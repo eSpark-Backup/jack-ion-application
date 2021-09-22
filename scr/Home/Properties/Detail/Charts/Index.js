@@ -1,0 +1,354 @@
+import React, {Component, version} from 'react';
+
+import {
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+  ActivityIndicator,
+  StatusBar,
+  Dimensions,
+  TextInput,
+  Animated,
+  ScrollView,
+  TouchableOpacity,
+  LayoutAnimation,
+  UIManager,
+  Button,
+  Pressable,
+} from 'react-native';
+
+//Packages
+import LinearGradient from 'react-native-linear-gradient';
+import Menu from 'react-native-vector-icons/Entypo';
+import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
+import Search from 'react-native-vector-icons/EvilIcons';
+import Back from 'react-native-vector-icons/MaterialIcons';
+import Locate from 'react-native-vector-icons/Feather';
+import Globe from 'react-native-vector-icons/Feather';
+import Build from 'react-native-vector-icons/Ionicons';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import Modal from 'react-native-modal';
+import Folder from 'react-native-vector-icons/Feather';
+import Tag from 'react-native-vector-icons/Feather';
+import Equip from 'react-native-vector-icons/Feather';
+import Chart from 'react-native-vector-icons/Feather';
+import Message from 'react-native-vector-icons/Feather';
+import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {
+  VictoryChart,
+  VictoryGroup,
+  VictoryBar,
+  VictoryTheme,
+  VictoryLegend,
+  VictoryAxis,
+} from 'victory-native';
+
+// Components
+import {Fonts} from '../../../../utils/fonts';
+import styles from './style';
+import style from './style';
+const {width, height} = Dimensions.get('window');
+
+const dataBar2 = {
+  actual: [
+    null,
+    {x: 'MON', y: 11},
+    {x: 'TUE', y: 15},
+    {x: 'WED', y: 18},
+    {x: 'THU', y: 1},
+    {x: 'FRI', y: 5},
+    {x: 'SAT', y: 2},
+    {x: 'SUN', y: 3},
+  ],
+  planned: [
+    null,
+    {x: 'MON', y: 12},
+    {x: 'TUE', y: 10},
+    {x: 'WED', y: 13},
+    {x: 'THU', y: 1},
+    {x: 'FRI', y: 5},
+    {x: 'SAT', y: 2},
+    {x: 'SUN', y: 8},
+  ],
+};
+
+const dataBar = [
+  {quarter: 'MON', earnings: 16500},
+  {quarter: 'TUE', earnings: 14250},
+  {quarter: 'WED', earnings: 19000},
+  {quarter: 'THU', earnings: 1200},
+  {quarter: 'FRI', earnings: 10000},
+  {quarter: 'SAT', earnings: 11000},
+  {quarter: 'SUN', earnings: 12000},
+];
+
+export default class Splash extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isModalVisible: false,
+      points: 80,
+      animatedValue: new Animated.Value(0),
+      clientName: 'Sugar Mamas Bake Shop',
+      address: 'Address',
+      addressDetail: '11750 Shelbyville Road Lousisville, KY 40243',
+      billCompany: 'Billing Company',
+      billCompanyDetail: 'ION Energy Solutions',
+      managementCompany: 'Management Company',
+      managementCompanyDetail: 'Mark Bollinger',
+    };
+    if (Platform.OS === 'android') {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }
+  _start = () => {
+    Animated.timing(this.state.fadeValue, {
+      toValue: 1,
+      duration: 1000,
+    }).start();
+  };
+  toggleModal = () => {
+    this.setState({isModalVisible: !this.state.isModalVisible});
+  };
+  changeLayoutMeter = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    this.setState({
+      meter: !this.state.meter,
+      meterDown: !this.state.meterDown,
+      animatedValue: new Animated.Value(0),
+    });
+    setTimeout(() => {
+      Animated.timing(this.state.animatedValue, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    }, 10);
+  };
+  naviagateToEquip = () => {
+    // this.toggleModal();
+    this.setState({isModalVisible: false});
+    this.props.navigation.navigate('Equip', this.props.navigation.state.params);
+  };
+  naviagateToDetail = () => {
+    this.toggleModal()
+    this.props.navigation.navigate('Detail', this.props.navigation.state.params);
+  }
+  naviagateToSupport = () => {
+    // this.toggleModal();
+    this.setState({isModalVisible: false});
+    this.props.navigation.navigate('Support');
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Modal
+          animationIn="slideInLeft"
+          animationOut="slideOutLeft"
+          isVisible={this.state.isModalVisible}
+          swipeDirection="left"
+          onSwipeStart={this.toggleModal}
+          onBackdropPress={this.toggleModal}
+          backdropColor="black"
+          style={styles.modalContainer}>
+          <View style={styles.drawerMainContainer}>
+            <View style={{marginTop: StatusBar.currentHeight}}>
+              <Menu
+                name="menu"
+                size={height * 0.05}
+                color="white"
+                // style={{right: 90}}
+                onPress={this.toggleModal}
+                style={{backgroundColor: '#35afe2'}}
+              />
+            </View>
+            <View style={styles.drawerContentContainer}>
+              <TouchableOpacity onPress={this.naviagateToDetail}>
+                <View style={styles.drawerContent}>
+                  <Detail
+                    name="account-details-outline"
+                    size={height * 0.035}
+                    color="#7575ff"
+                    style={{marginRight: width * 0.02}}
+                  />
+                  <Text style={styles.drawerbtn}>Profile</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.naviagateToEquip}>
+                <View style={styles.drawerContent}>
+                  <Equip
+                    name="rss"
+                    size={height * 0.035}
+                    color="#ff9f71"
+                    style={{marginRight: width * 0.02}}
+                  />
+                  <Text style={styles.drawerbtn}>Units</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.naviagateToChart}>
+                <View style={styles.drawerContent}>
+                  <Chart
+                    name="pie-chart"
+                    size={height * 0.035}
+                    color="#009349"
+                    style={{marginRight: width * 0.02}}
+                  />
+                  <Text style={styles.drawerbtn}>Charts</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={this.naviagateToSupport}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingBottom: height * 0.015,
+                }}>
+                <Detail
+                  name="help-circle-outline"
+                  size={height * 0.035}
+                  color="#35afe2"
+                  style={{
+                    marginBottom: height * 0.009,
+                    marginRight: width * 0.02,
+                  }}
+                />
+                <Text style={styles.drawerbtn}>Support</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <View style={styles.headerContainer}>
+          <View style={styles.headerInner}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.goBack()}
+              style={styles.menuView}>
+              <Back
+                size={width * 0.08}
+                color="white"
+                name="keyboard-backspace"
+              />
+            </TouchableOpacity>
+            <View style={styles.searchView}>
+              <Search
+                name="search"
+                size={height * 0.04}
+                style={{marginLeft: width * 0.05}}
+                color="white"
+              />
+              <TextInput
+                placeholderTextColor="white"
+                placeholder="Search"
+                style={styles.search}
+                onChangeText={(e) => this.setState({currentWei: e})}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={styles.headingContainer}>
+          <View style={styles.headingInner}>
+            <Menu
+              name="menu"
+              size={height * 0.04}
+              color="white"
+              style={{right: 95}}
+              onPress={this.toggleModal}
+            />
+            <View style={{flexDirection: 'row', right: 15}}>
+              <Detail
+                name="account-details-outline"
+                size={height * 0.04}
+                color="white"
+                style={{top: height * 0.002}}
+              />
+              <Text style={styles.mainHeadiing}>Charts</Text>
+            </View>
+          </View>
+        </View>
+        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+          <View style={styles.bodyContainer}>
+            <View style={styles.mainDataContainer}>
+              <View style={styles.contactViewContainer}>
+                <Text style={styles.dataFieldHeadings}>Property Health</Text>
+              </View>
+              <View style={styles.barViewContainer}>
+                <View style={styles.barView}>
+                  <AnimatedCircularProgress
+                    size={height * 0.2}
+                    width={height * 0.035}
+                    backgroundWidth={height * 0.035}
+                    fill={this.state.points}
+                    tintColor="#09BAF2"
+                    backgroundColor="#3d5875"
+                    arcSweepAngle={360}
+                    rotation={0}
+                    lineCap="butt">
+                    {(fill) => (
+                      <Text style={styles.barText}>
+                        Transceiver {'\n'} {Math.round((100 * fill) / 100)} %
+                      </Text>
+                    )}
+                  </AnimatedCircularProgress>
+                </View>
+                <View style={styles.barView}>
+                  <AnimatedCircularProgress
+                    size={height * 0.2}
+                    width={height * 0.035}
+                    backgroundWidth={height * 0.035}
+                    fill={this.state.points}
+                    tintColor="#09BAF2"
+                    backgroundColor="#3d5875"
+                    arcSweepAngle={360}
+                    rotation={0}
+                    lineCap="butt">
+                    {(fill) => (
+                      <Text style={styles.barText}>
+                        Repeater {'\n'} {Math.round((100 * fill) / 100)} %
+                      </Text>
+                    )}
+                  </AnimatedCircularProgress>
+                </View>
+              </View>
+              <View style={styles.contactViewContainer}>
+                <Text style={styles.dataFieldHeadings}>Check in history</Text>
+              </View>
+              <View style={{height: height * 0.45}}>
+                <VictoryChart
+                  theme={VictoryTheme.material}
+                  style={{height: height * 0.1}}>
+                  <VictoryBar
+                    data={dataBar2.actual}
+                    style={{data: {fill: '#AFAFAF', height: height * 0.01}}}
+                  />
+                  {/* <VictoryBar data={dataBar2.planned} style={{ data: { fill: 'orange' } }} /> */}
+                  {/* <VictoryBar data={dataBar} x='quater' y='earnings' /> */}
+                  <VictoryAxis />
+                </VictoryChart>
+                <VictoryLegend
+                  x={Dimensions.get('screen').width / 2 - 70}
+                  orientation="horizontal"
+                  data={[
+                    {
+                      name: 'Check In History',
+                      symbol: {
+                        fill: '#AFAFAF',
+                      },
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+}
