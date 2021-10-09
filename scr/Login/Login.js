@@ -19,17 +19,16 @@ import {Input} from 'react-native-elements';
 import {Fonts} from '../utils/fonts';
 import {create} from 'apisauce';
 import {Formik} from 'formik';
+import Base_URL from '../api/WebServices';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const {width, height} = Dimensions.get('window');
 
-const baseURL = 'http://ion.esparkconsultants.com/api';
-
 const clc = require('cli-color');
 
-const api = create({baseURL});
+const api = create({baseURL: Base_URL});
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label('Email'),
@@ -70,7 +69,7 @@ export default class Login extends Component {
 
   _checkCredentials = async (email, password) => {
     this.setState({isLoading: true});
-    const response = await api.post('/login', {
+    const response = await api.post('/auth/login', {
       email,
       password,
     });
@@ -133,7 +132,10 @@ export default class Login extends Component {
             </Text>
           </View>
           <Formik
-            initialValues={{email: 'bednar.douglas@example.net', password: 'password'}}
+            initialValues={{
+              email: 'dexter@test.com',
+              password: '555555',
+            }}
             onSubmit={(values) => {
               console.log(values);
               this._checkCredentials(values.email, values.password);
