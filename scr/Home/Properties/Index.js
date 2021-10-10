@@ -81,7 +81,7 @@ export default class Splash extends Component {
     }
   }
   componentDidMount() {
-    this.setState({loadScreen: true});
+    // this.setState({loadScreen: true});
   }
 
   handleLoadmore = () => {};
@@ -175,7 +175,7 @@ export default class Splash extends Component {
       console.log(clc.green('agayayaaa_____'));
       this.setState({Loading: false});
     }
-
+    console.log('prop---->',prop)
     return (
       <View
         style={{
@@ -193,7 +193,7 @@ export default class Splash extends Component {
           />
           <View style={{width: width * 0.6}}>
             <Text style={styles.propText}>
-              {prop.item.Property == null ? 'Untitled' : prop.item.Property}
+              {prop.item.property == null ? 'Untitled' : prop.item.property}
             </Text>
           </View>
           <Signal
