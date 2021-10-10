@@ -1,4 +1,4 @@
-import React, {Component, version} from 'react';
+import React, { Component, version } from 'react';
 
 import {
   AppRegistry,
@@ -29,7 +29,7 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
 import Globe from 'react-native-vector-icons/Feather';
 import Build from 'react-native-vector-icons/Ionicons';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Modal from 'react-native-modal';
 import Folder from 'react-native-vector-icons/Feather';
 import Tag from 'react-native-vector-icons/Feather';
@@ -38,8 +38,8 @@ import Chart from 'react-native-vector-icons/Feather';
 import Message from 'react-native-vector-icons/Feather';
 import Docs from 'react-native-vector-icons/Ionicons';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {
   VictoryChart,
   VictoryGroup,
@@ -49,46 +49,46 @@ import {
   VictoryAxis,
 } from 'victory-native';
 import ContextProp from '../Context/propContext';
-import {TextInput, Button, FAB} from 'react-native-paper';
+import { TextInput, Button, FAB } from 'react-native-paper';
 
 // Components
-import {Fonts} from '../../../utils/fonts';
+import { Fonts } from '../../../utils/fonts';
 import Drawer from 'react-native-drawer';
 import styles from './style';
 import style from './style';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const dataBar2 = {
   actual: [
     null,
-    {x: 'MON', y: 11},
-    {x: 'TUE', y: 15},
-    {x: 'WED', y: 18},
-    {x: 'THU', y: 1},
-    {x: 'FRI', y: 5},
-    {x: 'SAT', y: 2},
-    {x: 'SUN', y: 3},
+    { x: 'MON', y: 11 },
+    { x: 'TUE', y: 15 },
+    { x: 'WED', y: 18 },
+    { x: 'THU', y: 1 },
+    { x: 'FRI', y: 5 },
+    { x: 'SAT', y: 2 },
+    { x: 'SUN', y: 3 },
   ],
   planned: [
     null,
-    {x: 'MON', y: 12},
-    {x: 'TUE', y: 10},
-    {x: 'WED', y: 13},
-    {x: 'THU', y: 1},
-    {x: 'FRI', y: 5},
-    {x: 'SAT', y: 2},
-    {x: 'SUN', y: 8},
+    { x: 'MON', y: 12 },
+    { x: 'TUE', y: 10 },
+    { x: 'WED', y: 13 },
+    { x: 'THU', y: 1 },
+    { x: 'FRI', y: 5 },
+    { x: 'SAT', y: 2 },
+    { x: 'SUN', y: 8 },
   ],
 };
 
 const dataBar = [
-  {quarter: 'MON', earnings: 16500},
-  {quarter: 'TUE', earnings: 14250},
-  {quarter: 'WED', earnings: 19000},
-  {quarter: 'THU', earnings: 1200},
-  {quarter: 'FRI', earnings: 10000},
-  {quarter: 'SAT', earnings: 11000},
-  {quarter: 'SUN', earnings: 12000},
+  { quarter: 'MON', earnings: 16500 },
+  { quarter: 'TUE', earnings: 14250 },
+  { quarter: 'WED', earnings: 19000 },
+  { quarter: 'THU', earnings: 1200 },
+  { quarter: 'FRI', earnings: 10000 },
+  { quarter: 'SAT', earnings: 11000 },
+  { quarter: 'SUN', earnings: 12000 },
 ];
 
 export default class Splash extends React.Component {
@@ -100,16 +100,18 @@ export default class Splash extends React.Component {
       points: 80,
       editName: '',
       animatedValue: new Animated.Value(0),
-      clientName: 'Sugar Mamas Bake Shop',
-      addressTitle: 'Address',
-      addressDetail: '11750 Shelbyville Road Lousisville, KY 40243',
-      billCompany: 'Billing Company',
-      billCompanyDetail: 'ION Energy Solutions',
+      clientName: '',
+      address: '',
+      addressDetail: '',
+      billCompany: '',
+      billCompanyDetail: '',
       managementCompany: 'Management Company',
-      customId: 'Custom id',
+      customId: '',
       managementCompanyDetail: 'Mark Bollinger',
       customIdDetail: '012021',
       Name: '',
+      city: '',
+      zipcode: '',
       Address: '',
       BillComp: '',
       ManageComp: '',
@@ -162,7 +164,7 @@ export default class Splash extends React.Component {
     }).start();
   };
   toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   };
   toggleModalEditProp = () => {
     this.setState({
@@ -178,21 +180,21 @@ export default class Splash extends React.Component {
   };
   editThis = () => {
     this.setState(
-      Object.assign(this.state.data, {atIndex: this.state.info?.isIndex}),
+      Object.assign(this.state.data, { atIndex: this.state.info?.isIndex }),
     );
-    this.setState(Object.assign(this.state.data, {id: this.state.info?.id}));
-    this.setState(Object.assign(this.state.data, {editName: this.state.Name}));
+    this.setState(Object.assign(this.state.data, { id: this.state.info?.id }));
+    this.setState(Object.assign(this.state.data, { editName: this.state.Name }));
     this.setState(
-      Object.assign(this.state.data, {editAddress: this.state.Address}),
-    );
-    this.setState(
-      Object.assign(this.state.data, {editBillComp: this.state.BillComp}),
+      Object.assign(this.state.data, { editAddress: this.state.Address }),
     );
     this.setState(
-      Object.assign(this.state.data, {editManageComp: this.state.ManageComp}),
+      Object.assign(this.state.data, { editBillComp: this.state.BillComp }),
     );
     this.setState(
-      Object.assign(this.state.data, {editCustomId: this.state.CustomId}),
+      Object.assign(this.state.data, { editManageComp: this.state.ManageComp }),
+    );
+    this.setState(
+      Object.assign(this.state.data, { editCustomId: this.state.CustomId }),
     );
     this.context.editProperty(this.state.data);
   };
@@ -223,12 +225,12 @@ export default class Splash extends React.Component {
   };
   naviagateToEquip = () => {
     // this.toggleModal();
-    this.setState({isModalVisible: false});
+    this.setState({ isModalVisible: false });
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
   naviagateToDetail = () => {
     // this.toggleModal();
-    this.setState({isModalVisible: false});
+    this.setState({ isModalVisible: false });
     this.props.navigation.navigate(
       'Detail',
       this.props.navigation.state.params,
@@ -243,7 +245,7 @@ export default class Splash extends React.Component {
   };
   naviagateToSupport = () => {
     // this.toggleModal();
-    this.setState({isModalVisible: false});
+    this.setState({ isModalVisible: false });
     this.props.navigation.navigate('Support');
   };
 
@@ -261,14 +263,14 @@ export default class Splash extends React.Component {
           backdropColor="black"
           style={styles.sideModalContainer}>
           <View style={styles.drawerMainContainer}>
-            <View style={{marginTop: StatusBar.currentHeight}}>
+            <View style={{ marginTop: StatusBar.currentHeight }}>
               <Menu
                 name="menu"
                 size={height * 0.05}
                 color="white"
                 // style={{right: 90}}
                 onPress={this.toggleModal}
-                style={{backgroundColor: '#35afe2'}}
+                style={{ backgroundColor: '#35afe2' }}
               />
             </View>
             <View style={styles.drawerContentContainer}>
@@ -278,7 +280,7 @@ export default class Splash extends React.Component {
                     name="account-details-outline"
                     size={height * 0.035}
                     color="#7575ff"
-                    style={{marginRight: width * 0.02}}
+                    style={{ marginRight: width * 0.02 }}
                   />
                   <Text style={styles.drawerbtn}>Profile</Text>
                 </View>
@@ -289,7 +291,7 @@ export default class Splash extends React.Component {
                     name="rss"
                     size={height * 0.035}
                     color="#ff9f71"
-                    style={{marginRight: width * 0.02}}
+                    style={{ marginRight: width * 0.02 }}
                   />
                   <Text style={styles.drawerbtn}>Units</Text>
                 </View>
@@ -300,7 +302,7 @@ export default class Splash extends React.Component {
                     name="pie-chart"
                     size={height * 0.035}
                     color="#009349"
-                    style={{marginRight: width * 0.02}}
+                    style={{ marginRight: width * 0.02 }}
                   />
                   <Text style={styles.drawerbtn}>Charts</Text>
                 </View>
@@ -344,7 +346,7 @@ export default class Splash extends React.Component {
               <Search
                 name="search"
                 size={height * 0.04}
-                style={{marginLeft: width * 0.05}}
+                style={{ marginLeft: width * 0.05 }}
                 color="white"
               />
               <TextInput
@@ -353,7 +355,7 @@ export default class Splash extends React.Component {
                 placeholderTextColor="white"
                 placeholder="Search"
                 style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
+                onChangeText={(e) => this.setState({ currentWei: e })}
                 theme={{
                   colors: {
                     text: 'white',
@@ -372,21 +374,21 @@ export default class Splash extends React.Component {
               name="menu"
               size={height * 0.04}
               color="white"
-              style={{right: 90}}
+              style={{ right: 90 }}
               onPress={this.toggleModal}
             />
-            <View style={{flexDirection: 'row', right: 15}}>
+            <View style={{ flexDirection: 'row', right: 15 }}>
               <Detail
                 name="account-details-outline"
                 size={height * 0.05}
                 color="white"
-                style={{top: height * 0.002}}
+                style={{ top: height * 0.002 }}
               />
               <Text style={styles.mainHeadiing}>Profile</Text>
             </View>
           </View>
         </View>
-        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <View style={styles.bodyContainer}>
             <MapView
               style={styles.map}
@@ -411,9 +413,9 @@ export default class Splash extends React.Component {
             <View style={styles.clientName}>
               <Build name="md-business-outline" size={width * 0.08} />
               <Text style={styles.clientNameHeading}>
-                {this.state.listData.Property == null
+                {this.state.listData.property == null
                   ? 'Untitled'
-                  : this.state.listData.Property}
+                  : this.state.listData.property}
               </Text>
               <Pressable
                 style={styles.clientDataEdit}
@@ -461,9 +463,9 @@ export default class Splash extends React.Component {
                     </View>
                     {/* Box Body */}
                     <ScrollView
-                      style={{height: height * 0.6}}
+                      style={{ height: height * 0.6 }}
                       showsVerticalScrollIndicator={false}>
-                      <View style={{flex: 1}}>
+                      <View style={{ flex: 1 }}>
                         <View style={styles.desciptionContainer}>
                           <Icon
                             name={'location-on'}
@@ -476,11 +478,13 @@ export default class Splash extends React.Component {
                         </View>
                         <View style={styles.inputContainer}>
                           <TextInput
-                            value={this.state.Name}
-                            // placeholder={this.state.listData.name}
+                            label="Property Name*"
+                            value={this.state?.listData?.property}
+                            placeholder={this.state?.listData?.property}
+                            error={false}
                             // placeholder="Enter Name"
                             onChangeText={(text) => {
-                              this.setState({Name: text});
+                              this.setState({ Name: text });
                             }}
                             // onChangeText={(text) => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -498,11 +502,77 @@ export default class Splash extends React.Component {
                         <View style={styles.inputContainer}>
                           <TextInput
                             // placeholder={this.state.info?.address}
-                            value={this.state.Address}
-                            // placeholder="Enter Address"
+                            label="Property ID*"
+                            error={false}
+                            value={this.state?.listData?.property_id}
+                            placeholder={this.state?.listData?.property_id}
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({Address: text});
+                              this.setState({ customId: text });
+                            }}
+                            // onChangeText={text => { this.editThis(text) }}
+                            onBlur={this.editThis}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            value={this.state?.listData?.street}
+                            placeholder={this.state?.listData?.street}
+                            error={false}
+                            label="Street*"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({ address: text });
+                            }}
+                            // onChangeText={text => { this.editThis(text) }}
+                            onBlur={this.editThis}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={[styles.inputContainer, { flexDirection: 'row', justifyContent: 'space-around' }]}>
+                          <TextInput
+                            value={this.state?.listData?.city}
+                            error={false}
+                            placeholder={this.state?.listData?.city}
+                            label="City*"
+                            style={[styles.input, { width: width * 0.36 }]}
+                            onChangeText={(text) => {
+                              this.setState({ city: text });
+                            }}
+                            // onChangeText={text => { this.editThis(text) }}
+                            onBlur={this.editThis}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                          <TextInput
+                            value={this.state?.listData?.zipcode}
+                            error={this.state.zipcode}
+                            placeholder={this.state?.listData?.zipcode}
+                            label="ZipCode*"
+                            style={[styles.input, { width: width * 0.36 }]}
+                            onChangeText={(text) => {
+                              this.setState({ zipcode: text });
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -549,12 +619,13 @@ export default class Splash extends React.Component {
                         </View> */}
                         <View style={styles.inputContainer}>
                           <TextInput
+
                             value={this.state.ManageComp}
                             label="MANAGEMENT COMPANY*"
                             placeholder="Company Name"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({ManageComp: text});
+                              this.setState({ ManageComp: text });
                             }}
                             onBlur={this.editThis}
                             // dense={true}
@@ -600,7 +671,7 @@ export default class Splash extends React.Component {
                           color="white"
                           icon="check"
                           // loading={false}
-                          label="Submit"
+                          label="Update"
                         />
                       </View>
                     </View>
@@ -616,9 +687,9 @@ export default class Splash extends React.Component {
                 <View style={styles.infoViewInner}>
                   <Locate name="map-pin" size={width * 0.06} />
                   <Text style={styles.dataFieldText}>
-                    {this.state.listData.Street == null
+                    {this.state.listData.street == null
                       ? '--'
-                      : `${this.state.listData.Street} \n ${this.state.listData.City}, ${this.state.listData.St} ${this.state.listData.ZipCode}`}
+                      : `${this.state.listData.street} \n ${this.state.listData.city}, ${this.state.listData.st} ${this.state.listData.zipcode}`}
                   </Text>
                 </View>
               </View>
@@ -651,9 +722,9 @@ export default class Splash extends React.Component {
                 <View style={styles.infoViewInner}>
                   <Folder name="folder" size={width * 0.06} />
                   <Text style={styles.dataFieldText}>
-                    {this.state.listData.PropertyID == null
+                    {this.state.listData.property_id == null
                       ? '--'
-                      : this.state.listData.PropertyID}
+                      : this.state.listData.property_id}
                   </Text>
                 </View>
               </View>
@@ -662,9 +733,9 @@ export default class Splash extends React.Component {
                 <View style={styles.infoViewInner}>
                   <Globe name="phone" size={width * 0.06} />
                   <Text style={styles.dataFieldText}>
-                    {this.state.listData.Office_Contact_Number == null
+                    {this.state.listData.office_contact_number == null
                       ? '--'
-                      : this.state.listData.Office_Contact_Number}
+                      : this.state.listData.office_contact_number}
                   </Text>
                 </View>
               </View>
@@ -680,7 +751,7 @@ export default class Splash extends React.Component {
                     />
                   </View>
                   <TextInput
-                    value={this.state.listData.Contact}
+                    value={this.state.listData.contact}
                     placeholder="Contact Name"
                     onChangeText={(text) => console.log(text)}
                     style={styles.contactInput}
@@ -696,7 +767,7 @@ export default class Splash extends React.Component {
                     />
                   </View>
                   <TextInput
-                    value={this.state.listData.Contact_Email}
+                    value={this.state.listData.contact_email}
                     placeholder="Email"
                     onChangeText={(text) => console.log(text)}
                     style={styles.contactInput}
@@ -754,7 +825,7 @@ export default class Splash extends React.Component {
                     <Docs
                       name="document-text-outline"
                       size={height * 0.03}
-                      style={{color: 'purple', top: 2}}
+                      style={{ color: 'purple', top: 2 }}
                     />
                     <Text style={style.commentBottonText}>Docs(0)</Text>
                   </View>
@@ -798,14 +869,14 @@ export default class Splash extends React.Component {
                   </AnimatedCircularProgress>
                 </View>
               </View>
-              <View style={{height: height * 0.45}}>
+              <View style={{ height: height * 0.45 }}>
                 <VictoryChart
-                  style={{height: height * 0.1}}
-                  domainPadding={{x: 20}}
-                  animate={{duration: 500}}>
+                  style={{ height: height * 0.1 }}
+                  domainPadding={{ x: 20 }}
+                  animate={{ duration: 500 }}>
                   <VictoryBar
                     data={dataBar2.actual}
-                    style={{data: {fill: 'tomato', height: height * 0.01}}}
+                    style={{ data: { fill: 'tomato', height: height * 0.01 } }}
                     // labels={({ datum }) => datum.y}
                     animate={{
                       // duration: 2000,
