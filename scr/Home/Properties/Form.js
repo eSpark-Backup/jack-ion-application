@@ -127,10 +127,10 @@ export default class Splash extends React.Component {
     console.log('kiya Mila', this.state.Name);
 
     if (
-      (this.state.Name == '' || this.state.Address == '',
-      this.state.BillComp == '' ||
-        this.state.ManageComp == '' ||
-        this.state.CustomId == '')
+      (this.state.Name == '' || this.state.Address == '' || this.state.CustomId == ''
+      // this.state.BillComp == '' ||
+        // this.state.ManageComp == '' ||
+        )
     ) {
       alert('Kindly Fill All Required.');
     }
@@ -155,6 +155,9 @@ export default class Splash extends React.Component {
       );
       this.setState(
         Object.assign(this.state.info, {propContact: this.state.contact}),
+      );
+      this.setState(
+        Object.assign(this.state.info, {propCustomId: this.state.CustomId}),
       );
       this.setState(
         Object.assign(this.state.info, {

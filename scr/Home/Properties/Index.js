@@ -81,7 +81,7 @@ export default class Splash extends Component {
     }
   }
   componentDidMount() {
-    // this.setState({loadScreen: true});
+    this.setState({loadScreen: true});
   }
 
   handleLoadmore = () => {};
