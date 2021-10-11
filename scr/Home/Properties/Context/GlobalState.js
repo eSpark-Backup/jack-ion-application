@@ -15,11 +15,24 @@ class GlobalState extends React.Component {
     this.getToken();
   }
 
+  getToken = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      console.log('token aya', token);
+      this.setState({ token: token });
+      this.api = create({
+        baseURL: Base_URL,
+        headers: { Authorization: 'Bearer ' + token },
+      });
+      this.checkData();
+    }
+  };
+
   checkData = async () => {
     const response = await this.api.post('/property/all');
-    console.log('Check response', response.data.data.properties);
-    this.setState({success: response.data.bool});
-    this.setState({propList: response.data.data.properties});
+    console.log('Check response', response.data.data);
+    this.setState({ success: response.data.bool });
+    this.setState({ propList: response.data.data.properties.reverse() });
   };
 
   state = {
@@ -681,18 +694,18 @@ class GlobalState extends React.Component {
     ],
   };
 
-  getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      console.log(clc.bgRedBright('token aya', token));
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-      this.checkData();
-    }
-  };
+  // getToken = async () => {
+  //   const token = await EncryptedStorage.getItem('user_token');
+  //   if (token != null) {
+  //     console.log(clc.bgRedBright('token aya', token));
+  //     this.setState({token: token});
+  //     this.api = create({
+  //       baseURL: Base_URL,
+  //       headers: {Authorization: 'Bearer ' + token},
+  //     });
+  //     this.checkData();
+  //   }
+  // };
 
   addProp = async (info) => {
     console.log('PROPERTY INFORMATION--------->', info);
@@ -832,6 +845,7 @@ class GlobalState extends React.Component {
             editProperty: this.editProperty,
             profileWeGet: this.profileWeGet,
             jumpToDetail: this.jumpToDetail,
+            checkData: this.checkData
           }}>
           {this.props.children}
         </Context.Provider>
