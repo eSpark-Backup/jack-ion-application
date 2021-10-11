@@ -163,10 +163,12 @@ export default class Splash extends React.Component {
         Object.assign(this.state.info, {
           propContactEmail: this.state.contactEmail,
         }),
+        () => this.props.loader(true)
       );
       console.log('After', this.state.info.propName);
       this.context.addProp(this.state.info);
       this.clearInputs();
+      
     }
   };
 
