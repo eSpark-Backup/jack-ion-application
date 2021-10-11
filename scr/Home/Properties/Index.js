@@ -175,7 +175,7 @@ export default class Splash extends Component {
       console.log(clc.green('agayayaaa_____'));
       this.setState({Loading: false});
     }
-    console.log('prop---->',prop)
+    // console.log('prop---->',prop)
     return (
       <View
         style={{

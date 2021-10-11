@@ -6,31 +6,34 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 
 // const baseURL = 'http://51.178.36.223/api';
-const getToken = EncryptedStorage.getItem('user_token');
-const api = create({
-  baseURL: Base_URL,
-  headers: { 'Authorization' : 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6IjU1NTAxZjE0MjQ5MWVkYjQ4NGFkYWY2Y2FlMGFlOTY4NjM2OTFkMzhkM2QyY2JhODQ4NjFiODAwM2YzYjY0MzQ4MTUyNGMzMWRmZjkxZjFjIiwiaWF0IjoxNjMzNzk3NzQ5LCJuYmYiOjE2MzM3OTc3NDksImV4cCI6MTY2NTMzMzc0OSwic3ViIjoiMTkiLCJzY29wZXMiOltdfQ.nphSUM-ORtJTpdpl-lGY5dQsuS5r7SggPCTjOXu7B3rtqGyjqCn9FULyE_-oOahmgLXb7JMoh8awNKpGrp6Y_jegWeWe1iOJaoke2FRTEscFzsxTKDbFiFOnIn6rbfHP9UP5O2HHHuh-27Ej0-Vlkx5Z6fAB1x49G_eSr3gcwoNeFVybBElD_aiBZkSziOa7vdjGWfcOejhJgcLIYsC8vO2YJxjisubaeyCHkmRarfIXXHDWXoKDIpx6tERCKiqAHA1P6HFaF7UULUI8YYnxCjBlb29ZGtORn3scwglLeAYgUqQMMORGb9fmcGfp_npWcvLO61SZs-39TepSmNQNcq3TegIJ3J-7lYl1_FoYsI3XlzQe9H9naV5ivjL_7jZsYkr1t9HiEh-Z4qpTDZAl2B5rcbpEMJ_JBkK37QwYf0NIQQSrELj0CWq5QaBoqsxQG7Ys06Oi6N5sk8oQ1skJOGRzd4E7PGGPUHUSA6dQEVx9v7-xBvnOjqd0Z9yqwQsJx40hmXMne01JyIzWwOt6pm3vQEG_0YYBKW2sCnDw-CsVHQUIkIhiVuhcX-pXpaYds7eQmlRU5CE-mdRAhmmHxerFAvST1BzQS-rHBhoAL5Td_mz2TtXa70Gpg5rL98yNzX_0pIWCFMexPlmicZec2narA6OV35pDbRjnv4e0eMw'  },
-});
 
 // const ContextProp = React.createContext('default Value')
 
 class GlobalState extends React.Component {
   componentDidMount() {
-    this.checkData();
-    this.setState({token:getToken})
+    this.getToken();
   }
 
-  checkData = async () => {
-    // console.log('tooken mil gaya===>',getToken._W)
-
-    const response = await api.post('/property/all');
-    // header({
-    //    'Authorization' : 'Bearer ' + token
-    // })
-    console.log('Check response', response.data.data.properties);
-    this.setState({ success: response.data.bool });
-    this.setState({ propList: response.data.data.properties });
+  getToken = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      console.log('token aya', token);
+      this.setState({ token: token });
+      this.api = create({
+        baseURL: Base_URL,
+        headers: { Authorization: 'Bearer ' + token },
+      });
+      this.checkData();
+    }
   };
+
+  checkData = async () => {
+    const response = await this.api.post('/property/all');
+    console.log('Check response', response.data.data);
+    this.setState({ success: response.data.bool });
+    this.setState({ propList: response.data.data.properties.reverse() });
+  };
+
   state = {
     editName: '',
     editAddress: '',
@@ -38,7 +41,7 @@ class GlobalState extends React.Component {
     editManageComp: '',
     editCustomId: '',
     index: '',
-    token:[],
+    token: null,
     success: false,
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     propList: [
@@ -725,7 +728,7 @@ class GlobalState extends React.Component {
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error));
 
-    const response = await api.get('/getProperties');
+    const response = await this.api.get('/getProperties');
     this.setState({ propList: response.data.data });
   };
 
@@ -819,6 +822,7 @@ class GlobalState extends React.Component {
             editProperty: this.editProperty,
             profileWeGet: this.profileWeGet,
             jumpToDetail: this.jumpToDetail,
+            checkData: this.checkData
           }}>
           {this.props.children}
         </Context.Provider>
