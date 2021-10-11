@@ -1,6 +1,6 @@
 import React from 'react';
 import Context from './propContext';
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
@@ -29,7 +29,11 @@ class GlobalState extends React.Component {
   };
 
   checkData = async () => {
-    const response = await this.api.post('/property/all');
+    data = {
+      offset: 100,
+      limit: 110
+    }
+    const response = await this.api.post('/property/all', data);
     console.log('Check response', response.data.data);
     this.setState({ success: response.data.bool });
     this.setState({ propList: response.data.data.properties.reverse() });
@@ -783,18 +787,20 @@ class GlobalState extends React.Component {
     // console.log('We Get', this.state.propList)
   };
 
-  editProperty = (editData) => {
-    const some_array = [...this.state.propList];
-    some_array[editData.atIndex] = {
-      id: editData.id,
-      name: editData.editName,
-      address: editData.editAddress,
-      billComp: editData.editBillComp,
-      managementComp: editData.editManageComp,
-      customId: editData.editCustomId,
-    };
-    // console.log('hello', some_array)
-    this.setState({propList: some_array});
+  editProperty = async (editData) => {
+    console.log('editproperty===>', editData)
+
+    // const some_array = [...this.state.propList];
+    // some_array[editData.atIndex] = {
+    //   id: editData.id,
+    //   name: editData.editName,
+    //   address: editData.editAddress,
+    //   billComp: editData.editBillComp,
+    //   managementComp: editData.editManageComp,
+    //   customId: editData.editCustomId,
+    // };
+    // // console.log('hello', some_array)
+    // this.setState({propList: some_array});
     // console.log('Global List', this.state.propList)
   };
 
@@ -818,7 +824,7 @@ class GlobalState extends React.Component {
     this.setState(
       Object.assign(
         this.state.propList[editData.indexUnits].dataTop[editData.indexBuild],
-        {list: some_array},
+        { list: some_array },
       ),
     );
     // console.log('Kiya Edit Howa', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
@@ -854,4 +860,4 @@ class GlobalState extends React.Component {
   }
 }
 
-export {GlobalState};
+export { GlobalState };

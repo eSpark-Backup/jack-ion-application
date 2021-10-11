@@ -308,10 +308,12 @@ export default class Splash extends React.Component {
         street: this.state.listData.street,
         city: this.state.listData.city,
       }
+      this.context.editProperty(data);
+
       api.patch(`/property/update/${this.state?.listData?.id}`,data).then(res => {
         console.log(res.data);
       })
-
+      this.props.navigation.navigate('ionMain');
     }
   };
   changeLayoutMeter = () => {

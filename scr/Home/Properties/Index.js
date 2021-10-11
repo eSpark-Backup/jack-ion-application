@@ -136,7 +136,9 @@ export default class Splash extends Component {
     this.props.navigation.navigate('Setting');
     this.selectedProp(prop);
   };
-
+  handleLoader = (child) => {
+    this.setState({loadScreen: true});
+  }
   selectedProp = (prop) => {
     // this.context.profileWeGet(prop.index)
 
@@ -305,7 +307,7 @@ export default class Splash extends Component {
           </View>
         </View>
         <View style={styles.headingContainer}>
-          <Add />
+          <Add loader={this.handleLoader} />
         </View>
         <View
           style={{
