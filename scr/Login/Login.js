@@ -61,6 +61,7 @@ export default class Login extends Component {
   storeToken = async (token) => {
     try {
       await EncryptedStorage.setItem('user_token', token);
+      await AsyncStorage.setItem('token',token);
       console.log('Stored Token Success', clc.xterm(216)(token));
     } catch (e) {
       console.log('Store Token Failed', e);

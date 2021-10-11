@@ -56,8 +56,13 @@ import { Fonts } from '../../../utils/fonts';
 import Drawer from 'react-native-drawer';
 import styles from './style';
 import style from './style';
+import Base_URL from '../../../api/WebServices';
+import { create } from 'apisauce';
 const { width, height } = Dimensions.get('window');
-
+const api = create({
+  baseURL: Base_URL,
+  headers: { 'Authorization' : 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6IjU1NTAxZjE0MjQ5MWVkYjQ4NGFkYWY2Y2FlMGFlOTY4NjM2OTFkMzhkM2QyY2JhODQ4NjFiODAwM2YzYjY0MzQ4MTUyNGMzMWRmZjkxZjFjIiwiaWF0IjoxNjMzNzk3NzQ5LCJuYmYiOjE2MzM3OTc3NDksImV4cCI6MTY2NTMzMzc0OSwic3ViIjoiMTkiLCJzY29wZXMiOltdfQ.nphSUM-ORtJTpdpl-lGY5dQsuS5r7SggPCTjOXu7B3rtqGyjqCn9FULyE_-oOahmgLXb7JMoh8awNKpGrp6Y_jegWeWe1iOJaoke2FRTEscFzsxTKDbFiFOnIn6rbfHP9UP5O2HHHuh-27Ej0-Vlkx5Z6fAB1x49G_eSr3gcwoNeFVybBElD_aiBZkSziOa7vdjGWfcOejhJgcLIYsC8vO2YJxjisubaeyCHkmRarfIXXHDWXoKDIpx6tERCKiqAHA1P6HFaF7UULUI8YYnxCjBlb29ZGtORn3scwglLeAYgUqQMMORGb9fmcGfp_npWcvLO61SZs-39TepSmNQNcq3TegIJ3J-7lYl1_FoYsI3XlzQe9H9naV5ivjL_7jZsYkr1t9HiEh-Z4qpTDZAl2B5rcbpEMJ_JBkK37QwYf0NIQQSrELj0CWq5QaBoqsxQG7Ys06Oi6N5sk8oQ1skJOGRzd4E7PGGPUHUSA6dQEVx9v7-xBvnOjqd0Z9yqwQsJx40hmXMne01JyIzWwOt6pm3vQEG_0YYBKW2sCnDw-CsVHQUIkIhiVuhcX-pXpaYds7eQmlRU5CE-mdRAhmmHxerFAvST1BzQS-rHBhoAL5Td_mz2TtXa70Gpg5rL98yNzX_0pIWCFMexPlmicZec2narA6OV35pDbRjnv4e0eMw'  },
+});
 const dataBar2 = {
   actual: [
     null,
@@ -127,6 +132,13 @@ export default class Splash extends React.Component {
         editBillComp: '',
         editManageComp: '',
         editCustomId: '',
+      },
+      error: {
+        property: false,
+        property_id: false,
+        street: false,
+        city: false,
+        zipcode: false,
       },
       // editName: '',
       // editAddress: '',
@@ -199,13 +211,102 @@ export default class Splash extends React.Component {
     this.context.editProperty(this.state.data);
   };
   editProp = () => {
-    if (this.state.Name === '') {
-      alert('Please Fill the Required');
+    if (this.state?.listData?.property === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          property: true       // update the value of specific key
+        }
+      }));
     } else {
-      this.setState({
-        listData: this.context.propList[this.state.info?.isIndex],
-      });
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          property: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state?.listData?.property_id === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          property_id: true       // update the value of specific key
+        }
+      }));
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          property_id: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state?.listData?.street === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          street: true       // update the value of specific key
+        }
+      }));
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          street: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state?.listData?.city === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          city: true       // update the value of specific key
+        }
+      }));
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          city: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state?.listData?.zipcode === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          zipcode: true       // update the value of specific key
+        }
+      }));
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          zipcode: false       // update the value of specific key
+        }
+      }));
       this.toggleModalEditProp();
+      const data = {
+        property_id: this.state.listData.property_id,
+        zipcode: this.state.listData.zipcode,
+        property: this.state.listData.property,
+        street: this.state.listData.street,
+        city: this.state.listData.city,
+      }
+      api.patch(`/property/update/${this.state?.listData?.id}`,data).then(res => {
+        console.log(res.data);
+      })
+
     }
   };
   changeLayoutMeter = () => {
@@ -481,11 +582,19 @@ export default class Splash extends React.Component {
                             label="Property Name*"
                             value={this.state?.listData?.property}
                             placeholder={this.state?.listData?.property}
-                            error={false}
+                            error={this.state.error.property}
                             // placeholder="Enter Name"
                             onChangeText={(text) => {
-                              this.setState({ Name: text });
+                              this.setState(prevState => ({
+                                ...prevState,
+                                listData: {                   // object that we want to update
+                                  ...prevState.listData,    // keep all other key-value pairs
+                                  property: text       // update the value of specific key
+                                }
+                              }));
+
                             }}
+
                             // onChangeText={(text) => { this.editThis(text) }}
                             onBlur={this.editThis}
                             style={styles.input}
@@ -503,12 +612,18 @@ export default class Splash extends React.Component {
                           <TextInput
                             // placeholder={this.state.info?.address}
                             label="Property ID*"
-                            error={false}
+                            error={this.state.error.property_id}
                             value={this.state?.listData?.property_id}
                             placeholder={this.state?.listData?.property_id}
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({ customId: text });
+                              this.setState(prevState => ({
+                                ...prevState,
+                                listData: {                   // object that we want to update
+                                  ...prevState.listData,    // keep all other key-value pairs
+                                  property_id: text       // update the value of specific key
+                                }
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -526,11 +641,17 @@ export default class Splash extends React.Component {
                           <TextInput
                             value={this.state?.listData?.street}
                             placeholder={this.state?.listData?.street}
-                            error={false}
+                            error={this.state.error.street}
                             label="Street*"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({ address: text });
+                              this.setState(prevState => ({
+                                ...prevState,
+                                listData: {                   // object that we want to update
+                                  ...prevState.listData,    // keep all other key-value pairs
+                                  street: text       // update the value of specific key
+                                }
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -547,12 +668,18 @@ export default class Splash extends React.Component {
                         <View style={[styles.inputContainer, { flexDirection: 'row', justifyContent: 'space-around' }]}>
                           <TextInput
                             value={this.state?.listData?.city}
-                            error={false}
+                            error={this.state.error.city}
                             placeholder={this.state?.listData?.city}
                             label="City*"
                             style={[styles.input, { width: width * 0.36 }]}
                             onChangeText={(text) => {
-                              this.setState({ city: text });
+                              this.setState(prevState => ({
+                                ...prevState,
+                                listData: {                   // object that we want to update
+                                  ...prevState.listData,    // keep all other key-value pairs
+                                  city: text       // update the value of specific key
+                                }
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -567,12 +694,18 @@ export default class Splash extends React.Component {
                           />
                           <TextInput
                             value={this.state?.listData?.zipcode}
-                            error={this.state.zipcode}
+                            error={this.state.error.zipcode}
                             placeholder={this.state?.listData?.zipcode}
                             label="ZipCode*"
                             style={[styles.input, { width: width * 0.36 }]}
                             onChangeText={(text) => {
-                              this.setState({ zipcode: text });
+                              this.setState(prevState => ({
+                                ...prevState,
+                                listData: {                   // object that we want to update
+                                  ...prevState.listData,    // keep all other key-value pairs
+                                  zipcode: text       // update the value of specific key
+                                }
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -682,7 +815,7 @@ export default class Splash extends React.Component {
             <View style={styles.mainDataContainer}>
               <View style={styles.infoViewContainer}>
                 <Text style={styles.dataFieldHeadings}>
-                  {this.state.addressTitle}
+                  ADDRESS
                 </Text>
                 <View style={styles.infoViewInner}>
                   <Locate name="map-pin" size={width * 0.06} />
@@ -717,7 +850,7 @@ export default class Splash extends React.Component {
               </View> */}
               <View style={styles.infoViewContainer}>
                 <Text style={styles.dataFieldHeadings}>
-                  {this.state.customId}
+                  CUSTOM ID
                 </Text>
                 <View style={styles.infoViewInner}>
                   <Folder name="folder" size={width * 0.06} />
