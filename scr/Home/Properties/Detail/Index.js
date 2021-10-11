@@ -169,6 +169,11 @@ export default class Splash extends React.Component {
     // this.setState({ index: this.state.info?.isIndex })
   }
 
+  getBack = () => {
+    this.props.navigation.goBack()
+    this.context.checkData()
+  }
+
   _start = () => {
     Animated.timing(this.state.fadeValue, {
       toValue: 1,
@@ -435,7 +440,7 @@ export default class Splash extends React.Component {
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => this.getBack()}
               style={styles.menuView}>
               <Back
                 size={width * 0.08}
