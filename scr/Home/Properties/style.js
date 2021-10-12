@@ -1,10 +1,10 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../utils/fonts';
 
 //Packages
 
 //Files
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -212,11 +212,12 @@ export default styles = StyleSheet.create({
   dropView: {
     height: height * 0.07,
     backgroundColor: '#83d0f1',
-    width: width * 1,
+    width: width * .9,
     justifyContent: 'space-evenly',
     alignItems: 'center',
     flexDirection: 'row',
     top: height * -0.01,
+    overflow: 'hidden',
   },
   dropViewHide: {
     height: 0.0,

@@ -1,36 +1,68 @@
 import React from 'react';
 import Context from './propContext';
-import { create } from 'apisauce';
+import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
+import clc from 'cli-color';
 
 // const baseURL = 'http://51.178.36.223/api';
-const getToken = EncryptedStorage.getItem('user_token');
-const api = create({
-  baseURL: Base_URL,
-  headers: { 'Authorization' : 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6IjU1NTAxZjE0MjQ5MWVkYjQ4NGFkYWY2Y2FlMGFlOTY4NjM2OTFkMzhkM2QyY2JhODQ4NjFiODAwM2YzYjY0MzQ4MTUyNGMzMWRmZjkxZjFjIiwiaWF0IjoxNjMzNzk3NzQ5LCJuYmYiOjE2MzM3OTc3NDksImV4cCI6MTY2NTMzMzc0OSwic3ViIjoiMTkiLCJzY29wZXMiOltdfQ.nphSUM-ORtJTpdpl-lGY5dQsuS5r7SggPCTjOXu7B3rtqGyjqCn9FULyE_-oOahmgLXb7JMoh8awNKpGrp6Y_jegWeWe1iOJaoke2FRTEscFzsxTKDbFiFOnIn6rbfHP9UP5O2HHHuh-27Ej0-Vlkx5Z6fAB1x49G_eSr3gcwoNeFVybBElD_aiBZkSziOa7vdjGWfcOejhJgcLIYsC8vO2YJxjisubaeyCHkmRarfIXXHDWXoKDIpx6tERCKiqAHA1P6HFaF7UULUI8YYnxCjBlb29ZGtORn3scwglLeAYgUqQMMORGb9fmcGfp_npWcvLO61SZs-39TepSmNQNcq3TegIJ3J-7lYl1_FoYsI3XlzQe9H9naV5ivjL_7jZsYkr1t9HiEh-Z4qpTDZAl2B5rcbpEMJ_JBkK37QwYf0NIQQSrELj0CWq5QaBoqsxQG7Ys06Oi6N5sk8oQ1skJOGRzd4E7PGGPUHUSA6dQEVx9v7-xBvnOjqd0Z9yqwQsJx40hmXMne01JyIzWwOt6pm3vQEG_0YYBKW2sCnDw-CsVHQUIkIhiVuhcX-pXpaYds7eQmlRU5CE-mdRAhmmHxerFAvST1BzQS-rHBhoAL5Td_mz2TtXa70Gpg5rL98yNzX_0pIWCFMexPlmicZec2narA6OV35pDbRjnv4e0eMw'  },
-});
 
 // const ContextProp = React.createContext('default Value')
 
 class GlobalState extends React.Component {
   componentDidMount() {
-    this.checkData();
-    this.setState({token:getToken})
+    this.getToken();
   }
 
-  checkData = async () => {
-    // console.log('tooken mil gaya===>',getToken._W)
-
-    const response = await api.post('/property/all');
-    // header({
-    //    'Authorization' : 'Bearer ' + token
-    // })
-    console.log('Check response', response.data.data.properties);
-    this.setState({ success: response.data.bool });
-    this.setState({ propList: response.data.data.properties });
+  getToken = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      console.log('token aya', token);
+      this.setState({token: token});
+      this.api = create({
+        baseURL: Base_URL,
+        headers: {Authorization: 'Bearer ' + token},
+      });
+      this.checkData();
+    }
   };
+
+  loadMoreData = async () => {
+    console.log('load More Data');
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      console.log('token aya', token);
+      this.setState({token: token});
+      this.api = create({
+        baseURL: Base_URL,
+        headers: {Authorization: 'Bearer ' + token},
+      });
+      let data = {
+        offset: 10,
+      }
+      const response = await this.api.post('/property/all', data);
+      this.setState({
+        propList: [...this.state.propList, response.data.data.properties],
+      });
+    }
+  };
+
+  clearData = () => {
+    this.setState({propList: []});
+  };
+
+  checkData = async () => {
+    this.setState({isLoading: true});
+    let data = {
+      offset: 0,
+    }
+    const response = await this.api.post('/property/all', data);
+    this.setState({success: response.data.bool});
+    this.setState({propList: response.data.data.properties});
+    this.setState({isLoading: false});
+  };
+
   state = {
     editName: '',
     editAddress: '',
@@ -38,9 +70,11 @@ class GlobalState extends React.Component {
     editManageComp: '',
     editCustomId: '',
     index: '',
-    token:[],
+    token: null,
     success: false,
+    isLoading: false,
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
+    itemList:[],
     propList: [
       // {
       //   id: 1,
@@ -703,30 +737,40 @@ class GlobalState extends React.Component {
     // const list = [...this.state.propList.name, propName]
     // this.setState({propList: this.state.propList});
     // console.log('Prop list', this.state.propList);
-    var requestOptions = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        property: info.propName,
-        street: info.propAddress,
-        developer: info.propBillComp,
-        managerName: info.propManageComp,
-        contact: info.propContact,
-        contactEmail: info.propContactEmail,
-      }),
-      redirect: 'follow',
-    };
+    // var requestOptions = {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6IjU1NTAxZjE0MjQ5MWVkYjQ4NGFkYWY2Y2FlMGFlOTY4NjM2OTFkMzhkM2QyY2JhODQ4NjFiODAwM2YzYjY0MzQ4MTUyNGMzMWRmZjkxZjFjIiwiaWF0IjoxNjMzNzk3NzQ5LCJuYmYiOjE2MzM3OTc3NDksImV4cCI6MTY2NTMzMzc0OSwic3ViIjoiMTkiLCJzY29wZXMiOltdfQ.nphSUM-ORtJTpdpl-lGY5dQsuS5r7SggPCTjOXu7B3rtqGyjqCn9FULyE_-oOahmgLXb7JMoh8awNKpGrp6Y_jegWeWe1iOJaoke2FRTEscFzsxTKDbFiFOnIn6rbfHP9UP5O2HHHuh-27Ej0-Vlkx5Z6fAB1x49G_eSr3gcwoNeFVybBElD_aiBZkSziOa7vdjGWfcOejhJgcLIYsC8vO2YJxjisubaeyCHkmRarfIXXHDWXoKDIpx6tERCKiqAHA1P6HFaF7UULUI8YYnxCjBlb29ZGtORn3scwglLeAYgUqQMMORGb9fmcGfp_npWcvLO61SZs-39TepSmNQNcq3TegIJ3J-7lYl1_FoYsI3XlzQe9H9naV5ivjL_7jZsYkr1t9HiEh-Z4qpTDZAl2B5rcbpEMJ_JBkK37QwYf0NIQQSrELj0CWq5QaBoqsxQG7Ys06Oi6N5sk8oQ1skJOGRzd4E7PGGPUHUSA6dQEVx9v7-xBvnOjqd0Z9yqwQsJx40hmXMne01JyIzWwOt6pm3vQEG_0YYBKW2sCnDw-CsVHQUIkIhiVuhcX-pXpaYds7eQmlRU5CE-mdRAhmmHxerFAvST1BzQS-rHBhoAL5Td_mz2TtXa70Gpg5rL98yNzX_0pIWCFMexPlmicZec2narA6OV35pDbRjnv4e0eMw'
+    //   },
+    //   body: JSON.stringify({
+    //     property: info.propName,
+    //     street: info.propAddress,
+    //     developer: info.propBillComp,
+    //     managerName: info.propManageComp,
+    //     contact: info.propContact,
+    //     contactEmail: info.propContactEmail,
+    //   }),
+    //   redirect: 'follow',
+    // };
+    const data = {
+      name: info.propName,
+      street: info.propAddress,
+      property_id: info.propCustomId,
+      billing_company_id:info.propBillCompId,
+    }
+    // api.patch(`/property/add`,data).then(res => {
+      console.log('data--->',data);
+    // })
+    this.api.post('/property/add', data).then(res => {
+      console.log(res.data);
+    });
+    // fetch('http://51.178.36.223/api/property/add', requestOptions)
+    //   .then((response) => console.log(response.data))
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log('error', error));
 
-    fetch('http://192.168.18.71:8000/createProperty', requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log('error', error));
-
-    const response = await api.get('/getProperties');
-    this.setState({ propList: response.data.data });
+    const response = await this.api.post('/property/all');
+    this.setState({ propList: response.data.data.properties });
   };
 
   addUnits = (info) => {
@@ -757,18 +801,20 @@ class GlobalState extends React.Component {
     // console.log('We Get', this.state.propList)
   };
 
-  editProperty = (editData) => {
-    const some_array = [...this.state.propList];
-    some_array[editData.atIndex] = {
-      id: editData.id,
-      name: editData.editName,
-      address: editData.editAddress,
-      billComp: editData.editBillComp,
-      managementComp: editData.editManageComp,
-      customId: editData.editCustomId,
-    };
-    // console.log('hello', some_array)
-    this.setState({ propList: some_array });
+  editProperty = async (editData) => {
+    console.log('editproperty===>', editData);
+
+    // const some_array = [...this.state.propList];
+    // some_array[editData.atIndex] = {
+    //   id: editData.id,
+    //   name: editData.editName,
+    //   address: editData.editAddress,
+    //   billComp: editData.editBillComp,
+    //   managementComp: editData.editManageComp,
+    //   customId: editData.editCustomId,
+    // };
+    // // console.log('hello', some_array)
+    // this.setState({propList: some_array});
     // console.log('Global List', this.state.propList)
   };
 
@@ -792,7 +838,7 @@ class GlobalState extends React.Component {
     this.setState(
       Object.assign(
         this.state.propList[editData.indexUnits].dataTop[editData.indexBuild],
-        { list: some_array },
+        {list: some_array},
       ),
     );
     // console.log('Kiya Edit Howa', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
@@ -801,6 +847,12 @@ class GlobalState extends React.Component {
     this.props.navigation.navigate('Detail');
     // this.selectedProp()
   };
+  getBillingCompany = async () => {
+    const response = await this.api.get('/property/billing-companies');
+    console.log('Check response', response?.data?.data?.billingCompany);
+    // this.setState({ success: response.data.bool });
+    this.setState({ itemList: response?.data?.data?.billingCompany });
+  }
 
   render() {
     // console.log('pROP', this.props)
@@ -812,6 +864,7 @@ class GlobalState extends React.Component {
             success: this.state.success,
             propPerty: this.state.propPerty,
             profileIndex: this.state.profileIndex,
+            propitemList: this.state.itemList,
             addProp: this.addProp,
             addUnits: this.addUnits,
             addBuilding: this.addBuilding,
@@ -819,6 +872,12 @@ class GlobalState extends React.Component {
             editProperty: this.editProperty,
             profileWeGet: this.profileWeGet,
             jumpToDetail: this.jumpToDetail,
+            checkData: this.checkData,
+            getToken: this.getToken,
+            loadMoreData: this.loadMoreData,
+            getBillingCompany: this.getBillingCompany,
+            clearData: this.clearData,
+            isLoading: this.state.isLoading,
           }}>
           {this.props.children}
         </Context.Provider>
@@ -827,4 +886,4 @@ class GlobalState extends React.Component {
   }
 }
 
-export { GlobalState };
+export {GlobalState};
