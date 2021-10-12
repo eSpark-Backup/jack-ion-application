@@ -1,4 +1,4 @@
-import React, {Component, version} from 'react';
+import React, { Component, version } from 'react';
 
 import {
   AppRegistry,
@@ -26,23 +26,26 @@ import Search from 'react-native-vector-icons/EvilIcons';
 import Properties from 'react-native-vector-icons/FontAwesome5';
 import TabIcon from 'react-native-vector-icons/Entypo';
 import Back from 'react-native-vector-icons/MaterialIcons';
+import Loader from '../../components/Loader';
 import Tag from 'react-native-vector-icons/Feather';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB} from 'react-native-paper';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, Button, FAB } from 'react-native-paper';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Modal from 'react-native-modal';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 // Components
-import {Fonts} from '../../utils/fonts';
+import { Fonts } from '../../utils/fonts';
 import styles from './FormStyle';
-import {Ellipse} from 'react-native-svg';
+import { Ellipse } from 'react-native-svg';
 import ContextProp from './Context/propContext';
-import {create} from 'apisauce';
-const {width, height} = Dimensions.get('window');
+import { create } from 'apisauce';
+import { call } from 'react-native-reanimated';
+const { width, height } = Dimensions.get('window');
 
 const baseURL = 'http://localhost:8000';
 
-const api = create({baseURL});
+const api = create({ baseURL });
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -54,9 +57,17 @@ export default class Splash extends React.Component {
       Address: '',
       BillComp: 'ION',
       ManageComp: '',
-      CustomId: '007',
+      CustomId: '',
       contact: '',
+      city: '',
+      st: '',
+      street: '',
+      zipCode: '',
       contactEmail: '',
+      loadScreen: false,
+      open: false,
+      BillingCompany: "BILLING COMPANY",
+      BillingCompanyId: '',
       info: {
         propName: '',
         propAddress: '',
@@ -64,30 +75,45 @@ export default class Splash extends React.Component {
         propManageComp: '',
         propCustomId: '',
       },
+      error: {
+        property: false,
+        billingId: false,
+        propertyId: false,
+        street: false,
+        city: false,
+        zipcode: false,
+      },
+      value: '',
+      items: [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' }
+      ]
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
+    this.setValue = this.setValue.bind(this);
+
   }
   toggleModalAddProp = () => {
-    this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
+    this.setState({ isModalAddPropVisible: !this.state.isModalAddPropVisible });
   };
   change = (e) => {
     console.log('LELE', e);
 
-    var info = {...this.state.info};
+    var info = { ...this.state.info };
     info.propName = e;
 
     console.log('111', info);
-    this.setState({info});
+    this.setState({ info });
   };
   clearInputs = () => {
     this.toggleModalAddProp();
-    this.setState({Name: ''});
-    this.setState({Address: ''});
-    this.setState({BillComp: ''});
-    this.setState({ManageComp: ''});
-    this.setState({CustomId: ''});
+    this.setState({ Name: '' });
+    this.setState({ Address: '' });
+    this.setState({ BillComp: '' });
+    this.setState({ ManageComp: '' });
+    this.setState({ CustomId: '' });
   };
 
   // addProperty = () => {
@@ -122,56 +148,169 @@ export default class Splash extends React.Component {
   //     .then((result) => console.log(result))
   //     .catch((error) => console.log('error', error));
   // };
+  handleLoader = () => {
+    this.setState({ loadScreen: true });
+  }
 
   addProperty = () => {
     console.log('kiya Mila', this.state.Name);
 
-    if (
-      (this.state.Name == '' || this.state.Address == '',
-      this.state.BillComp == '' ||
-        this.state.ManageComp == '' ||
-        this.state.CustomId == '')
-    ) {
-      alert('Kindly Fill All Required.');
-    }
-    //  else if (this.state.info.propName == undefined || this.state.info.propAddress == undefined,
-    //     this.state.info.propBillComp == undefined || this.state.info.propManageComp == undefined || this.state.info.propCustomId == undefined) {
-    //     alert('Kindly Fill All Required.');
+    // if (
+    //   (this.state.Name == '' || this.state.Address == '' || this.state.CustomId == ''
+    //     // this.state.BillComp == '' ||
+    //     // this.state.ManageComp == '' ||
+    //   )
+    // ) {
+    //   alert('Kindly Fill All Required.');
     // }
+
+    if (this.state.Name === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          property: true       // update the value of specific key
+        }
+      }));
+      return;
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          property: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state.Address === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          street: true       // update the value of specific key
+        }
+      }));
+      return;
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          street: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state.BillingCompanyId === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          billingId: true       // update the value of specific key
+        }
+      }));
+      return;
+    }
     else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          billingId: false       // update the value of specific key
+        }
+      }));
+    }
+    if (this.state.CustomId === '') {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          propertyId: true       // update the value of specific key
+        }
+      }));
+      return;
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        error: {                   // object that we want to update
+          ...prevState.error,    // keep all other key-value pairs
+          propertyId: false       // update the value of specific key
+        }
+      }));
+      //  else if (this.state.info.propName == undefined || this.state.info.propAddress == undefined,
+      //     this.state.info.propBillComp == undefined || this.state.info.propManageComp == undefined || this.state.info.propCustomId == undefined) {
+      //     alert('Kindly Fill All Required.');
+      // }
       console.log('Before', this.state.info.propName);
       // const info = { ...this.state.info, propName: 'Good HAI' }
       this.setState(
-        Object.assign(this.state.info, {propName: this.state.Name}),
-      );
-      this.setState(
-        Object.assign(this.state.info, {propAddress: this.state.Address}),
-      );
-      this.setState(
-        Object.assign(this.state.info, {propBillComp: this.state.BillComp}),
-      );
-      this.setState(
-        Object.assign(this.state.info, {propManageComp: this.state.ManageComp}),
-      );
-      this.setState(
-        Object.assign(this.state.info, {propContact: this.state.contact}),
-      );
-      this.setState(
         Object.assign(this.state.info, {
+          propName: this.state.Name,
+          propAddress: this.state.Address,
+          propBillCompId: this.state.BillingCompanyId,
+          propManageComp: this.state.ManageComp,
+          propCustomId: this.state.CustomId,
           propContactEmail: this.state.contactEmail,
+          propBillComp: this.state.BillingCompany
+
         }),
+        () => this.props.loader(true)
       );
-      console.log('After', this.state.info.propName);
+      // this.setState(
+      //   Object.assign(this.state.info, { propAddress: this.state.Address }),
+      // );
+      // this.setState(
+      //   Object.assign(this.state.info, { propBillComp: this.state.BillingCompanyId }),
+      // );
+      // this.setState(
+      //   Object.assign(this.state.info, { propManageComp: this.state.ManageComp }),
+      // );
+      // this.setState(
+      //   Object.assign(this.state.info, { propContact: this.state.contact }),
+      // );
+      // this.setState(
+      //   Object.assign(this.state.info, { propCustomId: this.state.CustomId }),
+      // );
+      // this.setState(
+      //   Object.assign(this.state.info, { propContactEmail: this.state.contactEmail }),
+      //   () => this.props.loader(true)
+      // );
+      // console.log('After', this.state.info.propName);
       this.context.addProp(this.state.info);
       this.clearInputs();
+
     }
   };
+  setValue(callback) {
+    this.setState(state => ({
+      value: callback(state)
+    }))
+    setTimeout(() => {
+      console.log('--->value', this.state.value)
+    }, 1000);
+  }
 
+  setItems(callback) {
+    // this.setState(state => ({
+    //   items: callback(state.items)
+    // }));
+    console.log('--->item', callback)
+
+  }
+  handleOpenDropDown = () => {
+    this.context.getBillingCompany();
+    this.setState({ open: !this.state.open })
+  }
+  handleDropDownData = (value) => {
+    this.setState({ BillingCompany: value.name, BillingCompanyId: value.id })
+    this.setState({ open: !this.state.open })
+
+  }
   render() {
     return (
       <View style={styles.headingInner}>
+        {this.state.loadScreen ? <Loader /> : null}
         <Pressable
-          onPress={() => this.setState({isModalAddPropVisible: true})}
+          onPress={() => this.setState({ isModalAddPropVisible: true })}
           style={styles.addBotton}
           android_ripple={{
             color: 'black',
@@ -223,9 +362,9 @@ export default class Splash extends React.Component {
                 </View>
                 {/* Box Body */}
                 <ScrollView
-                  style={{height: height * 0.6}}
+                  style={{ height: height * 0.6 }}
                   showsVerticalScrollIndicator={false}>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <View style={styles.desciptionContainer}>
                       <Icon
                         name={'location-on'}
@@ -238,15 +377,16 @@ export default class Splash extends React.Component {
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
-                        placeholder="Enter Name"
+                        placeholder="Enter Property Name*"
                         // value={text}
                         // onChangeText={(text) => { this.setState({ info: { propName: text } }) }}
                         onChangeText={(text) => {
-                          this.setState({Name: text});
+                          this.setState({ Name: text });
                         }}
+                        error={this.state.error.property}
                         // onChangeText={(text) => this.change(text)}
-                        style={styles.input}
                         // value={this.state.info.Name}
+                        style={styles.input}
                         mode={'outlined'}
                         theme={{
                           colors: {
@@ -278,11 +418,12 @@ export default class Splash extends React.Component {
                       </View> */}
                       <TextInput
                         // label="Address*"
-                        placeholder="Enter Address"
+                        placeholder="Enter Address*"
+                        error={this.state.error.street}
                         style={styles.input}
                         // value={text}
                         onChangeText={(text) => {
-                          this.setState({Address: text});
+                          this.setState({ Address: text });
                         }}
                         mode={'outlined'}
                         theme={{
@@ -305,24 +446,73 @@ export default class Splash extends React.Component {
                       </Text>
                     </View>
                     <View style={styles.inputContainer}>
-                      <TextInput
-                        label="BILLING COMPANY*"
-                        placeholder="Like ION Energy Solutions, etc"
-                        // value={'ION Energy Solutions'}
-                        // dense={true}
-                        onChangeText={(text) => {
-                          this.setState({BillComp: text});
+                      <TouchableOpacity
+                        onPress={this.handleOpenDropDown}
+                        style={{
+                          backgroundColor: "#F6F6F6",
+                          alignSelf: "center",
+                          borderColor: this.state.error.billingId ? 'red' : "gray",
+                          width: "95%",
+                          height: "90%",
+                          borderWidth: width * .003,
+                          borderRadius: width * .01,
+                          justifyContent: 'center',
+                          paddingHorizontal: width * .03,
                         }}
-                        style={styles.input}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
+                      >
+                        <Text>
+                          {this.state.BillingCompany}
+                        </Text>
+                      </TouchableOpacity>
+                      <Modal
+                        animationIn="fadeIn"
+                        animationOut="fadeOut"
+                        isVisible={this.state.open}
+                        style={{
+                          height: height * .4,
+                        }}>
+                        {
+                          this.context.propitemList.map((data) => (
+                            <TouchableOpacity
+                              onPress={() => this.handleDropDownData(data)}
+                              style={{
+                                backgroundColor: "#F6F6F6",
+                                alignSelf: "center",
+                                borderColor: "gray",
+                                width: "85%",
+                                height: height * .09,
+                                borderWidth: width * .003,
+                                borderRadius: width * .01,
+                                justifyContent: 'center',
+                                paddingHorizontal: width * .03,
+
+                              }}
+                            >
+                              <Text>
+                                {data.name}
+                              </Text>
+                            </TouchableOpacity>
+                          ))
+                        }
+                      </Modal>
+                      {/* <DropDownPicker
+                        open={this.state.open}
+                        value={this.state.value}
+                        items={this.context.propitemList}
+                        setOpen={() => this.setState({ open: !this.state.open })}
+                        setValue={this.setValue}
+                        setItems={this.setItems}
+                        style={{
+                          backgroundColor: "#F6F6F6",
+                          alignSelf: "center",
+                          borderColor: "gray"
                         }}
-                      />
+                        placeholder="BILLING COMPANY*"
+                        containerStyle={{
+                          width: "95%",
+                        }}
+                        onPress={this.handleOpenDropDown}
+                      /> */}
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -331,7 +521,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
-                          this.setState({ManageComp: text});
+                          this.setState({ ManageComp: text });
                         }}
                         // dense={true}
                         mode={'outlined'}
@@ -348,10 +538,11 @@ export default class Splash extends React.Component {
                       <TextInput
                         label="CUSTOM ID*"
                         placeholder="Company specific Id"
+                        error={this.state.error.propertyId}
                         style={styles.input}
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
-                          this.setState({CustomId: text});
+                          this.setState({ CustomId: text });
                         }}
                         // dense={true}
                         mode={'outlined'}
@@ -385,7 +576,7 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Contact Name"
-                        onChangeText={(text) => this.setState({contact: text})}
+                        onChangeText={(text) => this.setState({ contact: text })}
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -459,7 +650,7 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Email"
                         onChangeText={(text) =>
-                          this.setState({contactEmail: text})
+                          this.setState({ contactEmail: text })
                         }
                         style={styles.contactInput}
                         // mode={"outlined"}

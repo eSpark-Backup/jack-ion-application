@@ -1,4 +1,4 @@
-import React, { Component, version } from 'react';
+import React, {Component, version} from 'react';
 
 import {
   AppRegistry,
@@ -29,7 +29,7 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
 import Globe from 'react-native-vector-icons/Feather';
 import Build from 'react-native-vector-icons/Ionicons';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Modal from 'react-native-modal';
 import Folder from 'react-native-vector-icons/Feather';
 import Tag from 'react-native-vector-icons/Feather';
@@ -38,8 +38,8 @@ import Chart from 'react-native-vector-icons/Feather';
 import Message from 'react-native-vector-icons/Feather';
 import Docs from 'react-native-vector-icons/Ionicons';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {
   VictoryChart,
   VictoryGroup,
@@ -49,46 +49,55 @@ import {
   VictoryAxis,
 } from 'victory-native';
 import ContextProp from '../Context/propContext';
-import { TextInput, Button, FAB } from 'react-native-paper';
+import {TextInput, Button, FAB} from 'react-native-paper';
 
 // Components
-import { Fonts } from '../../../utils/fonts';
+import {Fonts} from '../../../utils/fonts';
 import Drawer from 'react-native-drawer';
 import styles from './style';
 import style from './style';
-const { width, height } = Dimensions.get('window');
-
+import Base_URL from '../../../api/WebServices';
+import {create} from 'apisauce';
+const {width, height} = Dimensions.get('window');
+const api = create({
+  baseURL: Base_URL,
+  headers: {
+    Authorization:
+      'Bearer ' +
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6IjU1NTAxZjE0MjQ5MWVkYjQ4NGFkYWY2Y2FlMGFlOTY4NjM2OTFkMzhkM2QyY2JhODQ4NjFiODAwM2YzYjY0MzQ4MTUyNGMzMWRmZjkxZjFjIiwiaWF0IjoxNjMzNzk3NzQ5LCJuYmYiOjE2MzM3OTc3NDksImV4cCI6MTY2NTMzMzc0OSwic3ViIjoiMTkiLCJzY29wZXMiOltdfQ.nphSUM-ORtJTpdpl-lGY5dQsuS5r7SggPCTjOXu7B3rtqGyjqCn9FULyE_-oOahmgLXb7JMoh8awNKpGrp6Y_jegWeWe1iOJaoke2FRTEscFzsxTKDbFiFOnIn6rbfHP9UP5O2HHHuh-27Ej0-Vlkx5Z6fAB1x49G_eSr3gcwoNeFVybBElD_aiBZkSziOa7vdjGWfcOejhJgcLIYsC8vO2YJxjisubaeyCHkmRarfIXXHDWXoKDIpx6tERCKiqAHA1P6HFaF7UULUI8YYnxCjBlb29ZGtORn3scwglLeAYgUqQMMORGb9fmcGfp_npWcvLO61SZs-39TepSmNQNcq3TegIJ3J-7lYl1_FoYsI3XlzQe9H9naV5ivjL_7jZsYkr1t9HiEh-Z4qpTDZAl2B5rcbpEMJ_JBkK37QwYf0NIQQSrELj0CWq5QaBoqsxQG7Ys06Oi6N5sk8oQ1skJOGRzd4E7PGGPUHUSA6dQEVx9v7-xBvnOjqd0Z9yqwQsJx40hmXMne01JyIzWwOt6pm3vQEG_0YYBKW2sCnDw-CsVHQUIkIhiVuhcX-pXpaYds7eQmlRU5CE-mdRAhmmHxerFAvST1BzQS-rHBhoAL5Td_mz2TtXa70Gpg5rL98yNzX_0pIWCFMexPlmicZec2narA6OV35pDbRjnv4e0eMw',
+  },
+});
 const dataBar2 = {
   actual: [
     null,
-    { x: 'MON', y: 11 },
-    { x: 'TUE', y: 15 },
-    { x: 'WED', y: 18 },
-    { x: 'THU', y: 1 },
-    { x: 'FRI', y: 5 },
-    { x: 'SAT', y: 2 },
-    { x: 'SUN', y: 3 },
+    {x: 'MON', y: 11},
+    {x: 'TUE', y: 15},
+    {x: 'WED', y: 18},
+    {x: 'THU', y: 1},
+    {x: 'FRI', y: 5},
+    {x: 'SAT', y: 2},
+    {x: 'SUN', y: 3},
   ],
   planned: [
     null,
-    { x: 'MON', y: 12 },
-    { x: 'TUE', y: 10 },
-    { x: 'WED', y: 13 },
-    { x: 'THU', y: 1 },
-    { x: 'FRI', y: 5 },
-    { x: 'SAT', y: 2 },
-    { x: 'SUN', y: 8 },
+    {x: 'MON', y: 12},
+    {x: 'TUE', y: 10},
+    {x: 'WED', y: 13},
+    {x: 'THU', y: 1},
+    {x: 'FRI', y: 5},
+    {x: 'SAT', y: 2},
+    {x: 'SUN', y: 8},
   ],
 };
 
 const dataBar = [
-  { quarter: 'MON', earnings: 16500 },
-  { quarter: 'TUE', earnings: 14250 },
-  { quarter: 'WED', earnings: 19000 },
-  { quarter: 'THU', earnings: 1200 },
-  { quarter: 'FRI', earnings: 10000 },
-  { quarter: 'SAT', earnings: 11000 },
-  { quarter: 'SUN', earnings: 12000 },
+  {quarter: 'MON', earnings: 16500},
+  {quarter: 'TUE', earnings: 14250},
+  {quarter: 'WED', earnings: 19000},
+  {quarter: 'THU', earnings: 1200},
+  {quarter: 'FRI', earnings: 10000},
+  {quarter: 'SAT', earnings: 11000},
+  {quarter: 'SUN', earnings: 12000},
 ];
 
 export default class Splash extends React.Component {
@@ -128,6 +137,13 @@ export default class Splash extends React.Component {
         editManageComp: '',
         editCustomId: '',
       },
+      error: {
+        property: false,
+        property_id: false,
+        street: false,
+        city: false,
+        zipcode: false,
+      },
       // editName: '',
       // editAddress: '',
       // editBillComp: '',
@@ -157,6 +173,11 @@ export default class Splash extends React.Component {
     // this.setState({ index: this.state.info?.isIndex })
   }
 
+  getBack = () => {
+    this.props.navigation.goBack();
+    // this.props.navigation.navigate('Properties');
+  };
+
   _start = () => {
     Animated.timing(this.state.fadeValue, {
       toValue: 1,
@@ -164,7 +185,7 @@ export default class Splash extends React.Component {
     }).start();
   };
   toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+    this.setState({isModalVisible: !this.state.isModalVisible});
   };
   toggleModalEditProp = () => {
     this.setState({
@@ -180,32 +201,135 @@ export default class Splash extends React.Component {
   };
   editThis = () => {
     this.setState(
-      Object.assign(this.state.data, { atIndex: this.state.info?.isIndex }),
+      Object.assign(this.state.data, {atIndex: this.state.info?.isIndex}),
     );
-    this.setState(Object.assign(this.state.data, { id: this.state.info?.id }));
-    this.setState(Object.assign(this.state.data, { editName: this.state.Name }));
+    this.setState(Object.assign(this.state.data, {id: this.state.info?.id}));
+    this.setState(Object.assign(this.state.data, {editName: this.state.Name}));
     this.setState(
-      Object.assign(this.state.data, { editAddress: this.state.Address }),
-    );
-    this.setState(
-      Object.assign(this.state.data, { editBillComp: this.state.BillComp }),
+      Object.assign(this.state.data, {editAddress: this.state.Address}),
     );
     this.setState(
-      Object.assign(this.state.data, { editManageComp: this.state.ManageComp }),
+      Object.assign(this.state.data, {editBillComp: this.state.BillComp}),
     );
     this.setState(
-      Object.assign(this.state.data, { editCustomId: this.state.CustomId }),
+      Object.assign(this.state.data, {editManageComp: this.state.ManageComp}),
+    );
+    this.setState(
+      Object.assign(this.state.data, {editCustomId: this.state.CustomId}),
     );
     this.context.editProperty(this.state.data);
   };
   editProp = () => {
-    if (this.state.Name === '') {
-      alert('Please Fill the Required');
+    if (this.state?.listData?.name === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          name: true, // update the value of specific key
+        },
+      }));
     } else {
-      this.setState({
-        listData: this.context.propList[this.state.info?.isIndex],
-      });
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          name: false, // update the value of specific key
+        },
+      }));
+    }
+    if (this.state?.listData?.property_id === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          property_id: true, // update the value of specific key
+        },
+      }));
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          property_id: false, // update the value of specific key
+        },
+      }));
+    }
+    if (this.state?.listData?.street === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          street: true, // update the value of specific key
+        },
+      }));
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          street: false, // update the value of specific key
+        },
+      }));
+    }
+    if (this.state?.listData?.city === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          city: true, // update the value of specific key
+        },
+      }));
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          city: false, // update the value of specific key
+        },
+      }));
+    }
+    if (this.state?.listData?.zipcode === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          zipcode: true, // update the value of specific key
+        },
+      }));
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          zipcode: false, // update the value of specific key
+        },
+      }));
       this.toggleModalEditProp();
+      const data = {
+        property_id: this.state.listData.property_id,
+        zipcode: this.state.listData.zipcode,
+        name: this.state.listData.name,
+        street: this.state.listData.street,
+        city: this.state.listData.city,
+      };
+      this.context.editProperty(data);
+
+      api
+        .patch(`/property/update/${this.state?.listData?.id}`, data)
+        .then((res) => {
+          console.log(res.data);
+        });
+      // this.props.navigation.navigate('Properties');
     }
   };
   changeLayoutMeter = () => {
@@ -225,12 +349,12 @@ export default class Splash extends React.Component {
   };
   naviagateToEquip = () => {
     // this.toggleModal();
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
   naviagateToDetail = () => {
     // this.toggleModal();
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate(
       'Detail',
       this.props.navigation.state.params,
@@ -245,7 +369,7 @@ export default class Splash extends React.Component {
   };
   naviagateToSupport = () => {
     // this.toggleModal();
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate('Support');
   };
 
@@ -263,14 +387,14 @@ export default class Splash extends React.Component {
           backdropColor="black"
           style={styles.sideModalContainer}>
           <View style={styles.drawerMainContainer}>
-            <View style={{ marginTop: StatusBar.currentHeight }}>
+            <View style={{marginTop: StatusBar.currentHeight}}>
               <Menu
                 name="menu"
                 size={height * 0.05}
                 color="white"
                 // style={{right: 90}}
                 onPress={this.toggleModal}
-                style={{ backgroundColor: '#35afe2' }}
+                style={{backgroundColor: '#35afe2'}}
               />
             </View>
             <View style={styles.drawerContentContainer}>
@@ -280,7 +404,7 @@ export default class Splash extends React.Component {
                     name="account-details-outline"
                     size={height * 0.035}
                     color="#7575ff"
-                    style={{ marginRight: width * 0.02 }}
+                    style={{marginRight: width * 0.02}}
                   />
                   <Text style={styles.drawerbtn}>Profile</Text>
                 </View>
@@ -291,7 +415,7 @@ export default class Splash extends React.Component {
                     name="rss"
                     size={height * 0.035}
                     color="#ff9f71"
-                    style={{ marginRight: width * 0.02 }}
+                    style={{marginRight: width * 0.02}}
                   />
                   <Text style={styles.drawerbtn}>Units</Text>
                 </View>
@@ -302,7 +426,7 @@ export default class Splash extends React.Component {
                     name="pie-chart"
                     size={height * 0.035}
                     color="#009349"
-                    style={{ marginRight: width * 0.02 }}
+                    style={{marginRight: width * 0.02}}
                   />
                   <Text style={styles.drawerbtn}>Charts</Text>
                 </View>
@@ -334,7 +458,7 @@ export default class Splash extends React.Component {
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => this.getBack()}
               style={styles.menuView}>
               <Back
                 size={width * 0.08}
@@ -346,7 +470,7 @@ export default class Splash extends React.Component {
               <Search
                 name="search"
                 size={height * 0.04}
-                style={{ marginLeft: width * 0.05 }}
+                style={{marginLeft: width * 0.05}}
                 color="white"
               />
               <TextInput
@@ -355,7 +479,7 @@ export default class Splash extends React.Component {
                 placeholderTextColor="white"
                 placeholder="Search"
                 style={styles.search}
-                onChangeText={(e) => this.setState({ currentWei: e })}
+                onChangeText={(e) => this.setState({currentWei: e})}
                 theme={{
                   colors: {
                     text: 'white',
@@ -374,21 +498,21 @@ export default class Splash extends React.Component {
               name="menu"
               size={height * 0.04}
               color="white"
-              style={{ right: 90 }}
+              style={{right: 90}}
               onPress={this.toggleModal}
             />
-            <View style={{ flexDirection: 'row', right: 15 }}>
+            <View style={{flexDirection: 'row', right: 15}}>
               <Detail
                 name="account-details-outline"
                 size={height * 0.05}
                 color="white"
-                style={{ top: height * 0.002 }}
+                style={{top: height * 0.002}}
               />
               <Text style={styles.mainHeadiing}>Profile</Text>
             </View>
           </View>
         </View>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
           <View style={styles.bodyContainer}>
             <MapView
               style={styles.map}
@@ -413,9 +537,9 @@ export default class Splash extends React.Component {
             <View style={styles.clientName}>
               <Build name="md-business-outline" size={width * 0.08} />
               <Text style={styles.clientNameHeading}>
-                {this.state.listData.property == null
+                {this.state.listData.name == null
                   ? 'Untitled'
-                  : this.state.listData.property}
+                  : this.state.listData.name}
               </Text>
               <Pressable
                 style={styles.clientDataEdit}
@@ -463,9 +587,9 @@ export default class Splash extends React.Component {
                     </View>
                     {/* Box Body */}
                     <ScrollView
-                      style={{ height: height * 0.6 }}
+                      style={{height: height * 0.6}}
                       showsVerticalScrollIndicator={false}>
-                      <View style={{ flex: 1 }}>
+                      <View style={{flex: 1}}>
                         <View style={styles.desciptionContainer}>
                           <Icon
                             name={'location-on'}
@@ -479,12 +603,19 @@ export default class Splash extends React.Component {
                         <View style={styles.inputContainer}>
                           <TextInput
                             label="Property Name*"
-                            value={this.state?.listData?.property}
-                            placeholder={this.state?.listData?.property}
-                            error={false}
+                            value={this.state?.listData?.name}
+                            placeholder={this.state?.listData?.name}
+                            error={this.state.error.name}
                             // placeholder="Enter Name"
                             onChangeText={(text) => {
-                              this.setState({ Name: text });
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  name: text, // update the value of specific key
+                                },
+                              }));
                             }}
                             // onChangeText={(text) => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -503,12 +634,19 @@ export default class Splash extends React.Component {
                           <TextInput
                             // placeholder={this.state.info?.address}
                             label="Property ID*"
-                            error={false}
+                            error={this.state.error.property_id}
                             value={this.state?.listData?.property_id}
                             placeholder={this.state?.listData?.property_id}
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({ customId: text });
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  property_id: text, // update the value of specific key
+                                },
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -526,11 +664,18 @@ export default class Splash extends React.Component {
                           <TextInput
                             value={this.state?.listData?.street}
                             placeholder={this.state?.listData?.street}
-                            error={false}
+                            error={this.state.error.street}
                             label="Street*"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({ address: text });
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  street: text, // update the value of specific key
+                                },
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -544,15 +689,29 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={[styles.inputContainer, { flexDirection: 'row', justifyContent: 'space-around' }]}>
+                        <View
+                          style={[
+                            styles.inputContainer,
+                            {
+                              flexDirection: 'row',
+                              justifyContent: 'space-around',
+                            },
+                          ]}>
                           <TextInput
                             value={this.state?.listData?.city}
-                            error={false}
+                            error={this.state.error.city}
                             placeholder={this.state?.listData?.city}
                             label="City*"
-                            style={[styles.input, { width: width * 0.36 }]}
+                            style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
-                              this.setState({ city: text });
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  city: text, // update the value of specific key
+                                },
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -567,12 +726,19 @@ export default class Splash extends React.Component {
                           />
                           <TextInput
                             value={this.state?.listData?.zipcode}
-                            error={this.state.zipcode}
+                            error={this.state.error.zipcode}
                             placeholder={this.state?.listData?.zipcode}
                             label="ZipCode*"
-                            style={[styles.input, { width: width * 0.36 }]}
+                            style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
-                              this.setState({ zipcode: text });
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  zipcode: text, // update the value of specific key
+                                },
+                              }));
                             }}
                             // onChangeText={text => { this.editThis(text) }}
                             onBlur={this.editThis}
@@ -619,13 +785,12 @@ export default class Splash extends React.Component {
                         </View> */}
                         <View style={styles.inputContainer}>
                           <TextInput
-
                             value={this.state.ManageComp}
                             label="MANAGEMENT COMPANY*"
                             placeholder="Company Name"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({ ManageComp: text });
+                              this.setState({ManageComp: text});
                             }}
                             onBlur={this.editThis}
                             // dense={true}
@@ -681,9 +846,7 @@ export default class Splash extends React.Component {
             </Modal>
             <View style={styles.mainDataContainer}>
               <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>
-                  {this.state.addressTitle}
-                </Text>
+                <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
                 <View style={styles.infoViewInner}>
                   <Locate name="map-pin" size={width * 0.06} />
                   <Text style={styles.dataFieldText}>
@@ -716,9 +879,7 @@ export default class Splash extends React.Component {
                 </View>
               </View> */}
               <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>
-                  {this.state.customId}
-                </Text>
+                <Text style={styles.dataFieldHeadings}>CUSTOM ID</Text>
                 <View style={styles.infoViewInner}>
                   <Folder name="folder" size={width * 0.06} />
                   <Text style={styles.dataFieldText}>
@@ -825,7 +986,7 @@ export default class Splash extends React.Component {
                     <Docs
                       name="document-text-outline"
                       size={height * 0.03}
-                      style={{ color: 'purple', top: 2 }}
+                      style={{color: 'purple', top: 2}}
                     />
                     <Text style={style.commentBottonText}>Docs(0)</Text>
                   </View>
@@ -869,14 +1030,14 @@ export default class Splash extends React.Component {
                   </AnimatedCircularProgress>
                 </View>
               </View>
-              <View style={{ height: height * 0.45 }}>
+              <View style={{height: height * 0.45}}>
                 <VictoryChart
-                  style={{ height: height * 0.1 }}
-                  domainPadding={{ x: 20 }}
-                  animate={{ duration: 500 }}>
+                  style={{height: height * 0.1}}
+                  domainPadding={{x: 20}}
+                  animate={{duration: 500}}>
                   <VictoryBar
                     data={dataBar2.actual}
-                    style={{ data: { fill: 'tomato', height: height * 0.01 } }}
+                    style={{data: {fill: 'tomato', height: height * 0.01}}}
                     // labels={({ datum }) => datum.y}
                     animate={{
                       // duration: 2000,

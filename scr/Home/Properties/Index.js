@@ -1,21 +1,14 @@
 import React, {Component, version} from 'react';
 
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  ActivityIndicator,
   StatusBar,
   Dimensions,
   Animated,
-  ScrollView,
   TouchableOpacity,
   LayoutAnimation,
   UIManager,
-  Pressable,
 } from 'react-native';
 
 //Packages
@@ -27,7 +20,6 @@ import Build from 'react-native-vector-icons/Ionicons';
 import {TextInput, Button} from 'react-native-paper';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
-import Modal from 'react-native-modal';
 
 // Components
 import {Fonts} from '../../utils/fonts';
@@ -36,6 +28,7 @@ import Add from './Form';
 import styles from './style';
 import {FlatList} from 'react-native-gesture-handler';
 import Loader from '../../components/Loader';
+import {NavigationEvents} from 'react-navigation';
 const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
@@ -50,41 +43,26 @@ export default class Splash extends Component {
       Loading: false,
       loadScreen: false,
       stopLoader: false,
-      // propList: [
-      //   {
-      //     id: 1,
-      //     name: 'Sugar Mamas',
-      //   },
-      //   {
-      //     id: 2,
-      //     name: 'Parkway Plaza',
-      //   },
-      //   {
-      //     id: 3,
-      //     name: 'Autumn Plaza',
-      //   },
-      //   {
-      //     id: 4,
-      //     name: 'Candlewood',
-      //   },
-      // ]
+      currentIndex: null,
+      propertyList: null,
     };
-    // this.context.propList = this.context.propList.map(item => {
-    //   item.isSelected = false;
-    //   item.isSelectedView = styles.dropViewHide;
-    //   // item.isSelectedClass = styles.infoViewContainer;
 
-    //   return item;
-    // })
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
-  componentDidMount() {
-    // this.setState({loadScreen: true});
+  async componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.onFocusFunction();
+    });
+    this.setState({loadScreen: true});
   }
 
-  handleLoadmore = () => {};
+  onFocusFunction = () => {
+    this.setState({loadScreen: true});
+    this.context.getToken();
+    this.setState({propertyList: this.context.propList});
+  };
 
   _start = () => {
     Animated.timing(this.state.fadeValue, {
@@ -118,11 +96,6 @@ export default class Splash extends Component {
         useNativeDriver: true,
       }).start();
     }, 10);
-    // Animated.timing(this.state.animatedValue, {
-    //   toValue: 1,
-    //   duration: 1000,
-    //   useNativeDriver: true
-    // }).start();
   };
   jumpToDetail = ({prop, item}) => {
     this.props.navigation.navigate('Detail', {item});
@@ -136,37 +109,29 @@ export default class Splash extends Component {
     this.props.navigation.navigate('Setting');
     this.selectedProp(prop);
   };
-
+  handleLoader = (child) => {
+    this.setState({loadScreen: true});
+  };
   selectedProp = (prop) => {
     // this.context.profileWeGet(prop.index)
 
-    // this.setState({index: this.context.profileIndex})
-    this.setState({isSelectedView: !this.state.isSelectedView});
-    this.setState({isSelected: !this.state.isSelected});
-    this.setState({isSelectedProperty: this.state.isSelected});
-    prop.item.isIndex = prop.index;
-    prop.item.isSelected = this.state.isSelected;
-    prop.item.isSelectedView = prop.item.isSelected
-      ? styles.dropView
-      : styles.dropViewHide;
-    prop.item.isSelectedProperty = prop.item.isSelected
-      ? styles.mainViewCenter
-      : styles.mainView;
-    if (prop.item.isSelected == true) {
-      this.changeAnimation();
-    } else if (prop.item.isSelected == false) {
-      this.changeAnimation();
-    }
+    this.setState({
+      currentIndex: prop.index === this.state.currentIndex ? null : prop.index,
+    });
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  };
+
+  LoadData = () => {
+    console.log('End reached');
+    this.context.loadMoreData();
+  };
+
+  cleardata = (prop) => {
+    this.jumpToDetail({prop, item: prop});
+    this.context.clearData();
   };
 
   _renderPropList = (prop) => {
-    // console.log('Array Length', this.context.propList);
-    // console.log('Array Index', prop);
-    // let newArray = [];
-    // newArray.push(prop.item);
-    // let filterArray = newArray;
-    // const getArray = filterArray.map((item) => (item.Appt, item.Property));
-    // console.log('Array me kia mila', getArray);
     if (
       prop.index == this.context.propList.length - 1 &&
       !this.state.stopLoader
@@ -175,15 +140,14 @@ export default class Splash extends Component {
       console.log(clc.green('agayayaaa_____'));
       this.setState({Loading: false});
     }
-    console.log('prop---->',prop)
+    // console.log('prop---->',prop)
     return (
       <View
         style={{
-          alignItems: this.state.isSelectedProperty ? 'center' : 'flex-end',
+          alignItems: 'center',
         }}>
         <TouchableOpacity
           style={styles.propButton}
-          // activeOpacity={0.8}
           onPress={() => this.selectedProp(prop)}>
           <Build
             name="md-business-outline"
@@ -193,7 +157,7 @@ export default class Splash extends Component {
           />
           <View style={{width: width * 0.6}}>
             <Text style={styles.propText}>
-              {prop.item.property == null ? 'Untitled' : prop.item.property}
+              {prop.item.name == null ? 'Untitled' : prop.item.name}
             </Text>
           </View>
           <Signal
@@ -203,61 +167,63 @@ export default class Splash extends Component {
             style={styles.logoShadowStyle}
           />
         </TouchableOpacity>
-        <View style={[styles.dropViewHide, prop.item.isSelectedView]}>
-          <TouchableOpacity
-            onPress={() => this.jumpToDetail({prop, item: prop})}>
-            <LinearGradient
-              colors={['#09BAF2', '#115b72', '#0d3744']}
-              style={{
-                height: height * 0.15,
-                width: height * 0.23,
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: width * 0.003,
-              }}
-              start={{x: 0.1, y: 1}}
-              end={{x: 1.5, y: 3}}>
-              <Text
+        {prop.index === this.state.currentIndex ? (
+          <View style={styles.dropView}>
+            <TouchableOpacity onPress={() => this.cleardata(prop)}>
+              <LinearGradient
+                colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
-                  fontFamily: Fonts.Handlee,
-                  fontSize: height * 0.03,
-                  color: 'white',
-                }}>
-                Property Profile
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity
-          disabled={true}
-            onPress={() => this.jumpToEquip({prop, item: prop})}>
-            <LinearGradient
-              colors={['#09BAF2', '#115b72', '#0d3744']}
-              style={{
-                height: height * 0.15,
-                width: height * 0.23,
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: width * 0.003,
-              }}
-              start={{x: 0.1, y: 1}}
-              end={{x: 1.5, y: 3}}>
-              <Text
+                  height: height * 0.15,
+                  paddingHorizontal: width * 0.02,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  elevation: width * 0.003,
+                }}
+                start={{x: 0.1, y: 1}}
+                end={{x: 1.5, y: 3}}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.Handlee,
+                    fontSize: height * 0.03,
+                    color: 'white',
+                  }}>
+                  Property Profile
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={true}
+              onPress={() => this.jumpToEquip({prop, item: prop})}>
+              <LinearGradient
+                colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
-                  fontFamily: Fonts.Handlee,
-                  fontSize: height * 0.03,
-                  color: 'white',
-                }}>
-                Property Units
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+                  height: height * 0.15,
+                  paddingHorizontal: width * 0.02,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  elevation: width * 0.003,
+                }}
+                start={{x: 0.1, y: 1}}
+                end={{x: 1.5, y: 3}}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.Handlee,
+                    fontSize: height * 0.03,
+                    color: 'white',
+                  }}>
+                  Property Units
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
     );
   };
 
   render() {
-    if (this.context.success && this.state.loadScreen) {
+    console.log('Component is re-rendered');
+    if (!this.context.isLoading && this.state.loadScreen) {
       console.log('Condition Success');
       this.setState({loadScreen: false});
       this.setState({Loading: true});
@@ -265,7 +231,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        {this.state.loadScreen ? <Loader /> : null}
+        {this.context.isLoading || this.state.loadScreen ? <Loader /> : null}
         <StatusBar backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
@@ -305,7 +271,7 @@ export default class Splash extends Component {
           </View>
         </View>
         <View style={styles.headingContainer}>
-          <Add />
+          <Add loader={this.handleLoader} />
         </View>
         <View
           style={{
@@ -321,13 +287,15 @@ export default class Splash extends Component {
             removeClippedSubviews={false}
             maxToRenderPerBatch={150}
             windowSize={100}
-            // keyExtractor={(item) => item.PropertyID}
+            keyExtractor={(item) => item.propertyid}
             showsVerticalScrollIndicator={false}
-            ListFooterComponent={() =>
-              this.state.Loading ? (
-                <ActivityIndicator color="#25dAE1" size="large" />
-              ) : null
-            }
+            // ListFooterComponent={() =>
+            //   this.state.Loading ? (
+            //     <ActivityIndicator color="#25dAE1" size="large" />
+            //   ) : null
+            // }
+            onEndReachedThreshold={10}
+            // onEndReached={this.LoadData}
           />
         </View>
       </View>
