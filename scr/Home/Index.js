@@ -22,6 +22,7 @@ import {
 import TabIcon from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
 import { withNavigation } from 'react-navigation';
+// import { MainContext } from '../context/MainContext';
 
 // Components
 import { Fonts } from '../utils/fonts';
@@ -33,6 +34,7 @@ const IC_ARR_DOWN = require('../../Images/down.png');
 const IC_ARR_UP = require('../../Images/up.png');
 
 class Splash extends Component {
+  // static contextType = MainContext
   static navigationOptions = {
     title: 'Home',
     tabBarIcon: ({ tintColor }) => (
