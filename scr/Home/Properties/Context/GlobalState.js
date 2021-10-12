@@ -1,6 +1,6 @@
 import React from 'react';
 import Context from './propContext';
-import { create } from 'apisauce';
+import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
@@ -19,41 +19,48 @@ class GlobalState extends React.Component {
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       console.log('token aya', token);
-      this.setState({ token: token });
+      this.setState({token: token});
       this.api = create({
         baseURL: Base_URL,
-        headers: { Authorization: 'Bearer ' + token },
+        headers: {Authorization: 'Bearer ' + token},
       });
       this.checkData();
     }
   };
 
   loadMoreData = async () => {
-    console.log("load More Data")
+    console.log('load More Data');
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       console.log('token aya', token);
-      this.setState({ token: token });
+      this.setState({token: token});
       this.api = create({
         baseURL: Base_URL,
-        headers: { Authorization: 'Bearer ' + token },
+        headers: {Authorization: 'Bearer ' + token},
       });
       let data = {
         offset: 10,
       }
       const response = await this.api.post('/property/all', data);
-      this.setState({ propList: [...this.state.propList, response.data.data.properties] });
+      this.setState({
+        propList: [...this.state.propList, response.data.data.properties],
+      });
     }
-  }
+  };
+
+  clearData = () => {
+    this.setState({propList: []});
+  };
 
   checkData = async () => {
+    this.setState({isLoading: true});
     let data = {
       offset: 0,
     }
     const response = await this.api.post('/property/all', data);
-    console.log('Check response', response.data.data.properties);
-    this.setState({ success: response.data.bool });
-    this.setState({ propList: response.data.data.properties });
+    this.setState({success: response.data.bool});
+    this.setState({propList: response.data.data.properties});
+    this.setState({isLoading: false});
   };
 
   state = {
@@ -65,6 +72,7 @@ class GlobalState extends React.Component {
     index: '',
     token: null,
     success: false,
+    isLoading: false,
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList:[],
     propList: [
@@ -716,19 +724,6 @@ class GlobalState extends React.Component {
     ],
   };
 
-  // getToken = async () => {
-  //   const token = await EncryptedStorage.getItem('user_token');
-  //   if (token != null) {
-  //     console.log(clc.bgRedBright('token aya', token));
-  //     this.setState({token: token});
-  //     this.api = create({
-  //       baseURL: Base_URL,
-  //       headers: {Authorization: 'Bearer ' + token},
-  //     });
-  //     this.checkData();
-  //   }
-  // };
-
   addProp = async (info) => {
     console.log('PROPERTY INFORMATION--------->', info);
     // this.state.propList.push({
@@ -768,7 +763,7 @@ class GlobalState extends React.Component {
     // })
     this.api.post('/property/add', data).then(res => {
       console.log(res.data);
-    })
+    });
     // fetch('http://51.178.36.223/api/property/add', requestOptions)
     //   .then((response) => console.log(response.data))
     //   .then((result) => console.log(result))
@@ -807,7 +802,7 @@ class GlobalState extends React.Component {
   };
 
   editProperty = async (editData) => {
-    console.log('editproperty===>', editData)
+    console.log('editproperty===>', editData);
 
     // const some_array = [...this.state.propList];
     // some_array[editData.atIndex] = {
@@ -843,7 +838,7 @@ class GlobalState extends React.Component {
     this.setState(
       Object.assign(
         this.state.propList[editData.indexUnits].dataTop[editData.indexBuild],
-        { list: some_array },
+        {list: some_array},
       ),
     );
     // console.log('Kiya Edit Howa', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
@@ -880,7 +875,9 @@ class GlobalState extends React.Component {
             checkData: this.checkData,
             getToken: this.getToken,
             loadMoreData: this.loadMoreData,
-            getBillingCompany: this.getBillingCompany
+            getBillingCompany: this.getBillingCompany,
+            clearData: this.clearData,
+            isLoading: this.state.isLoading,
           }}>
           {this.props.children}
         </Context.Provider>
@@ -889,4 +886,4 @@ class GlobalState extends React.Component {
   }
 }
 
-export { GlobalState };
+export {GlobalState};
