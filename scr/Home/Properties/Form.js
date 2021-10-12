@@ -1,4 +1,4 @@
-import React, {Component, version} from 'react';
+import React, { Component, version } from 'react';
 
 import {
   AppRegistry,
@@ -26,23 +26,24 @@ import Search from 'react-native-vector-icons/EvilIcons';
 import Properties from 'react-native-vector-icons/FontAwesome5';
 import TabIcon from 'react-native-vector-icons/Entypo';
 import Back from 'react-native-vector-icons/MaterialIcons';
+import Loader from '../../components/Loader';
 import Tag from 'react-native-vector-icons/Feather';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB} from 'react-native-paper';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, Button, FAB } from 'react-native-paper';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Modal from 'react-native-modal';
 
 // Components
-import {Fonts} from '../../utils/fonts';
+import { Fonts } from '../../utils/fonts';
 import styles from './FormStyle';
-import {Ellipse} from 'react-native-svg';
+import { Ellipse } from 'react-native-svg';
 import ContextProp from './Context/propContext';
-import {create} from 'apisauce';
-const {width, height} = Dimensions.get('window');
+import { create } from 'apisauce';
+const { width, height } = Dimensions.get('window');
 
 const baseURL = 'http://localhost:8000';
 
-const api = create({baseURL});
+const api = create({ baseURL });
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -57,6 +58,7 @@ export default class Splash extends React.Component {
       CustomId: '007',
       contact: '',
       contactEmail: '',
+      loadScreen: false,
       info: {
         propName: '',
         propAddress: '',
@@ -70,24 +72,24 @@ export default class Splash extends React.Component {
     }
   }
   toggleModalAddProp = () => {
-    this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
+    this.setState({ isModalAddPropVisible: !this.state.isModalAddPropVisible });
   };
   change = (e) => {
     console.log('LELE', e);
 
-    var info = {...this.state.info};
+    var info = { ...this.state.info };
     info.propName = e;
 
     console.log('111', info);
-    this.setState({info});
+    this.setState({ info });
   };
   clearInputs = () => {
     this.toggleModalAddProp();
-    this.setState({Name: ''});
-    this.setState({Address: ''});
-    this.setState({BillComp: ''});
-    this.setState({ManageComp: ''});
-    this.setState({CustomId: ''});
+    this.setState({ Name: '' });
+    this.setState({ Address: '' });
+    this.setState({ BillComp: '' });
+    this.setState({ ManageComp: '' });
+    this.setState({ CustomId: '' });
   };
 
   // addProperty = () => {
@@ -122,15 +124,18 @@ export default class Splash extends React.Component {
   //     .then((result) => console.log(result))
   //     .catch((error) => console.log('error', error));
   // };
+  handleLoader = () => {
+    this.setState({ loadScreen: true });
+  }
 
   addProperty = () => {
     console.log('kiya Mila', this.state.Name);
 
     if (
       (this.state.Name == '' || this.state.Address == '' || this.state.CustomId == ''
-      // this.state.BillComp == '' ||
+        // this.state.BillComp == '' ||
         // this.state.ManageComp == '' ||
-        )
+      )
     ) {
       alert('Kindly Fill All Required.');
     }
@@ -142,22 +147,22 @@ export default class Splash extends React.Component {
       console.log('Before', this.state.info.propName);
       // const info = { ...this.state.info, propName: 'Good HAI' }
       this.setState(
-        Object.assign(this.state.info, {propName: this.state.Name}),
+        Object.assign(this.state.info, { propName: this.state.Name }),
       );
       this.setState(
-        Object.assign(this.state.info, {propAddress: this.state.Address}),
+        Object.assign(this.state.info, { propAddress: this.state.Address }),
       );
       this.setState(
-        Object.assign(this.state.info, {propBillComp: this.state.BillComp}),
+        Object.assign(this.state.info, { propBillComp: this.state.BillComp }),
       );
       this.setState(
-        Object.assign(this.state.info, {propManageComp: this.state.ManageComp}),
+        Object.assign(this.state.info, { propManageComp: this.state.ManageComp }),
       );
       this.setState(
-        Object.assign(this.state.info, {propContact: this.state.contact}),
+        Object.assign(this.state.info, { propContact: this.state.contact }),
       );
       this.setState(
-        Object.assign(this.state.info, {propCustomId: this.state.CustomId}),
+        Object.assign(this.state.info, { propCustomId: this.state.CustomId }),
       );
       this.setState(
         Object.assign(this.state.info, {
@@ -168,15 +173,16 @@ export default class Splash extends React.Component {
       console.log('After', this.state.info.propName);
       this.context.addProp(this.state.info);
       this.clearInputs();
-      
+
     }
   };
 
   render() {
     return (
       <View style={styles.headingInner}>
+        {this.state.loadScreen ? <Loader /> : null}
         <Pressable
-          onPress={() => this.setState({isModalAddPropVisible: true})}
+          onPress={() => this.setState({ isModalAddPropVisible: true })}
           style={styles.addBotton}
           android_ripple={{
             color: 'black',
@@ -228,9 +234,9 @@ export default class Splash extends React.Component {
                 </View>
                 {/* Box Body */}
                 <ScrollView
-                  style={{height: height * 0.6}}
+                  style={{ height: height * 0.6 }}
                   showsVerticalScrollIndicator={false}>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <View style={styles.desciptionContainer}>
                       <Icon
                         name={'location-on'}
@@ -247,7 +253,7 @@ export default class Splash extends React.Component {
                         // value={text}
                         // onChangeText={(text) => { this.setState({ info: { propName: text } }) }}
                         onChangeText={(text) => {
-                          this.setState({Name: text});
+                          this.setState({ Name: text });
                         }}
                         // onChangeText={(text) => this.change(text)}
                         style={styles.input}
@@ -287,7 +293,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={text}
                         onChangeText={(text) => {
-                          this.setState({Address: text});
+                          this.setState({ Address: text });
                         }}
                         mode={'outlined'}
                         theme={{
@@ -316,7 +322,7 @@ export default class Splash extends React.Component {
                         // value={'ION Energy Solutions'}
                         // dense={true}
                         onChangeText={(text) => {
-                          this.setState({BillComp: text});
+                          this.setState({ BillComp: text });
                         }}
                         style={styles.input}
                         mode={'outlined'}
@@ -336,7 +342,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
-                          this.setState({ManageComp: text});
+                          this.setState({ ManageComp: text });
                         }}
                         // dense={true}
                         mode={'outlined'}
@@ -356,7 +362,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
-                          this.setState({CustomId: text});
+                          this.setState({ CustomId: text });
                         }}
                         // dense={true}
                         mode={'outlined'}
@@ -390,7 +396,7 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Contact Name"
-                        onChangeText={(text) => this.setState({contact: text})}
+                        onChangeText={(text) => this.setState({ contact: text })}
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -464,7 +470,7 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Email"
                         onChangeText={(text) =>
-                          this.setState({contactEmail: text})
+                          this.setState({ contactEmail: text })
                         }
                         style={styles.contactInput}
                         // mode={"outlined"}

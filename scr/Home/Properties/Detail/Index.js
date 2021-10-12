@@ -170,8 +170,8 @@ export default class Splash extends React.Component {
   }
 
   getBack = () => {
-    this.props.navigation.goBack()
-    this.context.checkData()
+    this.props.navigation.navigate('Properties')
+    this.context.getToken()
   }
 
   _start = () => {
@@ -313,7 +313,8 @@ export default class Splash extends React.Component {
       api.patch(`/property/update/${this.state?.listData?.id}`,data).then(res => {
         console.log(res.data);
       })
-      this.props.navigation.navigate('ionMain');
+      // this.props.navigation.navigate('Properties');
+      this.getBack()
     }
   };
   changeLayoutMeter = () => {

@@ -28,15 +28,34 @@ class GlobalState extends React.Component {
     }
   };
 
+  loadMoreData = async () => {
+    console.log("load More Data")
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      console.log('token aya', token);
+      this.setState({ token: token });
+      this.api = create({
+        baseURL: Base_URL,
+        headers: { Authorization: 'Bearer ' + token },
+      });
+      let data = {
+        offset: 10,
+        limit: 0
+      }
+      const response = await this.api.post('/property/all', data);
+      this.setState({ propList: [...this.state.propList, response.data.data.properties] });
+    }
+  }
+
   checkData = async () => {
-    data = {
-      offset: 100,
-      limit: 110
+    let data = {
+      offset: 0,
+      limit: 10
     }
     const response = await this.api.post('/property/all', data);
-    console.log('Check response', response.data.data);
+    console.log('Check response', response.data.data.properties);
     this.setState({ success: response.data.bool });
-    this.setState({ propList: response.data.data.properties.reverse() });
+    this.setState({ propList: response.data.data.properties });
   };
 
   state = {
@@ -851,7 +870,9 @@ class GlobalState extends React.Component {
             editProperty: this.editProperty,
             profileWeGet: this.profileWeGet,
             jumpToDetail: this.jumpToDetail,
-            checkData: this.checkData
+            checkData: this.checkData,
+            getToken: this.getToken,
+            loadMoreData: this.loadMoreData
           }}>
           {this.props.children}
         </Context.Provider>
