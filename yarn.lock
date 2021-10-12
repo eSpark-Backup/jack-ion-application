@@ -6300,13 +6300,10 @@ react-native-drop-down-item@^1.1.0:
   dependencies:
     dooboolab-welcome "^1.1.0"
 
-react-native-dropdown-picker@^3.6.8:
-  version "3.6.8"
-  resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-3.6.8.tgz#e5d069e8e4f6b972c039957430a28ddefdcf446a"
-  integrity sha512-VHAKx6pDLSHWxOvdwBXHvkAY+aiGI+UptRYnsWpSx3fdafFslA0qlld5VuCRMpED1uP3ZA/ju/QiU+CHnqfwfA==
-  dependencies:
-    prop-types "^15.7.2"
-    react-native-vector-icons "^7.0.0"
+react-native-dropdown-picker@^5.1.28:
+  version "5.1.28"
+  resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-5.1.28.tgz#c49a898ecff5baaf98770b35645d3fcef6049780"
+  integrity sha512-REF1QMuuJhVrNh71IvgCY594wT6+l4KQG8TRgwPUfvnWPukzbNHClGkqf6E7Y7xZS5eK6NeE1uAzoZZJntdwWA==
 
 react-native-elements@^3.0.0:
   version "3.0.0"
