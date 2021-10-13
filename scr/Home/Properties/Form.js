@@ -122,13 +122,6 @@ export default class Splash extends React.Component {
   };
   clearInputs = () => {
     this.toggleModalAddProp();
-<<<<<<< HEAD
-    this.setState({ Name: '' });
-    this.setState({ Address: '' });
-    this.setState({ BillComp: '' });
-    this.setState({ ManageComp: '' });
-    this.setState({ CustomId: '' });
-=======
     this.setState({Name: ''});
     this.setState({Street: ''});
     this.setState({State: ''});
@@ -141,7 +134,6 @@ export default class Splash extends React.Component {
     this.setState({ContactTitle: ''});
     this.setState({ContactPhone: ''});
     this.setState({ContactEmail: ''});
->>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
   };
 
   handleLoader = () => {
@@ -408,11 +400,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={text}
                         onChangeText={(text) => {
-<<<<<<< HEAD
-                          this.setState({ Address: text });
-=======
                           this.setState({Street: text});
->>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         }}
                         mode={'outlined'}
                         theme={{
@@ -431,11 +419,7 @@ export default class Splash extends React.Component {
                         placeholder="Enter State"
                         style={styles.input}
                         onChangeText={(text) => {
-<<<<<<< HEAD
-                          this.setState({ St: text });
-=======
                           this.setState({State: text});
->>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         }}
                         // onChangeText={text => { this.editThis(text) }}
                         mode={'outlined'}
@@ -628,13 +612,9 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Contact Name"
-<<<<<<< HEAD
-                        onChangeText={(text) => this.setState({ contact: text })}
-=======
                         onChangeText={(text) =>
                           this.setState({ContactName: text})
                         }
->>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -712,11 +692,7 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Email"
                         onChangeText={(text) =>
-<<<<<<< HEAD
-                          this.setState({ contactEmail: text })
-=======
                           this.setState({ContactEmail: text})
->>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         }
                         style={styles.contactInput}
                         // mode={"outlined"}
