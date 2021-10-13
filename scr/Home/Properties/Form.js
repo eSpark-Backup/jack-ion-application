@@ -54,26 +54,39 @@ export default class Splash extends React.Component {
     this.state = {
       isVisible: false,
       Name: '',
-      Address: '',
+      Street: '',
+      State: '',
+      City: '',
+      ZipCode: '',
       BillComp: 'ION',
       ManageComp: '',
       CustomId: '',
-      contact: '',
+      ContactName: '',
+      ContactTitle: '',
+      ContactPhone: '',
+      ContactEmail: '',
       city: '',
       st: '',
       street: '',
       zipCode: '',
-      contactEmail: '',
       loadScreen: false,
       open: false,
       BillingCompany: 'BILLING COMPANY',
       BillingCompanyId: '',
       info: {
         propName: '',
-        propAddress: '',
+        propStreet: '',
+        propState: '',
+        propCity: '',
+        propZipCode: '',
         propBillComp: '',
         propManageComp: '',
         propCustomId: '',
+        propCustomId: '',
+        propContactName: '',
+        propContactTitle: '',
+        proContactPhone: '',
+        proContactEmail: '',
       },
       error: {
         property: false,
@@ -109,45 +122,28 @@ export default class Splash extends React.Component {
   };
   clearInputs = () => {
     this.toggleModalAddProp();
+<<<<<<< HEAD
     this.setState({ Name: '' });
     this.setState({ Address: '' });
     this.setState({ BillComp: '' });
     this.setState({ ManageComp: '' });
     this.setState({ CustomId: '' });
+=======
+    this.setState({Name: ''});
+    this.setState({Street: ''});
+    this.setState({State: ''});
+    this.setState({City: ''});
+    this.setState({ZipCode: ''});
+    this.setState({BillComp: ''});
+    this.setState({ManageComp: ''});
+    this.setState({CustomId: ''});
+    this.setState({ContactName: ''});
+    this.setState({ContactTitle: ''});
+    this.setState({ContactPhone: ''});
+    this.setState({ContactEmail: ''});
+>>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
   };
 
-  // addProperty = () => {
-  //   var raw = JSON.stringify({
-  //     property: 'Added Property',
-  //     street: 'Grove Street',
-  //     developer: 'Wirad',
-  //     managerName: 'Sarim',
-  //     contact: '03232323201',
-  //     contactEmail: 'contracter@contact.com',
-  //   });
-
-  //   var requestOptions = {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       property: 'Added New Property',
-  //       street: 'Street',
-  //       developer: '----',
-  //       managerName: '----',
-  //       contact: '03232323201',
-  //       contactEmail: 'contracter@contact.com',
-  //     }),
-  //     redirect: 'follow',
-  //   };
-
-  //   fetch('http://192.168.18.71:8000/createProperty', requestOptions)
-  //     .then((response) => response.text())
-  //     .then((result) => console.log(result))
-  //     .catch((error) => console.log('error', error));
-  // };
   handleLoader = () => {
     this.setState({ loadScreen: true });
   };
@@ -184,7 +180,7 @@ export default class Splash extends React.Component {
         },
       }));
     }
-    if (this.state.Address === '') {
+    if (this.state.Street === '') {
       this.setState((prevState) => ({
         ...prevState,
         error: {
@@ -252,12 +248,18 @@ export default class Splash extends React.Component {
       this.setState(
         Object.assign(this.state.info, {
           propName: this.state.Name,
-          propAddress: this.state.Address,
+          propStreet: this.state.Street,
+          propState: this.state.State,
+          propCity: this.state.City,
+          propZipCode: this.state.ZipCode,
           propBillCompId: this.state.BillingCompanyId,
           propManageComp: this.state.ManageComp,
           propCustomId: this.state.CustomId,
-          propContactEmail: this.state.contactEmail,
           propBillComp: this.state.BillingCompany,
+          propContactName: this.state.ContactName,
+          propContactTitle: this.state.ContactTitle,
+          propContactPhone: this.state.ContactPhone,
+          propContactEmail: this.state.ContactEmail,
         }),
         () => this.props.loader(true),
       );
@@ -406,7 +408,11 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={text}
                         onChangeText={(text) => {
+<<<<<<< HEAD
                           this.setState({ Address: text });
+=======
+                          this.setState({Street: text});
+>>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         }}
                         mode={'outlined'}
                         theme={{
@@ -425,7 +431,11 @@ export default class Splash extends React.Component {
                         placeholder="Enter State"
                         style={styles.input}
                         onChangeText={(text) => {
+<<<<<<< HEAD
                           this.setState({ St: text });
+=======
+                          this.setState({State: text});
+>>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         }}
                         // onChangeText={text => { this.editThis(text) }}
                         mode={'outlined'}
@@ -618,7 +628,13 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Contact Name"
+<<<<<<< HEAD
                         onChangeText={(text) => this.setState({ contact: text })}
+=======
+                        onChangeText={(text) =>
+                          this.setState({ContactName: text})
+                        }
+>>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -642,7 +658,9 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Title or Job Description"
-                        onChangeText={(text) => console.log(text)}
+                        onChangeText={(text) =>
+                          this.setState({ContactTitle: text})
+                        }
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -667,7 +685,9 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Phone"
                         keyboardType="number-pad"
-                        onChangeText={(text) => console.log(text)}
+                        onChangeText={(text) =>
+                          this.setState({ContactPhone: text})
+                        }
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -692,7 +712,11 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Email"
                         onChangeText={(text) =>
+<<<<<<< HEAD
                           this.setState({ contactEmail: text })
+=======
+                          this.setState({ContactEmail: text})
+>>>>>>> 9c79865cd76d485190a8b2b5a76e94dd5dd98fa2
                         }
                         style={styles.contactInput}
                         // mode={"outlined"}
