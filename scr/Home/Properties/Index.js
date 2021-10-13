@@ -192,7 +192,6 @@ export default class Splash extends Component {
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={true}
               onPress={() => this.jumpToEquip({prop, item: prop})}>
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}

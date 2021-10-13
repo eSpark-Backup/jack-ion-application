@@ -689,6 +689,35 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            value={this.state?.listData?.st}
+                            error={this.state.error.st}
+                            placeholder={this.state?.listData?.st}
+                            label="St*"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  st: text, // update the value of specific key
+                                },
+                              }));
+                            }}
+                            // onChangeText={text => { this.editThis(text) }}
+                            onBlur={this.editThis}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
                         <View
                           style={[
                             styles.inputContainer,
@@ -725,35 +754,6 @@ export default class Splash extends React.Component {
                             }}
                           />
                           <TextInput
-                            value={this.state?.listData?.st}
-                            error={this.state.error.st}
-                            placeholder={this.state?.listData?.st}
-                            label="St*"
-                            style={[styles.input, {width: width * 0.36}]}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  st: text, // update the value of specific key
-                                },
-                              }));
-                            }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
-                        <View style={styles.inputContainer}>
-                          <TextInput
                             value={this.state?.listData?.zipcode}
                             error={this.state.error.zipcode}
                             placeholder={this.state?.listData?.zipcode}
@@ -781,6 +781,7 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
+
                         <View style={styles.desciptionContainer}>
                           <Icon
                             name={'folder-open'}
