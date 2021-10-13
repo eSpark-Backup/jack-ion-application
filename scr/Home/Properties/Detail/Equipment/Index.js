@@ -610,18 +610,18 @@ export default class Splash extends Component {
     // console.log(this.state.dataActivity)
     this.setState({isModalVisible: false});
     this.loaderLoad();
-    this.setState({
-      realData: this.context.propList[
-        this.props.navigation.state.params.item.isIndex
-      ].dataTop[this.state.buildIndex].list,
-      dataBuild: this.context.propList[
-        this.props.navigation.state.params.item.isIndex
-      ].dataTop,
-      unitIndex: this.props.navigation.state.params.item.isIndex,
-      newBuild: this.context.propList[
-        this.props.navigation.state.params.item.isIndex
-      ].dataTop[this.state.buildIndex].name,
-    });
+    // this.setState({
+    //   realData: this.context.propList[
+    //     this.props.navigation.state.params.item.isIndex
+    //   ].dataTop[this.state.buildIndex].list,
+    //   dataBuild: this.context.propList[
+    //     this.props.navigation.state.params.item.isIndex
+    //   ].dataTop,
+    //   unitIndex: this.props.navigation.state.params.item.isIndex,
+    //   newBuild: this.context.propList[
+    //     this.props.navigation.state.params.item.isIndex
+    //   ].dataTop[this.state.buildIndex].name,
+    // });
     // console.log('Top List2', this.props.navigation);
   }
 
