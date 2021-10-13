@@ -54,26 +54,39 @@ export default class Splash extends React.Component {
     this.state = {
       isVisible: false,
       Name: '',
-      Address: '',
+      Street: '',
+      State: '',
+      City: '',
+      ZipCode: '',
       BillComp: 'ION',
       ManageComp: '',
       CustomId: '',
-      contact: '',
+      ContactName: '',
+      ContactTitle: '',
+      ContactPhone: '',
+      ContactEmail: '',
       city: '',
       st: '',
       street: '',
       zipCode: '',
-      contactEmail: '',
       loadScreen: false,
       open: false,
-      BillingCompany: "BILLING COMPANY",
+      BillingCompany: 'BILLING COMPANY',
       BillingCompanyId: '',
       info: {
         propName: '',
-        propAddress: '',
+        propStreet: '',
+        propState: '',
+        propCity: '',
+        propZipCode: '',
         propBillComp: '',
         propManageComp: '',
         propCustomId: '',
+        propCustomId: '',
+        propContactName: '',
+        propContactTitle: '',
+        proContactPhone: '',
+        proContactEmail: '',
       },
       error: {
         property: false,
@@ -82,18 +95,18 @@ export default class Splash extends React.Component {
         street: false,
         city: false,
         zipcode: false,
+        st: false,
       },
       value: '',
       items: [
         { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
-      ]
+        { label: 'Banana', value: 'banana' },
+      ],
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
     this.setValue = this.setValue.bind(this);
-
   }
   toggleModalAddProp = () => {
     this.setState({ isModalAddPropVisible: !this.state.isModalAddPropVisible });
@@ -109,48 +122,23 @@ export default class Splash extends React.Component {
   };
   clearInputs = () => {
     this.toggleModalAddProp();
-    this.setState({ Name: '' });
-    this.setState({ Address: '' });
-    this.setState({ BillComp: '' });
-    this.setState({ ManageComp: '' });
-    this.setState({ CustomId: '' });
+    this.setState({Name: ''});
+    this.setState({Street: ''});
+    this.setState({State: ''});
+    this.setState({City: ''});
+    this.setState({ZipCode: ''});
+    this.setState({BillComp: ''});
+    this.setState({ManageComp: ''});
+    this.setState({CustomId: ''});
+    this.setState({ContactName: ''});
+    this.setState({ContactTitle: ''});
+    this.setState({ContactPhone: ''});
+    this.setState({ContactEmail: ''});
   };
 
-  // addProperty = () => {
-  //   var raw = JSON.stringify({
-  //     property: 'Added Property',
-  //     street: 'Grove Street',
-  //     developer: 'Wirad',
-  //     managerName: 'Sarim',
-  //     contact: '03232323201',
-  //     contactEmail: 'contracter@contact.com',
-  //   });
-
-  //   var requestOptions = {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       property: 'Added New Property',
-  //       street: 'Street',
-  //       developer: '----',
-  //       managerName: '----',
-  //       contact: '03232323201',
-  //       contactEmail: 'contracter@contact.com',
-  //     }),
-  //     redirect: 'follow',
-  //   };
-
-  //   fetch('http://192.168.18.71:8000/createProperty', requestOptions)
-  //     .then((response) => response.text())
-  //     .then((result) => console.log(result))
-  //     .catch((error) => console.log('error', error));
-  // };
   handleLoader = () => {
     this.setState({ loadScreen: true });
-  }
+  };
 
   addProperty = () => {
     console.log('kiya Mila', this.state.Name);
@@ -165,76 +153,83 @@ export default class Splash extends React.Component {
     // }
 
     if (this.state.Name === '') {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          property: true       // update the value of specific key
-        }
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          property: true, // update the value of specific key
+        },
       }));
       return;
     } else {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          property: false       // update the value of specific key
-        }
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          property: false, // update the value of specific key
+        },
       }));
     }
-    if (this.state.Address === '') {
-      this.setState(prevState => ({
+    if (this.state.Street === '') {
+      this.setState((prevState) => ({
         ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          street: true       // update the value of specific key
-        }
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          street: true, // update the value of specific key
+        },
       }));
       return;
     } else {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          street: false       // update the value of specific key
-        }
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          street: false, // update the value of specific key
+        },
       }));
     }
     if (this.state.BillingCompanyId === '') {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          billingId: true       // update the value of specific key
-        }
-      }));
-      return;
-    }
-    else {
-      this.setState(prevState => ({
-        ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          billingId: false       // update the value of specific key
-        }
-      }));
-    }
-    if (this.state.CustomId === '') {
-      this.setState(prevState => ({
-        ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          propertyId: true       // update the value of specific key
-        }
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          billingId: true, // update the value of specific key
+        },
       }));
       return;
     } else {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
-        error: {                   // object that we want to update
-          ...prevState.error,    // keep all other key-value pairs
-          propertyId: false       // update the value of specific key
-        }
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          billingId: false, // update the value of specific key
+        },
+      }));
+    }
+    if (this.state.CustomId === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          propertyId: true, // update the value of specific key
+        },
+      }));
+      return;
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          propertyId: false, // update the value of specific key
+        },
       }));
       //  else if (this.state.info.propName == undefined || this.state.info.propAddress == undefined,
       //     this.state.info.propBillComp == undefined || this.state.info.propManageComp == undefined || this.state.info.propCustomId == undefined) {
@@ -245,47 +240,31 @@ export default class Splash extends React.Component {
       this.setState(
         Object.assign(this.state.info, {
           propName: this.state.Name,
-          propAddress: this.state.Address,
+          propStreet: this.state.Street,
+          propState: this.state.State,
+          propCity: this.state.City,
+          propZipCode: this.state.ZipCode,
           propBillCompId: this.state.BillingCompanyId,
           propManageComp: this.state.ManageComp,
           propCustomId: this.state.CustomId,
-          propContactEmail: this.state.contactEmail,
-          propBillComp: this.state.BillingCompany
-
+          propBillComp: this.state.BillingCompany,
+          propContactName: this.state.ContactName,
+          propContactTitle: this.state.ContactTitle,
+          propContactPhone: this.state.ContactPhone,
+          propContactEmail: this.state.ContactEmail,
         }),
-        () => this.props.loader(true)
+        () => this.props.loader(true),
       );
-      // this.setState(
-      //   Object.assign(this.state.info, { propAddress: this.state.Address }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propBillComp: this.state.BillingCompanyId }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propManageComp: this.state.ManageComp }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propContact: this.state.contact }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propCustomId: this.state.CustomId }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propContactEmail: this.state.contactEmail }),
-      //   () => this.props.loader(true)
-      // );
-      // console.log('After', this.state.info.propName);
       this.context.addProp(this.state.info);
       this.clearInputs();
-
     }
   };
   setValue(callback) {
-    this.setState(state => ({
-      value: callback(state)
-    }))
+    this.setState((state) => ({
+      value: callback(state),
+    }));
     setTimeout(() => {
-      console.log('--->value', this.state.value)
+      console.log('--->value', this.state.value);
     }, 1000);
   }
 
@@ -293,18 +272,16 @@ export default class Splash extends React.Component {
     // this.setState(state => ({
     //   items: callback(state.items)
     // }));
-    console.log('--->item', callback)
-
+    console.log('--->item', callback);
   }
   handleOpenDropDown = () => {
     this.context.getBillingCompany();
-    this.setState({ open: !this.state.open })
-  }
+    this.setState({ open: !this.state.open });
+  };
   handleDropDownData = (value) => {
-    this.setState({ BillingCompany: value.name, BillingCompanyId: value.id })
-    this.setState({ open: !this.state.open })
-
-  }
+    this.setState({ BillingCompany: value.name, BillingCompanyId: value.id });
+    this.setState({ open: !this.state.open });
+  };
   render() {
     return (
       <View style={styles.headingInner}>
@@ -418,12 +395,12 @@ export default class Splash extends React.Component {
                       </View> */}
                       <TextInput
                         // label="Address*"
-                        placeholder="Enter Address*"
+                        placeholder="Enter Street*"
                         error={this.state.error.street}
                         style={styles.input}
                         // value={text}
                         onChangeText={(text) => {
-                          this.setState({ Address: text });
+                          this.setState({Street: text});
                         }}
                         mode={'outlined'}
                         theme={{
@@ -435,6 +412,71 @@ export default class Splash extends React.Component {
                         }}
                       />
                     </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        // value={this.state?.listData?.st}
+                        error={this.state.error.st}
+                        placeholder="Enter State"
+                        style={styles.input}
+                        onChangeText={(text) => {
+                          this.setState({State: text});
+                        }}
+                        // onChangeText={text => { this.editThis(text) }}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
+                          },
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        {
+                          flexDirection: 'row',
+                          justifyContent: 'space-evenly',
+                        },
+                      ]}>
+                      <TextInput
+                        // value={this.state?.listData?.city}
+                        error={this.state.error.city}
+                        placeholder="Enter City"
+                        style={[styles.input, { width: width * 0.36 }]}
+                        onChangeText={(text) => {
+                          this.setState({ City: text });
+                        }}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
+                          },
+                        }}
+                      />
+                      <TextInput
+                        // value={this.state?.listData?.zipcode}
+                        error={this.state.error.zipcode}
+                        placeholder="Enter Zipcode"
+                        style={[styles.input, { width: width * 0.36 }]}
+                        onChangeText={(text) => {
+                          this.setState({ ZipCode: text });
+                        }}
+                        // onChangeText={text => { this.editThis(text) }}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
+                          },
+                        }}
+                      />
+                    </View>
+
                     <View style={styles.desciptionContainer}>
                       <Icon
                         name={'folder-open'}
@@ -449,51 +491,45 @@ export default class Splash extends React.Component {
                       <TouchableOpacity
                         onPress={this.handleOpenDropDown}
                         style={{
-                          backgroundColor: "#F6F6F6",
-                          alignSelf: "center",
-                          borderColor: this.state.error.billingId ? 'red' : "gray",
-                          width: "95%",
-                          height: "90%",
-                          borderWidth: width * .003,
-                          borderRadius: width * .01,
+                          backgroundColor: '#F6F6F6',
+                          alignSelf: 'center',
+                          borderColor: this.state.error.billingId
+                            ? 'red'
+                            : 'gray',
+                          width: '95%',
+                          height: '90%',
+                          borderWidth: width * 0.003,
+                          borderRadius: width * 0.01,
                           justifyContent: 'center',
-                          paddingHorizontal: width * .03,
-                        }}
-                      >
-                        <Text>
-                          {this.state.BillingCompany}
-                        </Text>
+                          paddingHorizontal: width * 0.03,
+                        }}>
+                        <Text>{this.state.BillingCompany}</Text>
                       </TouchableOpacity>
                       <Modal
                         animationIn="fadeIn"
                         animationOut="fadeOut"
                         isVisible={this.state.open}
                         style={{
-                          height: height * .4,
+                          height: height * 0.4,
                         }}>
-                        {
+                        {this.context.propitemList &&
                           this.context.propitemList.map((data) => (
                             <TouchableOpacity
                               onPress={() => this.handleDropDownData(data)}
                               style={{
-                                backgroundColor: "#F6F6F6",
-                                alignSelf: "center",
-                                borderColor: "gray",
-                                width: "85%",
-                                height: height * .09,
-                                borderWidth: width * .003,
-                                borderRadius: width * .01,
+                                backgroundColor: '#F6F6F6',
+                                alignSelf: 'center',
+                                borderColor: 'gray',
+                                width: '85%',
+                                height: height * 0.09,
+                                borderWidth: width * 0.003,
+                                borderRadius: width * 0.01,
                                 justifyContent: 'center',
-                                paddingHorizontal: width * .03,
-
-                              }}
-                            >
-                              <Text>
-                                {data.name}
-                              </Text>
+                                paddingHorizontal: width * 0.03,
+                              }}>
+                              <Text>{data.name}</Text>
                             </TouchableOpacity>
-                          ))
-                        }
+                          ))}
                       </Modal>
                       {/* <DropDownPicker
                         open={this.state.open}
@@ -576,7 +612,9 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Contact Name"
-                        onChangeText={(text) => this.setState({ contact: text })}
+                        onChangeText={(text) =>
+                          this.setState({ContactName: text})
+                        }
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -600,7 +638,9 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Title or Job Description"
-                        onChangeText={(text) => console.log(text)}
+                        onChangeText={(text) =>
+                          this.setState({ContactTitle: text})
+                        }
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -625,7 +665,9 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Phone"
                         keyboardType="number-pad"
-                        onChangeText={(text) => console.log(text)}
+                        onChangeText={(text) =>
+                          this.setState({ContactPhone: text})
+                        }
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -650,7 +692,7 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Email"
                         onChangeText={(text) =>
-                          this.setState({ contactEmail: text })
+                          this.setState({ContactEmail: text})
                         }
                         style={styles.contactInput}
                         // mode={"outlined"}

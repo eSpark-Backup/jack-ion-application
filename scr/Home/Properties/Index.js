@@ -122,7 +122,7 @@ export default class Splash extends Component {
   };
 
   LoadData = () => {
-    console.log('End reached');
+    // console.log('End reached');
     this.context.loadMoreData();
   };
 
@@ -192,7 +192,6 @@ export default class Splash extends Component {
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={true}
               onPress={() => this.jumpToEquip({prop, item: prop})}>
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}
@@ -222,9 +221,9 @@ export default class Splash extends Component {
   };
 
   render() {
-    console.log('Component is re-rendered');
+    // console.log('Component is re-rendered');
     if (!this.context.isLoading && this.state.loadScreen) {
-      console.log('Condition Success');
+      // console.log('Condition Success');
       this.setState({loadScreen: false});
       this.setState({Loading: true});
     }
