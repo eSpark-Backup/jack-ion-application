@@ -1,4 +1,4 @@
-import React, {Component, version} from 'react';
+import React, { Component, version } from 'react';
 
 import {
   AppRegistry,
@@ -28,24 +28,24 @@ import TabIcon from 'react-native-vector-icons/Entypo';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Loader from '../../components/Loader';
 import Tag from 'react-native-vector-icons/Feather';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB} from 'react-native-paper';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, Button, FAB } from 'react-native-paper';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // Components
-import {Fonts} from '../../utils/fonts';
+import { Fonts } from '../../utils/fonts';
 import styles from './FormStyle';
-import {Ellipse} from 'react-native-svg';
+import { Ellipse } from 'react-native-svg';
 import ContextProp from './Context/propContext';
-import {create} from 'apisauce';
-import {call} from 'react-native-reanimated';
-const {width, height} = Dimensions.get('window');
+import { create } from 'apisauce';
+import { call } from 'react-native-reanimated';
+const { width, height } = Dimensions.get('window');
 
 const baseURL = 'http://localhost:8000';
 
-const api = create({baseURL});
+const api = create({ baseURL });
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -86,8 +86,8 @@ export default class Splash extends React.Component {
       },
       value: '',
       items: [
-        {label: 'Apple', value: 'apple'},
-        {label: 'Banana', value: 'banana'},
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
       ],
     };
     if (Platform.OS === 'android') {
@@ -96,24 +96,24 @@ export default class Splash extends React.Component {
     this.setValue = this.setValue.bind(this);
   }
   toggleModalAddProp = () => {
-    this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
+    this.setState({ isModalAddPropVisible: !this.state.isModalAddPropVisible });
   };
   change = (e) => {
     console.log('LELE', e);
 
-    var info = {...this.state.info};
+    var info = { ...this.state.info };
     info.propName = e;
 
     console.log('111', info);
-    this.setState({info});
+    this.setState({ info });
   };
   clearInputs = () => {
     this.toggleModalAddProp();
-    this.setState({Name: ''});
-    this.setState({Address: ''});
-    this.setState({BillComp: ''});
-    this.setState({ManageComp: ''});
-    this.setState({CustomId: ''});
+    this.setState({ Name: '' });
+    this.setState({ Address: '' });
+    this.setState({ BillComp: '' });
+    this.setState({ ManageComp: '' });
+    this.setState({ CustomId: '' });
   };
 
   // addProperty = () => {
@@ -149,7 +149,7 @@ export default class Splash extends React.Component {
   //     .catch((error) => console.log('error', error));
   // };
   handleLoader = () => {
-    this.setState({loadScreen: true});
+    this.setState({ loadScreen: true });
   };
 
   addProperty = () => {
@@ -261,26 +261,6 @@ export default class Splash extends React.Component {
         }),
         () => this.props.loader(true),
       );
-      // this.setState(
-      //   Object.assign(this.state.info, { propAddress: this.state.Address }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propBillComp: this.state.BillingCompanyId }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propManageComp: this.state.ManageComp }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propContact: this.state.contact }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propCustomId: this.state.CustomId }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.info, { propContactEmail: this.state.contactEmail }),
-      //   () => this.props.loader(true)
-      // );
-      // console.log('After', this.state.info.propName);
       this.context.addProp(this.state.info);
       this.clearInputs();
     }
@@ -302,18 +282,18 @@ export default class Splash extends React.Component {
   }
   handleOpenDropDown = () => {
     this.context.getBillingCompany();
-    this.setState({open: !this.state.open});
+    this.setState({ open: !this.state.open });
   };
   handleDropDownData = (value) => {
-    this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
-    this.setState({open: !this.state.open});
+    this.setState({ BillingCompany: value.name, BillingCompanyId: value.id });
+    this.setState({ open: !this.state.open });
   };
   render() {
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
         <Pressable
-          onPress={() => this.setState({isModalAddPropVisible: true})}
+          onPress={() => this.setState({ isModalAddPropVisible: true })}
           style={styles.addBotton}
           android_ripple={{
             color: 'black',
@@ -365,9 +345,9 @@ export default class Splash extends React.Component {
                 </View>
                 {/* Box Body */}
                 <ScrollView
-                  style={{height: height * 0.6}}
+                  style={{ height: height * 0.6 }}
                   showsVerticalScrollIndicator={false}>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <View style={styles.desciptionContainer}>
                       <Icon
                         name={'location-on'}
@@ -384,7 +364,7 @@ export default class Splash extends React.Component {
                         // value={text}
                         // onChangeText={(text) => { this.setState({ info: { propName: text } }) }}
                         onChangeText={(text) => {
-                          this.setState({Name: text});
+                          this.setState({ Name: text });
                         }}
                         error={this.state.error.property}
                         // onChangeText={(text) => this.change(text)}
@@ -426,7 +406,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={text}
                         onChangeText={(text) => {
-                          this.setState({Address: text});
+                          this.setState({ Address: text });
                         }}
                         mode={'outlined'}
                         theme={{
@@ -445,7 +425,7 @@ export default class Splash extends React.Component {
                         placeholder="Enter State"
                         style={styles.input}
                         onChangeText={(text) => {
-                          this.setState({St: text});
+                          this.setState({ St: text });
                         }}
                         // onChangeText={text => { this.editThis(text) }}
                         mode={'outlined'}
@@ -470,9 +450,9 @@ export default class Splash extends React.Component {
                         // value={this.state?.listData?.city}
                         error={this.state.error.city}
                         placeholder="Enter City"
-                        style={[styles.input, {width: width * 0.36}]}
+                        style={[styles.input, { width: width * 0.36 }]}
                         onChangeText={(text) => {
-                          this.setState({City: text});
+                          this.setState({ City: text });
                         }}
                         mode={'outlined'}
                         theme={{
@@ -487,9 +467,9 @@ export default class Splash extends React.Component {
                         // value={this.state?.listData?.zipcode}
                         error={this.state.error.zipcode}
                         placeholder="Enter Zipcode"
-                        style={[styles.input, {width: width * 0.36}]}
+                        style={[styles.input, { width: width * 0.36 }]}
                         onChangeText={(text) => {
-                          this.setState({ZipCode: text});
+                          this.setState({ ZipCode: text });
                         }}
                         // onChangeText={text => { this.editThis(text) }}
                         mode={'outlined'}
@@ -538,23 +518,24 @@ export default class Splash extends React.Component {
                         style={{
                           height: height * 0.4,
                         }}>
-                        {this.context.propitemList.map((data) => (
-                          <TouchableOpacity
-                            onPress={() => this.handleDropDownData(data)}
-                            style={{
-                              backgroundColor: '#F6F6F6',
-                              alignSelf: 'center',
-                              borderColor: 'gray',
-                              width: '85%',
-                              height: height * 0.09,
-                              borderWidth: width * 0.003,
-                              borderRadius: width * 0.01,
-                              justifyContent: 'center',
-                              paddingHorizontal: width * 0.03,
-                            }}>
-                            <Text>{data.name}</Text>
-                          </TouchableOpacity>
-                        ))}
+                        {this.context.propitemList &&
+                          this.context.propitemList.map((data) => (
+                            <TouchableOpacity
+                              onPress={() => this.handleDropDownData(data)}
+                              style={{
+                                backgroundColor: '#F6F6F6',
+                                alignSelf: 'center',
+                                borderColor: 'gray',
+                                width: '85%',
+                                height: height * 0.09,
+                                borderWidth: width * 0.003,
+                                borderRadius: width * 0.01,
+                                justifyContent: 'center',
+                                paddingHorizontal: width * 0.03,
+                              }}>
+                              <Text>{data.name}</Text>
+                            </TouchableOpacity>
+                          ))}
                       </Modal>
                       {/* <DropDownPicker
                         open={this.state.open}
@@ -582,7 +563,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
-                          this.setState({ManageComp: text});
+                          this.setState({ ManageComp: text });
                         }}
                         // dense={true}
                         mode={'outlined'}
@@ -603,7 +584,7 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
-                          this.setState({CustomId: text});
+                          this.setState({ CustomId: text });
                         }}
                         // dense={true}
                         mode={'outlined'}
@@ -637,7 +618,7 @@ export default class Splash extends React.Component {
                       </View>
                       <TextInput
                         placeholder="Contact Name"
-                        onChangeText={(text) => this.setState({contact: text})}
+                        onChangeText={(text) => this.setState({ contact: text })}
                         style={styles.contactInput}
                         // mode={"outlined"}
                         theme={{
@@ -711,7 +692,7 @@ export default class Splash extends React.Component {
                       <TextInput
                         placeholder="Email"
                         onChangeText={(text) =>
-                          this.setState({contactEmail: text})
+                          this.setState({ contactEmail: text })
                         }
                         style={styles.contactInput}
                         // mode={"outlined"}

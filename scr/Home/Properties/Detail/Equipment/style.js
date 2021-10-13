@@ -103,8 +103,7 @@ export default styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     // alignItems: 'center',
-    marginTop: height * 0.01,
-    marginBottom: height * 0.01,
+    marginVertical: height * 0.01,
     borderRadius: width * 0.01,
     borderWidth: width * 0.001,
     // elevation: width * .03,
@@ -123,12 +122,8 @@ export default styles = StyleSheet.create({
   },
   infoViewInner: {
     flex: 1,
-    width: width * 0.9,
-    height: height * 0.1,
-    top: height * 0.01,
     flexDirection: 'row',
-    marginBottom: height * 0.02,
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   unitListInfo: {
@@ -417,15 +412,24 @@ export default styles = StyleSheet.create({
   },
   addUnitListView: {
     height: height * 0.09,
-    width: width * 0.8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: width * 0.75,
+    alignSelf:'center',
+    alignItems:'center',
+    flexDirection:'row',
+    backgroundColor:'#F6F6F6',
+    marginVertical:width * .01,
+    borderRadius:width * .004,
+    borderColor:'#D0D0D0',
+    borderWidth:width * .003,
+
     // borderTopWidth: width * .002,
   },
   addUnitListInput: {
     // height: height * .07,
-    width: width * 0.72,
+    // width: width * 0.72,
     fontSize: height * 0.018,
+    borderColor:'#d0d0d0',
+    backgroundColor:'#F6F6F6'
   },
   meterDesciptionContainer: {
     height: height * 0.04,
@@ -513,24 +517,21 @@ export default styles = StyleSheet.create({
   meterReading: {
     flexDirection: 'column',
     alignItems: 'center',
-    width: width * 0.25,
-    // backgroundColor: 'red',
+    width: width * 0.2,
   },
   programDevice: {
-    // width: width * .5,
+    width: width * .4,
     height: 40,
     borderWidth: height * 0.0015,
     borderColor: 'purple',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
+
   },
   proDeviceContent: {
     flexDirection: 'row',
     padding: width * 0.02,
-    // justifyContent: 'space-evenly',
     alignItems: 'center',
-    // right: width * .01,
-    // bottom: height * .005,
   },
   propDeviceText: {
     paddingLeft: width * 0.02,
