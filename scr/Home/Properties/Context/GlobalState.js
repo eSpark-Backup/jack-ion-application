@@ -728,9 +728,17 @@ class GlobalState extends React.Component {
     // console.log('PROPERTY INFORMATION--------->', info);
     const data = {
       name: info.propName,
-      street: info.propAddress,
+      street: info.propStreet,
+      city: info.propState,
+      st: info.propCity,
+      zipcode: info.propZipCode,
       property_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
+      management_company: info.propManageComp,
+      contact_name: info.propContactName,
+      contact_title: info.propContactTitle,
+      contact_phone: info.propContactPhone,
+      contact_email: info.propContactEmail,
     };
     // console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
