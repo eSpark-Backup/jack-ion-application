@@ -682,20 +682,24 @@ export default class Splash extends Component {
 
   addInput = (value, i) => {
     console.log(value, 'value-->')
-    // console.log(item,'item-->')
     console.log('Index-->', i)
-
-    // console.log(item.text)
-    // console.log(item.item.name)
+    this.setState({newUnit:value})
     if (this.state.autoIncrement == true) {
       let unitsArray = [...this.state.unitsArray];
       this.state.unitsArray.map((item, index) => {
-
-        unitsArray[index] = { ...unitsArray[index], name: value };
-        this.setState({ unitsArray }
-          , () => console.log("onchane===>", this.state.unitsArray)
-        )
+        if (index >= i) {
+          unitsArray[index] = { ...unitsArray[index], name: value };
+          this.setState({ unitsArray }
+            , () => console.log("onchane===>", this.state.unitsArray)
+          )
+        }
       })
+    } else {
+      let unitsArray = [...this.state.unitsArray];
+      unitsArray[i] = { ...unitsArray[i], name: value };
+      this.setState({ unitsArray }
+        , () => console.log("onchane===>", this.state.unitsArray)
+      )
     }
   };
 
@@ -1273,26 +1277,6 @@ export default class Splash extends Component {
           units: false, // update the value of specific key
         },
       }));
-      // this.state.dataActivity = this.state.dataActivity.map((element) => {
-      //   element.build = this.state.buildName;
-      //   return element;
-      // });
-      // this.setState(
-      //   Object.assign(this.state.newBuildInfo, {
-      //     indexUnits: this.state.unitIndex,
-      //   }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.newBuildInfo, {
-      //     newBuildName: this.state.buildName,
-      //   }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.newBuildInfo, {
-      //     newBuildUnits: this.state.dataActivity,
-      //   }),
-      // );
-      // this.context.addBuilding(this.state.newBuildInfo);
       var loopData = [];
       var i;
       for (i = 0; i < this.state.unitsArray.length; i++) {
@@ -1310,9 +1294,12 @@ export default class Splash extends Component {
     }
   };
   handleAddbuildingApi = async (data) => {
+    this.setState({ loader: true, loaderBuildings: true });
     console.log('data--->', data)
     const unitResponse = await this.api.post(`/property/equipment/building/add-building`, data);
     console.log('Check unitResponse buildings--->', unitResponse);
+    
+    this.checkData()
   }
 
   _renderUnitList = ({ item, index }) => (
@@ -1402,23 +1389,20 @@ export default class Splash extends Component {
     }, 1000);
   }
 
-  showArrayItem = (build) => {
-    // console.log('What Item We Get', build.index)
-    this.setState({ buildIndex: build.index });
-    this.setState({ realData: build.item.list });
-    this.loaderLoad();
-    // if (item.item.name == 'A') {
-    //   this.setState({ realData: this.state.ListA })
-    //   this.loaderLoad()
-    // }
-    // else if (item.item.name === 'B') {
-    //   this.setState({ realData: this.state.ListB })
-    //   this.loaderLoad()
-    // }
-    // else if (item.item.name === 'C') {
-    //   this.setState({ realData: this.state.ListC })
-    //   this.loaderLoad()
-    // }
+  showArrayItem = async (build) => {
+    // console.log('What Item We Get', build.item.id)
+    this.setState({ loader: true });
+    const data = {
+      building_id: build.item.id
+    }
+    const unitResponse = await this.api.post(`/property/equipment/unit/all-units`, data);
+    console.log('Check unitResponse buildings--->', unitResponse);
+    if (unitResponse?.ok == true) {
+      this.setState({ realData: unitResponse?.data?.data, loader: false });
+    } else {
+      alert("Network Issue")
+      this.setState({ loader: false });
+    }
   };
   showMeter = (item) => {
     console.log('Selected 2', item.item.name);
@@ -1468,87 +1452,6 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const { loader, loaderBuildings } = this.state;
-
-    const dataActivityTop = [
-      {
-        id: 1,
-        name: 'A',
-        length: this.state.ListA.length,
-      },
-      {
-        id: 2,
-        name: 'B',
-        length: this.state.ListB.length,
-      },
-      {
-        id: 3,
-        name: 'C',
-        length: this.state.ListC.length,
-      },
-      // {
-      //   id: 4,
-      //   name: 'D',
-
-      // },
-      // {
-      //   id: 5,
-      //   name: 'E',
-
-      // },
-      // {
-      //   id: 6,
-      //   name: 'F',
-
-      // },
-      // {
-      //   id: 7,
-      //   name: 'G',
-
-      // },
-      // {
-      //   id: 8,
-      //   name: 'H',
-
-      // },
-      // {
-      //   id: 9,
-      //   name: 'I',
-
-      // },
-      // {
-      //   id: 10,
-      //   name: 'J',
-
-      // },
-      // {
-      //   id: 11,
-      //   name: 'K',
-
-      // },
-      // {
-      //   id: 12,
-      //   name: 'L',
-
-      // },
-      // {
-      //   id: 13,
-      //   name: 'M',
-
-      // },
-      // {
-      //   id: 14,
-      //   name: 'N',
-
-      // },
-      // {
-      //   id: 15,
-      //   name: 'O',
-
-      // },
-    ];
-    // this.changeLayoutAddUtility()
-    // console.log(this.state.newUnit
-    // console.log(this.state.pressedText)
     return (
       <View style={styles.container}>
         {/* Drawer Modal */}
