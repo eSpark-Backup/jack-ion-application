@@ -329,7 +329,6 @@ export default styles = StyleSheet.create({
   inputContainer: {
     // height: height * .09,
     width: width * 0.8,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     // backgroundColor: "yellow"
