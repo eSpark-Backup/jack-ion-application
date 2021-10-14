@@ -286,7 +286,7 @@ export default class Splash extends Component {
             removeClippedSubviews={false}
             maxToRenderPerBatch={150}
             windowSize={100}
-            keyExtractor={(item) => item.propertyid}
+            keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             // ListFooterComponent={() =>
             //   this.state.Loading ? (

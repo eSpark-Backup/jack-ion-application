@@ -43,7 +43,7 @@ import Fire from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Compact from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Icon, IconToggle } from 'react-native-material-ui';
-import { TextInput, Button, FAB } from 'react-native-paper';
+import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
@@ -137,11 +137,12 @@ export default class Splash extends Component {
       autoIncrement: false,
       unitIndex: 1,
       buildIndex: 0,
-      pressedText: '',
+      pressedText: 'Select Type',
       pressedUnit: '',
       pressedCode: '',
       pressedAndEdit: '',
       scanner: null,
+      meterId: 0,
       barcodes: [],
       scan: false,
       scanResult: false,
@@ -156,16 +157,22 @@ export default class Splash extends Component {
       isModalUnitVisible: false,
       isModalMunitVisible: false,
       points: 80,
+      custom_meter_id: '',
+      meterSerial: "",
       selected: false,
       animatedValue: new Animated.Value(0),
       newBuild: 'A',
       newUnit: 'Unit-',
+      newUnitAdd: '',
+      meterList: false,
       newSerial: '',
       newMeter: '',
       buildName: '',
       loaderBuildings: false,
       unitsArray: [],
       unitsArraySend: [],
+      buildingData: [],
+      lastUnitData: '',
       newUnitInfo: {
         indexUnits: '',
         unitBuild: '',
@@ -587,6 +594,12 @@ export default class Splash extends Component {
         buildingName: false,
         units: false
       },
+      errorUnits: {
+        units: '',
+        meter: false,
+        deviceSerial: '',
+
+      },
     };
     this.state.realData = this.state.realData.map((item) => {
       item.isSelected = false;
@@ -643,13 +656,22 @@ export default class Splash extends Component {
       this.setState({ dataBuild: response?.data?.data })
       this.setState({ loaderBuildings: false });
       if (response?.data?.data?.length != 0) {
+        this.setState({ buildingData: response?.data?.data[0] })
         const data = {
           building_id: response?.data?.data[0].id
         }
         const unitResponse = await this.api.post(`/property/equipment/unit/all-units`, data);
         console.log('Check unitResponse buildings--->', unitResponse);
+        // console.log('buildingData--->', this.state.buildingData);
+
         if (unitResponse?.ok == true) {
           this.setState({ realData: unitResponse?.data?.data, loader: false });
+          let arry = unitResponse?.data?.data;
+          let lastElement = arry[arry.length - 1];
+          // console.log('lastElement--->', lastElement)
+          this.setState({ lastUnitData: lastElement.name });
+          // console.log('lastUnitData--->', this.state.lastUnitData)
+
         } else {
           alert("Network Issue")
           this.setState({ loader: false });
@@ -682,20 +704,24 @@ export default class Splash extends Component {
 
   addInput = (value, i) => {
     console.log(value, 'value-->')
-    // console.log(item,'item-->')
     console.log('Index-->', i)
-
-    // console.log(item.text)
-    // console.log(item.item.name)
+    this.setState({ newUnit: value })
     if (this.state.autoIncrement == true) {
       let unitsArray = [...this.state.unitsArray];
       this.state.unitsArray.map((item, index) => {
-
-        unitsArray[index] = { ...unitsArray[index], name: value };
-        this.setState({ unitsArray }
-          , () => console.log("onchane===>", this.state.unitsArray)
-        )
+        if (index >= i) {
+          unitsArray[index] = { ...unitsArray[index], name: value };
+          this.setState({ unitsArray }
+            , () => console.log("onchane===>", this.state.unitsArray)
+          )
+        }
       })
+    } else {
+      let unitsArray = [...this.state.unitsArray];
+      unitsArray[i] = { ...unitsArray[i], name: value };
+      this.setState({ unitsArray }
+        , () => console.log("onchane===>", this.state.unitsArray)
+      )
     }
   };
 
@@ -747,6 +773,7 @@ export default class Splash extends Component {
   };
   onScanned = (e) => {
     const check = e.data.substring(0, 4);
+    console.log('e--->', e.data)
     // this.setState({
     //   result: e,
     //   newSerial: e.data,
@@ -853,7 +880,7 @@ export default class Splash extends Component {
   changeUtilityAndToggleAddU = () => {
     this.toggleAddUtility();
     this.changeLayoutUtilityScr();
-    this.setState({ newUnit: !this.state.newUnit });
+    // this.setState({ meterList: !this.state.newUnit });
   };
   editAndToggleEdit = (unit) => {
     this.toggleModalEdit();
@@ -905,41 +932,136 @@ export default class Splash extends Component {
       realData: this.context.propList[0].dataTop[this.state.buildIndex].list,
     });
   };
-  newUnit = () => {
-    if (this.state.newBuild == '' || this.state.newUnit == '') {
-      alert('Kindly Fill all Fields');
-    } else if (this.state.newSerial == '' || this.state.newMeter == '') {
-      alert('Kindly Select Utility and Fill the Required');
+  handleAddNewUnit = async () => {
+    const matchUnit = this.state.realData.filter((e) => e.name == this.state.lastUnitData)
+    // console.log('matchUnit--->', matchUnit)
+    // console.log('lastUnitData--->', this.state.lastUnitData)
+
+    if (!this.state.lastUnitData) {
+      this.setState((prevState) => ({
+        ...prevState,
+        errorUnits: {
+          // object that we want to update
+          ...prevState.errorUnits, // keep all other key-value pairs
+          units: 'Unit Required', // update the value of specific key
+        },
+      }));
+      return;
     } else {
-      this.setState(
-        Object.assign(this.state.newUnitInfo, {
-          indexBuild: this.state.buildIndex,
-        }),
-      );
-      this.setState(
-        Object.assign(this.state.newUnitInfo, {
-          indexUnits: this.state.unitIndex,
-        }),
-      );
-      this.setState(
-        Object.assign(this.state.newUnitInfo, { unitBuild: this.state.newBuild }),
-      );
-      this.setState(
-        Object.assign(this.state.newUnitInfo, { unitName: this.state.newUnit }),
-      );
-      this.setState(
-        Object.assign(this.state.newUnitInfo, {
-          unitSerial: this.state.newSerial,
-        }),
-      );
-      this.setState(
-        Object.assign(this.state.newUnitInfo, { unitMeter: this.state.newMeter }),
-      );
-      // console.log('INFO', this.state.info)
-      this.context.addUnits(this.state.newUnitInfo);
-      // this.newUnits()
-      this.changeUtilityAndToggle();
+      this.setState((prevState) => ({
+        ...prevState,
+        errorUnits: {
+          // object that we want to update
+          ...prevState.errorUnits, // keep all other key-value pairs
+          units: '', // update the value of specific key
+        },
+      }));
     }
+    if (matchUnit.length != 0) {
+      this.setState((prevState) => ({
+        ...prevState,
+        errorUnits: {
+          // object that we want to update
+          ...prevState.errorUnits, // keep all other key-value pairs
+          units: 'This unit already exist', // update the value of specific key
+        },
+      }));
+      return;
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        errorUnits: {
+          // object that we want to update
+          ...prevState.errorUnits, // keep all other key-value pairs
+          units: '', // update the value of specific key
+        },
+      }));
+    }
+    if (this.state.meterId == 0) {
+      alert('Select meter and continue');
+      return;
+    }
+    if (!this.state.newSerial) {
+      this.setState((prevState) => ({
+        ...prevState,
+        errorUnits: {
+          // object that we want to update
+          ...prevState.errorUnits, // keep all other key-value pairs
+          deviceSerial: 'Device serial required', // update the value of specific key
+        },
+      }));
+      return;
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        errorUnits: {
+          // object that we want to update
+          ...prevState.errorUnits, // keep all other key-value pairs
+          deviceSerial: '', // update the value of specific key
+        },
+      }));
+      const data = {
+        name: this.state.lastUnitData,
+        building_id: this.state.buildingData.id,
+        meters: [
+          {
+            meter_id: 5,
+            device_serial_number: this.state.newSerial,
+            meter_serial_number: this.state.meterSerial,
+            custom_meter_id: this.state.custom_meter_id,
+            type_id: this.state.meterId
+          }
+        ]
+      }
+      console.log('data--->', data)
+      const unitResponse = await this.api.post(`/property/equipment/unit/add-unit`, data);
+      console.log('Check unitResponse add--->', unitResponse);
+      if (unitResponse.ok == true) {
+        this.setState({ loader: true, loaderBuildings: true });
+        this.checkData()
+      } else {
+        alert(unitResponse?.data?.message)
+      }
+      // console.log('data of add unit--->',data)
+      this.changeUtilityAndToggle();
+
+    }
+
+
+    // if (this.state.newBuild == '' || this.state.newUnit == '') {
+    //   // alert('Kindly Fill all Fields');
+
+    // } else if (this.state.newSerial == '' || this.state.newMeter == '') {
+    //   alert('Kindly Select Utility and Fill the Required');
+    // } else {
+    //   this.setState(
+    //     Object.assign(this.state.newUnitInfo, {
+    //       indexBuild: this.state.buildIndex,
+    //     }),
+    //   );
+    //   this.setState(
+    //     Object.assign(this.state.newUnitInfo, {
+    //       indexUnits: this.state.unitIndex,
+    //     }),
+    //   );
+    //   this.setState(
+    //     Object.assign(this.state.newUnitInfo, { unitBuild: this.state.newBuild }),
+    //   );
+    //   this.setState(
+    //     Object.assign(this.state.newUnitInfo, { unitName: this.state.newUnit }),
+    //   );
+    //   this.setState(
+    //     Object.assign(this.state.newUnitInfo, {
+    //       unitSerial: this.state.newSerial,
+    //     }),
+    //   );
+    //   this.setState(
+    //     Object.assign(this.state.newUnitInfo, { unitMeter: this.state.newMeter }),
+    //   );
+    //   // console.log('INFO', this.state.info)
+    //   this.context.addUnits(this.state.newUnitInfo);
+    //   // this.newUnits()
+    // }
   };
 
   editOnPress = () => {
@@ -1273,26 +1395,6 @@ export default class Splash extends Component {
           units: false, // update the value of specific key
         },
       }));
-      // this.state.dataActivity = this.state.dataActivity.map((element) => {
-      //   element.build = this.state.buildName;
-      //   return element;
-      // });
-      // this.setState(
-      //   Object.assign(this.state.newBuildInfo, {
-      //     indexUnits: this.state.unitIndex,
-      //   }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.newBuildInfo, {
-      //     newBuildName: this.state.buildName,
-      //   }),
-      // );
-      // this.setState(
-      //   Object.assign(this.state.newBuildInfo, {
-      //     newBuildUnits: this.state.dataActivity,
-      //   }),
-      // );
-      // this.context.addBuilding(this.state.newBuildInfo);
       var loopData = [];
       var i;
       for (i = 0; i < this.state.unitsArray.length; i++) {
@@ -1310,9 +1412,12 @@ export default class Splash extends Component {
     }
   };
   handleAddbuildingApi = async (data) => {
+    this.setState({ loader: true, loaderBuildings: true });
     console.log('data--->', data)
     const unitResponse = await this.api.post(`/property/equipment/building/add-building`, data);
     console.log('Check unitResponse buildings--->', unitResponse);
+
+    this.checkData()
   }
 
   _renderUnitList = ({ item, index }) => (
@@ -1402,27 +1507,29 @@ export default class Splash extends Component {
     }, 1000);
   }
 
-  showArrayItem = (build) => {
-    // console.log('What Item We Get', build.index)
-    this.setState({ buildIndex: build.index });
-    this.setState({ realData: build.item.list });
-    this.loaderLoad();
-    // if (item.item.name == 'A') {
-    //   this.setState({ realData: this.state.ListA })
-    //   this.loaderLoad()
-    // }
-    // else if (item.item.name === 'B') {
-    //   this.setState({ realData: this.state.ListB })
-    //   this.loaderLoad()
-    // }
-    // else if (item.item.name === 'C') {
-    //   this.setState({ realData: this.state.ListC })
-    //   this.loaderLoad()
-    // }
+  showArrayItem = async (build) => {
+    // console.log('What Item We Get', build.item.id)
+    this.setState({ loader: true, buildingData: build.item });
+    const data = {
+      building_id: build.item.id
+    }
+    const unitResponse = await this.api.post(`/property/equipment/unit/all-units`, data);
+    console.log('Check unitResponse buildings--->', unitResponse);
+    // console.log('buildingData--->', this.state.buildingData);
+    if (unitResponse?.ok == true) {
+      this.setState({ realData: unitResponse?.data?.data, loader: false });
+      let arry = unitResponse?.data?.data;
+      let lastElement = arry[arry.length - 1];
+      this.setState({ lastUnitData: lastElement.name });
+      // console.log('lastElement--->', this.state.lastUnitData);
+    } else {
+      alert("Network Issue")
+      this.setState({ loader: false });
+    }
   };
   showMeter = (item) => {
-    console.log('Selected 2', item.item.name);
-    this.setState({ pressedText: item.item.name });
+    console.log('Selected 2', item);
+    this.setState({ pressedText: item.item.name, meterId: item.item.id });
     this.setState({ hColor: item.item.color });
     this.setState({ isModaladdUVisible: false });
     this.changeLayoutUtilityScr();
@@ -1430,14 +1537,16 @@ export default class Splash extends Component {
     this.setState({ editU: false });
     this.setState({ pressedType: item.item.name });
     // this.setState({ uScr: false })
+
   };
   showMeter2 = (item) => {
-    console.log('Selected', item.item.name);
-    this.setState({ pressedText: item.item.name });
+    // console.log('Selected', item);
+    this.setState({ pressedText: item.item.name, meterId: item.item.id });
     this.setState({ hColor: item.item.color });
     this.setState({ isModaladdUVisible: false });
     this.changeUtilityAndToggleAddU();
-    this.setState({ uScr: true });
+    this.setState({ uScr: true, meterList: !this.state.meterList });
+
   };
   showBuild = (unit) => {
     // console.log('Selected 2', unit.item.name)
@@ -1447,7 +1556,6 @@ export default class Splash extends Component {
     this.changeLayoutMeter3();
   };
   addMeter = () => {
-    this.setState({ newUnit: false });
     this.toggleAddUtility();
   };
   // showInfo = () => {
@@ -1468,87 +1576,6 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const { loader, loaderBuildings } = this.state;
-
-    const dataActivityTop = [
-      {
-        id: 1,
-        name: 'A',
-        length: this.state.ListA.length,
-      },
-      {
-        id: 2,
-        name: 'B',
-        length: this.state.ListB.length,
-      },
-      {
-        id: 3,
-        name: 'C',
-        length: this.state.ListC.length,
-      },
-      // {
-      //   id: 4,
-      //   name: 'D',
-
-      // },
-      // {
-      //   id: 5,
-      //   name: 'E',
-
-      // },
-      // {
-      //   id: 6,
-      //   name: 'F',
-
-      // },
-      // {
-      //   id: 7,
-      //   name: 'G',
-
-      // },
-      // {
-      //   id: 8,
-      //   name: 'H',
-
-      // },
-      // {
-      //   id: 9,
-      //   name: 'I',
-
-      // },
-      // {
-      //   id: 10,
-      //   name: 'J',
-
-      // },
-      // {
-      //   id: 11,
-      //   name: 'K',
-
-      // },
-      // {
-      //   id: 12,
-      //   name: 'L',
-
-      // },
-      // {
-      //   id: 13,
-      //   name: 'M',
-
-      // },
-      // {
-      //   id: 14,
-      //   name: 'N',
-
-      // },
-      // {
-      //   id: 15,
-      //   name: 'O',
-
-      // },
-    ];
-    // this.changeLayoutAddUtility()
-    // console.log(this.state.newUnit
-    // console.log(this.state.pressedText)
     return (
       <View style={styles.container}>
         {/* Drawer Modal */}
@@ -1886,7 +1913,7 @@ export default class Splash extends Component {
                       style={[
                         styles.boxConatainer,
                         {
-                          height: !this.state.newUnit
+                          height: !this.state.meterList
                             ? height * 0.44
                             : height * 0.82,
                         },
@@ -1901,7 +1928,7 @@ export default class Splash extends Component {
                               color="#5e5e5e"
                             />
                             <Text style={styles.modalHeading}>
-                              New Unit {this.state.newUnit}
+                              New Unit
                             </Text>
                             <Pressable
                               onPress={this.changeUtilityAndToggle}
@@ -1936,14 +1963,14 @@ export default class Splash extends Component {
                             <TextInput
                               // label="Name*"
                               // placeholder="A"
-                              value={this.state.newBuild}
+                              value={this.state.buildingData.name}
                               dense={true}
-                              onFocus={this.changeLayoutMeter3}
+                              // onFocus={this.changeLayoutMeter3}
                               // onBlur={this.changeLayoutMeter3}
                               showSoftInputOnFocus={false}
-                              onChangeText={(text) => {
-                                this.setState({ newBuild: text });
-                              }}
+                              // onChangeText={(text) => {
+                              //   this.setState({ newBuild: text });
+                              // }}
                               style={styles.input}
                               mode={'outlined'}
                               theme={{
@@ -1955,7 +1982,7 @@ export default class Splash extends Component {
                               }}
                             />
                           </View>
-                          <View
+                          {/* <View
                             style={[
                               styles.buildList,
                               {
@@ -1977,7 +2004,7 @@ export default class Splash extends Component {
                               keyExtractor={(item) => item.id.toString()}
                               showsVerticalScrollIndicator={false}
                             />
-                          </View>
+                          </View> */}
                           <View style={styles.desciptionContainer}>
                             <Text style={styles.desciptionHeading}>UNIT*</Text>
                           </View>
@@ -1995,10 +2022,10 @@ export default class Splash extends Component {
                             ]}>
                             <TextInput
                               placeholder="Unit Name"
-                              // value={'Unit Name'}
+                              value={this.state.lastUnitData}
                               dense={true}
                               onChangeText={(text) => {
-                                this.setState({ newUnit: text });
+                                this.setState({ lastUnitData: text });
                               }}
                               style={[
                                 styles.input,
@@ -2008,6 +2035,7 @@ export default class Splash extends Component {
                                     : width * 0.0,
                                 },
                               ]}
+                              error={this.state.errorUnits.units}
                               mode={'outlined'}
                               theme={{
                                 colors: {
@@ -2017,85 +2045,85 @@ export default class Splash extends Component {
                                 },
                               }}></TextInput>
                           </View>
-                          {!!this.state.newUnit && (
-                            <View
-                              style={{
+                          <HelperText type="error" visible={this.state.errorUnits.units}>
+                            {this.state.errorUnits.units}
+                          </HelperText>
+                          {this.state.meterList && (
+                            <ScrollView style={{
+                              height: !this.state.uScr
+                                ? height * 0
+                                : height * 0.4,
+                              overflow: 'hidden',
+                            }}
+                            >
+                              <View style={{
                                 alignItems: 'center',
                                 overflow: 'hidden',
+                                marginBottom: height * .02
                               }}>
-                              <View
-                                style={{
-                                  height: !this.state.uScr ? height * 0.5 : 0,
-                                  overflow: 'hidden',
-                                  top: height * 0.04,
-                                }}>
-                                <FlatList
-                                  data={meterTypes}
-                                  renderItem={this._renderMeterTypes}
-                                  keyExtractor={(item) => item.id.toString()}
-                                />
-                              </View>
-                              <View
-                                style={{
-                                  height: !this.state.uScr
-                                    ? height * 0
-                                    : height * 0.4,
-                                  overflow: 'hidden',
-                                  top: height * 0.005,
-                                  width: width * 0.75,
-                                }}>
-                                <View>
-                                  <View style={styles.utilityInScrHeadView}>
-                                    <Text
-                                      style={[
-                                        styles.utilityInScrHead,
-                                        { color: realColor },
-                                      ]}>
-                                      {this.state.pressedText}
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterDesciptionContainer}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Device serial number
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterInputContainer}>
-                                    <TextInput
-                                      placeholder="Serial Number"
-                                      value={this.state.newSerial}
-                                      dense={true}
-                                      right={
-                                        <TextInput.Icon
-                                          name={() => (
-                                            <TouchableOpacity
-                                              onPress={this.toggleScanner}>
-                                              <Scanner name="scan" size={20} />
-                                            </TouchableOpacity>
-                                          )}
-                                        />
-                                      }
-                                      onChangeText={(text) => {
-                                        this.setState({ newSerial: text });
-                                      }}
-                                      style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}>
-                                      {/* <Scanner name="scan" size={20} /> */}
-                                    </TextInput>
-                                  </View>
-                                  <View style={styles.meterDesciptionContainer}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Meter type
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterInputContainer}>
-                                    <TextInput
+                                <View
+                                  style={{
+                                    // top: height * 0.005,
+                                    width: width * 0.75,
+                                  }}>
+                                  <View>
+                                    <View style={styles.utilityInScrHeadView}>
+                                      <Text
+                                        style={[
+                                          styles.utilityInScrHead,
+                                          { color: realColor },
+                                        ]}>
+                                        {this.state.pressedText}
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterDesciptionContainer}>
+                                      <Text style={styles.meterDesciptionHeading}>
+                                        Device serial number
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterInputContainer}>
+                                      <TextInput
+                                        placeholder="Serial Number"
+                                        value={this.state.newSerial}
+                                        dense={true}
+                                        error={this.state.errorUnits.deviceSerial}
+                                        right={
+                                          <TextInput.Icon
+                                            name={() => (
+                                              <TouchableOpacity
+                                                onPress={this.toggleScanner}>
+                                                <Scanner name="scan" size={20} />
+                                              </TouchableOpacity>
+                                            )}
+                                          />
+                                        }
+                                        onChangeText={(text) => {
+                                          this.setState({ newSerial: text });
+                                        }}
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                          },
+                                        }}>
+                                        {/* <Scanner name="scan" size={20} /> */}
+                                      </TextInput>
+                                    </View>
+                                    {this.state.errorUnits.deviceSerial ?
+                                      <HelperText type="error" visible={this.state.errorUnits.deviceSerial}>
+                                        {this.state.errorUnits.deviceSerial}
+                                      </HelperText>
+                                      : null
+                                    }
+                                    <View style={styles.meterDesciptionContainer}>
+                                      <Text style={styles.meterDesciptionHeading}>
+                                        Meter type
+                                      </Text>
+                                    </View>
+                                    {/* <TextInput
                                       placeholder="Unknown"
                                       dense={true}
                                       onChangeText={(text) => {
@@ -2110,32 +2138,61 @@ export default class Splash extends Component {
                                           selectionColor: 'red',
                                         },
                                       }}
+                                    /> */}
+                                    <View style={{
+                                      backgroundColor: '#F6F6F6',
+                                      alignSelf: 'center',
+                                      borderColor: this.state.errorUnits.meter
+                                        ? 'red'
+                                        : 'gray',
+                                      width: width * 0.75,
+                                      height: height * .07,
+                                      borderWidth: width * 0.003,
+                                      borderRadius: width * 0.01,
+                                      justifyContent: 'center',
+                                      paddingHorizontal: width * 0.03,
+                                    }}>
+                                      <Text>
+                                        {this.state.pressedText}
+                                      </Text>
+                                    </View>
+                                    {/* <View
+                                    style={{
+                                      height: !this.state.uScr ? height * 0.5 : 0,
+                                      overflow: 'hidden',
+                                      top: height * 0.04,
+                                    }}>
+                                    <FlatList
+                                      data={meterTypes}
+                                      renderItem={this._renderMeterTypes}
+                                      keyExtractor={(item) => item.id.toString()}
                                     />
-                                  </View>
-                                  <View style={styles.meterDesciptionContainer}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Initial Meter Read (IMR)
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterInputContainer}>
-                                    <TextInput
-                                      placeholder=""
-                                      dense={true}
-                                      keyboardType="numeric"
-                                      style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
-                                    />
+                                  </View> */}
+                                    <View style={styles.meterDesciptionContainer}>
+                                      <Text style={styles.meterDesciptionHeading}>
+                                        Initial Meter Read (IMR)
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterInputContainer}>
+                                      <TextInput
+                                        placeholder=""
+                                        dense={true}
+                                        keyboardType="numeric"
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                          },
+                                        }}
+                                      />
+                                    </View>
                                   </View>
                                 </View>
                               </View>
-                            </View>
+                            </ScrollView>
                           )}
                         </View>
                         {/* </ScrollView> */}
@@ -2170,7 +2227,7 @@ export default class Splash extends Component {
                                 <Text style={{ color: 'black' }}>Cancel</Text>
                               </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={this.newUnit}>
+                            <TouchableOpacity onPress={this.handleAddNewUnit}>
                               <View style={styles.submitBotton}>
                                 <Plus name="plus" color="white" size={18} />
                                 <Text style={{ color: 'white' }}>Add Unit</Text>
