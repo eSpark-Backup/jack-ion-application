@@ -169,7 +169,7 @@ export default class Splash extends Component {
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
           <View style={styles.dropView}>
-            <TouchableOpacity onPress={() => this.cleardata(prop)}>
+            <TouchableOpacity onPress={() => this.jumpToDetail({prop, item: prop})}>
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
