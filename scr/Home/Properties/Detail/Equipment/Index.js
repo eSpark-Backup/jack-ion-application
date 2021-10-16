@@ -43,9 +43,10 @@ import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fire from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Compact from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
-import { RNCamera } from 'react-native-camera';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
+import {DotsLoader} from 'react-native-indicator';
+import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Base_URL from '../../../../api/WebServices';
@@ -231,26 +232,28 @@ export default class Splash extends Component {
       barcodes: [],
       scan: false,
       scanResult: false,
-      isModalMeterVisible:false,
+      isModalMeterVisible: false,
       textStyle: false,
       loader: false,
       scanIndex: null,
       meterListData: [],
-      meterListArray: [{
-        id: 1,
-        name: 'All Water',
-        icon: 'water-outline',
-      },
-      {
-        id: 2,
-        name: 'Cold Water',
-        icon: 'water-outline',
-      },
-      {
-        id: 3,
-        name: 'Hot Water',
-        icon: 'water-outline',
-      }],
+      meterListArray: [
+        // {
+        //   id: 1,
+        //   name: 'All Water',
+        //   icon: 'water-outline',
+        // },
+        // {
+        //   id: 2,
+        //   name: 'Cold Water',
+        //   icon: 'water-outline',
+        // },
+        // {
+        //   id: 3,
+        //   name: 'Hot Water',
+        //   icon: 'water-outline',
+        // },
+      ],
       uScr: false,
       unitInputIndex: 0,
       itemName: '',
@@ -298,6 +301,9 @@ export default class Splash extends Component {
         editMeter: '',
       },
       dataBuild: [],
+      meterTypeData: null,
+      typeOfMeters: [],
+      typeOfMetersVisible: false,
       dataActivityTop: [
         {
           id: 1,
@@ -770,15 +776,17 @@ export default class Splash extends Component {
     let newArr = [...this.state.meterTypeInputs];
     newArr[index].showList = !newArr[index].showList;
 
-    this.setState({ meterTypeInputs: newArr });
-    this.setState({ visible: true });
+    this.setState({meterTypeInputs: newArr});
   };
 
   hideSuggestion = (index, val) => {
     let newArr = [...this.state.meterTypeInputs];
     newArr[index].showList = !newArr[index].showList;
     newArr[index].input = val;
-    this.setState({ meterTypeInputs: newArr });
+    this.setState({meterTypeInputs: newArr});
+    this.setState({
+      meterTypeData: {...this.state.meterTypeData, model: val},
+    });
     console.log('Meter Type', this.state.meterTypeData);
   };
 
@@ -894,10 +902,10 @@ export default class Splash extends Component {
     this.setState({ isModaladdUVisible: !this.state.isModaladdUVisible });
   };
   scannerModal = () => {
-    this.setState({ isScannerVisible: false });
-    this.setState({ scan: false });
+    this.setState({isScannerVisible: false});
+    this.setState({scan: false});
   };
-  
+
   scanAgain = () => {
     this.setState({
       scan: true,
@@ -912,6 +920,25 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({ visible: true });
   };
+  showTypesOfMeter = (item,index) => {
+    // this.setState({typeOfMetersVisible: true});
+    // let newArr = [...this.state.meterListData]; // copying the old datas array
+    // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
+    // this.setState({ meterListData: newArr }
+    //   ,
+    //   () => console.log('e--->', this.state.meterListData));
+  };
+  hideTypesOfMeter = () => {
+    this.setState({typeOfMetersVisible: false});
+  };
+  onGetMeterTypeId = (item,index) => {
+    this.setState({typeOfMetersVisible: false})
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+    this.setState({ meterListData: newArr }
+      ,
+      () => console.log('e--->', this.state.meterListData));
+  }
 
   naviagateToDetail = () => {
     // this.toggleModal();
@@ -934,9 +961,16 @@ export default class Splash extends Component {
     this.props.navigation.navigate('Support');
   };
 
-  selectAndCloseAdd = () => {
+  selectAndCloseAdd = async () => {
     this.toggleModalUnit();
     this.changeLayoutMeter2();
+    if (!this.state.isModalUnitVisible) {
+      const unitResponse = await this.api.get(
+        `/property/equipment/meter/all-meters`,
+      );
+      console.log('Check meter add--->', unitResponse);
+      this.setState({meterListArray: unitResponse?.data?.data});
+    }
   };
   selectAndCloseAddMultiple = () => {
     this.toggleModalMunit();
@@ -1102,14 +1136,14 @@ export default class Splash extends Component {
           // dispatch(modalAction.show({ title: "empty input" + data.id }));
           // console.log('deviceSerialNum',index)
           let newArr = [...this.state.meterListData];
-          newArr[index].deviceSerialError = "Device serial required";
-          this.setState({ meterListData: newArr });
+          newArr[index].deviceSerialError = 'Device serial required';
+          this.setState({meterListData: newArr});
           return;
         } else {
           // console.log('deviceSerialNum else',index)
           let newArr = [...this.state.meterListData];
-          newArr[index].deviceSerialError = "";
-          this.setState({ meterListData: newArr });
+          newArr[index].deviceSerialError = '';
+          this.setState({meterListData: newArr});
         }
         // if (data.meterType.length == 0) {
         //   console.log('meterType',index)
@@ -1123,24 +1157,24 @@ export default class Splash extends Component {
         //   newArr[index].meterTypeError = "";
         //   this.setState({ meterListData: newArr });
         // }
-      })
+      });
     } else {
       this.state.meterListData.map((data, index) => {
         let newArr = [...this.state.meterListData];
-        newArr[index].deviceSerialError = "";
-        this.setState({ meterListData: newArr });
-      })
+        newArr[index].deviceSerialError = '';
+        this.setState({meterListData: newArr});
+      });
 
       var loopData = [];
       this.state.meterListData.map((data, index) => {
         loopData.push({
           meter_id: data.id,
           device_serial_number: data.deviceSerialNum,
-          meter_serial_number: this.state.meterSerial,
-          custom_meter_id: this.state.custom_meter_id,
-          type_id: data.id,
-        })
-      })
+          meter_serial_number: data.meterSerialNum,
+          custom_meter_id: data.customMeterId,
+          type_id: data.meterType,
+        });
+      });
       // var i;
       // for (i = 0; i < n; i++) {
       //   loopData.push({
@@ -1152,7 +1186,6 @@ export default class Splash extends Component {
       // this.setState({ unitsArray: loopData }, () =>
       //   console.log('array--->', this.state.unitsArray),
       // );
-
 
       const data = {
         name: this.state.lastUnitData,
@@ -1210,8 +1243,8 @@ export default class Splash extends Component {
     //   // this.newUnits()
     // }
   };
-  addMeterInNewArray = (value) => {
-    this.setState({ visible: false });
+  addMeterInNewArray = async (value) => {
+    this.setState({visible: false});
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const data = {
       id: value.id,
@@ -1221,52 +1254,66 @@ export default class Splash extends Component {
       meterTypeError: '',
       meterAttachedTo: '',
       meterAttachedError: '',
+      meterSerialNum: '',
+      customMeterId: '',
       name: value.name,
       icon: value.icon,
-    }
+      meterTypeMenu:false
+    };
     const newArray = [...this.state.meterListData];
-    newArray.push(data)
-    this.setState({ meterListData: newArray });
+    newArray.push(data);
+    this.setState({meterListData: newArray});
+    const newList = this.state.meterListArray.filter(
+      (item) => item.id !== value.id,
+    );
+    this.setState({meterListArray: newList});
+    const unitResponse = await this.api.get(
+      `/property/equipment/type/all-types`,
+    );
+    console.log('Check types add--->', unitResponse.data);
+    this.setState({typeOfMeters: unitResponse?.data?.data}, () =>
+      console.log('Meter Type Of_______', this.state.typeOfMeters),
+    );
+  };
 
-    const newList = this.state.meterListArray.filter((item) => item.id !== value.id);
-    this.setState({ meterListArray: newList });
-  }
   deleteMeterInNewArray = (value) => {
-    const newList = this.state.meterListData.filter((item) => item.id !== value.id);
-    this.setState({ meterListData: newList });
+    const newList = this.state.meterListData.filter(
+      (item) => item.id !== value.id,
+    );
+    this.setState({meterListData: newList});
 
     const data = {
       id: value.id,
       name: value.name,
       icon: value.icon,
-    }
+    };
     const newArray = [...this.state.meterListArray];
-    newArray.push(data)
-    this.setState({ meterListArray: newArray });
-  }
+    newArray.push(data);
+    this.setState({meterListArray: newArray});
+  };
   onChangeMultipleField = (e, index) => {
     // console.log('index: ' + index);
     // console.log('property name: ' + e.target.value);
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }
-      ,
-      () => console.log('e--->', this.state.meterListData));
-  }
+    this.setState({meterListData: newArr}, () =>
+      console.log('e--->', this.state.meterListData),
+    );
+  };
   toggleScanner = async (value) => {
-    this.setState({ scanIndex: value })
+    this.setState({scanIndex: value});
     try {
       const granted = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted === true) {
-        this.setState({ hasAccess: true });
-        this.setState({ isScannerVisible: true });
-        this.setState({ scanResult: false });
-        this.setState({ scan: true });
+        this.setState({hasAccess: true});
+        this.setState({isScannerVisible: true});
+        this.setState({scanResult: false});
+        this.setState({scan: true});
         console.log('Access');
       } else {
-        this.setState({ hasAccess: false });
+        this.setState({hasAccess: false});
         Alert.alert(
           "You don't have access for the Camera",
           'Kindly TurnOn Camera Permission from Settings to use Scanner',
@@ -1295,8 +1342,8 @@ export default class Splash extends Component {
     } else {
       let newArr = [...this.state.meterListData]; // copying the old datas array
       newArr[this.state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterListData: newArr },
-        () => console.log('e--->', this.state.meterListData)
+      this.setState({meterListData: newArr}, () =>
+        console.log('e--->', this.state.meterListData),
       );
       this.setState({
         result: e,
@@ -2157,9 +2204,10 @@ export default class Splash extends Component {
                       style={[
                         styles.boxConatainer,
                         {
-                          height: this.state.meterListData.length == 0
-                            ? height * 0.44
-                            : height * 0.6,
+                          height:
+                            this.state.meterListData.length == 0
+                              ? height * 0.44
+                              : height * 0.6,
                         },
                       ]}>
                       <View style={styles.boxInner}>
@@ -2190,8 +2238,7 @@ export default class Splash extends Component {
                         </View>
                         {/* Box Body */}
                         <ScrollView showsVerticalScrollIndicator={false}>
-                          <View style={{ flex: 1 }}>
-
+                          <View style={{flex: 1}}>
                             <View style={styles.desciptionContainer}>
                               <Build
                                 name={'office-building'}
@@ -2226,16 +2273,17 @@ export default class Splash extends Component {
                               />
                             </View>
                             <View style={styles.desciptionContainer}>
-                              <Text style={styles.desciptionHeading}>UNIT*</Text>
+                              <Text style={styles.desciptionHeading}>
+                                UNIT*
+                              </Text>
                             </View>
-                            <View
-                              style={[styles.inputContainer]}>
+                            <View style={[styles.inputContainer]}>
                               <TextInput
                                 placeholder="Unit Name"
                                 value={this.state.lastUnitData}
                                 dense={true}
                                 onChangeText={(text) => {
-                                  this.setState({ lastUnitData: text });
+                                  this.setState({lastUnitData: text});
                                 }}
                                 style={[
                                   styles.input,
@@ -2263,8 +2311,7 @@ export default class Splash extends Component {
                             </HelperText>
 
                             {/* {this.state.meterList && ( */}
-                            {
-                              this.state.meterListData &&
+                            {this.state.meterListData &&
                               this.state.meterListData.map((item, index) => (
                                 <View
                                   style={{
@@ -2279,18 +2326,26 @@ export default class Splash extends Component {
                                     }}>
                                     <View>
                                       <View style={styles.utilityInScrHeadView}>
-                                        <Drop name={item.icon} size={width * .06} color="#3E89BF" />
+                                        <Drop
+                                          name={item.icon}
+                                          size={width * 0.06}
+                                          color="#3E89BF"
+                                        />
                                         <Text
                                           style={[
                                             styles.utilityInScrHead,
-                                            { color: realColor },
+                                            {color: realColor},
                                           ]}>
                                           {item.name}
                                         </Text>
                                         <TouchableOpacity
-                                          style={{ position: 'absolute', right: 0 }}
-                                          onPress={() => this.deleteMeterInNewArray(item)}
-                                        >
+                                          style={{
+                                            position: 'absolute',
+                                            right: 0,
+                                          }}
+                                          onPress={() =>
+                                            this.deleteMeterInNewArray(item)
+                                          }>
                                           <Delete
                                             name={'delete-forever'}
                                             size={height * 0.04}
@@ -2310,14 +2365,14 @@ export default class Splash extends Component {
                                           placeholder="Serial Number"
                                           value={item.deviceSerialNum}
                                           dense={true}
-                                          error={
-                                            item.deviceSerialError
-                                          }
+                                          error={item.deviceSerialError}
                                           right={
                                             <TextInput.Icon
                                               name={() => (
                                                 <TouchableOpacity
-                                                  onPress={() => this.toggleScanner(index)}>
+                                                  onPress={() =>
+                                                    this.toggleScanner(index)
+                                                  }>
                                                   <Scanner
                                                     name="scan"
                                                     size={20}
@@ -2326,7 +2381,12 @@ export default class Splash extends Component {
                                               )}
                                             />
                                           }
-                                          onChangeText={(text) => this.onChangeMultipleField(text, index)}
+                                          onChangeText={(text) =>
+                                            this.onChangeMultipleField(
+                                              text,
+                                              index,
+                                            )
+                                          }
                                           style={styles.meterInput}
                                           mode={'outlined'}
                                           theme={{
@@ -2342,9 +2402,7 @@ export default class Splash extends Component {
                                       {item.deviceSerialError ? (
                                         <HelperText
                                           type="error"
-                                          visible={
-                                            item.deviceSerialError
-                                          }>
+                                          visible={item.deviceSerialError}>
                                           {item.deviceSerialError}
                                         </HelperText>
                                       ) : null}
@@ -2355,11 +2413,17 @@ export default class Splash extends Component {
                                           Meter type
                                         </Text>
                                       </View>
-                                      <TouchableOpacity
-                                        onPress={() => this.setState({isModalMeterVisible:true})}
+                                      <View
+                                        // onPress={() =>
+                                        //   this.setState({
+                                        //     isModalMeterVisible: true,
+                                        //   })
+                                        // }
                                         style={{
                                           backgroundColor: '#F6F6F6',
                                           alignSelf: 'center',
+                                          alignItems: 'center',
+                                          flexDirection: 'row',
                                           borderColor: item.meterTypeError
                                             ? 'red'
                                             : 'gray',
@@ -2367,17 +2431,112 @@ export default class Splash extends Component {
                                           height: height * 0.07,
                                           borderWidth: width * 0.003,
                                           borderRadius: width * 0.01,
-                                          justifyContent: 'center',
+                                          justifyContent: 'space-between',
                                           paddingHorizontal: width * 0.03,
                                         }}>
-                                        <Text>{item.name}</Text>
-                                      </TouchableOpacity>
+                                        {/* <Text>{item.name}</Text> */}
+                                        {this.state.typeOfMeters.length ? (
+                                          <MenuT
+                                            visible={
+                                              this.state.typeOfMetersVisible
+                                            }
+                                            style={{height: height * .12}}
+                                            anchor={
+                                              this.state.typeOfMeters.length ? (
+                                                <Pressable
+                                                  onPress={
+                                                    this.showTypesOfMeter
+                                                  }
+                                                  style={{
+                                                    flexDirection: 'row',
+                                                    justifyContent:
+                                                      'flex-start',
+                                                    alignItems: 'center',
+                                                  }}
+                                                  android_ripple={{
+                                                    color: '#25AAE1ec',
+                                                    borderless: true,
+                                                    radius: height * 0.08,
+                                                  }}>
+                                                  {/*//todo: Button for meter */}
+                                                  <Plus
+                                                    name="plus"
+                                                    size={25}
+                                                    color="#25AAE1ec"
+                                                  />
+                                                  <Text
+                                                    style={{
+                                                      fontSize: height * 0.018,
+                                                      color: '#25AAE1ec',
+                                                    }}>
+                                                    Select
+                                                  </Text>
+                                                </Pressable>
+                                              ) : (
+                                                <View
+                                                  style={{
+                                                    marginLeft: width * 0.02,
+                                                  }}>
+                                                  <DotsLoader />
+                                                </View>
+                                              )
+                                            }
+                                            onRequestClose={
+                                              this.hideTypesOfMeter
+                                            }>
+                                            <ScrollView>
+                                              {this.state.typeOfMeters.map(
+                                                (item, index) => (
+                                                  <View
+                                                    style={{
+                                                      flexDirection: 'row',
+                                                      justifyContent: 'center',
+                                                      alignItems: 'center',
+                                                      paddingLeft: width * 0.02,
+                                                    }}>
+                                                    <Drop
+                                                      name={item.icon}
+                                                      size={15}
+                                                      color="#3E89BF"
+                                                    />
+                                                    <MenuItem
+                                                      onPress={() =>
+                                                        this.onGetMeterTypeId(item,index)
+                                                      }>
+                                                      {item.manufacturer +
+                                                        '-' +
+                                                        item.model +
+                                                        '(x' +
+                                                        item.multiplier +
+                                                        item.unit_of_measure +
+                                                        ')' +
+                                                        item.size}
+                                                    </MenuItem>
+                                                  </View>
+                                                ),
+                                              )}
+                                            </ScrollView>
+                                          </MenuT>
+                                        ) : (
+                                          <DotsLoader
+                                            color="#25AAE1ec"
+                                            size={width * 0.02}
+                                          />
+                                        )}
+
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            this.setState({
+                                              isModalMeterVisible: true,
+                                            })
+                                          }>
+                                          <Plus name="plus" size={20} />
+                                        </TouchableOpacity>
+                                      </View>
                                       {item.meterTypeError ? (
                                         <HelperText
                                           type="error"
-                                          visible={
-                                            item.meterTypeError
-                                          }>
+                                          visible={item.meterTypeError}>
                                           {item.meterTypeError}
                                         </HelperText>
                                       ) : null}
@@ -2407,8 +2566,7 @@ export default class Splash extends Component {
                                     </View>
                                   </View>
                                 </View>
-                              ))
-                            }
+                              ))}
 
                             {/* // </ScrollView> */}
                             {/* )} */}
@@ -2424,50 +2582,67 @@ export default class Splash extends Component {
                             }}>
                             <MenuT
                               visible={this.state.visible}
+                              style={{height: height * 0.2}}
                               anchor={
-                                <Pressable
-                                  onPress={this.showMenu}
-                                  style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'center',
-                                  }}
-                                  android_ripple={{
-                                    color: '#25AAE1ec',
-                                    borderless: true,
-                                    radius: height * 0.08,
-                                  }}>
-                                  {/*//todo: Button for meter */}
-                                  <Plus
-                                    name="plus"
-                                    size={25}
-                                    color="#25AAE1ec"
-                                  />
-                                  <Text
+                                this.state.meterListArray.length ? (
+                                  <Pressable
+                                    onPress={this.showMenu}
                                     style={{
-                                      fontSize: height * 0.018,
+                                      flexDirection: 'row',
+                                      justifyContent: 'flex-start',
+                                      alignItems: 'center',
+                                    }}
+                                    android_ripple={{
                                       color: '#25AAE1ec',
+                                      borderless: true,
+                                      radius: height * 0.08,
                                     }}>
-                                    Meter
-                                  </Text>
-                                </Pressable>
+                                    {/*//todo: Button for meter */}
+                                    <Plus
+                                      name="plus"
+                                      size={25}
+                                      color="#25AAE1ec"
+                                    />
+                                    <Text
+                                      style={{
+                                        fontSize: height * 0.018,
+                                        color: '#25AAE1ec',
+                                      }}>
+                                      Meter
+                                    </Text>
+                                  </Pressable>
+                                ) : (
+                                  <View style={{marginLeft: width * 0.02}}>
+                                    <DotsLoader />
+                                  </View>
+                                )
                               }
                               onRequestClose={this.hideMenu}>
-                              {
-                                this.state.meterListArray.map((item, index) => (
-                                  <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    paddingLeft: width * .02,
-                                  }}>
-                                    <Drop name={item.icon} size={15} color="#3E89BF" />
-                                    <MenuItem onPress={() => this.addMeterInNewArray(item)}>
-                                      {item.name}
-                                    </MenuItem>
-                                  </View>
-                                ))
-                              }
+                              <ScrollView>
+                                {this.state.meterListArray.map(
+                                  (item, index) => (
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        paddingLeft: width * 0.02,
+                                      }}>
+                                      <Drop
+                                        name={item.icon}
+                                        size={15}
+                                        color="#3E89BF"
+                                      />
+                                      <MenuItem
+                                        onPress={() =>
+                                          this.addMeterInNewArray(item)
+                                        }>
+                                        {item.name}
+                                      </MenuItem>
+                                    </View>
+                                  ),
+                                )}
+                              </ScrollView>
                             </MenuT>
                           </View>
                           <View style={styles.addUnitBtnContainer}>
@@ -2523,7 +2698,9 @@ export default class Splash extends Component {
                             Meter Type Builder
                           </Text>
                           <Pressable
-                            onPress={() => this.setState({isModalMeterVisible:false})}
+                            onPress={() =>
+                              this.setState({isModalMeterVisible: false})
+                            }
                             android_ripple={{
                               color: 'black',
                               borderless: true,
@@ -2552,8 +2729,8 @@ export default class Splash extends Component {
                                   </View>
                                   <View style={styles.inputContainer}>
                                     <MenuT
-                                      visible={item.showList}
-                                      style={{ height: height * 0.2 }}
+                                      visible={index < 2 ? item.showList : null}
+                                      style={{height: height * 0.2}}
                                       anchor={
                                         <TextInput
                                           value={item.input}
@@ -2561,7 +2738,9 @@ export default class Splash extends Component {
                                           onFocus={() =>
                                             this.showSuggestion(index)
                                           }
-                                          // showSoftInputOnFocus={false}
+                                          showSoftInputOnFocus={
+                                            index < 2 ? false : true
+                                          }
                                           style={styles.input}
                                           mode={'outlined'}
                                           theme={{
@@ -2660,10 +2839,16 @@ export default class Splash extends Component {
                                         },
                                       ]}>
                                       <MenuT
-                                        visible={item.showList}
+                                        visible={
+                                          index == 4 ? item.showList : null
+                                        }
                                         anchor={
                                           <TextInput
-                                            placeholder="Unit Name"
+                                            keyboardType={
+                                              index == 3
+                                                ? 'decimal-pad'
+                                                : 'default'
+                                            }
                                             value={this.state.lastUnitData}
                                             dense={true}
                                             onFocus={() =>
@@ -2696,17 +2881,19 @@ export default class Splash extends Component {
                                         onRequestClose={() =>
                                           this.hideSuggestion(index)
                                         }>
-                                        {manufacturers.map((item) => (
-                                          <MenuItem
-                                            onPress={() =>
-                                              this.hideSuggestion(
-                                                index,
-                                                item.name,
-                                              )
-                                            }>
-                                            {item.name}
-                                          </MenuItem>
-                                        ))}
+                                        {index == 4
+                                          ? manufacturers.map((item) => (
+                                              <MenuItem
+                                                onPress={() =>
+                                                  this.hideSuggestion(
+                                                    index,
+                                                    item.name,
+                                                  )
+                                                }>
+                                                {item.name}
+                                              </MenuItem>
+                                            ))
+                                          : null}
                                       </MenuT>
                                     </View>
                                   </View>
@@ -2725,13 +2912,21 @@ export default class Splash extends Component {
                       <View style={styles.footerBtn}>
                         <View style={styles.addUnitBtnContainer}>
                           <TouchableOpacity
-                            onPress={this.changeUtilityAndToggle}>
+                            onPress={() =>
+                              this.setState({isModalMeterVisible: false})
+                            }>
                             <View style={styles.cancelBotton}>
                               <Plus name="close" color="black" size={18} />
                               <Text style={{ color: 'black' }}>Cancel</Text>
                             </View>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={this.handleAddNewUnit}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              console.log(
+                                'Meter Type data',
+                                this.state.meterTypeData,
+                              )
+                            }>
                             <View style={styles.submitBotton}>
                               <Plus name="plus" color="white" size={18} />
                               <Text style={{ color: 'white' }}>Add Unit</Text>
@@ -3470,11 +3665,11 @@ export default class Splash extends Component {
               keyExtractor={item => item.id.toString()}
             /> */}
             {loader ? (
-              <View style={{ width: width * 0.55, justifyContent: 'center' }}>
+              <View style={{width: width * 0.55, justifyContent: 'center'}}>
                 <ActivityIndicator size="large" color="black" />
               </View>
             ) : this.state.dataBuild.length == 0 ? (
-              <View style={{ width: width * 0.55, justifyContent: 'center' }}>
+              <View style={{width: width * 0.55, justifyContent: 'center'}}>
                 <Text
                   style={{
                     fontSize: width * 0.04,
