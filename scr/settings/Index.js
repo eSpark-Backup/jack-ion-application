@@ -445,8 +445,8 @@ export default class Splash extends Component {
               onPress={() => {
                 this.removeToken();
                 this.setLoggedOut();
-                this.props.navigation.popToTop();
-                this.props.navigation.push('Login');
+                // this.props.navigation.popToTop();
+                this.props.navigation.replace('Login');
               }}>
               <View style={style.containerInner}>
                 <View>
