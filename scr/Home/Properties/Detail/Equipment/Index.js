@@ -68,21 +68,42 @@ let listViewRef;
 const meterTypes = [
   {
     id: 1,
-    name: 'Water',
+    name: 'Generic',
     image: require('../../../../../Images/Water-Meter.png'),
     color: '#3E89BF',
   },
   {
     id: 2,
-    name: 'Gas',
+    name: 'IMS',
     image: require('../../../../../Images/Gas-Meter2.png'),
     color: '#9ACF72',
   },
   {
     id: 3,
-    name: 'Electric',
+    name: 'MasterTek',
     image: require('../../../../../Images/Electric-Meter2.png'),
     color: '#E7D931',
+  },
+];
+
+const manufacturers = [
+  {
+    id: 1,
+    name: 'Water',
+    // image: require('../../../../../Images/Water-Meter.png'),
+    // color: '#3E89BF',
+  },
+  {
+    id: 2,
+    name: 'Gas',
+    // image: require('../../../../../Images/Gas-Meter2.png'),
+    // color: '#9ACF72',
+  },
+  {
+    id: 3,
+    name: 'Electric',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
   },
 ];
 const meterList = [
@@ -601,6 +622,33 @@ export default class Splash extends Component {
         meter: false,
         deviceSerial: '',
       },
+      meterTypeInputs: [
+        {
+          name: 'MANUFACTURER*',
+          showList: false,
+          input: '',
+        },
+        {
+          name: 'MODEL*',
+          showList: false,
+          input: '',
+        },
+        {
+          name: 'SIZE*',
+          showList: false,
+          input: '',
+        },
+        {
+          name: 'MULTIPLIER*',
+          showList: false,
+          input: '',
+        },
+        {
+          name: 'UNIT OF MEASURE*',
+          showList: false,
+          input: '',
+        },
+      ],
     };
     this.state.realData = this.state.realData.map((item) => {
       item.isSelected = false;
@@ -636,6 +684,22 @@ export default class Splash extends Component {
     console.log('Equip--->', this.props.navigation.state.params.item.item.id);
     this.setState({isModalVisible: false});
   }
+
+  showSuggestion = (index) => {
+    let newArr = [...this.state.meterTypeInputs];
+    newArr[index].showList = !newArr[index].showList;
+
+    this.setState({meterTypeInputs: newArr});
+    this.setState({visible: true});
+  };
+
+  hideSuggestion = (index, val) => {
+    let newArr = [...this.state.meterTypeInputs];
+    newArr[index].showList = !newArr[index].showList;
+    newArr[index].input = val;
+    this.setState({meterTypeInputs: newArr});
+    console.log('Meter Type', this.state.meterTypeData);
+  };
 
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -734,7 +798,8 @@ export default class Splash extends Component {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
   toggleModalUnit = () => {
-    this.setState({isModalUnitVisible: !this.state.isModalUnitVisible});
+    this.setState({isModalMeterVisible: !this.state.isModalMeterVisible});
+    // this.setState({isModalUnitVisible: !this.state.isModalUnitVisible});
   };
   toggleModalMunit = () => {
     this.setState({isModalMunitVisible: !this.state.isModalMunitVisible});
@@ -1592,7 +1657,7 @@ export default class Splash extends Component {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
-    const {loader, loaderBuildings} = this.state;
+    const {loader, loaderBuildings, meterTypeInputs} = this.state;
     return (
       <View style={styles.container}>
         {/* Drawer Modal */}
@@ -2299,6 +2364,445 @@ export default class Splash extends Component {
                     </View>
                   </View>
                 </KeyboardAvoidingView>
+              </Modal>
+              {/* Add Meter Type Modal */}
+              <Modal
+                animationIn="slideInDown"
+                animationOut="slideOutUp"
+                hasBackdrop={true}
+                backdropColor="black"
+                isVisible={this.state.isModalMeterVisible}
+                style={styles.modal1Container}>
+                {/* <KeyboardAvoidingView behavior="padding"> */}
+                <View style={styles.modalInner}>
+                  <View
+                    style={[
+                      styles.boxConatainer,
+                      {
+                        height: !this.state.meterList
+                          ? height * 0.64
+                          : height * 0.82,
+                      },
+                    ]}>
+                    <View style={styles.boxInner}>
+                      {/* Box Header */}
+                      <View style={styles.boxHeader}>
+                        <View style={styles.boxHeaderInner}>
+                          <Icon
+                            name={'business'}
+                            size={height * 0.05}
+                            color="#5e5e5e"
+                          />
+                          <Text style={styles.modalHeading}>
+                            Meter Type Builder
+                          </Text>
+                          <Pressable
+                            onPress={this.changeUtilityAndToggle}
+                            android_ripple={{
+                              color: 'black',
+                              borderless: true,
+                              radius: width * 0.03,
+                            }}>
+                            <Icon
+                              name="cancel"
+                              size={height * 0.035}
+                              color="black"
+                              maxOpacity={0.5}
+                            />
+                          </Pressable>
+                        </View>
+                      </View>
+                      {/* Box Body */}
+                      <View style={{flex: 1}}>
+                        {meterTypeInputs.map((item, index) => {
+                          return (
+                            <View>
+                              {index < 3 ? (
+                                <View>
+                                  <View style={styles.desciptionContainer}>
+                                    <Text style={styles.desciptionHeading}>
+                                      {item.name}
+                                    </Text>
+                                  </View>
+                                  <View style={styles.inputContainer}>
+                                    <MenuT
+                                      visible={item.showList}
+                                      anchor={
+                                        <TextInput
+                                          value={item.input}
+                                          dense={true}
+                                          onFocus={() =>
+                                            this.showSuggestion(index)
+                                          }
+                                          showSoftInputOnFocus={false}
+                                          style={styles.input}
+                                          mode={'outlined'}
+                                          theme={{
+                                            colors: {
+                                              text: '#25AAE1ec',
+                                              primary: '#25AAE1ec',
+                                              selectionColor: 'red',
+                                            },
+                                          }}
+                                        />
+                                      }
+                                      onRequestClose={() =>
+                                        this.hideSuggestion(index)
+                                      }>
+                                      {manufacturers.map((item) => (
+                                        <MenuItem
+                                          onPress={() =>
+                                            this.hideSuggestion(
+                                              index,
+                                              item.name,
+                                            )
+                                          }>
+                                          {item.name}
+                                        </MenuItem>
+                                      ))}
+                                    </MenuT>
+                                  </View>
+                                </View>
+                              ) : null}
+                            </View>
+                          );
+                        })}
+                        <View style={{flexDirection: 'row'}}>
+                          {meterTypeInputs.map((item, index) => {
+                            return (
+                              <View>
+                                {index >= 3 ? (
+                                  <View>
+                                    <View
+                                      style={{
+                                        height: height * 0.04,
+                                        width: width * 0.35,
+                                        alignSelf: 'center',
+                                        alignItems: 'flex-end',
+                                        flexDirection: 'row',
+                                      }}>
+                                      <Text style={styles.desciptionHeading}>
+                                        {item.name}
+                                      </Text>
+                                    </View>
+                                    <View
+                                      style={[
+                                        styles.inputContainer,
+                                        {
+                                          height: !this.state.meter3
+                                            ? height * 0.055
+                                            : height * 0.0,
+                                          width: !this.state.meter3
+                                            ? width * 0.4
+                                            : width * 0.0,
+                                        },
+                                      ]}>
+                                      <MenuT
+                                        visible={item.showList}
+                                        anchor={
+                                          <TextInput
+                                            placeholder="Unit Name"
+                                            value={this.state.lastUnitData}
+                                            dense={true}
+                                            onFocus={() =>
+                                              this.showSuggestion(index)
+                                            }
+                                            onChangeText={(text) => {
+                                              this.setState({
+                                                lastUnitData: text,
+                                              });
+                                            }}
+                                            style={[
+                                              styles.input,
+                                              {
+                                                width: !this.state.meter3
+                                                  ? width * 0.35
+                                                  : width * 0.0,
+                                              },
+                                            ]}
+                                            error={this.state.errorUnits.units}
+                                            mode={'outlined'}
+                                            theme={{
+                                              colors: {
+                                                text: '#25AAE1ec',
+                                                primary: '#25AAE1ec',
+                                                selectionColor: 'red',
+                                              },
+                                            }}
+                                          />
+                                        }
+                                        onRequestClose={() =>
+                                          this.hideSuggestion(index)
+                                        }>
+                                        {manufacturers.map((item) => (
+                                          <MenuItem
+                                            onPress={() =>
+                                              this.hideSuggestion(
+                                                index,
+                                                item.name,
+                                              )
+                                            }>
+                                            {item.name}
+                                          </MenuItem>
+                                        ))}
+                                      </MenuT>
+                                    </View>
+                                  </View>
+                                ) : null}
+                              </View>
+                            );
+                          })}
+                        </View>
+                        {/* <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            MANUFACTURER*
+                          </Text>
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <MenuT
+                            visible={this.state.visible}
+                            anchor={
+                              <TextInput
+                                value={
+                                  this.state.meterTypeData == null
+                                    ? ''
+                                    : this.state.meterTypeData.manufacturer
+                                }
+                                dense={true}
+                                onFocus={this.showMenu}
+                                showSoftInputOnFocus={false}
+                                style={styles.input}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                            }
+                            onRequestClose={this.hideMenu}>
+                            {manufacturers.map((item) => (
+                              <MenuItem
+                                onPress={() => this.hideMenu(item.name)}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </MenuT>
+                        </View>
+
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>MODEL*</Text>
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <MenuT
+                            visible={this.state.visible1}
+                            anchor={
+                              <TextInput
+                                value={
+                                  this.state.meterTypeData == null
+                                    ? ''
+                                    : this.state.meterTypeData.model
+                                }
+                                dense={true}
+                                onFocus={this.showMenu1}
+                                showSoftInputOnFocus={false}
+                                style={styles.input}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                            }
+                            onRequestClose={this.hideMenu1}>
+                            {meterTypes.map((item) => (
+                              <MenuItem
+                                onPress={() => this.hideMenu1(item.name)}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </MenuT>
+                        </View>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>SIZE*</Text>
+                        </View>
+                        <View
+                          style={[
+                            styles.inputContainer,
+                            {
+                              height: !this.state.meter3
+                                ? height * 0.055
+                                : height * 0.0,
+                              width: !this.state.meter3
+                                ? width * 0.8
+                                : width * 0.0,
+                            },
+                          ]}>
+                          <TextInput
+                            placeholder="Unit Name"
+                            value={this.state.lastUnitData}
+                            dense={true}
+                            onChangeText={(text) => {
+                              this.setState({lastUnitData: text});
+                            }}
+                            style={[
+                              styles.input,
+                              {
+                                width: !this.state.meter3
+                                  ? width * 0.75
+                                  : width * 0.0,
+                              },
+                            ]}
+                            error={this.state.errorUnits.units}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View> */}
+                        {/* <View style={{flexDirection: 'row'}}>
+                          <View>
+                            <View
+                              style={{
+                                height: height * 0.04,
+                                width: width * 0.35,
+                                alignSelf: 'center',
+                                alignItems: 'flex-end',
+                                flexDirection: 'row',
+                              }}>
+                              <Text style={styles.desciptionHeading}>
+                                MULTIPLIER*
+                              </Text>
+                            </View>
+                            <View
+                              style={[
+                                styles.inputContainer,
+                                {
+                                  height: !this.state.meter3
+                                    ? height * 0.055
+                                    : height * 0.0,
+                                  width: !this.state.meter3
+                                    ? width * 0.4
+                                    : width * 0.0,
+                                },
+                              ]}>
+                              <TextInput
+                                placeholder="Unit Name"
+                                value={this.state.lastUnitData}
+                                dense={true}
+                                onChangeText={(text) => {
+                                  this.setState({lastUnitData: text});
+                                }}
+                                style={[
+                                  styles.input,
+                                  {
+                                    width: !this.state.meter3
+                                      ? width * 0.35
+                                      : width * 0.0,
+                                  },
+                                ]}
+                                error={this.state.errorUnits.units}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                            </View>
+                          </View>
+                          <View>
+                            <View
+                              style={{
+                                height: height * 0.04,
+                                width: width * 0.35,
+                                alignSelf: 'center',
+                                alignItems: 'flex-end',
+                                flexDirection: 'row',
+                              }}>
+                              <Text style={styles.desciptionHeading}>
+                                UNIT OF MEASURE*
+                              </Text>
+                            </View>
+                            <View
+                              style={[
+                                styles.inputContainer,
+                                {
+                                  height: !this.state.meter3
+                                    ? height * 0.055
+                                    : height * 0.0,
+                                  width: !this.state.meter3
+                                    ? width * 0.4
+                                    : width * 0.0,
+                                },
+                              ]}>
+                              <TextInput
+                                placeholder="Unit Name"
+                                value={this.state.lastUnitData}
+                                dense={true}
+                                onChangeText={(text) => {
+                                  this.setState({lastUnitData: text});
+                                }}
+                                style={[
+                                  styles.input,
+                                  {
+                                    width: !this.state.meter3
+                                      ? width * 0.35
+                                      : width * 0.0,
+                                  },
+                                ]}
+                                error={this.state.errorUnits.units}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                            </View>
+                          </View>
+                        </View> */}
+                        <HelperText
+                          type="error"
+                          visible={this.state.errorUnits.units}>
+                          {this.state.errorUnits.units}
+                        </HelperText>
+                      </View>
+                      {/* Box Footer */}
+                      <View style={styles.footerBtn}>
+                        <View style={styles.addUnitBtnContainer}>
+                          <TouchableOpacity
+                            onPress={this.changeUtilityAndToggle}>
+                            <View style={styles.cancelBotton}>
+                              <Plus name="close" color="black" size={18} />
+                              <Text style={{color: 'black'}}>Cancel</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={this.handleAddNewUnit}>
+                            <View style={styles.submitBotton}>
+                              <Plus name="plus" color="white" size={18} />
+                              <Text style={{color: 'white'}}>Add Unit</Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                {/* </KeyboardAvoidingView> */}
               </Modal>
               {/* Edit Modal */}
               <Modal
