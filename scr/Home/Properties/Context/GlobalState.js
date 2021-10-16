@@ -16,6 +16,7 @@ class GlobalState extends React.Component {
   }
 
   getToken = async () => {
+    console.log("Get Token")
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       // console.log('token aya', token);
