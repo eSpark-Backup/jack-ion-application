@@ -460,7 +460,8 @@ export default styles = StyleSheet.create({
     fontSize: height * 0.018,
   },
   utilityInScrHeadView: {
-    justifyContent: 'flex-end',
+    flexDirection:'row',
+    justifyContent: 'center',
     alignItems: 'center',
     borderBottomWidth: width * 0.001,
   },
