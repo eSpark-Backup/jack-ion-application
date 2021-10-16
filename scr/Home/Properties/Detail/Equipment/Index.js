@@ -106,6 +106,68 @@ const manufacturers = [
     // color: '#E7D931',
   },
 ];
+const models = [
+  {
+    id: 1,
+    name: 'AC-250',
+    // image: require('../../../../../Images/Water-Meter.png'),
+    // color: '#3E89BF',
+  },
+  {
+    id: 2,
+    name: 'AC-260',
+    // image: require('../../../../../Images/Gas-Meter2.png'),
+    // color: '#9ACF72',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+  {
+    id: 3,
+    name: 'AC-350',
+    // image: require('../../../../../Images/Electric-Meter2.png'),
+    // color: '#E7D931',
+  },
+];
 const meterList = [
   {
     id: 1,
@@ -798,8 +860,7 @@ export default class Splash extends Component {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
   toggleModalUnit = () => {
-    this.setState({isModalMeterVisible: !this.state.isModalMeterVisible});
-    // this.setState({isModalUnitVisible: !this.state.isModalUnitVisible});
+    this.setState({isModalUnitVisible: !this.state.isModalUnitVisible});
   };
   toggleModalMunit = () => {
     this.setState({isModalMunitVisible: !this.state.isModalMunitVisible});
@@ -2427,6 +2488,7 @@ export default class Splash extends Component {
                                   <View style={styles.inputContainer}>
                                     <MenuT
                                       visible={item.showList}
+                                      style={{height: height * 0.2}}
                                       anchor={
                                         <TextInput
                                           value={item.input}
@@ -2434,7 +2496,7 @@ export default class Splash extends Component {
                                           onFocus={() =>
                                             this.showSuggestion(index)
                                           }
-                                          showSoftInputOnFocus={false}
+                                          // showSoftInputOnFocus={false}
                                           style={styles.input}
                                           mode={'outlined'}
                                           theme={{
@@ -2449,7 +2511,7 @@ export default class Splash extends Component {
                                       onRequestClose={() =>
                                         this.hideSuggestion(index)
                                       }>
-                                      {manufacturers.map((item) => (
+                                      {/* {manufacturers.map((item) => (
                                         <MenuItem
                                           onPress={() =>
                                             this.hideSuggestion(
@@ -2459,7 +2521,42 @@ export default class Splash extends Component {
                                           }>
                                           {item.name}
                                         </MenuItem>
-                                      ))}
+                                      ))} */}
+                                      <ScrollView>
+                                        {(() => {
+                                          switch (index) {
+                                            case 0:
+                                              return manufacturers.map(
+                                                (item) => (
+                                                  <MenuItem
+                                                    onPress={() =>
+                                                      this.hideSuggestion(
+                                                        index,
+                                                        item.name,
+                                                      )
+                                                    }>
+                                                    {item.name}
+                                                  </MenuItem>
+                                                ),
+                                              );
+                                            case 1:
+                                              return models.map((item) => (
+                                                <MenuItem
+                                                  onPress={() =>
+                                                    this.hideSuggestion(
+                                                      index,
+                                                      item.name,
+                                                    )
+                                                  }>
+                                                  {item.name}
+                                                </MenuItem>
+                                              ));
+
+                                            default:
+                                              return null;
+                                          }
+                                        })()}
+                                      </ScrollView>
                                     </MenuT>
                                   </View>
                                 </View>
@@ -2553,228 +2650,6 @@ export default class Splash extends Component {
                             );
                           })}
                         </View>
-                        {/* <View style={styles.desciptionContainer}>
-                          <Text style={styles.desciptionHeading}>
-                            MANUFACTURER*
-                          </Text>
-                        </View>
-                        <View style={styles.inputContainer}>
-                          <MenuT
-                            visible={this.state.visible}
-                            anchor={
-                              <TextInput
-                                value={
-                                  this.state.meterTypeData == null
-                                    ? ''
-                                    : this.state.meterTypeData.manufacturer
-                                }
-                                dense={true}
-                                onFocus={this.showMenu}
-                                showSoftInputOnFocus={false}
-                                style={styles.input}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            }
-                            onRequestClose={this.hideMenu}>
-                            {manufacturers.map((item) => (
-                              <MenuItem
-                                onPress={() => this.hideMenu(item.name)}>
-                                {item.name}
-                              </MenuItem>
-                            ))}
-                          </MenuT>
-                        </View>
-
-                        <View style={styles.desciptionContainer}>
-                          <Text style={styles.desciptionHeading}>MODEL*</Text>
-                        </View>
-                        <View style={styles.inputContainer}>
-                          <MenuT
-                            visible={this.state.visible1}
-                            anchor={
-                              <TextInput
-                                value={
-                                  this.state.meterTypeData == null
-                                    ? ''
-                                    : this.state.meterTypeData.model
-                                }
-                                dense={true}
-                                onFocus={this.showMenu1}
-                                showSoftInputOnFocus={false}
-                                style={styles.input}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            }
-                            onRequestClose={this.hideMenu1}>
-                            {meterTypes.map((item) => (
-                              <MenuItem
-                                onPress={() => this.hideMenu1(item.name)}>
-                                {item.name}
-                              </MenuItem>
-                            ))}
-                          </MenuT>
-                        </View>
-                        <View style={styles.desciptionContainer}>
-                          <Text style={styles.desciptionHeading}>SIZE*</Text>
-                        </View>
-                        <View
-                          style={[
-                            styles.inputContainer,
-                            {
-                              height: !this.state.meter3
-                                ? height * 0.055
-                                : height * 0.0,
-                              width: !this.state.meter3
-                                ? width * 0.8
-                                : width * 0.0,
-                            },
-                          ]}>
-                          <TextInput
-                            placeholder="Unit Name"
-                            value={this.state.lastUnitData}
-                            dense={true}
-                            onChangeText={(text) => {
-                              this.setState({lastUnitData: text});
-                            }}
-                            style={[
-                              styles.input,
-                              {
-                                width: !this.state.meter3
-                                  ? width * 0.75
-                                  : width * 0.0,
-                              },
-                            ]}
-                            error={this.state.errorUnits.units}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View> */}
-                        {/* <View style={{flexDirection: 'row'}}>
-                          <View>
-                            <View
-                              style={{
-                                height: height * 0.04,
-                                width: width * 0.35,
-                                alignSelf: 'center',
-                                alignItems: 'flex-end',
-                                flexDirection: 'row',
-                              }}>
-                              <Text style={styles.desciptionHeading}>
-                                MULTIPLIER*
-                              </Text>
-                            </View>
-                            <View
-                              style={[
-                                styles.inputContainer,
-                                {
-                                  height: !this.state.meter3
-                                    ? height * 0.055
-                                    : height * 0.0,
-                                  width: !this.state.meter3
-                                    ? width * 0.4
-                                    : width * 0.0,
-                                },
-                              ]}>
-                              <TextInput
-                                placeholder="Unit Name"
-                                value={this.state.lastUnitData}
-                                dense={true}
-                                onChangeText={(text) => {
-                                  this.setState({lastUnitData: text});
-                                }}
-                                style={[
-                                  styles.input,
-                                  {
-                                    width: !this.state.meter3
-                                      ? width * 0.35
-                                      : width * 0.0,
-                                  },
-                                ]}
-                                error={this.state.errorUnits.units}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            </View>
-                          </View>
-                          <View>
-                            <View
-                              style={{
-                                height: height * 0.04,
-                                width: width * 0.35,
-                                alignSelf: 'center',
-                                alignItems: 'flex-end',
-                                flexDirection: 'row',
-                              }}>
-                              <Text style={styles.desciptionHeading}>
-                                UNIT OF MEASURE*
-                              </Text>
-                            </View>
-                            <View
-                              style={[
-                                styles.inputContainer,
-                                {
-                                  height: !this.state.meter3
-                                    ? height * 0.055
-                                    : height * 0.0,
-                                  width: !this.state.meter3
-                                    ? width * 0.4
-                                    : width * 0.0,
-                                },
-                              ]}>
-                              <TextInput
-                                placeholder="Unit Name"
-                                value={this.state.lastUnitData}
-                                dense={true}
-                                onChangeText={(text) => {
-                                  this.setState({lastUnitData: text});
-                                }}
-                                style={[
-                                  styles.input,
-                                  {
-                                    width: !this.state.meter3
-                                      ? width * 0.35
-                                      : width * 0.0,
-                                  },
-                                ]}
-                                error={this.state.errorUnits.units}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            </View>
-                          </View>
-                        </View> */}
                         <HelperText
                           type="error"
                           visible={this.state.errorUnits.units}>
