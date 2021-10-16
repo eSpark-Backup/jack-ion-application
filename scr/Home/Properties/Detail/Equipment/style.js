@@ -267,7 +267,9 @@ export default styles = StyleSheet.create({
   },
 
   // Modal
-  modal1Container: {},
+  modal1Container: {
+    // zIndex: 0,
+  },
   modalInner: {
     elevation: width * 0.005,
     borderRadius: width * 0.02,
@@ -412,14 +414,14 @@ export default styles = StyleSheet.create({
   addUnitListView: {
     height: height * 0.09,
     width: width * 0.75,
-    alignSelf:'center',
-    alignItems:'center',
-    flexDirection:'row',
-    backgroundColor:'#F6F6F6',
-    marginVertical:width * .01,
-    borderRadius:width * .004,
-    borderColor:'#D0D0D0',
-    borderWidth:width * .003,
+    alignSelf: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#F6F6F6',
+    marginVertical: width * 0.01,
+    borderRadius: width * 0.004,
+    borderColor: '#D0D0D0',
+    borderWidth: width * 0.003,
 
     // borderTopWidth: width * .002,
   },
@@ -427,8 +429,8 @@ export default styles = StyleSheet.create({
     // height: height * .07,
     // width: width * 0.72,
     fontSize: height * 0.018,
-    borderColor:'#d0d0d0',
-    backgroundColor:'#F6F6F6'
+    borderColor: '#d0d0d0',
+    backgroundColor: '#F6F6F6',
   },
   meterDesciptionContainer: {
     height: height * 0.04,
@@ -519,13 +521,12 @@ export default styles = StyleSheet.create({
     width: width * 0.2,
   },
   programDevice: {
-    width: width * .4,
+    width: width * 0.4,
     height: 40,
     borderWidth: height * 0.0015,
     borderColor: 'purple',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
-
   },
   proDeviceContent: {
     flexDirection: 'row',
