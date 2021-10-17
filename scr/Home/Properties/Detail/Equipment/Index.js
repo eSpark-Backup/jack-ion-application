@@ -43,10 +43,10 @@ import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fire from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Compact from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
-import {DotsLoader} from 'react-native-indicator';
-import {RNCamera} from 'react-native-camera';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
+import { DotsLoader } from 'react-native-indicator';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Base_URL from '../../../../api/WebServices';
@@ -91,19 +91,19 @@ const meterTypes = [
 const manufacturers = [
   {
     id: 1,
-    name: 'Water',
+    name: 'AMCO',
     // image: require('../../../../../Images/Water-Meter.png'),
     // color: '#3E89BF',
   },
   {
     id: 2,
-    name: 'Gas',
+    name: 'Badger',
     // image: require('../../../../../Images/Gas-Meter2.png'),
     // color: '#9ACF72',
   },
   {
     id: 3,
-    name: 'Electric',
+    name: 'Conservice',
     // image: require('../../../../../Images/Electric-Meter2.png'),
     // color: '#E7D931',
   },
@@ -111,61 +111,19 @@ const manufacturers = [
 const models = [
   {
     id: 1,
-    name: 'AC-250',
+    name: 'C4000 Digital Compound (AMCO Bypass)',
     // image: require('../../../../../Images/Water-Meter.png'),
     // color: '#3E89BF',
   },
   {
     id: 2,
-    name: 'AC-260',
+    name: 'Compound RTR',
     // image: require('../../../../../Images/Gas-Meter2.png'),
     // color: '#9ACF72',
   },
   {
     id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
-  },
-  {
-    id: 3,
-    name: 'AC-350',
+    name: 'MJ09 Brass',
     // image: require('../../../../../Images/Electric-Meter2.png'),
     // color: '#E7D931',
   },
@@ -301,9 +259,16 @@ export default class Splash extends Component {
         editMeter: '',
       },
       dataBuild: [],
-      meterTypeData: null,
+      meterTypeData: {
+        manufacturer: '',
+        model: '',
+        multiplier: 1,
+        unit_of_measure_id: ''
+      },
       typeOfMeters: [],
       typeOfMetersVisible: false,
+      typeOfMeterIndex:'',
+      measureOfUnit: [],
       dataActivityTop: [
         {
           id: 1,
@@ -704,6 +669,7 @@ export default class Splash extends Component {
         buildingName: false,
         units: false,
       },
+      measureOfUnitName: '',
       errorUnits: {
         units: '',
         meter: false,
@@ -714,26 +680,30 @@ export default class Splash extends Component {
           name: 'MANUFACTURER*',
           showList: false,
           input: '',
+          error: ''
         },
         {
           name: 'MODEL*',
           showList: false,
           input: '',
+          error: ''
         },
-        {
-          name: 'SIZE*',
-          showList: false,
-          input: '',
-        },
+        // {
+        //   name: 'SIZE*',
+        //   showList: false,
+        //   input: '',
+        // },
         {
           name: 'MULTIPLIER*',
           showList: false,
-          input: '',
+          input: '1',
+          error: ''
         },
         {
           name: 'UNIT OF MEASURE*',
           showList: false,
           input: '',
+          error: ''
         },
       ],
     };
@@ -776,18 +746,40 @@ export default class Splash extends Component {
     let newArr = [...this.state.meterTypeInputs];
     newArr[index].showList = !newArr[index].showList;
 
-    this.setState({meterTypeInputs: newArr});
+    this.setState({ meterTypeInputs: newArr });
   };
 
-  hideSuggestion = (index, val) => {
+  hideSuggestion = (index, val, name) => {
     let newArr = [...this.state.meterTypeInputs];
     newArr[index].showList = !newArr[index].showList;
     newArr[index].input = val;
-    this.setState({meterTypeInputs: newArr});
-    this.setState({
-      meterTypeData: {...this.state.meterTypeData, model: val},
-    });
-    console.log('Meter Type', this.state.meterTypeData);
+    this.setState({ meterTypeInputs: newArr }, () =>
+      console.log('Meter Type', this.state.meterTypeInputs));
+    if (index == 0) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, manufacturer: val }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+    if (index == 1) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, model: val }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+    if (index == 2) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, multiplier: val }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+    if (index == 3) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: val },
+        measureOfUnitName: name
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
   };
 
   getToken = async () => {
@@ -902,8 +894,8 @@ export default class Splash extends Component {
     this.setState({ isModaladdUVisible: !this.state.isModaladdUVisible });
   };
   scannerModal = () => {
-    this.setState({isScannerVisible: false});
-    this.setState({scan: false});
+    this.setState({ isScannerVisible: false });
+    this.setState({ scan: false });
   };
 
   scanAgain = () => {
@@ -920,25 +912,7 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({ visible: true });
   };
-  showTypesOfMeter = (item,index) => {
-    // this.setState({typeOfMetersVisible: true});
-    // let newArr = [...this.state.meterListData]; // copying the old datas array
-    // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
-    // this.setState({ meterListData: newArr }
-    //   ,
-    //   () => console.log('e--->', this.state.meterListData));
-  };
-  hideTypesOfMeter = () => {
-    this.setState({typeOfMetersVisible: false});
-  };
-  onGetMeterTypeId = (item,index) => {
-    this.setState({typeOfMetersVisible: false})
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }
-      ,
-      () => console.log('e--->', this.state.meterListData));
-  }
+
 
   naviagateToDetail = () => {
     // this.toggleModal();
@@ -969,7 +943,7 @@ export default class Splash extends Component {
         `/property/equipment/meter/all-meters`,
       );
       console.log('Check meter add--->', unitResponse);
-      this.setState({meterListArray: unitResponse?.data?.data});
+      this.setState({ meterListArray: unitResponse?.data?.data });
     }
   };
   selectAndCloseAddMultiple = () => {
@@ -1137,13 +1111,13 @@ export default class Splash extends Component {
           // console.log('deviceSerialNum',index)
           let newArr = [...this.state.meterListData];
           newArr[index].deviceSerialError = 'Device serial required';
-          this.setState({meterListData: newArr});
+          this.setState({ meterListData: newArr });
           return;
         } else {
           // console.log('deviceSerialNum else',index)
           let newArr = [...this.state.meterListData];
           newArr[index].deviceSerialError = '';
-          this.setState({meterListData: newArr});
+          this.setState({ meterListData: newArr });
         }
         // if (data.meterType.length == 0) {
         //   console.log('meterType',index)
@@ -1162,7 +1136,7 @@ export default class Splash extends Component {
       this.state.meterListData.map((data, index) => {
         let newArr = [...this.state.meterListData];
         newArr[index].deviceSerialError = '';
-        this.setState({meterListData: newArr});
+        this.setState({ meterListData: newArr });
       });
 
       var loopData = [];
@@ -1193,85 +1167,53 @@ export default class Splash extends Component {
         meters: [loopData],
       };
       console.log('data--->', data);
-      // const unitResponse = await this.api.post(
-      //   `/property/equipment/unit/add-unit`,
-      //   data,
-      // );
-      // console.log('Check unitResponse add--->', unitResponse);
-      // if (unitResponse.ok == true) {
-      //   this.setState({ loader: true, loaderBuildings: true });
-      //   this.checkData();
-      // } else {
-      //   alert(unitResponse?.data?.message);
-      // }
-      // console.log('data of add unit--->',data)
-      // this.changeUtilityAndToggle();
+      try {
+        const unitResponse = await this.api.post(
+          `/property/equipment/unit/add-unit`,
+          data,
+        );
+        console.log('Check unitResponse add--->', unitResponse);
+          this.setState({ loader: true, loaderBuildings: true });
+          this.checkData();
+      } catch (e) {
+        alert(e);
+        console.log('errorrr--->', e);
+      }
+      this.changeUtilityAndToggle();
     }
-
-    // if (this.state.newBuild == '' || this.state.newUnit == '') {
-    //   // alert('Kindly Fill all Fields');
-
-    // } else if (this.state.newSerial == '' || this.state.newMeter == '') {
-    //   alert('Kindly Select Utility and Fill the Required');
-    // } else {
-    //   this.setState(
-    //     Object.assign(this.state.newUnitInfo, {
-    //       indexBuild: this.state.buildIndex,
-    //     }),
-    //   );
-    //   this.setState(
-    //     Object.assign(this.state.newUnitInfo, {
-    //       indexUnits: this.state.unitIndex,
-    //     }),
-    //   );
-    //   this.setState(
-    //     Object.assign(this.state.newUnitInfo, { unitBuild: this.state.newBuild }),
-    //   );
-    //   this.setState(
-    //     Object.assign(this.state.newUnitInfo, { unitName: this.state.newUnit }),
-    //   );
-    //   this.setState(
-    //     Object.assign(this.state.newUnitInfo, {
-    //       unitSerial: this.state.newSerial,
-    //     }),
-    //   );
-    //   this.setState(
-    //     Object.assign(this.state.newUnitInfo, { unitMeter: this.state.newMeter }),
-    //   );
-    //   // console.log('INFO', this.state.info)
-    //   this.context.addUnits(this.state.newUnitInfo);
-    //   // this.newUnits()
-    // }
   };
   addMeterInNewArray = async (value) => {
-    this.setState({visible: false});
+    this.setState({ visible: false });
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const data = {
       id: value.id,
       deviceSerialNum: '',
       deviceSerialError: '',
-      meterType: [],
+      meterType: '',
+      meterTypeName: '',
       meterTypeError: '',
       meterAttachedTo: '',
       meterAttachedError: '',
-      meterSerialNum: '',
-      customMeterId: '',
+      meterSerialNum: '12357841',
+      customMeterId: '6564678',
       name: value.name,
       icon: value.icon,
-      meterTypeMenu:false
+      meterTypeMenu: false
     };
     const newArray = [...this.state.meterListData];
     newArray.push(data);
-    this.setState({meterListData: newArray});
+    this.setState({ meterListData: newArray }
+      ,
+      () => console.log('Check types add--->', this.state.meterListData));
     const newList = this.state.meterListArray.filter(
       (item) => item.id !== value.id,
     );
-    this.setState({meterListArray: newList});
+    this.setState({ meterListArray: newList });
     const unitResponse = await this.api.get(
       `/property/equipment/type/all-types`,
     );
-    console.log('Check types add--->', unitResponse.data);
-    this.setState({typeOfMeters: unitResponse?.data?.data}, () =>
+
+    this.setState({ typeOfMeters: unitResponse?.data?.data }, () =>
       console.log('Meter Type Of_______', this.state.typeOfMeters),
     );
   };
@@ -1280,7 +1222,7 @@ export default class Splash extends Component {
     const newList = this.state.meterListData.filter(
       (item) => item.id !== value.id,
     );
-    this.setState({meterListData: newList});
+    this.setState({ meterListData: newList });
 
     const data = {
       id: value.id,
@@ -1289,31 +1231,91 @@ export default class Splash extends Component {
     };
     const newArray = [...this.state.meterListArray];
     newArray.push(data);
-    this.setState({meterListArray: newArray});
+    this.setState({ meterListArray: newArray });
   };
   onChangeMultipleField = (e, index) => {
     // console.log('index: ' + index);
     // console.log('property name: ' + e.target.value);
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
-    this.setState({meterListData: newArr}, () =>
+    this.setState({ meterListData: newArr }, () =>
       console.log('e--->', this.state.meterListData),
     );
   };
+  onChangeTypeBuilder = (e, index) => {
+    // console.log('index: ' + index);
+    // console.log('property name: ' + e.target.value);
+    let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+    newArr[index].input = e; // replace e.target.value with whatever you want to change it to
+    this.setState({ meterTypeInputs: newArr }, () =>
+      console.log('e--->', this.state.meterTypeInputs),
+    );
+    if (index == 0) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, manufacturer: e }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+    if (index == 1) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, model: e }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+    if (index == 2) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, multiplier: Number(e) }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+    if (index == 3) {
+      this.setState({
+        meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: e }
+      }, () =>
+        console.log('Meter Type', this.state.meterTypeData));
+    }
+
+  };
+  showTypesOfMeter = (item, index) => {
+    // this.setState({typeOfMetersVisible: true});
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterTypeMenu = true; // replace e.target.value with whatever you want to change it to
+    this.setState({ meterListData: newArr }
+      ,
+      () => console.log('e--->', this.state.meterListData));
+  };
+  hideTypesOfMeter = (item, index) => {
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
+    this.setState({ meterListData: newArr }
+      ,
+      () => console.log('e--->', this.state.meterListData));
+  };
+  onGetMeterTypeId = (item, index) => {
+    // this.setState({typeOfMetersVisible: false})
+    // console.log('check itne',item)
+    // console.log('check index',index)
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterTypeName = item.manufacturer + '-' + item.model + '(x' + item.multiplier + item.unit_of_measure + ')'; // replace e.target.value with whatever you want to change it to
+    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+    // console.log(newArr[index],'mter types') // replace e.target.value with whatever you want to change it to
+    newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
+    this.setState({ meterListData: newArr });
+  }
   toggleScanner = async (value) => {
-    this.setState({scanIndex: value});
+    this.setState({ scanIndex: value });
     try {
       const granted = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted === true) {
-        this.setState({hasAccess: true});
-        this.setState({isScannerVisible: true});
-        this.setState({scanResult: false});
-        this.setState({scan: true});
+        this.setState({ hasAccess: true });
+        this.setState({ isScannerVisible: true });
+        this.setState({ scanResult: false });
+        this.setState({ scan: true });
         console.log('Access');
       } else {
-        this.setState({hasAccess: false});
+        this.setState({ hasAccess: false });
         Alert.alert(
           "You don't have access for the Camera",
           'Kindly TurnOn Camera Permission from Settings to use Scanner',
@@ -1342,7 +1344,7 @@ export default class Splash extends Component {
     } else {
       let newArr = [...this.state.meterListData]; // copying the old datas array
       newArr[this.state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
-      this.setState({meterListData: newArr}, () =>
+      this.setState({ meterListData: newArr }, () =>
         console.log('e--->', this.state.meterListData),
       );
       this.setState({
@@ -1863,7 +1865,90 @@ export default class Splash extends Component {
     // this.toggleModal();
     this.setState({ isModalVisible: false });
   };
+  handleMetertypeModal = async (index) => {
+    const unitResponse = await this.api.get(
+      `/property/equipment/unit-of-measure/all`,
+    );
+    this.setState({ measureOfUnit: unitResponse?.data?.data,typeOfMeterIndex:index }, () =>
+      console.log('measureOfUnit Of_______', this.state.measureOfUnit)
+    );
+    this.setState({
+      isModalMeterVisible: true,
+    })
+  }
+  handleSaveMeterTypeBuilder = async () => {
+    if (!this.state.meterTypeData.manufacturer) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      })
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[0].error = 'Select or type manufacturer'; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    if (!this.state.meterTypeData.model) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      })
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[1].error = 'Select or type model'; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    if (!this.state.meterTypeData.multiplier) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      })
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[2].error = 'This should be greater then one '; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    if (!this.state.meterTypeData.unit_of_measure_id) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      })
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[3].error = 'Select or measure of unit '; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    else {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      })
+      console.log('measureOfUnit Of_______', this.state.meterTypeData)
 
+      const unitResponse = await this.api.post(
+        `/property/equipment/type/add-type`, this.state.meterTypeData
+      );
+      console.log('addtype response--->',unitResponse)
+      if (unitResponse?.ok) {
+        // this.setState({ measureOfUnit: unitResponse?.data?.data }, () =>
+        // console.log('measureOfUnit Of_______', this.state.measureOfUnit),
+        // );
+        let newArr = [...this.state.meterListData]; // copying the old datas array
+        newArr[this.state.typeOfMeterIndex].meterTypeName = unitResponse?.data?.data?.type?.manufacturer + '-' + unitResponse?.data?.data?.type?.model + '(x' + unitResponse?.data?.data?.type?.multiplier + unitResponse?.data?.data?.type?.unit_of_measure + ')'; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterListData: newArr });
+        this.setState({
+          isModalMeterVisible: false,
+        })
+      }else{
+        alert('Network error')
+      }
+
+    }
+  }
   render() {
     const { result, scan, scanResult } = this.state;
     const realData = this.state.realData;
@@ -2238,7 +2323,7 @@ export default class Splash extends Component {
                         </View>
                         {/* Box Body */}
                         <ScrollView showsVerticalScrollIndicator={false}>
-                          <View style={{flex: 1}}>
+                          <View style={{ flex: 1 }}>
                             <View style={styles.desciptionContainer}>
                               <Build
                                 name={'office-building'}
@@ -2283,7 +2368,7 @@ export default class Splash extends Component {
                                 value={this.state.lastUnitData}
                                 dense={true}
                                 onChangeText={(text) => {
-                                  this.setState({lastUnitData: text});
+                                  this.setState({ lastUnitData: text });
                                 }}
                                 style={[
                                   styles.input,
@@ -2312,7 +2397,7 @@ export default class Splash extends Component {
 
                             {/* {this.state.meterList && ( */}
                             {this.state.meterListData &&
-                              this.state.meterListData.map((item, index) => (
+                              this.state.meterListData.map((item, meterIndex) => (
                                 <View
                                   style={{
                                     alignItems: 'center',
@@ -2334,7 +2419,7 @@ export default class Splash extends Component {
                                         <Text
                                           style={[
                                             styles.utilityInScrHead,
-                                            {color: realColor},
+                                            { color: realColor },
                                           ]}>
                                           {item.name}
                                         </Text>
@@ -2384,7 +2469,7 @@ export default class Splash extends Component {
                                           onChangeText={(text) =>
                                             this.onChangeMultipleField(
                                               text,
-                                              index,
+                                              meterIndex,
                                             )
                                           }
                                           style={styles.meterInput}
@@ -2438,14 +2523,14 @@ export default class Splash extends Component {
                                         {this.state.typeOfMeters.length ? (
                                           <MenuT
                                             visible={
-                                              this.state.typeOfMetersVisible
+                                              item.meterTypeMenu
                                             }
-                                            style={{height: height * .12}}
+                                            style={{ height: height * .12 }}
                                             anchor={
                                               this.state.typeOfMeters.length ? (
                                                 <Pressable
-                                                  onPress={
-                                                    this.showTypesOfMeter
+                                                  onPress={() =>
+                                                    this.showTypesOfMeter(item, meterIndex)
                                                   }
                                                   style={{
                                                     flexDirection: 'row',
@@ -2458,18 +2543,12 @@ export default class Splash extends Component {
                                                     borderless: true,
                                                     radius: height * 0.08,
                                                   }}>
-                                                  {/*//todo: Button for meter */}
-                                                  <Plus
-                                                    name="plus"
-                                                    size={25}
-                                                    color="#25AAE1ec"
-                                                  />
                                                   <Text
                                                     style={{
                                                       fontSize: height * 0.018,
                                                       color: '#25AAE1ec',
                                                     }}>
-                                                    Select
+                                                    {item.meterTypeName ? item.meterTypeName : "Select"}
                                                   </Text>
                                                 </Pressable>
                                               ) : (
@@ -2481,8 +2560,8 @@ export default class Splash extends Component {
                                                 </View>
                                               )
                                             }
-                                            onRequestClose={
-                                              this.hideTypesOfMeter
+                                            onRequestClose={() =>
+                                              this.hideTypesOfMeter(item, meterIndex)
                                             }>
                                             <ScrollView>
                                               {this.state.typeOfMeters.map(
@@ -2501,7 +2580,7 @@ export default class Splash extends Component {
                                                     />
                                                     <MenuItem
                                                       onPress={() =>
-                                                        this.onGetMeterTypeId(item,index)
+                                                        this.onGetMeterTypeId(item, meterIndex)
                                                       }>
                                                       {item.manufacturer +
                                                         '-' +
@@ -2509,8 +2588,7 @@ export default class Splash extends Component {
                                                         '(x' +
                                                         item.multiplier +
                                                         item.unit_of_measure +
-                                                        ')' +
-                                                        item.size}
+                                                        ')'}
                                                     </MenuItem>
                                                   </View>
                                                 ),
@@ -2525,11 +2603,7 @@ export default class Splash extends Component {
                                         )}
 
                                         <TouchableOpacity
-                                          onPress={() =>
-                                            this.setState({
-                                              isModalMeterVisible: true,
-                                            })
-                                          }>
+                                          onPress={() => this.handleMetertypeModal(meterIndex)}>
                                           <Plus name="plus" size={20} />
                                         </TouchableOpacity>
                                       </View>
@@ -2582,7 +2656,7 @@ export default class Splash extends Component {
                             }}>
                             <MenuT
                               visible={this.state.visible}
-                              style={{height: height * 0.2}}
+                              style={{ height: height * 0.2 }}
                               anchor={
                                 this.state.meterListArray.length ? (
                                   <Pressable
@@ -2612,7 +2686,7 @@ export default class Splash extends Component {
                                     </Text>
                                   </Pressable>
                                 ) : (
-                                  <View style={{marginLeft: width * 0.02}}>
+                                  <View style={{ marginLeft: width * 0.02 }}>
                                     <DotsLoader />
                                   </View>
                                 )
@@ -2699,7 +2773,7 @@ export default class Splash extends Component {
                           </Text>
                           <Pressable
                             onPress={() =>
-                              this.setState({isModalMeterVisible: false})
+                              this.setState({ isModalMeterVisible: false })
                             }
                             android_ripple={{
                               color: 'black',
@@ -2720,7 +2794,7 @@ export default class Splash extends Component {
                         {meterTypeInputs.map((item, index) => {
                           return (
                             <View>
-                              {index < 3 ? (
+                              {index < 2 ? (
                                 <View>
                                   <View style={styles.desciptionContainer}>
                                     <Text style={styles.desciptionHeading}>
@@ -2730,27 +2804,39 @@ export default class Splash extends Component {
                                   <View style={styles.inputContainer}>
                                     <MenuT
                                       visible={index < 2 ? item.showList : null}
-                                      style={{height: height * 0.2}}
+                                      style={{ height: height * 0.2 }}
                                       anchor={
-                                        <TextInput
-                                          value={item.input}
-                                          dense={true}
-                                          onFocus={() =>
-                                            this.showSuggestion(index)
-                                          }
-                                          showSoftInputOnFocus={
-                                            index < 2 ? false : true
-                                          }
-                                          style={styles.input}
-                                          mode={'outlined'}
-                                          theme={{
-                                            colors: {
-                                              text: '#25AAE1ec',
-                                              primary: '#25AAE1ec',
-                                              selectionColor: 'red',
-                                            },
-                                          }}
-                                        />
+                                        <View>
+                                          <TextInput
+                                            value={item.input}
+                                            dense={true}
+                                            onFocus={() =>
+                                              this.showSuggestion(index)
+                                            }
+                                            showSoftInputOnFocus={
+                                              index < 1 ? false : true
+                                            }
+                                            error={item.error}
+                                            style={styles.input}
+                                            mode={'outlined'}
+                                            onChangeText={(text) => this.onChangeTypeBuilder(text, index)}
+                                            theme={{
+                                              colors: {
+                                                text: '#25AAE1ec',
+                                                primary: '#25AAE1ec',
+                                                selectionColor: 'red',
+                                              },
+                                            }}
+                                          />
+                                          {item.error ? (
+                                            <HelperText
+                                              type="error"
+                                              visible={item.error}>
+                                              {item.error}
+                                            </HelperText>
+                                          ) : null}
+                                        </View>
+
                                       }
                                       onRequestClose={() =>
                                         this.hideSuggestion(index)
@@ -2770,18 +2856,14 @@ export default class Splash extends Component {
                                         {(() => {
                                           switch (index) {
                                             case 0:
-                                              return manufacturers.map(
-                                                (item) => (
-                                                  <MenuItem
-                                                    onPress={() =>
-                                                      this.hideSuggestion(
-                                                        index,
-                                                        item.name,
-                                                      )
-                                                    }>
-                                                    {item.name}
-                                                  </MenuItem>
-                                                ),
+                                              return manufacturers.map((item) => (
+                                                <MenuItem
+                                                  onPress={() =>
+                                                    this.hideSuggestion(index, item.name,)
+                                                  }>
+                                                  {item.name}
+                                                </MenuItem>
+                                              ),
                                               );
                                             case 1:
                                               return models.map((item) => (
@@ -2808,19 +2890,16 @@ export default class Splash extends Component {
                             </View>
                           );
                         })}
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                           {meterTypeInputs.map((item, index) => {
                             return (
                               <View>
-                                {index >= 3 ? (
+                                {index >= 2 ? (
                                   <View>
                                     <View
                                       style={{
-                                        height: height * 0.04,
-                                        width: width * 0.35,
-                                        alignSelf: 'center',
-                                        alignItems: 'flex-end',
-                                        flexDirection: 'row',
+                                        // height: height * 0.04,
+                                        width: width * 0.38,
                                       }}>
                                       <Text style={styles.desciptionHeading}>
                                         {item.name}
@@ -2830,69 +2909,96 @@ export default class Splash extends Component {
                                       style={[
                                         styles.inputContainer,
                                         {
-                                          height: !this.state.meter3
-                                            ? height * 0.055
-                                            : height * 0.0,
                                           width: !this.state.meter3
-                                            ? width * 0.4
+                                            ? width * 0.35
                                             : width * 0.0,
                                         },
                                       ]}>
                                       <MenuT
-                                        visible={
-                                          index == 4 ? item.showList : null
-                                        }
+                                        visible={index == 3 ? item.showList : null}
                                         anchor={
-                                          <TextInput
-                                            keyboardType={
-                                              index == 3
-                                                ? 'decimal-pad'
-                                                : 'default'
-                                            }
-                                            value={this.state.lastUnitData}
-                                            dense={true}
-                                            onFocus={() =>
-                                              this.showSuggestion(index)
-                                            }
-                                            onChangeText={(text) => {
-                                              this.setState({
-                                                lastUnitData: text,
-                                              });
-                                            }}
-                                            style={[
-                                              styles.input,
-                                              {
-                                                width: !this.state.meter3
-                                                  ? width * 0.35
-                                                  : width * 0.0,
-                                              },
-                                            ]}
-                                            error={this.state.errorUnits.units}
-                                            mode={'outlined'}
-                                            theme={{
-                                              colors: {
-                                                text: '#25AAE1ec',
-                                                primary: '#25AAE1ec',
-                                                selectionColor: 'red',
-                                              },
-                                            }}
-                                          />
+                                          index == 2 ?
+                                            <View>
+                                              <TextInput
+                                                keyboardType={
+                                                  index == 2
+                                                    ? 'decimal-pad'
+                                                    : 'default'
+                                                }
+                                                value={item.input}
+                                                dense={true}
+                                                onFocus={() =>
+                                                  this.showSuggestion(index)
+                                                }
+                                                onChangeText={(text) => this.onChangeTypeBuilder(text, index)}
+                                                style={[
+                                                  styles.input,
+                                                  {
+                                                    width: !this.state.meter3
+                                                      ? width * 0.35
+                                                      : width * 0.0,
+                                                  },
+                                                ]}
+                                                error={item.error}
+                                                mode={'outlined'}
+                                                theme={{
+                                                  colors: {
+                                                    text: '#25AAE1ec',
+                                                    primary: '#25AAE1ec',
+                                                    selectionColor: 'red',
+                                                  },
+                                                }}
+                                              />
+                                              {item.error ? (
+                                                <HelperText
+                                                  type="error"
+                                                  visible={item.error}>
+                                                  {item.error}
+                                                </HelperText>
+                                              ) : null}
+                                            </View> :
+                                            index == 3 ?
+                                              <View>
+                                                <TouchableOpacity
+                                                  style={{
+                                                    backgroundColor: '#F6F6F6',
+                                                    justifyContent: 'center',
+                                                    borderColor: item.error ? "red" : 'gray',
+                                                    width: width * 0.35,
+                                                    height: height * 0.06,
+                                                    borderWidth: width * 0.003,
+                                                    borderRadius: width * 0.01,
+                                                    paddingHorizontal: width * 0.03,
+                                                    marginTop: width * .01
+                                                  }}
+                                                  onPress={() => this.showSuggestion(index)}>
+                                                  <Text style={{ color: '#25AAE1ec' }}>{index == 3 ? this.state.measureOfUnitName : null}</Text>
+                                                </TouchableOpacity>
+                                                {item.error ? (
+                                                  <HelperText
+                                                    type="error"
+                                                    visible={item.error}>
+                                                    {item.error}
+                                                  </HelperText>
+                                                ) : null}
+                                              </View> : null
                                         }
                                         onRequestClose={() =>
                                           this.hideSuggestion(index)
                                         }>
-                                        {index == 4
-                                          ? manufacturers.map((item) => (
-                                              <MenuItem
-                                                onPress={() =>
-                                                  this.hideSuggestion(
-                                                    index,
-                                                    item.name,
-                                                  )
-                                                }>
-                                                {item.name}
-                                              </MenuItem>
-                                            ))
+                                        {index == 3
+                                          ? this.state.measureOfUnit.map((item) => (
+                                            <MenuItem
+                                              onPress={() =>
+                                                this.hideSuggestion(
+                                                  index,
+                                                  item.id,
+                                                  item.name
+                                                )
+                                              }>
+                                              {item.name}
+                                            </MenuItem>
+                                          ))
                                           : null}
                                       </MenuT>
                                     </View>
@@ -2902,18 +3008,18 @@ export default class Splash extends Component {
                             );
                           })}
                         </View>
-                        <HelperText
+                        {/* <HelperText
                           type="error"
                           visible={this.state.errorUnits.units}>
                           {this.state.errorUnits.units}
-                        </HelperText>
+                        </HelperText> */}
                       </View>
                       {/* Box Footer */}
                       <View style={styles.footerBtn}>
                         <View style={styles.addUnitBtnContainer}>
                           <TouchableOpacity
                             onPress={() =>
-                              this.setState({isModalMeterVisible: false})
+                              this.setState({ isModalMeterVisible: false })
                             }>
                             <View style={styles.cancelBotton}>
                               <Plus name="close" color="black" size={18} />
@@ -2921,15 +3027,10 @@ export default class Splash extends Component {
                             </View>
                           </TouchableOpacity>
                           <TouchableOpacity
-                            onPress={() =>
-                              console.log(
-                                'Meter Type data',
-                                this.state.meterTypeData,
-                              )
-                            }>
+                            onPress={this.handleSaveMeterTypeBuilder}>
                             <View style={styles.submitBotton}>
                               <Plus name="plus" color="white" size={18} />
-                              <Text style={{ color: 'white' }}>Add Unit</Text>
+                              <Text style={{ color: 'white' }}>Save</Text>
                             </View>
                           </TouchableOpacity>
                         </View>
@@ -3665,11 +3766,11 @@ export default class Splash extends Component {
               keyExtractor={item => item.id.toString()}
             /> */}
             {loader ? (
-              <View style={{width: width * 0.55, justifyContent: 'center'}}>
+              <View style={{ width: width * 0.55, justifyContent: 'center' }}>
                 <ActivityIndicator size="large" color="black" />
               </View>
             ) : this.state.dataBuild.length == 0 ? (
-              <View style={{width: width * 0.55, justifyContent: 'center'}}>
+              <View style={{ width: width * 0.55, justifyContent: 'center' }}>
                 <Text
                   style={{
                     fontSize: width * 0.04,
