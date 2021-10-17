@@ -392,7 +392,7 @@ export default styles = StyleSheet.create({
     height: height * 0.05,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     margin: width * 0.01,
     padding: width * 0.015,
     borderRadius: width * 0.02,
