@@ -1,10 +1,11 @@
 import React from 'react';
 import Context from './propContext';
-import { create } from 'apisauce';
+import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 import clc from 'cli-color';
+import {Alert} from 'react-native';
 
 // const baseURL = 'http://51.178.36.223/api';
 
@@ -16,53 +17,40 @@ class GlobalState extends React.Component {
   }
 
   getToken = async () => {
-    console.log("Get Token")
+    console.log('Get Token');
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       // console.log('token aya', token);
-      this.setState({ token: token });
+      this.setState({token: token});
       this.api = create({
         baseURL: Base_URL,
-        headers: { Authorization: 'Bearer ' + token },
+        headers: {Authorization: 'Bearer ' + token},
       });
       this.checkData();
     }
   };
 
-  loadMoreData = async () => {
-    // console.log('load More Data');
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      this.setState({ token: token });
-      this.api = create({
-        baseURL: Base_URL,
-        headers: { Authorization: 'Bearer ' + token },
-      });
-      let data = {
-        offset: 10,
-      };
-      const response = await this.api.post('/property/all', data);
-      this.setState({
-        propList: [...this.state.propList, response.data.data.properties],
-      });
-    }
-  };
+ 
 
   clearData = () => {
-    this.setState({ propList: [] });
+    this.setState({propList: []});
   };
 
   checkData = async () => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let data = {
       offset: 0,
     };
     const response = await this.api.post('/property/all', data);
-    console.log('respone property===>',response)
-    this.setState({ success: response.data.bool });
-    this.setState({ propList: response.data.data.properties });
-    this.setState({ isLoading: false });
+    console.log('respone property===>', response);
+    this.setState({success: response.data.bool});
+    if (response?.data?.bool) {
+      this.setState({propList: response.data.data.properties});
+      this.setState({isLoading: false});
+    } else {
+      Alert.alert('Error', 'Network Issues');
+      this.setState({isLoading: false});
+    }
   };
 
   state = {
@@ -745,10 +733,15 @@ class GlobalState extends React.Component {
     // console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
       console.log(res.data);
+      if (res?.data?.bool) {
+        this.checkData();
+      } else {
+        Alert.alert('Error', 'Network Issues');
+      }
     });
 
-    const response = await this.api.post('/property/all');
-    this.setState({ propList: response.data.data.properties });
+    // const response = await this.api.post('/property/all');
+    // this.setState({propList: response.data.data.properties});
   };
 
   addUnits = (info) => {
@@ -772,7 +765,10 @@ class GlobalState extends React.Component {
     //   name: building.newBuildName,
     //   list: building.newBuildUnits,
     // });
-    const unitResponse = this.api.post(`/property/equipment/building/add-building`, building);
+    const unitResponse = this.api.post(
+      `/property/equipment/building/add-building`,
+      building,
+    );
     console.log('Check unitResponse buildings--->', unitResponse);
   };
 
@@ -805,7 +801,7 @@ class GlobalState extends React.Component {
     this.setState(
       Object.assign(
         this.state.propList[editData.indexUnits].dataTop[editData.indexBuild],
-        { list: some_array },
+        {list: some_array},
       ),
     );
     // console.log('Kiya Edit Howa', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
@@ -818,11 +814,13 @@ class GlobalState extends React.Component {
     const response = await this.api.get('/property/billing-company/all');
     console.log('Check response', response?.data?.data?.billingCompany);
     // this.setState({ success: response.data.bool });
-    this.setState({ itemList: response?.data?.data?.billingCompany });
+    this.setState({itemList: response?.data?.data?.billingCompany});
   };
 
   showBuildings = async (data) => {
-    const response = await this.api.get(`/property/equipment/building/all-buildings/28303`);
+    const response = await this.api.get(
+      `/property/equipment/building/all-buildings/28303`,
+    );
     console.log('Check response buildings--->', response);
     // console.log('Check response buildings--->', `/property/equipment/building/all-buildings/${data}`);
 
@@ -865,7 +863,6 @@ class GlobalState extends React.Component {
             jumpToDetail: this.jumpToDetail,
             checkData: this.checkData,
             getToken: this.getToken,
-            loadMoreData: this.loadMoreData,
             getBillingCompany: this.getBillingCompany,
             clearData: this.clearData,
             showBuildings: this.showBuildings,
@@ -878,4 +875,4 @@ class GlobalState extends React.Component {
   }
 }
 
-export { GlobalState };
+export {GlobalState};
