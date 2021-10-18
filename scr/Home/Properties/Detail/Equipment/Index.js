@@ -922,6 +922,25 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({visible: true});
   };
+  showTypesOfMeter = (item,index) => {
+    // this.setState({typeOfMetersVisible: true});
+    // let newArr = [...this.state.meterListData]; // copying the old datas array
+    // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
+    // this.setState({ meterListData: newArr }
+    //   ,
+    //   () => console.log('e--->', this.state.meterListData));
+  };
+  hideTypesOfMeter = () => {
+    this.setState({typeOfMetersVisible: false});
+  };
+  onGetMeterTypeId = (item,index) => {
+    this.setState({typeOfMetersVisible: false})
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+    this.setState({ meterListData: newArr }
+      ,
+      () => console.log('e--->', this.state.meterListData));
+  }
 
   naviagateToDetail = () => {
     // this.toggleModal();
@@ -1346,6 +1365,120 @@ export default class Splash extends Component {
     // console.log(newArr[index],'mter types') // replace e.target.value with whatever you want to change it to
     newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
     this.setState({meterListData: newArr});
+  };
+  toggleScanner = async (value) => {
+    this.setState({scanIndex: value});
+    try {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      if (granted === true) {
+        this.setState({hasAccess: true});
+        this.setState({isScannerVisible: true});
+        this.setState({scanResult: false});
+        this.setState({scan: true});
+        console.log('Access');
+      } else {
+        this.setState({hasAccess: false});
+        Alert.alert(
+          "You don't have access for the Camera",
+          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+        );
+        console.log('Denied');
+      }
+      return granted;
+    } catch (err) {
+      alert(err);
+    }
+  };
+  onScanned = (e) => {
+    const check = e.data.substring(0, 4);
+
+    // this.setState({
+    //   result: e,
+    //   newSerial: e.data,
+    //   scan: false,
+    //   // scanResult: true,
+    //   isScannerVisible: false,
+    // })
+    if (check == 'http') {
+      Linking.openURL(e.data).catch((err) =>
+        console.error('An error occured', err),
+      );
+    } else {
+      let newArr = [...this.state.meterListData]; // copying the old datas array
+      newArr[this.state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
+      this.setState({meterListData: newArr}, () =>
+        console.log('e--->', this.state.meterListData),
+      );
+      this.setState({
+        result: e,
+        scan: false,
+        newSerial: e.data,
+        isScannerVisible: false,
+      });
+
+      setTimeout(() => {
+        RNBeep.beep(false);
+      }, 500);
+    }
+  };
+  addMeterInNewArray = async (value) => {
+    this.setState({visible: false});
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const data = {
+      id: value.id,
+      deviceSerialNum: '',
+      deviceSerialError: '',
+      meterType: [],
+      meterTypeError: '',
+      meterAttachedTo: '',
+      meterAttachedError: '',
+      meterSerialNum: '',
+      customMeterId: '',
+      name: value.name,
+      icon: value.icon,
+      meterTypeMenu:false
+    };
+    const newArray = [...this.state.meterListData];
+    newArray.push(data);
+    this.setState({meterListData: newArray});
+    const newList = this.state.meterListArray.filter(
+      (item) => item.id !== value.id,
+    );
+    this.setState({meterListArray: newList});
+    const unitResponse = await this.api.get(
+      `/property/equipment/type/all-types`,
+    );
+    console.log('Check types add--->', unitResponse.data);
+    this.setState({typeOfMeters: unitResponse?.data?.data}, () =>
+      console.log('Meter Type Of_______', this.state.typeOfMeters),
+    );
+  };
+
+  deleteMeterInNewArray = (value) => {
+    const newList = this.state.meterListData.filter(
+      (item) => item.id !== value.id,
+    );
+    this.setState({meterListData: newList});
+
+    const data = {
+      id: value.id,
+      name: value.name,
+      icon: value.icon,
+    };
+    const newArray = [...this.state.meterListArray];
+    newArray.push(data);
+    this.setState({meterListArray: newArray});
+  };
+  onChangeMultipleField = (e, index) => {
+    // console.log('index: ' + index);
+    // console.log('property name: ' + e.target.value);
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
+    this.setState({meterListData: newArr}, () =>
+      console.log('e--->', this.state.meterListData),
+    );
   };
   toggleScanner = async (value) => {
     this.setState({scanIndex: value});
