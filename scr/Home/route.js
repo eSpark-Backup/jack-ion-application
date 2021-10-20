@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   View,
   ScrollView,
@@ -11,18 +11,19 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import { createStackNavigator } from "react-navigation-stack";
+import {createStackNavigator} from 'react-navigation-stack';
 // import { NavigationContainer } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
-import ionMain from "./Index";
-import DashBoard from "./DashBoard/Index";
-import Properties from "./Properties/Properties";
-import Detail from "./Properties/Detail/Profile";
-import Equip from "./Properties/Detail/Equipment/Units";
-import Charts from "./Properties/Detail/Charts/Index";
+import ionMain from './Index';
+import DashBoard from './DashBoard/Index';
+import Properties from './Properties/Properties';
+import Detail from './Properties/Detail/Profile';
+import Equip from './Properties/Detail/Equipment/Units';
+import Charts from './Properties/Detail/Charts/Index';
 import Support from '../ContactUs/Index';
 import Setting from '../settings/Index';
-const { width, height } = Dimensions.get('window');
+import U_Details from './Properties/Detail/Equipment/Units/Details/index';
+const {width, height} = Dimensions.get('window');
 // import { Fonts } from '../../utils/fonts';
 import TabIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 // const Stack = createStackNavigator();
@@ -47,13 +48,14 @@ import TabIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 const IonNavigatorConfig = {
   initialRouteName: 'ionMain',
   defaultNavigationOptions: {
-    headerShown: false
+    headerShown: false,
   },
   navigationOptions: {
     tabBarLabel: 'Home',
-    tabBarIcon: ({ tintColor }) => (
-      <TabIcon name="home-circle" color={tintColor} size={height * .035} />)
-  }
+    tabBarIcon: ({tintColor}) => (
+      <TabIcon name="home-circle" color={tintColor} size={height * 0.035} />
+    ),
+  },
 };
 
 const RouteConfigs = {
@@ -65,6 +67,7 @@ const RouteConfigs = {
   Charts,
   Support,
   Setting,
+  U_Details,
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);
