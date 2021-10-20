@@ -169,7 +169,10 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
   },
   dropDown: {
-    height: 40,
+    flexDirection: 'row',
+    height: height * .05,
+    justifyContent: 'space-around',
+    alignItems: 'center',
     borderWidth: height * 0.0015,
     borderColor: 'purple',
     backgroundColor: 'white',
@@ -285,7 +288,7 @@ export default styles = StyleSheet.create({
   mUnitboxConatainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: height * 0.75,
+    height: height * 0.6,
     borderRadius: width * 0.02,
     // width: width * .85,
   },
@@ -433,7 +436,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
   },
   meterDesciptionContainer: {
-    height: height * 0.04,
+    height: height * 0.042,
     width: width * 0.7,
     alignSelf: 'center',
     justifyContent: 'flex-end',
@@ -460,7 +463,7 @@ export default styles = StyleSheet.create({
     fontSize: height * 0.018,
   },
   utilityInScrHeadView: {
-    flexDirection:'row',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomWidth: width * 0.001,
@@ -536,8 +539,11 @@ export default styles = StyleSheet.create({
   },
   propDeviceText: {
     paddingLeft: width * 0.02,
-    fontSize: height * 0.02,
+    fontSize: width * 0.031,
     color: 'purple',
     fontFamily: Fonts.WorkSansRegular,
+  },
+  textCapitalize: {
+    textTransform: 'capitalize',
   },
 });
