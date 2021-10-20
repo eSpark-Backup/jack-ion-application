@@ -64,6 +64,7 @@ import {color} from 'react-native-reanimated';
 import {ActivityIndicator} from 'react-native';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-navigation';
+import clc from 'cli-color';
 const {width, height} = Dimensions.get('window');
 let listViewRef;
 
@@ -922,7 +923,7 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({visible: true});
   };
-  showTypesOfMeter = (item,index) => {
+  showTypesOfMeter = (item, index) => {
     // this.setState({typeOfMetersVisible: true});
     // let newArr = [...this.state.meterListData]; // copying the old datas array
     // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
@@ -933,14 +934,14 @@ export default class Splash extends Component {
   hideTypesOfMeter = () => {
     this.setState({typeOfMetersVisible: false});
   };
-  onGetMeterTypeId = (item,index) => {
-    this.setState({typeOfMetersVisible: false})
+  onGetMeterTypeId = (item, index) => {
+    this.setState({typeOfMetersVisible: false});
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }
-      ,
-      () => console.log('e--->', this.state.meterListData));
-  }
+    this.setState({meterListData: newArr}, () =>
+      console.log('e--->', this.state.meterListData),
+    );
+  };
 
   naviagateToDetail = () => {
     // this.toggleModal();
@@ -1438,7 +1439,7 @@ export default class Splash extends Component {
       customMeterId: '',
       name: value.name,
       icon: value.icon,
-      meterTypeMenu:false
+      meterTypeMenu: false,
     };
     const newArray = [...this.state.meterListData];
     newArray.push(data);
@@ -1620,9 +1621,11 @@ export default class Splash extends Component {
     this.setState({arrays});
     console.log('Index oF List', index);
   };
-  actionOnPress = (unit) => {
-    console.log('Selected :', unit);
 
+  //todo: Unit Click Event +++++++++++++++++++++++
+  actionOnPress = (unit) => {
+    this.props.navigation.navigate('U_Details');
+    console.log(clc.cyan('Selected :', unit.item.id));
     // console.log("Pressed :", index)
     // if (item?.pressItem == item.id) {
     //   alert("wppdfl")
@@ -1708,6 +1711,8 @@ export default class Splash extends Component {
       ? styles.barcodeHide
       : styles.programDevice;
   };
+
+  //todo: Units List
 
   _renderMyList = (unit) => {
     this.checkValues(unit);
@@ -2327,18 +2332,14 @@ export default class Splash extends Component {
                   <TouchableOpacity
                     style={styles.dropDown}
                     onPress={this.changeLayoutMeter}>
-                      <Message
-                        name="file"
-                        size={height * 0.025}
-                        color="purple"
-                      />
-                      <Text style={styles.dropDownText}>File</Text>
-                      <Message
-                        name="chevron-down"
-                        size={height * 0.02}
-                        color="purple"
-                        style={{marginLeft: width * 0.02}}
-                      />
+                    <Message name="file" size={height * 0.025} color="purple" />
+                    <Text style={styles.dropDownText}>File</Text>
+                    <Message
+                      name="chevron-down"
+                      size={height * 0.02}
+                      color="purple"
+                      style={{marginLeft: width * 0.02}}
+                    />
                   </TouchableOpacity>
                   <View
                     style={[
@@ -2382,18 +2383,14 @@ export default class Splash extends Component {
                   <TouchableOpacity
                     style={styles.dropDown}
                     onPress={this.changeLayoutMeter2}>
-                      <Message
-                        name="plus"
-                        size={height * 0.025}
-                        color="purple"
-                      />
-                      <Text style={styles.dropDownText}>Add</Text>
-                      <Message
-                        name="chevron-down"
-                        size={height * 0.02}
-                        color="purple"
-                        style={{marginLeft: width * 0.02}}
-                      />
+                    <Message name="plus" size={height * 0.025} color="purple" />
+                    <Text style={styles.dropDownText}>Add</Text>
+                    <Message
+                      name="chevron-down"
+                      size={height * 0.02}
+                      color="purple"
+                      style={{marginLeft: width * 0.02}}
+                    />
                   </TouchableOpacity>
                   <View
                     style={[
