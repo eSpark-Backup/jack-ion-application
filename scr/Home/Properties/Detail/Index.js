@@ -18,10 +18,12 @@ import {
   UIManager,
   // Button,
   Pressable,
+  Alert,
 } from 'react-native';
 
 //Packages
 import LinearGradient from 'react-native-linear-gradient';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Menu from 'react-native-vector-icons/Entypo';
 import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
@@ -219,7 +221,7 @@ export default class Splash extends React.Component {
     );
     this.context.editProperty(this.state.data);
   };
-  editProp = () => {
+  editProp = async () => {
     if (this.state?.listData?.name === '') {
       this.setState((prevState) => ({
         ...prevState,
@@ -314,7 +316,6 @@ export default class Splash extends React.Component {
           zipcode: false, // update the value of specific key
         },
       }));
-      this.toggleModalEditProp();
       const data = {
         property_id: this.state.listData.property_id,
         zipcode: this.state.listData.zipcode,
@@ -322,13 +323,35 @@ export default class Splash extends React.Component {
         street: this.state.listData.street,
         city: this.state.listData.city,
       };
-      this.context.editProperty(data);
 
-      api
-        .patch(`/property/update/${this.state?.listData?.id}`, data)
-        .then((res) => {
-          console.log(res.data);
-        });
+      const token = await EncryptedStorage.getItem('user_token');
+
+      this.api = create({
+        baseURL: Base_URL,
+        headers: {Authorization: 'Bearer ' + token},
+      });
+
+      const response = await this.api.patch(
+        `/property/update/${this.state?.listData?.id}`,
+        data,
+      );
+      console.log(response?.data);
+      if (response?.data?.bool) {
+        this.toggleModalEditProp();
+      } else {
+        Alert.alert('Error', 'Network Issues');
+      }
+
+      // api
+      //   .patch(`/property/update/${this.state?.listData?.id}`, data)
+      //   .then((res) => {
+      //     console.log(res.data);
+      //     if (res?.data?.bool) {
+      //       this.toggleModalEditProp();
+      //     } else {
+      //       Alert.alert('Error', 'Network Issues');
+      //     }
+      //   });
       // this.props.navigation.navigate('Properties');
     }
   };

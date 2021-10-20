@@ -82,7 +82,7 @@ export default class Login extends Component {
         errPass: '*Incorrect Username or Password',
         isLoading: false,
       });
-    } else if (response.ok) {
+    } else if (response?.ok) {
       this.storeToken(response.data.data.token); //todo: Token Saved this point
       this.props.navigation.navigate('Home');
       this.setState({
