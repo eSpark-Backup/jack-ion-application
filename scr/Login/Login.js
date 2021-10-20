@@ -184,9 +184,12 @@ export default class Login extends Component {
                 </View>
                 <View
                   style={{
-                    width: width * 0.75,
+                    width: width,
                     marginBottom: height * 0.02,
-                    marginLeft: width * 0.15,
+                    // marginLeft: width * 0.15,
+                    // justifyContent: 'center',
+                    alignItems: 'center',
+                    // backgroundColor: 'blue',
                   }}>
                   {touched.email ? (
                     <Text style={{color: 'red'}}>
@@ -227,9 +230,10 @@ export default class Login extends Component {
                 </View>
                 <View
                   style={{
-                    width: width * 0.75,
+                    width: width,
                     marginBottom: height * 0.05,
-                    marginLeft: width * 0.15,
+                    alignItems: 'center',
+                    // marginLeft: width * 0.15,
                   }}>
                   {touched.password ? (
                     <Text style={{color: 'red'}}>
@@ -280,13 +284,16 @@ export default class Login extends Component {
                   this.setState({errName: '', errPass: ''});
                 }, 100);
               }}>
-              <Text
-                style={{
-                  fontSize: height * 0.022,
-                  fontFamily: Fonts.Montserrat,
-                }}>
-                Not a Member Yet? Contact Administrator
-              </Text>
+              <View style={{width: width * 0.75, alignItems: 'center'}}>
+                <Text
+                  style={{
+                    fontSize: height * 0.022,
+                    fontFamily: Fonts.Montserrat,
+                    textAlign: 'center',
+                  }}>
+                  Not a Member Yet? Contact Administrator
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
           <StatusBar
