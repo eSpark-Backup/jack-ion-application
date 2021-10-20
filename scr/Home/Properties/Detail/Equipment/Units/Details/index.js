@@ -15,11 +15,38 @@ const {width, height} = Dimensions.get('window');
 const unitData = [
   {
     title: 'Unit',
-    data: [{icon: 'home', name: 'Name'}],
+    data: [
+      {
+        leftIcon: 'home',
+        leftName: 'Name',
+        rightIcon: null,
+        rightName: 'Unit 1',
+      },
+      {
+        leftIcon: 'drops',
+        leftName: 'Utility Type',
+        rightIcon: 'chevron-down',
+        rightName: 'All Water',
+      },
+      {
+        leftIcon: 'building',
+        leftName: 'Building',
+        rightIcon: 'chevron-down',
+        rightName: 'Bluegrass MHP',
+      },
+      {
+        leftIcon: 'board',
+        leftName: 'Notes',
+        rightIcon: 'chevron-right',
+        rightName: null,
+      },
+    ],
   },
 ];
 
 const App = ({navigation}) => {
+  const renderUnitList = () => {};
+
   return (
     <View style={styles.container}>
       <Header
@@ -86,7 +113,13 @@ const App = ({navigation}) => {
           onPress={() => console.log('Quick Actions Press')}
         />
       </View>
-      <List />
+      {/* <SectionList
+        sections={unitData}
+        keyExtractor={(item, index) => item + index}
+        renderItem={renderUnitList}
+        renderSectionHeader={({section: {title}}) => (
+          <Text>{title}</Text>
+        )}></SectionList> */}
     </View>
   );
 };
