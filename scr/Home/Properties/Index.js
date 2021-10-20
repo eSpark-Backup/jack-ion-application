@@ -169,12 +169,14 @@ export default class Splash extends Component {
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
           <View style={styles.dropView}>
-            <TouchableOpacity onPress={() => this.jumpToDetail({prop, item: prop})}>
+            <TouchableOpacity
+              onPress={() => this.jumpToDetail({prop, item: prop})}>
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
+                  width: width * 0.4,
                   height: height * 0.15,
-                  paddingHorizontal: width * 0.02,
+                  // paddingHorizontal: width * 0.02,
                   justifyContent: 'center',
                   alignItems: 'center',
                   elevation: width * 0.003,
@@ -184,7 +186,7 @@ export default class Splash extends Component {
                 <Text
                   style={{
                     fontFamily: Fonts.Handlee,
-                    fontSize: height * 0.03,
+                    fontSize: width * 0.051,
                     color: 'white',
                   }}>
                   Property Profile
@@ -196,8 +198,9 @@ export default class Splash extends Component {
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
+                  width: width * 0.4,
                   height: height * 0.15,
-                  paddingHorizontal: width * 0.02,
+                  // paddingHorizontal: width * 0.02,
                   justifyContent: 'center',
                   alignItems: 'center',
                   elevation: width * 0.003,
@@ -207,7 +210,7 @@ export default class Splash extends Component {
                 <Text
                   style={{
                     fontFamily: Fonts.Handlee,
-                    fontSize: height * 0.03,
+                    fontSize: width * 0.051,
                     color: 'white',
                   }}>
                   Property Units
@@ -286,7 +289,7 @@ export default class Splash extends Component {
             removeClippedSubviews={false}
             maxToRenderPerBatch={150}
             windowSize={100}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}
             // ListFooterComponent={() =>
             //   this.state.Loading ? (
