@@ -22,6 +22,7 @@ import Equip from './Properties/Detail/Equipment/Units';
 import Charts from './Properties/Detail/Charts/Index';
 import Support from '../ContactUs/Index';
 import Setting from '../settings/Index';
+import Filter from './Properties/Filter/index';
 import U_Details from './Properties/Detail/Equipment/Units/Details/index';
 const {width, height} = Dimensions.get('window');
 // import { Fonts } from '../../utils/fonts';
@@ -67,6 +68,7 @@ const RouteConfigs = {
   Charts,
   Support,
   Setting,
+  Filter,
   U_Details,
 };
 
