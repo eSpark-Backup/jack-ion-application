@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -15,155 +15,191 @@ import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import {View as MotiView} from 'moti';
+import {create} from 'apisauce';
+import Base_Url from '../../../../../../api/WebServices';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import Loader from '../../../../../../components/Loader';
 
 // Components
 import styles from './style';
 import {Divider} from 'react-native-paper';
+import {color} from 'react-native-reanimated';
 const {width, height} = Dimensions.get('window');
 
-const unitData = [
-  {
-    title: 'Unit',
-    data: [
-      {
-        leftIcon: 'home',
-        leftName: 'Name',
-        rightIcon: null,
-        rightName: 'Unit 1',
-        type: 'feather',
-        typeRight: 'feather',
-      },
-      {
-        leftIcon: 'md-water-outline',
-        leftName: 'Utility Type',
-        rightIcon: 'chevron-down',
-        rightName: 'All Water',
-        type: 'ionicon',
-        typeRight: 'feather',
-      },
-      {
-        leftIcon: 'building',
-        leftName: 'Building',
-        rightIcon: 'chevron-down',
-        rightName: 'Bluegrass MHP',
-        type: 'font-awesome-5',
-        typeRight: 'feather',
-      },
-      {
-        leftIcon: 'ios-clipboard-outline',
-        leftName: 'Notes',
-        rightIcon: 'chevron-right',
-        rightName: null,
-        type: 'ionicon',
-        typeRight: 'feather',
-      },
-    ],
-  },
-];
-
-const remoteReaderData = [
-  {
-    title: 'Remote Reader',
-    data: [
-      {
-        leftName: 'Serial Number',
-        rightIcon: 'barcode-outline',
-        rightName: 'EA036EA1',
-        type: 'ionicon',
-        rightIcon2: null,
-      },
-      {
-        leftName: 'Status',
-        rightIcon2: 'check',
-        rightIcon: 'chevron-down',
-        rightName: 'Good',
-        type: 'feather',
-        text: 'As of 5 hours ago',
-      },
-    ],
-  },
-];
-
-const meterTypeData = [
-  {
-    title: 'All Water Meter',
-    data: [
-      {
-        leftName: 'Type',
-        rightName: 'PD19 Poly (x1 Gallons)',
-        rightIcon: 'chevron-down',
-        type: 'feather',
-      },
-    ],
-  },
-];
-
-const meterInfoData = [
-  {
-    leftText: 'Manufacturer',
-    rightText: 'MTX',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'Model',
-    rightText: 'PD19 Poly',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'Unit of Measure',
-    rightText: 'Gallons',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'Multiplier',
-    rightText: '1',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'Size',
-    rightText: 'Tap to Add',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'Meter Serial',
-    rightText: 'S/N19002596',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'Custom ID',
-    rightText: 'Tap to Add',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  {
-    leftText: 'IMR',
-    rightText: '21',
-    leftIcon: null,
-    rightIcon: 'chevron-down',
-    type: 'feather',
-  },
-  // {leftText: 'Photo', rightText: null, img: '', leftIcon: null, rightIcon: 'chevron-down', type: 'feather'},
-];
+const api = create({
+  baseURL: Base_Url,
+});
 
 const App = ({navigation}) => {
   const [dangerView, setDangerView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState({});
 
+  const {unitId, buildingName} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params);
+
+  const testId = '105';
+
+  const unitData = [
+    {
+      title: 'Unit',
+      data: [
+        {
+          leftIcon: 'home',
+          leftName: 'Name',
+          rightIcon: null,
+          rightName: 'Unit 1',
+          type: 'feather',
+          typeRight: 'feather',
+        },
+        {
+          leftIcon: 'md-water-outline',
+          leftName: 'Utility Type',
+          rightIcon: 'chevron-down',
+          rightName: 'All Water',
+          type: 'ionicon',
+          typeRight: 'feather',
+        },
+        {
+          leftIcon: 'building',
+          leftName: 'Building',
+          rightIcon: 'chevron-down',
+          rightName: 'Bluegrass MHP',
+          type: 'font-awesome-5',
+          typeRight: 'feather',
+        },
+        {
+          leftIcon: 'ios-clipboard-outline',
+          leftName: 'Notes',
+          rightIcon: 'chevron-right',
+          rightName: null,
+          type: 'ionicon',
+          typeRight: 'feather',
+        },
+      ],
+    },
+  ];
+
+  const remoteReaderData = [
+    {
+      title: 'Remote Reader',
+      data: [
+        {
+          leftName: 'Serial Number',
+          rightIcon: 'barcode-outline',
+          rightName: 'EA036EA1',
+          type: 'ionicon',
+          rightIcon2: null,
+        },
+        {
+          leftName: 'Status',
+          rightIcon2: 'check',
+          rightIcon: 'chevron-down',
+          rightName: 'Good',
+          type: 'feather',
+          text: 'As of 5 hours ago',
+        },
+      ],
+    },
+  ];
+
+  const meterTypeData = [
+    {
+      title: 'All Water Meter',
+      data: [
+        {
+          leftName: 'Type',
+          rightName: 'PD19 Poly (x1 Gallons)',
+          rightIcon: 'chevron-down',
+          type: 'feather',
+        },
+      ],
+    },
+  ];
+
+  const meterInfoData = [
+    {
+      leftText: 'Manufacturer',
+      rightText: 'MTX',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'Model',
+      rightText: 'PD19 Poly',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'Unit of Measure',
+      rightText: 'Gallons',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'Multiplier',
+      rightText: '1',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'Size',
+      rightText: 'Tap to Add',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'Meter Serial',
+      rightText: 'S/N19002596',
+      leftIcon: 'barcode-outline',
+      leftType: 'ionicon',
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'Custom ID',
+      rightText: 'Tap to Add',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+    {
+      leftText: 'IMR',
+      rightText: '21',
+      leftIcon: null,
+      rightIcon: 'chevron-down',
+      type: 'feather',
+    },
+  ];
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  const getUnitDetail = async () => {
+    const res = await api.get(`/property/equipment/unit/${testId}`);
+    console.log('Kia ha Response', res);
+    console.log('Kia ha Response Data', res.data);
+    setLoading(false);
+  };
+
+  const getToken = async () => {
+    setLoading(true);
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      console.log('token aya', token);
+      // this.setState({token: token});
+      api.setHeader('Authorization', 'Bearer ' + token);
+      getUnitDetail();
+    }
+  };
 
   const renderUnitList = ({item, index}) => {
     return (
@@ -173,19 +209,23 @@ const App = ({navigation}) => {
             <Icon
               name={item.leftIcon}
               type={item.type}
-              size={20}
-              color="#000"
+              size={width * 0.05}
+              color={index == 1 ? 'rgb(90,134,183)' : '#000'}
               style={{alignSelf: 'center', marginRight: width * 0.03}}
             />
             <Text>{item.leftName}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
-            {item.rightName == null ? null : <Text>{item.rightName}</Text>}
+            {item.rightName == null ? null : (
+              <Text style={{color: index == 1 ? 'rgb(90,134,183)' : '#000'}}>
+                {item.rightName}
+              </Text>
+            )}
             {item.rightIcon == null ? null : (
               <Icon
                 name={item.rightIcon}
                 type={item.typeRight}
-                size={20}
+                size={width * 0.05}
                 color="#000"
                 style={{alignSelf: 'center'}}
               />
@@ -234,7 +274,7 @@ const App = ({navigation}) => {
                   <Icon
                     name={item.rightIcon2}
                     type={item.type}
-                    size={20}
+                    size={width * 0.05}
                     color="#0fc908"
                     style={{marginRight: width * 0.01}}
                   />
@@ -246,7 +286,7 @@ const App = ({navigation}) => {
               <Icon
                 name={item.rightIcon}
                 type={item.type}
-                size={20}
+                size={width * 0.05}
                 color="#000"
                 style={{alignSelf: 'center'}}
               />
@@ -283,7 +323,12 @@ const App = ({navigation}) => {
               <View style={{flexDirection: 'column'}}>
                 <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text style={{textAlign: 'right'}}>{item.rightName}</Text>
+                    <Text
+                      style={{
+                        textAlign: 'right',
+                      }}>
+                      {item.rightName}
+                    </Text>
                   )}
                 </View>
               </View>
@@ -291,7 +336,7 @@ const App = ({navigation}) => {
                 <Icon
                   name={item.rightIcon}
                   type={item.type}
-                  size={20}
+                  size={width * 0.05}
                   color="#000"
                   style={{alignSelf: 'center'}}
                 />
@@ -314,15 +359,31 @@ const App = ({navigation}) => {
 
   const renderMeterInfo = ({item}) => {
     return (
-      <View style={{backgroundColor: '#5c5c5ccf'}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text>{item.leftText}</Text>
+      <View style={{backgroundColor: '#605c5c24'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: width * 0.04,
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            <Text>{item.leftText}</Text>
+            {item.leftIcon == null ? null : (
+              <Icon
+                name={item.leftIcon}
+                type={item.leftType}
+                size={width * 0.05}
+                color={'rgb(90,134,183)'}
+                style={{marginLeft: width * 0.03, alignSelf: 'center'}}
+              />
+            )}
+          </View>
           <View style={{flexDirection: 'row'}}>
             <Text>{item.rightText}</Text>
             <Icon
               name={item.rightIcon}
               type={item.type}
-              size={20}
+              size={width * 0.05}
               color="#000"
               style={{alignSelf: 'center'}}
             />
@@ -334,6 +395,7 @@ const App = ({navigation}) => {
 
   return (
     <ScrollView>
+      {loading ? <Loader /> : null}
       <View style={styles.container}>
         <Header
           leftComponent={{
@@ -345,11 +407,11 @@ const App = ({navigation}) => {
             <View style={{flexDirection: 'row'}}>
               <Home
                 name="home"
-                size={20}
+                size={width * 0.05}
                 color="#000"
                 style={{alignSelf: 'center', marginRight: width * 0.01}}
               />
-              <Text style={{fontSize: 20}}>Units Details</Text>
+              <Text style={{fontSize: width * 0.05}}>Units Details</Text>
             </View>
           }
           rightComponent={{
@@ -589,15 +651,27 @@ const App = ({navigation}) => {
                 }}
               />
             </>
-          )}>
-          {opened ? (
-            <FlatList
-              data={meterInfoData}
-              keyExtractor={(item, index) => item + index}
-              renderItem={renderMeterInfo}
-            />
-          ) : null}
-        </SectionList>
+          )}
+        />
+        {opened ? (
+          <FlatList
+            style={{width: width, bottom: width * 0.02}}
+            data={meterInfoData}
+            keyExtractor={(item, index) => item + index}
+            renderItem={renderMeterInfo}
+            ItemSeparatorComponent={() => (
+              <Divider
+                style={{
+                  width: width * 0.85,
+                  borderWidth: 0.2,
+                  right: width * 0.05,
+                  borderColor: '#8a8a8a6e',
+                }}
+                inset
+              />
+            )}
+          />
+        ) : null}
         <View>
           <View
             style={{
