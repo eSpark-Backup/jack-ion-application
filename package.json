@@ -23,6 +23,7 @@
     "axios": "^0.21.1",
     "cli-color": "^2.0.0",
     "formik": "^2.2.9",
+    "hermes-engine": "0.5.2-rc1",
     "moti": "^0.16.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
