@@ -1,15 +1,24 @@
-import React, {Component} from 'react';
-
-import {Text, View, Dimensions, SectionList} from 'react-native';
-import {Header, Button} from 'react-native-elements';
+import React, {useState} from 'react';
+import {
+  Text,
+  View,
+  Dimensions,
+  SectionList,
+  ScrollView,
+  TouchableOpacity,
+  LayoutAnimation,
+  FlatList,
+} from 'react-native';
+import {Header, Button, Icon} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
+import {View as MotiView} from 'moti';
 
 // Components
 import styles from './style';
-import style from '../../style';
+import {Divider} from 'react-native-paper';
 const {width, height} = Dimensions.get('window');
 
 const unitData = [
@@ -21,106 +30,663 @@ const unitData = [
         leftName: 'Name',
         rightIcon: null,
         rightName: 'Unit 1',
+        type: 'feather',
+        typeRight: 'feather',
       },
       {
-        leftIcon: 'drops',
+        leftIcon: 'md-water-outline',
         leftName: 'Utility Type',
         rightIcon: 'chevron-down',
         rightName: 'All Water',
+        type: 'ionicon',
+        typeRight: 'feather',
       },
       {
         leftIcon: 'building',
         leftName: 'Building',
         rightIcon: 'chevron-down',
         rightName: 'Bluegrass MHP',
+        type: 'font-awesome-5',
+        typeRight: 'feather',
       },
       {
-        leftIcon: 'board',
+        leftIcon: 'ios-clipboard-outline',
         leftName: 'Notes',
         rightIcon: 'chevron-right',
         rightName: null,
+        type: 'ionicon',
+        typeRight: 'feather',
       },
     ],
   },
 ];
 
-const App = ({navigation}) => {
-  const renderUnitList = () => {};
+const remoteReaderData = [
+  {
+    title: 'Remote Reader',
+    data: [
+      {
+        leftName: 'Serial Number',
+        rightIcon: 'barcode-outline',
+        rightName: 'EA036EA1',
+        type: 'ionicon',
+        rightIcon2: null,
+      },
+      {
+        leftName: 'Status',
+        rightIcon2: 'check',
+        rightIcon: 'chevron-down',
+        rightName: 'Good',
+        type: 'feather',
+        text: 'As of 5 hours ago',
+      },
+    ],
+  },
+];
 
-  return (
-    <View style={styles.container}>
-      <Header
-        leftComponent={{
-          text: 'Close',
-          style: {fontSize: width * 0.05, color: '#000'},
-          onPress: () => navigation.goBack(),
-        }}
-        centerComponent={
+const meterTypeData = [
+  {
+    title: 'All Water Meter',
+    data: [
+      {
+        leftName: 'Type',
+        rightName: 'PD19 Poly (x1 Gallons)',
+        rightIcon: 'chevron-down',
+        type: 'feather',
+      },
+    ],
+  },
+];
+
+const meterInfoData = [
+  {
+    leftText: 'Manufacturer',
+    rightText: 'MTX',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'Model',
+    rightText: 'PD19 Poly',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'Unit of Measure',
+    rightText: 'Gallons',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'Multiplier',
+    rightText: '1',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'Size',
+    rightText: 'Tap to Add',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'Meter Serial',
+    rightText: 'S/N19002596',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'Custom ID',
+    rightText: 'Tap to Add',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  {
+    leftText: 'IMR',
+    rightText: '21',
+    leftIcon: null,
+    rightIcon: 'chevron-down',
+    type: 'feather',
+  },
+  // {leftText: 'Photo', rightText: null, img: '', leftIcon: null, rightIcon: 'chevron-down', type: 'feather'},
+];
+
+const App = ({navigation}) => {
+  const [dangerView, setDangerView] = useState(false);
+  const [headView, setHeadView] = useState(false);
+  const [opened, setOpened] = useState(false);
+
+  console.log('aya kuch ++', navigation.state.params);
+
+  const renderUnitList = ({item, index}) => {
+    return (
+      <View style={{paddingVertical: width * 0.02}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View style={{flexDirection: 'row'}}>
-            <Home
-              name="home"
+            <Icon
+              name={item.leftIcon}
+              type={item.type}
               size={20}
               color="#000"
-              style={{alignSelf: 'center', marginRight: width * 0.01}}
+              style={{alignSelf: 'center', marginRight: width * 0.03}}
             />
-            <Text style={{fontSize: 20}}>Units Details</Text>
+            <Text>{item.leftName}</Text>
           </View>
-        }
-        rightComponent={{
-          text: 'Save',
-          style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
-        }}
-        backgroundColor="#fff"
-        containerStyle={{borderBottomWidth: width * 0.003, elevation: 1}}
-      />
-      <View style={styles.currentReadContainer}>
-        <Text style={{color: '#5c5c5ccf'}}>CURRENT READ</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: width,
-            marginVertical: width * 0.01,
-            paddingHorizontal: width * 0.04,
-          }}>
-          <Text style={{fontSize: width * 0.08, color: 'rgb(90,134,183)'}}>
-            3,782 Gallons
-          </Text>
-          <RightArrow
-            name="chevron-thin-right"
-            size={width * 0.08}
-            color="rgb(90,134,183)"
-            style={{alignSelf: 'center', marginRight: width * 0.01}}
+          <View style={{flexDirection: 'row'}}>
+            {item.rightName == null ? null : <Text>{item.rightName}</Text>}
+            {item.rightIcon == null ? null : (
+              <Icon
+                name={item.rightIcon}
+                type={item.typeRight}
+                size={20}
+                color="#000"
+                style={{alignSelf: 'center'}}
+              />
+            )}
+          </View>
+        </View>
+        {index == 0 ? (
+          <Divider
+            style={{
+              marginTop: height * 0.02,
+              width: width,
+              alignSelf: 'flex-start',
+              right: width * 0.07,
+              borderWidth: 0.2,
+            }}
           />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <Check name="check" size={width * 0.05} color="#0fc908" />
-          <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
-        </View>
+        ) : (
+          <Divider
+            style={{
+              marginTop: height * 0.02,
+              borderWidth: 0.2,
+              width: width * 0.855,
+              right: width * 0.1,
+            }}
+            inset
+          />
+        )}
       </View>
-      <View>
-        <Button
-          title="Quick Actions"
-          icon={
-            <Radio
-              name="radio"
-              size={width * 0.06}
-              color="#fff"
-              style={{marginRight: width * 0.025}}
-            />
-          }
-          buttonStyle={{backgroundColor: 'rgb(90,134,183)'}}
-          onPress={() => console.log('Quick Actions Press')}
+    );
+  };
+
+  const renderRemoteList = ({item, index}) => {
+    return (
+      <View style={{paddingVertical: width * 0.02}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'row'}}>
+            <Text>{item.leftName}</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'column'}}>
+              <View style={{flexDirection: 'row-reverse'}}>
+                {item.rightName == null ? null : (
+                  <Text style={{textAlign: 'right'}}>{item.rightName}</Text>
+                )}
+                {item.rightIcon2 == null ? null : (
+                  <Icon
+                    name={item.rightIcon2}
+                    type={item.type}
+                    size={20}
+                    color="#0fc908"
+                    style={{marginRight: width * 0.01}}
+                  />
+                )}
+              </View>
+              <Text style={{color: '#5c5c5ccf'}}>{item.text}</Text>
+            </View>
+            {item.rightIcon == null ? null : (
+              <Icon
+                name={item.rightIcon}
+                type={item.type}
+                size={20}
+                color="#000"
+                style={{alignSelf: 'center'}}
+              />
+            )}
+          </View>
+        </View>
+        <Divider
+          style={{
+            marginTop: height * 0.02,
+            borderWidth: 0.2,
+            width: width * 0.92,
+            right: width * 0.165,
+          }}
+          inset
         />
       </View>
-      {/* <SectionList
-        sections={unitData}
-        keyExtractor={(item, index) => item + index}
-        renderItem={renderUnitList}
-        renderSectionHeader={({section: {title}}) => (
-          <Text>{title}</Text>
-        )}></SectionList> */}
-    </View>
+    );
+  };
+
+  const openView = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setOpened(!opened);
+  };
+
+  const renderMeterType = ({item, index}) => {
+    return (
+      <TouchableOpacity onPress={() => openView()}>
+        <View style={{paddingVertical: width * 0.02}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text>{item.leftName}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'column'}}>
+                <View style={{flexDirection: 'row-reverse'}}>
+                  {item.rightName == null ? null : (
+                    <Text style={{textAlign: 'right'}}>{item.rightName}</Text>
+                  )}
+                </View>
+              </View>
+              {item.rightIcon == null ? null : (
+                <Icon
+                  name={item.rightIcon}
+                  type={item.type}
+                  size={20}
+                  color="#000"
+                  style={{alignSelf: 'center'}}
+                />
+              )}
+            </View>
+          </View>
+          <Divider
+            style={{
+              marginTop: height * 0.02,
+              borderWidth: 0.2,
+              width: width * 0.92,
+              right: width * 0.165,
+            }}
+            inset
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderMeterInfo = ({item}) => {
+    return (
+      <View style={{backgroundColor: '#5c5c5ccf'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text>{item.leftText}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text>{item.rightText}</Text>
+            <Icon
+              name={item.rightIcon}
+              type={item.type}
+              size={20}
+              color="#000"
+              style={{alignSelf: 'center'}}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <Header
+          leftComponent={{
+            text: 'Close',
+            style: {fontSize: width * 0.05, color: '#000'},
+            onPress: () => navigation.goBack(),
+          }}
+          centerComponent={
+            <View style={{flexDirection: 'row'}}>
+              <Home
+                name="home"
+                size={20}
+                color="#000"
+                style={{alignSelf: 'center', marginRight: width * 0.01}}
+              />
+              <Text style={{fontSize: 20}}>Units Details</Text>
+            </View>
+          }
+          rightComponent={{
+            text: 'Save',
+            style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
+          }}
+          backgroundColor="#fff"
+          containerStyle={{borderBottomWidth: width * 0.003, elevation: 1}}
+        />
+        {!headView && (
+          <MotiView
+            from={{
+              opacity: 0,
+              translateX: -500,
+            }}
+            animate={{
+              opacity: 1,
+              translateX: 0,
+            }}
+            style={styles.currentReadContainer}>
+            <Text style={{color: '#5c5c5ccf'}}>CURRENT READ</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: width,
+                marginVertical: width * 0.01,
+                paddingHorizontal: width * 0.04,
+              }}>
+              <Text style={{fontSize: width * 0.08, color: 'rgb(90,134,183)'}}>
+                3,782 Gallons
+              </Text>
+              <RightArrow
+                name="chevron-thin-right"
+                size={width * 0.08}
+                color="rgb(90,134,183)"
+                style={{alignSelf: 'center', marginRight: width * 0.01}}
+                onPress={() => setHeadView(!headView)}
+              />
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Check name="check" size={width * 0.05} color="#0fc908" />
+              <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
+            </View>
+          </MotiView>
+        )}
+        {headView && (
+          <MotiView
+            from={{
+              opacity: 0,
+              translateX: 500,
+            }}
+            animate={{
+              opacity: 1,
+              translateX: 0,
+            }}
+            style={[
+              styles.currentReadContainer,
+              {alignItems: 'center', justifyContent: 'center'},
+            ]}>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <RightArrow
+                name="chevron-thin-left"
+                size={width * 0.08}
+                color="rgb(90,134,183)"
+                style={{alignSelf: 'center', marginRight: width * 0.01}}
+                onPress={() => setHeadView(!headView)}
+              />
+              <View>
+                <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                  PULSES
+                </Text>
+                <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                  3,786
+                </Text>
+              </View>
+              <Text
+                style={{marginHorizontal: width * 0.02, color: '#5c5c5ccf'}}>
+                x
+              </Text>
+              <View>
+                <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                  MULTIPLIER
+                </Text>
+                <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                  1
+                </Text>
+              </View>
+              <Text
+                style={{marginHorizontal: width * 0.02, color: '#5c5c5ccf'}}>
+                +
+              </Text>
+              <View>
+                <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                  IMR
+                </Text>
+                <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                  21
+                </Text>
+              </View>
+              <Text
+                style={{marginHorizontal: width * 0.02, color: '#5c5c5ccf'}}>
+                =
+              </Text>
+              <View>
+                <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                  CURRENT READ
+                </Text>
+                <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                  3,807
+                </Text>
+              </View>
+            </View>
+          </MotiView>
+        )}
+        <View>
+          <Button
+            title="Quick Actions"
+            icon={
+              <Radio
+                name="radio"
+                size={width * 0.06}
+                color="#fff"
+                style={{marginRight: width * 0.025}}
+              />
+            }
+            buttonStyle={{backgroundColor: 'rgb(90,134,183)'}}
+            onPress={() => console.log('Quick Actions Press')}
+          />
+        </View>
+        {/*
+        //* Unit List
+        */}
+        <SectionList
+          style={{marginTop: height * 0.07}}
+          contentContainerStyle={{
+            width: width,
+            paddingHorizontal: width * 0.05,
+          }}
+          sections={unitData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderUnitList}
+          renderSectionHeader={({section: {title}}) => (
+            <>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text style={{fontSize: width * 0.07}}>{title}</Text>
+                <View
+                  style={{
+                    width: height * 0.05,
+                    height: height * 0.05,
+                    backgroundColor: 'blue',
+                    alignSelf: 'flex-end',
+                  }}
+                />
+              </View>
+              <Divider
+                style={{
+                  marginVertical: height * 0.02,
+                  width: width,
+                  borderWidth: 0.8,
+                }}
+              />
+            </>
+          )}
+        />
+        {/*
+        //* Remote Reader List
+        */}
+        <SectionList
+          style={{marginTop: height * 0.07}}
+          contentContainerStyle={{
+            width: width,
+            paddingHorizontal: width * 0.05,
+          }}
+          sections={remoteReaderData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderRemoteList}
+          renderSectionHeader={({section: {title}}) => (
+            <>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text style={{fontSize: width * 0.07}}>{title}</Text>
+                <View
+                  style={{
+                    width: height * 0.05,
+                    height: height * 0.05,
+                    backgroundColor: 'red',
+                    alignSelf: 'flex-end',
+                  }}
+                />
+              </View>
+              <Divider
+                style={{
+                  marginVertical: height * 0.02,
+                  width: width,
+                  borderWidth: 0.8,
+                }}
+              />
+            </>
+          )}
+        />
+        {/*
+        //* Meter Type List
+        */}
+        <SectionList
+          style={{marginTop: height * 0.07}}
+          contentContainerStyle={{
+            width: width,
+            paddingHorizontal: width * 0.05,
+          }}
+          sections={meterTypeData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderMeterType}
+          renderSectionHeader={({section: {title}}) => (
+            <>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text style={{fontSize: width * 0.07}}>{title}</Text>
+                <View
+                  style={{
+                    width: height * 0.05,
+                    height: height * 0.05,
+                    backgroundColor: 'red',
+                    alignSelf: 'flex-end',
+                  }}
+                />
+              </View>
+              <Divider
+                style={{
+                  marginVertical: height * 0.02,
+                  width: width,
+                  borderWidth: 0.8,
+                }}
+              />
+            </>
+          )}>
+          {opened ? (
+            <FlatList
+              data={meterInfoData}
+              keyExtractor={(item, index) => item + index}
+              renderItem={renderMeterInfo}
+            />
+          ) : null}
+        </SectionList>
+        <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: height * 0.07,
+              width: width,
+              justifyContent: 'space-between',
+              paddingHorizontal: width * 0.05,
+            }}>
+            <Text style={{fontSize: width * 0.07}}>Usage</Text>
+            <View
+              style={{
+                width: height * 0.05,
+                height: height * 0.05,
+                backgroundColor: 'red',
+                alignSelf: 'flex-end',
+              }}
+            />
+          </View>
+          <Divider
+            style={{
+              marginVertical: height * 0.02,
+              width: width,
+              borderWidth: 0.8,
+              left: width * 0.05,
+            }}
+          />
+          <View
+            style={{
+              width: width * 0.9,
+              height: height * 0.3,
+              backgroundColor: 'green',
+              alignSelf: 'center',
+            }}
+          />
+        </View>
+
+        <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: height * 0.07,
+              width: width,
+              justifyContent: 'space-between',
+              paddingHorizontal: width * 0.05,
+            }}>
+            <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
+            <Icon
+              name={dangerView ? 'chevron-down' : 'chevron-right'}
+              type="feather"
+              size={width * 0.08}
+              color="#000"
+              onPress={() => setDangerView(!dangerView)}
+            />
+          </View>
+          <Divider
+            style={{
+              marginVertical: height * 0.02,
+              width: width,
+              borderWidth: 0.8,
+              left: width * 0.05,
+            }}
+          />
+          {!dangerView ? (
+            <View />
+          ) : (
+            <View
+              style={{
+                flexDirection: 'column',
+                width: width * 0.95,
+                alignSelf: 'center',
+                marginBottom: width * 0.05,
+              }}>
+              <Button
+                title="Delete Water Meter"
+                buttonStyle={{
+                  backgroundColor: '#e24b4b',
+                  marginBottom: height * 0.03,
+                }}
+              />
+              <Button
+                title="Delete Unit 101"
+                buttonStyle={{backgroundColor: '#e24b4b'}}
+              />
+            </View>
+          )}
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 

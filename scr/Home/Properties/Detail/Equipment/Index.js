@@ -1624,7 +1624,7 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-    this.props.navigation.navigate('U_Details');
+    this.props.navigation.navigate('U_Details', {unitId: unit.item.id});
     console.log(clc.cyan('Selected :', unit.item.id));
     // console.log("Pressed :", index)
     // if (item?.pressItem == item.id) {
