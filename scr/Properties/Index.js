@@ -278,7 +278,7 @@ export default class Splash extends Component {
               onPress={() => console.log('helo')}
             >
               <Image
-                source={require('../../Images/profileBack.jpg')}
+                source={require('../../Images/')}
                 style={styles.toolImage}
               />
               <Cast name="cast" size={height * .06} color='white' />
