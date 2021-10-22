@@ -805,7 +805,7 @@ export default class Splash extends Component {
     const response = await this.api.get(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
-    console.log('Check response buildings--->', response);
+    // console.log('Check response buildings--->', response);
     if (response?.ok == true) {
       this.setState({dataBuild: response?.data?.data});
       this.setState({loaderBuildings: false});
@@ -819,7 +819,7 @@ export default class Splash extends Component {
           `/property/equipment/unit/all-units`,
           data,
         );
-        console.log('Check unitResponse buildings--->', unitResponse);
+        console.log('Check unitResponse unit--->', unitResponse?.data?.data);
         // console.log('buildingData--->', this.state.buildingData);
 
         if (unitResponse?.ok == true) {
@@ -1637,15 +1637,12 @@ export default class Splash extends Component {
                 </Text>
               </View>
               <View style={[styles.meterReading]}>
-                {/* <View style={{ flexDirection: 'row' }}> */}
-                <Barcode name="barcode-scan" size={height * 0.025} />
                 <Text style={styles.dataFieldText}>
-                  {/* <Fire name="burn" color="#7EC353" size={22} /> */}
-                  97295
+                  {unit.item?.['unit-meter']?.length}
                 </Text>
-                {/* <Text style={styles.dataFieldText}>{unit.item.type}</Text> */}
-                {/* </View> */}
-                {/* <Text style={styles.dataFieldText} >Cubic Feet</Text> */}
+                <Text style={styles.dataFieldText}>
+                  Meters
+                </Text>
               </View>
               {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
               <TouchableOpacity
