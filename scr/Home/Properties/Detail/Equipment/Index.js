@@ -74,19 +74,19 @@ const meterTypes = [
   {
     id: 1,
     name: 'Generic',
-    image: require('../../../../../Images/Water-Meter.png'),
+    image: require('../../../../../Images/meter-water.png'),
     color: '#3E89BF',
   },
   {
     id: 2,
     name: 'IMS',
-    image: require('../../../../../Images/Gas-Meter2.png'),
+    image: require('../../../../../Images/meter-gas.png'),
     color: '#9ACF72',
   },
   {
     id: 3,
     name: 'MasterTek',
-    image: require('../../../../../Images/Electric-Meter2.png'),
+    image: require('../../../../../Images/meter-electric.png'),
     color: '#E7D931',
   },
 ];
@@ -95,40 +95,28 @@ const manufacturers = [
   {
     id: 1,
     name: 'AMCO',
-    // image: require('../../../../../Images/Water-Meter.png'),
-    // color: '#3E89BF',
   },
   {
     id: 2,
     name: 'Badger',
-    // image: require('../../../../../Images/Gas-Meter2.png'),
-    // color: '#9ACF72',
   },
   {
     id: 3,
     name: 'Conservice',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
   },
 ];
 const models = [
   {
     id: 1,
     name: 'C4000 Digital Compound (AMCO Bypass)',
-    // image: require('../../../../../Images/Water-Meter.png'),
-    // color: '#3E89BF',
   },
   {
     id: 2,
     name: 'Compound RTR',
-    // image: require('../../../../../Images/Gas-Meter2.png'),
-    // color: '#9ACF72',
   },
   {
     id: 3,
     name: 'MJ09 Brass',
-    // image: require('../../../../../Images/Electric-Meter2.png'),
-    // color: '#E7D931',
   },
 ];
 const meterList = [
