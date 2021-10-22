@@ -3125,7 +3125,7 @@ export default class Splash extends Component {
                           </Pressable>
                         </View>
                       </View>
-                      {/* Box Body */}
+                      {/* //TodoY: Meter Box Body */}
                       <View style={{flex: 1}}>
                         {meterTypeInputs.map((item, index) => {
                           return (
