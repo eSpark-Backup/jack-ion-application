@@ -30,8 +30,6 @@ class GlobalState extends React.Component {
     }
   };
 
- 
-
   clearData = () => {
     this.setState({propList: []});
   };
@@ -46,6 +44,19 @@ class GlobalState extends React.Component {
     this.setState({success: response.data.bool});
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
+      this.setState({isLoading: false});
+    } else {
+      Alert.alert('Error', 'Network Issues');
+      this.setState({isLoading: false});
+    }
+  };
+
+  filterData = async (sort) => {
+    const response = await this.api.post('/property/all', sort);
+    console.log('FIlter property===>', response);
+    if (response?.data?.bool) {
+      this.setState({propList: response.data.data.properties});
+      console.log('FIltered property===>', response.data.data.properties);
       this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
@@ -843,6 +854,23 @@ class GlobalState extends React.Component {
   //   // this.setState({ success: response.data.bool });
   //   // this.setState({ itemList: response?.data?.data?.billingCompany });
   // };
+  searchProperties = async (e) => {
+    let data = {
+      offset: 0,
+      search: e,
+    };
+    const response = await this.api.post('/property/all', data);
+    console.log('Search property===>', response);
+    if (response?.data?.bool) {
+      this.setState({propList: response.data.data.properties});
+      console.log('Search property===>', response.data.data.properties);
+      this.setState({isLoading: false});
+    } else {
+      Alert.alert('Error', 'Network Issues');
+      this.setState({isLoading: false});
+    }
+  };
+
   render() {
     // console.log('pROP', this.props)
     return (
@@ -867,6 +895,8 @@ class GlobalState extends React.Component {
             clearData: this.clearData,
             showBuildings: this.showBuildings,
             isLoading: this.state.isLoading,
+            filterData: this.filterData,
+            searchProperties: this.searchProperties,
           }}>
           {this.props.children}
         </Context.Provider>
