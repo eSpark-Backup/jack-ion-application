@@ -33,12 +33,18 @@ const api = create({
 });
 
 const App = ({ navigation }) => {
+
   const [dangerView, setDangerView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState([]);
+  const [meterInfoData, setMeterInfoData] = useState([]);
+  const [meterTypeData, setMeterTypeData] = useState([]);
+  const [remoteReaderData, setRemoteReaderData] = useState([]);
+  const [unitData, setUnitData] = useState([]);
+
 
   const { unitId, buildingName } = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
@@ -56,7 +62,7 @@ const App = ({ navigation }) => {
     setUnitMeter(res.data?.data?.unit?.['unit-meter']?.[0])
     setLoading(false);
   };
-  
+
 
   const getToken = async () => {
     setLoading(true);
@@ -69,67 +75,7 @@ const App = ({ navigation }) => {
     }
   };
 
-  const unitData = [
-    {
-      title: 'Unit',
-      icon: 'home',
-      type: 'ionicon',
-      data: [
-        {
-          leftIcon: 'home',
-          leftName: 'Name',
-          rightIcon: null,
-          rightName: data?.data?.unit?.name ?? 'N/A',
-          type: 'feather',
-          typeRight: 'feather',
-        },
-        {
-          leftIcon: null,
-          leftName: 'Utility Type',
-          rightIcon: null,
-          rightName: data?.data?.unit?.['unit-meter']?.[0].meter_name,
-          type: 'ionicon',
-          typeRight: 'feather',
-        },
-        {
-          leftIcon: 'building',
-          leftName: 'Building',
-          rightIcon: null,
-          rightName: buildingName ?? 'Bluegrass MHP',
-          type: 'font-awesome-5',
-          typeRight: 'feather',
-        },
-        {
-          leftIcon: 'ios-clipboard-outline',
-          leftName: 'Notes',
-          rightIcon: 'chevron-right',
-          rightName: null,
-          type: 'ionicon',
-          typeRight: 'feather',
-        },
-      ],
-    },
-  ];
-
-  // var unitMeter = data?.data?.unit?.['unit-meter']?.[0];
   const arrayOfUnits = data?.data?.unit?.['unit-meter'];
-
-  const meterSwitcher = () => {
-    switch (unitMeter?.meter_name) {
-      case 'hot water':
-        return require('../../../../../../../Images/meter-hot.png');
-      case 'cold water':
-        return require('../../../../../../../Images/meter-cold-water.png');
-      case 'electricity':
-        return require('../../../../../../../Images/meter-electric.png');
-      case 'gas':
-        return require('../../../../../../../Images/meter-gas.png');
-      case 'water':
-        return require('../../../../../../../Images/meter-all-waters.png');
-      default:
-        break;
-    }
-  };
 
   const typeSwitcher = (arg) => {
     switch (arg) {
@@ -148,8 +94,77 @@ const App = ({ navigation }) => {
     }
   };
 
-  const remoteReaderData = [
+  useEffect(() => {
+
+    setMeterInfoData([{
+      leftText: 'Manufacturer',
+      rightText: unitMeter?.type?.manufacturer ?? 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    },
     {
+      leftText: 'Model',
+      rightText: unitMeter?.type?.model ?? 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    },
+    {
+      leftText: 'Unit of Measure',
+      rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    },
+    {
+      leftText: 'Multiplier',
+      rightText: unitMeter?.type?.multiplier ?? 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    },
+    {
+      leftText: 'Size',
+      rightText: unitMeter?.type?.size ?? 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    },
+    {
+      leftText: 'Meter Serial',
+      rightText: unitMeter?.meter_serial_number ?? 'N/A',
+      leftIcon: 'barcode-outline',
+      leftType: 'ionicon',
+      type: 'feather',
+    },
+    {
+      leftText: 'Custom ID',
+      rightText: unitMeter?.custom_meter_id ?? 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    },
+    {
+      leftText: 'IMR',
+      rightText: 'N/A',
+      leftIcon: null,
+      type: 'feather',
+    }])
+    setMeterTypeData([{
+      title: 'Hot Water Meter',
+      img: meterSwitcher(),
+      data: [
+        {
+          leftName: 'Type',
+          rightName:
+            unitMeter?.type?.manufacturer +
+            '-' +
+            unitMeter?.type?.model +
+            '(x' +
+            unitMeter?.type?.multiplier +
+            unitMeter?.type?.unit_of_measure +
+            ')',
+          rightIcon: 'chevron-down',
+          type: 'feather',
+        },
+      ],
+    }])
+    setRemoteReaderData([{
       title: 'Transciever',
       img: require('../../../../../../../Images/remote-reader.png'),
       data: [
@@ -169,100 +184,76 @@ const App = ({ navigation }) => {
           text: 'As of 5 hours ago',
         },
       ],
-    },
-  ];
-
-  const meterTypeData = [
-    {
-      title: 'Hot Water Meter',
-      img: meterSwitcher(),
-      data: [
-        {
-          leftName: 'Type',
-          rightName:
-            unitMeter?.type?.manufacturer +
-            '-' +
-            unitMeter?.type?.model +
-            '(x' +
-            unitMeter?.type?.multiplier +
-            unitMeter?.type?.unit_of_measure +
-            ')',
-          rightIcon: 'chevron-down',
-          type: 'feather',
-        },
-      ],
-    },
-  ];
-
-  const meterInfoData = [
-    {
-      leftText: 'Manufacturer',
-      rightText: unitMeter?.type?.manufacturer ?? 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'Model',
-      rightText: unitMeter?.type?.model ?? 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'Unit of Measure',
-      rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'Multiplier',
-      rightText: unitMeter?.type?.multiplier ?? 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'Size',
-      rightText: unitMeter?.type?.size ?? 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'Meter Serial',
-      rightText: unitMeter?.meter_serial_number ?? 'N/A',
-      leftIcon: 'barcode-outline',
-      leftType: 'ionicon',
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'Custom ID',
-      rightText: unitMeter?.custom_meter_id ?? 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-    {
-      leftText: 'IMR',
-      rightText: 'N/A',
-      leftIcon: null,
-      rightIcon: 'chevron-down',
-      type: 'feather',
-    },
-  ];
-
-  useEffect(() => {
-    // console.log('Kia ha unitMeter', unitMeter);
-    setLoading(false)
+    }])
+    setUnitData([
+      {
+        title: 'Unit',
+        icon: 'home',
+        type: 'ionicon',
+        data: [
+          {
+            leftIcon: 'home',
+            leftName: 'Name',
+            rightIcon: null,
+            rightName: data?.data?.unit?.name ?? 'N/A',
+            type: 'feather',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: null,
+            leftName: 'Utility Type',
+            rightIcon: null,
+            rightName: unitMeter.meter_name,
+            type: 'ionicon',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'building',
+            leftName: 'Building',
+            rightIcon: null,
+            rightName: buildingName ?? 'Bluegrass MHP',
+            type: 'font-awesome-5',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'ios-clipboard-outline',
+            leftName: 'Notes',
+            rightIcon: 'chevron-right',
+            rightName: null,
+            type: 'ionicon',
+            typeRight: 'feather',
+          },
+        ],
+      },
+    ])
+    // console.log('Kia ha unitMeter', meterInfoData);
+    if (data.length != 0) {
+      setLoading(false)
+    }
   }, [unitMeter]);
-
+  const meterSwitcher = () => {
+    switch (unitMeter?.meter_name) {
+      case 'hot water':
+        return require('../../../../../../../Images/meter-hot.png');
+      case 'cold water':
+        return require('../../../../../../../Images/meter-cold-water.png');
+      case 'electricity':
+        return require('../../../../../../../Images/meter-electric.png');
+      case 'gas':
+        return require('../../../../../../../Images/meter-gas.png');
+      case 'water':
+        return require('../../../../../../../Images/meter-all-waters.png');
+      default:
+        break;
+    }
+  };
   const handleMeterSelect = (data) => {
-    setLoading(true)
-    setUnitMeter(data)
-    
+    // console.log('Kia ha unitMeter', data);
+    if(data.id != unitMeter.id){
+      setLoading(true)
+      setUnitMeter(data)
+    }
+
   }
   const typeColor = (arg) => {
     switch (arg) {
@@ -288,13 +279,11 @@ const App = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             {index == 1 ? (
               <Image
-                source={typeSwitcher(
-                  data?.data?.unit?.['unit-meter']?.[0].meter_name,
-                )}
+                source={typeSwitcher(item.rightName)}
                 style={{
-                  height: height * 0.03,
-                  width: height * 0.03,
-                  marginRight: width * 0.03,
+                  height: width * 0.06,
+                    width: width * 0.055,
+                  marginRight: width * 0.025,
                 }}
               />
             ) : (
@@ -315,7 +304,7 @@ const App = ({ navigation }) => {
                   color:
                     index == 1
                       ? typeColor(
-                        data?.data?.unit?.['unit-meter']?.[0].meter_name,
+                        item.rightName,
                       )
                       : '#000',
                   fontSize: width * 0.04,
@@ -491,13 +480,6 @@ const App = ({ navigation }) => {
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ fontSize: width * 0.035 }}>{item.rightText}</Text>
-            <Icon
-              name={item.rightIcon}
-              type={item.type}
-              size={width * 0.05}
-              color="#000"
-              style={{ alignSelf: 'center' }}
-            />
           </View>
         </View>
       </View>
@@ -743,7 +725,7 @@ const App = ({ navigation }) => {
                       source={img}
                       style={{
                         height: height * 0.08,
-                        width: width * 0.13,
+                        width: height * 0.08,
                       }}
                     />
                   </View>
@@ -929,7 +911,7 @@ const App = ({ navigation }) => {
         <View
           style={{
             width: width,
-            height: height * 0.08,
+            height: height * 0.1,
             backgroundColor: '#fff',
             elevation: width * 0.07,
             alignItems: 'center',
@@ -941,10 +923,10 @@ const App = ({ navigation }) => {
             arrayOfUnits.map((item, index) =>
               <TouchableOpacity
                 style={{
-                  width: height * 0.06,
-                  height: height * 0.06,
+                  width: width * 0.13,
+                  height: width * 0.13,
                   backgroundColor: 'white',
-                  marginHorizontal: width * .02,
+                  marginHorizontal: width * .025,
                   elevation: width * .01,
                   borderWidth: width * .005,
                   borderColor: typeColor(item.meter_name),
@@ -952,14 +934,14 @@ const App = ({ navigation }) => {
                   alignItems: 'center'
                 }}
                 onPress={() => handleMeterSelect(item)}
-                >
+              >
                 <Image
                   source={typeSwitcher(
                     item.meter_name,
                   )}
                   style={{
-                    height: height * 0.035,
-                    width: height * 0.035,
+                    height: width * 0.06,
+                    width: width * 0.055,
                   }}
                 />
               </TouchableOpacity>
