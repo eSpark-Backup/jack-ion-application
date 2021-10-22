@@ -51,6 +51,7 @@ import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Base_URL from '../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import DropDownPicker from 'react-native-dropdown-picker';
 import {create} from 'apisauce';
 
 // Components
@@ -62,6 +63,7 @@ import ContextProp from '../../Context/propContext';
 // import { FlatList } from 'react-native-gesture-handler';
 import {color} from 'react-native-reanimated';
 import {ActivityIndicator} from 'react-native';
+import ModalDropdown from 'react-native-modal-dropdown';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-navigation';
 import clc from 'cli-color';
@@ -212,6 +214,12 @@ export default class Splash extends Component {
         //   name: 'Hot Water',
         //   icon: 'water-outline',
         // },
+      ],
+      open: false,
+      value: null,
+      items: [
+        {label: 'Apple', value: 'apple'},
+        {label: 'Banana', value: 'banana'},
       ],
       uScr: false,
       unitInputIndex: 0,
@@ -818,6 +826,7 @@ export default class Splash extends Component {
         const data = {
           building_id: response?.data?.data[0].id,
         };
+        // this.setState({items: response?.data?.data});
         const unitResponse = await this.api.post(
           `/property/equipment/unit/all-units`,
           data,
@@ -1524,7 +1533,10 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-    this.props.navigation.navigate('U_Details');
+    this.props.navigation.navigate('U_Details', {
+      unitId: unit.item.id,
+      buildingName: this.state.buildingData.name,
+    });
     console.log(clc.cyan('Selected :', unit.item.id));
     // console.log("Pressed :", index)
     // if (item?.pressItem == item.id) {
@@ -2082,6 +2094,7 @@ export default class Splash extends Component {
       }
     });
   };
+
   render() {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
@@ -2318,20 +2331,44 @@ export default class Splash extends Component {
                         flexDirection: 'column',
                         height: height * 0.12,
                       }}>
-                      <TouchableOpacity onPress={this.selectAndCloseAdd}>
+                      <TouchableOpacity
+                        disabled={
+                          this.state.dataBuild.length == 0 ? true : false
+                        }
+                        onPress={this.selectAndCloseAdd}>
                         <View
                           style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                             width: width * 0.23,
                           }}>
-                          <Home name="house-user" size={height * 0.02} />
-                          <Text style={styles.dropDownListText}>
+                          <Home
+                            color={
+                              this.state.dataBuild.length == 0
+                                ? '#817e7e80'
+                                : '#000'
+                            }
+                            name="house-user"
+                            size={height * 0.02}
+                          />
+                          <Text
+                            style={[
+                              styles.dropDownListText,
+                              {
+                                color:
+                                  this.state.dataBuild.length == 0
+                                    ? '#817e7e80'
+                                    : '#000',
+                              },
+                            ]}>
                             Add a Unit
                           </Text>
                         </View>
                       </TouchableOpacity>
                       <TouchableOpacity
+                        disabled={
+                          this.state.dataBuild.length == 0 ? true : false
+                        }
                         onPress={this.selectAndCloseAddMultiple}>
                         <View
                           style={{
@@ -2339,8 +2376,25 @@ export default class Splash extends Component {
                             justifyContent: 'space-between',
                             width: width * 0.265,
                           }}>
-                          <Home name="house-user" size={height * 0.02} />
-                          <Text style={styles.dropDownListText}>
+                          <Home
+                            color={
+                              this.state.dataBuild.length == 0
+                                ? '#817e7e80'
+                                : '#000'
+                            }
+                            name="house-user"
+                            size={height * 0.02}
+                          />
+                          <Text
+                            style={[
+                              styles.dropDownListText,
+                              {
+                                color:
+                                  this.state.dataBuild.length == 0
+                                    ? '#817e7e80'
+                                    : '#000',
+                              },
+                            ]}>
                             Add Multiple{'\n'}Units
                           </Text>
                         </View>
@@ -2386,7 +2440,6 @@ export default class Splash extends Component {
                 </View>
               ) : (
                 <FlatList
-                  // contentContainerStyle={{ margin: 4, }}
                   // style={{borderLeftWidth: width * .02, borderColor: 'black',}}
                   // numColumns={1}
                   showsHorizontalScrollIndicator={false}
@@ -2403,6 +2456,7 @@ export default class Splash extends Component {
                 hasBackdrop={true}
                 backdropColor="black"
                 isVisible={this.state.isModalUnitVisible}
+                // isVisible={true}
                 style={styles.modal1Container}>
                 <KeyboardAvoidingView behavior="padding">
                   <View style={styles.modalInner}>
@@ -2456,7 +2510,50 @@ export default class Splash extends Component {
                               </Text>
                             </View>
                             <View style={styles.inputContainer}>
-                              <TextInput
+                              {/* //todo: This is Drop down picker */}
+
+                              <ModalDropdown
+                                options={this.state.dataBuild.map(
+                                  (item) => item.name,
+                                )}
+                                defaultValue="Select Building*"
+                                textStyle={{
+                                  fontSize: width * 0.025,
+                                  marginLeft: width * 0.02,
+                                  color: '#25AAE1ec',
+                                }}
+                                style={[
+                                  styles.input,
+                                  {
+                                    backgroundColor: '#a6a6a61f',
+                                    borderWidth: width * 0.0013,
+                                    paddingVertical: width * 0.02,
+                                    borderRadius: width * 0.01,
+                                  },
+                                ]}
+                                defaultTextStyle={{
+                                  color: '#4a4a4abd',
+                                }}
+                                dropdownStyle={[
+                                  styles.input,
+                                  {
+                                    height: `${
+                                      this.state.dataBuild.length * 5 > 20
+                                        ? 20
+                                        : this.state.dataBuild.length * 5
+                                    }%`,
+                                  },
+                                ]}
+                                dropdownTextStyle={{
+                                  fontSize: width * 0.025,
+                                  marginLeft: width * 0.01,
+                                }}
+                                dropdownTextHighlightStyle={{
+                                  color: '#23a8e17a',
+                                }}
+                                scrollEnabled
+                              />
+                              {/* <TextInput
                                 // label="Name*"
                                 // placeholder="A"
                                 value={this.state.buildingData.name}
@@ -2476,7 +2573,7 @@ export default class Splash extends Component {
                                     selectionColor: 'red',
                                   },
                                 }}
-                              />
+                              /> */}
                             </View>
                             <View style={styles.desciptionContainer}>
                               <Text style={styles.desciptionHeading}>
@@ -3810,14 +3907,14 @@ export default class Splash extends Component {
                           </View> */}
                           <View style={styles.inputContainer}>
                             <TextInput
-                              label={'Name*'}
-                              left={
-                                <Build
-                                  name={'office-building'}
-                                  size={height * 0.02}
-                                  color="#5e5e5e"
-                                />
-                              }
+                              // label={'Name*'}
+                              // left={
+                              //   <Build
+                              //     name={'office-building'}
+                              //     size={height * 0.02}
+                              //     color="#5e5e5e"
+                              //   />
+                              // }
                               placeholder="Building Name"
                               error={this.state.error.buildingName}
                               // dense={true}
@@ -3887,6 +3984,7 @@ export default class Splash extends Component {
                             }}>
                             <TextInput
                               // label="BILLING COMPANY*"
+                              keyboardType="numeric"
                               error={this.state.error.units}
                               placeholder="# of Units"
                               // dense={true}
