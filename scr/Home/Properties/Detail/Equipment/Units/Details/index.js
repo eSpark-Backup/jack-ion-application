@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   View,
@@ -10,39 +10,40 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {Header, Button, Icon} from 'react-native-elements';
+import { Header, Button, Icon } from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
-import {View as MotiView} from 'moti';
-import {create} from 'apisauce';
+import { View as MotiView } from 'moti';
+import { create } from 'apisauce';
 import Base_Url from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../../components/Loader';
 
 // Components
 import styles from './style';
-import {Divider} from 'react-native-paper';
-import {color} from 'react-native-reanimated';
+import { Divider } from 'react-native-paper';
+import { color } from 'react-native-reanimated';
 import clc from 'cli-color';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const api = create({
   baseURL: Base_Url,
 });
 
-const App = ({navigation}) => {
+const App = ({ navigation }) => {
   const [dangerView, setDangerView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
+  const [unitMeter, setUnitMeter] = useState([]);
 
-  const {unitId, buildingName} = navigation.state.params; //? Dynamic Ids
-  console.log('aya kuch ++', navigation.state.params);
+  const { unitId, buildingName } = navigation.state.params; //? Dynamic Ids
+  console.log('aya kuch ++', navigation.state.params.unitId);
 
-  const testId = '105';
+  const testId = navigation.state.params.unitId;
 
   useEffect(() => {
     getToken();
@@ -50,10 +51,12 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    console.log('Kia ha Response Data', res.data);
+    // console.log('Kia ha Response Data', res.data);
     setData(res.data);
+    setUnitMeter(res.data?.data?.unit?.['unit-meter']?.[0])
     setLoading(false);
   };
+  
 
   const getToken = async () => {
     setLoading(true);
@@ -108,10 +111,11 @@ const App = ({navigation}) => {
     },
   ];
 
-  const unit_meter = data?.data?.unit?.['unit-meter']?.[0];
+  // var unitMeter = data?.data?.unit?.['unit-meter']?.[0];
+  const arrayOfUnits = data?.data?.unit?.['unit-meter'];
 
   const meterSwitcher = () => {
-    switch (unit_meter?.meter_name) {
+    switch (unitMeter?.meter_name) {
       case 'hot water':
         return require('../../../../../../../Images/meter-hot.png');
       case 'cold water':
@@ -152,7 +156,7 @@ const App = ({navigation}) => {
         {
           leftName: 'Serial Number',
           rightIcon: 'barcode-outline',
-          rightName: unit_meter?.device_serial_number ?? 'N/A',
+          rightName: unitMeter?.device_serial_number ?? 'N/A',
           type: 'ionicon',
           rightIcon2: null,
         },
@@ -176,12 +180,12 @@ const App = ({navigation}) => {
         {
           leftName: 'Type',
           rightName:
-            unit_meter?.type.manufacturer +
+            unitMeter?.type?.manufacturer +
             '-' +
-            unit_meter?.type.model +
+            unitMeter?.type?.model +
             '(x' +
-            unit_meter?.type.multiplier +
-            unit_meter?.type.unit_of_measure +
+            unitMeter?.type?.multiplier +
+            unitMeter?.type?.unit_of_measure +
             ')',
           rightIcon: 'chevron-down',
           type: 'feather',
@@ -193,42 +197,42 @@ const App = ({navigation}) => {
   const meterInfoData = [
     {
       leftText: 'Manufacturer',
-      rightText: unit_meter?.type.manufacturer ?? 'N/A',
+      rightText: unitMeter?.type?.manufacturer ?? 'N/A',
       leftIcon: null,
       rightIcon: 'chevron-down',
       type: 'feather',
     },
     {
       leftText: 'Model',
-      rightText: unit_meter?.type.model ?? 'N/A',
+      rightText: unitMeter?.type?.model ?? 'N/A',
       leftIcon: null,
       rightIcon: 'chevron-down',
       type: 'feather',
     },
     {
       leftText: 'Unit of Measure',
-      rightText: unit_meter?.type.unit_of_measure ?? 'N/A',
+      rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
       leftIcon: null,
       rightIcon: 'chevron-down',
       type: 'feather',
     },
     {
       leftText: 'Multiplier',
-      rightText: unit_meter?.type.multiplier ?? 'N/A',
+      rightText: unitMeter?.type?.multiplier ?? 'N/A',
       leftIcon: null,
       rightIcon: 'chevron-down',
       type: 'feather',
     },
     {
       leftText: 'Size',
-      rightText: unit_meter?.type.size ?? 'N/A',
+      rightText: unitMeter?.type?.size ?? 'N/A',
       leftIcon: null,
       rightIcon: 'chevron-down',
       type: 'feather',
     },
     {
       leftText: 'Meter Serial',
-      rightText: unit_meter?.meter_serial_number ?? 'N/A',
+      rightText: unitMeter?.meter_serial_number ?? 'N/A',
       leftIcon: 'barcode-outline',
       leftType: 'ionicon',
       rightIcon: 'chevron-down',
@@ -236,7 +240,7 @@ const App = ({navigation}) => {
     },
     {
       leftText: 'Custom ID',
-      rightText: unit_meter?.custom_meter_id ?? 'N/A',
+      rightText: unitMeter?.custom_meter_id ?? 'N/A',
       leftIcon: null,
       rightIcon: 'chevron-down',
       type: 'feather',
@@ -250,6 +254,16 @@ const App = ({navigation}) => {
     },
   ];
 
+  useEffect(() => {
+    // console.log('Kia ha unitMeter', unitMeter);
+    setLoading(false)
+  }, [unitMeter]);
+
+  const handleMeterSelect = (data) => {
+    setLoading(true)
+    setUnitMeter(data)
+    
+  }
   const typeColor = (arg) => {
     switch (arg) {
       case 'hot water':
@@ -267,11 +281,11 @@ const App = ({navigation}) => {
     }
   };
 
-  const renderUnitList = ({item, index}) => {
+  const renderUnitList = ({ item, index }) => {
     return (
-      <View style={{paddingVertical: width * 0.02}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{flexDirection: 'row'}}>
+      <View style={{ paddingVertical: width * 0.02 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row' }}>
             {index == 1 ? (
               <Image
                 source={typeSwitcher(
@@ -289,20 +303,20 @@ const App = ({navigation}) => {
                 type={item.type}
                 size={width * 0.05}
                 color={'#000'}
-                style={{marginRight: width * 0.03}}
+                style={{ marginRight: width * 0.03 }}
               />
             )}
-            <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+            <Text style={{ fontSize: width * 0.04 }}>{item.leftName}</Text>
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             {item.rightName == null ? null : (
               <Text
                 style={{
                   color:
                     index == 1
                       ? typeColor(
-                          data?.data?.unit?.['unit-meter']?.[0].meter_name,
-                        )
+                        data?.data?.unit?.['unit-meter']?.[0].meter_name,
+                      )
                       : '#000',
                   fontSize: width * 0.04,
                 }}>
@@ -315,7 +329,7 @@ const App = ({navigation}) => {
                 type={item.typeRight}
                 size={width * 0.05}
                 color="#000"
-                style={{alignSelf: 'center'}}
+                style={{ alignSelf: 'center' }}
               />
             )}
           </View>
@@ -347,18 +361,18 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderRemoteList = ({item, index}) => {
+  const renderRemoteList = ({ item, index }) => {
     return (
-      <View style={{paddingVertical: width * 0.02}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+      <View style={{ paddingVertical: width * 0.02 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontSize: width * 0.04 }}>{item.leftName}</Text>
           </View>
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flexDirection: 'column'}}>
-              <View style={{flexDirection: 'row-reverse'}}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'column' }}>
+              <View style={{ flexDirection: 'row-reverse' }}>
                 {item.rightName == null ? null : (
-                  <Text style={{textAlign: 'right', fontSize: width * 0.04}}>
+                  <Text style={{ textAlign: 'right', fontSize: width * 0.04 }}>
                     {item.rightName}
                   </Text>
                 )}
@@ -368,11 +382,11 @@ const App = ({navigation}) => {
                     type={item.type}
                     size={width * 0.05}
                     color="#0fc908"
-                    style={{marginRight: width * 0.01}}
+                    style={{ marginRight: width * 0.01 }}
                   />
                 )}
               </View>
-              <Text style={{color: '#5c5c5ccf', fontSize: width * 0.04}}>
+              <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.04 }}>
                 {item.text}
               </Text>
             </View>
@@ -382,7 +396,7 @@ const App = ({navigation}) => {
                 type={item.type}
                 size={width * 0.05}
                 color="#000"
-                style={{alignSelf: 'center'}}
+                style={{ alignSelf: 'center' }}
               />
             )}
           </View>
@@ -406,17 +420,17 @@ const App = ({navigation}) => {
     setOpened(!opened);
   };
 
-  const renderMeterType = ({item, index}) => {
+  const renderMeterType = ({ item, index }) => {
     return (
       <TouchableOpacity onPress={() => openView()}>
-        <View style={{paddingVertical: width * 0.02}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+        <View style={{ paddingVertical: width * 0.02 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ fontSize: width * 0.04 }}>{item.leftName}</Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flexDirection: 'column'}}>
-                <View style={{flexDirection: 'row-reverse'}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'column' }}>
+                <View style={{ flexDirection: 'row-reverse' }}>
                   {item.rightName == null ? null : (
                     <Text
                       style={{
@@ -434,7 +448,7 @@ const App = ({navigation}) => {
                   type={item.type}
                   size={width * 0.05}
                   color="#000"
-                  style={{alignSelf: 'center'}}
+                  style={{ alignSelf: 'center' }}
                 />
               )}
             </View>
@@ -454,35 +468,35 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderMeterInfo = ({item}) => {
+  const renderMeterInfo = ({ item }) => {
     return (
-      <View style={{backgroundColor: '#605c5c24'}}>
+      <View style={{ backgroundColor: '#605c5c24' }}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: width * 0.04,
           }}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: width * 0.035}}>{item.leftText}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontSize: width * 0.035 }}>{item.leftText}</Text>
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
                 type={item.leftType}
                 size={width * 0.05}
                 color={'rgb(90,134,183)'}
-                style={{marginLeft: width * 0.03, alignSelf: 'center'}}
+                style={{ marginLeft: width * 0.03, alignSelf: 'center' }}
               />
             )}
           </View>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: width * 0.035}}>{item.rightText}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontSize: width * 0.035 }}>{item.rightText}</Text>
             <Icon
               name={item.rightIcon}
               type={item.type}
               size={width * 0.05}
               color="#000"
-              style={{alignSelf: 'center'}}
+              style={{ alignSelf: 'center' }}
             />
           </View>
         </View>
@@ -496,32 +510,32 @@ const App = ({navigation}) => {
     return <Loader />;
   } else {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <ScrollView>
           <View style={styles.container}>
             <Header
               leftComponent={{
                 text: 'Close',
-                style: {fontSize: width * 0.05, color: '#000'},
+                style: { fontSize: width * 0.05, color: '#000' },
                 onPress: () => navigation.goBack(),
               }}
               centerComponent={
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   <Home
                     name="home"
                     size={width * 0.05}
                     color="#000"
-                    style={{alignSelf: 'center', marginRight: width * 0.01}}
+                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
                   />
-                  <Text style={{fontSize: width * 0.05}}>Units Details</Text>
+                  <Text style={{ fontSize: width * 0.05 }}>Units Details</Text>
                 </View>
               }
               rightComponent={{
                 text: 'Save',
-                style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
+                style: { fontSize: width * 0.05, color: '#5c5c5ccf' },
               }}
               backgroundColor="#fff"
-              containerStyle={{borderBottomWidth: width * 0.003, elevation: 1}}
+              containerStyle={{ borderBottomWidth: width * 0.003, elevation: 1 }}
             />
             {!headView && (
               <MotiView
@@ -534,7 +548,7 @@ const App = ({navigation}) => {
                   translateX: 0,
                 }}
                 style={styles.currentReadContainer}>
-                <Text style={{color: '#5c5c5ccf'}}>CURRENT READ</Text>
+                <Text style={{ color: '#5c5c5ccf' }}>CURRENT READ</Text>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -544,20 +558,20 @@ const App = ({navigation}) => {
                     paddingHorizontal: width * 0.04,
                   }}>
                   <Text
-                    style={{fontSize: width * 0.08, color: 'rgb(90,134,183)'}}>
+                    style={{ fontSize: width * 0.08, color: 'rgb(90,134,183)' }}>
                     3,782 Gallons
                   </Text>
                   <RightArrow
                     name="chevron-thin-right"
                     size={width * 0.08}
                     color="rgb(90,134,183)"
-                    style={{alignSelf: 'center', marginRight: width * 0.01}}
+                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
                     onPress={() => setHeadView(!headView)}
                   />
                 </View>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   <Check name="check" size={width * 0.05} color="#0fc908" />
-                  <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
+                  <Text style={{ color: '#5c5c5ccf' }}>As of 5 hours ago</Text>
                 </View>
               </MotiView>
             )}
@@ -573,7 +587,7 @@ const App = ({navigation}) => {
                 }}
                 style={[
                   styles.currentReadContainer,
-                  {alignItems: 'center', justifyContent: 'center'},
+                  { alignItems: 'center', justifyContent: 'center' },
                 ]}>
                 <View
                   style={{
@@ -583,14 +597,14 @@ const App = ({navigation}) => {
                     name="chevron-thin-left"
                     size={width * 0.08}
                     color="rgb(90,134,183)"
-                    style={{alignSelf: 'center', marginRight: width * 0.01}}
+                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
                     onPress={() => setHeadView(!headView)}
                   />
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
                       PULSES
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
                       3,786
                     </Text>
                   </View>
@@ -602,10 +616,10 @@ const App = ({navigation}) => {
                     x
                   </Text>
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
                       MULTIPLIER
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
                       1
                     </Text>
                   </View>
@@ -617,10 +631,10 @@ const App = ({navigation}) => {
                     +
                   </Text>
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
                       IMR
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
                       21
                     </Text>
                   </View>
@@ -632,10 +646,10 @@ const App = ({navigation}) => {
                     =
                   </Text>
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
                       CURRENT READ
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
                       3,807
                     </Text>
                   </View>
@@ -650,10 +664,10 @@ const App = ({navigation}) => {
                     name="radio"
                     size={width * 0.06}
                     color="#fff"
-                    style={{marginRight: width * 0.025}}
+                    style={{ marginRight: width * 0.025 }}
                   />
                 }
-                buttonStyle={{backgroundColor: 'rgb(90,134,183)'}}
+                buttonStyle={{ backgroundColor: 'rgb(90,134,183)' }}
                 onPress={() => console.log('Quick Actions Press')}
               />
             </View>
@@ -661,7 +675,7 @@ const App = ({navigation}) => {
         //* Unit List
         */}
             <SectionList
-              style={{marginTop: height * 0.07}}
+              style={{ marginTop: height * 0.07 }}
               contentContainerStyle={{
                 width: width,
                 paddingHorizontal: width * 0.05,
@@ -669,14 +683,15 @@ const App = ({navigation}) => {
               sections={unitData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderUnitList}
-              renderSectionHeader={({section: {title, icon, type}}) => (
+              renderSectionHeader={({ section: { title, icon, type } }) => (
                 <>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                    <Text style={{fontSize: width * 0.07}}>{title}</Text>
+                    <Text style={{ fontSize: width * 0.065 }}>{title}</Text>
                     {/* <View
                     style={{
                       width: height * 0.05,
@@ -689,12 +704,13 @@ const App = ({navigation}) => {
                       name={icon}
                       type={type}
                       size={width * 0.08}
-                      style={{alignSelf: 'center'}}
+                      style={{ alignSelf: 'center' }}
                     />
                   </View>
                   <Divider
                     style={{
-                      marginVertical: height * 0.02,
+                      marginBottom: height * 0.02,
+                      marginTop: height * 0.01,
                       width: width,
                       borderWidth: 0.8,
                     }}
@@ -706,7 +722,7 @@ const App = ({navigation}) => {
         //* Remote Reader List
         */}
             <SectionList
-              style={{marginTop: height * 0.07}}
+              style={{ marginTop: height * 0.07 }}
               contentContainerStyle={{
                 width: width,
                 paddingHorizontal: width * 0.05,
@@ -714,14 +730,15 @@ const App = ({navigation}) => {
               sections={remoteReaderData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderRemoteList}
-              renderSectionHeader={({section: {title, img}}) => (
+              renderSectionHeader={({ section: { title, img } }) => (
                 <>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                    <Text style={{fontSize: width * 0.07}}>{title}</Text>
+                    <Text style={{ fontSize: width * 0.065 }}>{title}</Text>
                     <Image
                       source={img}
                       style={{
@@ -732,7 +749,8 @@ const App = ({navigation}) => {
                   </View>
                   <Divider
                     style={{
-                      marginVertical: height * 0.02,
+                      marginBottom: height * 0.02,
+                      marginTop: height * 0.01,
                       width: width,
                       borderWidth: 0.8,
                     }}
@@ -744,7 +762,7 @@ const App = ({navigation}) => {
         //* Meter Type List
         */}
             <SectionList
-              style={{marginTop: height * 0.07}}
+              style={{ marginTop: height * 0.07 }}
               contentContainerStyle={{
                 width: width,
                 paddingHorizontal: width * 0.05,
@@ -752,17 +770,16 @@ const App = ({navigation}) => {
               sections={meterTypeData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderMeterType}
-              renderSectionHeader={({section: {title, img}}) => (
+              renderSectionHeader={({ section: { title, img } }) => (
                 <>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                    <Text style={{fontSize: width * 0.07}}>
-                      {data?.data?.unit?.[
-                        'unit-meter'
-                      ]?.[0].meter_name.toUpperCase() + ' Meter'}
+                    <Text style={{ fontSize: width * 0.065 }}>
+                      {unitMeter?.meter_name?.toUpperCase() + ' Meter'}
                     </Text>
                     {/* <View
                     style={{
@@ -782,7 +799,8 @@ const App = ({navigation}) => {
                   </View>
                   <Divider
                     style={{
-                      marginVertical: height * 0.02,
+                      marginBottom: height * 0.02,
+                      marginTop: height * 0.01,
                       width: width,
                       borderWidth: 0.8,
                     }}
@@ -792,7 +810,7 @@ const App = ({navigation}) => {
             />
             {opened ? (
               <FlatList
-                style={{width: width, bottom: width * 0.02}}
+                style={{ width: width, bottom: width * 0.02 }}
                 data={meterInfoData}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderMeterInfo}
@@ -819,8 +837,9 @@ const App = ({navigation}) => {
                   width: width,
                   justifyContent: 'space-between',
                   paddingHorizontal: width * 0.05,
+                  alignItems: 'center'
                 }}>
-                <Text style={{fontSize: width * 0.07}}>Usage</Text>
+                <Text style={{ fontSize: width * 0.065 }}>Usage</Text>
                 {/* <View
                 style={{
                   width: height * 0.05,
@@ -833,12 +852,13 @@ const App = ({navigation}) => {
                   name="bar-chart"
                   type="fontisto"
                   size={width * 0.08}
-                  style={{alignSelf: 'center'}}
+                  style={{ alignSelf: 'center' }}
                 />
               </View>
               <Divider
                 style={{
-                  marginVertical: height * 0.02,
+                  marginBottom: height * 0.02,
+                  marginTop: height * 0.01,
                   width: width,
                   borderWidth: 0.8,
                   left: width * 0.05,
@@ -863,7 +883,7 @@ const App = ({navigation}) => {
                   justifyContent: 'space-between',
                   paddingHorizontal: width * 0.05,
                 }}>
-                <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
+                <Text style={{ fontSize: width * 0.07 }}>Danger Zone</Text>
                 <Icon
                   name={dangerView ? 'chevron-down' : 'chevron-right'}
                   type="feather"
@@ -899,7 +919,7 @@ const App = ({navigation}) => {
                   />
                   <Button
                     title="Delete Unit 101"
-                    buttonStyle={{backgroundColor: '#e24b4b'}}
+                    buttonStyle={{ backgroundColor: '#e24b4b' }}
                   />
                 </View>
               )}
@@ -912,17 +932,39 @@ const App = ({navigation}) => {
             height: height * 0.08,
             backgroundColor: '#fff',
             elevation: width * 0.07,
-            justifyContent: 'space-between',
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-          <View
-            style={{
-              width: width * 0.12,
-              height: height * 0.08,
-              backgroundColor: 'blue',
-            }}></View>
-          <Icon name="plus" type="feather" size={width * 0.1} style={{}} />
+
+          {
+            arrayOfUnits &&
+            arrayOfUnits.map((item, index) =>
+              <TouchableOpacity
+                style={{
+                  width: height * 0.06,
+                  height: height * 0.06,
+                  backgroundColor: 'white',
+                  marginHorizontal: width * .02,
+                  elevation: width * .01,
+                  borderWidth: width * .005,
+                  borderColor: typeColor(item.meter_name),
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+                onPress={() => handleMeterSelect(item)}
+                >
+                <Image
+                  source={typeSwitcher(
+                    item.meter_name,
+                  )}
+                  style={{
+                    height: height * 0.035,
+                    width: height * 0.035,
+                  }}
+                />
+              </TouchableOpacity>
+            )
+          }
         </View>
       </View>
     );
