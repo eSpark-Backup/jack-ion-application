@@ -820,9 +820,6 @@ export default class Splash extends Component {
     console.log('Check response buildings--->', response);
     if (response?.ok == true) {
       this.setState({dataBuild: response?.data?.data});
-      console.log(
-        clc.cyan('Building name', JSON.stringify(response?.data?.data)),
-      );
       this.setState({loaderBuildings: false});
       if (response?.data?.data?.length != 0) {
         this.setState({buildingData: response?.data?.data[0]});
@@ -984,7 +981,15 @@ export default class Splash extends Component {
         `/property/equipment/meter/all-meters`,
       );
       console.log('Check meter add--->', unitResponse);
-      this.setState({meterListArray: unitResponse?.data?.data});
+      this.setState({
+        meterListArray: unitResponse?.data?.data.sort((a, b) =>
+          a.name > b.name ? 1 : -1,
+        ),
+      });
+      console.log(
+        'Check meter add--->',
+        unitResponse?.data?.data.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      );
     }
   };
   selectAndCloseAddMultiple = () => {
@@ -1217,7 +1222,7 @@ export default class Splash extends Component {
       const data = {
         name: this.state.lastUnitData,
         building_id: this.state.buildingData.id,
-        meters: [loopData],
+        meters: loopData,
       };
       console.log('data--->', data);
       try {
@@ -2091,16 +2096,9 @@ export default class Splash extends Component {
   };
 
   render() {
-    const {result, scan, scanResult, open, value, items} = this.state;
+    const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
-    console.log(
-      clc.greenBright(
-        'Building ka data? ',
-        JSON.stringify(this.state.dataBuild),
-      ),
-    );
-    console.log(clc.yellowBright('Units ka data? ', this.state.realData));
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
     return (
       <View style={styles.container}>
