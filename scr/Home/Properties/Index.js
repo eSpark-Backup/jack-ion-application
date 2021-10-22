@@ -14,6 +14,7 @@ import {
 //Packages
 import LinearGradient from 'react-native-linear-gradient';
 import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
+import FilterIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Build from 'react-native-vector-icons/Ionicons';
@@ -29,6 +30,8 @@ import styles from './style';
 import {FlatList} from 'react-native-gesture-handler';
 import Loader from '../../components/Loader';
 import {NavigationEvents} from 'react-navigation';
+import Filter from './Filter';
+import Modal from 'react-native-modal';
 const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
@@ -45,6 +48,8 @@ export default class Splash extends Component {
       stopLoader: false,
       currentIndex: null,
       propertyList: null,
+      showFilter: false,
+      showSearch: false,
     };
 
     if (Platform.OS === 'android') {
@@ -259,7 +264,7 @@ export default class Splash extends Component {
                 placeholderTextColor="white"
                 placeholder="Search"
                 style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
+                onChangeText={(e) => this.context.searchProperties(e)}
                 theme={{
                   colors: {
                     text: 'white',
@@ -268,12 +273,82 @@ export default class Splash extends Component {
                     background: 'transparent',
                   },
                 }}
+                // onFocus={() =>
+                //   this.setState({showFilter: !this.state.showFilter})
+                // }
               />
+              <TouchableOpacity
+                onPress={() =>
+                  this.setState({showFilter: !this.state.showFilter})
+                }>
+                <FilterIcon name="filter-outline" color="white" size={20} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
         <View style={styles.headingContainer}>
           <Add loader={this.handleLoader} />
+          {this.state.showFilter ? (
+            <Filter
+              isVisible={this.state.showFilter}
+              close={() => this.setState({showFilter: !this.state.showFilter})}
+            />
+          ) : null}
+          {this.state.showSearch ? (
+            <Modal
+              isVisible={this.state.showSearch}
+              style={{
+                elevation: width * 0.005,
+                // borderRadius: width * 0.02,
+                width: width * 1,
+                height: height * 1,
+                justifyContent: 'flex-start',
+                // maxHeight: height * 1,
+                // maxWidth: width * 1,
+              }}>
+              <View
+                style={{
+                  // marginLeft: width * 0.03,
+                  // width: width * 1,
+                  height: height * 0.06,
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  backgroundColor: '#25AAE1ec',
+                  // borderRadius: width * 0.1,
+                  elevation: width * 0.01,
+                  flexDirection: 'row',
+                }}>
+                <Search
+                  name="search"
+                  size={height * 0.04}
+                  style={{marginLeft: width * 0.05}}
+                  color="white"
+                />
+                <TextInput
+                  underlineColor="transparent"
+                  dense={true}
+                  placeholderTextColor="white"
+                  placeholder="Search"
+                  style={styles.search}
+                  onChangeText={(e) => this.context.searchProperties(e)}
+                  theme={{
+                    colors: {
+                      text: 'white',
+                      primary: '#25dAE1',
+                      selectionColor: 'transparent',
+                      background: 'transparent',
+                    },
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({showFilter: !this.state.showFilter})
+                  }>
+                  <FilterIcon name="filter-outline" color="white" size={20} />
+                </TouchableOpacity>
+              </View>
+            </Modal>
+          ) : null}
         </View>
         <View
           style={{
