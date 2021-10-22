@@ -17,5 +17,6 @@ export default styles = StyleSheet.create({
     width: width,
     alignItems: 'center',
     marginVertical: width * 0.05,
+    height: height * 0.15,
   },
 });

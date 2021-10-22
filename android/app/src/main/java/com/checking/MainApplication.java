@@ -18,7 +18,8 @@ import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.shell.MainReactPackage;
 import java.util.Arrays;
 import com.ninty.system.setting.SystemSettingPackage;
-
+import com.facebook.react.bridge.JSIModulePackage; // <- add
+import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +29,11 @@ public class MainApplication extends Application implements ReactApplication {
         public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
         }
+
+             @Override
+      protected JSIModulePackage getJSIModulePackage() {
+        return new ReanimatedJSIModulePackage(); // <- add
+      }
 
         @Override
         protected List<ReactPackage> getPackages() {
