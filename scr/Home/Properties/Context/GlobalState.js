@@ -12,9 +12,9 @@ import {Alert} from 'react-native';
 // const ContextProp = React.createContext('default Value')
 
 class GlobalState extends React.Component {
-  componentDidMount() {
-    this.getToken();
-  }
+  // componentDidMount() {
+  //   this.getToken();
+  // }
 
   getToken = async () => {
     console.log('Get Token');
@@ -51,6 +51,27 @@ class GlobalState extends React.Component {
     }
   };
 
+  loadMoreData = async () => {
+    this.setState({listLoader: true});
+    let data = {
+      offset: this.state.propList.length,
+    };
+    const response = await this.api.post('/property/all', data);
+    console.log('respone property===>', response.data.data);
+    this.setState({success: response.data.bool});
+    if (response?.data?.bool) {
+      let data = [...this.state.propList];
+      let data2 = response.data.data.properties;
+      data.push(...data2);
+      this.setState({propList: data});
+      // console.log('new array', data);
+      this.setState({listLoader: false});
+    } else {
+      Alert.alert('Error', 'Network Issues');
+      this.setState({listLoader: false});
+    }
+  };
+
   filterData = async (sort) => {
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
@@ -74,8 +95,11 @@ class GlobalState extends React.Component {
     token: null,
     success: false,
     isLoading: false,
+    searchLoading: false,
+    listLoader: false,
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
+    searchList: [],
     propList: [
       // {
       //   id: 1,
@@ -859,16 +883,24 @@ class GlobalState extends React.Component {
       offset: 0,
       search: e,
     };
-    const response = await this.api.post('/property/all', data);
-    console.log('Search property===>', response);
-    if (response?.data?.bool) {
-      this.setState({propList: response.data.data.properties});
-      console.log('Search property===>', response.data.data.properties);
-      this.setState({isLoading: false});
+    if (e) {
+      this.setState({searchLoading: true});
+      const response = await this.api.post('/property/all', data);
+      // console.log('Search property===>', response);
+      if (response?.data?.bool) {
+        this.setState({searchList: response.data.data.properties});
+        // console.log('Search property===>', response.data.data.properties);
+        this.setState({searchLoading: false});
+      } else {
+        Alert.alert('Error', 'Network Issues');
+        this.setState({searchLoading: false});
+      }
     } else {
-      Alert.alert('Error', 'Network Issues');
-      this.setState({isLoading: false});
+      this.setState({searchList: []});
     }
+  };
+  clearSearchList = () => {
+    this.setState({searchList: []});
   };
 
   render() {
@@ -897,6 +929,11 @@ class GlobalState extends React.Component {
             isLoading: this.state.isLoading,
             filterData: this.filterData,
             searchProperties: this.searchProperties,
+            searchList: this.state.searchList,
+            searchLoading: this.state.searchLoading,
+            clearSearchList: this.clearSearchList,
+            loadMoreData: this.loadMoreData,
+            listLoader: this.state.listLoader,
           }}>
           {this.props.children}
         </Context.Provider>
