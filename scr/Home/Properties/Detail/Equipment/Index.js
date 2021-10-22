@@ -1388,7 +1388,9 @@ export default class Splash extends Component {
     };
     const newArray = [...this.state.meterListArray];
     newArray.push(data);
-    this.setState({meterListArray: newArray});
+    this.setState({
+      meterListArray: newArray.sort((a, b) => (a.name > b.name ? 1 : -1)),
+    });
   };
   toggleScanner = async (value) => {
     this.setState({scanIndex: value});

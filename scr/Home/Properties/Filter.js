@@ -93,7 +93,6 @@ export default class Splash extends Component {
   };
 
   render() {
-    console.log('Check billing Company', this.context.propitemList);
     return (
       <View>
         <StatusBar barStyle="dark-content" />
@@ -119,7 +118,7 @@ export default class Splash extends Component {
                       <Text style={{fontSize: 20, color: '#18CADC'}}>
                         Filter
                       </Text>
-                      <Progress.Bar
+                      {/* <Progress.Bar
                         progress={0.2}
                         borderWidth={1}
                         borderColor="#e1e1e1"
@@ -130,7 +129,7 @@ export default class Splash extends Component {
                       />
                       <Text style={{fontSize: width * 0.03}}>
                         13 of 13 Properties Remaining
-                      </Text>
+                      </Text> */}
                     </View>
                   }
                   rightComponent={{

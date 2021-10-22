@@ -45,8 +45,9 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
   },
   search: {
+    color: 'white',
     minWidth: width * 0.6,
-    maxHeight: height * 0.055,
+    maxHeight: height * 0.08,
     borderBottomColor: '#25AAE1ec',
     fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
