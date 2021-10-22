@@ -531,6 +531,8 @@ export default styles = StyleSheet.create({
     borderColor: 'purple',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
+    justifyContent:'center',
+    alignItems:'center'
   },
   proDeviceContent: {
     flexDirection: 'row',
