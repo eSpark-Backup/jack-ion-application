@@ -278,6 +278,8 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.02,
     backgroundColor: 'white',
     padding: height * 0.03,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   boxConatainer: {
     justifyContent: 'center',
@@ -350,6 +352,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: width * 0.02,
     borderTopWidth: width * 0.001,
+    backgroundColor: 'white',
   },
   addUnitBtnContainer: {
     flex: 1,
