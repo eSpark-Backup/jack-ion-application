@@ -170,7 +170,7 @@ export default styles = StyleSheet.create({
   },
   dropDown: {
     flexDirection: 'row',
-    height: height * .05,
+    height: height * 0.05,
     justifyContent: 'space-around',
     alignItems: 'center',
     borderWidth: height * 0.0015,
@@ -531,8 +531,8 @@ export default styles = StyleSheet.create({
     borderColor: 'purple',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   proDeviceContent: {
     flexDirection: 'row',
