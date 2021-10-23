@@ -306,71 +306,7 @@ export default class Splash extends Component {
       measureOfUnit: [],
       selectedManufacuter: [],
       selectedModel: [],
-      dataActivityTop: [
-        {
-          id: 1,
-          name: 'A',
-          // length: ListA.length,
-        },
-        {
-          id: 2,
-          name: 'B',
-          // length: ListB.length,
-        },
-        {
-          id: 3,
-          name: 'C',
-          // length: ListC.length,
-        },
-        {
-          id: 4,
-          name: 'D',
-        },
-        {
-          id: 5,
-          name: 'E',
-        },
-        {
-          id: 6,
-          name: 'F',
-        },
-        {
-          id: 7,
-          name: 'G',
-        },
-        {
-          id: 8,
-          name: 'H',
-        },
-        {
-          id: 9,
-          name: 'I',
-        },
-        {
-          id: 10,
-          name: 'J',
-        },
-        {
-          id: 11,
-          name: 'K',
-        },
-        {
-          id: 12,
-          name: 'L',
-        },
-        {
-          id: 13,
-          name: 'M',
-        },
-        {
-          id: 14,
-          name: 'N',
-        },
-        {
-          id: 15,
-          name: 'O',
-        },
-      ],
+
       dataActivity: [
         {
           id: 1,
@@ -444,264 +380,7 @@ export default class Splash extends Component {
         },
       ],
       realData: [],
-      ListA: [
-        {
-          id: 1,
-          build: 'A',
-          name: 'A-01',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 2,
-          build: 'A',
-          name: 'A-02',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 3,
-          build: 'A',
-          name: 'A-03',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 4,
-          build: 'A',
-          name: 'A-04',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 5,
-          build: 'A',
-          name: 'A-05',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 6,
-          build: 'A',
-          name: 'A-06',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 7,
-          build: 'A',
-          name: 'A-07',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 8,
-          build: 'A',
-          name: 'A-08',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 9,
-          build: 'A',
-          name: 'A-09',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 10,
-          build: 'A',
-          name: 'A-10',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 11,
-          build: 'A',
-          name: 'A-11',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 12,
-          build: 'A',
-          name: 'A-12',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-      ],
-      ListB: [
-        {
-          id: 1,
-          build: 'B',
-          name: 'B-01',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 2,
-          build: 'B',
-          name: 'B-02',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 3,
-          build: 'B',
-          name: 'B-03',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 4,
-          build: 'B',
-          name: 'B-04',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 5,
-          build: 'B',
-          name: 'B-05',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 6,
-          build: 'B',
-          name: 'B-06',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 7,
-          build: 'B',
-          name: 'B-07',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 8,
-          build: 'B',
-          name: 'B-08',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 9,
-          build: 'B',
-          name: 'B-09',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 10,
-          build: 'B',
-          name: 'B-10',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 11,
-          build: 'B',
-          name: 'B-11',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 12,
-          build: 'B',
-          name: 'B-12',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-      ],
-      ListC: [
-        {
-          id: 1,
-          build: 'C',
-          name: 'C-01',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 2,
-          build: 'C',
-          name: 'C-02',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 3,
-          build: 'C',
-          name: 'C-03',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 4,
-          build: 'C',
-          name: 'C-04',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 5,
-          build: 'C',
-          name: 'C-05',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 6,
-          build: 'C',
-          name: 'C-06',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 7,
-          build: 'C',
-          name: 'C-07',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 8,
-          build: 'C',
-          name: 'C-08',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 9,
-          build: 'C',
-          name: 'C-09',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 10,
-          build: 'C',
-          name: 'C-10',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 11,
-          build: 'C',
-          name: 'C-11',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 12,
-          build: 'C',
-          name: 'C-12',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-      ],
+
       error: {
         buildingName: false,
         units: false,
@@ -959,25 +638,15 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({visible: true});
   };
-  showTypesOfMeter = (item, index) => {
-    // this.setState({typeOfMetersVisible: true});
-    // let newArr = [...this.state.meterListData]; // copying the old datas array
-    // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
-    // this.setState({ meterListData: newArr }
-    //   ,
-    //   () => console.log('e--->', this.state.meterListData));
-  };
-  hideTypesOfMeter = () => {
-    this.setState({typeOfMetersVisible: false});
-  };
-  onGetMeterTypeId = (item, index) => {
-    this.setState({typeOfMetersVisible: false});
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-    this.setState({meterListData: newArr}, () =>
-      console.log('e--->', this.state.meterListData),
-    );
-  };
+
+  // onGetMeterTypeId = (item, index) => {
+  //   this.setState({typeOfMetersVisible: false});
+  //   let newArr = [...this.state.meterListData]; // copying the old datas array
+  //   newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+  //   this.setState({meterListData: newArr}, () =>
+  //     console.log('e--->', this.state.meterListData),
+  //   );
+  // };
 
   naviagateToDetail = () => {
     // this.toggleModal();
@@ -1113,21 +782,7 @@ export default class Splash extends Component {
       unit.index,
       1,
     );
-    // this.state.realData.splice(unit.index, 1)
-    // console.log('Pressed', unit.index)
-    // if (unit.item.build == 'A') {
-    //   this.state.ListA.splice(unit.index, 1)
-    //   return this.setState({ ListA: this.state.ListA })
-    // } else if (unit.item.build == 'B') {
-    //   this.state.ListB.splice(unit.index, 1)
-    //   return this.setState({ ListB: this.state.ListB })
-    // } else if (unit.item.build == 'C') {
-    //   this.state.ListC.splice(unit.index, 1)
-    //   return this.setState({ ListC: this.state.ListC })
-    // }
-    // console.log('List', this.context.propList[0].dataTop[this.state.buildIndex].list)
-    // let ListA = this.state.ListA
-    // ListA.splice(unit.index, 1);
+
     return this.setState({
       realData: this.context.propList[0].dataTop[this.state.buildIndex].list,
     });
@@ -1389,11 +1044,11 @@ export default class Splash extends Component {
     // console.log('check index',index)
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterTypeName =
-      item.manufacturer +
-      '-' +
       item.model +
+      ' ' +
       '(x' +
       item.multiplier +
+      ' ' +
       item.unit_of_measure +
       ')'; // replace e.target.value with whatever you want to change it to
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
@@ -1530,34 +1185,6 @@ export default class Splash extends Component {
         this.state.buildIndex
       ].list,
     });
-    // this.showArrayItem(build)
-
-    // const some_array = [...this.state.realData]
-    // some_array[this.state.pressedIndex] = {
-    //   id: this.state.pressedID,
-    //   build: this.state.typedBuild,
-    //   name: this.state.typedUnit,
-    //   code: this.state.typedCode,
-    //   type: this.state.typedMType,
-    // }
-    // if (this.state.typedBuild === 'A') {
-    //   this.setState({ ListA: some_array })
-    // } else if (this.state.typedBuild === 'B') {
-    //   this.setState({ ListB: some_array })
-    // } else if (this.state.typedBuild === 'C') {
-    //   this.setState({ ListC: some_array })
-    // }
-    // this.setState({ realData: some_array })
-  };
-  editOnPress2 = () => {
-    let arrays = [...this.state.ListA];
-    this.setState((prevState) => ({
-      ListA: [...prevState.arrayvar, newelement],
-    }));
-    // this.setState({ ListA: this.state.ListA.map(el => (el.name === 'A-01')) })
-    // const index = this.state.ListA.map(el => (el.name === 'A-01' ? { ...el, key: id } : el))
-    this.setState({arrays});
-    console.log('Index oF List', index);
   };
 
   //todo: Unit Click Event +++++++++++++++++++++++
@@ -2795,7 +2422,7 @@ export default class Splash extends Component {
                                               anchor={
                                                 this.state.typeOfMeters
                                                   .length ? (
-                                                  <Pressable
+                                                  <TouchableOpacity
                                                     onPress={() =>
                                                       this.showTypesOfMeter(
                                                         item,
@@ -2803,27 +2430,27 @@ export default class Splash extends Component {
                                                       )
                                                     }
                                                     style={{
+                                                      width: width * 0.5,
                                                       flexDirection: 'row',
                                                       justifyContent:
                                                         'flex-start',
                                                       alignItems: 'center',
-                                                    }}
-                                                    android_ripple={{
-                                                      color: '#25AAE1ec',
-                                                      borderless: true,
-                                                      radius: height * 0.08,
                                                     }}>
-                                                    <Text
+                                                    <TextTicker
+                                                      marqueeDelay={2000}
+                                                      duration={5000}
                                                       style={{
                                                         fontSize:
                                                           height * 0.018,
                                                         color: '#25AAE1ec',
+                                                        textTransform:
+                                                          'capitalize',
                                                       }}>
                                                       {item.meterTypeName
                                                         ? item.meterTypeName
                                                         : 'Select'}
-                                                    </Text>
-                                                  </Pressable>
+                                                    </TextTicker>
+                                                  </TouchableOpacity>
                                                 ) : (
                                                   <View
                                                     style={{
@@ -2857,28 +2484,27 @@ export default class Splash extends Component {
                                                         color="#3E89BF"
                                                       />
                                                       <MenuItem
-                                                        style={{
-                                                          width: width * 0.5,
-                                                        }}
                                                         onPress={() =>
                                                           this.onGetMeterTypeId(
                                                             item,
                                                             meterIndex,
                                                           )
                                                         }>
-                                                        <TextTicker
-                                                          duration={5000}
+                                                        <Text
                                                           style={{
-                                                            width: width * 0.4,
+                                                            textTransform:
+                                                              'capitalize',
                                                           }}>
                                                           {item.manufacturer +
                                                             '-' +
                                                             item.model +
+                                                            ' ' +
                                                             '(x' +
                                                             item.multiplier +
+                                                            ' ' +
                                                             item.unit_of_measure +
                                                             ')'}
-                                                        </TextTicker>
+                                                        </Text>
                                                       </MenuItem>
                                                     </View>
                                                   ),
@@ -3000,7 +2626,8 @@ export default class Splash extends Component {
                                             </View>
                                           </View>
                                         ) : (
-                                          console.log('Check Item', item)
+                                          // console.log('Check Item', item)
+                                          null
                                         )}
                                         <TouchableOpacity
                                           onPress={() =>
@@ -3193,12 +2820,7 @@ export default class Splash extends Component {
                                   </View> */}
                                   <SearchableDropdown
                                     onItemSelect={(item) => {
-                                      index == 0
-                                        ? this.setState({
-                                            selectedManufacuter: item,
-                                          })
-                                        : this.setState({selectedModel: item});
-                                      console.log('Kya select hoa', item);
+                                      this.hideSuggestion(index, item.name);
                                     }}
                                     containerStyle={{padding: 5}}
                                     itemStyle={{
@@ -3220,10 +2842,7 @@ export default class Splash extends Component {
                                         index == 0
                                           ? 'Manufacturer*'
                                           : 'Models*',
-                                      value:
-                                        index == 0
-                                          ? this.state.selectedManufacuter.name
-                                          : this.state.selectedModel.name,
+                                      value:item.input,
                                       underlineColorAndroid: 'transparent',
                                       style: {
                                         padding: 12,
