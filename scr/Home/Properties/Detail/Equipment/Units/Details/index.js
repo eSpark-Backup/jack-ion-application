@@ -395,13 +395,13 @@ const App = ({navigation}) => {
         disabled={item.leftName == 'Status' ? false : true}
         onPress={() => openStatusView()}>
         <View style={{paddingVertical: width * 0.02}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between',alignItems:'center'}}>
             <View style={{flexDirection: 'row'}}>
               <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flexDirection: 'column'}}>
-                <View style={{flexDirection: 'row-reverse'}}>
+            <View style={{flexDirection: 'row',}}>
+              <View style={{flexDirection: 'column',}}>
+                <View style={{flexDirection: 'row-reverse',}}>
                   {item.rightName == null ? null : (
                     <Text style={{textAlign: 'right', fontSize: width * 0.04}}>
                       {item.rightName}
@@ -417,9 +417,11 @@ const App = ({navigation}) => {
                     />
                   )}
                 </View>
-                <Text style={{color: '#5c5c5ccf', fontSize: width * 0.04}}>
+                {item.text &&
+                  <Text style={{color: '#5c5c5ccf', fontSize: width * 0.04}}>
                   {item.text}
                 </Text>
+                }
               </View>
               {item.rightIcon == null ? null : (
                 <Icon
