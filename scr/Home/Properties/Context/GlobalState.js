@@ -755,8 +755,8 @@ class GlobalState extends React.Component {
     const data = {
       name: info.propName,
       street: info.propStreet,
-      city: info.propState,
-      st: info.propCity,
+      city: info.propCity,
+      st: info.propState,
       zipcode: info.propZipCode,
       property_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
