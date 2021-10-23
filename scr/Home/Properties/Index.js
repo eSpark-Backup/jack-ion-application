@@ -18,10 +18,12 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
 import FilterIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Close from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Build from 'react-native-vector-icons/Ionicons';
 import {TextInput, Button} from 'react-native-paper';
+import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
 
@@ -200,10 +202,10 @@ export default class Splash extends Component {
             color="#115b72"
             style={styles.logoShadowStyle}
           />
-          <View style={{width: width * 0.6}}>
-            <Text style={styles.propText}>
+          <View style={{width: width * 0.6, alignItems: 'center'}}>
+            <TextTicker style={styles.propText} duration={5000}>
               {prop.item.name == null ? 'Untitled' : prop.item.name}
-            </Text>
+            </TextTicker>
           </View>
           <Signal
             name="signal-cellular-outline"
@@ -292,46 +294,45 @@ export default class Splash extends Component {
               />
             </TouchableOpacity>
             <View style={styles.searchView}>
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 activeOpacity={1}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   height: height * 0.08,
                 }}
-                onPress={this.openAndClear}> */}
-              <Search
-                name="search"
-                size={height * 0.04}
-                style={{marginLeft: width * 0.05}}
-                color="white"
-              />
-              <TextInput
-                underlineColor="transparent"
-                dense={true}
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.context.searchProperties(e)}
-                theme={{
-                  colors: {
-                    text: 'white',
-                    primary: '#25dAE1',
-                    selectionColor: 'transparent',
-                    background: 'transparent',
-                  },
-                }}
-                onFocus={() =>
-                  this.setState({showSearch: !this.state.showSearch})
-                }
-              />
-              {/* </TouchableOpacity> */}
+                onPress={this.openAndClear}>
+                <Search
+                  name="search"
+                  size={height * 0.04}
+                  style={{marginLeft: width * 0.05}}
+                  color="white"
+                />
+                <TextInput
+                  disabled={true}
+                  underlineColor="transparent"
+                  dense={true}
+                  placeholderTextColor="white"
+                  placeholder="Search"
+                  style={styles.search}
+                  onChangeText={(e) => this.context.searchProperties(e)}
+                  theme={{
+                    colors: {
+                      text: 'white',
+                      primary: '#25dAE1',
+                      selectionColor: 'transparent',
+                      background: 'transparent',
+                    },
+                  }}
+                  // onFocus={() =>
+                  //   this.setState({showSearch: true})
+                  // }
+                />
+              </TouchableOpacity>
               <TouchableOpacity
-                onPress={this.LoadData}
-                // onPress={() =>
-                //   this.setState({showFilter: !this.state.showFilter})
-                // }
-              >
+                onPress={() =>
+                  this.setState({showFilter: !this.state.showFilter})
+                }>
                 <FilterIcon name="filter-outline" color="white" size={20} />
               </TouchableOpacity>
             </View>
@@ -347,7 +348,6 @@ export default class Splash extends Component {
           ) : null}
           {this.state.showSearch ? (
             <Modal
-              onBackdropPress={this.closeAndClear}
               isVisible={this.state.showSearch}
               style={{
                 elevation: width * 0.005,
@@ -393,22 +393,28 @@ export default class Splash extends Component {
                     }}
                   />
                 </View>
-                <View style={{width: width * 0.05}}>
+                <View
+                  style={{
+                    width: width * 0.05,
+                  }}>
                   {this.context.searchLoading ? (
                     <ActivityIndicator color="white" size="small" />
                   ) : null}
                 </View>
+                <TouchableOpacity onPress={this.closeAndClear}>
+                  <Close name="close" color="white" size={20} />
+                </TouchableOpacity>
               </View>
-              <View style={{alignItems: 'center'}}>
+              <View style={{alignItems: 'center', paddingVertical: height * .005}}>
                 <FlatList
                   data={this.context.searchList}
                   renderItem={this._renderSearchPropList}
-                  removeClippedSubviews={false}
+                  removeClippedSubviews={true}
                   maxToRenderPerBatch={150}
                   windowSize={100}
                   keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
-                  onEndReachedThreshold={10}
+                  onEndReached={this.context.loadSearchData}
                 />
               </View>
             </Modal>
@@ -436,7 +442,7 @@ export default class Splash extends Component {
               ) : null
             }
             // onEndReachedThreshold={this.context.propList.length * 100}
-            onEndReached={this.LoadData}
+            // onEndReached={this.LoadData}
           />
         </View>
       </View>
