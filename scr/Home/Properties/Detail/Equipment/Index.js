@@ -65,7 +65,6 @@ import ContextProp from '../../Context/propContext';
 // import { FlatList } from 'react-native-gesture-handler';
 import {color} from 'react-native-reanimated';
 import {ActivityIndicator} from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-navigation';
 import clc from 'cli-color';
@@ -2544,50 +2543,8 @@ export default class Splash extends Component {
                               </Text>
                             </View>
                             <View style={styles.inputContainer}>
-                              {/* //todo: This is Drop down picker */}
-
-                              <ModalDropdown
-                                options={this.state.dataBuild.map(
-                                  (item) => item.name,
-                                )}
-                                defaultValue="Select Building*"
-                                textStyle={{
-                                  fontSize: width * 0.025,
-                                  marginLeft: width * 0.02,
-                                  color: '#25AAE1ec',
-                                }}
-                                style={[
-                                  styles.input,
-                                  {
-                                    backgroundColor: '#a6a6a61f',
-                                    borderWidth: width * 0.0013,
-                                    paddingVertical: width * 0.02,
-                                    borderRadius: width * 0.01,
-                                  },
-                                ]}
-                                defaultTextStyle={{
-                                  color: '#4a4a4abd',
-                                }}
-                                dropdownStyle={[
-                                  styles.input,
-                                  {
-                                    height: `${
-                                      this.state.dataBuild.length * 5 > 20
-                                        ? 20
-                                        : this.state.dataBuild.length * 5
-                                    }%`,
-                                  },
-                                ]}
-                                dropdownTextStyle={{
-                                  fontSize: width * 0.025,
-                                  marginLeft: width * 0.01,
-                                }}
-                                dropdownTextHighlightStyle={{
-                                  color: '#23a8e17a',
-                                }}
-                                scrollEnabled
-                              />
-                              {/* <TextInput
+                             
+                              <TextInput
                                 // label="Name*"
                                 // placeholder="A"
                                 value={this.state.buildingData.name}
@@ -2607,7 +2564,7 @@ export default class Splash extends Component {
                                     selectionColor: 'red',
                                   },
                                 }}
-                              /> */}
+                              />
                             </View>
                             <View style={styles.desciptionContainer}>
                               <Text style={styles.desciptionHeading}>
