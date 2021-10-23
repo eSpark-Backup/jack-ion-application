@@ -160,9 +160,8 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.type?.manufacturer +
-              '-' +
               unitMeter?.type?.model +
+              ' ' +
               '(x' +
               unitMeter?.type?.multiplier +
               unitMeter?.type?.unit_of_measure +
