@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -10,43 +10,50 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import { Header, Button, Icon } from 'react-native-elements';
+import {Header, Button, Icon} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
-import { View as MotiView } from 'moti';
-import { create } from 'apisauce';
+import {View as MotiView} from 'moti';
+import {create} from 'apisauce';
 import Base_Url from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../../components/Loader';
+import {
+  Chart,
+  Line,
+  Area,
+  HorizontalAxis,
+  VerticalAxis,
+} from 'react-native-responsive-linechart';
 
 // Components
 import styles from './style';
-import { Divider } from 'react-native-paper';
-import { color } from 'react-native-reanimated';
+import {Divider} from 'react-native-paper';
+import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const api = create({
   baseURL: Base_Url,
 });
 
-const App = ({ navigation }) => {
-
+const App = ({navigation}) => {
   const [dangerView, setDangerView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [openedStatus, setOpenedStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState([]);
   const [meterInfoData, setMeterInfoData] = useState([]);
+  const [statusInfo, setStatusInfo] = useState([]);
   const [meterTypeData, setMeterTypeData] = useState([]);
   const [remoteReaderData, setRemoteReaderData] = useState([]);
   const [unitData, setUnitData] = useState([]);
 
-
-  const { unitId, buildingName } = navigation.state.params; //? Dynamic Ids
+  const {unitId, buildingName} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
@@ -59,10 +66,9 @@ const App = ({ navigation }) => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     // console.log('Kia ha Response Data', res.data);
     setData(res.data);
-    setUnitMeter(res.data?.data?.unit?.['unit-meter']?.[0])
+    setUnitMeter(res.data?.data?.unit?.['unit-meter']?.[0]);
     setLoading(false);
   };
-
 
   const getToken = async () => {
     setLoading(true);
@@ -95,96 +101,135 @@ const App = ({ navigation }) => {
   };
 
   useEffect(() => {
-
-    setMeterInfoData([{
-      leftText: 'Manufacturer',
-      rightText: unitMeter?.type?.manufacturer ?? 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    },
-    {
-      leftText: 'Model',
-      rightText: unitMeter?.type?.model ?? 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    },
-    {
-      leftText: 'Unit of Measure',
-      rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    },
-    {
-      leftText: 'Multiplier',
-      rightText: unitMeter?.type?.multiplier ?? 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    },
-    {
-      leftText: 'Size',
-      rightText: unitMeter?.type?.size ?? 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    },
-    {
-      leftText: 'Meter Serial',
-      rightText: unitMeter?.meter_serial_number ?? 'N/A',
-      leftIcon: 'barcode-outline',
-      leftType: 'ionicon',
-      type: 'feather',
-    },
-    {
-      leftText: 'Custom ID',
-      rightText: unitMeter?.custom_meter_id ?? 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    },
-    {
-      leftText: 'IMR',
-      rightText: 'N/A',
-      leftIcon: null,
-      type: 'feather',
-    }])
-    setMeterTypeData([{
-      title: 'Hot Water Meter',
-      img: meterSwitcher(),
-      data: [
-        {
-          leftName: 'Type',
-          rightName:
-            unitMeter?.type?.manufacturer +
-            '-' +
-            unitMeter?.type?.model +
-            '(x' +
-            unitMeter?.type?.multiplier +
-            unitMeter?.type?.unit_of_measure +
-            ')',
-          rightIcon: 'chevron-down',
-          type: 'feather',
-        },
-      ],
-    }])
-    setRemoteReaderData([{
-      title: 'Transciever',
-      img: require('../../../../../../../Images/remote-reader.png'),
-      data: [
-        {
-          leftName: 'Serial Number',
-          rightIcon: 'barcode-outline',
-          rightName: unitMeter?.device_serial_number ?? 'N/A',
-          type: 'ionicon',
-          rightIcon2: null,
-        },
-        {
-          leftName: 'Status',
-          rightIcon2: 'check',
-          rightIcon: 'chevron-down',
-          rightName: 'Good',
-          type: 'feather',
-          text: 'As of 5 hours ago',
-        },
-      ],
-    }])
+    setMeterInfoData([
+      {
+        leftText: 'Manufacturer',
+        rightText: unitMeter?.type?.manufacturer ?? 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+      {
+        leftText: 'Model',
+        rightText: unitMeter?.type?.model ?? 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+      {
+        leftText: 'Unit of Measure',
+        rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+      {
+        leftText: 'Multiplier',
+        rightText: unitMeter?.type?.multiplier ?? 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+      {
+        leftText: 'Size',
+        rightText: unitMeter?.type?.size ?? 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+      {
+        leftText: 'Meter Serial',
+        rightText: unitMeter?.meter_serial_number ?? 'N/A',
+        leftIcon: 'barcode-outline',
+        leftType: 'ionicon',
+        type: 'feather',
+      },
+      {
+        leftText: 'Custom ID',
+        rightText: unitMeter?.custom_meter_id ?? 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+      {
+        leftText: 'IMR',
+        rightText: 'N/A',
+        leftIcon: null,
+        type: 'feather',
+      },
+    ]);
+    setMeterTypeData([
+      {
+        title: 'Hot Water Meter',
+        img: meterSwitcher(),
+        data: [
+          {
+            leftName: 'Type',
+            rightName:
+              unitMeter?.type?.manufacturer +
+              '-' +
+              unitMeter?.type?.model +
+              '(x' +
+              unitMeter?.type?.multiplier +
+              unitMeter?.type?.unit_of_measure +
+              ')',
+            rightIcon: 'chevron-down',
+            type: 'feather',
+          },
+        ],
+      },
+    ]);
+    setRemoteReaderData([
+      {
+        title: 'Transciever',
+        img: require('../../../../../../../Images/remote-reader.png'),
+        data: [
+          {
+            leftName: 'Serial Number',
+            rightIcon: 'barcode-outline',
+            rightName: unitMeter?.device_serial_number ?? 'N/A',
+            type: 'ionicon',
+            rightIcon2: null,
+          },
+          {
+            leftName: 'Status',
+            rightIcon2: 'check',
+            rightIcon: 'chevron-down',
+            rightName: 'Good',
+            type: 'feather',
+            text: 'As of 5 hours ago',
+          },
+        ],
+      },
+    ]);
+    setStatusInfo([
+      {
+        leftText: 'Pulses',
+        rightText: '3,761',
+        icon: null,
+        bold: false,
+      },
+      {
+        leftText: 'Meter Port',
+        rightText: 'Port 1',
+        icon: 'chevron-down',
+        bold: true,
+        type: 'feather',
+      },
+      {
+        leftText: 'Signal Type',
+        rightText: 'Pulse',
+        icon: 'chevron-down',
+        bold: true,
+        type: 'feather',
+      },
+      {
+        leftText: 'Temperature',
+        rightText: '59 F',
+        icon: null,
+        bold: false,
+      },
+      {
+        leftText: 'Battery',
+        rightText: 'Approx.7 Years',
+        icon: null,
+        bold: false,
+      },
+    ]);
     setUnitData([
       {
         title: 'Unit',
@@ -225,10 +270,10 @@ const App = ({ navigation }) => {
           },
         ],
       },
-    ])
+    ]);
     // console.log('Kia ha unitMeter', meterInfoData);
     if (data.length != 0) {
-      setLoading(false)
+      setLoading(false);
     }
   }, [unitMeter]);
   const meterSwitcher = () => {
@@ -249,12 +294,11 @@ const App = ({ navigation }) => {
   };
   const handleMeterSelect = (data) => {
     // console.log('Kia ha unitMeter', data);
-    if(data.id != unitMeter.id){
-      setLoading(true)
-      setUnitMeter(data)
+    if (data.id != unitMeter.id) {
+      setLoading(true);
+      setUnitMeter(data);
     }
-
-  }
+  };
   const typeColor = (arg) => {
     switch (arg) {
       case 'hot water':
@@ -272,17 +316,17 @@ const App = ({ navigation }) => {
     }
   };
 
-  const renderUnitList = ({ item, index }) => {
+  const renderUnitList = ({item, index}) => {
     return (
-      <View style={{ paddingVertical: width * 0.02 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row' }}>
+      <View style={{paddingVertical: width * 0.02}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'row'}}>
             {index == 1 ? (
               <Image
                 source={typeSwitcher(item.rightName)}
                 style={{
                   height: width * 0.06,
-                    width: width * 0.055,
+                  width: width * 0.055,
                   marginRight: width * 0.025,
                 }}
               />
@@ -292,21 +336,16 @@ const App = ({ navigation }) => {
                 type={item.type}
                 size={width * 0.05}
                 color={'#000'}
-                style={{ marginRight: width * 0.03 }}
+                style={{marginRight: width * 0.03}}
               />
             )}
-            <Text style={{ fontSize: width * 0.04 }}>{item.leftName}</Text>
+            <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{flexDirection: 'row'}}>
             {item.rightName == null ? null : (
               <Text
                 style={{
-                  color:
-                    index == 1
-                      ? typeColor(
-                        item.rightName,
-                      )
-                      : '#000',
+                  color: index == 1 ? typeColor(item.rightName) : '#000',
                   fontSize: width * 0.04,
                 }}>
                 {item.rightName}
@@ -318,7 +357,7 @@ const App = ({ navigation }) => {
                 type={item.typeRight}
                 size={width * 0.05}
                 color="#000"
-                style={{ alignSelf: 'center' }}
+                style={{alignSelf: 'center'}}
               />
             )}
           </View>
@@ -350,86 +389,37 @@ const App = ({ navigation }) => {
     );
   };
 
-  const renderRemoteList = ({ item, index }) => {
+  const renderRemoteList = ({item, index}) => {
     return (
-      <View style={{ paddingVertical: width * 0.02 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={{ fontSize: width * 0.04 }}>{item.leftName}</Text>
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexDirection: 'column' }}>
-              <View style={{ flexDirection: 'row-reverse' }}>
-                {item.rightName == null ? null : (
-                  <Text style={{ textAlign: 'right', fontSize: width * 0.04 }}>
-                    {item.rightName}
-                  </Text>
-                )}
-                {item.rightIcon2 == null ? null : (
-                  <Icon
-                    name={item.rightIcon2}
-                    type={item.type}
-                    size={width * 0.05}
-                    color="#0fc908"
-                    style={{ marginRight: width * 0.01 }}
-                  />
-                )}
-              </View>
-              <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.04 }}>
-                {item.text}
-              </Text>
+      <TouchableOpacity
+        disabled={item.leftName == 'Status' ? false : true}
+        onPress={() => openStatusView()}>
+        <View style={{paddingVertical: width * 0.02}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
             </View>
-            {item.rightIcon == null ? null : (
-              <Icon
-                name={item.rightIcon}
-                type={item.type}
-                size={width * 0.05}
-                color="#000"
-                style={{ alignSelf: 'center' }}
-              />
-            )}
-          </View>
-        </View>
-        <Divider
-          style={{
-            marginTop: height * 0.02,
-            borderWidth: 0.2,
-            width: width * 0.9,
-            right: width * 0.1,
-            flexDirection: 'row',
-          }}
-          inset
-        />
-      </View>
-    );
-  };
-
-  const openView = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setOpened(!opened);
-  };
-
-  const renderMeterType = ({ item, index }) => {
-    return (
-      <TouchableOpacity onPress={() => openView()}>
-        <View style={{ paddingVertical: width * 0.02 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={{ fontSize: width * 0.04 }}>{item.leftName}</Text>
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flexDirection: 'column' }}>
-                <View style={{ flexDirection: 'row-reverse' }}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'column'}}>
+                <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text
-                      style={{
-                        textAlign: 'right',
-                        fontSize: width * 0.04,
-                      }}>
+                    <Text style={{textAlign: 'right', fontSize: width * 0.04}}>
                       {item.rightName}
                     </Text>
                   )}
+                  {item.rightIcon2 == null ? null : (
+                    <Icon
+                      name={item.rightIcon2}
+                      type={item.type}
+                      size={width * 0.05}
+                      color="#0fc908"
+                      style={{marginRight: width * 0.01}}
+                    />
+                  )}
                 </View>
+                <Text style={{color: '#5c5c5ccf', fontSize: width * 0.04}}>
+                  {item.text}
+                </Text>
               </View>
               {item.rightIcon == null ? null : (
                 <Icon
@@ -437,7 +427,7 @@ const App = ({ navigation }) => {
                   type={item.type}
                   size={width * 0.05}
                   color="#000"
-                  style={{ alignSelf: 'center' }}
+                  style={{alignSelf: 'center'}}
                 />
               )}
             </View>
@@ -457,29 +447,128 @@ const App = ({ navigation }) => {
     );
   };
 
-  const renderMeterInfo = ({ item }) => {
+  const openView = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setOpened(!opened);
+  };
+
+  const openStatusView = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setOpenedStatus(!openedStatus);
+  };
+
+  const renderMeterType = ({item, index}) => {
     return (
-      <View style={{ backgroundColor: '#605c5c24' }}>
+      <TouchableOpacity onPress={() => openView()}>
+        <View style={{paddingVertical: width * 0.02}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'column'}}>
+                <View style={{flexDirection: 'row-reverse'}}>
+                  {item.rightName == null ? null : (
+                    <Text
+                      style={{
+                        textAlign: 'right',
+                        fontSize: width * 0.04,
+                      }}>
+                      {item.rightName}
+                    </Text>
+                  )}
+                </View>
+              </View>
+              {item.rightIcon == null ? null : (
+                <Icon
+                  name={item.rightIcon}
+                  type={item.type}
+                  size={width * 0.05}
+                  color="#000"
+                  style={{alignSelf: 'center'}}
+                />
+              )}
+            </View>
+          </View>
+          <Divider
+            style={{
+              marginTop: height * 0.02,
+              borderWidth: 0.2,
+              width: width * 0.9,
+              right: width * 0.1,
+              flexDirection: 'row',
+            }}
+            inset
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderMeterInfo = ({item}) => {
+    return (
+      <View style={{backgroundColor: '#605c5c24'}}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: width * 0.04,
           }}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={{ fontSize: width * 0.035 }}>{item.leftText}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: width * 0.035}}>{item.leftText}</Text>
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
                 type={item.leftType}
                 size={width * 0.05}
                 color={'rgb(90,134,183)'}
-                style={{ marginLeft: width * 0.03, alignSelf: 'center' }}
+                style={{marginLeft: width * 0.03, alignSelf: 'center'}}
               />
             )}
           </View>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={{ fontSize: width * 0.035 }}>{item.rightText}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: width * 0.035}}>{item.rightText}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderStatusInfo = ({item}) => {
+    return (
+      <View style={{backgroundColor: '#605c5c24'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: width * 0.04,
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                fontSize: width * 0.035,
+                color: '#8c8c8c',
+              }}>
+              {item.leftText}
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                fontSize: width * 0.035,
+                color: item.bold ? '#000' : '#8c8c8c',
+              }}>
+              {item.rightText}
+            </Text>
+            {item.icon == null ? null : (
+              <Icon
+                name={item.icon}
+                type={item.type}
+                size={width * 0.05}
+                color={'#000'}
+                // style={{marginLeft: width * 0.03, alignSelf: 'center'}}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -492,32 +581,32 @@ const App = ({ navigation }) => {
     return <Loader />;
   } else {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <ScrollView>
           <View style={styles.container}>
             <Header
               leftComponent={{
                 text: 'Close',
-                style: { fontSize: width * 0.05, color: '#000' },
+                style: {fontSize: width * 0.05, color: '#000'},
                 onPress: () => navigation.goBack(),
               }}
               centerComponent={
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Home
                     name="home"
                     size={width * 0.05}
                     color="#000"
-                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
+                    style={{alignSelf: 'center', marginRight: width * 0.01}}
                   />
-                  <Text style={{ fontSize: width * 0.05 }}>Units Details</Text>
+                  <Text style={{fontSize: width * 0.05}}>Units Details</Text>
                 </View>
               }
               rightComponent={{
                 text: 'Save',
-                style: { fontSize: width * 0.05, color: '#5c5c5ccf' },
+                style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
               }}
               backgroundColor="#fff"
-              containerStyle={{ borderBottomWidth: width * 0.003, elevation: 1 }}
+              containerStyle={{borderBottomWidth: width * 0.003, elevation: 1}}
             />
             {!headView && (
               <MotiView
@@ -530,7 +619,7 @@ const App = ({ navigation }) => {
                   translateX: 0,
                 }}
                 style={styles.currentReadContainer}>
-                <Text style={{ color: '#5c5c5ccf' }}>CURRENT READ</Text>
+                <Text style={{color: '#5c5c5ccf'}}>CURRENT READ</Text>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -540,20 +629,20 @@ const App = ({ navigation }) => {
                     paddingHorizontal: width * 0.04,
                   }}>
                   <Text
-                    style={{ fontSize: width * 0.08, color: 'rgb(90,134,183)' }}>
+                    style={{fontSize: width * 0.08, color: 'rgb(90,134,183)'}}>
                     3,782 Gallons
                   </Text>
                   <RightArrow
                     name="chevron-thin-right"
                     size={width * 0.08}
                     color="rgb(90,134,183)"
-                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
+                    style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
                   />
                 </View>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Check name="check" size={width * 0.05} color="#0fc908" />
-                  <Text style={{ color: '#5c5c5ccf' }}>As of 5 hours ago</Text>
+                  <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
                 </View>
               </MotiView>
             )}
@@ -569,7 +658,7 @@ const App = ({ navigation }) => {
                 }}
                 style={[
                   styles.currentReadContainer,
-                  { alignItems: 'center', justifyContent: 'center' },
+                  {alignItems: 'center', justifyContent: 'center'},
                 ]}>
                 <View
                   style={{
@@ -579,14 +668,14 @@ const App = ({ navigation }) => {
                     name="chevron-thin-left"
                     size={width * 0.08}
                     color="rgb(90,134,183)"
-                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
+                    style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
                   />
                   <View>
-                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
+                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
                       PULSES
                     </Text>
-                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
+                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
                       3,786
                     </Text>
                   </View>
@@ -598,10 +687,10 @@ const App = ({ navigation }) => {
                     x
                   </Text>
                   <View>
-                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
+                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
                       MULTIPLIER
                     </Text>
-                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
+                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
                       1
                     </Text>
                   </View>
@@ -613,10 +702,10 @@ const App = ({ navigation }) => {
                     +
                   </Text>
                   <View>
-                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
+                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
                       IMR
                     </Text>
-                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
+                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
                       21
                     </Text>
                   </View>
@@ -628,10 +717,10 @@ const App = ({ navigation }) => {
                     =
                   </Text>
                   <View>
-                    <Text style={{ color: '#5c5c5ccf', fontSize: width * 0.03 }}>
+                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
                       CURRENT READ
                     </Text>
-                    <Text style={{ textAlign: 'center', fontSize: width * 0.03 }}>
+                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
                       3,807
                     </Text>
                   </View>
@@ -646,10 +735,10 @@ const App = ({ navigation }) => {
                     name="radio"
                     size={width * 0.06}
                     color="#fff"
-                    style={{ marginRight: width * 0.025 }}
+                    style={{marginRight: width * 0.025}}
                   />
                 }
-                buttonStyle={{ backgroundColor: 'rgb(90,134,183)' }}
+                buttonStyle={{backgroundColor: 'rgb(90,134,183)'}}
                 onPress={() => console.log('Quick Actions Press')}
               />
             </View>
@@ -657,7 +746,7 @@ const App = ({ navigation }) => {
         //* Unit List
         */}
             <SectionList
-              style={{ marginTop: height * 0.07 }}
+              style={{marginTop: height * 0.07}}
               contentContainerStyle={{
                 width: width,
                 paddingHorizontal: width * 0.05,
@@ -665,15 +754,15 @@ const App = ({ navigation }) => {
               sections={unitData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderUnitList}
-              renderSectionHeader={({ section: { title, icon, type } }) => (
+              renderSectionHeader={({section: {title, icon, type}}) => (
                 <>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
                     }}>
-                    <Text style={{ fontSize: width * 0.065 }}>{title}</Text>
+                    <Text style={{fontSize: width * 0.065}}>{title}</Text>
                     {/* <View
                     style={{
                       width: height * 0.05,
@@ -686,7 +775,7 @@ const App = ({ navigation }) => {
                       name={icon}
                       type={type}
                       size={width * 0.08}
-                      style={{ alignSelf: 'center' }}
+                      style={{alignSelf: 'center'}}
                     />
                   </View>
                   <Divider
@@ -704,7 +793,7 @@ const App = ({ navigation }) => {
         //* Remote Reader List
         */}
             <SectionList
-              style={{ marginTop: height * 0.07 }}
+              style={{marginTop: height * 0.07}}
               contentContainerStyle={{
                 width: width,
                 paddingHorizontal: width * 0.05,
@@ -712,15 +801,15 @@ const App = ({ navigation }) => {
               sections={remoteReaderData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderRemoteList}
-              renderSectionHeader={({ section: { title, img } }) => (
+              renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
                     }}>
-                    <Text style={{ fontSize: width * 0.065 }}>{title}</Text>
+                    <Text style={{fontSize: width * 0.065}}>{title}</Text>
                     <Image
                       source={img}
                       style={{
@@ -740,11 +829,32 @@ const App = ({ navigation }) => {
                 </>
               )}
             />
+            {openedStatus ? (
+              <FlatList
+                style={{width: width, bottom: width * 0.02}}
+                data={statusInfo}
+                keyExtractor={(item, index) => item + index}
+                renderItem={renderStatusInfo}
+                ItemSeparatorComponent={() => (
+                  <Divider
+                    style={{
+                      width: width * 0.9,
+                      borderWidth: 0.2,
+                      right: width * 0.05,
+                      borderColor: '#8a8a8a6e',
+                      backgroundColor: '#5c5c5ccf',
+                      flexDirection: 'row',
+                    }}
+                    inset
+                  />
+                )}
+              />
+            ) : null}
             {/*
         //* Meter Type List
         */}
             <SectionList
-              style={{ marginTop: height * 0.07 }}
+              style={{marginTop: height * 0.07}}
               contentContainerStyle={{
                 width: width,
                 paddingHorizontal: width * 0.05,
@@ -752,15 +862,15 @@ const App = ({ navigation }) => {
               sections={meterTypeData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderMeterType}
-              renderSectionHeader={({ section: { title, img } }) => (
+              renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
                     }}>
-                    <Text style={{ fontSize: width * 0.065 }}>
+                    <Text style={{fontSize: width * 0.065}}>
                       {unitMeter?.meter_name?.toUpperCase() + ' Meter'}
                     </Text>
                     {/* <View
@@ -792,7 +902,7 @@ const App = ({ navigation }) => {
             />
             {opened ? (
               <FlatList
-                style={{ width: width, bottom: width * 0.02 }}
+                style={{width: width, bottom: width * 0.02}}
                 data={meterInfoData}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderMeterInfo}
@@ -819,9 +929,9 @@ const App = ({ navigation }) => {
                   width: width,
                   justifyContent: 'space-between',
                   paddingHorizontal: width * 0.05,
-                  alignItems: 'center'
+                  alignItems: 'center',
                 }}>
-                <Text style={{ fontSize: width * 0.065 }}>Usage</Text>
+                <Text style={{fontSize: width * 0.065}}>Usage</Text>
                 {/* <View
                 style={{
                   width: height * 0.05,
@@ -834,7 +944,7 @@ const App = ({ navigation }) => {
                   name="bar-chart"
                   type="fontisto"
                   size={width * 0.08}
-                  style={{ alignSelf: 'center' }}
+                  style={{alignSelf: 'center'}}
                 />
               </View>
               <Divider
@@ -846,16 +956,84 @@ const App = ({ navigation }) => {
                   left: width * 0.05,
                 }}
               />
+              {/*
+              //todo: Add Chart here 
+              */}
               <View
                 style={{
-                  width: width * 0.9,
-                  height: height * 0.3,
-                  backgroundColor: 'green',
                   alignSelf: 'center',
-                }}
-              />
+                }}>
+                <Chart
+                  style={{
+                    height: height * 0.3,
+                    width: width * 0.9,
+                  }}
+                  data={[
+                    {x: -2, y: 15},
+                    {x: -1, y: 10},
+                    {x: 0, y: 12},
+                    {x: 1, y: 7},
+                    {x: 2, y: 6},
+                    {x: 3, y: 8},
+                    {x: 4, y: 10},
+                    {x: 5, y: 8},
+                    {x: 6, y: 12},
+                    {x: 7, y: 14},
+                    {x: 8, y: 12},
+                    {x: 9, y: 13.5},
+                    {x: 10, y: 18},
+                  ]}
+                  padding={{left: 40, bottom: 20, right: 20, top: 20}}
+                  xDomain={{min: -2, max: 10}}
+                  yDomain={{min: 0, max: 20}}>
+                  <VerticalAxis
+                    tickCount={11}
+                    theme={{labels: {formatter: (v) => v.toFixed(2)}}}
+                  />
+                  <HorizontalAxis tickCount={5} />
+                  <Area
+                    theme={{
+                      gradient: {
+                        from: {color: '#5D84B6'},
+                        to: {color: '#DFDFDF', opacity: 0.4},
+                      },
+                    }}
+                  />
+                  <Line
+                    theme={{
+                      stroke: {color: '#5D84B6', width: 5},
+                      scatter: {default: {width: 4, height: 4, rx: 2}},
+                    }}
+                  />
+                </Chart>
+                <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                  <View style={{flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        backgroundColor: '#DFDFDF',
+                        width: width * 0.03,
+                        height: width * 0.03,
+                        alignSelf: 'center',
+                        marginHorizontal: width * 0.02,
+                      }}
+                    />
+                    <Text>Meter Usage</Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        backgroundColor: '#5D84B6',
+                        width: width * 0.03,
+                        height: width * 0.03,
+                        alignSelf: 'center',
+                        marginHorizontal: width * 0.02,
+                      }}
+                    />
+                    <Text>Meter Read</Text>
+                  </View>
+                </View>
+              </View>
             </View>
-
             <View>
               <View
                 style={{
@@ -865,7 +1043,7 @@ const App = ({ navigation }) => {
                   justifyContent: 'space-between',
                   paddingHorizontal: width * 0.05,
                 }}>
-                <Text style={{ fontSize: width * 0.07 }}>Danger Zone</Text>
+                <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
                 <Icon
                   name={dangerView ? 'chevron-down' : 'chevron-right'}
                   type="feather"
@@ -893,15 +1071,15 @@ const App = ({ navigation }) => {
                     marginBottom: width * 0.05,
                   }}>
                   <Button
-                    title="Delete Water Meter"
+                    title={`Delete ${unitMeter?.meter_name.toUpperCase()} Meter`}
                     buttonStyle={{
                       backgroundColor: '#e24b4b',
                       marginBottom: height * 0.03,
                     }}
                   />
                   <Button
-                    title="Delete Unit 101"
-                    buttonStyle={{ backgroundColor: '#e24b4b' }}
+                    title={'Delete Unit ' + testId}
+                    buttonStyle={{backgroundColor: '#e24b4b'}}
                   />
                 </View>
               )}
@@ -917,36 +1095,30 @@ const App = ({ navigation }) => {
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-
-          {
-            arrayOfUnits &&
-            arrayOfUnits.map((item, index) =>
+          {arrayOfUnits &&
+            arrayOfUnits.map((item, index) => (
               <TouchableOpacity
                 style={{
                   width: width * 0.13,
                   height: width * 0.13,
                   backgroundColor: 'white',
-                  marginHorizontal: width * .025,
-                  elevation: width * .01,
-                  borderWidth: width * .005,
+                  marginHorizontal: width * 0.025,
+                  elevation: width * 0.01,
+                  borderWidth: width * 0.005,
                   borderColor: typeColor(item.meter_name),
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
                 }}
-                onPress={() => handleMeterSelect(item)}
-              >
+                onPress={() => handleMeterSelect(item)}>
                 <Image
-                  source={typeSwitcher(
-                    item.meter_name,
-                  )}
+                  source={typeSwitcher(item.meter_name)}
                   style={{
                     height: width * 0.06,
                     width: width * 0.055,
                   }}
                 />
               </TouchableOpacity>
-            )
-          }
+            ))}
         </View>
       </View>
     );
