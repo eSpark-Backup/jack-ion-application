@@ -3137,8 +3137,8 @@ export default class Splash extends Component {
                 animationOut="slideOutUp"
                 hasBackdrop={true}
                 backdropColor="black"
-                isVisible={this.state.isModalMeterVisible}
-                // isVisible={true}
+                // isVisible={this.state.isModalMeterVisible}
+                isVisible={true}
                 style={styles.modal1Container}>
                 {/* <KeyboardAvoidingView behavior="padding"> */}
                 <View style={styles.modalInner}>
@@ -3430,12 +3430,12 @@ export default class Splash extends Component {
                                                     ? 'red'
                                                     : 'gray',
                                                   width: width * 0.35,
-                                                  height: height * 0.052,
+                                                  height: height * 0.061,
                                                   borderWidth: width * 0.003,
                                                   borderRadius: width * 0.01,
                                                   paddingHorizontal:
                                                     width * 0.03,
-                                                  marginTop: width * 0.01,
+                                                  marginTop: width * 0.014,
                                                 }}
                                                 onPress={() =>
                                                   this.showSuggestion(index)
