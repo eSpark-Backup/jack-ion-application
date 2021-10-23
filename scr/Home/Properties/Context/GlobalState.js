@@ -97,6 +97,7 @@ class GlobalState extends React.Component {
     isLoading: false,
     searchLoading: false,
     listLoader: false,
+    loadFor: '',
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
     searchList: [],
@@ -879,10 +880,12 @@ class GlobalState extends React.Component {
   //   // this.setState({ itemList: response?.data?.data?.billingCompany });
   // };
   searchProperties = async (e) => {
+    this.setState({loadFor: e});
     let data = {
       offset: 0,
       search: e,
     };
+
     if (e) {
       this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', data);
@@ -899,6 +902,32 @@ class GlobalState extends React.Component {
       this.setState({searchList: []});
     }
   };
+
+  loadSearchData = async () => {
+    this.setState({searchLoading: true});
+    let prop = {
+      offset: this.state.searchList.length,
+      search: this.state.loadFor,
+    };
+    if (this.state.loadFor) {
+      this.setState({searchLoading: true});
+      const response = await this.api.post('/property/all', prop);
+      console.log('Search more property===>', response);
+      if (response?.data?.bool) {
+        let data = [...this.state.searchList];
+        let data2 = response.data.data.properties;
+        data.push(...data2);
+        this.setState({searchList: data});
+        this.setState({searchLoading: false});
+      } else {
+        Alert.alert('Error', 'Network Issues');
+        this.setState({searchLoading: false});
+      }
+    } else {
+      this.setState({searchList: []});
+    }
+  };
+
   clearSearchList = () => {
     this.setState({searchList: []});
   };
@@ -934,6 +963,7 @@ class GlobalState extends React.Component {
             clearSearchList: this.clearSearchList,
             loadMoreData: this.loadMoreData,
             listLoader: this.state.listLoader,
+            loadSearchData: this.loadSearchData,
           }}>
           {this.props.children}
         </Context.Provider>

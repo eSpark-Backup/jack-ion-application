@@ -171,7 +171,7 @@ export default class Splash extends React.Component {
       info: this.props.navigation.state.params.item,
       listData: this.props.navigation.state.params.item.item,
     });
-    console.log(this.props.navigation);
+    console.log(this.props.navigation.state.params.item.item);
     // this.setState({ index: this.state.info?.isIndex })
   }
 
@@ -903,9 +903,23 @@ export default class Splash extends React.Component {
                 <View style={styles.infoViewInner}>
                   <Locate name="map-pin" size={width * 0.06} />
                   <Text style={styles.dataFieldText}>
-                    {this.state.listData.street == null
-                      ? '--'
-                      : `${this.state.listData.street} \n ${this.state.listData.city}, ${this.state.listData.st} ${this.state.listData.zipcode}`}
+                    {`${
+                      this.state.listData.street == null
+                        ? ' - '
+                        : this.state.listData.street
+                    } \n ${
+                      this.state.listData.city == null
+                        ? ' - '
+                        : this.state.listData.city
+                    }, ${
+                      this.state.listData.st == null
+                        ? ' - '
+                        : this.state.listData.st
+                    } ${
+                      this.state.listData.zipcode == null
+                        ? ' - '
+                        : this.state.listData.zipcode
+                    }`}
                   </Text>
                 </View>
               </View>
@@ -965,7 +979,11 @@ export default class Splash extends React.Component {
                     />
                   </View>
                   <TextInput
-                    value={this.state.listData.contact}
+                    value={
+                      this.state.listData.contact_name == null
+                        ? '-'
+                        : this.state.listData.contact_name
+                    }
                     placeholder="Contact Name"
                     onChangeText={(text) => console.log(text)}
                     style={styles.contactInput}
