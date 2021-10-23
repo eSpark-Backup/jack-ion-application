@@ -51,6 +51,7 @@ import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Base_URL from '../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import TextTicker from 'react-native-text-ticker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {create} from 'apisauce';
 
@@ -1632,17 +1633,18 @@ export default class Splash extends Component {
                   overflow: 'hidden',
                 }}>
                 <Home name="house-user" size={18} />
-                <Text style={styles.dataFieldText} key={unit}>
+                <TextTicker
+                  duration={5000}
+                  style={styles.dataFieldText}
+                  key={unit}>
                   {unit.item.name}
-                </Text>
+                </TextTicker>
               </View>
               <View style={[styles.meterReading]}>
                 <Text style={styles.dataFieldText}>
                   {unit.item?.['unit-meter']?.length}
                 </Text>
-                <Text style={styles.dataFieldText}>
-                  Meters
-                </Text>
+                <Text style={styles.dataFieldText}>Meters</Text>
               </View>
               {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
               <TouchableOpacity
@@ -2810,19 +2812,28 @@ export default class Splash extends Component {
                                                         color="#3E89BF"
                                                       />
                                                       <MenuItem
+                                                        style={{
+                                                          width: width * 0.5,
+                                                        }}
                                                         onPress={() =>
                                                           this.onGetMeterTypeId(
                                                             item,
                                                             meterIndex,
                                                           )
                                                         }>
-                                                        {item.manufacturer +
-                                                          '-' +
-                                                          item.model +
-                                                          '(x' +
-                                                          item.multiplier +
-                                                          item.unit_of_measure +
-                                                          ')'}
+                                                        <TextTicker
+                                                          duration={5000}
+                                                          style={{
+                                                            width: width * 0.4,
+                                                          }}>
+                                                          {item.manufacturer +
+                                                            '-' +
+                                                            item.model +
+                                                            '(x' +
+                                                            item.multiplier +
+                                                            item.unit_of_measure +
+                                                            ')'}
+                                                        </TextTicker>
                                                       </MenuItem>
                                                     </View>
                                                   ),
