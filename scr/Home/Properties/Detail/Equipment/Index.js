@@ -2721,8 +2721,8 @@ export default class Splash extends Component {
                 animationOut="slideOutUp"
                 hasBackdrop={true}
                 backdropColor="black"
-                // isVisible={this.state.isModalMeterVisible}
-                isVisible={true}
+                isVisible={this.state.isModalMeterVisible}
+                // isVisible={true}
                 style={styles.modal1Container}>
                 {/* <KeyboardAvoidingView behavior="padding"> */}
                 <View style={styles.modalInner}>

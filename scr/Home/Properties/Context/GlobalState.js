@@ -31,17 +31,20 @@ class GlobalState extends React.Component {
   };
 
   clearData = () => {
-    this.setState({propList: []});
+    this.setState({propList: [],});
   };
 
   checkData = async () => {
-    this.setState({isLoading: true});
+    this.setState({isLoading: true,filterDataName:''});
     let data = {
       offset: 0,
     };
     const response = await this.api.post('/property/all', data);
     console.log('respone property===>', response.data.data.properties);
-    this.setState({success: response.data.bool});
+    this.setState({
+      success: response.data.bool,
+      offset: response.data.data.offset,
+    });
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
       this.setState({isLoading: false});
@@ -54,18 +57,26 @@ class GlobalState extends React.Component {
   loadMoreData = async () => {
     this.setState({listLoader: true});
     let data = {
-      offset: this.state.propList.length,
+      offset: this.state.offset,
+      billing: this.state.filterDataName
     };
     const response = await this.api.post('/property/all', data);
     console.log('respone property===>', response.data.data);
-    this.setState({success: response.data.bool});
+    // console.log('this.state.offset===>', this.state.offset);
+    this.setState({
+      success: response.data.bool,
+    });
     if (response?.data?.bool) {
-      let data = [...this.state.propList];
-      let data2 = response.data.data.properties;
-      data.push(...data2);
-      this.setState({propList: data});
-      // console.log('new array', data);
-      this.setState({listLoader: false});
+      console.log('this.state.offset===>', this.state.offset);
+      console.log('response.data.data.offset===>', response.data.data.offset);
+      if (this.state.offset != response.data.data.offset && response.data.data.offset > 0) {
+        let data = [...this.state.propList];
+        let data2 = response.data.data.properties;
+        data.push(...data2);
+        this.setState({propList: data});
+        // console.log('new array', data);
+        this.setState({listLoader: false, offset: response.data.data.offset});
+      }
     } else {
       Alert.alert('Error', 'Network Issues');
       this.setState({listLoader: false});
@@ -76,7 +87,7 @@ class GlobalState extends React.Component {
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
-      this.setState({propList: response.data.data.properties});
+      this.setState({propList: response.data.data.properties,filterDataName:sort.billing});
       console.log('FIltered property===>', response.data.data.properties);
       this.setState({isLoading: false});
     } else {
@@ -91,6 +102,7 @@ class GlobalState extends React.Component {
     editBillComp: '',
     editManageComp: '',
     editCustomId: '',
+    filterDataName:'',
     index: '',
     token: null,
     success: false,
@@ -100,6 +112,8 @@ class GlobalState extends React.Component {
     loadFor: '',
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
+    offset: 0,
+    searchOffset: 0,
     searchList: [],
     propList: [
       // {
@@ -906,7 +920,7 @@ class GlobalState extends React.Component {
   loadSearchData = async () => {
     this.setState({searchLoading: true});
     let prop = {
-      offset: this.state.searchList.length,
+      offset: this.state.searchOffset,
       search: this.state.loadFor,
     };
     if (this.state.loadFor) {
@@ -914,11 +928,16 @@ class GlobalState extends React.Component {
       const response = await this.api.post('/property/all', prop);
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
-        let data = [...this.state.searchList];
-        let data2 = response.data.data.properties;
-        data.push(...data2);
-        this.setState({searchList: data});
-        this.setState({searchLoading: false});
+        if (this.state.offset != response.data.data.offset) {
+          let data = [...this.state.searchList];
+          let data2 = response.data.data.properties;
+          data.push(...data2);
+          this.setState({searchList: data});
+          this.setState({
+            searchLoading: false,
+            searchOffset: response.data.data.offset,
+          });
+        }
       } else {
         Alert.alert('Error', 'Network Issues');
         this.setState({searchLoading: false});
