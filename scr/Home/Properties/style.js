@@ -1,10 +1,10 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { Fonts } from '../../utils/fonts';
+import {StyleSheet, Dimensions} from 'react-native';
+import {Fonts} from '../../utils/fonts';
 
 //Packages
 
 //Files
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -178,13 +178,14 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     marginVertical: height * 0.01,
     borderColor: '#115b72',
-    borderWidth: width * .001,
+    borderWidth: width * 0.001,
     borderRadius: width * 0.008,
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
   },
   propText: {
+    textTransform: 'capitalize',
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.025,
     color: '#001522',
@@ -213,7 +214,7 @@ export default styles = StyleSheet.create({
   dropView: {
     height: height * 0.07,
     // backgroundColor: '#83d0f1',
-    width: width * .9,
+    width: width * 0.9,
     justifyContent: 'space-evenly',
     alignItems: 'center',
     flexDirection: 'row',
