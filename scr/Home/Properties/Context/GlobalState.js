@@ -40,7 +40,7 @@ class GlobalState extends React.Component {
       offset: 0,
     };
     const response = await this.api.post('/property/all', data);
-    console.log('respone property===>', response);
+    console.log('respone property===>', response.data.data.properties);
     this.setState({success: response.data.bool});
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
@@ -94,7 +94,7 @@ class GlobalState extends React.Component {
     index: '',
     token: null,
     success: false,
-    isLoading: false,
+    isLoading: true,
     searchLoading: false,
     listLoader: false,
     loadFor: '',
