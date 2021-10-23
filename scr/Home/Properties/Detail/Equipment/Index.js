@@ -1661,7 +1661,6 @@ export default class Splash extends Component {
 
   _renderMyList = (unit) => {
     this.checkValues(unit);
-    // console.log(unit.item.code)
     return (
       <View>
         <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
