@@ -51,7 +51,7 @@ import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Base_URL from '../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import DropDownPicker from 'react-native-dropdown-picker';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 import {create} from 'apisauce';
 
 // Components
@@ -88,6 +88,41 @@ const meterTypes = [
     name: 'MasterTek',
     image: require('../../../../../Images/meter-electric.png'),
     color: '#E7D931',
+  },
+];
+
+var items = [
+  {
+    id: 1,
+    name: 'JavaScript',
+  },
+  {
+    id: 2,
+    name: 'Java',
+  },
+  {
+    id: 3,
+    name: 'Ruby',
+  },
+  {
+    id: 4,
+    name: 'React Native',
+  },
+  {
+    id: 5,
+    name: 'PHP',
+  },
+  {
+    id: 6,
+    name: 'Python',
+  },
+  {
+    id: 7,
+    name: 'Go',
+  },
+  {
+    id: 8,
+    name: 'Swift',
   },
 ];
 
@@ -267,6 +302,8 @@ export default class Splash extends Component {
       typeOfMetersVisible: false,
       typeOfMeterIndex: '',
       measureOfUnit: [],
+      selectedManufacuter: [],
+      selectedModel: [],
       dataActivityTop: [
         {
           id: 1,
@@ -1523,70 +1560,74 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-    this.props.navigation.navigate('U_Details', {
-      unitId: unit.item.id,
-      buildingName: this.state.buildingData.name,
-    });
-    console.log(clc.cyan('Selected :', unit.item.id));
-    // console.log("Pressed :", index)
-    // if (item?.pressItem == item.id) {
-    //   alert("wppdfl")
-    // }
-    // const index = this.state.realData.findIndex(
-    //   item => unit.item.id === item.id
-    // );
-    // this.state.realData[index] = unit.item;
-    switch (unit.item.type) {
-      case 'Cubic Feet':
-        this.setState({pressedType: 'Gas'});
-        break;
-      case 'Gallons':
-        this.setState({pressedType: 'All Water'});
-        break;
+    if (unit.item?.['unit-meter']?.length !== 0) {
+      this.props.navigation.navigate('U_Details', {
+        unitId: unit.item.id,
+        buildingName: this.state.buildingData.name,
+      });
+      console.log(clc.cyan('Selected :', unit.item.id));
+      // console.log("Pressed :", index)
+      // if (item?.pressItem == item.id) {
+      //   alert("wppdfl")
+      // }
+      // const index = this.state.realData.findIndex(
+      //   item => unit.item.id === item.id
+      // );
+      // this.state.realData[index] = unit.item;
+      switch (unit.item.type) {
+        case 'Cubic Feet':
+          this.setState({pressedType: 'Gas'});
+          break;
+        case 'Gallons':
+          this.setState({pressedType: 'All Water'});
+          break;
 
-      default:
-        break;
-    }
-    // if (unit.item.type == 'Cubic Feet') {
-    //   this.setState({ pressedType: 'Gas' })
-    //   this.setState({ pressedMeterType: 'G4 (X1 Cubic Feet)' })
-    // }
+        default:
+          break;
+      }
+      // if (unit.item.type == 'Cubic Feet') {
+      //   this.setState({ pressedType: 'Gas' })
+      //   this.setState({ pressedMeterType: 'G4 (X1 Cubic Feet)' })
+      // }
 
-    unit.item.isSelected = !unit.item.isSelected;
-    this.state.typedUnit = this.state.pressedUnit = unit.item.name;
-    this.state.typedBuild = this.state.pressedBuild = unit.item.build;
-    this.state.typedCode = this.state.pressedCode = unit.item.code;
-    this.state.typedMType = this.state.pressedMeterType = unit.item.type;
-    this.state.pressedIndex = unit.index;
-    this.state.pressedID = unit.item.id;
-    unit.item.isSelectedClass = unit.item.isSelected
-      ? styles.isSelectedUnit
-      : styles.infoViewContainer;
-    unit.item.isSelectedView = unit.item.isSelected
-      ? styles.isSelected
-      : styles.unitListInfo;
-    if (unit.item.code === '') {
-      this.setState({noCode: true});
-      this.setState({editU: true});
+      unit.item.isSelected = !unit.item.isSelected;
+      this.state.typedUnit = this.state.pressedUnit = unit.item.name;
+      this.state.typedBuild = this.state.pressedBuild = unit.item.build;
+      this.state.typedCode = this.state.pressedCode = unit.item.code;
+      this.state.typedMType = this.state.pressedMeterType = unit.item.type;
+      this.state.pressedIndex = unit.index;
+      this.state.pressedID = unit.item.id;
+      unit.item.isSelectedClass = unit.item.isSelected
+        ? styles.isSelectedUnit
+        : styles.infoViewContainer;
+      unit.item.isSelectedView = unit.item.isSelected
+        ? styles.isSelected
+        : styles.unitListInfo;
+      if (unit.item.code === '') {
+        this.setState({noCode: true});
+        this.setState({editU: true});
+      } else {
+        this.setState({noCode: false});
+        this.setState({editU: false});
+      }
+
+      if (unit.item.isSelected === true) {
+        this.changeAnimation();
+      } else if (unit.item.isSelected === false) {
+        this.changeAnimation();
+      }
+      // console.log('second', this.state.pressedID)
+      if (unit.index == this.state.realData.length - 1) {
+        setTimeout(() => {
+          listViewRef.scrollToEnd({animated: true});
+        }, 1000);
+      }
+      // console.log('Unit Name', this.state.pressedType)
+      this.setState({realData: this.state.realData});
+      console.log('Code', this.state.realData.length - 1);
     } else {
-      this.setState({noCode: false});
-      this.setState({editU: false});
+      alert('No Meters for this Unit');
     }
-
-    if (unit.item.isSelected === true) {
-      this.changeAnimation();
-    } else if (unit.item.isSelected === false) {
-      this.changeAnimation();
-    }
-    // console.log('second', this.state.pressedID)
-    if (unit.index == this.state.realData.length - 1) {
-      setTimeout(() => {
-        listViewRef.scrollToEnd({animated: true});
-      }, 1000);
-    }
-    // console.log('Unit Name', this.state.pressedType)
-    this.setState({realData: this.state.realData});
-    console.log('Code', this.state.realData.length - 1);
   };
 
   checkValues = (unit) => {
@@ -1640,14 +1681,16 @@ export default class Splash extends Component {
                 <Text style={styles.dataFieldText}>
                   {unit.item?.['unit-meter']?.length}
                 </Text>
-                <Text style={styles.dataFieldText}>
-                  Meters
-                </Text>
+                <Text style={styles.dataFieldText}>Meters</Text>
               </View>
               {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
               <TouchableOpacity
                 style={[styles.programDevice]}
-                onPress={() => this.programDevice(unit)}>
+                onPress={() =>
+                  unit.item?.['unit-meter']?.length !== 0
+                    ? this.programDevice(unit)
+                    : alert('No Meters for this unit')
+                }>
                 <View style={styles.proDeviceContent}>
                   <Barcode
                     name="barcode-scan"
@@ -3082,6 +3125,7 @@ export default class Splash extends Component {
                 hasBackdrop={true}
                 backdropColor="black"
                 isVisible={this.state.isModalMeterVisible}
+                // isVisible={true}
                 style={styles.modal1Container}>
                 {/* <KeyboardAvoidingView behavior="padding"> */}
                 <View style={styles.modalInner}>
@@ -3128,106 +3172,160 @@ export default class Splash extends Component {
                           return (
                             <View>
                               {index < 2 ? (
-                                <View>
-                                  <View style={styles.desciptionContainer}>
+                                <>
+                                  {/* <View style={styles.desciptionContainer}>
                                     <Text style={styles.desciptionHeading}>
                                       {item.name}
                                     </Text>
-                                  </View>
-                                  <View style={styles.inputContainer}>
-                                    <MenuT
-                                      visible={index < 2 ? item.showList : null}
-                                      style={{height: height * 0.2}}
-                                      anchor={
-                                        <View>
-                                          <TextInput
-                                            value={item.input}
-                                            dense={true}
-                                            onFocus={() =>
-                                              this.showSuggestion(index)
-                                            }
-                                            showSoftInputOnFocus={
-                                              index < 2 ? false : true
-                                            }
-                                            error={item.error}
-                                            style={styles.input}
-                                            mode={'outlined'}
-                                            onChangeText={(text) =>
-                                              this.onChangeTypeBuilder(
-                                                text,
-                                                index,
-                                              )
-                                            }
-                                            theme={{
-                                              colors: {
-                                                text: '#25AAE1ec',
-                                                primary: '#25AAE1ec',
-                                                selectionColor: 'red',
-                                              },
-                                            }}
-                                          />
-                                          {item.error ? (
-                                            <HelperText
-                                              type="error"
-                                              visible={item.error}>
-                                              {item.error}
-                                            </HelperText>
-                                          ) : null}
-                                        </View>
-                                      }
-                                      onRequestClose={() =>
-                                        this.hideSuggestion(index)
-                                      }>
-                                      {/* {manufacturers.map((item) => (
-                                        <MenuItem
-                                          onPress={() =>
-                                            this.hideSuggestion(
-                                              index,
-                                              item.name,
-                                            )
-                                          }>
-                                          {item.name}
-                                        </MenuItem>
-                                      ))} */}
-                                      <ScrollView>
-                                        {(() => {
-                                          switch (index) {
-                                            case 0:
-                                              return manufacturers.map(
-                                                (item) => (
-                                                  <MenuItem
-                                                    onPress={() =>
-                                                      this.hideSuggestion(
-                                                        index,
-                                                        item.name,
-                                                      )
-                                                    }>
-                                                    {item.name}
-                                                  </MenuItem>
-                                                ),
-                                              );
-                                            case 1:
-                                              return models.map((item) => (
-                                                <MenuItem
-                                                  onPress={() =>
-                                                    this.hideSuggestion(
-                                                      index,
-                                                      item.name,
-                                                    )
-                                                  }>
-                                                  {item.name}
-                                                </MenuItem>
-                                              ));
+                                  </View> */}
+                                  <SearchableDropdown
+                                    onItemSelect={(item) => {
+                                      index == 0
+                                        ? this.setState({
+                                            selectedManufacuter: item,
+                                          })
+                                        : this.setState({selectedModel: item});
+                                      console.log('Kya select hoa', item);
+                                    }}
+                                    containerStyle={{padding: 5}}
+                                    itemStyle={{
+                                      padding: 10,
+                                      marginTop: 2,
+                                      backgroundColor: 'rgb(247, 247, 247)',
+                                      borderColor: '#bbb',
+                                      borderWidth: 1,
+                                      borderRadius: 5,
+                                    }}
+                                    itemTextStyle={{color: '#222'}}
+                                    itemsContainerStyle={{
+                                      maxHeight: 140,
+                                    }}
+                                    items={index == 0 ? manufacturers : models}
+                                    resetValue={false}
+                                    textInputProps={{
+                                      placeholder:
+                                        index == 0
+                                          ? 'Manufacturer*'
+                                          : 'Models*',
+                                      value:
+                                        index == 0
+                                          ? this.state.selectedManufacuter.name
+                                          : this.state.selectedModel.name,
+                                      underlineColorAndroid: 'transparent',
+                                      style: {
+                                        padding: 12,
+                                        borderWidth: 1,
+                                        borderColor: '#ccc',
+                                        borderRadius: 5,
+                                      },
+                                      onTextChange: (text) => console.log(text),
+                                    }}
+                                    listProps={{
+                                      nestedScrollEnabled: true,
+                                    }}
+                                  />
+                                </>
+                              ) : //  :
+                              // <View>
+                              //   <View style={styles.desciptionContainer}>
+                              //     <Text style={styles.desciptionHeading}>
+                              //       {item.name}
+                              //     </Text>
+                              //   </View>
+                              //   <View style={styles.inputContainer}>
+                              //     <MenuT
+                              //       visible={index < 2 ? item.showList : null}
+                              //       style={{height: height * 0.2}}
+                              //       anchor={
+                              //         <View>
+                              //           <TextInput
+                              //             value={item.input}
+                              //             dense={true}
+                              //             onFocus={() =>
+                              //               this.showSuggestion(index)
+                              //             }
+                              //             showSoftInputOnFocus={
+                              //               index < 2 ? false : true
+                              //             }
+                              //             error={item.error}
+                              //             style={styles.input}
+                              //             mode={'outlined'}
+                              //             onChangeText={(text) =>
+                              //               this.onChangeTypeBuilder(
+                              //                 text,
+                              //                 index,
+                              //               )
+                              //             }
+                              //             theme={{
+                              //               colors: {
+                              //                 text: '#25AAE1ec',
+                              //                 primary: '#25AAE1ec',
+                              //                 selectionColor: 'red',
+                              //               },
+                              //             }}
+                              //           />
+                              //           {item.error ? (
+                              //             <HelperText
+                              //               type="error"
+                              //               visible={item.error}>
+                              //               {item.error}
+                              //             </HelperText>
+                              //           ) : null}
+                              //         </View>
+                              //       }
+                              //       onRequestClose={() =>
+                              //         this.hideSuggestion(index)
+                              //       }>
+                              //       {manufacturers.map((item) => (
+                              //         <MenuItem
+                              //           onPress={() =>
+                              //             this.hideSuggestion(
+                              //               index,
+                              //               item.name,
+                              //             )
+                              //           }>
+                              //           {item.name}
+                              //         </MenuItem>
+                              //       ))}
+                              //       <ScrollView>
+                              //         {(() => {
+                              //           switch (index) {
+                              //             case 0:
+                              //               return manufacturers.map(
+                              //                 (item) => (
+                              //                   <MenuItem
+                              //                     onPress={() =>
+                              //                       this.hideSuggestion(
+                              //                         index,
+                              //                         item.name,
+                              //                       )
+                              //                     }>
+                              //                     {item.name}
+                              //                   </MenuItem>
+                              //                 ),
+                              //               );
+                              //             case 1:
+                              //               return models.map((item) => (
+                              //                 <MenuItem
+                              //                   onPress={() =>
+                              //                     this.hideSuggestion(
+                              //                       index,
+                              //                       item.name,
+                              //                     )
+                              //                   }>
+                              //                   {item.name}
+                              //                 </MenuItem>
+                              //               ));
 
-                                            default:
-                                              return null;
-                                          }
-                                        })()}
-                                      </ScrollView>
-                                    </MenuT>
-                                  </View>
-                                </View>
-                              ) : null}
+                              //             default:
+                              //               return null;
+                              //           }
+                              //         })()}
+                              //       </ScrollView>
+                              //     </MenuT>
+                              //   </View>
+                              // </View>
+                              null}
                             </View>
                           );
                         })}
@@ -3850,6 +3948,7 @@ export default class Splash extends Component {
                 hasBackdrop={true}
                 backdropColor="black"
                 isVisible={this.state.isModalBuildVisible}
+                // isVisible={true}
                 style={styles.modal1Container}>
                 <KeyboardAvoidingView behavior="padding">
                   <View style={styles.modalInner}>
@@ -3966,8 +4065,9 @@ export default class Splash extends Component {
                               width: width * 0.8,
                               flexDirection: 'row',
                               alignItems: 'center',
-                              justifyContent: 'space-evenly',
+                              justifyContent: 'space-around',
                               borderBottomWidth: width * 0.001,
+                              paddingHorizontal: width * 0.02,
                             }}>
                             <TextInput
                               // label="BILLING COMPANY*"
@@ -4001,7 +4101,9 @@ export default class Splash extends Component {
                                 })
                               }
                             />
-                            <Text>Auto Increment</Text>
+                            <Text style={{fontSize: height * 0.02}}>
+                              Auto Increment
+                            </Text>
                           </View>
                           {this.state.error.units ? (
                             <HelperText
