@@ -20,6 +20,8 @@ import {
   KeyboardAvoidingView,
   // TextInput
   CheckBox,
+  TouchableWithoutFeedback,
+  BackHandler,
 } from 'react-native';
 
 //Packages
@@ -65,6 +67,7 @@ import ContextProp from '../../Context/propContext';
 // import { FlatList } from 'react-native-gesture-handler';
 import {color} from 'react-native-reanimated';
 import {ActivityIndicator} from 'react-native';
+import ModalDropdown from 'react-native-modal-dropdown';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-navigation';
 import clc from 'cli-color';
@@ -305,7 +308,71 @@ export default class Splash extends Component {
       measureOfUnit: [],
       selectedManufacuter: [],
       selectedModel: [],
-
+      dataActivityTop: [
+        {
+          id: 1,
+          name: 'A',
+          // length: ListA.length,
+        },
+        {
+          id: 2,
+          name: 'B',
+          // length: ListB.length,
+        },
+        {
+          id: 3,
+          name: 'C',
+          // length: ListC.length,
+        },
+        {
+          id: 4,
+          name: 'D',
+        },
+        {
+          id: 5,
+          name: 'E',
+        },
+        {
+          id: 6,
+          name: 'F',
+        },
+        {
+          id: 7,
+          name: 'G',
+        },
+        {
+          id: 8,
+          name: 'H',
+        },
+        {
+          id: 9,
+          name: 'I',
+        },
+        {
+          id: 10,
+          name: 'J',
+        },
+        {
+          id: 11,
+          name: 'K',
+        },
+        {
+          id: 12,
+          name: 'L',
+        },
+        {
+          id: 13,
+          name: 'M',
+        },
+        {
+          id: 14,
+          name: 'N',
+        },
+        {
+          id: 15,
+          name: 'O',
+        },
+      ],
       dataActivity: [
         {
           id: 1,
@@ -379,7 +446,264 @@ export default class Splash extends Component {
         },
       ],
       realData: [],
-
+      ListA: [
+        {
+          id: 1,
+          build: 'A',
+          name: 'A-01',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 2,
+          build: 'A',
+          name: 'A-02',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 3,
+          build: 'A',
+          name: 'A-03',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 4,
+          build: 'A',
+          name: 'A-04',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 5,
+          build: 'A',
+          name: 'A-05',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 6,
+          build: 'A',
+          name: 'A-06',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 7,
+          build: 'A',
+          name: 'A-07',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 8,
+          build: 'A',
+          name: 'A-08',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 9,
+          build: 'A',
+          name: 'A-09',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 10,
+          build: 'A',
+          name: 'A-10',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 11,
+          build: 'A',
+          name: 'A-11',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 12,
+          build: 'A',
+          name: 'A-12',
+          code: 'AA00EFE1',
+          type: 'Cubic Feet',
+        },
+      ],
+      ListB: [
+        {
+          id: 1,
+          build: 'B',
+          name: 'B-01',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 2,
+          build: 'B',
+          name: 'B-02',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 3,
+          build: 'B',
+          name: 'B-03',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 4,
+          build: 'B',
+          name: 'B-04',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 5,
+          build: 'B',
+          name: 'B-05',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 6,
+          build: 'B',
+          name: 'B-06',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 7,
+          build: 'B',
+          name: 'B-07',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 8,
+          build: 'B',
+          name: 'B-08',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 9,
+          build: 'B',
+          name: 'B-09',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 10,
+          build: 'B',
+          name: 'B-10',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 11,
+          build: 'B',
+          name: 'B-11',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 12,
+          build: 'B',
+          name: 'B-12',
+          code: 'BA00EFE1',
+          type: 'Cubic Feet',
+        },
+      ],
+      ListC: [
+        {
+          id: 1,
+          build: 'C',
+          name: 'C-01',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 2,
+          build: 'C',
+          name: 'C-02',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 3,
+          build: 'C',
+          name: 'C-03',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 4,
+          build: 'C',
+          name: 'C-04',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 5,
+          build: 'C',
+          name: 'C-05',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 6,
+          build: 'C',
+          name: 'C-06',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 7,
+          build: 'C',
+          name: 'C-07',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 8,
+          build: 'C',
+          name: 'C-08',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 9,
+          build: 'C',
+          name: 'C-09',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 10,
+          build: 'C',
+          name: 'C-10',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 11,
+          build: 'C',
+          name: 'C-11',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+        {
+          id: 12,
+          build: 'C',
+          name: 'C-12',
+          code: 'CA00EFE1',
+          type: 'Cubic Feet',
+        },
+      ],
       error: {
         buildingName: false,
         units: false,
@@ -637,15 +961,25 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({visible: true});
   };
-
-  // onGetMeterTypeId = (item, index) => {
-  //   this.setState({typeOfMetersVisible: false});
-  //   let newArr = [...this.state.meterListData]; // copying the old datas array
-  //   newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-  //   this.setState({meterListData: newArr}, () =>
-  //     console.log('e--->', this.state.meterListData),
-  //   );
-  // };
+  showTypesOfMeter = (item, index) => {
+    // this.setState({typeOfMetersVisible: true});
+    // let newArr = [...this.state.meterListData]; // copying the old datas array
+    // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
+    // this.setState({ meterListData: newArr }
+    //   ,
+    //   () => console.log('e--->', this.state.meterListData));
+  };
+  hideTypesOfMeter = () => {
+    this.setState({typeOfMetersVisible: false});
+  };
+  onGetMeterTypeId = (item, index) => {
+    this.setState({typeOfMetersVisible: false});
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+    this.setState({meterListData: newArr}, () =>
+      console.log('e--->', this.state.meterListData),
+    );
+  };
 
   naviagateToDetail = () => {
     // this.toggleModal();
@@ -781,7 +1115,21 @@ export default class Splash extends Component {
       unit.index,
       1,
     );
-
+    // this.state.realData.splice(unit.index, 1)
+    // console.log('Pressed', unit.index)
+    // if (unit.item.build == 'A') {
+    //   this.state.ListA.splice(unit.index, 1)
+    //   return this.setState({ ListA: this.state.ListA })
+    // } else if (unit.item.build == 'B') {
+    //   this.state.ListB.splice(unit.index, 1)
+    //   return this.setState({ ListB: this.state.ListB })
+    // } else if (unit.item.build == 'C') {
+    //   this.state.ListC.splice(unit.index, 1)
+    //   return this.setState({ ListC: this.state.ListC })
+    // }
+    // console.log('List', this.context.propList[0].dataTop[this.state.buildIndex].list)
+    // let ListA = this.state.ListA
+    // ListA.splice(unit.index, 1);
     return this.setState({
       realData: this.context.propList[0].dataTop[this.state.buildIndex].list,
     });
@@ -1043,11 +1391,11 @@ export default class Splash extends Component {
     // console.log('check index',index)
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterTypeName =
+      item.manufacturer +
+      '-' +
       item.model +
-      ' ' +
       '(x' +
       item.multiplier +
-      ' ' +
       item.unit_of_measure +
       ')'; // replace e.target.value with whatever you want to change it to
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
@@ -1184,6 +1532,34 @@ export default class Splash extends Component {
         this.state.buildIndex
       ].list,
     });
+    // this.showArrayItem(build)
+
+    // const some_array = [...this.state.realData]
+    // some_array[this.state.pressedIndex] = {
+    //   id: this.state.pressedID,
+    //   build: this.state.typedBuild,
+    //   name: this.state.typedUnit,
+    //   code: this.state.typedCode,
+    //   type: this.state.typedMType,
+    // }
+    // if (this.state.typedBuild === 'A') {
+    //   this.setState({ ListA: some_array })
+    // } else if (this.state.typedBuild === 'B') {
+    //   this.setState({ ListB: some_array })
+    // } else if (this.state.typedBuild === 'C') {
+    //   this.setState({ ListC: some_array })
+    // }
+    // this.setState({ realData: some_array })
+  };
+  editOnPress2 = () => {
+    let arrays = [...this.state.ListA];
+    this.setState((prevState) => ({
+      ListA: [...prevState.arrayvar, newelement],
+    }));
+    // this.setState({ ListA: this.state.ListA.map(el => (el.name === 'A-01')) })
+    // const index = this.state.ListA.map(el => (el.name === 'A-01' ? { ...el, key: id } : el))
+    this.setState({arrays});
+    console.log('Index oF List', index);
   };
 
   //todo: Unit Click Event +++++++++++++++++++++++
@@ -2170,18 +2546,60 @@ export default class Splash extends Component {
                               </Text>
                             </View>
                             <View style={styles.inputContainer}>
-                             
+                              {/* //todo: This is Drop down picker */}
+
+                              {/* <ModalDropdown
+                                options={this.state.dataBuild.map(
+                                  (item) => item.name,
+                                )}
+                                defaultValue="Select Building*"
+                                textStyle={{
+                                  fontSize: width * 0.025,
+                                  marginLeft: width * 0.02,
+                                  color: '#25AAE1ec',
+                                }}
+                                style={[
+                                  styles.input,
+                                  {
+                                    backgroundColor: '#a6a6a61f',
+                                    borderWidth: width * 0.0013,
+                                    paddingVertical: width * 0.02,
+                                    borderRadius: width * 0.01,
+                                  },
+                                ]}
+                                defaultTextStyle={{
+                                  color: '#4a4a4abd',
+                                }}
+                                dropdownStyle={[
+                                  styles.input,
+                                  {
+                                    height: `${
+                                      this.state.dataBuild.length * 5 > 20
+                                        ? 20
+                                        : this.state.dataBuild.length * 5
+                                    }%`,
+                                  },
+                                ]}
+                                dropdownTextStyle={{
+                                  fontSize: width * 0.025,
+                                  marginLeft: width * 0.01,
+                                }}
+                                dropdownTextHighlightStyle={{
+                                  color: '#23a8e17a',
+                                }}
+                                scrollEnabled
+                              /> */}
                               <TextInput
-                                // label="Name*"
-                                // placeholder="A"
+                                label="Name*"
+                                placeholder="A"
                                 value={this.state.buildingData.name}
                                 dense={true}
-                                // onFocus={this.changeLayoutMeter3}
-                                // onBlur={this.changeLayoutMeter3}
+                                onFocus={this.changeLayoutMeter3}
+                                onBlur={this.changeLayoutMeter3}
                                 showSoftInputOnFocus={false}
-                                // onChangeText={(text) => {
-                                //   this.setState({ newBuild: text });
-                                // }}
+                                onChangeText={(text) => {
+                                  this.setState({newBuild: text});
+                                }}
                                 style={styles.input}
                                 mode={'outlined'}
                                 theme={{
@@ -2379,7 +2797,7 @@ export default class Splash extends Component {
                                               anchor={
                                                 this.state.typeOfMeters
                                                   .length ? (
-                                                  <TouchableOpacity
+                                                  <Pressable
                                                     onPress={() =>
                                                       this.showTypesOfMeter(
                                                         item,
@@ -2387,27 +2805,27 @@ export default class Splash extends Component {
                                                       )
                                                     }
                                                     style={{
-                                                      width: width * 0.5,
                                                       flexDirection: 'row',
                                                       justifyContent:
                                                         'flex-start',
                                                       alignItems: 'center',
+                                                    }}
+                                                    android_ripple={{
+                                                      color: '#25AAE1ec',
+                                                      borderless: true,
+                                                      radius: height * 0.08,
                                                     }}>
-                                                    <TextTicker
-                                                      marqueeDelay={2000}
-                                                      duration={5000}
+                                                    <Text
                                                       style={{
                                                         fontSize:
                                                           height * 0.018,
                                                         color: '#25AAE1ec',
-                                                        textTransform:
-                                                          'capitalize',
                                                       }}>
                                                       {item.meterTypeName
                                                         ? item.meterTypeName
                                                         : 'Select'}
-                                                    </TextTicker>
-                                                  </TouchableOpacity>
+                                                    </Text>
+                                                  </Pressable>
                                                 ) : (
                                                   <View
                                                     style={{
@@ -2441,27 +2859,28 @@ export default class Splash extends Component {
                                                         color="#3E89BF"
                                                       />
                                                       <MenuItem
+                                                        style={{
+                                                          width: width * 0.5,
+                                                        }}
                                                         onPress={() =>
                                                           this.onGetMeterTypeId(
                                                             item,
                                                             meterIndex,
                                                           )
                                                         }>
-                                                        <Text
+                                                        <TextTicker
+                                                          duration={5000}
                                                           style={{
-                                                            textTransform:
-                                                              'capitalize',
+                                                            width: width * 0.4,
                                                           }}>
                                                           {item.manufacturer +
                                                             '-' +
                                                             item.model +
-                                                            ' ' +
                                                             '(x' +
                                                             item.multiplier +
-                                                            ' ' +
                                                             item.unit_of_measure +
                                                             ')'}
-                                                        </Text>
+                                                        </TextTicker>
                                                       </MenuItem>
                                                     </View>
                                                   ),
@@ -2583,8 +3002,7 @@ export default class Splash extends Component {
                                             </View>
                                           </View>
                                         ) : (
-                                          // console.log('Check Item', item)
-                                          null
+                                          console.log('Check Item', item)
                                         )}
                                         <TouchableOpacity
                                           onPress={() =>
@@ -2735,384 +3153,392 @@ export default class Splash extends Component {
                           : height * 0.82,
                       },
                     ]}>
-                    <View style={styles.boxInner}>
-                      {/* Box Header */}
-                      <View style={styles.boxHeader}>
-                        <View style={styles.boxHeaderInner}>
-                          <Icon
-                            name={'business'}
-                            size={height * 0.05}
-                            color="#5e5e5e"
-                          />
-                          <Text style={styles.modalHeading}>
-                            Meter Type Builder
-                          </Text>
-                          <Pressable
-                            onPress={this.meterTypeClose}
-                            android_ripple={{
-                              color: 'black',
-                              borderless: true,
-                              radius: width * 0.03,
-                            }}>
+                    <TouchableWithoutFeedback
+                      onPress={() => Keyboard.dismiss()}>
+                      <View style={[styles.boxInner]}>
+                        {/* Box Header */}
+                        <View style={styles.boxHeader}>
+                          <View style={styles.boxHeaderInner}>
                             <Icon
-                              name="cancel"
-                              size={height * 0.035}
-                              color="black"
-                              maxOpacity={0.5}
+                              name={'business'}
+                              size={height * 0.05}
+                              color="#5e5e5e"
                             />
-                          </Pressable>
+                            <Text style={styles.modalHeading}>
+                              Meter Type Builder
+                            </Text>
+                            <Pressable
+                              onPress={this.meterTypeClose}
+                              android_ripple={{
+                                color: 'black',
+                                borderless: true,
+                                radius: width * 0.03,
+                              }}>
+                              <Icon
+                                name="cancel"
+                                size={height * 0.035}
+                                color="black"
+                                maxOpacity={0.5}
+                              />
+                            </Pressable>
+                          </View>
                         </View>
-                      </View>
-                      {/* //TodoY: Meter Box Body */}
-                      <View style={{flex: 1}}>
-                        {meterTypeInputs.map((item, index) => {
-                          return (
-                            <View>
-                              {index < 2 ? (
-                                <>
-                                  {/* <View style={styles.desciptionContainer}>
+                        {/* //TodoY: Meter Box Body */}
+                        <View
+                          style={{height: height * 0.4, overflow: 'hidden'}}>
+                          {meterTypeInputs.map((item, index) => {
+                            return (
+                              <View>
+                                {index < 2 ? (
+                                  <View>
+                                    {/* <View style={styles.desciptionContainer}>
                                     <Text style={styles.desciptionHeading}>
                                       {item.name}
                                     </Text>
                                   </View> */}
-                                  <SearchableDropdown
-                                    onItemSelect={(item) => {
-                                      this.hideSuggestion(index, item.name);
-                                    }}
-                                    containerStyle={{padding: 5}}
-                                    itemStyle={{
-                                      padding: 10,
-                                      marginTop: 2,
-                                      backgroundColor: 'rgb(247, 247, 247)',
-                                      borderColor: '#bbb',
-                                      borderWidth: 1,
-                                      borderRadius: 5,
-                                    }}
-                                    itemTextStyle={{color: '#222'}}
-                                    itemsContainerStyle={{
-                                      maxHeight: 140,
-                                    }}
-                                    items={index == 0 ? manufacturers : models}
-                                    resetValue={false}
-                                    textInputProps={{
-                                      placeholder:
-                                        index == 0
-                                          ? 'Manufacturer*'
-                                          : 'Models*',
-                                      value:item.input,
-                                      underlineColorAndroid: 'transparent',
-                                      style: {
-                                        padding: 12,
-                                        borderWidth: 1,
-                                        borderColor: '#ccc',
-                                        borderRadius: 5,
-                                      },
-                                      onTextChange: (text) => console.log(text),
-                                    }}
-                                    listProps={{
-                                      nestedScrollEnabled: true,
-                                    }}
-                                  />
-                                </>
-                              ) : //  :
-                              // <View>
-                              //   <View style={styles.desciptionContainer}>
-                              //     <Text style={styles.desciptionHeading}>
-                              //       {item.name}
-                              //     </Text>
-                              //   </View>
-                              //   <View style={styles.inputContainer}>
-                              //     <MenuT
-                              //       visible={index < 2 ? item.showList : null}
-                              //       style={{height: height * 0.2}}
-                              //       anchor={
-                              //         <View>
-                              //           <TextInput
-                              //             value={item.input}
-                              //             dense={true}
-                              //             onFocus={() =>
-                              //               this.showSuggestion(index)
-                              //             }
-                              //             showSoftInputOnFocus={
-                              //               index < 2 ? false : true
-                              //             }
-                              //             error={item.error}
-                              //             style={styles.input}
-                              //             mode={'outlined'}
-                              //             onChangeText={(text) =>
-                              //               this.onChangeTypeBuilder(
-                              //                 text,
-                              //                 index,
-                              //               )
-                              //             }
-                              //             theme={{
-                              //               colors: {
-                              //                 text: '#25AAE1ec',
-                              //                 primary: '#25AAE1ec',
-                              //                 selectionColor: 'red',
-                              //               },
-                              //             }}
-                              //           />
-                              //           {item.error ? (
-                              //             <HelperText
-                              //               type="error"
-                              //               visible={item.error}>
-                              //               {item.error}
-                              //             </HelperText>
-                              //           ) : null}
-                              //         </View>
-                              //       }
-                              //       onRequestClose={() =>
-                              //         this.hideSuggestion(index)
-                              //       }>
-                              //       {manufacturers.map((item) => (
-                              //         <MenuItem
-                              //           onPress={() =>
-                              //             this.hideSuggestion(
-                              //               index,
-                              //               item.name,
-                              //             )
-                              //           }>
-                              //           {item.name}
-                              //         </MenuItem>
-                              //       ))}
-                              //       <ScrollView>
-                              //         {(() => {
-                              //           switch (index) {
-                              //             case 0:
-                              //               return manufacturers.map(
-                              //                 (item) => (
-                              //                   <MenuItem
-                              //                     onPress={() =>
-                              //                       this.hideSuggestion(
-                              //                         index,
-                              //                         item.name,
-                              //                       )
-                              //                     }>
-                              //                     {item.name}
-                              //                   </MenuItem>
-                              //                 ),
-                              //               );
-                              //             case 1:
-                              //               return models.map((item) => (
-                              //                 <MenuItem
-                              //                   onPress={() =>
-                              //                     this.hideSuggestion(
-                              //                       index,
-                              //                       item.name,
-                              //                     )
-                              //                   }>
-                              //                   {item.name}
-                              //                 </MenuItem>
-                              //               ));
-
-                              //             default:
-                              //               return null;
-                              //           }
-                              //         })()}
-                              //       </ScrollView>
-                              //     </MenuT>
-                              //   </View>
-                              // </View>
-                              null}
-                            </View>
-                          );
-                        })}
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-around',
-                          }}>
-                          {meterTypeInputs.map((item, index) => {
-                            return (
-                              <View>
-                                {index >= 2 ? (
-                                  <View>
-                                    <View
-                                      style={{
-                                        // height: height * 0.04,
-                                        width: width * 0.38,
-                                      }}>
-                                      <Text style={styles.desciptionHeading}>
-                                        {item.name}
-                                      </Text>
-                                    </View>
-                                    <View
-                                      style={[
-                                        styles.inputContainer,
-                                        {
-                                          width: !this.state.meter3
-                                            ? width * 0.35
-                                            : width * 0.0,
+                                    <SearchableDropdown
+                                      onItemSelect={(item) =>
+                                        this.hideSuggestion(index, item.name)
+                                      }
+                                      containerStyle={{padding: width * 0.03}}
+                                      itemStyle={{
+                                        padding: width * 0.027,
+                                        marginTop: width * 0.01,
+                                        backgroundColor: 'rgb(247, 247, 247)',
+                                        borderColor: '#bbb',
+                                        borderWidth: width * 0.0015,
+                                        borderRadius: width * 0.015,
+                                      }}
+                                      itemTextStyle={{color: '#222'}}
+                                      itemsContainerStyle={{
+                                        maxHeight: height * 0.135,
+                                      }}
+                                      items={
+                                        index == 0 ? manufacturers : models
+                                      }
+                                      resetValue={false}
+                                      textInputProps={{
+                                        placeholder:
+                                          index == 0
+                                            ? 'Manufacturer*'
+                                            : 'Models*',
+                                        value: item.input,
+                                        underlineColorAndroid: 'transparent',
+                                        style: {
+                                          padding: width * 0.027,
+                                          borderColor: '#000',
+                                          borderWidth: width * 0.0019,
+                                          borderRadius: width * 0.015,
                                         },
-                                      ]}>
-                                      <MenuT
-                                        visible={
-                                          index == 3 ? item.showList : null
-                                        }
-                                        anchor={
-                                          index == 2 ? (
-                                            <View>
-                                              <TextInput
-                                                keyboardType={
-                                                  index == 2
-                                                    ? 'decimal-pad'
-                                                    : 'default'
-                                                }
-                                                value={item.input}
-                                                dense={true}
-                                                onFocus={() =>
-                                                  this.showSuggestion(index)
-                                                }
-                                                onChangeText={(text) =>
-                                                  this.onChangeTypeBuilder(
-                                                    text,
-                                                    index,
-                                                  )
-                                                }
-                                                style={[
-                                                  styles.input,
-                                                  {
-                                                    width: !this.state.meter3
-                                                      ? width * 0.35
-                                                      : width * 0.0,
-                                                  },
-                                                ]}
-                                                error={item.error}
-                                                mode={'outlined'}
-                                                theme={{
-                                                  colors: {
-                                                    text: '#25AAE1ec',
-                                                    primary: '#25AAE1ec',
-                                                    selectionColor: 'red',
-                                                  },
-                                                }}
-                                              />
-                                              {item.error ? (
-                                                <HelperText
-                                                  type="error"
-                                                  visible={item.error}>
-                                                  {item.error}
-                                                </HelperText>
-                                              ) : null}
-                                            </View>
-                                          ) : index == 3 ? (
-                                            <View>
-                                              <TouchableOpacity
-                                                style={{
-                                                  backgroundColor: '#F6F6F6',
-                                                  justifyContent: 'center',
-                                                  borderColor: item.error
-                                                    ? 'red'
-                                                    : 'gray',
-                                                  width: width * 0.35,
-                                                  height: height * 0.061,
-                                                  borderWidth: width * 0.003,
-                                                  borderRadius: width * 0.01,
-                                                  paddingHorizontal:
-                                                    width * 0.03,
-                                                  marginTop: width * 0.014,
-                                                }}
-                                                onPress={() =>
-                                                  this.showSuggestion(index)
-                                                }>
-                                                <Text
-                                                  style={{
-                                                    color: '#25AAE1ec',
-                                                    textTransform: 'capitalize',
-                                                  }}>
-                                                  {index == 3
-                                                    ? this.state
-                                                        .measureOfUnitName
-                                                    : null}
-                                                </Text>
-                                              </TouchableOpacity>
-                                              {item.error ? (
-                                                <HelperText
-                                                  type="error"
-                                                  visible={item.error}>
-                                                  {item.error}
-                                                </HelperText>
-                                              ) : null}
-                                            </View>
-                                          ) : null
-                                        }
-                                        onRequestClose={() =>
-                                          this.hideSuggestion(index)
-                                        }>
-                                        {index == 3
-                                          ? this.state.measureOfUnit.map(
-                                              (item) => (
-                                                <MenuItem
-                                                  textStyle={
-                                                    styles.textCapitalize
-                                                  }
-                                                  onPress={() =>
-                                                    this.hideSuggestion(
-                                                      index,
-                                                      item.id,
-                                                      item.name,
-                                                    )
-                                                  }>
-                                                  {item.name}
-                                                </MenuItem>
-                                              ),
-                                            )
-                                          : null}
-                                      </MenuT>
-                                    </View>
+                                        onTextChange: (text) =>
+                                          console.log(text),
+                                      }}
+                                      listProps={{
+                                        nestedScrollEnabled: true,
+                                      }}
+                                    />
                                   </View>
-                                ) : null}
+                                ) : //  :
+                                // <View>
+                                //   <View style={styles.desciptionContainer}>
+                                //     <Text style={styles.desciptionHeading}>
+                                //       {item.name}
+                                //     </Text>
+                                //   </View>
+                                //   <View style={styles.inputContainer}>
+                                //     <MenuT
+                                //       visible={index < 2 ? item.showList : null}
+                                //       style={{height: height * 0.2}}
+                                //       anchor={
+                                //         <View>
+                                //           <TextInput
+                                //             value={item.input}
+                                //             dense={true}
+                                //             onFocus={() =>
+                                //               this.showSuggestion(index)
+                                //             }
+                                //             showSoftInputOnFocus={
+                                //               index < 2 ? false : true
+                                //             }
+                                //             error={item.error}
+                                //             style={styles.input}
+                                //             mode={'outlined'}
+                                //             onChangeText={(text) =>
+                                //               this.onChangeTypeBuilder(
+                                //                 text,
+                                //                 index,
+                                //               )
+                                //             }
+                                //             theme={{
+                                //               colors: {
+                                //                 text: '#25AAE1ec',
+                                //                 primary: '#25AAE1ec',
+                                //                 selectionColor: 'red',
+                                //               },
+                                //             }}
+                                //           />
+                                //           {item.error ? (
+                                //             <HelperText
+                                //               type="error"
+                                //               visible={item.error}>
+                                //               {item.error}
+                                //             </HelperText>
+                                //           ) : null}
+                                //         </View>
+                                //       }
+                                //       onRequestClose={() =>
+                                //         this.hideSuggestion(index)
+                                //       }>
+                                //       {manufacturers.map((item) => (
+                                //         <MenuItem
+                                //           onPress={() =>
+                                //             this.hideSuggestion(
+                                //               index,
+                                //               item.name,
+                                //             )
+                                //           }>
+                                //           {item.name}
+                                //         </MenuItem>
+                                //       ))}
+                                //       <ScrollView>
+                                //         {(() => {
+                                //           switch (index) {
+                                //             case 0:
+                                //               return manufacturers.map(
+                                //                 (item) => (
+                                //                   <MenuItem
+                                //                     onPress={() =>
+                                //                       this.hideSuggestion(
+                                //                         index,
+                                //                         item.name,
+                                //                       )
+                                //                     }>
+                                //                     {item.name}
+                                //                   </MenuItem>
+                                //                 ),
+                                //               );
+                                //             case 1:
+                                //               return models.map((item) => (
+                                //                 <MenuItem
+                                //                   onPress={() =>
+                                //                     this.hideSuggestion(
+                                //                       index,
+                                //                       item.name,
+                                //                     )
+                                //                   }>
+                                //                   {item.name}
+                                //                 </MenuItem>
+                                //               ));
+
+                                //             default:
+                                //               return null;
+                                //           }
+                                //         })()}
+                                //       </ScrollView>
+                                //     </MenuT>
+                                //   </View>
+                                // </View>
+                                null}
                               </View>
                             );
                           })}
-                        </View>
-                        <View
-                          style={{
-                            height: height * 0.1,
-                            alignSelf: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Text
+                          <View
                             style={{
-                              fontSize: height * 0.02,
-                              color: 'black',
-                              textTransform: 'capitalize',
-                              fontFamily: Fonts.ComfortaaRegular,
+                              flexDirection: 'row',
+                              justifyContent: 'space-around',
                             }}>
-                            {'1 Pulse = ' +
-                              meterTypeInputs[2].input +
-                              (this.state.measureOfUnitName
-                                ? ` ${this.state.measureOfUnitName}`
-                                : ' Select')}
-                          </Text>
-                        </View>
-                        {/* <HelperText
+                            {meterTypeInputs.map((item, index) => {
+                              return (
+                                <View>
+                                  {index >= 2 ? (
+                                    <View>
+                                      <View
+                                        style={{
+                                          // height: height * 0.04,
+                                          width: width * 0.38,
+                                        }}>
+                                        <Text style={styles.desciptionHeading}>
+                                          {item.name}
+                                        </Text>
+                                      </View>
+                                      <View
+                                        style={[
+                                          styles.inputContainer,
+                                          {
+                                            width: !this.state.meter3
+                                              ? width * 0.35
+                                              : width * 0.0,
+                                          },
+                                        ]}>
+                                        <MenuT
+                                          visible={
+                                            index == 3 ? item.showList : null
+                                          }
+                                          anchor={
+                                            index == 2 ? (
+                                              <View>
+                                                <TextInput
+                                                  keyboardType={
+                                                    index == 2
+                                                      ? 'decimal-pad'
+                                                      : 'default'
+                                                  }
+                                                  value={item.input}
+                                                  dense={true}
+                                                  onFocus={() =>
+                                                    this.showSuggestion(index)
+                                                  }
+                                                  onChangeText={(text) =>
+                                                    this.onChangeTypeBuilder(
+                                                      text,
+                                                      index,
+                                                    )
+                                                  }
+                                                  style={[
+                                                    styles.input,
+                                                    {
+                                                      width: !this.state.meter3
+                                                        ? width * 0.35
+                                                        : width * 0.0,
+                                                    },
+                                                  ]}
+                                                  error={item.error}
+                                                  mode={'outlined'}
+                                                  theme={{
+                                                    colors: {
+                                                      text: '#25AAE1ec',
+                                                      primary: '#25AAE1ec',
+                                                      selectionColor: 'red',
+                                                    },
+                                                  }}
+                                                />
+                                                {item.error ? (
+                                                  <HelperText
+                                                    type="error"
+                                                    visible={item.error}>
+                                                    {item.error}
+                                                  </HelperText>
+                                                ) : null}
+                                              </View>
+                                            ) : index == 3 ? (
+                                              <View>
+                                                <TouchableOpacity
+                                                  style={{
+                                                    backgroundColor: '#F6F6F6',
+                                                    justifyContent: 'center',
+                                                    borderColor: item.error
+                                                      ? 'red'
+                                                      : 'gray',
+                                                    width: width * 0.35,
+                                                    height: height * 0.061,
+                                                    borderWidth: width * 0.003,
+                                                    borderRadius: width * 0.01,
+                                                    paddingHorizontal:
+                                                      width * 0.03,
+                                                    marginTop: width * 0.014,
+                                                  }}
+                                                  onPress={() =>
+                                                    this.showSuggestion(index)
+                                                  }>
+                                                  <Text
+                                                    style={{
+                                                      color: '#25AAE1ec',
+                                                      textTransform:
+                                                        'capitalize',
+                                                    }}>
+                                                    {index == 3
+                                                      ? this.state
+                                                          .measureOfUnitName
+                                                      : null}
+                                                  </Text>
+                                                </TouchableOpacity>
+                                                {item.error ? (
+                                                  <HelperText
+                                                    type="error"
+                                                    visible={item.error}>
+                                                    {item.error}
+                                                  </HelperText>
+                                                ) : null}
+                                              </View>
+                                            ) : null
+                                          }
+                                          onRequestClose={() =>
+                                            this.hideSuggestion(index)
+                                          }>
+                                          {index == 3
+                                            ? this.state.measureOfUnit.map(
+                                                (item) => (
+                                                  <MenuItem
+                                                    textStyle={
+                                                      styles.textCapitalize
+                                                    }
+                                                    onPress={() =>
+                                                      this.hideSuggestion(
+                                                        index,
+                                                        item.id,
+                                                        item.name,
+                                                      )
+                                                    }>
+                                                    {item.name}
+                                                  </MenuItem>
+                                                ),
+                                              )
+                                            : null}
+                                        </MenuT>
+                                      </View>
+                                    </View>
+                                  ) : null}
+                                </View>
+                              );
+                            })}
+                          </View>
+                          <View
+                            style={{
+                              height: height * 0.1,
+                              alignSelf: 'center',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: height * 0.02,
+                                color: 'black',
+                                textTransform: 'capitalize',
+                                fontFamily: Fonts.ComfortaaRegular,
+                              }}>
+                              {'1 Pulse = ' +
+                                meterTypeInputs[2].input +
+                                (this.state.measureOfUnitName
+                                  ? ` ${this.state.measureOfUnitName}`
+                                  : ' Select')}
+                            </Text>
+                          </View>
+                          {/* <HelperText
                           type="error"
                           visible={this.state.errorUnits.units}>
                           {this.state.errorUnits.units}
                         </HelperText> */}
-                      </View>
-                      {/* Box Footer */}
-                      <View style={styles.footerBtn}>
-                        <View style={styles.addUnitBtnContainer}>
-                          <TouchableOpacity onPress={this.meterTypeClose}>
-                            <View style={styles.cancelBotton}>
-                              <Plus name="close" color="black" size={18} />
-                              <Text style={{color: 'black'}}>Cancel</Text>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={this.handleSaveMeterTypeBuilder}>
-                            <View style={styles.submitBotton}>
-                              <Plus name="plus" color="white" size={18} />
-                              <Text style={{color: 'white'}}>Save</Text>
-                            </View>
-                          </TouchableOpacity>
+                        </View>
+                        {/* Box Footer */}
+                        <View style={styles.footerBtn}>
+                          <View style={styles.addUnitBtnContainer}>
+                            <TouchableOpacity onPress={this.meterTypeClose}>
+                              <View style={styles.cancelBotton}>
+                                <Plus name="close" color="black" size={18} />
+                                <Text style={{color: 'black'}}>Cancel</Text>
+                              </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={this.handleSaveMeterTypeBuilder}>
+                              <View style={styles.submitBotton}>
+                                <Plus name="plus" color="white" size={18} />
+                                <Text style={{color: 'white'}}>Save</Text>
+                              </View>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       </View>
-                    </View>
+                    </TouchableWithoutFeedback>
                   </View>
                 </View>
                 {/* </KeyboardAvoidingView> */}
