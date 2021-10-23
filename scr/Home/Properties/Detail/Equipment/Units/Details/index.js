@@ -164,6 +164,7 @@ const App = ({navigation}) => {
               ' ' +
               '(x' +
               unitMeter?.type?.multiplier +
+              ' ' +
               unitMeter?.type?.unit_of_measure +
               ')',
             rightIcon: 'chevron-down',
@@ -344,6 +345,7 @@ const App = ({navigation}) => {
             {item.rightName == null ? null : (
               <Text
                 style={{
+                  textTransform: 'capitalize',
                   color: index == 1 ? typeColor(item.rightName) : '#000',
                   fontSize: width * 0.04,
                 }}>
@@ -394,13 +396,18 @@ const App = ({navigation}) => {
         disabled={item.leftName == 'Status' ? false : true}
         onPress={() => openStatusView()}>
         <View style={{paddingVertical: width * 0.02}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between',alignItems:'center'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
             <View style={{flexDirection: 'row'}}>
               <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
             </View>
-            <View style={{flexDirection: 'row',}}>
-              <View style={{flexDirection: 'column',}}>
-                <View style={{flexDirection: 'row-reverse',}}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'column'}}>
+                <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
                     <Text style={{textAlign: 'right', fontSize: width * 0.04}}>
                       {item.rightName}
@@ -416,11 +423,11 @@ const App = ({navigation}) => {
                     />
                   )}
                 </View>
-                {item.text &&
+                {item.text && (
                   <Text style={{color: '#5c5c5ccf', fontSize: width * 0.04}}>
-                  {item.text}
-                </Text>
-                }
+                    {item.text}
+                  </Text>
+                )}
               </View>
               {item.rightIcon == null ? null : (
                 <Icon
@@ -474,6 +481,7 @@ const App = ({navigation}) => {
                       style={{
                         textAlign: 'right',
                         fontSize: width * 0.04,
+                        textTransform: 'capitalize',
                       }}>
                       {item.rightName}
                     </Text>
@@ -528,7 +536,10 @@ const App = ({navigation}) => {
             )}
           </View>
           <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: width * 0.035}}>{item.rightText}</Text>
+            <Text
+              style={{fontSize: width * 0.035, textTransform: 'capitalize'}}>
+              {item.rightText}
+            </Text>
           </View>
         </View>
       </View>
@@ -871,8 +882,12 @@ const App = ({navigation}) => {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                     }}>
-                    <Text style={{fontSize: width * 0.065}}>
-                      {unitMeter?.meter_name?.toUpperCase() + ' Meter'}
+                    <Text
+                      style={{
+                        fontSize: width * 0.065,
+                        textTransform: 'capitalize',
+                      }}>
+                      {unitMeter?.meter_name + ' Meter'}
                     </Text>
                     {/* <View
                     style={{

@@ -68,19 +68,22 @@ export default class Splash extends Component {
   };
 
   getBillingCompany = () => {
+    this.context.getBillingCompany();
     this.setState({billCompanies: this.context.propitemList});
+    this.setState({showList: true});
   };
 
   //  [biller, setBiller] = useState(billing[0].name);
   componentDidMount() {
-    this.context.getBillingCompany()
-    this.getBillingCompany();
+    this.context.getBillingCompany();
     SplashScreen.hide();
   }
 
   listSelection = (val) => {
     this.setState({biller: val});
   };
+
+ 
 
   filter = () => {
     let data = {
@@ -90,6 +93,13 @@ export default class Splash extends Component {
     };
     this.context.filterData(data);
     this.setState({showList: false});
+  };
+
+  onFocusFunction = () => {
+    this.context.getToken();
+    this.props.close();
+    this.setState({biller: ''});
+
   };
 
   render() {
@@ -135,6 +145,7 @@ export default class Splash extends Component {
                   rightComponent={{
                     text: 'Reset',
                     style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
+                    onPress: () => this.onFocusFunction()
                   }}
                   backgroundColor="#fff"
                   containerStyle={{
@@ -152,7 +163,7 @@ export default class Splash extends Component {
                     <View style={styles.filterLists}>
                       <Text style={styles.filterListText}>Billing</Text>
                       <TouchableOpacity
-                        onPress={() => this.setState({showList: true})}
+                        onPress={this.getBillingCompany}
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={{fontSize: width * 0.04}}>
                           {this.state.biller}
