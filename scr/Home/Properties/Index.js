@@ -73,6 +73,11 @@ export default class Splash extends Component {
     this.setState({propertyList: this.context.propList});
   };
 
+  openFilter = () => {
+    this.context.getBillingCompany();
+    this.setState({showFilter: true});
+  };
+
   _start = () => {
     Animated.timing(this.state.fadeValue, {
       toValue: 1,
@@ -329,10 +334,7 @@ export default class Splash extends Component {
                   // }
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  this.setState({showFilter: !this.state.showFilter})
-                }>
+              <TouchableOpacity onPress={this.openFilter}>
                 <FilterIcon name="filter-outline" color="white" size={20} />
               </TouchableOpacity>
             </View>
@@ -405,7 +407,8 @@ export default class Splash extends Component {
                   <Close name="close" color="white" size={20} />
                 </TouchableOpacity>
               </View>
-              <View style={{alignItems: 'center', paddingVertical: height * .005}}>
+              <View
+                style={{alignItems: 'center', paddingVertical: height * 0.005}}>
                 <FlatList
                   data={this.context.searchList}
                   renderItem={this._renderSearchPropList}
