@@ -1,4 +1,4 @@
-import React, { Component, version } from 'react';
+import React, {Component, version} from 'react';
 
 import {
   Text,
@@ -22,22 +22,22 @@ import Close from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Build from 'react-native-vector-icons/Ionicons';
-import { TextInput, Button } from 'react-native-paper';
+import {TextInput, Button} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
 
 // Components
-import { Fonts } from '../../utils/fonts';
+import {Fonts} from '../../utils/fonts';
 import Add from './Form';
 
 import styles from './style';
-import { FlatList } from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 import Loader from '../../components/Loader';
-import { NavigationEvents } from 'react-navigation';
+import {NavigationEvents} from 'react-navigation';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
   static contextType = ContextProp;
@@ -68,14 +68,14 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
-    this.setState({ loadScreen: true });
+    this.setState({loadScreen: true});
     this.context.getToken();
-    this.setState({ propertyList: this.context.propList });
+    this.setState({propertyList: this.context.propList});
   };
 
   openFilter = () => {
     this.context.getBillingCompany();
-    this.setState({ showFilter: true });
+    this.setState({showFilter: true});
   };
 
   _start = () => {
@@ -91,7 +91,7 @@ export default class Splash extends Component {
     this._drawer.open();
   };
   toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+    this.setState({isModalVisible: !this.state.isModalVisible});
   };
   changeAnimation = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -111,17 +111,17 @@ export default class Splash extends Component {
       }).start();
     }, 10);
   };
-  jumpToDetail = ({ prop, item }) => {
-    this.props.navigation.navigate('Detail', { item });
+  jumpToDetail = ({prop, item}) => {
+    this.props.navigation.navigate('Detail', {item});
     this.selectedProp(prop);
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
   };
-  jumpFromSearch = ({ prop, item }) => {
-    this.props.navigation.navigate('Detail', { item });
-    this.setState({ showSearch: false });
+  jumpFromSearch = ({prop, item}) => {
+    this.props.navigation.navigate('Detail', {item});
+    this.setState({showSearch: false});
   };
-  jumpToEquip = ({ prop, item }) => {
-    this.props.navigation.navigate('Equip', { item });
+  jumpToEquip = ({prop, item}) => {
+    this.props.navigation.navigate('Equip', {item});
     this.selectedProp(prop);
   };
   jumpToSettings = (prop) => {
@@ -129,7 +129,7 @@ export default class Splash extends Component {
     this.selectedProp(prop);
   };
   handleLoader = (child) => {
-    this.setState({ loadScreen: true });
+    this.setState({loadScreen: true});
   };
   selectedProp = (prop) => {
     // this.context.profileWeGet(prop.index)
@@ -140,36 +140,36 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
-  LoadData = () => {
+  LoadData = async () => {
     // console.log('End reached');
-    this.context.loadMoreData();
+    await this.context.loadMoreData();
   };
 
   cleardata = (prop) => {
-    this.jumpToDetail({ prop, item: prop });
+    this.jumpToDetail({prop, item: prop});
     this.context.clearData();
   };
 
   closeAndClear = () => {
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
     this.context.clearSearchList();
   };
   openAndClear = () => {
-    this.setState({ showSearch: true });
+    this.setState({showSearch: true});
     this.context.clearSearchList();
   };
 
   _renderSearchPropList = (prop) => (
     <TouchableOpacity
       style={styles.propButton}
-      onPress={() => this.jumpFromSearch({ prop, item: prop })}>
+      onPress={() => this.jumpFromSearch({prop, item: prop})}>
       <Build
         name="md-business-outline"
         size={height * 0.04}
         color="#115b72"
         style={styles.logoShadowStyle}
       />
-      <View style={{ width: width * 0.6 }}>
+      <View style={{width: width * 0.6}}>
         <Text style={styles.propText}>
           {prop.item.name == null ? 'Untitled' : prop.item.name}
         </Text>
@@ -188,9 +188,9 @@ export default class Splash extends Component {
       prop.index == this.context.propList.length - 1 &&
       !this.state.stopLoader
     ) {
-      this.setState({ stopLoader: true });
+      this.setState({stopLoader: true});
       console.log(clc.green('agayayaaa_____'));
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
     }
     // console.log('prop---->',prop)
     return (
@@ -209,15 +209,24 @@ export default class Splash extends Component {
             style={styles.logoShadowStyle}
           />
           <View>
-            <View style={{ width: width * 0.6, }}>
-              <TextTicker style={styles.propText} duration={5000}>
+            <View style={{width: width * 0.6}}>
+              <TextTicker
+                style={styles.propText}
+                duration={6000}
+                marqueeDelay={2000}>
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
 
-            <View style={{ width: width * 0.6, }}>
-              <TextTicker style={{ color: 'gray' }} duration={5000}>
-                {(prop.item.street == null ? '' : prop.item.street + ", ") + (prop.item.st == null ? '' : prop.item.st + ", ") + (prop.item.city == null ? '' : prop.item.city + ", ") + (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+            <View style={{width: width * 0.6}}>
+              <TextTicker
+                style={{color: 'gray'}}
+                duration={6000}
+                marqueeDelay={2000}>
+                {(prop.item.street == null ? '' : prop.item.street + ', ') +
+                  (prop.item.st == null ? '' : prop.item.st + ', ') +
+                  (prop.item.city == null ? '' : prop.item.city + ', ') +
+                  (prop.item.zipcode == null ? '' : prop.item.zipcode)}
               </TextTicker>
             </View>
           </View>
@@ -232,7 +241,7 @@ export default class Splash extends Component {
         {prop.index === this.state.currentIndex ? (
           <View style={styles.dropView}>
             <TouchableOpacity
-              onPress={() => this.jumpToDetail({ prop, item: prop })}>
+              onPress={() => this.jumpToDetail({prop, item: prop})}>
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
@@ -243,8 +252,8 @@ export default class Splash extends Component {
                   alignItems: 'center',
                   elevation: width * 0.003,
                 }}
-                start={{ x: 0.1, y: 1 }}
-                end={{ x: 1.5, y: 3 }}>
+                start={{x: 0.1, y: 1}}
+                end={{x: 1.5, y: 3}}>
                 <Text
                   style={{
                     fontFamily: Fonts.Handlee,
@@ -256,7 +265,7 @@ export default class Splash extends Component {
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.jumpToEquip({ prop, item: prop })}>
+              onPress={() => this.jumpToEquip({prop, item: prop})}>
               <LinearGradient
                 colors={['#09BAF2', '#115b72', '#0d3744']}
                 style={{
@@ -267,8 +276,8 @@ export default class Splash extends Component {
                   alignItems: 'center',
                   elevation: width * 0.003,
                 }}
-                start={{ x: 0.1, y: 1 }}
-                end={{ x: 1.5, y: 3 }}>
+                start={{x: 0.1, y: 1}}
+                end={{x: 1.5, y: 3}}>
                 <Text
                   style={{
                     fontFamily: Fonts.Handlee,
@@ -289,8 +298,8 @@ export default class Splash extends Component {
     // console.log('Component is re-rendered');
     if (!this.context.isLoading && this.state.loadScreen) {
       // console.log('Condition Success');
-      this.setState({ loadScreen: false });
-      this.setState({ Loading: true });
+      this.setState({loadScreen: false});
+      this.setState({Loading: true});
     }
 
     return (
@@ -320,7 +329,7 @@ export default class Splash extends Component {
                 <Search
                   name="search"
                   size={height * 0.04}
-                  style={{ marginLeft: width * 0.05 }}
+                  style={{marginLeft: width * 0.05}}
                   color="white"
                 />
                 <TextInput
@@ -339,9 +348,9 @@ export default class Splash extends Component {
                       background: 'transparent',
                     },
                   }}
-                // onFocus={() =>
-                //   this.setState({showSearch: true})
-                // }
+                  // onFocus={() =>
+                  //   this.setState({showSearch: true})
+                  // }
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={this.openFilter}>
@@ -355,7 +364,7 @@ export default class Splash extends Component {
           {this.state.showFilter ? (
             <Filter
               isVisible={this.state.showFilter}
-              close={() => this.setState({ showFilter: !this.state.showFilter })}
+              close={() => this.setState({showFilter: !this.state.showFilter})}
             />
           ) : null}
           {this.state.showSearch ? (
@@ -418,7 +427,7 @@ export default class Splash extends Component {
                 </TouchableOpacity>
               </View>
               <View
-                style={{ alignItems: 'center', paddingVertical: height * 0.005 }}>
+                style={{alignItems: 'center', paddingVertical: height * 0.005}}>
                 <FlatList
                   data={this.context.searchList}
                   renderItem={this._renderSearchPropList}
@@ -452,8 +461,8 @@ export default class Splash extends Component {
                 <ActivityIndicator color="#25dAE1" size="large" />
               ) : null
             }
-          // onEndReachedThreshold={this.context.propList.length * 100}
-          // onEndReached={this.LoadData}
+            onEndReachedThreshold={width * .0001}
+            onEndReached={() => this.LoadData()}
           />
         </View>
       </View>
