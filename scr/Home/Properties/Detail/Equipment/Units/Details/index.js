@@ -379,11 +379,10 @@ const App = ({navigation}) => {
           style={{
             marginTop: height * 0.02,
             borderWidth: 0.2,
-            width: width * 0.9,
-            right: width * 0.1,
+            width: width,
+            // right: width * 0.1,
             flexDirection: 'row',
           }}
-          inset
         />
         {/* )} */}
       </View>
@@ -444,11 +443,10 @@ const App = ({navigation}) => {
             style={{
               marginTop: height * 0.02,
               borderWidth: 0.2,
-              width: width * 0.9,
-              right: width * 0.1,
+              width: width,
+              // right: width * 0.1,
               flexDirection: 'row',
             }}
-            inset
           />
         </View>
       </TouchableOpacity>
@@ -503,11 +501,10 @@ const App = ({navigation}) => {
             style={{
               marginTop: height * 0.02,
               borderWidth: 0.2,
-              width: width * 0.9,
-              right: width * 0.1,
+              width: width,
+              // right: width * 0.1,
               flexDirection: 'row',
             }}
-            inset
           />
         </View>
       </TouchableOpacity>
@@ -850,14 +847,13 @@ const App = ({navigation}) => {
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={{
-                      width: width * 0.9,
+                      width: width,
                       borderWidth: 0.2,
-                      right: width * 0.05,
+                      // right: width * 0.05,
                       borderColor: '#8a8a8a6e',
                       backgroundColor: '#5c5c5ccf',
                       flexDirection: 'row',
                     }}
-                    inset
                   />
                 )}
               />
@@ -925,14 +921,13 @@ const App = ({navigation}) => {
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={{
-                      width: width * 0.9,
+                      width: width,
                       borderWidth: 0.2,
-                      right: width * 0.05,
+                      // right: width * 0.05,
                       borderColor: '#8a8a8a6e',
                       backgroundColor: '#5c5c5ccf',
                       flexDirection: 'row',
                     }}
-                    inset
                   />
                 )}
               />
