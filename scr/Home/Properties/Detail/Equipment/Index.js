@@ -71,6 +71,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-navigation';
 import clc from 'cli-color';
+import Index from '../../../Index';
 const {width, height} = Dimensions.get('window');
 let listViewRef;
 
@@ -130,7 +131,7 @@ var items = [
   },
 ];
 
-const manufacturers = [
+let manufacturers = [
   {
     id: 1,
     name: 'AMCO',
@@ -532,6 +533,7 @@ export default class Splash extends Component {
           type: 'Cubic Feet',
         },
       ],
+      vals: '',
       ListB: [
         {
           id: 1,
@@ -788,10 +790,17 @@ export default class Splash extends Component {
     this.setState({meterTypeInputs: newArr});
   };
 
+  onChangeInputs = (index, text) => {
+    let newArr = [...this.state.meterTypeInputs];
+    newArr[index].input = text;
+    this.setState({meterTypeInputs: newArr});
+  };
+
   hideSuggestion = (index, val, name) => {
     let newArr = [...this.state.meterTypeInputs];
     newArr[index].showList = !newArr[index].showList;
     newArr[index].input = val;
+    newArr[index].error = '';
     this.setState({meterTypeInputs: newArr}, () =>
       console.log('Meter Type', this.state.meterTypeInputs),
     );
@@ -2110,6 +2119,7 @@ export default class Splash extends Component {
   meterTypeClose = () => {
     this.setState({
       isModalMeterVisible: false,
+      measureOfUnitName: '',
     });
     this.setState((prevState) => ({
       ...prevState,
@@ -2590,7 +2600,7 @@ export default class Splash extends Component {
                                 scrollEnabled
                               /> */}
                               <TextInput
-                                label="Name*"
+                                // label="Name*"
                                 placeholder="A"
                                 value={this.state.buildingData.name}
                                 dense={true}
@@ -3170,14 +3180,14 @@ export default class Splash extends Component {
                             <Pressable
                               onPress={this.meterTypeClose}
                               android_ripple={{
-                                color: 'black',
+                                color: '#000',
                                 borderless: true,
                                 radius: width * 0.03,
                               }}>
                               <Icon
                                 name="cancel"
                                 size={height * 0.035}
-                                color="black"
+                                color="#000"
                                 maxOpacity={0.5}
                               />
                             </Pressable>
@@ -3197,9 +3207,10 @@ export default class Splash extends Component {
                                     </Text>
                                   </View> */}
                                     <SearchableDropdown
-                                      onItemSelect={(item) =>
-                                        this.hideSuggestion(index, item.name)
-                                      }
+                                      onItemSelect={(item, indexy) => {
+                                        this.hideSuggestion(index, item.name);
+                                        console.log('kuch', indexy);
+                                      }}
                                       containerStyle={{padding: width * 0.03}}
                                       itemStyle={{
                                         padding: width * 0.027,
@@ -3222,21 +3233,38 @@ export default class Splash extends Component {
                                           index == 0
                                             ? 'Manufacturer*'
                                             : 'Models*',
-                                        value: item.input,
                                         underlineColorAndroid: 'transparent',
                                         style: {
                                           padding: width * 0.027,
-                                          borderColor: '#000',
+                                          borderColor: item.error ? 'red' : 'black',
                                           borderWidth: width * 0.0019,
                                           borderRadius: width * 0.015,
                                         },
-                                        onTextChange: (text) =>
-                                          console.log(text),
+                                        onTextChange: (text) => {
+                                          console.log(text);
+                                          this.onChangeInputs(
+                                            index,
+                                            text,
+                                          );
+                                        },
+                                        value: setTimeout(() => item.input, 200) ,
+                                        defaultValue: item.input,
                                       }}
                                       listProps={{
                                         nestedScrollEnabled: true,
+                                        // renderItem: ({item, index}) => {
+                                        //   console.log(index);
+                                        //   return <Text>{item.name}</Text>;
+                                        // },
                                       }}
                                     />
+                                    {item.error ? (
+                                      <HelperText
+                                        type="error"
+                                        visible={item.error}>
+                                        {item.error}
+                                      </HelperText>
+                                    ) : null}
                                   </View>
                                 ) : //  :
                                 // <View>
