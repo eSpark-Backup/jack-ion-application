@@ -47,8 +47,8 @@ class GlobalState extends React.Component {
     });
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
-        this.setState({limitExceed: false});
-        this.setState({isLoading: false});
+      this.setState({limitExceed: false});
+      this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
       this.setState({isLoading: false});
@@ -101,8 +101,8 @@ class GlobalState extends React.Component {
         filterDataName: sort.billing,
       });
       console.log('FIltered property===>', response.data.data.properties);
-        this.setState({limitExceed: false});
-        this.setState({isLoading: false});
+      this.setState({limitExceed: false});
+      this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
       this.setState({isLoading: false});
