@@ -1087,6 +1087,7 @@ const App = ({navigation}) => {
                     marginBottom: width * 0.05,
                   }}>
                   <Button
+                  titleStyle={{textTransform: 'capitalize'}}
                     title={`Delete ${unitMeter?.meter_name.toUpperCase()} Meter`}
                     buttonStyle={{
                       backgroundColor: '#e24b4b',
@@ -1094,7 +1095,8 @@ const App = ({navigation}) => {
                     }}
                   />
                   <Button
-                    title={'Delete Unit ' + testId}
+                  titleStyle={{textTransform: 'capitalize'}}
+                  title={'Delete Unit ' + testId}
                     buttonStyle={{backgroundColor: '#e24b4b'}}
                   />
                 </View>

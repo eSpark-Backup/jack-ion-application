@@ -436,6 +436,7 @@ export default class Splash extends Component {
                   windowSize={100}
                   keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
+                  onEndReachedThreshold={width * 0.0001}
                   onEndReached={this.context.loadSearchData}
                 />
               </View>
@@ -461,7 +462,7 @@ export default class Splash extends Component {
                 <ActivityIndicator color="#25dAE1" size="large" />
               ) : null
             }
-            onEndReachedThreshold={width * .0001}
+            onEndReachedThreshold={width * 0.0001}
             onEndReached={() => this.LoadData()}
           />
         </View>

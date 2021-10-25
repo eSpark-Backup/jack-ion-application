@@ -1391,11 +1391,11 @@ export default class Splash extends Component {
     // console.log('check index',index)
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterTypeName =
-      item.manufacturer +
-      '-' +
       item.model +
+      ' ' +
       '(x' +
       item.multiplier +
+      ' ' +
       item.unit_of_measure +
       ')'; // replace e.target.value with whatever you want to change it to
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
@@ -2797,7 +2797,7 @@ export default class Splash extends Component {
                                               anchor={
                                                 this.state.typeOfMeters
                                                   .length ? (
-                                                  <Pressable
+                                                  <TouchableOpacity
                                                     onPress={() =>
                                                       this.showTypesOfMeter(
                                                         item,
@@ -2805,27 +2805,27 @@ export default class Splash extends Component {
                                                       )
                                                     }
                                                     style={{
+                                                      width: width * 0.5,
                                                       flexDirection: 'row',
                                                       justifyContent:
                                                         'flex-start',
                                                       alignItems: 'center',
-                                                    }}
-                                                    android_ripple={{
-                                                      color: '#25AAE1ec',
-                                                      borderless: true,
-                                                      radius: height * 0.08,
                                                     }}>
-                                                    <Text
+                                                    <TextTicker
+                                                      marqueeDelay={1000}
+                                                      duration={5000}
                                                       style={{
                                                         fontSize:
                                                           height * 0.018,
                                                         color: '#25AAE1ec',
+                                                        textTransform:
+                                                          'capitalize',
                                                       }}>
                                                       {item.meterTypeName
                                                         ? item.meterTypeName
                                                         : 'Select'}
-                                                    </Text>
-                                                  </Pressable>
+                                                    </TextTicker>
+                                                  </TouchableOpacity>
                                                 ) : (
                                                   <View
                                                     style={{
@@ -2868,19 +2868,21 @@ export default class Splash extends Component {
                                                             meterIndex,
                                                           )
                                                         }>
-                                                        <TextTicker
-                                                          duration={5000}
+                                                        <Text
                                                           style={{
-                                                            width: width * 0.4,
+                                                            textTransform:
+                                                              'capitalize',
                                                           }}>
                                                           {item.manufacturer +
                                                             '-' +
                                                             item.model +
+                                                            ' ' +
                                                             '(x' +
                                                             item.multiplier +
+                                                            ' ' +
                                                             item.unit_of_measure +
                                                             ')'}
-                                                        </TextTicker>
+                                                        </Text>
                                                       </MenuItem>
                                                     </View>
                                                   ),
@@ -3554,7 +3556,7 @@ export default class Splash extends Component {
                 <KeyboardAvoidingView behavior="padding">
                   <View style={[styles.modalInner]}>
                     <View
-                      style={[styles.boxConatainer, {height: height * 0.82}]}>
+                      style={[styles.boxConatainer, {height: height * 0.6}]}>
                       <View style={[styles.boxInner]}>
                         {/* Box Header */}
                         <View style={styles.boxHeader}>
@@ -3584,167 +3586,179 @@ export default class Splash extends Component {
                           </View>
                         </View>
                         {/* Box Body */}
-                        <View style={{flex: 1}}>
-                          <View style={styles.desciptionContainer}>
-                            <Build
-                              name={'office-building'}
-                              size={height * 0.02}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.desciptionHeading}>
-                              BUILDING*
-                            </Text>
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              // label="Name*"
-                              value={this.state.typedBuild}
-                              dense={true}
-                              editable={false}
-                              onChangeText={(text) => {
-                                this.setState({typedBuild: text});
-                              }}
-                              style={styles.input}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.desciptionContainer}>
-                            <Text style={styles.desciptionHeading}>UNIT*</Text>
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              // label="BILLING COMPANY*"
-                              value={this.state.typedUnit}
-                              dense={true}
-                              onChangeText={(text) => {
-                                this.setState({typedUnit: text});
-                              }}
-                              style={styles.input}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View
-                            style={{alignItems: 'center', overflow: 'hidden'}}>
-                            {this.state.noCode ? (
-                              <View
-                                style={{
-                                  height: this.state.editU ? height * 0.5 : 0,
-                                  overflow: 'hidden',
-                                  top: height * 0.04,
-                                }}>
-                                <FlatList
-                                  data={meterTypes}
-                                  renderItem={this._renderMeterTypes}
-                                  keyExtractor={(item) => item.id.toString()}
-                                />
-                              </View>
-                            ) : (
-                              <View
-                                style={{
-                                  height: this.state.editU
-                                    ? height * 0.0
-                                    : height * 0.4,
-                                  overflow: 'hidden',
-                                  top: height * 0.005,
-                                  width: width * 0.75,
-                                }}>
-                                <View>
-                                  <View style={styles.utilityInScrHeadView}>
-                                    <Text
-                                      style={[
-                                        styles.utilityInScrHead,
-                                        {color: '#9ACF72'},
-                                      ]}>
-                                      {this.state.pressedType}
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterDesciptionContainer}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Transceiver
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterInputContainer}>
-                                    <TextInput
-                                      value={this.state.typedCode}
-                                      dense={true}
-                                      onChangeText={(text) => {
-                                        this.setState({typedCode: text});
-                                      }}
-                                      style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
-                                    />
-                                  </View>
-                                  <View style={styles.meterDesciptionContainer}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Meter type
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterInputContainer}>
-                                    <TextInput
-                                      value={this.state.typedMType}
-                                      dense={true}
-                                      onChangeText={(text) => {
-                                        this.setState({typedMType: text});
-                                      }}
-                                      style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
-                                    />
-                                  </View>
-                                  <View style={styles.meterDesciptionContainer}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Initial Meter Read (IMR)
-                                    </Text>
-                                  </View>
-                                  <View style={styles.meterInputContainer}>
-                                    <TextInput
-                                      placeholder=""
-                                      dense={true}
-                                      keyboardType="numeric"
-                                      style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
-                                    />
+                        <ScrollView showsVerticalScrollIndicator={false} >
+                          <View style={{flex: 1}}>
+                            <View style={styles.desciptionContainer}>
+                              <Build
+                                name={'office-building'}
+                                size={height * 0.02}
+                                color="#5e5e5e"
+                              />
+                              <Text style={styles.desciptionHeading}>
+                                BUILDING*
+                              </Text>
+                            </View>
+                            <View style={styles.inputContainer}>
+                              <TextInput
+                                // label="Name*"
+                                value={this.state.typedBuild}
+                                dense={true}
+                                editable={false}
+                                onChangeText={(text) => {
+                                  this.setState({typedBuild: text});
+                                }}
+                                style={styles.input}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                            </View>
+                            <View style={styles.desciptionContainer}>
+                              <Text style={styles.desciptionHeading}>
+                                UNIT*
+                              </Text>
+                            </View>
+                            <View style={styles.inputContainer}>
+                              <TextInput
+                                // label="BILLING COMPANY*"
+                                value={this.state.typedUnit}
+                                dense={true}
+                                onChangeText={(text) => {
+                                  this.setState({typedUnit: text});
+                                }}
+                                style={styles.input}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                            </View>
+                            <View
+                              style={{
+                                alignItems: 'center',
+                                overflow: 'hidden',
+                              }}>
+                              {this.state.noCode ? (
+                                <View
+                                  style={{
+                                    height: this.state.editU ? height * 0.5 : 0,
+                                    overflow: 'hidden',
+                                    top: height * 0.04,
+                                  }}>
+                                  <FlatList
+                                    data={meterTypes}
+                                    renderItem={this._renderMeterTypes}
+                                    keyExtractor={(item) => item.id.toString()}
+                                  />
+                                </View>
+                              ) : (
+                                <View
+                                  style={{
+                                    height: this.state.editU
+                                      ? height * 0.0
+                                      : height * 0.4,
+                                    overflow: 'hidden',
+                                    top: height * 0.005,
+                                    width: width * 0.75,
+                                  }}>
+                                  <View>
+                                    <View style={styles.utilityInScrHeadView}>
+                                      <Text
+                                        style={[
+                                          styles.utilityInScrHead,
+                                          {color: '#9ACF72'},
+                                        ]}>
+                                        {this.state.pressedType}
+                                      </Text>
+                                    </View>
+                                    <View
+                                      style={styles.meterDesciptionContainer}>
+                                      <Text
+                                        style={styles.meterDesciptionHeading}>
+                                        Transceiver
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterInputContainer}>
+                                      <TextInput
+                                        value={this.state.typedCode}
+                                        dense={true}
+                                        onChangeText={(text) => {
+                                          this.setState({typedCode: text});
+                                        }}
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                          },
+                                        }}
+                                      />
+                                    </View>
+                                    <View
+                                      style={styles.meterDesciptionContainer}>
+                                      <Text
+                                        style={styles.meterDesciptionHeading}>
+                                        Meter type
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterInputContainer}>
+                                      <TextInput
+                                        value={this.state.typedMType}
+                                        dense={true}
+                                        onChangeText={(text) => {
+                                          this.setState({typedMType: text});
+                                        }}
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                          },
+                                        }}
+                                      />
+                                    </View>
+                                    <View
+                                      style={styles.meterDesciptionContainer}>
+                                      <Text
+                                        style={styles.meterDesciptionHeading}>
+                                        Initial Meter Read (IMR)
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterInputContainer}>
+                                      <TextInput
+                                        placeholder=""
+                                        dense={true}
+                                        keyboardType="numeric"
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                          },
+                                        }}
+                                      />
+                                    </View>
                                   </View>
                                 </View>
-                              </View>
-                            )}
+                              )}
+                            </View>
                           </View>
-                        </View>
-                        {/* </ScrollView> */}
+                        </ScrollView>
                         {/* Box Footer */}
                         <View style={styles.footerBtn}>
                           <View style={styles.bottonContainer}>

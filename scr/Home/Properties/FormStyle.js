@@ -37,22 +37,28 @@ export default styles = StyleSheet.create({
 
     // Modal
     modalContainer: {
-        elevation: width * .005,
-        borderRadius: width * .02,
-        backgroundColor: 'white',
-        maxHeight: height * 1,
-        maxWidth: width * 1,
+        // elevation: width * .005,
+        // borderRadius: width * .02,
+        // backgroundColor: 'white',
+        // maxHeight: height * 1,
+        // maxWidth: width * 1,
         
         // borderWidth: height * .005,
     },
     modalInner: {
         // flex: 1,
+        elevation: width * 0.005,
+        borderRadius: width * 0.02,
+        backgroundColor: 'white',
+        padding: height * 0.03,
         justifyContent: 'center',
         alignItems: 'center',
     },
     boxConatainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
         width: width * .85,
-        height: height * .9,
+        height: height * .6,
         // justifyContent: "center",
     },
     boxInner: {
@@ -145,7 +151,7 @@ export default styles = StyleSheet.create({
         alignItems: 'center',
     },
     submitBotton:{
-        width: width * .4,
+        // width: width * .4,
         height: height * .06,
         alignItems:'center',
         justifyContent:'center',
