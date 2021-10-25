@@ -379,11 +379,10 @@ const App = ({navigation}) => {
           style={{
             marginTop: height * 0.02,
             borderWidth: 0.2,
-            width: width * 0.9,
-            right: width * 0.1,
+            width: width * .9,
+            // right: width * 0.1,
             flexDirection: 'row',
           }}
-          inset
         />
         {/* )} */}
       </View>
@@ -444,11 +443,10 @@ const App = ({navigation}) => {
             style={{
               marginTop: height * 0.02,
               borderWidth: 0.2,
-              width: width * 0.9,
-              right: width * 0.1,
+              width: width * .9,
+              // right: width * 0.1,
               flexDirection: 'row',
             }}
-            inset
           />
         </View>
       </TouchableOpacity>
@@ -503,11 +501,10 @@ const App = ({navigation}) => {
             style={{
               marginTop: height * 0.02,
               borderWidth: 0.2,
-              width: width * 0.9,
-              right: width * 0.1,
+              width: width * .9,
+              // right: width * 0.1,
               flexDirection: 'row',
             }}
-            inset
           />
         </View>
       </TouchableOpacity>
@@ -794,7 +791,7 @@ const App = ({navigation}) => {
                     style={{
                       marginBottom: height * 0.02,
                       marginTop: height * 0.01,
-                      width: width,
+                      width: width * .9,
                       borderWidth: 0.8,
                     }}
                   />
@@ -834,7 +831,7 @@ const App = ({navigation}) => {
                     style={{
                       marginBottom: height * 0.02,
                       marginTop: height * 0.01,
-                      width: width,
+                      width: width * .9,
                       borderWidth: 0.8,
                     }}
                   />
@@ -843,21 +840,20 @@ const App = ({navigation}) => {
             />
             {openedStatus ? (
               <FlatList
-                style={{width: width, bottom: width * 0.02}}
+                style={{width: width * .9, bottom: width * 0.02}}
                 data={statusInfo}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderStatusInfo}
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={{
-                      width: width * 0.9,
+                      width: width * .9,
                       borderWidth: 0.2,
-                      right: width * 0.05,
+                      // right: width * 0.05,
                       borderColor: '#8a8a8a6e',
                       backgroundColor: '#5c5c5ccf',
                       flexDirection: 'row',
                     }}
-                    inset
                   />
                 )}
               />
@@ -909,7 +905,7 @@ const App = ({navigation}) => {
                     style={{
                       marginBottom: height * 0.02,
                       marginTop: height * 0.01,
-                      width: width,
+                      width: width * .9,
                       borderWidth: 0.8,
                     }}
                   />
@@ -918,21 +914,20 @@ const App = ({navigation}) => {
             />
             {opened ? (
               <FlatList
-                style={{width: width, bottom: width * 0.02}}
+                style={{width: width * .9, bottom: width * 0.02}}
                 data={meterInfoData}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderMeterInfo}
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={{
-                      width: width * 0.9,
+                      width: width * .9,
                       borderWidth: 0.2,
-                      right: width * 0.05,
+                      // right: width * 0.05,
                       borderColor: '#8a8a8a6e',
                       backgroundColor: '#5c5c5ccf',
                       flexDirection: 'row',
                     }}
-                    inset
                   />
                 )}
               />
@@ -967,7 +962,7 @@ const App = ({navigation}) => {
                 style={{
                   marginBottom: height * 0.02,
                   marginTop: height * 0.01,
-                  width: width,
+                  width: width * .9,
                   borderWidth: 0.8,
                   left: width * 0.05,
                 }}
@@ -1071,7 +1066,7 @@ const App = ({navigation}) => {
               <Divider
                 style={{
                   marginVertical: height * 0.02,
-                  width: width,
+                  width: width * .9,
                   borderWidth: 0.8,
                   left: width * 0.05,
                 }}
@@ -1082,7 +1077,7 @@ const App = ({navigation}) => {
                 <View
                   style={{
                     flexDirection: 'column',
-                    width: width * 0.95,
+                    width: width * .9,
                     alignSelf: 'center',
                     marginBottom: width * 0.05,
                   }}>
