@@ -31,11 +31,11 @@ class GlobalState extends React.Component {
   };
 
   clearData = () => {
-    this.setState({propList: [],});
+    this.setState({propList: []});
   };
 
   checkData = async () => {
-    this.setState({isLoading: true,filterDataName:''});
+    this.setState({isLoading: true, filterDataName: ''});
     let data = {
       offset: 0,
     };
@@ -47,6 +47,7 @@ class GlobalState extends React.Component {
     });
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
+      this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
@@ -55,27 +56,35 @@ class GlobalState extends React.Component {
   };
 
   loadMoreData = async () => {
-    this.setState({listLoader: true});
+    if (!this.state.limitExceed) {
+      this.setState({listLoader: true});
+    }
     let data = {
       offset: this.state.offset,
-      billing: this.state.filterDataName
+      billing: this.state.filterDataName,
     };
     const response = await this.api.post('/property/all', data);
     console.log('respone property===>', response.data.data);
-    // console.log('this.state.offset===>', this.state.offset);
     this.setState({
       success: response.data.bool,
     });
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
       console.log('response.data.data.offset===>', response.data.data.offset);
-      if (this.state.offset != response.data.data.offset && response.data.data.offset > 0) {
+      if (
+        this.state.offset != response.data.data.offset &&
+        response.data.data.offset > 0
+      ) {
         let data = [...this.state.propList];
         let data2 = response.data.data.properties;
         data.push(...data2);
         this.setState({propList: data});
         // console.log('new array', data);
         this.setState({listLoader: false, offset: response.data.data.offset});
+        this.setState({limitExceed: false});
+      } else {
+        this.setState({limitExceed: true});
+        this.setState({listLoader: false});
       }
     } else {
       Alert.alert('Error', 'Network Issues');
@@ -87,8 +96,12 @@ class GlobalState extends React.Component {
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
-      this.setState({propList: response.data.data.properties,filterDataName:sort.billing});
+      this.setState({
+        propList: response.data.data.properties,
+        filterDataName: sort.billing,
+      });
       console.log('FIltered property===>', response.data.data.properties);
+      this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
@@ -102,13 +115,14 @@ class GlobalState extends React.Component {
     editBillComp: '',
     editManageComp: '',
     editCustomId: '',
-    filterDataName:'',
+    filterDataName: '',
     index: '',
     token: null,
     success: false,
     isLoading: true,
     searchLoading: false,
     listLoader: false,
+    limitExceed: false,
     loadFor: '',
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
