@@ -92,13 +92,21 @@ class GlobalState extends React.Component {
     }
   };
 
+  changeOffset = () => {
+    this.setState({offset: 0});
+  };
+
   filterData = async (sort) => {
+    // this.setState({
+    //   offset: 0,
+    // });
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
       this.setState({
         propList: response.data.data.properties,
         filterDataName: sort.billing,
+        offset: response.data.data.offset
       });
       console.log('FIltered property===>', response.data.data.properties);
       this.setState({limitExceed: false});
@@ -943,8 +951,10 @@ class GlobalState extends React.Component {
       const response = await this.api.post('/property/all', prop);
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
-        if (this.state.searchOffset != response.data.data.offset &&
-          response.data.data.offset > 0) {
+        if (
+          this.state.searchOffset != response.data.data.offset &&
+          response.data.data.offset > 0
+        ) {
           let data = [...this.state.searchList];
           let data2 = response.data.data.properties;
           data.push(...data2);
