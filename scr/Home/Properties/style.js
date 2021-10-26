@@ -189,7 +189,7 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.025,
     color: '#001522',
-    textAlign: 'center',
+    // textAlign: 'center',
     textShadowOffset: {
       width: width * 0.002,
       height: height * 0.002,
