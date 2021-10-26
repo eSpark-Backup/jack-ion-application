@@ -2532,7 +2532,7 @@ export default class Splash extends Component {
                           height:
                             this.state.meterListData.length == 0
                               ? height * 0.44
-                              : height * 0.6,
+                              : height * 0.55,
                         },
                       ]}>
                       <View style={styles.boxInner}>
@@ -2889,7 +2889,7 @@ export default class Splash extends Component {
                                                       />
                                                       <MenuItem
                                                         style={{
-                                                          width: width * 0.5,
+                                                          width: width * 0.7,
                                                         }}
                                                         onPress={() =>
                                                           this.onGetMeterTypeId(

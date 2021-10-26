@@ -323,7 +323,7 @@ export default styles = StyleSheet.create({
   },
   boxConatainer: {
     width: width * 0.85,
-    height: height * 0.78,
+    height: height * 0.6,
     justifyContent: 'center',
     alignItems: 'center',
   },
