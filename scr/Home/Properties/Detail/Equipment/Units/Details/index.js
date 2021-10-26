@@ -30,9 +30,10 @@ import {
 
 // Components
 import styles from './style';
-import {Divider} from 'react-native-paper';
+import {Checkbox, Divider} from 'react-native-paper';
 import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
+import TextTicker from 'react-native-text-ticker';
 const {width, height} = Dimensions.get('window');
 
 const api = create({
@@ -66,7 +67,7 @@ const App = ({navigation}) => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     // console.log('Kia ha Response Data', res.data);
     setData(res.data);
-    setUnitMeter(res.data?.data?.unit?.['unit-meter']?.[0]);
+    setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     setLoading(false);
   };
 
@@ -81,7 +82,7 @@ const App = ({navigation}) => {
     }
   };
 
-  const arrayOfUnits = data?.data?.unit?.['unit-meter'];
+  const arrayOfUnits = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
     switch (arg) {
@@ -379,7 +380,7 @@ const App = ({navigation}) => {
           style={{
             marginTop: height * 0.02,
             borderWidth: 0.2,
-            width: width * .9,
+            width: width * 0.9,
             // right: width * 0.1,
             flexDirection: 'row',
           }}
@@ -443,7 +444,7 @@ const App = ({navigation}) => {
             style={{
               marginTop: height * 0.02,
               borderWidth: 0.2,
-              width: width * .9,
+              width: width * 0.9,
               // right: width * 0.1,
               flexDirection: 'row',
             }}
@@ -473,16 +474,19 @@ const App = ({navigation}) => {
             </View>
             <View style={{flexDirection: 'row'}}>
               <View style={{flexDirection: 'column'}}>
-                <View style={{flexDirection: 'row-reverse'}}>
+                <View
+                  style={{flexDirection: 'row-reverse', width: width * 0.6}}>
                   {item.rightName == null ? null : (
-                    <Text
+                    <TextTicker
+                      duration={6000}
+                      marqueeDelay={2000}
                       style={{
                         textAlign: 'right',
                         fontSize: width * 0.04,
                         textTransform: 'capitalize',
                       }}>
                       {item.rightName}
-                    </Text>
+                    </TextTicker>
                   )}
                 </View>
               </View>
@@ -501,7 +505,7 @@ const App = ({navigation}) => {
             style={{
               marginTop: height * 0.02,
               borderWidth: 0.2,
-              width: width * .9,
+              width: width * 0.9,
               // right: width * 0.1,
               flexDirection: 'row',
             }}
@@ -638,13 +642,13 @@ const App = ({navigation}) => {
                     paddingHorizontal: width * 0.04,
                   }}>
                   <Text
-                    style={{fontSize: width * 0.08, color: 'rgb(90,134,183)'}}>
+                    style={{fontSize: width * 0.08, color: typeColor(unitMeter?.meter_name)}}>
                     3,782 Gallons
                   </Text>
                   <RightArrow
                     name="chevron-thin-right"
                     size={width * 0.08}
-                    color="rgb(90,134,183)"
+                    color={typeColor(unitMeter?.meter_name)}
                     style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
                   />
@@ -676,7 +680,7 @@ const App = ({navigation}) => {
                   <RightArrow
                     name="chevron-thin-left"
                     size={width * 0.08}
-                    color="rgb(90,134,183)"
+                    color={typeColor(unitMeter?.meter_name)}
                     style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
                   />
@@ -747,7 +751,7 @@ const App = ({navigation}) => {
                     style={{marginRight: width * 0.025}}
                   />
                 }
-                buttonStyle={{backgroundColor: 'rgb(90,134,183)'}}
+                buttonStyle={{backgroundColor: typeColor(unitMeter?.meter_name)}}
                 onPress={() => console.log('Quick Actions Press')}
               />
             </View>
@@ -791,7 +795,7 @@ const App = ({navigation}) => {
                     style={{
                       marginBottom: height * 0.02,
                       marginTop: height * 0.01,
-                      width: width * .9,
+                      width: width * 0.9,
                       borderWidth: 0.8,
                     }}
                   />
@@ -831,7 +835,7 @@ const App = ({navigation}) => {
                     style={{
                       marginBottom: height * 0.02,
                       marginTop: height * 0.01,
-                      width: width * .9,
+                      width: width * 0.9,
                       borderWidth: 0.8,
                     }}
                   />
@@ -840,14 +844,14 @@ const App = ({navigation}) => {
             />
             {openedStatus ? (
               <FlatList
-                style={{width: width * .9, bottom: width * 0.02}}
+                style={{width: width * 0.9, bottom: width * 0.02}}
                 data={statusInfo}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderStatusInfo}
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={{
-                      width: width * .9,
+                      width: width * 0.9,
                       borderWidth: 0.2,
                       // right: width * 0.05,
                       borderColor: '#8a8a8a6e',
@@ -895,9 +899,11 @@ const App = ({navigation}) => {
                   /> */}
                     <Image
                       source={img}
+                      resizeMode='contain'
                       style={{
-                        height: height * 0.08,
-                        width: width * 0.16,
+                        // backgroundColor: 'red',
+                        height: height * 0.09,
+                        width: height * 0.09,
                       }}
                     />
                   </View>
@@ -905,7 +911,7 @@ const App = ({navigation}) => {
                     style={{
                       marginBottom: height * 0.02,
                       marginTop: height * 0.01,
-                      width: width * .9,
+                      width: width * 0.9,
                       borderWidth: 0.8,
                     }}
                   />
@@ -914,14 +920,14 @@ const App = ({navigation}) => {
             />
             {opened ? (
               <FlatList
-                style={{width: width * .9, bottom: width * 0.02}}
+                style={{width: width * 0.9, bottom: width * 0.02}}
                 data={meterInfoData}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderMeterInfo}
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={{
-                      width: width * .9,
+                      width: width * 0.9,
                       borderWidth: 0.2,
                       // right: width * 0.05,
                       borderColor: '#8a8a8a6e',
@@ -962,7 +968,7 @@ const App = ({navigation}) => {
                 style={{
                   marginBottom: height * 0.02,
                   marginTop: height * 0.01,
-                  width: width * .9,
+                  width: width * 0.9,
                   borderWidth: 0.8,
                   left: width * 0.05,
                 }}
@@ -1066,7 +1072,7 @@ const App = ({navigation}) => {
               <Divider
                 style={{
                   marginVertical: height * 0.02,
-                  width: width * .9,
+                  width: width * 0.9,
                   borderWidth: 0.8,
                   left: width * 0.05,
                 }}
@@ -1077,12 +1083,12 @@ const App = ({navigation}) => {
                 <View
                   style={{
                     flexDirection: 'column',
-                    width: width * .9,
+                    width: width * 0.9,
                     alignSelf: 'center',
                     marginBottom: width * 0.05,
                   }}>
                   <Button
-                  titleStyle={{textTransform: 'capitalize'}}
+                    titleStyle={{textTransform: 'capitalize'}}
                     title={`Delete ${unitMeter?.meter_name} Meter`}
                     buttonStyle={{
                       backgroundColor: '#e24b4b',
@@ -1090,8 +1096,8 @@ const App = ({navigation}) => {
                     }}
                   />
                   <Button
-                  titleStyle={{textTransform: 'capitalize'}}
-                  title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
+                    titleStyle={{textTransform: 'capitalize'}}
+                    title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
                     buttonStyle={{backgroundColor: '#e24b4b'}}
                   />
                 </View>
@@ -1112,7 +1118,7 @@ const App = ({navigation}) => {
             arrayOfUnits.map((item, index) => (
               <TouchableOpacity
                 style={{
-                  width: width * 0.13,
+                  width: width * 0.15,
                   height: width * 0.13,
                   backgroundColor: 'white',
                   marginHorizontal: width * 0.025,
@@ -1123,6 +1129,27 @@ const App = ({navigation}) => {
                   alignItems: 'center',
                 }}
                 onPress={() => handleMeterSelect(item)}>
+                {item.id == unitMeter.id && (
+                  <View style={{
+                    position: 'absolute', 
+                    right:width * 0,
+                    top:height * 0,
+                    width:width * .035,
+                    height:width * .035,
+                    backgroundColor:typeColor(item.meter_name),
+                    alignItems:'center',
+                    justifyContent:'center',
+                    borderBottomLeftRadius:width * .02
+                    }}>
+                    <Check name="check" style={{marginLeft:width * .005}} size={width * 0.02} color="#fff" />
+                    {/* <Checkbox
+                    status={true ? 'checked' : 'unchecked'}
+                    // onPress={() => {
+                      //   setChecked(!checked);
+                      // }}
+                    /> */}
+                  </View>
+                )}
                 <Image
                   source={typeSwitcher(item.meter_name)}
                   style={{

@@ -42,6 +42,7 @@ import Equip from 'react-native-vector-icons/Feather';
 import Message from 'react-native-vector-icons/Feather';
 import Trash from 'react-native-vector-icons/Feather';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
+import Edit from 'react-native-vector-icons/MaterialIcons';
 import Fire from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Compact from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -870,6 +871,10 @@ export default class Splash extends Component {
           data,
         );
         console.log('Check unitResponse unit--->', unitResponse?.data?.data);
+        console.log(
+          'Check UNIT Meter --->',
+          unitResponse?.data?.data[1].unit_meter,
+        );
         // console.log('buildingData--->', this.state.buildingData);
 
         if (unitResponse?.ok == true) {
@@ -1498,17 +1503,47 @@ export default class Splash extends Component {
   };
 
   _renderTopList = (build) => (
-    <TouchableOpacity onPress={() => this.showArrayItem(build)}>
-      <View style={styles.infoTopViewContainer}>
-        <View style={styles.infoTopViewInner}>
-          <Build name="office-building" size={width * 0.06} />
-          <Text style={styles.dataFieldText}>{build.item.name}</Text>
-        </View>
-        <Text style={{paddingHorizontal: 10}}>
-          {build.item.unit_count} Units
-        </Text>
+    <View
+      onPress={() => this.showArrayItem(build)}
+      style={styles.infoTopViewContainer}>
+      {/* <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: width * 0.0,
+              top: height * 0.0075,
+              width: width * 0.06,
+              height: width * 0.06,
+              backgroundColor: 'red',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: width * 0.02,
+              borderWidth: 1,
+              zIndex: 1,
+            }}></TouchableOpacity> */}
+      <View style={styles.infoTopViewInner}>
+        <Build name="office-building" size={width * 0.06} />
+        <TextTicker duration={5000} style={styles.dataFieldText} >
+          {build.item.name}
+        </TextTicker>
       </View>
-    </TouchableOpacity>
+      <Text style={{paddingHorizontal: 10,fontSize:width * .04,textAlign:'center',fontWeight:'bold'}}>{build.item.unit_count} Units</Text>
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          // borderTopWidth: 1,
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: height * 0.01,
+          paddingVertical: height * 0.005,
+          backgroundColor: '#25AAE1ec',
+          borderBottomLeftRadius: width * 0.01,
+          borderBottomRightRadius: width * 0.01,
+        }}>
+        <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
+        <Edit name="edit" color="white" size={width * 0.04} />
+      </TouchableOpacity>
+    </View>
   );
   editUnit = () => {
     this.setState(
@@ -1573,7 +1608,7 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-    if (unit.item?.['unit-meter']?.length !== 0) {
+    if (unit.item?.unit_meter?.length !== 0) {
       this.props.navigation.navigate('U_Details', {
         unitId: unit.item.id,
         buildingName: this.state.buildingData.name,
@@ -1694,7 +1729,7 @@ export default class Splash extends Component {
               </View>
               <View style={[styles.meterReading]}>
                 <Text style={styles.dataFieldText}>
-                  {unit.item?.['unit-meter']?.length}
+                  {unit.item?.unit_meter?.length}
                 </Text>
                 <Text style={styles.dataFieldText}>Meters</Text>
               </View>
@@ -2314,6 +2349,9 @@ export default class Splash extends Component {
                   // marginVertical: width * .006,
                   justifyContent: 'space-around',
                   borderRightWidth: width * 0.001,
+                  height:height * .13,
+                  // backgroundColor:'red'
+
                 }}>
                 <View style={{width: width * 0.35}}>
                   <TouchableOpacity
@@ -2505,7 +2543,10 @@ export default class Splash extends Component {
                 </View>
               ) : (
                 <FlatList
-                  // style={{borderLeftWidth: width * .02, borderColor: 'black',}}
+                  style={{
+                    // padding:width * .01,
+                    height: height * 0.12,
+                  }}
                   // numColumns={1}
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
@@ -3190,11 +3231,6 @@ export default class Splash extends Component {
                         {/* Box Header */}
                         <View style={styles.boxHeader}>
                           <View style={styles.boxHeaderInner}>
-                            <Icon
-                              name={'business'}
-                              size={height * 0.05}
-                              color="#5e5e5e"
-                            />
                             <Text style={styles.modalHeading}>
                               Meter Type Builder
                             </Text>
@@ -3293,107 +3329,7 @@ export default class Splash extends Component {
                                       </HelperText>
                                     ) : null}
                                   </View>
-                                ) : //  :
-                                // <View>
-                                //   <View style={styles.desciptionContainer}>
-                                //     <Text style={styles.desciptionHeading}>
-                                //       {item.name}
-                                //     </Text>
-                                //   </View>
-                                //   <View style={styles.inputContainer}>
-                                //     <MenuT
-                                //       visible={index < 2 ? item.showList : null}
-                                //       style={{height: height * 0.2}}
-                                //       anchor={
-                                //         <View>
-                                //           <TextInput
-                                //             value={item.input}
-                                //             dense={true}
-                                //             onFocus={() =>
-                                //               this.showSuggestion(index)
-                                //             }
-                                //             showSoftInputOnFocus={
-                                //               index < 2 ? false : true
-                                //             }
-                                //             error={item.error}
-                                //             style={styles.input}
-                                //             mode={'outlined'}
-                                //             onChangeText={(text) =>
-                                //               this.onChangeTypeBuilder(
-                                //                 text,
-                                //                 index,
-                                //               )
-                                //             }
-                                //             theme={{
-                                //               colors: {
-                                //                 text: '#25AAE1ec',
-                                //                 primary: '#25AAE1ec',
-                                //                 selectionColor: 'red',
-                                //               },
-                                //             }}
-                                //           />
-                                //           {item.error ? (
-                                //             <HelperText
-                                //               type="error"
-                                //               visible={item.error}>
-                                //               {item.error}
-                                //             </HelperText>
-                                //           ) : null}
-                                //         </View>
-                                //       }
-                                //       onRequestClose={() =>
-                                //         this.hideSuggestion(index)
-                                //       }>
-                                //       {manufacturers.map((item) => (
-                                //         <MenuItem
-                                //           onPress={() =>
-                                //             this.hideSuggestion(
-                                //               index,
-                                //               item.name,
-                                //             )
-                                //           }>
-                                //           {item.name}
-                                //         </MenuItem>
-                                //       ))}
-                                //       <ScrollView>
-                                //         {(() => {
-                                //           switch (index) {
-                                //             case 0:
-                                //               return manufacturers.map(
-                                //                 (item) => (
-                                //                   <MenuItem
-                                //                     onPress={() =>
-                                //                       this.hideSuggestion(
-                                //                         index,
-                                //                         item.name,
-                                //                       )
-                                //                     }>
-                                //                     {item.name}
-                                //                   </MenuItem>
-                                //                 ),
-                                //               );
-                                //             case 1:
-                                //               return models.map((item) => (
-                                //                 <MenuItem
-                                //                   onPress={() =>
-                                //                     this.hideSuggestion(
-                                //                       index,
-                                //                       item.name,
-                                //                     )
-                                //                   }>
-                                //                   {item.name}
-                                //                 </MenuItem>
-                                //               ));
-
-                                //             default:
-                                //               return null;
-                                //           }
-                                //         })()}
-                                //       </ScrollView>
-                                //     </MenuT>
-                                //   </View>
-                                // </View>
-                                null}
+                                ) : null}
                               </View>
                             );
                           })}
@@ -3458,6 +3394,7 @@ export default class Splash extends Component {
                                                     style={[
                                                       styles.input,
                                                       {
+                                                        height: height * 0.058,
                                                         width: !this.state
                                                           .meter3
                                                           ? width * 0.35
@@ -4373,7 +4310,7 @@ export default class Splash extends Component {
                   listViewRef = ref;
                 }}
                 showsVerticalScrollIndicator={false}
-                style={{marginBottom: height * 0.42}}
+                style={{marginBottom: height * 0.41}}
                 contentContainerStyle={{backgroundColor: '#F5F5F5'}}
                 numColumns={1}
                 initialNumToRender={realData.length}

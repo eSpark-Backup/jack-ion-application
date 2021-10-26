@@ -161,44 +161,44 @@ export default class Splash extends Component {
 
   _renderSearchPropList = (prop) => (
     <TouchableOpacity
-          style={styles.propButton}
-          onPress={() => this.jumpFromSearch({prop, item: prop})}>
-          <Build
-            name="md-business-outline"
-            size={width * 0.09}
-            color="#115b72"
-            style={styles.logoShadowStyle}
-          />
-          <View>
-            <View style={{width: width * 0.6}}>
-              <TextTicker
-                style={styles.propText}
-                duration={6000}
-                marqueeDelay={2000}>
-                {prop.item.name == null ? 'Untitled' : prop.item.name}
-              </TextTicker>
-            </View>
+      style={styles.propButton}
+      onPress={() => this.jumpFromSearch({prop, item: prop})}>
+      <Build
+        name="md-business-outline"
+        size={width * 0.09}
+        color="#115b72"
+        style={styles.logoShadowStyle}
+      />
+      <View>
+        <View style={{width: width * 0.6}}>
+          <TextTicker
+            style={styles.propText}
+            duration={6000}
+            marqueeDelay={2000}>
+            {prop.item.name == null ? 'Untitled' : prop.item.name}
+          </TextTicker>
+        </View>
 
-            <View style={{width: width * 0.6}}>
-              <TextTicker
-                style={{color: 'gray'}}
-                duration={6000}
-                marqueeDelay={2000}>
-                {(prop.item.street == null ? '' : prop.item.street + ', ') +
-                  (prop.item.st == null ? '' : prop.item.st + ', ') +
-                  (prop.item.city == null ? '' : prop.item.city + ', ') +
-                  (prop.item.zipcode == null ? '' : prop.item.zipcode)}
-              </TextTicker>
-            </View>
-          </View>
+        <View style={{width: width * 0.6}}>
+          <TextTicker
+            style={{color: 'gray'}}
+            duration={6000}
+            marqueeDelay={2000}>
+            {(prop.item.street == null ? '' : prop.item.street + ', ') +
+              (prop.item.st == null ? '' : prop.item.st + ', ') +
+              (prop.item.city == null ? '' : prop.item.city + ', ') +
+              (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+          </TextTicker>
+        </View>
+      </View>
 
-          <Signal
-            name="signal-cellular-outline"
-            size={height * 0.04}
-            color="#115b72"
-            style={styles.logoShadowStyle}
-          />
-        </TouchableOpacity>
+      <Signal
+        name="signal-cellular-outline"
+        size={height * 0.04}
+        color="#115b72"
+        style={styles.logoShadowStyle}
+      />
+    </TouchableOpacity>
 
     // <TouchableOpacity
     //   style={styles.propButton}
@@ -221,7 +221,6 @@ export default class Splash extends Component {
     //     style={styles.logoShadowStyle}
     //   />
     // </TouchableOpacity>
-    
   );
 
   _renderPropList = (prop) => {
@@ -468,16 +467,17 @@ export default class Splash extends Component {
                 </TouchableOpacity>
               </View>
               <View
-                style={{alignItems: 'center', paddingVertical: height * 0.005}}>
+                style={{alignItems: 'center', paddingVertical: height * 0.005}}
+                >
                 <FlatList
                   data={this.context.searchList}
                   renderItem={this._renderSearchPropList}
-                  removeClippedSubviews={true}
+                  removeClippedSubviews={false}
                   maxToRenderPerBatch={150}
                   windowSize={100}
                   keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
-                  onEndReachedThreshold={width * 0.0001}
+                  onEndReachedThreshold={width * 0.001}
                   onEndReached={this.context.loadSearchData}
                 />
               </View>
