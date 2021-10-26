@@ -319,7 +319,7 @@ export default styles = StyleSheet.create({
     right: width * 0.02,
   },
   desciptionContainer: {
-    height: height * 0.04,
+    height: height * 0.035,
     width: width * 0.7,
     alignSelf: 'center',
     alignItems: 'flex-end',
