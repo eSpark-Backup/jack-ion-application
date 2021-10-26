@@ -161,26 +161,67 @@ export default class Splash extends Component {
 
   _renderSearchPropList = (prop) => (
     <TouchableOpacity
-      style={styles.propButton}
-      onPress={() => this.jumpFromSearch({prop, item: prop})}>
-      <Build
-        name="md-business-outline"
-        size={height * 0.04}
-        color="#115b72"
-        style={styles.logoShadowStyle}
-      />
-      <View style={{width: width * 0.6}}>
-        <Text style={styles.propText}>
-          {prop.item.name == null ? 'Untitled' : prop.item.name}
-        </Text>
-      </View>
-      <Signal
-        name="signal-cellular-outline"
-        size={height * 0.04}
-        color="#115b72"
-        style={styles.logoShadowStyle}
-      />
-    </TouchableOpacity>
+          style={styles.propButton}
+          onPress={() => this.jumpFromSearch({prop, item: prop})}>
+          <Build
+            name="md-business-outline"
+            size={width * 0.09}
+            color="#115b72"
+            style={styles.logoShadowStyle}
+          />
+          <View>
+            <View style={{width: width * 0.6}}>
+              <TextTicker
+                style={styles.propText}
+                duration={6000}
+                marqueeDelay={2000}>
+                {prop.item.name == null ? 'Untitled' : prop.item.name}
+              </TextTicker>
+            </View>
+
+            <View style={{width: width * 0.6}}>
+              <TextTicker
+                style={{color: 'gray'}}
+                duration={6000}
+                marqueeDelay={2000}>
+                {(prop.item.street == null ? '' : prop.item.street + ', ') +
+                  (prop.item.st == null ? '' : prop.item.st + ', ') +
+                  (prop.item.city == null ? '' : prop.item.city + ', ') +
+                  (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+              </TextTicker>
+            </View>
+          </View>
+
+          <Signal
+            name="signal-cellular-outline"
+            size={height * 0.04}
+            color="#115b72"
+            style={styles.logoShadowStyle}
+          />
+        </TouchableOpacity>
+
+    // <TouchableOpacity
+    //   style={styles.propButton}
+    //   onPress={() => this.jumpFromSearch({prop, item: prop})}>
+    //   <Build
+    //     name="md-business-outline"
+    //     size={height * 0.04}
+    //     color="#115b72"
+    //     style={styles.logoShadowStyle}
+    //   />
+    //   <View style={{width: width * 0.6}}>
+    //     <Text style={styles.propText}>
+    //       {prop.item.name == null ? 'Untitled' : prop.item.name}
+    //     </Text>
+    //   </View>
+    //   <Signal
+    //     name="signal-cellular-outline"
+    //     size={height * 0.04}
+    //     color="#115b72"
+    //     style={styles.logoShadowStyle}
+    //   />
+    // </TouchableOpacity>
+    
   );
 
   _renderPropList = (prop) => {
