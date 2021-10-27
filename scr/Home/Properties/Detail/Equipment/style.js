@@ -84,7 +84,7 @@ export default styles = StyleSheet.create({
     paddingVertical: height * 0.02,
   },
   infoTopViewContainer: {
-    width: width * .3,
+    width: width * 0.3,
     // height: height * 0.1,
     // elevation: width * .03,
     backgroundColor: 'white',
@@ -94,7 +94,7 @@ export default styles = StyleSheet.create({
     // marginBottom: height * 0.02,
     borderRadius: width * 0.01,
     borderWidth: width * 0.001,
-    marginLeft: width * .02,
+    marginLeft: width * 0.02,
   },
   infoViewContainer: {
     width: width * 0.9,
@@ -115,10 +115,10 @@ export default styles = StyleSheet.create({
   infoTopViewInner: {
     // width: width * .1,
     // top: height * 0.01,
-    flex:1,
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    marginLeft: width * .01,
+    marginLeft: width * 0.01,
     // marginBottom: height * 0.02,
     alignItems: 'center',
   },
@@ -169,6 +169,7 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     marginLeft: width * 0.01,
     textAlign: 'center',
+    textTransform: 'capitalize',
   },
   dropDown: {
     flexDirection: 'row',
