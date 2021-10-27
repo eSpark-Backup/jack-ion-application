@@ -34,6 +34,7 @@ import {Checkbox, Divider} from 'react-native-paper';
 import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
+import style from './style';
 const {width, height} = Dimensions.get('window');
 
 const api = create({
@@ -319,8 +320,8 @@ const App = ({navigation}) => {
 
   const renderUnitList = ({item, index}) => {
     return (
-      <View style={{paddingVertical: width * 0.02}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={styles.listOuter}>
+        <View style={styles.listContainer}>
           <View style={{flexDirection: 'row'}}>
             {index == 1 ? (
               <Image
@@ -340,16 +341,15 @@ const App = ({navigation}) => {
                 style={{marginRight: width * 0.03}}
               />
             )}
-            <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+            <Text style={styles.listText}>{item.leftName}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             {item.rightName == null ? null : (
               <Text
-                style={{
+                style={[styles.listText,{
                   textTransform: 'capitalize',
                   color: index == 1 ? typeColor(item.rightName) : '#000',
-                  fontSize: width * 0.04,
-                }}>
+                }]}>
                 {item.rightName}
               </Text>
             )}
@@ -364,28 +364,9 @@ const App = ({navigation}) => {
             )}
           </View>
         </View>
-        {/* {index == 0 ? (
-          <Divider
-            style={{
-              marginTop: height * 0.02,
-              width: width,
-              alignSelf: 'flex-start',
-              right: width * 0.07,
-              borderWidth: 0.2,
-              flexDirection: 'row',
-            }}
-          />
-        ) : ( */}
         <Divider
-          style={{
-            marginTop: height * 0.02,
-            borderWidth: 0.2,
-            width: width * 0.9,
-            // right: width * 0.1,
-            flexDirection: 'row',
-          }}
+          style={styles.listDivider}
         />
-        {/* )} */}
       </View>
     );
   };
@@ -395,21 +376,17 @@ const App = ({navigation}) => {
       <TouchableOpacity
         disabled={item.leftName == 'Status' ? false : true}
         onPress={() => openStatusView()}>
-        <View style={{paddingVertical: width * 0.02}}>
+        <View style={styles.listOuter}>
           <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
+            style={styles.listContainer}>
             <View style={{flexDirection: 'row'}}>
-              <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+              <Text style={styles.listText}>{item.leftName}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
               <View style={{flexDirection: 'column'}}>
                 <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text style={{textAlign: 'right', fontSize: width * 0.04}}>
+                    <Text style={styles.listText}>
                       {item.rightName}
                     </Text>
                   )}
@@ -424,7 +401,7 @@ const App = ({navigation}) => {
                   )}
                 </View>
                 {item.text && (
-                  <Text style={{color: '#5c5c5ccf', fontSize: width * 0.04}}>
+                  <Text style={styles.listGreyText}>
                     {item.text}
                   </Text>
                 )}
@@ -441,13 +418,7 @@ const App = ({navigation}) => {
             </View>
           </View>
           <Divider
-            style={{
-              marginTop: height * 0.02,
-              borderWidth: 0.2,
-              width: width * 0.9,
-              // right: width * 0.1,
-              flexDirection: 'row',
-            }}
+            style={styles.listDivider}
           />
         </View>
       </TouchableOpacity>
@@ -467,10 +438,10 @@ const App = ({navigation}) => {
   const renderMeterType = ({item, index}) => {
     return (
       <TouchableOpacity onPress={() => openView()}>
-        <View style={{paddingVertical: width * 0.02}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={styles.listOuter}>
+          <View style={styles.listContainer}>
             <View style={{flexDirection: 'row'}}>
-              <Text style={{fontSize: width * 0.04}}>{item.leftName}</Text>
+              <Text style={styles.listText}>{item.leftName}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
               <View style={{flexDirection: 'column'}}>
@@ -480,11 +451,10 @@ const App = ({navigation}) => {
                     <TextTicker
                       duration={6000}
                       marqueeDelay={2000}
-                      style={{
+                      style={[styles.listText, {
                         textAlign: 'right',
-                        fontSize: width * 0.04,
                         textTransform: 'capitalize',
-                      }}>
+                      }]}>
                       {item.rightName}
                     </TextTicker>
                   )}
@@ -502,13 +472,7 @@ const App = ({navigation}) => {
             </View>
           </View>
           <Divider
-            style={{
-              marginTop: height * 0.02,
-              borderWidth: 0.2,
-              width: width * 0.9,
-              // right: width * 0.1,
-              flexDirection: 'row',
-            }}
+            style={styles.listDivider}
           />
         </View>
       </TouchableOpacity>
@@ -517,15 +481,11 @@ const App = ({navigation}) => {
 
   const renderMeterInfo = ({item}) => {
     return (
-      <View style={{backgroundColor: '#605c5c24'}}>
+      <View style={styles.listInner}>
         <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: width * 0.04,
-          }}>
+          style={styles.listInnerContainer}>
           <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: width * 0.035}}>{item.leftText}</Text>
+            <Text style={styles.listInnerText}>{item.leftText}</Text>
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
@@ -538,7 +498,7 @@ const App = ({navigation}) => {
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text
-              style={{fontSize: width * 0.035, textTransform: 'capitalize'}}>
+              style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
               {item.rightText}
             </Text>
           </View>
@@ -549,28 +509,20 @@ const App = ({navigation}) => {
 
   const renderStatusInfo = ({item}) => {
     return (
-      <View style={{backgroundColor: '#605c5c24'}}>
+      <View style={styles.listInner}>
         <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: width * 0.04,
-          }}>
+          style={styles.listInnerContainer}>
           <View style={{flexDirection: 'row'}}>
             <Text
-              style={{
-                fontSize: width * 0.035,
-                color: '#8c8c8c',
-              }}>
+              style={styles.listGreyText}>
               {item.leftText}
             </Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text
-              style={{
-                fontSize: width * 0.035,
+              style={[styles.listInnerText, {
                 color: item.bold ? '#000' : '#8c8c8c',
-              }}>
+              }]}>
               {item.rightText}
             </Text>
             {item.icon == null ? null : (
@@ -579,7 +531,6 @@ const App = ({navigation}) => {
                 type={item.type}
                 size={width * 0.05}
                 color={'#000'}
-                // style={{marginLeft: width * 0.03, alignSelf: 'center'}}
               />
             )}
           </View>
@@ -588,16 +539,14 @@ const App = ({navigation}) => {
     );
   };
 
-  console.log(clc.red('data', data));
+  console.log(clc.red('data', data.data));
 
   if (loading) {
     return <Loader />;
   } else {
     return (
       <View style={{flex: 1}}>
-        <ScrollView>
-          <View style={styles.container}>
-            <Header
+        <Header
               leftComponent={{
                 text: 'Close',
                 style: {fontSize: width * 0.05, color: '#000'},
@@ -621,6 +570,8 @@ const App = ({navigation}) => {
               backgroundColor="#fff"
               containerStyle={{borderBottomWidth: width * 0.003, elevation: 1}}
             />
+        <ScrollView>
+          <View style={styles.container}>
             {!headView && (
               <MotiView
                 from={{
@@ -634,13 +585,7 @@ const App = ({navigation}) => {
                 style={styles.currentReadContainer}>
                 <Text style={{color: '#5c5c5ccf'}}>CURRENT READ</Text>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: width,
-                    marginVertical: width * 0.01,
-                    paddingHorizontal: width * 0.04,
-                  }}>
+                  style={styles.currentReadInnerContainer}>
                   <Text
                     style={{fontSize: width * 0.08, color: typeColor(unitMeter?.meter_name)}}>
                     3,782 Gallons
@@ -685,55 +630,46 @@ const App = ({navigation}) => {
                     onPress={() => setHeadView(!headView)}
                   />
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={styles.greyText}>
                       PULSES
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={styles.text}>
                       3,786
                     </Text>
                   </View>
                   <Text
-                    style={{
-                      marginHorizontal: width * 0.02,
-                      color: '#5c5c5ccf',
-                    }}>
+                    style={styles.symbolStyle}>
                     x
                   </Text>
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={styles.greyText}>
                       MULTIPLIER
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={styles.text}>
                       1
                     </Text>
                   </View>
                   <Text
-                    style={{
-                      marginHorizontal: width * 0.02,
-                      color: '#5c5c5ccf',
-                    }}>
+                    style={styles.symbolStyle}>
                     +
                   </Text>
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={styles.greyText}>
                       IMR
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={styles.text}>
                       21
                     </Text>
                   </View>
                   <Text
-                    style={{
-                      marginHorizontal: width * 0.02,
-                      color: '#5c5c5ccf',
-                    }}>
+                    style={styles.symbolStyle}>
                     =
                   </Text>
                   <View>
-                    <Text style={{color: '#5c5c5ccf', fontSize: width * 0.03}}>
+                    <Text style={styles.greyText}>
                       CURRENT READ
                     </Text>
-                    <Text style={{textAlign: 'center', fontSize: width * 0.03}}>
+                    <Text style={styles.text}>
                       3,807
                     </Text>
                   </View>
@@ -759,31 +695,16 @@ const App = ({navigation}) => {
         //* Unit List
         */}
             <SectionList
-              style={{marginTop: height * 0.07}}
-              contentContainerStyle={{
-                width: width,
-                paddingHorizontal: width * 0.05,
-              }}
+              style={styles.sectionStyle}
+              contentContainerStyle={styles.sectionContainer}
               sections={unitData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderUnitList}
               renderSectionHeader={({section: {title, icon, type}}) => (
                 <>
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={{fontSize: width * 0.065}}>{title}</Text>
-                    {/* <View
-                    style={{
-                      width: height * 0.05,
-                      height: height * 0.05,
-                      backgroundColor: 'blue',
-                      alignSelf: 'flex-end',
-                    }}
-                  /> */}
+                    style={styles.sectionTitle}>
+                    <Text style={styles.sectionText}>{title}</Text>
                     <Icon
                       name={icon}
                       type={type}
@@ -792,12 +713,7 @@ const App = ({navigation}) => {
                     />
                   </View>
                   <Divider
-                    style={{
-                      marginBottom: height * 0.02,
-                      marginTop: height * 0.01,
-                      width: width * 0.9,
-                      borderWidth: 0.8,
-                    }}
+                    style={styles.sectionTitleDivider}
                   />
                 </>
               )}
@@ -806,58 +722,36 @@ const App = ({navigation}) => {
         //* Remote Reader List
         */}
             <SectionList
-              style={{marginTop: height * 0.07}}
-              contentContainerStyle={{
-                width: width,
-                paddingHorizontal: width * 0.05,
-              }}
+              style={styles.sectionStyle}
+              contentContainerStyle={styles.sectionContainer}
               sections={remoteReaderData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderRemoteList}
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={{fontSize: width * 0.065}}>{title}</Text>
+                    style={styles.sectionTitle}>
+                    <Text style={styles.sectionText}>{title}</Text>
                     <Image
                       source={img}
-                      style={{
-                        height: height * 0.08,
-                        width: height * 0.08,
-                      }}
+                      style={styles.sectionImgStyle}
                     />
                   </View>
                   <Divider
-                    style={{
-                      marginBottom: height * 0.02,
-                      marginTop: height * 0.01,
-                      width: width * 0.9,
-                      borderWidth: 0.8,
-                    }}
+                    style={styles.sectionTitleDivider}
                   />
                 </>
               )}
             />
             {openedStatus ? (
               <FlatList
-                style={{width: width * 0.9, bottom: width * 0.02}}
+                style={styles.statusList}
                 data={statusInfo}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderStatusInfo}
                 ItemSeparatorComponent={() => (
                   <Divider
-                    style={{
-                      width: width * 0.9,
-                      borderWidth: 0.2,
-                      // right: width * 0.05,
-                      borderColor: '#8a8a8a6e',
-                      backgroundColor: '#5c5c5ccf',
-                      flexDirection: 'row',
-                    }}
+                    style={[styles.listDivider, {marginTop: 0}]}
                   />
                 )}
               />
@@ -866,97 +760,50 @@ const App = ({navigation}) => {
         //* Meter Type List
         */}
             <SectionList
-              style={{marginTop: height * 0.07}}
-              contentContainerStyle={{
-                width: width,
-                paddingHorizontal: width * 0.05,
-              }}
+              style={styles.sectionStyle}
+              contentContainerStyle={styles.sectionContainer}
               sections={meterTypeData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderMeterType}
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
+                    style={styles.sectionTitle}>
                     <Text
-                      style={{
-                        fontSize: width * 0.065,
+                      style={[styles.sectionText, {
                         textTransform: 'capitalize',
-                      }}>
+                      }]}>
                       {unitMeter?.meter_name + ' Meter'}
                     </Text>
-                    {/* <View
-                    style={{
-                      width: height * 0.05,
-                      height: height * 0.05,
-                      backgroundColor: 'red',
-                      alignSelf: 'flex-end',
-                    }}
-                  /> */}
                     <Image
                       source={img}
                       resizeMode='contain'
-                      style={{
-                        // backgroundColor: 'red',
-                        height: height * 0.09,
-                        width: height * 0.09,
-                      }}
+                      style={styles.sectionImgStyle}
                     />
                   </View>
                   <Divider
-                    style={{
-                      marginBottom: height * 0.02,
-                      marginTop: height * 0.01,
-                      width: width * 0.9,
-                      borderWidth: 0.8,
-                    }}
+                    style={styles.sectionTitleDivider}
                   />
                 </>
               )}
             />
             {opened ? (
               <FlatList
-                style={{width: width * 0.9, bottom: width * 0.02}}
+                style={styles.statusList}
                 data={meterInfoData}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderMeterInfo}
                 ItemSeparatorComponent={() => (
                   <Divider
-                    style={{
-                      width: width * 0.9,
-                      borderWidth: 0.2,
-                      // right: width * 0.05,
-                      borderColor: '#8a8a8a6e',
-                      backgroundColor: '#5c5c5ccf',
-                      flexDirection: 'row',
-                    }}
+                    style={[styles.listDivider, {marginTop: 0}]}
                   />
                 )}
               />
             ) : null}
             <View>
               <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: height * 0.07,
-                  width: width,
-                  justifyContent: 'space-between',
-                  paddingHorizontal: width * 0.05,
-                  alignItems: 'center',
-                }}>
-                <Text style={{fontSize: width * 0.065}}>Usage</Text>
-                {/* <View
-                style={{
-                  width: height * 0.05,
-                  height: height * 0.05,
-                  backgroundColor: 'red',
-                  alignSelf: 'flex-end',
-                }}
-              /> */}
+                style={styles.usageTextContainer}>
+                <Text style={styles.sectionText}>Usage</Text>
                 <Icon
                   name="bar-chart"
                   type="fontisto"
@@ -965,13 +812,9 @@ const App = ({navigation}) => {
                 />
               </View>
               <Divider
-                style={{
-                  marginBottom: height * 0.02,
-                  marginTop: height * 0.01,
-                  width: width * 0.9,
-                  borderWidth: 0.8,
+                style={[styles.sectionTitleDivider, {
                   left: width * 0.05,
-                }}
+                }]}
               />
               {/*
               //todo: Add Chart here 
@@ -981,10 +824,7 @@ const App = ({navigation}) => {
                   alignSelf: 'center',
                 }}>
                 <Chart
-                  style={{
-                    height: height * 0.3,
-                    width: width * 0.9,
-                  }}
+                  style={styles.chartStyle}
                   data={[
                     {x: -2, y: 15},
                     {x: -1, y: 10},
@@ -1000,7 +840,7 @@ const App = ({navigation}) => {
                     {x: 9, y: 13.5},
                     {x: 10, y: 18},
                   ]}
-                  padding={{left: 40, bottom: 20, right: 20, top: 20}}
+                  padding={styles.chartPadding}
                   xDomain={{min: -2, max: 10}}
                   yDomain={{min: 0, max: 20}}>
                   <VerticalAxis
@@ -1023,28 +863,16 @@ const App = ({navigation}) => {
                     }}
                   />
                 </Chart>
-                <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                <View style={styles.legendContainer}>
                   <View style={{flexDirection: 'row'}}>
                     <View
-                      style={{
-                        backgroundColor: '#DFDFDF',
-                        width: width * 0.03,
-                        height: width * 0.03,
-                        alignSelf: 'center',
-                        marginHorizontal: width * 0.02,
-                      }}
+                      style={styles.meterUsageBox}
                     />
                     <Text>Meter Usage</Text>
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View
-                      style={{
-                        backgroundColor: '#5D84B6',
-                        width: width * 0.03,
-                        height: width * 0.03,
-                        alignSelf: 'center',
-                        marginHorizontal: width * 0.02,
-                      }}
+                      style={styles.meterReadBox}
                     />
                     <Text>Meter Read</Text>
                   </View>
@@ -1053,13 +881,7 @@ const App = ({navigation}) => {
             </View>
             <View>
               <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: height * 0.07,
-                  width: width,
-                  justifyContent: 'space-between',
-                  paddingHorizontal: width * 0.05,
-                }}>
+                style={styles.usageTextContainer}>
                 <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
                 <Icon
                   name={dangerView ? 'chevron-down' : 'chevron-right'}
@@ -1070,23 +892,13 @@ const App = ({navigation}) => {
                 />
               </View>
               <Divider
-                style={{
-                  marginVertical: height * 0.02,
-                  width: width * 0.9,
-                  borderWidth: 0.8,
-                  left: width * 0.05,
-                }}
+                style={styles.dangerHeader}
               />
               {!dangerView ? (
                 <View />
               ) : (
                 <View
-                  style={{
-                    flexDirection: 'column',
-                    width: width * 0.9,
-                    alignSelf: 'center',
-                    marginBottom: width * 0.05,
-                  }}>
+                  style={styles.dangerView}>
                   <Button
                     titleStyle={{textTransform: 'capitalize'}}
                     title={`Delete ${unitMeter?.meter_name} Meter`}
@@ -1106,56 +918,22 @@ const App = ({navigation}) => {
           </View>
         </ScrollView>
         <View
-          style={{
-            width: width,
-            height: height * 0.1,
-            backgroundColor: '#fff',
-            elevation: width * 0.07,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
+          style={styles.footerStyle}>
           {arrayOfUnits &&
             arrayOfUnits.map((item, index) => (
               <TouchableOpacity
-                style={{
-                  width: width * 0.15,
-                  height: width * 0.13,
-                  backgroundColor: 'white',
-                  marginHorizontal: width * 0.025,
-                  elevation: width * 0.01,
-                  borderWidth: width * 0.005,
-                  borderColor: typeColor(item.meter_name),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+                style={[styles.meterStyle, {borderColor: typeColor(item.meter_name)
+                }]}
                 onPress={() => handleMeterSelect(item)}>
                 {item.id == unitMeter.id && (
-                  <View style={{
-                    position: 'absolute', 
-                    right:width * 0,
-                    top:height * 0,
-                    width:width * .035,
-                    height:width * .035,
-                    backgroundColor:typeColor(item.meter_name),
-                    alignItems:'center',
-                    justifyContent:'center',
-                    borderBottomLeftRadius:width * .02
-                    }}>
+                  <View style={[styles.meterInner, {backgroundColor:typeColor(item.meter_name)
+                  }]}>
                     <Check name="check" style={{marginLeft:width * .005}} size={width * 0.02} color="#fff" />
-                    {/* <Checkbox
-                    status={true ? 'checked' : 'unchecked'}
-                    // onPress={() => {
-                      //   setChecked(!checked);
-                      // }}
-                    /> */}
                   </View>
                 )}
                 <Image
                   source={typeSwitcher(item.meter_name)}
-                  style={{
-                    height: width * 0.06,
-                    width: width * 0.055,
-                  }}
+                  style={styles.meterImg}
                 />
               </TouchableOpacity>
             ))}
