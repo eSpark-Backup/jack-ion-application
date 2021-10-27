@@ -753,6 +753,7 @@ export default class Splash extends Component {
           error: '',
         },
       ],
+      editBuildId:0,
     };
     this.state.realData = this.state.realData.map((item) => {
       item.isSelected = false;
@@ -1512,20 +1513,6 @@ export default class Splash extends Component {
       <View
         onPress={() => this.showArrayItem(build)}
         style={styles.infoTopViewContainer}>
-        {/* <TouchableOpacity
-            style={{
-              position: 'absolute',
-              right: width * 0.0,
-              top: height * 0.0075,
-              width: width * 0.06,
-              height: width * 0.06,
-              backgroundColor: 'red',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: width * 0.02,
-              borderWidth: 1,
-              zIndex: 1,
-            }}></TouchableOpacity> */}
         <View style={styles.infoTopViewInner}>
           <Build name="office-building" size={width * 0.06} />
           <TextTicker duration={5000} style={styles.dataFieldText}>
@@ -1563,10 +1550,12 @@ export default class Splash extends Component {
   };
 
   buildingEditOpen = (item) => {
+    console.log(item,'item--------->')
     this.setState({
       editModal: true,
       editBuilding: item.name,
       editBuildDes: item.descriptions,
+      editBuildId:item.id,
     });
   };
 
@@ -2338,6 +2327,7 @@ export default class Splash extends Component {
                       backgroundColor: '#e24b4b',
                       marginVertical: height * 0.01,
                     }}
+                    onPress={() => this.context.updateBuilding(this.state.editBuildId)}
                   />
                 </View>
               </View>
@@ -2686,7 +2676,7 @@ export default class Splash extends Component {
                 <FlatList
                   style={{
                     // padding:width * .01,
-                    height: height * 0.12,
+                    height: width * 0.22,
                   }}
                   // numColumns={1}
                   showsHorizontalScrollIndicator={false}
@@ -2802,7 +2792,7 @@ export default class Splash extends Component {
                               /> */}
                               <TextInput
                                 // label="Name*"
-                                placeholder="A"
+                                placeholder="Building Name"
                                 value={this.state.buildingData.name}
                                 dense={true}
                                 onFocus={this.changeLayoutMeter3}

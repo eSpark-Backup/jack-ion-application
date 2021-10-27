@@ -69,7 +69,7 @@ export default class Splash extends Component {
 
   onFocusFunction = () => {
     this.setState({loadScreen: true});
-    this.context.getToken();
+    this.context.checkData();
     this.setState({propertyList: this.context.propList});
   };
 
