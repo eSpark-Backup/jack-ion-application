@@ -85,12 +85,11 @@ export default styles = StyleSheet.create({
   },
   infoTopViewContainer: {
     width: width * 0.3,
-    // height: height * 0.1,
+    // height: height * 0.13,
     // elevation: width * .03,
     backgroundColor: 'white',
     // justifyContent: 'center',
     // alignItems: 'center',
-    // marginTop: height * 0.02,
     // marginBottom: height * 0.02,
     borderRadius: width * 0.01,
     borderWidth: width * 0.001,
@@ -116,6 +115,7 @@ export default styles = StyleSheet.create({
     // width: width * .1,
     // top: height * 0.01,
     flex: 1,
+    marginVertical: height * 0.01,
     alignItems: 'center',
     flexDirection: 'row',
     marginLeft: width * 0.01,
@@ -180,6 +180,7 @@ export default styles = StyleSheet.create({
     borderColor: 'purple',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
+    marginBottom:width * 0.02
   },
   dropDownContent: {
     flexDirection: 'row',
@@ -344,7 +345,7 @@ export default styles = StyleSheet.create({
     // backgroundColor: "yellow"
   },
   input: {
-    // height: height * .07,
+    height: height * .07,
     width: width * 0.75,
     fontSize: height * 0.018,
   },
@@ -356,6 +357,19 @@ export default styles = StyleSheet.create({
     paddingHorizontal: width * 0.02,
     borderTopWidth: width * 0.001,
     backgroundColor: 'white',
+  },
+  propText: {
+    textTransform: 'capitalize',
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * 0.025,
+    color: '#001522',
+    // textAlign: 'center',
+    textShadowOffset: {
+      width: width * 0.002,
+      height: height * 0.002,
+    },
+    textShadowRadius: width * 0.005,
+    textShadowColor: '#09BAF2',
   },
   addUnitBtnContainer: {
     flex: 1,
@@ -528,7 +542,7 @@ export default styles = StyleSheet.create({
   meterReading: {
     flexDirection: 'column',
     alignItems: 'center',
-    width: width * 0.2,
+    width: width * 0.,
   },
   programDevice: {
     width: width * 0.4,
