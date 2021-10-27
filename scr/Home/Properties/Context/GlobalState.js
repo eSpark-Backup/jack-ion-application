@@ -34,12 +34,13 @@ class GlobalState extends React.Component {
   };
 
   checkData = async () => {
-    this.setState({ isLoading: true, filterDataName: '' });
+    this.setState({biller: ''});
+    this.setState({isLoading: true, filterDataName: ''});
     let data = {
       offset: 0,
     };
     const response = await this.api.post('/property/all', data);
-    console.log('respone property===>', response.data.data.properties);
+    // console.log('respone property===>', response.data.data.properties);
     this.setState({
       success: response.data.bool,
       offset: response.data.data.offset,
@@ -63,7 +64,7 @@ class GlobalState extends React.Component {
       billing: this.state.filterDataName,
     };
     const response = await this.api.post('/property/all', data);
-    console.log('respone property===>', response.data.data);
+    // console.log('respone property===>', response.data.data);
     this.setState({
       success: response.data.bool,
     });
@@ -96,16 +97,14 @@ class GlobalState extends React.Component {
   };
 
   filterData = async (sort) => {
-    // this.setState({
-    //   offset: 0,
-    // });
+    this.setState({biller: sort.billing});
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
       this.setState({
         propList: response.data.data.properties,
         filterDataName: sort.billing,
-        offset: response.data.data.offset
+        offset: response.data.data.offset,
       });
       console.log('FIltered property===>', response.data.data.properties);
       this.setState({ limitExceed: false });
@@ -130,6 +129,7 @@ class GlobalState extends React.Component {
     searchLoading: false,
     listLoader: false,
     limitExceed: false,
+    biller: '',
     loadFor: '',
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
@@ -1023,7 +1023,8 @@ class GlobalState extends React.Component {
             listLoader: this.state.listLoader,
             loadSearchData: this.loadSearchData,
             deleteBuilding: this.deleteBuilding,
-            updateBuilding: this.updateBuilding
+            updateBuilding: this.updateBuilding,
+            biller: this.state.biller,
           }}>
           {this.props.children}
         </Context.Provider>

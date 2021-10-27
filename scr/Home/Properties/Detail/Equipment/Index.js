@@ -31,6 +31,8 @@ import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Home from 'react-native-vector-icons/FontAwesome5';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
+import FilterIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Close from 'react-native-vector-icons/MaterialCommunityIcons';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import Modal from 'react-native-modal';
 import Barcode from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -67,6 +69,7 @@ import File from './Form';
 import styles from './style';
 import style from './style';
 import ContextProp from '../../Context/propContext';
+import Filter from '../../Filter';
 // import { FlatList } from 'react-native-gesture-handler';
 import {color} from 'react-native-reanimated';
 import {ActivityIndicator} from 'react-native';
@@ -282,6 +285,8 @@ export default class Splash extends Component {
       editModal: false,
       editBuilding: '',
       editBuildDes: '',
+      showSearch: false,
+      showFilter: false,
       newUnitInfo: {
         indexUnits: '',
         unitBuild: '',
@@ -783,12 +788,18 @@ export default class Splash extends Component {
       duration: 1000,
     }).start();
   };
-  componentDidMount() {
+  async componentDidMount() {
     this.setState({loader: true, loaderBuildings: true});
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.onFocusFunction();
+    });
+  }
+
+  onFocusFunction = () => {
     this.getToken();
     console.log('Equip--->', this.props.navigation.state.params.item.item.id);
     this.setState({isModalVisible: false});
-  }
+  };
 
   showSuggestion = (index) => {
     let newArr = [...this.state.meterTypeInputs];
@@ -1508,9 +1519,40 @@ export default class Splash extends Component {
     }
   };
 
+  _renderSearchPropList = (prop) => (
+    <TouchableOpacity style={styles.propButton}>
+      <Build name="md-business-outline" size={width * 0.09} color="#115b72" />
+      <View>
+        <View style={{width: width * 0.6}}>
+          <TextTicker
+            style={styles.propText}
+            duration={6000}
+            marqueeDelay={2000}>
+            {prop.item.name == null ? 'Untitled' : prop.item.name}
+          </TextTicker>
+        </View>
+
+        <View style={{width: width * 0.6}}>
+          <TextTicker
+            style={{color: 'gray'}}
+            duration={6000}
+            marqueeDelay={2000}>
+            Units
+          </TextTicker>
+        </View>
+      </View>
+
+      <Signal
+        name="signal-cellular-outline"
+        size={height * 0.04}
+        color="#115b72"
+      />
+    </TouchableOpacity>
+  );
+
   _renderTopList = (build) => {
     return (
-      <View
+      <TouchableOpacity
         onPress={() => this.showArrayItem(build)}
         style={styles.infoTopViewContainer}>
         <View style={styles.infoTopViewInner}>
@@ -1545,7 +1587,7 @@ export default class Splash extends Component {
           <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
           <Edit name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -2209,6 +2251,15 @@ export default class Splash extends Component {
     });
   };
 
+  openAndClear = () => {
+    this.setState({showSearch: true});
+    this.context.clearSearchList();
+  };
+  openFilter = () => {
+    this.context.getBillingCompany();
+    this.setState({showFilter: true});
+  };
+
   render() {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
@@ -2220,7 +2271,8 @@ export default class Splash extends Component {
         <UpdateModal
           isVisible={this.state.editModal}
           title="Edit Building"
-          style={{height: height * 0.6}}
+          doneBtnTitle="Update Building"
+          style={{height: height * 0.55}}
           onCancel={() => this.setState({editModal: false})}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{flex: 1}}>
@@ -2283,49 +2335,16 @@ export default class Splash extends Component {
                 }}>
                 <View
                   style={{
-                    // width: width,
-                    flexDirection: 'row',
-                    marginTop: height * 0.02,
-                    justifyContent: 'space-between',
-                    paddingHorizontal: width * 0.05,
-                  }}>
-                  <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
-                  {/* <Icon
-                      name={'chevron-down'}
-                      type="feather"
-                      size={width * 0.08}
-                      color="#000"
-                      // onPress={() => setDangerView(!dangerView)}
-                    /> */}
-                </View>
-                <Divider
-                  style={{
-                    marginVertical: height * 0.02,
-                    width: width * 0.75,
-                    borderWidth: 0.8,
-                  }}
-                />
-                <View
-                  style={{
                     flexDirection: 'column',
                     width: width * 0.75,
                     alignSelf: 'center',
-                    marginBottom: width * 0.05,
+                    marginVertical: width * 0.05,
                   }}>
                   <Button
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete Building Meter`}
+                    title={`Delete Building`}
                     buttonStyle={{
                       backgroundColor: '#e24b4b',
-                      marginVertical: height * 0.01,
-                    }}
-                  />
-                  <Button
-                    titleStyle={{textTransform: 'capitalize'}}
-                    title={'Update Building'}
-                    buttonStyle={{
-                      backgroundColor: '#e24b4b',
-                      marginVertical: height * 0.01,
                     }}
                     onPress={() => this.context.updateBuilding(this.state.editBuildId)}
                   />
@@ -2426,28 +2445,44 @@ export default class Splash extends Component {
               />
             </TouchableOpacity>
             <View style={styles.searchView}>
-              <Search
-                name="search"
-                size={height * 0.04}
-                style={{marginLeft: width * 0.05}}
-                color="white"
-              />
-              <TextInput
-                underlineColor="transparent"
-                dense={true}
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
-                theme={{
-                  colors: {
-                    text: 'white',
-                    primary: '#25dAE1',
-                    selectionColor: 'transparent',
-                    background: 'transparent',
-                  },
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  height: height * 0.08,
                 }}
-              />
+                onPress={this.openAndClear}>
+                <Search
+                  name="search"
+                  size={height * 0.04}
+                  style={{marginLeft: width * 0.05}}
+                  color="white"
+                />
+                <TextInput
+                  disabled={true}
+                  underlineColor="transparent"
+                  dense={true}
+                  placeholderTextColor="white"
+                  placeholder="Search"
+                  style={styles.search}
+                  // onChangeText={(e) => this.context.searchProperties(e)}
+                  theme={{
+                    colors: {
+                      text: 'white',
+                      primary: '#25dAE1',
+                      selectionColor: 'transparent',
+                      background: 'transparent',
+                    },
+                  }}
+                  // onFocus={() =>
+                  //   this.setState({showSearch: true})
+                  // }
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.openFilter}>
+                <FilterIcon name="filter-outline" color="white" size={20} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -4405,22 +4440,88 @@ export default class Splash extends Component {
                 {/* </View> */}
               </Modal>
             </View>
-            {/* Unit List */}
-            {/* <ActivityIndicator size='large' color='black' style={{ height: this.state.loader ?  height * .5 : height * .0, overflow: 'hidden' }} />
-            <FlatList
-              ref={(ref) => {
-                listViewRef = ref;
-              }}
-              showsVerticalScrollIndicator={false}
-              style={{ marginBottom: height * .42, height: this.state.loader ? height * 0 : height * 1 }}
-              contentContainerStyle={{ backgroundColor: '#F5F5F5', }}
-              numColumns={1}
-              initialNumToRender={realData.length}
-              data={realData}
-              renderItem={this._renderMyList}
-              // renderItem={(item, index) => console.log(item.index)}
-              keyExtractor={item => item.id.toString()}
-            /> */}
+            <Filter
+              type="Units"
+              isVisible={this.state.showFilter}
+              close={() => this.setState({showFilter: !this.state.showFilter})}
+            />
+            {this.state.showSearch ? (
+              <Modal
+                isVisible={this.state.showSearch}
+                style={{
+                  elevation: width * 0.005,
+                  width: width * 1,
+                  height: height * 1,
+                  justifyContent: 'flex-start',
+                  left: '-5%',
+                  top: '-2.5%',
+                }}>
+                <View
+                  style={{
+                    width: width * 1,
+                    height: height * 0.08,
+                    justifyContent: 'space-around',
+                    alignItems: 'center',
+                    backgroundColor: '#25AAE1ec',
+                    // borderRadius: width * 0.1,
+                    elevation: width * 0.01,
+                    flexDirection: 'row',
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <Search name="search" size={height * 0.04} color="white" />
+                    <TextInput
+                      underlineColor="transparent"
+                      dense={true}
+                      placeholderTextColor="white"
+                      placeholder="Search"
+                      style={styles.search}
+                      // onChangeText={(e) => this.context.searchProperties(e)}
+                      theme={{
+                        colors: {
+                          text: 'white',
+                          primary: '#25dAE1',
+                          selectionColor: 'transparent',
+                          background: 'transparent',
+                        },
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      width: width * 0.05,
+                    }}>
+                    {this.context.searchLoading ? (
+                      <ActivityIndicator color="white" size="small" />
+                    ) : null}
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => this.setState({showSearch: false})}>
+                    <Close name="close" color="white" size={20} />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    paddingVertical: height * 0.005,
+                  }}>
+                  <FlatList
+                    data={this.context.searchList}
+                    renderItem={this._renderSearchPropList}
+                    removeClippedSubviews={false}
+                    maxToRenderPerBatch={150}
+                    windowSize={100}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    onEndReachedThreshold={width * 0.001}
+                    onEndReached={this.context.loadSearchData}
+                  />
+                </View>
+              </Modal>
+            ) : null}
             {loader ? (
               <View style={{width: width * 0.55, justifyContent: 'center'}}>
                 <ActivityIndicator size="large" color="black" />

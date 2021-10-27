@@ -70,7 +70,7 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
   },
   saveUnitBotton: {
-    width: width * 0.25,
+    // width: width * 0.25,
     height: height * 0.05,
     flexDirection: 'row',
     alignItems: 'center',
