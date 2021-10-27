@@ -47,7 +47,7 @@ import Fire from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Compact from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
+import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
 import {DotsLoader} from 'react-native-indicator';
 import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
@@ -58,6 +58,8 @@ import TextTicker from 'react-native-text-ticker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {create} from 'apisauce';
+import UpdateModal from '../../../../components/UpdateModal';
+import {Header, Button} from 'react-native-elements';
 
 // Components
 import {Fonts} from '../../../../utils/fonts';
@@ -277,6 +279,9 @@ export default class Splash extends Component {
       unitsArraySend: [],
       buildingData: [],
       lastUnitData: '',
+      editModal: false,
+      editBuilding: '',
+      editBuildDes: '',
       newUnitInfo: {
         indexUnits: '',
         unitBuild: '',
@@ -1502,11 +1507,12 @@ export default class Splash extends Component {
     }
   };
 
-  _renderTopList = (build) => (
-    <View
-      onPress={() => this.showArrayItem(build)}
-      style={styles.infoTopViewContainer}>
-      {/* <TouchableOpacity
+  _renderTopList = (build) => {
+    return (
+      <View
+        onPress={() => this.showArrayItem(build)}
+        style={styles.infoTopViewContainer}>
+        {/* <TouchableOpacity
             style={{
               position: 'absolute',
               right: width * 0.0,
@@ -1520,31 +1526,50 @@ export default class Splash extends Component {
               borderWidth: 1,
               zIndex: 1,
             }}></TouchableOpacity> */}
-      <View style={styles.infoTopViewInner}>
-        <Build name="office-building" size={width * 0.06} />
-        <TextTicker duration={5000} style={styles.dataFieldText} >
-          {build.item.name}
-        </TextTicker>
+        <View style={styles.infoTopViewInner}>
+          <Build name="office-building" size={width * 0.06} />
+          <TextTicker duration={5000} style={styles.dataFieldText}>
+            {build.item.name}
+          </TextTicker>
+        </View>
+        <Text
+          style={{
+            paddingHorizontal: 10,
+            fontSize: width * 0.04,
+            textAlign: 'center',
+            fontWeight: 'bold',
+          }}>
+          {build.item.unit_count} Units
+        </Text>
+        <TouchableOpacity
+          onPress={() => this.buildingEditOpen(build.item)}
+          style={{
+            flexDirection: 'row',
+            // borderTopWidth: 1,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: height * 0.01,
+            paddingVertical: height * 0.005,
+            backgroundColor: '#25AAE1ec',
+            borderBottomLeftRadius: width * 0.01,
+            borderBottomRightRadius: width * 0.01,
+          }}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
+          <Edit name="edit" color="white" size={width * 0.04} />
+        </TouchableOpacity>
       </View>
-      <Text style={{paddingHorizontal: 10,fontSize:width * .04,textAlign:'center',fontWeight:'bold'}}>{build.item.unit_count} Units</Text>
-      <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          // borderTopWidth: 1,
-          width: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: height * 0.01,
-          paddingVertical: height * 0.005,
-          backgroundColor: '#25AAE1ec',
-          borderBottomLeftRadius: width * 0.01,
-          borderBottomRightRadius: width * 0.01,
-        }}>
-        <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
-        <Edit name="edit" color="white" size={width * 0.04} />
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
+
+  buildingEditOpen = (item) => {
+    this.setState({
+      editModal: true,
+      editBuilding: item.name,
+      editBuildDes: item.descriptions,
+    });
+  };
+
   editUnit = () => {
     this.setState(
       Object.assign(this.state.editData, {indexUnits: this.state.unitIndex}),
@@ -2202,6 +2227,123 @@ export default class Splash extends Component {
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
     return (
       <View style={styles.container}>
+        {/* Building Edit Modal */}
+        <UpdateModal
+          isVisible={this.state.editModal}
+          title="Edit Building"
+          style={{height: height * 0.6}}
+          onCancel={() => this.setState({editModal: false})}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{flex: 1}}>
+              <View style={styles.desciptionContainer}>
+                <Build
+                  name={'office-building'}
+                  size={height * 0.02}
+                  color="#5e5e5e"
+                />
+                <Text style={styles.desciptionHeading}>BUILDING*</Text>
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  // label="Name*"
+                  value={this.state.editBuilding}
+                  dense={true}
+                  editable={false}
+                  onChangeText={(text) => {
+                    this.setState({typedBuild: text});
+                  }}
+                  style={styles.input}
+                  mode={'outlined'}
+                  theme={{
+                    colors: {
+                      text: '#25AAE1ec',
+                      primary: '#25AAE1ec',
+                      selectionColor: 'red',
+                    },
+                  }}
+                />
+              </View>
+              <View style={styles.desciptionContainer}>
+                <Text style={styles.desciptionHeading}>
+                  Building Despcription*
+                </Text>
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  // label="BILLING COMPANY*"
+                  value={this.state.editBuildDes}
+                  dense={true}
+                  onChangeText={(text) => {
+                    this.setState({typedUnit: text});
+                  }}
+                  style={styles.input}
+                  mode={'outlined'}
+                  theme={{
+                    colors: {
+                      text: '#25AAE1ec',
+                      primary: '#25AAE1ec',
+                      selectionColor: 'red',
+                    },
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                }}>
+                <View
+                  style={{
+                    // width: width,
+                    flexDirection: 'row',
+                    marginTop: height * 0.02,
+                    justifyContent: 'space-between',
+                    paddingHorizontal: width * 0.05,
+                  }}>
+                  <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
+                  {/* <Icon
+                      name={'chevron-down'}
+                      type="feather"
+                      size={width * 0.08}
+                      color="#000"
+                      // onPress={() => setDangerView(!dangerView)}
+                    /> */}
+                </View>
+                <Divider
+                  style={{
+                    marginVertical: height * 0.02,
+                    width: width * 0.75,
+                    borderWidth: 0.8,
+                  }}
+                />
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    width: width * 0.75,
+                    alignSelf: 'center',
+                    marginBottom: width * 0.05,
+                  }}>
+                  <Button
+                    titleStyle={{textTransform: 'capitalize'}}
+                    title={`Delete Building Meter`}
+                    buttonStyle={{
+                      backgroundColor: '#e24b4b',
+                      marginVertical: height * 0.01,
+                    }}
+                  />
+                  <Button
+                    titleStyle={{textTransform: 'capitalize'}}
+                    title={'Update Building'}
+                    buttonStyle={{
+                      backgroundColor: '#e24b4b',
+                      marginVertical: height * 0.01,
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        </UpdateModal>
         {/* Drawer Modal */}
         <Modal
           animationIn="slideInLeft"
@@ -2349,9 +2491,8 @@ export default class Splash extends Component {
                   // marginVertical: width * .006,
                   justifyContent: 'space-around',
                   borderRightWidth: width * 0.001,
-                  height:height * .13,
+                  height: height * 0.13,
                   // backgroundColor:'red'
-
                 }}>
                 <View style={{width: width * 0.35}}>
                   <TouchableOpacity
