@@ -9,6 +9,7 @@ import {
   LayoutAnimation,
   FlatList,
   Image,
+  Alert,
 } from 'react-native';
 import {Header, Button, Icon} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
@@ -65,10 +66,14 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    // console.log('Kia ha Response Data', res.data);
+    console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     setLoading(false);
+  };
+
+  const deleteUnit = () => {
+    Alert.alert('Delete Unit', 'Are you sure you want to Delete?');
   };
 
   const getToken = async () => {
@@ -642,7 +647,10 @@ const App = ({navigation}) => {
                     paddingHorizontal: width * 0.04,
                   }}>
                   <Text
-                    style={{fontSize: width * 0.08, color: typeColor(unitMeter?.meter_name)}}>
+                    style={{
+                      fontSize: width * 0.08,
+                      color: typeColor(unitMeter?.meter_name),
+                    }}>
                     3,782 Gallons
                   </Text>
                   <RightArrow
@@ -751,7 +759,9 @@ const App = ({navigation}) => {
                     style={{marginRight: width * 0.025}}
                   />
                 }
-                buttonStyle={{backgroundColor: typeColor(unitMeter?.meter_name)}}
+                buttonStyle={{
+                  backgroundColor: typeColor(unitMeter?.meter_name),
+                }}
                 onPress={() => console.log('Quick Actions Press')}
               />
             </View>
@@ -899,7 +909,7 @@ const App = ({navigation}) => {
                   /> */}
                     <Image
                       source={img}
-                      resizeMode='contain'
+                      resizeMode="contain"
                       style={{
                         // backgroundColor: 'red',
                         height: height * 0.09,
@@ -1096,6 +1106,7 @@ const App = ({navigation}) => {
                     }}
                   />
                   <Button
+                    onPress={deleteUnit}
                     titleStyle={{textTransform: 'capitalize'}}
                     title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
                     buttonStyle={{backgroundColor: '#e24b4b'}}
@@ -1130,18 +1141,24 @@ const App = ({navigation}) => {
                 }}
                 onPress={() => handleMeterSelect(item)}>
                 {item.id == unitMeter.id && (
-                  <View style={{
-                    position: 'absolute', 
-                    right:width * 0,
-                    top:height * 0,
-                    width:width * .035,
-                    height:width * .035,
-                    backgroundColor:typeColor(item.meter_name),
-                    alignItems:'center',
-                    justifyContent:'center',
-                    borderBottomLeftRadius:width * .02
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: width * 0,
+                      top: height * 0,
+                      width: width * 0.035,
+                      height: width * 0.035,
+                      backgroundColor: typeColor(item.meter_name),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderBottomLeftRadius: width * 0.02,
                     }}>
-                    <Check name="check" style={{marginLeft:width * .005}} size={width * 0.02} color="#fff" />
+                    <Check
+                      name="check"
+                      style={{marginLeft: width * 0.005}}
+                      size={width * 0.02}
+                      color="#fff"
+                    />
                     {/* <Checkbox
                     status={true ? 'checked' : 'unchecked'}
                     // onPress={() => {

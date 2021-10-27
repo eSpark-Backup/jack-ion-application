@@ -357,6 +357,19 @@ export default styles = StyleSheet.create({
     borderTopWidth: width * 0.001,
     backgroundColor: 'white',
   },
+  propText: {
+    textTransform: 'capitalize',
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * 0.025,
+    color: '#001522',
+    // textAlign: 'center',
+    textShadowOffset: {
+      width: width * 0.002,
+      height: height * 0.002,
+    },
+    textShadowRadius: width * 0.005,
+    textShadowColor: '#09BAF2',
+  },
   addUnitBtnContainer: {
     flex: 1,
     flexDirection: 'row',

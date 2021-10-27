@@ -7,6 +7,9 @@ import {
   Pressable,
   StatusBar,
   ScrollView,
+  TextInput,
+  Image,
+  FlatList,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import DropDown from 'react-native-vector-icons/FontAwesome';
@@ -32,27 +35,31 @@ export default class Splash extends Component {
       showList: false,
       token: '',
       billCompanies: [],
+      utilityTypes: [
+        {
+          id: 1,
+          img: require('../../../Images/all-waters.png'),
+        },
+        {
+          id: 2,
+          img: require('../../../Images/cold-water.png'),
+        },
+        {
+          id: 3,
+          img: require('../../../Images/hot-water.png'),
+        },
+        {
+          id: 4,
+          img: require('../../../Images/electric.png'),
+        },
+        {
+          id: 5,
+          img: require('../../../Images/gass.png'),
+        },
+      ],
       biller: '---',
     };
   }
-  // const [checked, setChecked] = useState(false);
-  // const [showList, setShowList] = useState(false);
-  // const [billCompanies, setBillCompanies] = useState([]);
-  // const [token, setToken] = useState([]);
-  // const billing = [
-  //   {
-  //     name: '---',
-  //   },
-  //   {
-  //     name: 'ION Energy',
-  //   },
-  //   {
-  //     name: 'RealPage, Inc',
-  //   },
-  //   {
-  //     name: 'RealPage, Inc',
-  //   },
-  // ];
 
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -83,7 +90,10 @@ export default class Splash extends Component {
     this.setState({biller: val});
   };
 
- 
+  cancelButton = () => {
+    this.setState({showList: false});
+    this.setState({biller: this.context.biller});
+  };
 
   filter = () => {
     let data = {
@@ -99,10 +109,10 @@ export default class Splash extends Component {
     this.context.getToken();
     this.props.close();
     this.setState({biller: ''});
-
   };
 
   render() {
+    const {isVisible, close, type} = this.props;
     return (
       <View>
         <StatusBar barStyle="dark-content" />
@@ -110,7 +120,7 @@ export default class Splash extends Component {
           animationIn="slideInDown"
           animationOut="slideOutUp"
           // avoidKeyboard={true}
-          isVisible={this.props.isVisible}
+          isVisible={isVisible}
           style={styles.modalContainer}>
           <View style={styles.modalInner}>
             <View style={styles.boxConatainer}>
@@ -121,7 +131,7 @@ export default class Splash extends Component {
                   leftComponent={{
                     text: 'Close',
                     style: {fontSize: width * 0.05, color: '#000'},
-                    onPress: this.props.close,
+                    onPress: close,
                   }}
                   centerComponent={
                     <View style={{alignItems: 'center'}}>
@@ -145,7 +155,7 @@ export default class Splash extends Component {
                   rightComponent={{
                     text: 'Reset',
                     style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
-                    onPress: () => this.onFocusFunction()
+                    onPress: () => this.onFocusFunction(),
                   }}
                   backgroundColor="#fff"
                   containerStyle={{
@@ -154,59 +164,90 @@ export default class Splash extends Component {
                   }}
                 />
                 <View style={{width: '100%'}}>
-                  <View style={styles.currentReadContainer}>
-                    <View style={styles.filterHeading}>
-                      <Text style={styles.filterListText}>
-                        Portfolio Details
-                      </Text>
-                    </View>
-                    <View style={styles.filterLists}>
-                      <Text style={styles.filterListText}>Billing</Text>
-                      <TouchableOpacity
-                        onPress={this.getBillingCompany}
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{fontSize: width * 0.04}}>
-                          {this.state.biller}
+                  {type == 'Properties' ? (
+                    <View style={styles.currentReadContainer}>
+                      <View style={styles.filterHeading}>
+                        <Text style={styles.filterListText}>
+                          {type == 'Properties'
+                            ? 'Portfolio Details'
+                            : 'Details'}
                         </Text>
-                        <DropDown name="caret-down" size={15} />
-                      </TouchableOpacity>
+                      </View>
+                      <View style={styles.filterLists}>
+                        <Text style={styles.filterListText}>Billing</Text>
+                        <TouchableOpacity
+                          onPress={this.getBillingCompany}
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text style={{fontSize: width * 0.04}}>
+                            {this.context.biller}
+                          </Text>
+                          <DropDown name="caret-down" size={20} />
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
+                  ) : null}
                   <View style={styles.currentReadContainer}>
                     <View style={styles.filterHeading}>
                       <Text style={styles.filterListText}>
-                        Property Details
+                        {type == 'Properties' ? 'Property Details' : 'Details'}
                       </Text>
                     </View>
-                    <View style={styles.filterLists}>
-                      <Text style={styles.filterListText}>Install Status</Text>
-                      <TouchableOpacity
-                        // onPress={() => setShowList(true)}
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{fontSize: width * 0.04}}>---</Text>
-                        <DropDown name="caret-down" size={15} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.filterLists}>
-                      <Text style={styles.filterListText}>Address</Text>
-                      <Text>Enter Address</Text>
-                    </View>
-                    <View style={styles.filterLists}>
-                      <Text style={styles.filterListText}>Distance</Text>
-                      <TouchableOpacity
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{fontSize: width * 0.04}}>---</Text>
-                        <DropDown name="caret-down" size={15} />
-                      </TouchableOpacity>
-                    </View>
+                    {type == 'Properties' ? (
+                      <View style={styles.inputFilterView}>
+                        <Text style={styles.filterListText}>Address:</Text>
+                        <TextInput style={styles.filterInputs} />
+                      </View>
+                    ) : (
+                      <View>
+                        <View style={styles.inputFilterView}>
+                          <Text style={styles.filterListText}>Building:</Text>
+                          <TextInput style={styles.filterInputs} />
+                        </View>
+                        <View style={styles.inputFilterView}>
+                          <Text style={styles.filterListText}>Unit:</Text>
+                          <TextInput style={styles.filterInputs} />
+                        </View>
+                        <View style={styles.inputFilterView}>
+                          <Text style={styles.filterListText}>
+                            Serial Number:
+                          </Text>
+                          <TextInput style={styles.filterInputs} />
+                        </View>
+                      </View>
+                    )}
                   </View>
                   <View style={styles.currentReadContainer}>
                     <View style={styles.filterHeading}>
                       <Text style={styles.filterListText}>Utility Types</Text>
                     </View>
-                    <View style={styles.filterLists}>
-                      <Text style={styles.filterListText}>Billing</Text>
-                      <Text>ION Energy Solutions</Text>
+                    <View style={styles.filterUtility}>
+                      <FlatList
+                        horizontal
+                        data={this.state.utilityTypes}
+                        renderItem={({item}) => (
+                          <TouchableOpacity>
+                            <Image
+                              source={item.img}
+                              resizeMode="contain"
+                              style={{
+                                height: width * 0.06,
+                                width: width * 0.055,
+                                marginHorizontal: width * 0.02,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      />
+                      {/* <Image
+                        source={require('../../../Images/all-waters.png')}
+                        resizeMode="contain"
+                        style={{
+                          height: width * 0.06,
+                          width: width * 0.055,
+                        }}
+                      /> */}
+                      {/* <Text style={styles.filterListText}>Billing</Text>
+                      <Text>ION Energy Solutions</Text> */}
                     </View>
                   </View>
                 </View>
@@ -266,7 +307,7 @@ export default class Splash extends Component {
                           marginVertical: height * 0.005,
                         }}>
                         <RadioButton
-                          value={this.state.biller}
+                          value={item.name}
                           status={
                             this.state.biller === item.name
                               ? 'checked'
@@ -278,45 +319,6 @@ export default class Splash extends Component {
                       </View>
                     ))}
                   </ScrollView>
-                  {/* <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginVertical: height * 0.005,
-                  }}>
-                  <RadioButton
-                    value="first"
-                    status={checked === 'first' ? 'checked' : 'unchecked'}
-                    onPress={() => setChecked('first')}
-                  />
-                  <Text>---</Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginVertical: height * 0.005,
-                  }}>
-                  <RadioButton
-                    value="second"
-                    status={checked === 'second' ? 'checked' : 'unchecked'}
-                    onPress={() => setChecked('second')}
-                  />
-                  <Text>ION Energy</Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginVertical: height * 0.005,
-                  }}>
-                  <RadioButton
-                    value="second"
-                    status={checked === 'third' ? 'checked' : 'unchecked'}
-                    onPress={() => setChecked('third')}
-                  />
-                  <Text>RealPage, Inc</Text>
-                </View> */}
                 </View>
 
                 <View
@@ -329,8 +331,7 @@ export default class Splash extends Component {
                     borderTopWidth: 0.5,
                     paddingRight: width * 0.03,
                   }}>
-                  <TouchableOpacity
-                    onPress={() => this.setState({showList: false})}>
+                  <TouchableOpacity onPress={this.cancelButton}>
                     <Text
                       style={{
                         fontSize: width * 0.032,
