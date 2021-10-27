@@ -3,25 +3,10 @@ import React, {Component, Fragment, version} from 'react';
 import {
   Text,
   View,
-  StatusBar,
   Dimensions,
-  Animated,
-  ScrollView,
   TouchableOpacity,
-  LayoutAnimation,
-  FlatList,
-  UIManager,
   Pressable,
-  Alert,
-  Image,
-  Keyboard,
-  PermissionsAndroid,
-  Frag,
   KeyboardAvoidingView,
-  // TextInput
-  CheckBox,
-  TouchableWithoutFeedback,
-  BackHandler,
 } from 'react-native';
 
 //Packages
@@ -40,7 +25,14 @@ const {width, height} = Dimensions.get('window');
 
 export default class UpdateModal extends Component {
   render() {
-    const {title, style, isVisible, onCancel, children} = this.props;
+    const {
+      title,
+      style,
+      isVisible,
+      onCancel,
+      children,
+      doneBtnTitle,
+    } = this.props;
     return (
       <Modal
         animationIn="slideInDown"
@@ -62,6 +54,7 @@ export default class UpdateModal extends Component {
                     />
                     <Text style={styles.modalHeading}>{title}</Text>
                     <Pressable
+                      onPress={onCancel}
                       android_ripple={{
                         color: 'black',
                         borderless: true,
@@ -90,7 +83,7 @@ export default class UpdateModal extends Component {
                     <TouchableOpacity>
                       <View style={styles.saveUnitBotton}>
                         <Plus name="plus" color="white" size={18} />
-                        <Text style={{color: 'white'}}>Save Unit</Text>
+                        <Text style={{color: 'white'}}>{doneBtnTitle}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
