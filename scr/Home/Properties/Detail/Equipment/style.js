@@ -180,6 +180,7 @@ export default styles = StyleSheet.create({
     borderColor: 'purple',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
+    marginBottom:width * 0.02
   },
   dropDownContent: {
     flexDirection: 'row',
@@ -344,7 +345,7 @@ export default styles = StyleSheet.create({
     // backgroundColor: "yellow"
   },
   input: {
-    // height: height * .07,
+    height: height * .07,
     width: width * 0.75,
     fontSize: height * 0.018,
   },
@@ -541,7 +542,7 @@ export default styles = StyleSheet.create({
   meterReading: {
     flexDirection: 'column',
     alignItems: 'center',
-    width: width * 0.2,
+    width: width * 0.,
   },
   programDevice: {
     width: width * 0.4,

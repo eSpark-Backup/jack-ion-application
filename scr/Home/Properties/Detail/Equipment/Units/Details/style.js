@@ -141,7 +141,7 @@ export default styles = StyleSheet.create({
     borderBottomLeftRadius:width * .02
     },
   meterImg: {
-    height: width * 0.06,
-    width: width * 0.055,
+    height: width * 0.07,
+    width: width * 0.07,
   }
 });
