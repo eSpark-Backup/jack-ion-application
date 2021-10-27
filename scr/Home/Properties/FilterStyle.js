@@ -17,19 +17,23 @@ export default styles = StyleSheet.create({
     width: '100%',
   },
   modalContainer: {
+    // elevation: width * 0.005,
+    // borderRadius: width * 0.02,
+    // backgroundColor: 'white',
+    // maxHeight: height * .7,
+    // maxWidth: width * 1,
+  },
+  modalInner: {
     elevation: width * 0.005,
     borderRadius: width * 0.02,
     backgroundColor: 'white',
-    maxHeight: height * 1,
-    maxWidth: width * 1,
-  },
-  modalInner: {
-    justifyContent: 'center',
+    padding: height * 0.03,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   boxConatainer: {
     width: width * 0.85,
-    height: height * 0.9,
+    height: height * 0.6,
   },
   boxInner: {
     flex: 1,
@@ -73,5 +77,23 @@ export default styles = StyleSheet.create({
   filterListText: {
     color: '#5c5c5ccf',
     fontSize: width * 0.04,
+  },
+  inputFilterView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    elevation: 1,
+    marginVertical: height * 0.001,
+    paddingHorizontal: height * 0.02,
+  },
+  filterInputs: {
+    width: '100%',
+  },
+  filterUtility: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: height * 0.02,
+    elevation: 1,
+    marginVertical: height * 0.001,
   },
 });

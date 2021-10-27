@@ -401,12 +401,11 @@ export default class Splash extends Component {
         </View>
         <View style={styles.headingContainer}>
           <Add loader={this.handleLoader} />
-          {this.state.showFilter ? (
-            <Filter
-              isVisible={this.state.showFilter}
-              close={() => this.setState({showFilter: !this.state.showFilter})}
-            />
-          ) : null}
+          <Filter
+            type="Properties"
+            isVisible={this.state.showFilter}
+            close={() => this.setState({showFilter: !this.state.showFilter})}
+          />
           {this.state.showSearch ? (
             <Modal
               isVisible={this.state.showSearch}
@@ -467,8 +466,7 @@ export default class Splash extends Component {
                 </TouchableOpacity>
               </View>
               <View
-                style={{alignItems: 'center', paddingVertical: height * 0.005}}
-                >
+                style={{alignItems: 'center', paddingVertical: height * 0.005}}>
                 <FlatList
                   data={this.context.searchList}
                   renderItem={this._renderSearchPropList}
