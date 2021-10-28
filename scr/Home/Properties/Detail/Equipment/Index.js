@@ -231,6 +231,7 @@ export default class Splash extends Component {
       textStyle: false,
       loader: false,
       scanIndex: null,
+      searchList: [],
       meterListData: [],
       meterListArray: [
         // {
@@ -276,6 +277,7 @@ export default class Splash extends Component {
       newSerial: '',
       newMeter: '',
       buildName: '',
+      buildDescription: '',
       loaderBuildings: false,
       visible: false,
       unitsArray: [],
@@ -870,6 +872,7 @@ export default class Splash extends Component {
       this.checkData();
     }
   };
+
   checkData = async () => {
     const response = await this.api.get(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
@@ -879,7 +882,11 @@ export default class Splash extends Component {
       this.setState({dataBuild: response?.data?.data});
       this.setState({loaderBuildings: false});
       if (response?.data?.data?.length != 0) {
-        this.setState({buildingData: response?.data?.data[0]});
+        this.setState({
+          buildingData: response?.data?.data[0],
+          editBuildDes: response?.data?.data[0].descriptions,
+          editBuildId: response?.data?.data[0].id,
+        });
         const data = {
           building_id: response?.data?.data[0].id,
         };
@@ -915,6 +922,33 @@ export default class Splash extends Component {
     } else {
       alert('Network Issue');
       this.setState({loaderBuildings: false});
+    }
+  };
+
+  searchUnits = async (e) => {
+    this.setState({loadFor: e});
+    let data = {
+      building_id: this.state.editBuildId,
+      search: e,
+    };
+
+    if (e) {
+      this.setState({searchLoading: true});
+      const unitResponse = await this.api.post(
+        `/property/equipment/unit/all-units`,
+        data,
+      );
+      console.log('Search property===>', unitResponse);
+      if (unitResponse?.data?.bool) {
+        this.setState({searchList: unitResponse.data.data});
+        console.log('Search property===>', unitResponse.data.data);
+        this.setState({searchLoading: false});
+      } else {
+        Alert.alert('Error', 'Network Issues');
+        this.setState({searchLoading: false});
+      }
+    } else {
+      this.setState({searchList: []});
     }
   };
 
@@ -1081,6 +1115,7 @@ export default class Splash extends Component {
   selectAndCloseAddMultiple = () => {
     this.toggleModalMunit();
     this.changeLayoutMeter2();
+    this.getLoopOfUnits();
   };
   selectAndCloseAddBuild = () => {
     this.toggleModalBuild();
@@ -1541,34 +1576,72 @@ export default class Splash extends Component {
     }
   };
 
-  _renderSearchPropList = (prop) => (
-    <TouchableOpacity style={styles.propButton}>
-      <Build name="md-business-outline" size={width * 0.09} color="#115b72" />
-      <View>
-        <View style={{width: width * 0.6}}>
-          <TextTicker
-            style={styles.propText}
-            duration={6000}
-            marqueeDelay={2000}>
-            {prop.item.name == null ? 'Untitled' : prop.item.name}
-          </TextTicker>
-        </View>
-
-        <View style={{width: width * 0.6}}>
-          <TextTicker
-            style={{color: 'gray'}}
-            duration={6000}
-            marqueeDelay={2000}>
-            Units
-          </TextTicker>
+  _renderSearchPropList = (unit) => (
+    <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
+      <View style={[styles.infoViewContainer]}>
+        <View style={styles.infoViewInner}>
+          <Home
+            name="house-user"
+            size={width * 0.07}
+            style={{
+              marginLeft: width * 0.01,
+            }}
+          />
+          <View
+            style={{
+              flexDirection: 'column',
+              // alignItems: 'center',
+              justifyContent: 'center',
+              width: width * 0.3,
+              overflow: 'hidden',
+              marginLeft: width * 0.01,
+              // backgroundColor:'red'
+            }}>
+            <TextTicker duration={5000} style={styles.dataFieldText} key={unit}>
+              {unit.item.name}
+            </TextTicker>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginLeft: width * 0.01,
+              }}>
+              {unit.item?.unit_meter.length ? (
+                unit.item?.unit_meter?.map((item) => (
+                  // console.log('item--->meter', item),
+                  <Image
+                    source={this.typeSwitcher(item.meter_name)}
+                    style={{
+                      height: width * 0.05,
+                      width: width * 0.05,
+                    }}
+                  />
+                ))
+              ) : (
+                <Text>No meters</Text>
+              )}
+            </View>
+          </View>
+          {/* <View style={[styles.meterReading]}> */}
+          {/* <Text style={styles.dataFieldText}>
+                  {unit.item?.unit_meter?.length}
+                </Text>
+                <Text style={styles.dataFieldText}>Meters</Text> */}
+          {/* </View> */}
+          {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
+          <TouchableOpacity
+            style={[styles.programDevice]}
+            onPress={() => this.programDevice(unit)}>
+            <View style={styles.proDeviceContent}>
+              <Barcode
+                name="barcode-scan"
+                size={height * 0.025}
+                color="purple"
+              />
+              <Text style={styles.propDeviceText}>Program Device</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
-
-      <Signal
-        name="signal-cellular-outline"
-        size={height * 0.04}
-        color="#115b72"
-      />
     </TouchableOpacity>
   );
 
@@ -1686,11 +1759,12 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-      this.props.navigation.navigate('U_Details', {
-        unitId: unit.item.id,
-        buildingName: this.state.buildingData.name,
-      });
-      console.log(clc.cyan('Selected :', unit.item.id));
+    this.props.navigation.navigate('U_Details', {
+      unitId: unit.item.id,
+      buildingName: this.state.buildingData.name,
+    });
+    this.setState({showSearch: false});
+    console.log(clc.cyan('Selected :', unit.item.id));
   };
 
   checkValues = (unit) => {
@@ -1899,6 +1973,57 @@ export default class Splash extends Component {
     }));
   };
 
+  addMultipleUnits = () => {
+    if (this.state.unitsArray.length === 0) {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          units: 'Empty units', // update the value of specific key
+        },
+      }));
+      return;
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          units: '', // update the value of specific key
+        },
+      }));
+      var loopData = [];
+      var i;
+      for (i = 0; i < this.state.unitsArray.length; i++) {
+        loopData.push({
+          name: this.state.unitsArray[i].name,
+        });
+      }
+      this.setState({unitsArraySend: loopData}, () =>
+        this.handleAddMUnitsApi({
+          building_id: this.state.editBuildId,
+          units: this.state.unitsArraySend,
+          descriptions: this.state.editBuildDes,
+        }),
+      );
+    }
+  };
+
+  handleAddMUnitsApi = async (data) => {
+    this.setState({loader: true, loaderBuildings: true});
+    console.log('data--->', data);
+    const unitResponse = await this.api.post(
+      `/property/equipment/unit/add-multiple-units`,
+      data,
+    );
+    console.log('Check unitResponse buildings--->', unitResponse);
+    this.setState({
+      isModalMunitVisible: false,
+    });
+    this.checkData();
+  };
+
   newBuilding = () => {
     console.log('BUILD Name', this.state.buildName);
     if (this.state.buildName === '') {
@@ -1944,7 +2069,7 @@ export default class Splash extends Component {
       var i;
       for (i = 0; i < this.state.unitsArray.length; i++) {
         loopData.push({
-          name: this.state.unitsArray[i].name + this.state.unitsArray[i].num,
+          name: this.state.unitsArray[i].name,
         });
       }
       this.setState({unitsArraySend: loopData}, () =>
@@ -1952,6 +2077,7 @@ export default class Splash extends Component {
           name: this.state.buildName,
           property_id: this.props.navigation.state.params.item.item.id,
           units: this.state.unitsArraySend,
+          descriptions: this.state.buildDescription,
         }),
       );
       this.setState({isModalBuildVisible: false});
@@ -2054,7 +2180,12 @@ export default class Splash extends Component {
 
   showArrayItem = async (build) => {
     // console.log('What Item We Get', build.item.id)
-    this.setState({loader: true, buildingData: build.item});
+    this.setState({
+      loader: true,
+      buildingData: build.item,
+      editBuildDes: build.item.descriptions,
+      editBuildId: build.item.id,
+    });
     const data = {
       building_id: build.item.id,
     };
@@ -2078,6 +2209,7 @@ export default class Splash extends Component {
       this.setState({loader: false});
     }
   };
+
   showMeter = (item) => {
     console.log('Selected 2', item);
     this.setState({pressedText: item.item.name, meterId: item.item.id});
@@ -2097,6 +2229,7 @@ export default class Splash extends Component {
     this.changeUtilityAndToggleAddU();
     this.setState({uScr: true, meterList: !this.state.meterList});
   };
+
   showBuild = (unit) => {
     // console.log('Selected 2', unit.item.name)
     // console.log('Selected 2', item.item.name)
@@ -2119,6 +2252,7 @@ export default class Splash extends Component {
     // this.toggleModal();
     this.setState({isModalVisible: false});
   };
+
   handleMetertypeModal = async (index) => {
     const unitResponse = await this.api.get(
       `/property/equipment/unit-of-measure/all`,
@@ -2131,6 +2265,7 @@ export default class Splash extends Component {
       isModalMeterVisible: true,
     });
   };
+
   handleSaveMeterTypeBuilder = async () => {
     if (!this.state.meterTypeData.manufacturer) {
       this.state.meterTypeInputs.map((item, index) => {
@@ -2266,16 +2401,49 @@ export default class Splash extends Component {
     this.setState({showFilter: true});
   };
 
+  deleteBuilding = () => {
+    this.setState({editModal: false});
+    this.context.updateBuilding(false, this.state.editBuildId);
+    this.setState({loader: true, loaderBuildings: true});
+    this.onFocusFunction();
+  };
+
+  updateBuilding = () => {
+    this.setState({editModal: false});
+    let data = {
+      name: this.state.editBuilding,
+      descriptions: this.state.editBuildDes,
+    };
+    this.context.updateBuilding(true, this.state.editBuildId, data);
+    this.setState({loader: true, loaderBuildings: true});
+    this.onFocusFunction();
+  };
+
+  editAlert = () => {
+    Alert.alert('Update Building', 'Are you sure you want to Update?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => this.updateBuilding()},
+    ]);
+  };
+
+  deleteAlert = () => {
+    Alert.alert('Delete Building', 'Are you sure you want to Delete?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => this.deleteBuilding()},
+    ]);
+  };
+
   render() {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
-
-    console.log(
-      clc.greenBright('xxx', JSON.stringify(this.state.meterListData)),
-    );
-
     return (
       <View style={styles.container}>
         {/* Building Edit Modal */}
@@ -2284,7 +2452,8 @@ export default class Splash extends Component {
           title="Edit Building"
           doneBtnTitle="Update Building"
           style={{height: height * 0.55}}
-          onCancel={() => this.setState({editModal: false})}>
+          onCancel={() => this.setState({editModal: false})}
+          onDone={this.editAlert}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{flex: 1}}>
               <View style={styles.desciptionContainer}>
@@ -2300,9 +2469,8 @@ export default class Splash extends Component {
                   // label="Name*"
                   value={this.state.editBuilding}
                   dense={true}
-                  editable={false}
                   onChangeText={(text) => {
-                    this.setState({typedBuild: text});
+                    this.setState({editBuilding: text});
                   }}
                   style={styles.input}
                   mode={'outlined'}
@@ -2326,7 +2494,7 @@ export default class Splash extends Component {
                   value={this.state.editBuildDes}
                   dense={true}
                   onChangeText={(text) => {
-                    this.setState({typedUnit: text});
+                    this.setState({editBuildDes: text});
                   }}
                   style={styles.input}
                   mode={'outlined'}
@@ -2357,9 +2525,7 @@ export default class Splash extends Component {
                     buttonStyle={{
                       backgroundColor: '#e24b4b',
                     }}
-                    onPress={() =>
-                      this.context.updateBuilding(this.state.editBuildId)
-                    }
+                    onPress={() => this.deleteAlert()}
                   />
                 </View>
               </View>
@@ -2620,7 +2786,7 @@ export default class Splash extends Component {
                         onPress={this.selectAndCloseAdd}>
                         <View
                           style={{
-                            backgroundColor: 'green',
+                            // backgroundColor: 'green',
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                             width: width * 0.23,
@@ -2796,56 +2962,11 @@ export default class Splash extends Component {
                               </Text>
                             </View>
                             <View style={styles.inputContainer}>
-                              {/* //todo: This is Drop down picker */}
-
-                              {/* <ModalDropdown
-                                options={this.state.dataBuild.map(
-                                  (item) => item.name,
-                                )}
-                                defaultValue="Select Building*"
-                                textStyle={{
-                                  fontSize: width * 0.025,
-                                  marginLeft: width * 0.02,
-                                  color: '#25AAE1ec',
-                                }}
-                                style={[
-                                  styles.input,
-                                  {
-                                    backgroundColor: '#a6a6a61f',
-                                    borderWidth: width * 0.0013,
-                                    paddingVertical: width * 0.02,
-                                    borderRadius: width * 0.01,
-                                  },
-                                ]}
-                                defaultTextStyle={{
-                                  color: '#4a4a4abd',
-                                }}
-                                dropdownStyle={[
-                                  styles.input,
-                                  {
-                                    height: `${
-                                      this.state.dataBuild.length * 5 > 20
-                                        ? 20
-                                        : this.state.dataBuild.length * 5
-                                    }%`,
-                                  },
-                                ]}
-                                dropdownTextStyle={{
-                                  fontSize: width * 0.025,
-                                  marginLeft: width * 0.01,
-                                }}
-                                dropdownTextHighlightStyle={{
-                                  color: '#23a8e17a',
-                                }}
-                                scrollEnabled
-                              /> */}
                               <TextInput
-                                // label="Name*"
                                 placeholder="Building Name"
                                 value={this.state.buildingData.name}
                                 dense={true}
-                                onFocus={this.changeLayoutMeter3}
-                                onBlur={this.changeLayoutMeter3}
+                                editable={false}
                                 showSoftInputOnFocus={false}
                                 onChangeText={(text) => {
                                   this.setState({newBuild: text});
@@ -3300,7 +3421,7 @@ export default class Splash extends Component {
                             }}>
                             <MenuT
                               visible={this.state.visible}
-                              // style={{height: height * 0.2}}
+                              style={{height: height * 0.2}}
                               anchor={
                                 this.state.meterListArray.length ? (
                                   <Pressable
@@ -3976,7 +4097,7 @@ export default class Splash extends Component {
                   />
                 </View>
               </Modal>
-              {/* Add Mutiple Unit Modal */}
+              {/* Add Multiple Unit Modal */}
               <Modal
                 animationIn="slideInDown"
                 animationOut="slideOutUp"
@@ -3988,7 +4109,7 @@ export default class Splash extends Component {
                   <View style={styles.modalInner}>
                     <View style={styles.mUnitboxConatainer}>
                       <View style={styles.boxInner}>
-                        {/* Add Mutiple Unit Modal Header */}
+                        {/* Add Multiple Unit Modal Header */}
                         <View style={styles.boxHeader}>
                           <View style={styles.boxHeaderInner}>
                             <Icon
@@ -4019,21 +4140,23 @@ export default class Splash extends Component {
                           </View>
                         </View>
                         {/* Modal Body */}
-                        <View style={{flex: 1}}>
+                        <ScrollView style={{flex: 1}}>
                           <View style={styles.desciptionContainer}>
                             <Build
                               name={'office-building'}
                               size={height * 0.02}
                               color="#5e5e5e"
                             />
-                            <Text style={styles.desciptionHeading}>Name*</Text>
+                            <Text style={styles.desciptionHeading}>
+                              BUILDING*
+                            </Text>
                           </View>
                           <View style={styles.inputContainer}>
                             <TextInput
-                              // label="Name*"
-                              placeholder="A"
-                              // dense={true}
-                              onChangeText={(text) => console.log(text)}
+                              placeholder="Building Name"
+                              value={this.state.buildingData.name}
+                              editable={false}
+                              showSoftInputOnFocus={false}
                               style={styles.input}
                               mode={'outlined'}
                               theme={{
@@ -4052,11 +4175,10 @@ export default class Splash extends Component {
                           </View>
                           <View style={styles.inputContainer}>
                             <TextInput
-                              // label="BILLING COMPANY*"
-                              placeholder="Unit Description"
-                              // dense={true}
+                              placeholder="Building Description"
+                              value={this.state.editBuildDes}
                               onChangeText={(text) => {
-                                this.setState({newUnit: text});
+                                this.setState({editBuildDes: text});
                               }}
                               style={styles.input}
                               mode={'outlined'}
@@ -4083,38 +4205,73 @@ export default class Splash extends Component {
                             style={{
                               height: height * 0.1,
                               width: width * 0.8,
-                              flexDirection: 'row',
                               alignItems: 'center',
-                              justifyContent: 'space-evenly',
+                              justifyContent: 'center',
                               borderBottomWidth: width * 0.001,
+                              // paddingHorizontal: width * 0.01,
+                              // backgroundColor:'red'
                             }}>
-                            <TextInput
-                              // label="BILLING COMPANY*"
-                              placeholder="Unit Name"
-                              // dense={true}
-                              onChangeText={(text) => console.log(text)}
+                            <View
                               style={{
-                                height: height * 0.07,
-                                width: width * 0.47,
-                                fontSize: height * 0.018,
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                            <Text>Auto Increment</Text>
+                                flexDirection: 'row',
+                                width: width * 0.75,
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                // backgroundColor:'red'
+                              }}>
+                              <TextInput
+                                // label="BILLING COMPANY*"
+                                keyboardType="numeric"
+                                error={this.state.error.units}
+                                placeholder="# of Units"
+                                // dense={true}
+                                onChangeText={(text) => {
+                                  this.getLoopOfUnits(text);
+                                }}
+                                style={{
+                                  height: height * 0.07,
+                                  width: width * 0.35,
+                                  fontSize: height * 0.018,
+                                }}
+                                scrollEnabled={false}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                              />
+                              <CheckBox
+                                value={this.state.autoIncrement}
+                                onValueChange={() =>
+                                  this.setState({
+                                    autoIncrement: !this.state.autoIncrement,
+                                  })
+                                }
+                              />
+                              <Text style={{fontSize: width * 0.035}}>
+                                Auto Increment
+                              </Text>
+                            </View>
                           </View>
+                          {this.state.error.units ? (
+                            <HelperText
+                              type="error"
+                              visible={this.state.error.units}>
+                              {this.state.error.units}
+                            </HelperText>
+                          ) : null}
                           <FlatList
-                            data={this.state.dataActivity}
-                            renderItem={this._renderUnitList}
-                            keyExtractor={(item) => item.id.toString()}
+                            data={this.state.unitsArray}
+                            initialNumToRender={this.state.noOfUnits}
+                            renderItem={(item, index) =>
+                              this._renderUnitList(item, index)
+                            }
+                            keyExtractor={(item, index) => index.toString()}
                           />
-                        </View>
+                        </ScrollView>
                         {/* Box Footer */}
                         <View style={styles.footerBtn}>
                           <View style={styles.bottonContainer}>
@@ -4131,15 +4288,10 @@ export default class Splash extends Component {
                               </View>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              onPress={() =>
-                                this.setState({
-                                  isModalMunitVisible: !this.state
-                                    .isModalMunitVisible,
-                                })
-                              }>
-                              <View style={styles.submitBotton}>
+                              onPress={() => this.addMultipleUnits()}>
+                              <View style={styles.saveUnitBotton}>
                                 <Plus name="plus" color="white" size={18} />
-                                <Text style={{color: 'white'}}>Add Unit</Text>
+                                <Text style={{color: 'white'}}>Add Units</Text>
                               </View>
                             </TouchableOpacity>
                           </View>
@@ -4501,7 +4653,7 @@ export default class Splash extends Component {
                       placeholderTextColor="white"
                       placeholder="Search"
                       style={styles.search}
-                      // onChangeText={(e) => this.context.searchProperties(e)}
+                      onChangeText={(e) => this.searchUnits(e)}
                       theme={{
                         colors: {
                           text: 'white',
@@ -4516,7 +4668,7 @@ export default class Splash extends Component {
                     style={{
                       width: width * 0.05,
                     }}>
-                    {this.context.searchLoading ? (
+                    {this.state.searchLoading ? (
                       <ActivityIndicator color="white" size="small" />
                     ) : null}
                   </View>
@@ -4531,7 +4683,7 @@ export default class Splash extends Component {
                     paddingVertical: height * 0.005,
                   }}>
                   <FlatList
-                    data={this.context.searchList}
+                    data={this.state.searchList}
                     renderItem={this._renderSearchPropList}
                     removeClippedSubviews={false}
                     maxToRenderPerBatch={150}
