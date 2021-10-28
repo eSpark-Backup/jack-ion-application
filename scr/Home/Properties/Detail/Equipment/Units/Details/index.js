@@ -359,7 +359,8 @@ const App = ({ navigation }) => {
     const antiIntersection = arr1.filter(
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
-    console.log(clc.yellow('please', antiIntersection));
+
+    console.log('please',antiIntersection);
     setEditMeterTypes(antiIntersection);
   };
 

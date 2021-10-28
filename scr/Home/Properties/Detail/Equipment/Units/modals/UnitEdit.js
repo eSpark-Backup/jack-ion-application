@@ -30,6 +30,7 @@ import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
+import MeterTypeBuilder from '../../../../../../components/modal/MeterTypeBuilder';
 
 const { width, height } = Dimensions.get('window');
 const api = create({ baseURL: Base_URL });
@@ -57,6 +58,11 @@ export default function UnitEdit({
     scanIndex: 0,
     result: '',
     newSerial: '',
+    typeOfMetersVisible: false,
+    isModalMeterVisible: false,
+    measureOfUnit: [],
+    typeOfMeterIndex: '',
+    meterTypeBuilder: false
   });
 
 
@@ -74,8 +80,8 @@ export default function UnitEdit({
 
   useEffect(() => {
     setMeterListArray(meterTypes);
-    console.log('XXXXX meterListArray', meterListArray);
-  }, []);
+    // console.log('XXXXX meterListArray', meterTypes);
+  }, [meterTypes]);
 
   const addMeterInNewArray = async (value) => {
     hideMenu();
@@ -124,40 +130,42 @@ export default function UnitEdit({
   //!----------->
 
   const showMoreInputs = (value, index) => {
-    // const newList = this.state.meterListData.filter(
-    //   (item) => item.showInputs !== value.showInputs,
-    // );
-    // this.setState({meterListData: newList});
-
-    let newArr = [...this.state.meterListData]; // copying the old datas array
+    let newArr = [...meterListData]; // copying the old datas array
     newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }, () =>
-      console.log('e--->', this.state.meterListData),
-    );
+    setMeterListData(newArr)
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // this.setState({showOtherInputs: !this.state.showOtherInputs});
   };
 
   const handleMetertypeModal = async (index) => {
-    const unitResponse = await this.api.get(
+    const unitResponse = await api.get(
       `/property/equipment/unit-of-measure/all`,
     );
-    this.setState(
-      { measureOfUnit: unitResponse?.data?.data, typeOfMeterIndex: index },
-      () => console.log('measureOfUnit Of_______', this.state.measureOfUnit),
-    );
-    this.setState({
+    // this.setState({ measureOfUnit: unitResponse?.data?.data, typeOfMeterIndex: index },
+    //   () => console.log('measureOfUnit Of_______', this.state.measureOfUnit),
+    // );
+    setState((oldState) => ({
+      ...oldState,
+      measureOfUnit: unitResponse?.data?.data,
+      typeOfMeterIndex: index,
       isModalMeterVisible: true,
-    });
+      meterTypeBuilder:true
+    }));
   };
 
+  const showTypesOfMeter = (item, index) => {
+    let newArr = [...meterListData]; // copying the old datas array
+    newArr[index].meterTypeMenu = true; // replace e.target.value with whatever you want to change it to
+    setMeterListData(newArr)
+  };
   const onGetMeterTypeId = (item, index) => {
-    this.setState({ typeOfMetersVisible: false });
-    let newArr = [...this.state.meterListData]; // copying the old datas array
+    setState((oldState) => ({
+      ...oldState,
+      typeOfMetersVisible: false,
+    }));
+    let newArr = [...meterListData]; // copying the old datas array
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }, () =>
-      console.log('e--->', this.state.meterListData),
-    );
+    setMeterListData(newArr)
   };
   useEffect(() => {
     // setMeterListArray(meterTypes);
@@ -206,9 +214,6 @@ export default function UnitEdit({
       let newArr = [...meterListData]; // copying the old datas array
       newArr[state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
       setMeterListData(newArr);
-      // this.setState({ meterListData: newArr }, () =>
-      //     console.log('e--->', this.state.meterListData),
-      //   );
       setState((oldState) => ({
         ...oldState,
         result: e,
@@ -222,8 +227,6 @@ export default function UnitEdit({
     }
   };
   const scannerModal = () => {
-    // this.setState({ isScannerVisible: false });
-    // this.setState({ scan: false });
     setState((oldState) => ({
       ...oldState,
       isScannerVisible: false,
@@ -235,6 +238,12 @@ export default function UnitEdit({
     let newArr = [...meterListData]; // copying the old datas array
     newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
     setMeterListData(newArr);
+  };
+  const hideTypesOfMeter = (item, index) => {
+    let newArr = [...meterListData]; // copying the old datas array
+    newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
+    setMeterListData(newArr);
+
   };
   console.log('got Meters', typeOfMeters); // ye jb hoga jb select hoga meter type
   console.log('got unit details', unitDetails);
@@ -302,12 +311,7 @@ export default function UnitEdit({
                         value={buildingName}
                         dense={true}
                         editable={false}
-                        // onFocus={this.changeLayoutMeter3}
-                        // onBlur={this.changeLayoutMeter3}
                         showSoftInputOnFocus={false}
-                        // onChangeText={(text) => {
-                        //   this.setState({newBuild: text});
-                        // }}
                         style={styles.input}
                         mode={'outlined'}
                         theme={{
@@ -330,14 +334,7 @@ export default function UnitEdit({
                         // onChangeText={(text) => {
                         //   this.setState({lastUnitData: text});
                         // }}
-                        style={[
-                          styles.input,
-                          // {
-                          //   width: !this.state.meter3
-                          //     ? width * 0.75
-                          //     : width * 0.0,
-                          // },
-                        ]}
+                        style={styles.input}
                         // error={this.state.errorUnits.units}
                         mode={'outlined'}
                         theme={{
@@ -481,7 +478,7 @@ export default function UnitEdit({
                                     typeOfMeters.length ? (
                                       <TouchableOpacity
                                         onPress={() =>
-                                          this.showTypesOfMeter(
+                                          showTypesOfMeter(
                                             item,
                                             meterIndex,
                                           )
@@ -515,7 +512,7 @@ export default function UnitEdit({
                                     )
                                   }
                                   onRequestClose={() =>
-                                    this.hideTypesOfMeter(item, meterIndex)
+                                    hideTypesOfMeter(item, meterIndex)
                                   }>
                                   <ScrollView>
                                     {typeOfMeters.map((item, index) => (
@@ -536,7 +533,7 @@ export default function UnitEdit({
                                             width: width * 0.7,
                                           }}
                                           onPress={() =>
-                                            this.onGetMeterTypeId(
+                                            onGetMeterTypeId(
                                               item,
                                               meterIndex,
                                             )
@@ -568,9 +565,7 @@ export default function UnitEdit({
                               )}
 
                               <TouchableOpacity
-                                onPress={() =>
-                                  this.handleMetertypeModal(meterIndex)
-                                }>
+                                onPress={() => handleMetertypeModal(meterIndex)}>
                                 <Plus name="plus" size={20} />
                               </TouchableOpacity>
                             </View>
@@ -652,7 +647,7 @@ export default function UnitEdit({
                             )}
                             <TouchableOpacity
                               onPress={() =>
-                                this.showMoreInputs(item, meterIndex)
+                                showMoreInputs(item, meterIndex)
                               }
                               style={{
                                 flexDirection: 'row',
@@ -814,7 +809,22 @@ export default function UnitEdit({
           </View>
         )}
       </Modal>
-    </View>
+      {/* Meter type builder */}
+      
+      <MeterTypeBuilder
+        isVisible={state.meterTypeBuilder}
+        title="Meter Type Builder"
+        doneBtnTitle="Save"
+        style={{ height: height * 0.55 }}
+        onCancel={() => setState((oldState) => ({
+          ...oldState,
+          meterTypeBuilder:false
+        }))}
+          // onDone={this.editAlert}
+          >
+
+    </MeterTypeBuilder>
+    </View >
   );
 }
 
@@ -965,7 +975,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    height: height * 0.07,
+    // height: height * 0.07,
     width: width * 0.75,
     fontSize: height * 0.018,
   },
