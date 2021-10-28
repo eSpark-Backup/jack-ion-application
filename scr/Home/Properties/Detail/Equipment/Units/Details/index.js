@@ -60,6 +60,8 @@ const App = ({navigation}) => {
   const [unitData, setUnitData] = useState([]);
   const [editUnitModalVisible, setEditUnitModalVisible] = useState(false);
   const [editUnitMenuVisible, setEditUnitMenuVisible] = useState(false);
+  const [meterListArray, setMeterListArray] = useState([]);
+  const [editMeterTypes, setEditMeterTypes] = useState([]);
 
   const {unitId, buildingName} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
@@ -78,6 +80,12 @@ const App = ({navigation}) => {
     setLoading(false);
   };
 
+  const getMeterTypes = async () => {
+    const res = await api.get('/property/equipment/meter/all-meters');
+    setMeterListArray(res.data?.data);
+    console.log('All Meters', res.data?.data);
+  };
+
   const deleteUnit = () => {
     Alert.alert('Delete Unit', 'Are you sure you want to Delete?');
   };
@@ -90,6 +98,7 @@ const App = ({navigation}) => {
       // this.setState({token: token});
       api.setHeader('Authorization', 'Bearer ' + token);
       getUnitDetail();
+      getMeterTypes();
     }
   };
 
@@ -328,6 +337,29 @@ const App = ({navigation}) => {
     }
   };
 
+  const openEditModal = () => {
+    meterTypes();
+    setEditUnitModalVisible(true);
+    console.log(clc.cyan('chala'));
+  };
+
+  const meterTypes = () => {
+    let arr1 = [...meterListArray];
+    // const arr1 = [
+    //   {id: 1, title: 'Water'},
+    //   {id: 2, title: 'Hot Water'},
+    //   {id: 3, title: 'Cold Water'},
+    //   {id: 4, title: 'Gas'},
+    //   {id: 5, title: 'Electricity'},
+    // ];
+    let arr2 = [...arrayOfUnits];
+    const antiIntersection = arr1.filter(
+      (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
+    );
+    console.log(clc.yellow('please', antiIntersection));
+    setEditMeterTypes(antiIntersection);
+  };
+
   const renderUnitList = ({item, index}) => {
     return (
       <View style={styles.listOuter}>
@@ -559,6 +591,7 @@ const App = ({navigation}) => {
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(false)}
+          meterTypes={editMeterTypes}
           buildingName={buildingName}
           unitDetails={data.data}
           itemPressHandle={() => {
@@ -590,7 +623,7 @@ const App = ({navigation}) => {
             text: 'Edit',
             style: styles.headerText,
             onPress: () => {
-              setEditUnitModalVisible(!editUnitModalVisible);
+              openEditModal();
             },
           }}
           backgroundColor="#fff"
