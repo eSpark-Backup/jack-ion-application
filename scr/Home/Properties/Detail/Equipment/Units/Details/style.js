@@ -143,5 +143,10 @@ export default styles = StyleSheet.create({
   meterImg: {
     height: width * 0.07,
     width: width * 0.07,
+  },
+  noDataMeterImg:{
+    // backgroundColor: 'red',
+    height: height * 0.18,
+    width: height * 0.18,
   }
 });

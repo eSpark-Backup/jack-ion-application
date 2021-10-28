@@ -1682,7 +1682,7 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-    if (unit.item?.unit_meter?.length !== 0) {
+    // if (unit.item?.unit_meter?.length !== 0) {
       this.props.navigation.navigate('U_Details', {
         unitId: unit.item.id,
         buildingName: this.state.buildingData.name,
@@ -1696,60 +1696,60 @@ export default class Splash extends Component {
       //   item => unit.item.id === item.id
       // );
       // this.state.realData[index] = unit.item;
-      switch (unit.item.type) {
-        case 'Cubic Feet':
-          this.setState({ pressedType: 'Gas' });
-          break;
-        case 'Gallons':
-          this.setState({ pressedType: 'All Water' });
-          break;
+      // switch (unit.item.type) {
+      //   case 'Cubic Feet':
+      //     this.setState({ pressedType: 'Gas' });
+      //     break;
+      //   case 'Gallons':
+      //     this.setState({ pressedType: 'All Water' });
+      //     break;
 
-        default:
-          break;
-      }
+      //   default:
+      //     break;
+      // }
       // if (unit.item.type == 'Cubic Feet') {
       //   this.setState({ pressedType: 'Gas' })
       //   this.setState({ pressedMeterType: 'G4 (X1 Cubic Feet)' })
       // }
 
-      unit.item.isSelected = !unit.item.isSelected;
-      this.state.typedUnit = this.state.pressedUnit = unit.item.name;
-      this.state.typedBuild = this.state.pressedBuild = unit.item.build;
-      this.state.typedCode = this.state.pressedCode = unit.item.code;
-      this.state.typedMType = this.state.pressedMeterType = unit.item.type;
-      this.state.pressedIndex = unit.index;
-      this.state.pressedID = unit.item.id;
-      unit.item.isSelectedClass = unit.item.isSelected
-        ? styles.isSelectedUnit
-        : styles.infoViewContainer;
-      unit.item.isSelectedView = unit.item.isSelected
-        ? styles.isSelected
-        : styles.unitListInfo;
-      if (unit.item.code === '') {
-        this.setState({ noCode: true });
-        this.setState({ editU: true });
-      } else {
-        this.setState({ noCode: false });
-        this.setState({ editU: false });
-      }
+      // unit.item.isSelected = !unit.item.isSelected;
+      // this.state.typedUnit = this.state.pressedUnit = unit.item.name;
+      // this.state.typedBuild = this.state.pressedBuild = unit.item.build;
+      // this.state.typedCode = this.state.pressedCode = unit.item.code;
+      // this.state.typedMType = this.state.pressedMeterType = unit.item.type;
+      // this.state.pressedIndex = unit.index;
+      // this.state.pressedID = unit.item.id;
+      // unit.item.isSelectedClass = unit.item.isSelected
+      //   ? styles.isSelectedUnit
+      //   : styles.infoViewContainer;
+      // unit.item.isSelectedView = unit.item.isSelected
+      //   ? styles.isSelected
+      //   : styles.unitListInfo;
+      // if (unit.item.code === '') {
+      //   this.setState({ noCode: true });
+      //   this.setState({ editU: true });
+      // } else {
+      //   this.setState({ noCode: false });
+      //   this.setState({ editU: false });
+      // }
 
-      if (unit.item.isSelected === true) {
-        this.changeAnimation();
-      } else if (unit.item.isSelected === false) {
-        this.changeAnimation();
-      }
-      // console.log('second', this.state.pressedID)
-      if (unit.index == this.state.realData.length - 1) {
-        setTimeout(() => {
-          listViewRef.scrollToEnd({ animated: true });
-        }, 1000);
-      }
-      // console.log('Unit Name', this.state.pressedType)
-      this.setState({ realData: this.state.realData });
-      console.log('Code', this.state.realData.length - 1);
-    } else {
-      alert('No Meters for this Unit');
-    }
+      // if (unit.item.isSelected === true) {
+      //   this.changeAnimation();
+      // } else if (unit.item.isSelected === false) {
+      //   this.changeAnimation();
+      // }
+      // // console.log('second', this.state.pressedID)
+      // if (unit.index == this.state.realData.length - 1) {
+      //   setTimeout(() => {
+      //     listViewRef.scrollToEnd({ animated: true });
+      //   }, 1000);
+      // }
+      // // console.log('Unit Name', this.state.pressedType)
+      // this.setState({ realData: this.state.realData });
+      // console.log('Code', this.state.realData.length - 1);
+    // } else {
+    //   alert('No Meters for this Unit');
+    // }
   };
 
   checkValues = (unit) => {
