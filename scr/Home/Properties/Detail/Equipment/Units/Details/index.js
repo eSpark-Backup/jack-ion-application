@@ -711,7 +711,7 @@ const App = ({ navigation }) => {
             )}
           />
           <View style={{
-            bottom: width * .25
+            bottom: width * .3
           }}>
 
             <Text style={{

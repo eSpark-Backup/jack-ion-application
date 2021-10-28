@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -9,25 +9,30 @@ import {
   Pressable,
   Dimensions,
   LayoutAnimation,
+  PermissionsAndroid
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
-import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
+import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import { Fonts } from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import {DotsLoader} from 'react-native-indicator';
+import { DotsLoader } from 'react-native-indicator';
 import TextTicker from 'react-native-text-ticker';
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import Base_URL from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { RNCamera } from 'react-native-camera';
+import BarcodeMask from 'react-native-barcode-mask';
+import RNBeep from 'react-native-a-beep';
+import Back from 'react-native-vector-icons/MaterialIcons';
 
-const {width, height} = Dimensions.get('window');
-const api = create({baseURL: Base_URL});
+const { width, height } = Dimensions.get('window');
+const api = create({ baseURL: Base_URL });
 
 export default function UnitEdit({
   modalVisible,
@@ -44,6 +49,16 @@ export default function UnitEdit({
   const [meterListData, setMeterListData] = useState([]);
   const [typeOfMeters, setTypeOfMeters] = useState([]);
   const [meterListArray, setMeterListArray] = useState([]);
+  const [state, setState] = useState({
+    isScannerVisible: false,
+    hasAccess: false,
+    scanResult: false,
+    scan: false,
+    scanIndex: 0,
+    result: '',
+    newSerial: '',
+  });
+
 
   const getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -59,8 +74,8 @@ export default function UnitEdit({
 
   useEffect(() => {
     setMeterListArray(meterTypes);
-    console.log('XXXXX', meterListArray);
-  }, [meterTypes]);
+    console.log('XXXXX meterListArray', meterListArray);
+  }, []);
 
   const addMeterInNewArray = async (value) => {
     hideMenu();
@@ -92,6 +107,20 @@ export default function UnitEdit({
     setTypeOfMeters(unitResponse?.data?.data);
   };
 
+  const deleteMeterInNewArray = (value) => {
+    const newList = meterListData.filter(
+      (item) => item.id !== value.id,
+    );
+    setMeterListData(newList)
+    const data = {
+      id: value.id,
+      name: value.name,
+      icon: value.icon,
+    };
+    const newArray = [...meterListArray];
+    newArray.push(data);
+    setMeterListArray(newArray.sort((a, b) => (a.name > b.name ? 1 : -1)));
+  };
   //!----------->
 
   const showMoreInputs = (value, index) => {
@@ -102,7 +131,7 @@ export default function UnitEdit({
 
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
-    this.setState({meterListData: newArr}, () =>
+    this.setState({ meterListData: newArr }, () =>
       console.log('e--->', this.state.meterListData),
     );
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -114,7 +143,7 @@ export default function UnitEdit({
       `/property/equipment/unit-of-measure/all`,
     );
     this.setState(
-      {measureOfUnit: unitResponse?.data?.data, typeOfMeterIndex: index},
+      { measureOfUnit: unitResponse?.data?.data, typeOfMeterIndex: index },
       () => console.log('measureOfUnit Of_______', this.state.measureOfUnit),
     );
     this.setState({
@@ -123,18 +152,90 @@ export default function UnitEdit({
   };
 
   const onGetMeterTypeId = (item, index) => {
-    this.setState({typeOfMetersVisible: false});
+    this.setState({ typeOfMetersVisible: false });
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-    this.setState({meterListData: newArr}, () =>
+    this.setState({ meterListData: newArr }, () =>
       console.log('e--->', this.state.meterListData),
     );
   };
+  useEffect(() => {
+    // setMeterListArray(meterTypes);
+    console.log('XXXXX state', state);
+  }, [state]);
+  const toggleScanner = async (value) => {
 
+    setState((oldState) => ({
+      ...oldState,
+      scanIndex: value,
+    }));
+    try {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      if (granted === true) {
+        setState((oldState) => ({
+          ...oldState,
+          isScannerVisible: true,
+          hasAccess: true,
+          scan: true
+        }));
+      } else {
+        setState((oldState) => ({
+          ...oldState,
+          hasAccess: false
+        }));
+        Alert.alert(
+          "You don't have access for the Camera",
+          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+        );
 
-
-//!-------->
-
+      }
+      return granted;
+    } catch (err) {
+      alert(err);
+    }
+  };
+  const onScanned = (e) => {
+    const check = e.data.substring(0, 4);
+    if (check == 'http') {
+      Linking.openURL(e.data).catch((err) =>
+        console.error('An error occured', err),
+      );
+    } else {
+      let newArr = [...meterListData]; // copying the old datas array
+      newArr[state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
+      setMeterListData(newArr);
+      // this.setState({ meterListData: newArr }, () =>
+      //     console.log('e--->', this.state.meterListData),
+      //   );
+      setState((oldState) => ({
+        ...oldState,
+        result: e,
+        scan: false,
+        newSerial: e.data,
+        isScannerVisible: false,
+      }));
+      setTimeout(() => {
+        RNBeep.beep(false);
+      }, 500);
+    }
+  };
+  const scannerModal = () => {
+    // this.setState({ isScannerVisible: false });
+    // this.setState({ scan: false });
+    setState((oldState) => ({
+      ...oldState,
+      isScannerVisible: false,
+      scan: false
+    }));
+  };
+  //!-------->
+  const onChangeMultipleField = (e, index) => {
+    let newArr = [...meterListData]; // copying the old datas array
+    newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
+    setMeterListData(newArr);
+  };
   console.log('got Meters', typeOfMeters); // ye jb hoga jb select hoga meter type
   console.log('got unit details', unitDetails);
   return (
@@ -185,7 +286,7 @@ export default function UnitEdit({
                 </View>
                 {/* Box Body */}
                 <ScrollView showsVerticalScrollIndicator={false}>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <View style={styles.desciptionContainer}>
                       <Build
                         name={'office-building'}
@@ -290,9 +391,9 @@ export default function UnitEdit({
                                   position: 'absolute',
                                   right: 0,
                                 }}
-                                // onPress={() =>
-                                //   this.deleteMeterInNewArray(item)
-                                // }
+                                onPress={() =>
+                                  deleteMeterInNewArray(item)
+                                }
                               >
                                 <Delete
                                   name={'delete-forever'}
@@ -316,23 +417,23 @@ export default function UnitEdit({
                                   <TextInput.Icon
                                     name={() => (
                                       <TouchableOpacity
-                                      // onPress={() =>
-                                      //   this.toggleScanner(
-                                      //     meterIndex,
-                                      //   )
-                                      // }
+                                        onPress={() =>
+                                          toggleScanner(
+                                            meterIndex,
+                                          )
+                                        }
                                       >
                                         <Scanner name="scan" size={20} />
                                       </TouchableOpacity>
                                     )}
                                   />
                                 }
-                                // onChangeText={(text) =>
-                                //   this.onChangeMultipleField(
-                                //     text,
-                                //     meterIndex,
-                                //   )
-                                // }
+                                onChangeText={(text) =>
+                                  onChangeMultipleField(
+                                    text,
+                                    meterIndex,
+                                  )
+                                }
                                 style={styles.meterInput}
                                 mode={'outlined'}
                                 theme={{
@@ -375,7 +476,7 @@ export default function UnitEdit({
                               {typeOfMeters.length ? (
                                 <MenuT
                                   visible={item.meterTypeMenu}
-                                  style={{height: height * 0.12}}
+                                  style={{ height: height * 0.12 }}
                                   anchor={
                                     typeOfMeters.length ? (
                                       <TouchableOpacity
@@ -610,7 +711,7 @@ export default function UnitEdit({
                             </Text>
                           </Pressable>
                         ) : (
-                          <View style={{marginLeft: width * 0.02}}>
+                          <View style={{ marginLeft: width * 0.02 }}>
                             <Text
                               style={{
                                 fontSize: height * 0.018,
@@ -646,13 +747,13 @@ export default function UnitEdit({
                     <TouchableOpacity onPress={closeModal}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{color: 'black'}}>Cancel</Text>
+                        <Text style={{ color: 'black' }}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleEditUnit}>
                       <View style={styles.submitBotton}>
                         <Plus name="pencil-plus" color="white" size={18} />
-                        <Text style={{color: 'white'}}>Edit Unit</Text>
+                        <Text style={{ color: 'white' }}>Edit Unit</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -661,6 +762,57 @@ export default function UnitEdit({
             </View>
           </View>
         </KeyboardAvoidingView>
+      </Modal>
+      <Modal
+        animationIn="bounceInUp"
+        animationOut="bounceInDown"
+        backdropOpacity={5}
+        isVisible={state.isScannerVisible}>
+        {state.scan && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'space-around',
+              borderRadius: width * 0.02,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: height * 0.02,
+              }}>
+              <TouchableOpacity onPress={scannerModal}>
+                <Back
+                  size={width * 0.08}
+                  color="white"
+                  name="keyboard-backspace"
+                />
+              </TouchableOpacity>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  paddingLeft: width * 0.08,
+                }}>
+                Scan Barcode
+              </Text>
+            </View>
+            <RNCamera
+              ref={(ref) => {
+                this.camera = ref;
+              }}
+              style={{ flex: 1 }}
+              type={RNCamera.Constants.Type.back}
+              autoFocus="on"
+              onBarCodeRead={onScanned}
+              captureAudio={false}
+            >
+              <BarcodeMask outerMaskOpacity={0} />
+            </RNCamera>
+          </View>
+        )}
       </Modal>
     </View>
   );

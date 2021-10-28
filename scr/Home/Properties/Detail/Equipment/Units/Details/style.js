@@ -146,8 +146,8 @@ export default styles = StyleSheet.create({
   },
   noDataMeterImg:{
     // backgroundColor: 'red',
-    height: height * 0.18,
-    width: height * 0.18,
+    height: width * 0.25,
+    width: width * 0.25,
   },
   headerText: {fontSize: width * 0.05, color: '#000'}
 });
