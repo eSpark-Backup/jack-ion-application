@@ -231,6 +231,7 @@ export default class Splash extends Component {
       textStyle: false,
       loader: false,
       scanIndex: null,
+      searchList: [],
       meterListData: [],
       meterListArray: [
         // {
@@ -924,6 +925,33 @@ export default class Splash extends Component {
     }
   };
 
+  searchUnits = async (e) => {
+    this.setState({loadFor: e});
+    let data = {
+      building_id: this.state.editBuildId,
+      search: e,
+    };
+
+    if (e) {
+      this.setState({searchLoading: true});
+      const unitResponse = await this.api.post(
+        `/property/equipment/unit/all-units`,
+        data,
+      );
+      console.log('Search property===>', unitResponse);
+      if (unitResponse?.data?.bool) {
+        this.setState({searchList: unitResponse.data.data});
+        console.log('Search property===>', unitResponse.data.data);
+        this.setState({searchLoading: false});
+      } else {
+        Alert.alert('Error', 'Network Issues');
+        this.setState({searchLoading: false});
+      }
+    } else {
+      this.setState({searchList: []});
+    }
+  };
+
   getLoopOfUnits = (text) => {
     console.log('text-->', text);
     const n = text == undefined ? 10 : text;
@@ -1549,34 +1577,72 @@ export default class Splash extends Component {
     }
   };
 
-  _renderSearchPropList = (prop) => (
-    <TouchableOpacity style={styles.propButton}>
-      <Build name="md-business-outline" size={width * 0.09} color="#115b72" />
-      <View>
-        <View style={{width: width * 0.6}}>
-          <TextTicker
-            style={styles.propText}
-            duration={6000}
-            marqueeDelay={2000}>
-            {prop.item.name == null ? 'Untitled' : prop.item.name}
-          </TextTicker>
-        </View>
-
-        <View style={{width: width * 0.6}}>
-          <TextTicker
-            style={{color: 'gray'}}
-            duration={6000}
-            marqueeDelay={2000}>
-            Units
-          </TextTicker>
+  _renderSearchPropList = (unit) => (
+    <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
+      <View style={[styles.infoViewContainer]}>
+        <View style={styles.infoViewInner}>
+          <Home
+            name="house-user"
+            size={width * 0.07}
+            style={{
+              marginLeft: width * 0.01,
+            }}
+          />
+          <View
+            style={{
+              flexDirection: 'column',
+              // alignItems: 'center',
+              justifyContent: 'center',
+              width: width * 0.3,
+              overflow: 'hidden',
+              marginLeft: width * 0.01,
+              // backgroundColor:'red'
+            }}>
+            <TextTicker duration={5000} style={styles.dataFieldText} key={unit}>
+              {unit.item.name}
+            </TextTicker>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginLeft: width * 0.01,
+              }}>
+              {unit.item?.unit_meter.length ? (
+                unit.item?.unit_meter?.map((item) => (
+                  // console.log('item--->meter', item),
+                  <Image
+                    source={this.typeSwitcher(item.meter_name)}
+                    style={{
+                      height: width * 0.05,
+                      width: width * 0.05,
+                    }}
+                  />
+                ))
+              ) : (
+                <Text>No meters</Text>
+              )}
+            </View>
+          </View>
+          {/* <View style={[styles.meterReading]}> */}
+          {/* <Text style={styles.dataFieldText}>
+                  {unit.item?.unit_meter?.length}
+                </Text>
+                <Text style={styles.dataFieldText}>Meters</Text> */}
+          {/* </View> */}
+          {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
+          <TouchableOpacity
+            style={[styles.programDevice]}
+            onPress={() => this.programDevice(unit)}>
+            <View style={styles.proDeviceContent}>
+              <Barcode
+                name="barcode-scan"
+                size={height * 0.025}
+                color="purple"
+              />
+              <Text style={styles.propDeviceText}>Program Device</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
-
-      <Signal
-        name="signal-cellular-outline"
-        size={height * 0.04}
-        color="#115b72"
-      />
     </TouchableOpacity>
   );
 
@@ -1694,74 +1760,12 @@ export default class Splash extends Component {
 
   //todo: Unit Click Event +++++++++++++++++++++++
   actionOnPress = (unit) => {
-    if (unit.item?.unit_meter?.length !== 0) {
-      this.props.navigation.navigate('U_Details', {
-        unitId: unit.item.id,
-        buildingName: this.state.buildingData.name,
-      });
-      console.log(clc.cyan('Selected :', unit.item.id));
-      // console.log("Pressed :", index)
-      // if (item?.pressItem == item.id) {
-      //   alert("wppdfl")
-      // }
-      // const index = this.state.realData.findIndex(
-      //   item => unit.item.id === item.id
-      // );
-      // this.state.realData[index] = unit.item;
-      switch (unit.item.type) {
-        case 'Cubic Feet':
-          this.setState({pressedType: 'Gas'});
-          break;
-        case 'Gallons':
-          this.setState({pressedType: 'All Water'});
-          break;
-
-        default:
-          break;
-      }
-      // if (unit.item.type == 'Cubic Feet') {
-      //   this.setState({ pressedType: 'Gas' })
-      //   this.setState({ pressedMeterType: 'G4 (X1 Cubic Feet)' })
-      // }
-
-      unit.item.isSelected = !unit.item.isSelected;
-      this.state.typedUnit = this.state.pressedUnit = unit.item.name;
-      this.state.typedBuild = this.state.pressedBuild = unit.item.build;
-      this.state.typedCode = this.state.pressedCode = unit.item.code;
-      this.state.typedMType = this.state.pressedMeterType = unit.item.type;
-      this.state.pressedIndex = unit.index;
-      this.state.pressedID = unit.item.id;
-      unit.item.isSelectedClass = unit.item.isSelected
-        ? styles.isSelectedUnit
-        : styles.infoViewContainer;
-      unit.item.isSelectedView = unit.item.isSelected
-        ? styles.isSelected
-        : styles.unitListInfo;
-      if (unit.item.code === '') {
-        this.setState({noCode: true});
-        this.setState({editU: true});
-      } else {
-        this.setState({noCode: false});
-        this.setState({editU: false});
-      }
-
-      if (unit.item.isSelected === true) {
-        this.changeAnimation();
-      } else if (unit.item.isSelected === false) {
-        this.changeAnimation();
-      }
-      // console.log('second', this.state.pressedID)
-      if (unit.index == this.state.realData.length - 1) {
-        setTimeout(() => {
-          listViewRef.scrollToEnd({animated: true});
-        }, 1000);
-      }
-      // console.log('Unit Name', this.state.pressedType)
-      this.setState({realData: this.state.realData});
-      console.log('Code', this.state.realData.length - 1);
-    } else {
-      alert('No Meters for this Unit');
-    }
+    this.props.navigation.navigate('U_Details', {
+      unitId: unit.item.id,
+      buildingName: this.state.buildingData.name,
+    });
+    this.setState({showSearch: false});
+    console.log(clc.cyan('Selected :', unit.item.id));
   };
 
   checkValues = (unit) => {
@@ -4649,7 +4653,7 @@ export default class Splash extends Component {
                       placeholderTextColor="white"
                       placeholder="Search"
                       style={styles.search}
-                      // onChangeText={(e) => this.context.searchProperties(e)}
+                      onChangeText={(e) => this.searchUnits(e)}
                       theme={{
                         colors: {
                           text: 'white',
@@ -4664,7 +4668,7 @@ export default class Splash extends Component {
                     style={{
                       width: width * 0.05,
                     }}>
-                    {this.context.searchLoading ? (
+                    {this.state.searchLoading ? (
                       <ActivityIndicator color="white" size="small" />
                     ) : null}
                   </View>
@@ -4679,7 +4683,7 @@ export default class Splash extends Component {
                     paddingVertical: height * 0.005,
                   }}>
                   <FlatList
-                    data={this.context.searchList}
+                    data={this.state.searchList}
                     renderItem={this._renderSearchPropList}
                     removeClippedSubviews={false}
                     maxToRenderPerBatch={150}
