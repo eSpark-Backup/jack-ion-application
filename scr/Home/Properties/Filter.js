@@ -35,31 +35,43 @@ export default class Splash extends Component {
       showList: false,
       token: '',
       billCompanies: [],
+      selectedType: '',
       utilityTypes: [
         {
           id: 1,
+          type: 'all-water',
           img: require('../../../Images/all-waters.png'),
         },
         {
           id: 2,
+          type: 'cold water',
           img: require('../../../Images/cold-water.png'),
         },
         {
           id: 3,
+          type: 'hot water',
           img: require('../../../Images/hot-water.png'),
         },
         {
           id: 4,
+          type: 'electric',
           img: require('../../../Images/electric.png'),
         },
         {
           id: 5,
+          type: 'gas',
           img: require('../../../Images/gass.png'),
         },
       ],
       biller: '---',
+      buildingName: '',
+      unitName: '',
+      serial: '',
     };
   }
+  getUtilityType = (type) => {
+    this.setState({selectedType: type});
+  };
 
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -96,13 +108,23 @@ export default class Splash extends Component {
   };
 
   filter = () => {
-    let data = {
-      offset: 0,
-      billing: this.state.biller,
-      managment: '',
-    };
-    this.context.filterData(data);
-    this.setState({showList: false});
+    if (this.props.type == 'Properties') {
+      let data = {
+        offset: 0,
+        billing: this.state.biller,
+        managment: '',
+      };
+      this.context.filterData(data);
+      this.setState({showList: false});
+    } else {
+      let data = {
+        offset: 0,
+        billing: this.state.biller,
+        managment: '',
+      };
+      this.context.filterData(data);
+      this.setState({showList: false});
+    }
   };
 
   onFocusFunction = () => {
@@ -120,8 +142,7 @@ export default class Splash extends Component {
           animationIn="slideInDown"
           animationOut="slideOutUp"
           // avoidKeyboard={true}
-          isVisible={isVisible}
-          style={styles.modalContainer}>
+          isVisible={isVisible}>
           <View style={styles.modalInner}>
             <View style={styles.boxConatainer}>
               <View style={styles.boxInner}>
@@ -201,17 +222,26 @@ export default class Splash extends Component {
                       <View>
                         <View style={styles.inputFilterView}>
                           <Text style={styles.filterListText}>Building:</Text>
-                          <TextInput style={styles.filterInputs} />
+                          <TextInput
+                            style={styles.filterInputs}
+                            onChange={(e) => this.setState({buildingName: e})}
+                          />
                         </View>
                         <View style={styles.inputFilterView}>
                           <Text style={styles.filterListText}>Unit:</Text>
-                          <TextInput style={styles.filterInputs} />
+                          <TextInput
+                            style={styles.filterInputs}
+                            onChange={(e) => this.setState({unitName: e})}
+                          />
                         </View>
                         <View style={styles.inputFilterView}>
                           <Text style={styles.filterListText}>
                             Serial Number:
                           </Text>
-                          <TextInput style={styles.filterInputs} />
+                          <TextInput
+                            style={styles.filterInputs}
+                            onChange={(e) => this.setState({serial: e})}
+                          />
                         </View>
                       </View>
                     )}
@@ -225,7 +255,8 @@ export default class Splash extends Component {
                         horizontal
                         data={this.state.utilityTypes}
                         renderItem={({item}) => (
-                          <TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => this.getUtilityType(item.type)}>
                             <Image
                               source={item.img}
                               resizeMode="contain"
@@ -238,16 +269,6 @@ export default class Splash extends Component {
                           </TouchableOpacity>
                         )}
                       />
-                      {/* <Image
-                        source={require('../../../Images/all-waters.png')}
-                        resizeMode="contain"
-                        style={{
-                          height: width * 0.06,
-                          width: width * 0.055,
-                        }}
-                      /> */}
-                      {/* <Text style={styles.filterListText}>Billing</Text>
-                      <Text>ION Energy Solutions</Text> */}
                     </View>
                   </View>
                 </View>
