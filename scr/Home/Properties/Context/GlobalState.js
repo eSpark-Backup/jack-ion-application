@@ -1,11 +1,11 @@
 import React from 'react';
 import Context from './propContext';
-import { create } from 'apisauce';
+import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 import clc from 'cli-color';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 // const baseURL = 'http://51.178.36.223/api';
 
@@ -20,17 +20,17 @@ class GlobalState extends React.Component {
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       // console.log('token aya', token);
-      this.setState({ token: token });
+      this.setState({token: token});
       this.api = create({
         baseURL: Base_URL,
-        headers: { Authorization: 'Bearer ' + token },
+        headers: {Authorization: 'Bearer ' + token},
       });
       // this.checkData();
     }
   };
 
   clearData = () => {
-    this.setState({ propList: [] });
+    this.setState({propList: []});
   };
 
   checkData = async () => {
@@ -46,18 +46,18 @@ class GlobalState extends React.Component {
       offset: response.data.data.offset,
     });
     if (response?.data?.bool) {
-      this.setState({ propList: response.data.data.properties });
-      this.setState({ limitExceed: false });
-      this.setState({ isLoading: false });
+      this.setState({propList: response.data.data.properties});
+      this.setState({limitExceed: false});
+      this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     }
   };
 
   loadMoreData = async () => {
     if (!this.state.limitExceed) {
-      this.setState({ listLoader: true });
+      this.setState({listLoader: true});
     }
     let data = {
       offset: this.state.offset,
@@ -78,22 +78,22 @@ class GlobalState extends React.Component {
         let data = [...this.state.propList];
         let data2 = response.data.data.properties;
         data.push(...data2);
-        this.setState({ propList: data });
+        this.setState({propList: data});
         // console.log('new array', data);
-        this.setState({ listLoader: false, offset: response.data.data.offset });
-        this.setState({ limitExceed: false });
+        this.setState({listLoader: false, offset: response.data.data.offset});
+        this.setState({limitExceed: false});
       } else {
-        this.setState({ limitExceed: true });
-        this.setState({ listLoader: false });
+        this.setState({limitExceed: true});
+        this.setState({listLoader: false});
       }
     } else {
       Alert.alert('Error', 'Network Issues');
-      this.setState({ listLoader: false });
+      this.setState({listLoader: false});
     }
   };
 
   changeOffset = () => {
-    this.setState({ offset: 0 });
+    this.setState({offset: 0});
   };
 
   filterData = async (sort) => {
@@ -107,11 +107,11 @@ class GlobalState extends React.Component {
         offset: response.data.data.offset,
       });
       console.log('FIltered property===>', response.data.data.properties);
-      this.setState({ limitExceed: false });
-      this.setState({ isLoading: false });
+      this.setState({limitExceed: false});
+      this.setState({isLoading: false});
     } else {
       Alert.alert('Error', 'Network Issues');
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     }
   };
 
@@ -872,7 +872,7 @@ class GlobalState extends React.Component {
     this.setState(
       Object.assign(
         this.state.propList[editData.indexUnits].dataTop[editData.indexBuild],
-        { list: some_array },
+        {list: some_array},
       ),
     );
     // console.log('Kiya Edit Howa', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
@@ -885,7 +885,7 @@ class GlobalState extends React.Component {
     const response = await this.api.get('/property/billing-company/all');
     console.log('Check response', response?.data?.data?.billingCompany);
     // this.setState({ success: response.data.bool });
-    this.setState({ itemList: response?.data?.data?.billingCompany });
+    this.setState({itemList: response?.data?.data?.billingCompany});
   };
 
   showBuildings = async (data) => {
@@ -915,38 +915,38 @@ class GlobalState extends React.Component {
   //   // this.setState({ itemList: response?.data?.data?.billingCompany });
   // };
   searchProperties = async (e) => {
-    this.setState({ loadFor: e });
+    this.setState({loadFor: e});
     let data = {
       offset: 0,
       search: e,
     };
 
     if (e) {
-      this.setState({ searchLoading: true });
+      this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', data);
       // console.log('Search property===>', response);
-      this.setState({ loadFor: response.data.data.offset });
+      this.setState({loadFor: response.data.data.offset});
       if (response?.data?.bool) {
-        this.setState({ searchList: response.data.data.properties });
+        this.setState({searchList: response.data.data.properties});
         // console.log('Search property===>', response.data.data.properties);
-        this.setState({ searchLoading: false });
+        this.setState({searchLoading: false});
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({ searchLoading: false });
+        this.setState({searchLoading: false});
       }
     } else {
-      this.setState({ searchList: [] });
+      this.setState({searchList: []});
     }
   };
 
   loadSearchData = async () => {
-    this.setState({ searchLoading: true });
+    this.setState({searchLoading: true});
     let prop = {
       offset: this.state.searchOffset,
       search: this.state.loadFor,
     };
     if (this.state.loadFor) {
-      this.setState({ searchLoading: true });
+      this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', prop);
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
@@ -957,7 +957,7 @@ class GlobalState extends React.Component {
           let data = [...this.state.searchList];
           let data2 = response.data.data.properties;
           data.push(...data2);
-          this.setState({ searchList: data });
+          this.setState({searchList: data});
           this.setState({
             searchLoading: false,
             searchOffset: response.data.data.offset,
@@ -965,31 +965,37 @@ class GlobalState extends React.Component {
         }
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({ searchLoading: false });
+        this.setState({searchLoading: false});
       }
     } else {
-      this.setState({ searchList: [] });
+      this.setState({searchList: []});
     }
   };
 
   clearSearchList = () => {
-    this.setState({ searchList: [] });
+    this.setState({searchList: []});
   };
 
-  deleteBuilding = async () => {
-
-  }
-
-  updateBuilding = async (id) => {
-    
-      console.log('updateBuilding');
-      const response = await this.api.delete(`/property/equipment/building/${id}`);
+  updateBuilding = async (edit, id, params) => {
+    console.log('updateBuilding');
+    if (edit) {
+      const response = await this.api.patch(
+        `/property/equipment/building/update-building/${id}`,
+        params,
+      );
+      console.log('Check Update', response?.data);
+      alert(response?.data?.message);
+    } else {
+      const response = await this.api.delete(
+        `/property/equipment/building/${id}`,
+      );
       console.log('Check response', response?.data);
-      alert(response?.data?.message)
-      // this.setState({ success: response.data.bool });
-      // this.setState({});
+      alert(response?.data?.message);
+    }
+    // this.setState({ success: response.data.bool });
+    // this.setState({});
     // }
-  }
+  };
   render() {
     // console.log('pROP', this.props)
     return (
@@ -1033,4 +1039,4 @@ class GlobalState extends React.Component {
   }
 }
 
-export { GlobalState };
+export {GlobalState};

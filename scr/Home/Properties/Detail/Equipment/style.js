@@ -345,9 +345,9 @@ export default styles = StyleSheet.create({
     // backgroundColor: "yellow"
   },
   input: {
-    height: height * .07,
+    // height: height * .07,
     width: width * 0.75,
-    fontSize: height * 0.018,
+    fontSize: width * 0.03,
   },
   footerBtn: {
     width: width * 0.8,
