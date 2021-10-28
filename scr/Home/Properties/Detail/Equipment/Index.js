@@ -1015,6 +1015,7 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({visible: true});
   };
+  
   showTypesOfMeter = (item, index) => {
     // this.setState({typeOfMetersVisible: true});
     // let newArr = [...this.state.meterListData]; // copying the old datas array
@@ -1023,9 +1024,11 @@ export default class Splash extends Component {
     //   ,
     //   () => console.log('e--->', this.state.meterListData));
   };
+
   hideTypesOfMeter = () => {
     this.setState({typeOfMetersVisible: false});
   };
+
   onGetMeterTypeId = (item, index) => {
     this.setState({typeOfMetersVisible: false});
     let newArr = [...this.state.meterListData]; // copying the old datas array
@@ -2684,6 +2687,7 @@ export default class Splash extends Component {
                         onPress={this.selectAndCloseAdd}>
                         <View
                           style={{
+                            backgroundColor: 'green',
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                             width: width * 0.23,

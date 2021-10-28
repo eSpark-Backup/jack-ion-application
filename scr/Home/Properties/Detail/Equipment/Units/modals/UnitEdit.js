@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   Dimensions,
+  LayoutAnimation,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -38,10 +39,11 @@ export default function UnitEdit({
   itemPressHandle,
   buildingName,
   unitDetails,
+  meterTypes,
 }) {
   const [meterListData, setMeterListData] = useState([]);
-  const [meterListArray, setMeterListArray] = useState([]);
   const [typeOfMeters, setTypeOfMeters] = useState([]);
+  const [meterListArray, setMeterListArray] = useState([]);
 
   const getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -55,7 +57,13 @@ export default function UnitEdit({
     getToken();
   }, []);
 
+  useEffect(() => {
+    setMeterListArray(meterTypes);
+    console.log('XXXXX', meterListArray);
+  }, [meterTypes]);
+
   const addMeterInNewArray = async (value) => {
+    hideMenu();
     console.log('value Of selectable meter_______', value);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const data = {
@@ -75,7 +83,7 @@ export default function UnitEdit({
     };
     const newArray = [...meterListData];
     newArray.push(data);
-    console.log(setMeterListData(newArray));
+    setMeterListData(newArray);
 
     const newList = meterListArray.filter((item) => item.id !== value.id);
     setMeterListArray(newList);
@@ -84,7 +92,50 @@ export default function UnitEdit({
     setTypeOfMeters(unitResponse?.data?.data);
   };
 
-  console.log('got Meters', typeOfMeters);
+  //!----------->
+
+  const showMoreInputs = (value, index) => {
+    // const newList = this.state.meterListData.filter(
+    //   (item) => item.showInputs !== value.showInputs,
+    // );
+    // this.setState({meterListData: newList});
+
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
+    this.setState({meterListData: newArr}, () =>
+      console.log('e--->', this.state.meterListData),
+    );
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    // this.setState({showOtherInputs: !this.state.showOtherInputs});
+  };
+
+  const handleMetertypeModal = async (index) => {
+    const unitResponse = await this.api.get(
+      `/property/equipment/unit-of-measure/all`,
+    );
+    this.setState(
+      {measureOfUnit: unitResponse?.data?.data, typeOfMeterIndex: index},
+      () => console.log('measureOfUnit Of_______', this.state.measureOfUnit),
+    );
+    this.setState({
+      isModalMeterVisible: true,
+    });
+  };
+
+  const onGetMeterTypeId = (item, index) => {
+    this.setState({typeOfMetersVisible: false});
+    let newArr = [...this.state.meterListData]; // copying the old datas array
+    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+    this.setState({meterListData: newArr}, () =>
+      console.log('e--->', this.state.meterListData),
+    );
+  };
+
+
+
+//!-------->
+
+  console.log('got Meters', typeOfMeters); // ye jb hoga jb select hoga meter type
   console.log('got unit details', unitDetails);
   return (
     <View>
@@ -102,7 +153,8 @@ export default function UnitEdit({
               style={[
                 styles.boxConatainer,
                 {
-                  height: height * 0.44,
+                  height:
+                    meterListData.length == 0 ? height * 0.44 : height * 0.55,
                 },
               ]}>
               <View style={styles.boxInner}>
@@ -148,6 +200,7 @@ export default function UnitEdit({
                         placeholder="Building Name"
                         value={buildingName}
                         dense={true}
+                        editable={false}
                         // onFocus={this.changeLayoutMeter3}
                         // onBlur={this.changeLayoutMeter3}
                         showSoftInputOnFocus={false}
@@ -226,7 +279,7 @@ export default function UnitEdit({
                                 style={[
                                   styles.utilityInScrHead,
                                   {
-                                    color: realColor,
+                                    color: '#000',
                                     textTransform: 'capitalize',
                                   },
                                 ]}>
@@ -288,9 +341,7 @@ export default function UnitEdit({
                                     primary: '#25AAE1ec',
                                     selectionColor: 'red',
                                   },
-                                }}>
-                                {/* <Scanner name="scan" size={20} /> */}
-                              </TextInput>
+                                }}></TextInput>
                             </View>
                             {item.deviceSerialError ? (
                               <HelperText
@@ -534,61 +585,60 @@ export default function UnitEdit({
                     }}>
                     <MenuT
                       visible={meterMenuVisible}
-                      // style={{height: height * 0.2}}
                       anchor={
-                        <Pressable
-                          onPress={showMenu}
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                          }}
-                          android_ripple={{
-                            color: '#25AAE1ec',
-                            borderless: true,
-                            radius: height * 0.08,
-                          }}>
-                          {/*//todo: Button for meter */}
-                          <Plus name="plus" size={25} color="#25AAE1ec" />
-                          <Text
+                        meterListArray.length ? (
+                          <Pressable
+                            onPress={showMenu}
                             style={{
-                              fontSize: height * 0.018,
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'center',
+                            }}
+                            android_ripple={{
                               color: '#25AAE1ec',
+                              borderless: true,
+                              radius: height * 0.08,
                             }}>
-                            Meter
-                          </Text>
-                        </Pressable>
+                            {/*//todo: Button for meter */}
+                            <Plus name="plus" size={25} color="#25AAE1ec" />
+                            <Text
+                              style={{
+                                fontSize: height * 0.018,
+                                color: '#25AAE1ec',
+                              }}>
+                              Meter
+                            </Text>
+                          </Pressable>
+                        ) : (
+                          <View style={{marginLeft: width * 0.02}}>
+                            <Text
+                              style={{
+                                fontSize: height * 0.018,
+                                color: '#25AAE1ec',
+                              }}>
+                              No Meters
+                            </Text>
+                          </View>
+                        )
                       }
                       onRequestClose={hideMenu}>
                       <ScrollView>
-                        <View
-                          style={{
-                            // flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            // paddingLeft: width * 0.02,
-                          }}>
-                          {/* <Drop
-                                        name={item.icon}
-                                        size={15}
-                                        color="#3E89BF"
-                                      /> */}
-                          <MenuItem
-                            textStyle={styles.textCapitalize}
-                            onPress={itemPressHandle}>
-                            Electricity
-                          </MenuItem>
-                          <MenuItem
-                            textStyle={styles.textCapitalize}
-                            onPress={itemPressHandle}>
-                            Gas
-                          </MenuItem>
-                          <MenuItem
-                            textStyle={styles.textCapitalize}
-                            onPress={itemPressHandle}>
-                            All Water
-                          </MenuItem>
-                        </View>
+                        {meterListArray.map((item, index) => (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              // paddingLeft: width * 0.02,
+                            }}>
+                            <Drop name={item.icon} size={15} color="#3E89BF" />
+                            <MenuItem
+                              textStyle={styles.textCapitalize}
+                              onPress={() => addMeterInNewArray(item)}>
+                              {item.name}
+                            </MenuItem>
+                          </View>
+                        ))}
                       </ScrollView>
                     </MenuT>
                   </View>
