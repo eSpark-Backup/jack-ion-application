@@ -1,5 +1,5 @@
 import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../utils/fonts';
+import {Fonts} from '../../../utils/fonts';
 
 //Packages
 

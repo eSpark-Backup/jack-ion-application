@@ -23,7 +23,7 @@ import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 import styles from './style';
 const {width, height} = Dimensions.get('window');
 
-export default class UpdateModal extends Component {
+export default class MeterTypeBuilder extends Component {
   render() {
     const {
       title,
@@ -32,6 +32,7 @@ export default class UpdateModal extends Component {
       onCancel,
       children,
       doneBtnTitle,
+      onDone,
     } = this.props;
     return (
       <Modal
@@ -80,7 +81,7 @@ export default class UpdateModal extends Component {
                         <Text style={{color: 'black'}}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={onDone}>
                       <View style={styles.saveUnitBotton}>
                         <Plus name="plus" color="white" size={18} />
                         <Text style={{color: 'white'}}>{doneBtnTitle}</Text>
