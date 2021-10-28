@@ -60,7 +60,7 @@ import TextTicker from 'react-native-text-ticker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {create} from 'apisauce';
-import UpdateModal from '../../../../components/UpdateModal';
+import UpdateModal from '../../../../components/modal/UpdateModal';
 import {Header, Button} from 'react-native-elements';
 
 // Components
@@ -1050,19 +1050,6 @@ export default class Splash extends Component {
     this.setState({visible: true});
   };
   
-  showTypesOfMeter = (item, index) => {
-    // this.setState({typeOfMetersVisible: true});
-    // let newArr = [...this.state.meterListData]; // copying the old datas array
-    // newArr[index].meterType = item; // replace e.target.value with whatever you want to change it to
-    // this.setState({ meterListData: newArr }
-    //   ,
-    //   () => console.log('e--->', this.state.meterListData));
-  };
-
-  hideTypesOfMeter = () => {
-    this.setState({typeOfMetersVisible: false});
-  };
-
   onGetMeterTypeId = (item, index) => {
     this.setState({typeOfMetersVisible: false});
     let newArr = [...this.state.meterListData]; // copying the old datas array
