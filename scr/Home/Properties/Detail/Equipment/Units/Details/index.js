@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   View,
@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import { Header, Button, Icon } from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
@@ -30,6 +31,7 @@ import {
 } from 'react-native-responsive-linechart';
 import { Fonts } from '../../../../../../utils/fonts';
 
+import EditUnit from '../modals/UnitEdit';
 // Components
 import styles from './style';
 import { Checkbox, Divider } from 'react-native-paper';
@@ -44,6 +46,8 @@ const api = create({
 });
 
 const App = ({ navigation }) => {
+  const scrollViewRef = useRef();
+
   const [dangerView, setDangerView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
@@ -56,6 +60,10 @@ const App = ({ navigation }) => {
   const [meterTypeData, setMeterTypeData] = useState([]);
   const [remoteReaderData, setRemoteReaderData] = useState([]);
   const [unitData, setUnitData] = useState([]);
+  const [editUnitModalVisible, setEditUnitModalVisible] = useState(false);
+  const [editUnitMenuVisible, setEditUnitMenuVisible] = useState(false);
+  const [meterListArray, setMeterListArray] = useState([]);
+  const [editMeterTypes, setEditMeterTypes] = useState([]);
 
   const { unitId, buildingName } = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
@@ -74,6 +82,12 @@ const App = ({ navigation }) => {
     setLoading(false);
   };
 
+  const getMeterTypes = async () => {
+    const res = await api.get('/property/equipment/meter/all-meters');
+    setMeterListArray(res.data?.data);
+    console.log('All Meters', res.data?.data);
+  };
+
   const deleteUnit = () => {
     Alert.alert('Delete Unit', 'Are you sure you want to Delete?');
   };
@@ -86,6 +100,7 @@ const App = ({ navigation }) => {
       // this.setState({token: token});
       api.setHeader('Authorization', 'Bearer ' + token);
       getUnitDetail();
+      getMeterTypes();
     }
   };
 
@@ -325,6 +340,29 @@ const App = ({ navigation }) => {
     }
   };
 
+  const openEditModal = () => {
+    meterTypes();
+    setEditUnitModalVisible(true);
+    console.log(clc.cyan('chala'));
+  };
+
+  const meterTypes = () => {
+    let arr1 = [...meterListArray];
+    // const arr1 = [
+    //   {id: 1, title: 'Water'},
+    //   {id: 2, title: 'Hot Water'},
+    //   {id: 3, title: 'Cold Water'},
+    //   {id: 4, title: 'Gas'},
+    //   {id: 5, title: 'Electricity'},
+    // ];
+    let arr2 = [...arrayOfUnits];
+    const antiIntersection = arr1.filter(
+      (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
+    );
+    console.log(clc.yellow('please', antiIntersection));
+    setEditMeterTypes(antiIntersection);
+  };
+
   const renderUnitList = ({ item, index }) => {
     return (
       data?.data?.unit?.unit_meter?.length == 0 ? (
@@ -435,10 +473,11 @@ const App = ({ navigation }) => {
     return (
       <TouchableOpacity
         disabled={item.leftName == 'Status' ? false : true}
-        onPress={() => openStatusView()}>
+        onPress={() => {
+          openStatusView(), setDangerView(false);
+        }}>
         <View style={styles.listOuter}>
-          <View
-            style={styles.listContainer}>
+          <View style={styles.listContainer}>
             <View style={{ flexDirection: 'row' }}>
               <Text style={styles.listText}>{item.leftName}</Text>
             </View>
@@ -446,9 +485,7 @@ const App = ({ navigation }) => {
               <View style={{ flexDirection: 'column' }}>
                 <View style={{ flexDirection: 'row-reverse' }}>
                   {item.rightName == null ? null : (
-                    <Text style={styles.listText}>
-                      {item.rightName}
-                    </Text>
+                    <Text style={styles.listText}>{item.rightName}</Text>
                   )}
                   {item.rightIcon2 == null ? null : (
                     <Icon
@@ -461,9 +498,7 @@ const App = ({ navigation }) => {
                   )}
                 </View>
                 {item.text && (
-                  <Text style={styles.listGreyText}>
-                    {item.text}
-                  </Text>
+                  <Text style={styles.listGreyText}>{item.text}</Text>
                 )}
               </View>
               {item.rightIcon == null ? null : (
@@ -477,9 +512,7 @@ const App = ({ navigation }) => {
               )}
             </View>
           </View>
-          <Divider
-            style={styles.listDivider}
-          />
+          <Divider style={styles.listDivider} />
         </View>
       </TouchableOpacity>
     );
@@ -497,7 +530,10 @@ const App = ({ navigation }) => {
 
   const renderMeterType = ({ item, index }) => {
     return (
-      <TouchableOpacity onPress={() => openView()}>
+      <TouchableOpacity
+        onPress={() => {
+          openView(), setDangerView(false);
+        }}>
         <View style={styles.listOuter}>
           <View style={styles.listContainer}>
             <View style={{ flexDirection: 'row' }}>
@@ -511,10 +547,13 @@ const App = ({ navigation }) => {
                     <TextTicker
                       duration={6000}
                       marqueeDelay={2000}
-                      style={[styles.listText, {
-                        textAlign: 'right',
-                        textTransform: 'capitalize',
-                      }]}>
+                      style={[
+                        styles.listText,
+                        {
+                          textAlign: 'right',
+                          textTransform: 'capitalize',
+                        },
+                      ]}>
                       {item.rightName}
                     </TextTicker>
                   )}
@@ -531,9 +570,7 @@ const App = ({ navigation }) => {
               )}
             </View>
           </View>
-          <Divider
-            style={styles.listDivider}
-          />
+          <Divider style={styles.listDivider} />
         </View>
       </TouchableOpacity>
     );
@@ -542,8 +579,7 @@ const App = ({ navigation }) => {
   const renderMeterInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
-        <View
-          style={styles.listInnerContainer}>
+        <View style={styles.listInnerContainer}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.listInnerText}>{item.leftText}</Text>
             {item.leftIcon == null ? null : (
@@ -557,8 +593,7 @@ const App = ({ navigation }) => {
             )}
           </View>
           <View style={{ flexDirection: 'row' }}>
-            <Text
-              style={[styles.listInnerText, { textTransform: 'capitalize' }]}>
+            <Text style={[styles.listInnerText, { textTransform: 'capitalize' }]}>
               {item.rightText}
             </Text>
           </View>
@@ -570,19 +605,18 @@ const App = ({ navigation }) => {
   const renderStatusInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
-        <View
-          style={styles.listInnerContainer}>
+        <View style={styles.listInnerContainer}>
           <View style={{ flexDirection: 'row' }}>
-            <Text
-              style={styles.listGreyText}>
-              {item.leftText}
-            </Text>
+            <Text style={styles.listGreyText}>{item.leftText}</Text>
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text
-              style={[styles.listInnerText, {
-                color: item.bold ? '#000' : '#8c8c8c',
-              }]}>
+              style={[
+                styles.listInnerText,
+                {
+                  color: item.bold ? '#000' : '#8c8c8c',
+                },
+              ]}>
               {item.rightText}
             </Text>
             {item.icon == null ? null : (
@@ -599,13 +633,30 @@ const App = ({ navigation }) => {
     );
   };
 
-  console.log(clc.red('data', data.data));
+  console.log(clc.red('data', JSON.stringify(data.data)));
 
   if (loading) {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
     return (
       <View style={{ flex: 1 }}>
+        <EditUnit
+          modalVisible={editUnitModalVisible}
+          meterMenuVisible={editUnitMenuVisible}
+          showMenu={() => setEditUnitMenuVisible(true)}
+          hideMenu={() => setEditUnitMenuVisible(false)}
+          closeModal={() => setEditUnitModalVisible(false)}
+          meterTypes={editMeterTypes}
+          buildingName={buildingName}
+          unitDetails={data.data}
+          itemPressHandle={() => {
+            setEditUnitMenuVisible(false);
+          }}
+          handleEditUnit={() => {
+            ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
+            setEditUnitModalVisible(false);
+          }}
+        />
         <Header
           leftComponent={{
             text: 'Close',
@@ -622,14 +673,18 @@ const App = ({ navigation }) => {
               />
               <Text style={{ fontSize: width * 0.05 }}>Units Details</Text>
             </View>
-          }
-          rightComponent={{
-            text: 'Save',
-            style: { fontSize: width * 0.05, color: '#5c5c5ccf' },
+          } rightComponent={{
+            text: 'Edit',
+            style: styles.headerText,
+            onPress: () => {
+              openEditModal();
+            },
           }}
           backgroundColor="#fff"
           containerStyle={{ borderBottomWidth: width * 0.003, elevation: 1 }}
         />
+
+
         <View style={{ flex: 1, }}>
           <SectionList
             style={{ marginTop: height * 0.02 }}
@@ -656,7 +711,7 @@ const App = ({ navigation }) => {
             )}
           />
           <View style={{
-              bottom: width * .25
+            bottom: width * .25
           }}>
 
             <Text style={{
@@ -671,7 +726,7 @@ const App = ({ navigation }) => {
                 "No meter in this unit.\nAdd meter with edit option"
               }
             </Text>
-            <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
               <Image
                 source={require('../../../../../../../Images/meter-hot.png')}
                 resizeMode="contain"
@@ -695,6 +750,23 @@ const App = ({ navigation }) => {
   } else {
     return (
       <View style={{ flex: 1 }}>
+        <EditUnit
+          modalVisible={editUnitModalVisible}
+          meterMenuVisible={editUnitMenuVisible}
+          showMenu={() => setEditUnitMenuVisible(true)}
+          hideMenu={() => setEditUnitMenuVisible(false)}
+          closeModal={() => setEditUnitModalVisible(false)}
+          meterTypes={editMeterTypes}
+          buildingName={buildingName}
+          unitDetails={data.data}
+          itemPressHandle={() => {
+            setEditUnitMenuVisible(false);
+          }}
+          handleEditUnit={() => {
+            ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
+            setEditUnitModalVisible(false);
+          }}
+        />
         <Header
           leftComponent={{
             text: 'Close',
@@ -713,14 +785,23 @@ const App = ({ navigation }) => {
             </View>
           }
           rightComponent={{
-            text: 'Save',
-            style: { fontSize: width * 0.05, color: '#5c5c5ccf' },
+            text: 'Edit',
+            style: styles.headerText,
+            onPress: () => {
+              openEditModal();
+            },
           }}
           backgroundColor="#fff"
           containerStyle={{ borderBottomWidth: width * 0.003, elevation: 1 }}
         />
 
-        <ScrollView>
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() => {
+            if (dangerView) {
+              scrollViewRef.current.scrollToEnd({ animated: true });
+            }
+          }}>
           <View style={styles.container}>
             {!headView && (
               <MotiView
@@ -734,8 +815,7 @@ const App = ({ navigation }) => {
                 }}
                 style={styles.currentReadContainer}>
                 <Text style={{ color: '#5c5c5ccf' }}>CURRENT READ</Text>
-                <View
-                  style={styles.currentReadInnerContainer}>
+                <View style={styles.currentReadInnerContainer}>
                   <Text
                     style={{
                       fontSize: width * 0.08,
@@ -757,78 +837,55 @@ const App = ({ navigation }) => {
                 </View>
               </MotiView>
             )}
-            {headView && (
-              <MotiView
-                from={{
-                  opacity: 0,
-                  translateX: 500,
-                }}
-                animate={{
-                  opacity: 1,
-                  translateX: 0,
-                }}
-                style={[
-                  styles.currentReadContainer,
-                  { alignItems: 'center', justifyContent: 'center' },
-                ]}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                  }}>
-                  <RightArrow
-                    name="chevron-thin-left"
-                    size={width * 0.08}
-                    color={typeColor(unitMeter?.meter_name)}
-                    style={{ alignSelf: 'center', marginRight: width * 0.01 }}
-                    onPress={() => setHeadView(!headView)}
-                  />
-                  <View>
-                    <Text style={styles.greyText}>
-                      PULSES
-                    </Text>
-                    <Text style={styles.text}>
-                      3,786
-                    </Text>
+            {
+              headView && (
+                <MotiView
+                  from={{
+                    opacity: 0,
+                    translateX: 500,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    translateX: 0,
+                  }}
+                  style={[
+                    styles.currentReadContainer,
+                    { alignItems: 'center', justifyContent: 'center' },
+                  ]}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <RightArrow
+                      name="chevron-thin-left"
+                      size={width * 0.08}
+                      color={typeColor(unitMeter?.meter_name)}
+                      style={{ alignSelf: 'center', marginRight: width * 0.01 }}
+                      onPress={() => setHeadView(!headView)}
+                    />
+                    <View>
+                      <Text style={styles.greyText}>PULSES</Text>
+                      <Text style={styles.text}>3,786</Text>
+                    </View>
+                    <Text style={styles.symbolStyle}>x</Text>
+                    <View>
+                      <Text style={styles.greyText}>MULTIPLIER</Text>
+                      <Text style={styles.text}>1</Text>
+                    </View>
+                    <Text style={styles.symbolStyle}>+</Text>
+                    <View>
+                      <Text style={styles.greyText}>IMR</Text>
+                      <Text style={styles.text}>21</Text>
+                    </View>
+                    <Text style={styles.symbolStyle}>=</Text>
+                    <View>
+                      <Text style={styles.greyText}>CURRENT READ</Text>
+                      <Text style={styles.text}>3,807</Text>
+                    </View>
                   </View>
-                  <Text
-                    style={styles.symbolStyle}>
-                    x
-                  </Text>
-                  <View>
-                    <Text style={styles.greyText}>
-                      MULTIPLIER
-                    </Text>
-                    <Text style={styles.text}>
-                      1
-                    </Text>
-                  </View>
-                  <Text
-                    style={styles.symbolStyle}>
-                    +
-                  </Text>
-                  <View>
-                    <Text style={styles.greyText}>
-                      IMR
-                    </Text>
-                    <Text style={styles.text}>
-                      21
-                    </Text>
-                  </View>
-                  <Text
-                    style={styles.symbolStyle}>
-                    =
-                  </Text>
-                  <View>
-                    <Text style={styles.greyText}>
-                      CURRENT READ
-                    </Text>
-                    <Text style={styles.text}>
-                      3,807
-                    </Text>
-                  </View>
-                </View>
-              </MotiView>
-            )}
+                </MotiView>
+              )
+            }
             <View>
               <Button
                 title="Quick Actions"
@@ -857,8 +914,7 @@ const App = ({ navigation }) => {
               renderItem={renderUnitList}
               renderSectionHeader={({ section: { title, icon, type } }) => (
                 <>
-                  <View
-                    style={styles.sectionTitle}>
+                  <View style={styles.sectionTitle}>
                     <Text style={styles.sectionText}>{title}</Text>
                     <Icon
                       name={icon}
@@ -867,9 +923,7 @@ const App = ({ navigation }) => {
                       style={{ alignSelf: 'center' }}
                     />
                   </View>
-                  <Divider
-                    style={styles.sectionTitleDivider}
-                  />
+                  <Divider style={styles.sectionTitleDivider} />
                 </>
               )}
             />
@@ -884,33 +938,27 @@ const App = ({ navigation }) => {
               renderItem={renderRemoteList}
               renderSectionHeader={({ section: { title, img } }) => (
                 <>
-                  <View
-                    style={styles.sectionTitle}>
+                  <View style={styles.sectionTitle}>
                     <Text style={styles.sectionText}>{title}</Text>
-                    <Image
-                      source={img}
-                      style={styles.sectionImgStyle}
-                    />
+                    <Image source={img} style={styles.sectionImgStyle} />
                   </View>
-                  <Divider
-                    style={styles.sectionTitleDivider}
-                  />
+                  <Divider style={styles.sectionTitleDivider} />
                 </>
               )}
             />
-            {openedStatus ? (
-              <FlatList
-                style={styles.statusList}
-                data={statusInfo}
-                keyExtractor={(item, index) => item + index}
-                renderItem={renderStatusInfo}
-                ItemSeparatorComponent={() => (
-                  <Divider
-                    style={[styles.listDivider, { marginTop: 0 }]}
-                  />
-                )}
-              />
-            ) : null}
+            {
+              openedStatus ? (
+                <FlatList
+                  style={styles.statusList}
+                  data={statusInfo}
+                  keyExtractor={(item, index) => item + index}
+                  renderItem={renderStatusInfo}
+                  ItemSeparatorComponent={() => (
+                    <Divider style={[styles.listDivider, { marginTop: 0 }]} />
+                  )}
+                />
+              ) : null
+            }
             {/*
         //* Meter Type List
         */}
@@ -922,12 +970,14 @@ const App = ({ navigation }) => {
               renderItem={renderMeterType}
               renderSectionHeader={({ section: { title, img } }) => (
                 <>
-                  <View
-                    style={styles.sectionTitle}>
+                  <View style={styles.sectionTitle}>
                     <Text
-                      style={[styles.sectionText, {
-                        textTransform: 'capitalize',
-                      }]}>
+                      style={[
+                        styles.sectionText,
+                        {
+                          textTransform: 'capitalize',
+                        },
+                      ]}>
                       {unitMeter?.meter_name + ' Meter'}
                     </Text>
                     <Image
@@ -940,28 +990,25 @@ const App = ({ navigation }) => {
                       }}
                     />
                   </View>
-                  <Divider
-                    style={styles.sectionTitleDivider}
-                  />
+                  <Divider style={styles.sectionTitleDivider} />
                 </>
               )}
             />
-            {opened ? (
-              <FlatList
-                style={styles.statusList}
-                data={meterInfoData}
-                keyExtractor={(item, index) => item + index}
-                renderItem={renderMeterInfo}
-                ItemSeparatorComponent={() => (
-                  <Divider
-                    style={[styles.listDivider, { marginTop: 0 }]}
-                  />
-                )}
-              />
-            ) : null}
+            {
+              opened ? (
+                <FlatList
+                  style={styles.statusList}
+                  data={meterInfoData}
+                  keyExtractor={(item, index) => item + index}
+                  renderItem={renderMeterInfo}
+                  ItemSeparatorComponent={() => (
+                    <Divider style={[styles.listDivider, { marginTop: 0 }]} />
+                  )}
+                />
+              ) : null
+            }
             <View>
-              <View
-                style={styles.usageTextContainer}>
+              <View style={styles.usageTextContainer}>
                 <Text style={styles.sectionText}>Usage</Text>
                 <Icon
                   name="bar-chart"
@@ -971,9 +1018,12 @@ const App = ({ navigation }) => {
                 />
               </View>
               <Divider
-                style={[styles.sectionTitleDivider, {
-                  left: width * 0.05,
-                }]}
+                style={[
+                  styles.sectionTitleDivider,
+                  {
+                    left: width * 0.05,
+                  },
+                ]}
               />
               {/*
               //todo: Add Chart here 
@@ -1024,40 +1074,34 @@ const App = ({ navigation }) => {
                 </Chart>
                 <View style={styles.legendContainer}>
                   <View style={{ flexDirection: 'row' }}>
-                    <View
-                      style={styles.meterUsageBox}
-                    />
+                    <View style={styles.meterUsageBox} />
                     <Text>Meter Usage</Text>
                   </View>
                   <View style={{ flexDirection: 'row' }}>
-                    <View
-                      style={styles.meterReadBox}
-                    />
+                    <View style={styles.meterReadBox} />
                     <Text>Meter Read</Text>
                   </View>
                 </View>
-              </View>
-            </View>
+              </View >
+            </View >
             <View>
-              <View
-                style={styles.usageTextContainer}>
+              <View style={styles.usageTextContainer}>
                 <Text style={{ fontSize: width * 0.07 }}>Danger Zone</Text>
                 <Icon
                   name={dangerView ? 'chevron-down' : 'chevron-right'}
                   type="feather"
                   size={width * 0.08}
                   color="#000"
-                  onPress={() => setDangerView(!dangerView)}
+                  onPress={() => {
+                    setDangerView(!dangerView);
+                  }}
                 />
               </View>
-              <Divider
-                style={styles.dangerHeader}
-              />
+              <Divider style={styles.dangerHeader} />
               {!dangerView ? (
                 <View />
               ) : (
-                <View
-                  style={styles.dangerView}>
+                <View style={styles.dangerView}>
                   <Button
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={`Delete ${unitMeter?.meter_name} Meter`}
@@ -1075,16 +1119,16 @@ const App = ({ navigation }) => {
                 </View>
               )}
             </View>
-          </View>
-        </ScrollView>
-        <View
-          style={styles.footerStyle}>
+          </View >
+        </ScrollView >
+        <View style={styles.footerStyle}>
           {arrayOfUnits &&
             arrayOfUnits.map((item, index) => (
               <TouchableOpacity
-                style={[styles.meterStyle, {
-                  borderColor: typeColor(item.meter_name)
-                }]}
+                style={[
+                  styles.meterStyle,
+                  { borderColor: typeColor(item.meter_name) },
+                ]}
                 onPress={() => handleMeterSelect(item)}>
                 {item.id == unitMeter?.id && (
                   <View
@@ -1120,7 +1164,7 @@ const App = ({ navigation }) => {
               </TouchableOpacity>
             ))}
         </View>
-      </View>
+      </View >
     );
   }
 };
