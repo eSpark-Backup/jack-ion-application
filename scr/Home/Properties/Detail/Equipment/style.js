@@ -86,6 +86,7 @@ export default styles = StyleSheet.create({
   infoTopViewContainer: {
     width: width * 0.3,
     // height: height * 0.13,
+    // height:height * .022,
     // elevation: width * .03,
     backgroundColor: 'white',
     // justifyContent: 'center',
@@ -119,7 +120,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginLeft: width * 0.01,
-    // marginBottom: height * 0.02,
+    // marginVertical: height * 0.01,
     alignItems: 'center',
   },
   infoViewInner: {

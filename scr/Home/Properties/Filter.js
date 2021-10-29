@@ -271,6 +271,17 @@ export default class Splash extends Component {
                       />
                     </View>
                   </View>
+                  <View style={styles.currentReadContainer}>
+                    <View style={styles.filterHeading}>
+                      <Text style={styles.filterListText}>Done Filteration</Text>
+                    </View>
+                    <View style={styles.filterUtility}>
+                      <TouchableOpacity
+                        onPress={() => this.getUtilityType(item.type)}>
+                        <Text>Filter</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>
