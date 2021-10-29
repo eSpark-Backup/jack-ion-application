@@ -872,6 +872,9 @@ export default class Splash extends Component {
       this.checkData();
     }
   };
+  get_filterVal = (payload) => {
+    get_filterVal(payload);
+  };
 
   checkData = async () => {
     const response = await this.api.get(
@@ -1049,7 +1052,7 @@ export default class Splash extends Component {
   showMenu = () => {
     this.setState({visible: true});
   };
-  
+
   onGetMeterTypeId = (item, index) => {
     this.setState({typeOfMetersVisible: false});
     let newArr = [...this.state.meterListData]; // copying the old datas array
@@ -1370,7 +1373,9 @@ export default class Splash extends Component {
     const newArray = [...this.state.meterListData];
     newArray.push(data);
     this.setState({meterListData: newArray});
-    const newList = this.state.meterListArray.filter((item) => item.id !== value.id);
+    const newList = this.state.meterListArray.filter(
+      (item) => item.id !== value.id,
+    );
     this.setState({meterListArray: newList});
     const unitResponse = await this.api.get(
       `/property/equipment/type/all-types`,
@@ -1634,42 +1639,44 @@ export default class Splash extends Component {
 
   _renderTopList = (build) => {
     return (
-      <TouchableOpacity
-        onPress={() => this.showArrayItem(build)}
-        style={styles.infoTopViewContainer}>
-        <View style={styles.infoTopViewInner}>
-          <Build name="office-building" size={width * 0.06} />
-          <TextTicker duration={5000} style={styles.dataFieldText}>
-            {build.item.name}
-          </TextTicker>
-        </View>
-        <Text
-          style={{
-            paddingHorizontal: 10,
-            fontSize: width * 0.04,
-            textAlign: 'center',
-            fontWeight: 'bold',
-          }}>
-          {build.item.unit_count} Units
-        </Text>
+      <KeyboardAvoidingView behavior="padding">
         <TouchableOpacity
-          onPress={() => this.buildingEditOpen(build.item)}
-          style={{
-            flexDirection: 'row',
-            // borderTopWidth: 1,
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: height * 0.01,
-            paddingVertical: height * 0.005,
-            backgroundColor: '#25AAE1ec',
-            borderBottomLeftRadius: width * 0.01,
-            borderBottomRightRadius: width * 0.01,
-          }}>
-          <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
-          <Edit name="edit" color="white" size={width * 0.04} />
+          onPress={() => this.showArrayItem(build)}
+          style={styles.infoTopViewContainer}>
+          <View style={styles.infoTopViewInner}>
+            <Build name="office-building" size={width * 0.06} />
+            <TextTicker duration={5000} style={styles.dataFieldText}>
+              {build.item.name}
+            </TextTicker>
+          </View>
+          <Text
+            style={{
+              paddingHorizontal: 10,
+              fontSize: width * 0.04,
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}>
+            {build.item.unit_count} Units
+          </Text>
+          <TouchableOpacity
+            onPress={() => this.buildingEditOpen(build.item)}
+            style={{
+              flexDirection: 'row',
+              // borderTopWidth: 1,
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: height * 0.01,
+              paddingVertical: height * 0.005,
+              backgroundColor: '#25AAE1ec',
+              borderBottomLeftRadius: width * 0.01,
+              borderBottomRightRadius: width * 0.01,
+            }}>
+            <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
+            <Edit name="edit" color="white" size={width * 0.04} />
+          </TouchableOpacity>
         </TouchableOpacity>
-      </TouchableOpacity>
+      </KeyboardAvoidingView>
     );
   };
 
@@ -2381,7 +2388,7 @@ export default class Splash extends Component {
 
   openAndClear = () => {
     this.setState({showSearch: true});
-    this.context.clearSearchList();
+    this.setState({searchList: []});
   };
   openFilter = () => {
     this.context.getBillingCompany();
@@ -4603,6 +4610,7 @@ export default class Splash extends Component {
             </View>
             <Filter
               type="Units"
+              get_filterVal={this.get_filterVal}
               isVisible={this.state.showFilter}
               close={() => this.setState({showFilter: !this.state.showFilter})}
             />
@@ -4617,70 +4625,76 @@ export default class Splash extends Component {
                   left: '-5%',
                   top: '-2.5%',
                 }}>
-                <View
-                  style={{
-                    width: width * 1,
-                    height: height * 0.08,
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    backgroundColor: '#25AAE1ec',
-                    // borderRadius: width * 0.1,
-                    elevation: width * 0.01,
-                    flexDirection: 'row',
-                  }}>
+                <KeyboardAvoidingView behavior="padding">
                   <View
                     style={{
-                      flexDirection: 'row',
+                      width: width * 1,
+                      height: height * 0.08,
+                      justifyContent: 'space-around',
                       alignItems: 'center',
+                      backgroundColor: '#25AAE1ec',
+                      // borderRadius: width * 0.1,
+                      elevation: width * 0.01,
+                      flexDirection: 'row',
                     }}>
-                    <Search name="search" size={height * 0.04} color="white" />
-                    <TextInput
-                      underlineColor="transparent"
-                      dense={true}
-                      placeholderTextColor="white"
-                      placeholder="Search"
-                      style={styles.search}
-                      onChangeText={(e) => this.searchUnits(e)}
-                      theme={{
-                        colors: {
-                          text: 'white',
-                          primary: '#25dAE1',
-                          selectionColor: 'transparent',
-                          background: 'transparent',
-                        },
-                      }}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <Search
+                        name="search"
+                        size={height * 0.04}
+                        color="white"
+                      />
+                      <TextInput
+                        underlineColor="transparent"
+                        dense={true}
+                        placeholderTextColor="white"
+                        placeholder="Search"
+                        style={styles.search}
+                        onChangeText={(e) => this.searchUnits(e)}
+                        theme={{
+                          colors: {
+                            text: 'white',
+                            primary: '#25dAE1',
+                            selectionColor: 'transparent',
+                            background: 'transparent',
+                          },
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        width: width * 0.05,
+                      }}>
+                      {this.state.searchLoading ? (
+                        <ActivityIndicator color="white" size="small" />
+                      ) : null}
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => this.setState({showSearch: false})}>
+                      <Close name="close" color="white" size={20} />
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      paddingVertical: height * 0.005,
+                    }}>
+                    <FlatList
+                      data={this.state.searchList}
+                      renderItem={this._renderSearchPropList}
+                      removeClippedSubviews={false}
+                      maxToRenderPerBatch={150}
+                      windowSize={100}
+                      keyExtractor={(item, index) => index.toString()}
+                      showsVerticalScrollIndicator={false}
+                      onEndReachedThreshold={width * 0.001}
+                      onEndReached={this.context.loadSearchData}
                     />
                   </View>
-                  <View
-                    style={{
-                      width: width * 0.05,
-                    }}>
-                    {this.state.searchLoading ? (
-                      <ActivityIndicator color="white" size="small" />
-                    ) : null}
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => this.setState({showSearch: false})}>
-                    <Close name="close" color="white" size={20} />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    paddingVertical: height * 0.005,
-                  }}>
-                  <FlatList
-                    data={this.state.searchList}
-                    renderItem={this._renderSearchPropList}
-                    removeClippedSubviews={false}
-                    maxToRenderPerBatch={150}
-                    windowSize={100}
-                    keyExtractor={(item, index) => index.toString()}
-                    showsVerticalScrollIndicator={false}
-                    onEndReachedThreshold={width * 0.001}
-                    onEndReached={this.context.loadSearchData}
-                  />
-                </View>
+                </KeyboardAvoidingView>
               </Modal>
             ) : null}
             {loader ? (
