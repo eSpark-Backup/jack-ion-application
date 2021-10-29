@@ -6,7 +6,7 @@ import Properties from 'react-native-vector-icons/FontAwesome5';
 import Setting from 'react-native-vector-icons/Feather';
 import Home from './Home/route';
 import Settings from './settings/Index';
-import Tools from './Properties/Index';
+import Tools from './Tools/Index';
 import Support from './ContactUs/Index';
 
 import {StatusBar, TouchableOpacity, Image, Dimensions} from 'react-native';
