@@ -65,7 +65,7 @@ const App = ({ navigation }) => {
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
 
-  const { unitId, buildingName } = navigation.state.params; //? Dynamic Ids
+  const { unitId, buildingName,buildingId } = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
@@ -635,7 +635,6 @@ const App = ({ navigation }) => {
   };
 
   console.log(clc.red('data', JSON.stringify(data.data)));
-
   if (loading) {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
@@ -647,8 +646,10 @@ const App = ({ navigation }) => {
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(false)}
+          reRun={() => getToken()}
           meterTypes={editMeterTypes}
           buildingName={buildingName}
+          buildingId={buildingId}
           unitDetails={data.data}
           itemPressHandle={() => {
             setEditUnitMenuVisible(false);
@@ -757,8 +758,10 @@ const App = ({ navigation }) => {
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(false)}
+          reRun={() => getToken()}
           meterTypes={editMeterTypes}
           buildingName={buildingName}
+          buildingId={buildingId}
           unitDetails={data.data}
           itemPressHandle={() => {
             setEditUnitMenuVisible(false);
