@@ -63,7 +63,12 @@ const App = ({navigation}) => {
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
 
-  const {unitId, buildingName, propertyName,meterInfo} = navigation.state.params; //? Dynamic Ids
+  const {
+    unitId,
+    buildingName,
+    propertyName,
+    meterInfo,
+  } = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
@@ -336,8 +341,22 @@ const App = ({navigation}) => {
     }
   };
 
-  const openEditModal = () => {
-    console.log(clc.cyan('chala'));
+  const confirmDelete = () => {
+    Alert.alert('Delete Meter', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: () => deleteMeter()},
+    ]);
+  };
+  const deleteMeter = async () => {
+    const response = await api.delete(
+      `/property/equipment/unit/unit-meter/${unitMeter.id}`,
+    );
+    getToken();
+    console.log('Check response', response?.data);
+    alert(response?.data?.message);
   };
 
   const renderUnitList = ({item, index}) => {
@@ -634,7 +653,6 @@ const App = ({navigation}) => {
               <Text style={{fontSize: width * 0.05}}>Meter Details</Text>
             </View>
           }
-          
           backgroundColor="#fff"
           containerStyle={{borderBottomWidth: width * 0.003, elevation: 1}}
         />
@@ -942,6 +960,7 @@ const App = ({navigation}) => {
               ) : (
                 <View style={styles.dangerView}>
                   <Button
+                    onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
                     title={`Delete ${unitMeter?.meter_name} Meter`}
                     buttonStyle={{
@@ -949,7 +968,7 @@ const App = ({navigation}) => {
                       marginBottom: height * 0.03,
                     }}
                   />
-                </View> 
+                </View>
               )}
             </View>
           </View>
