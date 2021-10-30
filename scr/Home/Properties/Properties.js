@@ -5,6 +5,8 @@ import Profile from './Detail/Index';
 import Dashboard from '../DashBoard/Index';
 import {GlobalState} from '../Properties/Context/GlobalState';
 import Filter from './Filter';
+import RedirectMeter from './../Properties/Detail/Equipment/RedirectMeter/index';
+
 
 export default class Prop extends React.Component {
   render() {
