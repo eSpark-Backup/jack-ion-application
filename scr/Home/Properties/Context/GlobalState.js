@@ -135,6 +135,7 @@ class GlobalState extends React.Component {
     itemList: [],
     offset: 0,
     searchOffset: 0,
+    filterSerial: '',
     searchList: [],
     propList: [],
   };
@@ -314,6 +315,10 @@ class GlobalState extends React.Component {
     this.setState({searchList: []});
   };
 
+  updateFilterSerial = (e) => {
+    this.setState({filterSerial: e});
+  };
+
   updateBuilding = async (edit, id, params) => {
     console.log('updateBuilding');
     if (edit) {
@@ -365,6 +370,8 @@ class GlobalState extends React.Component {
             deleteBuilding: this.deleteBuilding,
             updateBuilding: this.updateBuilding,
             biller: this.state.biller,
+            filterSerial: this.state.filterSerial,
+            updateFilterSerial: this.updateFilterSerial,
           }}>
           {this.props.children}
         </Context.Provider>

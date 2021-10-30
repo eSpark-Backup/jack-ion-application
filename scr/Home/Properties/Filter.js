@@ -133,8 +133,18 @@ export default class Splash extends Component {
     this.setState({biller: ''});
   };
 
+  onFilter = () => {
+    console.log('filter serila_______', this.context.filterSerial);
+    this.props.get_filterVal(this.context.filterSerial);
+  };
+
+  resetFilter = () => {
+    this.props.onReset('');
+    this.context.updateFilterSerial('');
+  };
+
   render() {
-    const {isVisible, close, type} = this.props;
+    const {isVisible, close, type, buildingName} = this.props;
     return (
       <View>
         <StatusBar barStyle="dark-content" />
@@ -156,7 +166,7 @@ export default class Splash extends Component {
                   }}
                   centerComponent={
                     <View style={{alignItems: 'center'}}>
-                      <Text style={{fontSize: 20, color: '#18CADC'}}>
+                      <Text style={{fontSize: 20, color: '#25aae1'}}>
                         Filter
                       </Text>
                       {/* <Progress.Bar
@@ -176,7 +186,11 @@ export default class Splash extends Component {
                   rightComponent={{
                     text: 'Reset',
                     style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
-                    onPress: () => this.onFocusFunction(),
+                    onPress: () => {
+                      type == 'Properties'
+                        ? this.onFocusFunction()
+                        : this.resetFilter();
+                    },
                   }}
                   backgroundColor="#fff"
                   containerStyle={{
@@ -224,14 +238,15 @@ export default class Splash extends Component {
                           <Text style={styles.filterListText}>Building:</Text>
                           <TextInput
                             style={styles.filterInputs}
-                            onChange={(e) => this.setState({buildingName: e})}
+                            value={buildingName}
+                            editable={false}
                           />
                         </View>
                         <View style={styles.inputFilterView}>
                           <Text style={styles.filterListText}>Unit:</Text>
                           <TextInput
                             style={styles.filterInputs}
-                            onChange={(e) => this.setState({unitName: e})}
+                            onChangeText={(e) => this.setState({unitName: e})}
                           />
                         </View>
                         <View style={styles.inputFilterView}>
@@ -240,7 +255,10 @@ export default class Splash extends Component {
                           </Text>
                           <TextInput
                             style={styles.filterInputs}
-                            onChange={(e) => this.setState({serial: e})}
+                            value={this.context.filterSerial}
+                            onChangeText={(e) =>
+                              this.context.updateFilterSerial(e)
+                            }
                           />
                         </View>
                       </View>
@@ -271,17 +289,22 @@ export default class Splash extends Component {
                       />
                     </View>
                   </View>
-                  <View style={styles.currentReadContainer}>
-                    <View style={styles.filterHeading}>
-                      <Text style={styles.filterListText}>Done Filteration</Text>
-                    </View>
-                    <View style={styles.filterUtility}>
+                  {type != 'Properties' ? (
+                    <View
+                      style={{
+                        ...styles.currentReadContainer,
+                        marginVertical: height * 0.015,
+                      }}>
                       <TouchableOpacity
-                        onPress={() => this.getUtilityType(item.type)}>
-                        <Text>Filter</Text>
+                        style={{
+                          ...styles.filterUtility,
+                          backgroundColor: '#25aae1',
+                        }}
+                        onPress={this.onFilter}>
+                        <Text style={{color: '#fff'}}>Filter</Text>
                       </TouchableOpacity>
                     </View>
-                  </View>
+                  ) : null}
                 </View>
               </View>
             </View>
