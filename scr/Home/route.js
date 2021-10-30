@@ -25,6 +25,7 @@ import Setting from '../settings/Index';
 import Filter from './Properties/Filter';
 import U_Details from './Properties/Detail/Equipment/Units/Details/index';
 import MeterDetails from './Properties/Detail/Equipment/MeterDetails/index'
+import RedirectMeter from './Properties/Detail/Equipment/RedirectMeter/index'
 const {width, height} = Dimensions.get('window');
 // import { Fonts } from '../../utils/fonts';
 import TabIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -71,7 +72,8 @@ const RouteConfigs = {
   Setting,
   Filter,
   U_Details,
-  MeterDetails
+  MeterDetails,
+  RedirectMeter
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

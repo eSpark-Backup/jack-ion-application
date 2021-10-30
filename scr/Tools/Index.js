@@ -136,12 +136,8 @@ export default class Splash extends Component {
         meterInfo:meterResponse?.data?.data?.meterinfo,
       });
     } else {
-      Alert.alert('Not Found', meterResponse?.data?.message, [
-        {
-          text: 'OK',
-          onPress: () => this.setState({scan: true, scanning: false}),
-        },
-      ]);
+      this.props.navigation.navigate(
+        'RedirectMeter');
     }
 
     // console.log('Barcode Values', response);

@@ -23,7 +23,7 @@ import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 import styles from './style';
 const {width, height} = Dimensions.get('window');
 
-export default class MeterTypeBuilder extends Component {
+export default class UpdateModal extends Component {
   render() {
     const {
       title,
