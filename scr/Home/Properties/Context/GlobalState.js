@@ -131,6 +131,7 @@ class GlobalState extends React.Component {
     limitExceed: false,
     biller: '',
     loadFor: '',
+    searchPropName: '',
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
     offset: 0,
