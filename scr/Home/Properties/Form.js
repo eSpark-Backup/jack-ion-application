@@ -134,8 +134,9 @@ export default class Splash extends React.Component {
     this.setState({ ContactTitle: '' });
     this.setState({ ContactPhone: '' });
     this.setState({ ContactEmail: '' });
-    this.setState({ BillingCompanyId: '' });
+    this.setState({ BillingCompanyId: '' ,BillingCompany: 'BILLING COMPANY'});
     this.setState({ error: '' });
+
   };
 
   handleLoader = () => {
@@ -218,15 +219,10 @@ export default class Splash extends React.Component {
       this.setState((prevState) => ({
         ...prevState,
         error: {
-          // object that we want to update
           ...prevState.error, // keep all other key-value pairs
           propertyId: '', // update the value of specific key
         },
       }));
-      //  else if (this.state.info.propName == undefined || this.state.info.propAddress == undefined,
-      //     this.state.info.propBillComp == undefined || this.state.info.propManageComp == undefined || this.state.info.propCustomId == undefined) {
-      //     alert('Kindly Fill All Required.');
-      // }
       console.log('Before', this.state.info.propName);
       // const info = { ...this.state.info, propName: 'Good HAI' }
       this.setState(
@@ -378,24 +374,6 @@ export default class Splash extends React.Component {
                       </HelperText>
                     ) : null}
                     <View style={styles.inputContainer}>
-                      {/* <View
-                        style={{
-                          flex: 1,
-                          padding: 10,
-                          // paddingTop: Constants.statusBarHeight + 10,
-                          backgroundColor: '#ecf0f1',
-                        }}>
-                        <GooglePlacesAutocomplete
-                          placeholder="Address
-                        "
-                          query={{
-                            key: 'AIzaSyDPO63dIpxQVdsZPynkYi0Ee8FxW_mwti8',
-                            language: 'en', // language of the results
-                          }}
-                          onPress={(data, details = null) => console.log(data)}
-                          onFail={(error) => console.error(error)}
-                        />
-                      </View> */}
                       <TextInput
                         placeholder="Enter Street*"
                         error={this.state.error.street}
@@ -575,24 +553,6 @@ export default class Splash extends React.Component {
                             ))}
                         </View>
                       </Modal>
-                      {/* <DropDownPicker
-                        open={this.state.open}
-                        value={this.state.value}
-                        items={this.context.propitemList}
-                        setOpen={() => this.setState({ open: !this.state.open })}
-                        setValue={this.setValue}
-                        setItems={this.setItems}
-                        style={{
-                          backgroundColor: "#F6F6F6",
-                          alignSelf: "center",
-                          borderColor: "gray"
-                        }}
-                        placeholder="BILLING COMPANY*"
-                        containerStyle={{
-                          width: "95%",
-                        }}
-                        onPress={this.handleOpenDropDown}
-                      /> */}
                     </View>
                     {this.state.error.billingId ? (
                       <HelperText

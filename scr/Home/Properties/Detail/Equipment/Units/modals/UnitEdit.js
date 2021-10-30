@@ -46,6 +46,8 @@ export default function UnitEdit({
   buildingName,
   unitDetails,
   meterTypes,
+  buildingId,
+  reRun
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [typeOfMeters, setTypeOfMeters] = useState([]);
@@ -62,7 +64,12 @@ export default function UnitEdit({
     isModalMeterVisible: false,
     measureOfUnit: [],
     typeOfMeterIndex: '',
-    meterTypeBuilder: false
+    meterTypeBuilder: false,
+    lastUnitData: ''
+    
+  });
+  const [error, setError] = useState({
+    errorUnits: ''
   });
 
 
@@ -80,7 +87,10 @@ export default function UnitEdit({
 
   useEffect(() => {
     setMeterListArray(meterTypes);
-    // console.log('XXXXX meterListArray', meterTypes);
+    setState((oldState) => ({
+      ...oldState,
+      lastUnitData: unitDetails.unit.name
+    }));
   }, [meterTypes]);
 
   const addMeterInNewArray = async (value) => {
@@ -149,7 +159,7 @@ export default function UnitEdit({
       measureOfUnit: unitResponse?.data?.data,
       typeOfMeterIndex: index,
       isModalMeterVisible: true,
-      meterTypeBuilder:true
+      meterTypeBuilder: true
     }));
   };
 
@@ -159,14 +169,23 @@ export default function UnitEdit({
     setMeterListData(newArr)
   };
   const onGetMeterTypeId = (item, index) => {
-    setState((oldState) => ({
-      ...oldState,
-      typeOfMetersVisible: false,
-    }));
     let newArr = [...meterListData]; // copying the old datas array
+    newArr[index].meterTypeName =
+      item.model +
+      ' ' +
+      '(x' +
+      item.multiplier +
+      ' ' +
+      item.unit_of_measure +
+      ')'; // replace e.target.value with whatever you want to change it to
     newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
+    // console.log(newArr[index],'mter types') // replace e.target.value with whatever you want to change it to
+    newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
+    // this.setState({meterListData: newArr});
     setMeterListData(newArr)
   };
+
+
   useEffect(() => {
     // setMeterListArray(meterTypes);
     console.log('XXXXX state', state);
@@ -243,10 +262,134 @@ export default function UnitEdit({
     let newArr = [...meterListData]; // copying the old datas array
     newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
     setMeterListData(newArr);
-
   };
-  console.log('got Meters', typeOfMeters); // ye jb hoga jb select hoga meter type
-  console.log('got unit details', unitDetails);
+  const handleMetertypeSelection = (child) => {
+    let newArr = [...meterListData]; // copying the old datas array
+    newArr[state.typeOfMeterIndex].meterTypeName = child.name; // replace e.target.value with whatever you want to change it to
+    newArr[state.typeOfMeterIndex].meterType = child.id;
+    // this.setState({ meterListData: newArr });
+    console.log('checkchild-->', child)
+    setMeterListData(newArr);
+    setState((oldState) => ({
+      ...oldState,
+      meterTypeBuilder: false
+    }));
+  }
+  // console.log('got Meters', typeOfMeters); // ye jb hoga jb select hoga meter type
+  // console.log('got unit details', unitDetails);
+
+  const handleMeterTypeClose = () => {
+    setState((oldState) => ({
+      ...oldState,
+      meterTypeBuilder: false
+    }))
+  }
+
+  const changeUtilityAndToggle = () => {
+    setMeterListData([]);
+    setState((oldState) => ({
+      ...oldState,
+      lastUnitData: ''
+    }));
+    setError((oldState) => ({
+      ...oldState,
+      errorUnits: ''
+    }));
+    closeModal()
+    // console.log('data--->');
+  };
+
+  const handleAddNewUnit = async () => {
+    const checkSerial = meterListData.filter(
+      (item) => item.deviceSerialNum === '',
+    );
+    const checkMeterType = meterListData.filter(
+      (item) => item.meterType == '',
+    );
+
+    if (!state.lastUnitData) {
+      setError((oldState) => ({
+        ...oldState,
+        errorUnits: 'Unit Required'
+      }));
+      return;
+    } else {
+      setError((oldState) => ({
+        ...oldState,
+        errorUnits: ''
+      }));
+    // }
+    // if (meterListData.length == 0) {
+    //   alert('Select meter and continue');
+    //   return;
+    // }
+    // if (checkSerial.length) {
+    //   meterListData.map((data, index) => {
+    //     if (data.deviceSerialNum == '') {
+    //       let newArr = [...meterListData];
+    //       newArr[index].deviceSerialError = 'Device serial required';
+    //       setMeterListData(newArr);
+    //       return;
+    //     } else {
+    //       let newArr = [...meterListData];
+    //       newArr[index].deviceSerialError = '';
+    //       setMeterListData(newArr);
+    //     }
+    //   });
+    //   return;
+    // } else {
+    //   meterListData.map((data, index) => {
+    //     let newArr = [...meterListData];
+    //     newArr[index].deviceSerialError = '';
+    //     setMeterListData(newArr);
+    //   });
+    // }
+    // if (checkMeterType.length) {
+    //   meterListData.map((data, index) => {
+    //     if (data.meterType == '') {
+    //       let newArr = [...meterListData];
+    //       newArr[index].meterTypeError = 'Meter Type Required';
+    //       setMeterListData(newArr);
+    //       return;
+    //     } else {
+    //       let newArr = [...meterListData];
+    //       newArr[index].meterTypeError = '';
+    //       setMeterListData(newArr);
+    //     }
+    //   });
+    //   return;
+    // } else {
+    //   meterListData.map((data, index) => {
+    //     let newArr = [...meterListData];
+    //     newArr[index].meterTypeError = '';
+    //     setMeterListData(newArr);
+    //   });
+      var loopData = [];
+      meterListData.map((data, index) => {
+        loopData.push({
+          meter_id: data.id,
+          device_serial_number: data.deviceSerialNum,
+          meter_serial_number: data.meterSerialNum,
+          custom_meter_id: data.customMeterId,
+          type_id: data.meterType,
+        });
+      });
+
+      const data = {
+        name: state.lastUnitData,
+        building_id: buildingId,
+        meters: loopData,
+      };
+      console.log('data--->', data);
+        const unitResponse = await api.patch(
+          `/property/equipment/unit/update-unit/${unitDetails.unit.id}`,
+          data,
+        );
+        console.log('Check unitResponse add--->', unitResponse);
+        changeUtilityAndToggle();
+        reRun()
+    }
+  };
   return (
     <View>
       <Modal
@@ -264,7 +407,7 @@ export default function UnitEdit({
                 styles.boxConatainer,
                 {
                   height:
-                    meterListData.length == 0 ? height * 0.44 : height * 0.55,
+                    meterListData.length == 0 ? height * 0.48 : height * 0.55,
                 },
               ]}>
               <View style={styles.boxInner}>
@@ -278,7 +421,7 @@ export default function UnitEdit({
                     />
                     <Text style={styles.modalHeading}>Edit Unit</Text>
                     <Pressable
-                      onPress={closeModal}
+                      onPress={changeUtilityAndToggle}
                       android_ripple={{
                         color: 'black',
                         borderless: true,
@@ -329,13 +472,16 @@ export default function UnitEdit({
                     <View style={[styles.inputContainer]}>
                       <TextInput
                         placeholder="Unit Name"
-                        value={unitDetails.unit.name}
+                        value={state.lastUnitData}
                         dense={true}
-                        // onChangeText={(text) => {
-                        //   this.setState({lastUnitData: text});
-                        // }}
+                        onChangeText={(text) => {
+                          setState((oldState) => ({
+                            ...oldState,
+                            lastUnitData: text
+                          }));
+                        }}
                         style={styles.input}
-                        // error={this.state.errorUnits.units}
+                        error={error.errorUnits}
                         mode={'outlined'}
                         theme={{
                           colors: {
@@ -346,12 +492,13 @@ export default function UnitEdit({
                         }}
                       />
                     </View>
-                    {/* <HelperText
-                      type="error"
-                      visible={this.state.errorUnits.units}
+                    {error.errorUnits ?
+                      <HelperText
+                        type="error"
+                        visible={error.errorUnits}
                       >
-                      {this.state.errorUnits.units}
-                    </HelperText> */}
+                        {error.errorUnits}
+                      </HelperText> : null}
                   </View>
                   {meterListData &&
                     meterListData.map((item, meterIndex) => (
@@ -739,13 +886,13 @@ export default function UnitEdit({
                     </MenuT>
                   </View>
                   <View style={styles.addUnitBtnContainer}>
-                    <TouchableOpacity onPress={closeModal}>
+                    <TouchableOpacity onPress={changeUtilityAndToggle}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
                         <Text style={{ color: 'black' }}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handleEditUnit}>
+                    <TouchableOpacity onPress={handleAddNewUnit}>
                       <View style={styles.submitBotton}>
                         <Plus name="pencil-plus" color="white" size={18} />
                         <Text style={{ color: 'white' }}>Edit Unit</Text>
@@ -810,20 +957,19 @@ export default function UnitEdit({
         )}
       </Modal>
       {/* Meter type builder */}
-      
+
       <MeterTypeBuilder
         isVisible={state.meterTypeBuilder}
         title="Meter Type Builder"
+        measureOfUnit={state.measureOfUnit}
         doneBtnTitle="Save"
+        meterTypeSelect={handleMetertypeSelection}
         style={{ height: height * 0.55 }}
-        onCancel={() => setState((oldState) => ({
-          ...oldState,
-          meterTypeBuilder:false
-        }))}
-          // onDone={this.editAlert}
-          >
+        onCancel={handleMeterTypeClose}
+      // onDone={this.editAlert}
+      >
 
-    </MeterTypeBuilder>
+      </MeterTypeBuilder>
     </View >
   );
 }
