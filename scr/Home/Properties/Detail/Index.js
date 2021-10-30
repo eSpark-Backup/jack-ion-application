@@ -717,7 +717,7 @@ export default class Splash extends React.Component {
                             value={this.state?.listData?.st}
                             error={this.state.error.st}
                             placeholder={this.state?.listData?.st}
-                            label="St*"
+                            label="St"
                             style={styles.input}
                             onChangeText={(text) => {
                               this.setState((prevState) => ({
@@ -753,7 +753,7 @@ export default class Splash extends React.Component {
                             value={this.state?.listData?.city}
                             error={this.state.error.city}
                             placeholder={this.state?.listData?.city}
-                            label="City*"
+                            label="City"
                             style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
                               this.setState((prevState) => ({
@@ -780,7 +780,7 @@ export default class Splash extends React.Component {
                             value={this.state?.listData?.zipcode}
                             error={this.state.error.zipcode}
                             placeholder={this.state?.listData?.zipcode}
-                            label="ZipCode*"
+                            label="ZipCode"
                             style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
                               this.setState((prevState) => ({
@@ -839,7 +839,7 @@ export default class Splash extends React.Component {
                         <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state.ManageComp}
-                            label="MANAGEMENT COMPANY*"
+                            label="MANAGEMENT COMPANY"
                             placeholder="Company Name"
                             style={styles.input}
                             onChangeText={(text) => {
