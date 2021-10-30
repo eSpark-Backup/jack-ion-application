@@ -65,7 +65,7 @@ const App = ({ navigation }) => {
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
 
-  const { unitId, buildingName,buildingId } = navigation.state.params; //? Dynamic Ids
+  const { unitId, buildingName, buildingId } = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
@@ -88,9 +88,7 @@ const App = ({ navigation }) => {
     console.log('All Meters', res.data?.data);
   };
 
-  const deleteUnit = () => {
-    Alert.alert('Delete Unit', 'Are you sure you want to Delete?');
-  };
+
 
   const getToken = async () => {
     setLoading(true);
@@ -360,10 +358,42 @@ const App = ({ navigation }) => {
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
 
-    console.log('please',antiIntersection);
+    console.log('please', antiIntersection);
     setEditMeterTypes(antiIntersection);
   };
-
+  const confirmUnitDelete = () => {
+    Alert.alert('Delete Unit', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      { text: 'Yes', onPress: () => deleteUnit() },
+    ]);
+  }
+  const deleteUnit = async () => {
+    const response = await api.delete(
+      `/property/equipment/unit/${testId}`,
+    );
+    alert(response?.data?.message);
+    navigation.goBack()
+  };
+  const confirmDelete = () => {
+    Alert.alert('Delete Meter', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      { text: 'Yes', onPress: () => deleteMeter() },
+    ]);
+  }
+  const deleteMeter = async () => {
+    const response = await api.delete(
+      `/property/equipment/unit/unit-meter/${unitMeter.id}`,
+    );
+    getToken()
+    console.log('Check response', response?.data);
+    alert(response?.data?.message);
+  }
   const renderUnitList = ({ item, index }) => {
     return (
       data?.data?.unit?.unit_meter?.length == 0 ? (
@@ -685,8 +715,6 @@ const App = ({ navigation }) => {
           backgroundColor="#fff"
           containerStyle={{ borderBottomWidth: width * 0.003, elevation: 1 }}
         />
-
-
         <View style={{ flex: 1, }}>
           <SectionList
             style={{ marginTop: height * 0.02 }}
@@ -745,6 +773,16 @@ const App = ({ navigation }) => {
                 style={style.noDataMeterImg}
               />
             </View>
+          </View>
+        </View>
+        <View>
+          <View style={styles.dangerView}>
+            <Button
+              onPress={confirmUnitDelete}
+              titleStyle={{ textTransform: 'capitalize' }}
+              title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
+              buttonStyle={{ backgroundColor: '#e24b4b' }}
+            />
           </View>
         </View>
       </View>
@@ -1107,6 +1145,7 @@ const App = ({ navigation }) => {
               ) : (
                 <View style={styles.dangerView}>
                   <Button
+                    onPress={confirmDelete}
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={`Delete ${unitMeter?.meter_name} Meter`}
                     buttonStyle={{
@@ -1115,7 +1154,7 @@ const App = ({ navigation }) => {
                     }}
                   />
                   <Button
-                    onPress={deleteUnit}
+                    onPress={confirmUnitDelete}
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
                     buttonStyle={{ backgroundColor: '#e24b4b' }}
