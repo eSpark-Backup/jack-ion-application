@@ -318,52 +318,52 @@ export default function UnitEdit({
         ...oldState,
         errorUnits: ''
       }));
-    }
-    if (meterListData.length == 0) {
-      alert('Select meter and continue');
-      return;
-    }
-    if (checkSerial.length) {
-      meterListData.map((data, index) => {
-        if (data.deviceSerialNum == '') {
-          let newArr = [...meterListData];
-          newArr[index].deviceSerialError = 'Device serial required';
-          setMeterListData(newArr);
-          return;
-        } else {
-          let newArr = [...meterListData];
-          newArr[index].deviceSerialError = '';
-          setMeterListData(newArr);
-        }
-      });
-      return;
-    } else {
-      meterListData.map((data, index) => {
-        let newArr = [...meterListData];
-        newArr[index].deviceSerialError = '';
-        setMeterListData(newArr);
-      });
-    }
-    if (checkMeterType.length) {
-      meterListData.map((data, index) => {
-        if (data.meterType == '') {
-          let newArr = [...meterListData];
-          newArr[index].meterTypeError = 'Meter Type Required';
-          setMeterListData(newArr);
-          return;
-        } else {
-          let newArr = [...meterListData];
-          newArr[index].meterTypeError = '';
-          setMeterListData(newArr);
-        }
-      });
-      return;
-    } else {
-      meterListData.map((data, index) => {
-        let newArr = [...meterListData];
-        newArr[index].meterTypeError = '';
-        setMeterListData(newArr);
-      });
+    // }
+    // if (meterListData.length == 0) {
+    //   alert('Select meter and continue');
+    //   return;
+    // }
+    // if (checkSerial.length) {
+    //   meterListData.map((data, index) => {
+    //     if (data.deviceSerialNum == '') {
+    //       let newArr = [...meterListData];
+    //       newArr[index].deviceSerialError = 'Device serial required';
+    //       setMeterListData(newArr);
+    //       return;
+    //     } else {
+    //       let newArr = [...meterListData];
+    //       newArr[index].deviceSerialError = '';
+    //       setMeterListData(newArr);
+    //     }
+    //   });
+    //   return;
+    // } else {
+    //   meterListData.map((data, index) => {
+    //     let newArr = [...meterListData];
+    //     newArr[index].deviceSerialError = '';
+    //     setMeterListData(newArr);
+    //   });
+    // }
+    // if (checkMeterType.length) {
+    //   meterListData.map((data, index) => {
+    //     if (data.meterType == '') {
+    //       let newArr = [...meterListData];
+    //       newArr[index].meterTypeError = 'Meter Type Required';
+    //       setMeterListData(newArr);
+    //       return;
+    //     } else {
+    //       let newArr = [...meterListData];
+    //       newArr[index].meterTypeError = '';
+    //       setMeterListData(newArr);
+    //     }
+    //   });
+    //   return;
+    // } else {
+    //   meterListData.map((data, index) => {
+    //     let newArr = [...meterListData];
+    //     newArr[index].meterTypeError = '';
+    //     setMeterListData(newArr);
+    //   });
       var loopData = [];
       meterListData.map((data, index) => {
         loopData.push({

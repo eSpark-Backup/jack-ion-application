@@ -63,20 +63,20 @@ const App = ({navigation}) => {
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
 
-  const {unitId, buildingName, propertyName} = navigation.state.params; //? Dynamic Ids
+  const {unitId, buildingName, propertyName,meterInfo} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
 
   useEffect(() => {
     getToken();
-  }, []);
+  }, [testId]);
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
-    setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
+    setUnitMeter(meterInfo);
     setLoading(false);
   };
 

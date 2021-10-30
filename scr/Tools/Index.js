@@ -93,6 +93,7 @@ export default class Splash extends Component {
   };
 
   onSuccess = async (e) => {
+    console.log('meter info ---->',e );
     this.setState({scan: false});
     this.setState({scanning: true});
     const check = e.data.substring(0);
@@ -103,7 +104,7 @@ export default class Splash extends Component {
       `/property/equipment/unit/get-meter-info`,
       data,
     );
-    console.log('Get Unit Id', meterResponse?.data?.data?.meterinfo?.unit_id);
+    console.log('Get Unit Id', meterResponse);
     const unitId = meterResponse?.data?.data?.meterinfo?.unit_id;
     if (meterResponse?.data?.bool) {
       this.setState({loader: true});
@@ -121,7 +122,7 @@ export default class Splash extends Component {
 
       console.log(
         'Get Building Name',
-        buildingResponse?.data?.data?.building?.name,
+        buildingResponse,
       );
       let buildingName = buildingResponse?.data?.data?.building?.name;
       let propertyName = buildingResponse?.data?.data?.building?.property_name;
@@ -132,6 +133,7 @@ export default class Splash extends Component {
         unitId: unitId,
         buildingName: buildingName,
         propertyName,
+        meterInfo:meterResponse?.data?.data?.meterinfo,
       });
     } else {
       Alert.alert('Not Found', meterResponse?.data?.message, [
@@ -172,14 +174,14 @@ export default class Splash extends Component {
   };
 
   componentDidMount() {
-    this.getToken();
     this.subs = [
       this.props.navigation.addListener('didFocus', () =>
-        Animated.spring(this.state.springValue, {
-          toValue: 1,
-          friction: 3,
-          useNativeDriver: true,
-        }).start(),
+      Animated.spring(this.state.springValue, {
+        toValue: 1,
+        friction: 3,
+        useNativeDriver: true,
+      }).start(),
+      this.getToken()
       ),
       this.props.navigation.addListener('willBlur', () =>
         this.setState({springValue: new Animated.Value(0)}),

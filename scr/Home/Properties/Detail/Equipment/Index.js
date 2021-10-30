@@ -80,63 +80,6 @@ import clc from 'cli-color';
 import Index from '../../../Index';
 const { width, height } = Dimensions.get('window');
 let listViewRef;
-
-const meterTypes = [
-  {
-    id: 1,
-    name: 'Generic',
-    image: require('../../../../../Images/meter-water.png'),
-    color: '#3E89BF',
-  },
-  {
-    id: 2,
-    name: 'IMS',
-    image: require('../../../../../Images/meter-gas.png'),
-    color: '#9ACF72',
-  },
-  {
-    id: 3,
-    name: 'MasterTek',
-    image: require('../../../../../Images/meter-electric.png'),
-    color: '#E7D931',
-  },
-];
-
-var items = [
-  {
-    id: 1,
-    name: 'JavaScript',
-  },
-  {
-    id: 2,
-    name: 'Java',
-  },
-  {
-    id: 3,
-    name: 'Ruby',
-  },
-  {
-    id: 4,
-    name: 'React Native',
-  },
-  {
-    id: 5,
-    name: 'PHP',
-  },
-  {
-    id: 6,
-    name: 'Python',
-  },
-  {
-    id: 7,
-    name: 'Go',
-  },
-  {
-    id: 8,
-    name: 'Swift',
-  },
-];
-
 let manufacturers = [
   {
     id: 1,
@@ -165,48 +108,7 @@ const models = [
     name: 'MJ09 Brass',
   },
 ];
-const meterList = [
-  {
-    id: 1,
-    name: 'All Water',
-    icon: 'water-outline',
-  },
-  {
-    id: 2,
-    name: 'Cold Water',
-    icon: 'water-outline',
-  },
-  {
-    id: 3,
-    name: 'Hot Water',
-    icon: 'water-outline',
-  },
-  {
-    id: 4,
-    name: 'Commercial Water',
-    icon: 'water-outline',
-  },
-  {
-    id: 5,
-    name: 'Gas',
-    icon: 'water-outline',
-  },
-  {
-    id: 6,
-    name: 'Electric',
-    icon: 'water-outline',
-  },
-  {
-    id: 7,
-    name: 'Run Time',
-    icon: 'water-outline',
-  },
-  {
-    id: 8,
-    name: 'Thermal Usage',
-    icon: 'water-outline',
-  },
-];
+
 
 export default class Splash extends Component {
   static contextType = ContextProp;
@@ -233,23 +135,7 @@ export default class Splash extends Component {
       scanIndex: null,
       searchList: [],
       meterListData: [],
-      meterListArray: [
-        // {
-        //   id: 1,
-        //   name: 'All Water',
-        //   icon: 'water-outline',
-        // },
-        // {
-        //   id: 2,
-        //   name: 'Cold Water',
-        //   icon: 'water-outline',
-        // },
-        // {
-        //   id: 3,
-        //   name: 'Hot Water',
-        //   icon: 'water-outline',
-        // },
-      ],
+      meterListArray: [],
       open: false,
       value: null,
       items: [
@@ -270,7 +156,7 @@ export default class Splash extends Component {
       selected: false,
       animatedValue: new Animated.Value(0),
       newBuild: 'A',
-      newUnit: 'Unit-',
+      newUnit: 'Unit-0',
       newUnitAdd: '',
       meterList: false,
       showOtherInputs: false,
@@ -322,403 +208,13 @@ export default class Splash extends Component {
       measureOfUnit: [],
       selectedManufacuter: [],
       selectedModel: [],
-      dataActivityTop: [
-        {
-          id: 1,
-          name: 'A',
-          // length: ListA.length,
-        },
-        {
-          id: 2,
-          name: 'B',
-          // length: ListB.length,
-        },
-        {
-          id: 3,
-          name: 'C',
-          // length: ListC.length,
-        },
-        {
-          id: 4,
-          name: 'D',
-        },
-        {
-          id: 5,
-          name: 'E',
-        },
-        {
-          id: 6,
-          name: 'F',
-        },
-        {
-          id: 7,
-          name: 'G',
-        },
-        {
-          id: 8,
-          name: 'H',
-        },
-        {
-          id: 9,
-          name: 'I',
-        },
-        {
-          id: 10,
-          name: 'J',
-        },
-        {
-          id: 11,
-          name: 'K',
-        },
-        {
-          id: 12,
-          name: 'L',
-        },
-        {
-          id: 13,
-          name: 'M',
-        },
-        {
-          id: 14,
-          name: 'N',
-        },
-        {
-          id: 15,
-          name: 'O',
-        },
-      ],
-      dataActivity: [
-        {
-          id: 1,
-          name: 'Unit-101',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 2,
-          name: 'Unit-102',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 3,
-          name: 'Unit-103',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 4,
-          name: 'Unit-104',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 5,
-          name: 'Unit-105',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 6,
-          name: 'Unit-106',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 7,
-          name: 'Unit-107',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 8,
-          name: 'Unit-108',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 9,
-          name: 'Unit-109',
-          build: '',
-          code: '',
-          type: '',
-        },
-        {
-          id: 10,
-          name: 'Unit-110',
-          build: '',
-          code: '',
-          type: '',
-        },
-      ],
+      dataActivityTop: [],
+      dataActivity: [],
       realData: [],
-      ListA: [
-        {
-          id: 1,
-          build: 'A',
-          name: 'A-01',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 2,
-          build: 'A',
-          name: 'A-02',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 3,
-          build: 'A',
-          name: 'A-03',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 4,
-          build: 'A',
-          name: 'A-04',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 5,
-          build: 'A',
-          name: 'A-05',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 6,
-          build: 'A',
-          name: 'A-06',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 7,
-          build: 'A',
-          name: 'A-07',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 8,
-          build: 'A',
-          name: 'A-08',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 9,
-          build: 'A',
-          name: 'A-09',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 10,
-          build: 'A',
-          name: 'A-10',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 11,
-          build: 'A',
-          name: 'A-11',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 12,
-          build: 'A',
-          name: 'A-12',
-          code: 'AA00EFE1',
-          type: 'Cubic Feet',
-        },
-      ],
+      ListA: [],
       vals: '',
-      ListB: [
-        {
-          id: 1,
-          build: 'B',
-          name: 'B-01',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 2,
-          build: 'B',
-          name: 'B-02',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 3,
-          build: 'B',
-          name: 'B-03',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 4,
-          build: 'B',
-          name: 'B-04',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 5,
-          build: 'B',
-          name: 'B-05',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 6,
-          build: 'B',
-          name: 'B-06',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 7,
-          build: 'B',
-          name: 'B-07',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 8,
-          build: 'B',
-          name: 'B-08',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 9,
-          build: 'B',
-          name: 'B-09',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 10,
-          build: 'B',
-          name: 'B-10',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 11,
-          build: 'B',
-          name: 'B-11',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 12,
-          build: 'B',
-          name: 'B-12',
-          code: 'BA00EFE1',
-          type: 'Cubic Feet',
-        },
-      ],
-      ListC: [
-        {
-          id: 1,
-          build: 'C',
-          name: 'C-01',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 2,
-          build: 'C',
-          name: 'C-02',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 3,
-          build: 'C',
-          name: 'C-03',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 4,
-          build: 'C',
-          name: 'C-04',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 5,
-          build: 'C',
-          name: 'C-05',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 6,
-          build: 'C',
-          name: 'C-06',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 7,
-          build: 'C',
-          name: 'C-07',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 8,
-          build: 'C',
-          name: 'C-08',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 9,
-          build: 'C',
-          name: 'C-09',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 10,
-          build: 'C',
-          name: 'C-10',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 11,
-          build: 'C',
-          name: 'C-11',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-        {
-          id: 12,
-          build: 'C',
-          name: 'C-12',
-          code: 'CA00EFE1',
-          type: 'Cubic Feet',
-        },
-      ],
+      ListB: [],
+      ListC: [],
       error: {
         buildingName: false,
         units: false,
@@ -812,11 +308,11 @@ export default class Splash extends Component {
     this.setState({ meterTypeInputs: newArr });
   };
 
-  onChangeInputs = (index, text) => {
-    let newArr = [...this.state.meterTypeInputs];
-    newArr[index].input = text;
-    this.setState({ meterTypeInputs: newArr });
-  };
+  // onChangeInputs = (index, text) => {
+  //   let newArr = [...this.state.meterTypeInputs];
+  //   newArr[index].input = text;
+  //   this.setState({ meterTypeInputs: newArr });
+  // };
 
   hideSuggestion = (index, val, name) => {
     let newArr = [...this.state.meterTypeInputs];
@@ -1039,12 +535,12 @@ export default class Splash extends Component {
     this.setState({ scan: false });
   };
 
-  scanAgain = () => {
-    this.setState({
-      scan: true,
-      scanResult: false,
-    });
-  };
+  // scanAgain = () => {
+  //   this.setState({
+  //     scan: true,
+  //     scanResult: false,
+  //   });
+  // };
 
   hideMenu = () => {
     this.setState({ visible: false });
@@ -1168,47 +664,6 @@ export default class Splash extends Component {
     unit.item.isSelected = true;
     // this.actionOnPress(unit);
   };
-  deleteUnit = (unit) => {
-    // console.log('What We Get', unit)
-    this.actionOnPress(unit);
-    Alert.alert('Dangerous Act', 'Would You Want To Delete This Unit', [
-      {
-        text: 'No',
-        style: 'cancel',
-        // onPress: () => ,
-      },
-      {
-        text: 'Yes',
-        onPress: () => this.leftedUnits(unit),
-      },
-    ]);
-  };
-  leftedUnits = (unit) => {
-    // console.log('Pressed', unit.index)
-    // console.log('Pressed', this.context.propList[0].dataTop[this.state.buildIndex].list)
-    this.context.propList[0].dataTop[this.state.buildIndex].list.splice(
-      unit.index,
-      1,
-    );
-    // this.state.realData.splice(unit.index, 1)
-    // console.log('Pressed', unit.index)
-    // if (unit.item.build == 'A') {
-    //   this.state.ListA.splice(unit.index, 1)
-    //   return this.setState({ ListA: this.state.ListA })
-    // } else if (unit.item.build == 'B') {
-    //   this.state.ListB.splice(unit.index, 1)
-    //   return this.setState({ ListB: this.state.ListB })
-    // } else if (unit.item.build == 'C') {
-    //   this.state.ListC.splice(unit.index, 1)
-    //   return this.setState({ ListC: this.state.ListC })
-    // }
-    // console.log('List', this.context.propList[0].dataTop[this.state.buildIndex].list)
-    // let ListA = this.state.ListA
-    // ListA.splice(unit.index, 1);
-    return this.setState({
-      realData: this.context.propList[0].dataTop[this.state.buildIndex].list,
-    });
-  };
   handleAddNewUnit = async () => {
     const matchUnit = this.state.realData.filter(
       (e) => e.name == this.state.lastUnitData,
@@ -1219,7 +674,7 @@ export default class Splash extends Component {
       (item) => item.deviceSerialNum === '',
     );
     const checkMeterType = this.state.meterListData.filter(
-      (item) => item.meterType.length == 0,
+      (item) => item.meterType == '',
     );
 
     if (!this.state.lastUnitData) {
@@ -1281,18 +736,6 @@ export default class Splash extends Component {
           newArr[index].deviceSerialError = '';
           this.setState({ meterListData: newArr });
         }
-        // if (data.meterType.length == 0) {
-        //   console.log('meterType',index)
-        //   let newArr = [...this.state.meterListData];
-        //   newArr[index].meterTypeError = "Select meter type required";
-        //   this.setState({ meterListData: newArr });
-        //   return;
-        // } else {
-        //   console.log('meterType else',index)
-        //   let newArr = [...this.state.meterListData];
-        //   newArr[index].meterTypeError = "";
-        //   this.setState({ meterListData: newArr });
-        // }
       });
     } else {
       this.state.meterListData.map((data, index) => {
@@ -1300,7 +743,28 @@ export default class Splash extends Component {
         newArr[index].deviceSerialError = '';
         this.setState({ meterListData: newArr });
       });
-
+    } if (checkMeterType.length) {
+      this.state.meterListData.map((data, index) => {
+        if (data.meterType == '') {
+          // dispatch(modalAction.show({ title: "empty input" + data.id }));
+          // console.log('deviceSerialNum',index)
+          let newArr = [...this.state.meterListData];
+          newArr[index].meterTypeError = 'Meter Type Required';
+          this.setState({ meterListData: newArr });
+          return;
+        } else {
+          // console.log('deviceSerialNum else',index)
+          let newArr = [...this.state.meterListData];
+          newArr[index].meterTypeError = '';
+          this.setState({ meterListData: newArr });
+        }
+      });
+    } else {
+      this.state.meterListData.map((data, index) => {
+        let newArr = [...this.state.meterListData];
+        newArr[index].meterTypeError = '';
+        this.setState({ meterListData: newArr });
+      });
       var loopData = [];
       this.state.meterListData.map((data, index) => {
         loopData.push({
@@ -1311,18 +775,6 @@ export default class Splash extends Component {
           type_id: data.meterType,
         });
       });
-      // var i;
-      // for (i = 0; i < n; i++) {
-      //   loopData.push({
-      //     name: this.state.newUnit,
-      //     num: value + 1,
-      //   }),
-      //     (value = value + 1);
-      // }
-      // this.setState({ unitsArray: loopData }, () =>
-      //   console.log('array--->', this.state.unitsArray),
-      // );
-
       const data = {
         name: this.state.lastUnitData,
         building_id: this.state.buildingData.id,
@@ -1377,23 +829,15 @@ export default class Splash extends Component {
     );
   };
   showMoreInputs = (value, index) => {
-    // const newList = this.state.meterListData.filter(
-    //   (item) => item.showInputs !== value.showInputs,
-    // );
-    // this.setState({meterListData: newList});
-
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
     this.setState({ meterListData: newArr }, () =>
       console.log('e--->', this.state.meterListData),
     );
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    // this.setState({showOtherInputs: !this.state.showOtherInputs});
   };
 
   onChangeMultipleField = (e, index) => {
-    // console.log('index: ' + index);
-    // console.log('property name: ' + e.target.value);
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
     this.setState({ meterListData: newArr }, () =>
@@ -1401,8 +845,6 @@ export default class Splash extends Component {
     );
   };
   onChangeTypeBuilder = (e, index) => {
-    // console.log('index: ' + index);
-    // console.log('property name: ' + e.target.value);
     let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
     newArr[index].input = e; // replace e.target.value with whatever you want to change it to
     this.setState({ meterTypeInputs: newArr }, () =>
@@ -1442,7 +884,6 @@ export default class Splash extends Component {
     }
   };
   showTypesOfMeter = (item, index) => {
-    // this.setState({typeOfMetersVisible: true});
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterTypeMenu = true; // replace e.target.value with whatever you want to change it to
     this.setState({ meterListData: newArr }, () =>
@@ -1457,9 +898,6 @@ export default class Splash extends Component {
     );
   };
   onGetMeterTypeId = (item, index) => {
-    // this.setState({typeOfMetersVisible: false})
-    // console.log('check itne',item)
-    // console.log('check index',index)
     let newArr = [...this.state.meterListData]; // copying the old datas array
     newArr[index].meterTypeName =
       item.model +
@@ -1519,14 +957,6 @@ export default class Splash extends Component {
   };
   onScanned = (e) => {
     const check = e.data.substring(0, 4);
-
-    // this.setState({
-    //   result: e,
-    //   newSerial: e.data,
-    //   scan: false,
-    //   // scanResult: true,
-    //   isScannerVisible: false,
-    // })
     if (check == 'http') {
       Linking.openURL(e.data).catch((err) =>
         console.error('An error occured', err),
@@ -1631,42 +1061,42 @@ export default class Splash extends Component {
   _renderTopList = (build) => {
     return (
       // <KeyboardAvoidingView behavior="padding">
+      <TouchableOpacity
+        onPress={() => this.showArrayItem(build)}
+        style={styles.infoTopViewContainer}>
+        <View style={styles.infoTopViewInner}>
+          <Build name="office-building" size={width * 0.06} />
+          <TextTicker duration={5000} style={styles.dataFieldText}>
+            {build.item.name}
+          </TextTicker>
+        </View>
+        <Text
+          style={{
+            paddingHorizontal: 10,
+            fontSize: width * 0.04,
+            textAlign: 'center',
+            fontWeight: 'bold',
+          }}>
+          {build.item.unit_count} Units
+        </Text>
         <TouchableOpacity
-          onPress={() => this.showArrayItem(build)}
-          style={styles.infoTopViewContainer}>
-          <View style={styles.infoTopViewInner}>
-            <Build name="office-building" size={width * 0.06} />
-            <TextTicker duration={5000} style={styles.dataFieldText}>
-              {build.item.name}
-            </TextTicker>
-          </View>
-          <Text
-            style={{
-              paddingHorizontal: 10,
-              fontSize: width * 0.04,
-              textAlign: 'center',
-              fontWeight: 'bold',
-            }}>
-            {build.item.unit_count} Units
-          </Text>
-          <TouchableOpacity
-            onPress={() => this.buildingEditOpen(build.item)}
-            style={{
-              flexDirection: 'row',
-              // borderTopWidth: 1,
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: height * 0.01,
-              paddingVertical: height * 0.005,
-              backgroundColor: '#25AAE1ec',
-              borderBottomLeftRadius: width * 0.01,
-              borderBottomRightRadius: width * 0.01,
-            }}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>Edit</Text>
-            <Edit name="edit" color="white" size={width * 0.04} />
-          </TouchableOpacity>
+          onPress={() => this.buildingEditOpen(build.item)}
+          style={{
+            flexDirection: 'row',
+            // borderTopWidth: 1,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: height * 0.01,
+            paddingVertical: height * 0.005,
+            backgroundColor: '#25AAE1ec',
+            borderBottomLeftRadius: width * 0.01,
+            borderBottomRightRadius: width * 0.01,
+          }}>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Edit</Text>
+          <Edit name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
+      </TouchableOpacity>
       // </KeyboardAvoidingVie  w>
     );
   };
@@ -1712,24 +1142,6 @@ export default class Splash extends Component {
         this.state.buildIndex
       ].list,
     });
-    // this.showArrayItem(build)
-
-    // const some_array = [...this.state.realData]
-    // some_array[this.state.pressedIndex] = {
-    //   id: this.state.pressedID,
-    //   build: this.state.typedBuild,
-    //   name: this.state.typedUnit,
-    //   code: this.state.typedCode,
-    //   type: this.state.typedMType,
-    // }
-    // if (this.state.typedBuild === 'A') {
-    //   this.setState({ ListA: some_array })
-    // } else if (this.state.typedBuild === 'B') {
-    //   this.setState({ ListB: some_array })
-    // } else if (this.state.typedBuild === 'C') {
-    //   this.setState({ ListC: some_array })
-    // }
-    // this.setState({ realData: some_array })
   };
   editOnPress2 = () => {
     let arrays = [...this.state.ListA];
@@ -1739,7 +1151,7 @@ export default class Splash extends Component {
     // this.setState({ ListA: this.state.ListA.map(el => (el.name === 'A-01')) })
     // const index = this.state.ListA.map(el => (el.name === 'A-01' ? { ...el, key: id } : el))
     this.setState({ arrays });
-    console.log('Index oF List', index);
+    // console.log('Index oF List', index);
   };
 
   //todo: Unit Click Event +++++++++++++++++++++++
@@ -1747,9 +1159,9 @@ export default class Splash extends Component {
     this.props.navigation.navigate('U_Details', {
       unitId: unit.item.id,
       buildingName: this.state.buildingData.name,
-      buildingId:this.state.editBuildId
+      buildingId: this.state.editBuildId
     });
-    this.setState({ showSearch: false });
+    this.setState({ showSearch: false, loader: true, loaderBuildings: true });
     console.log(clc.cyan('Selected :', unit.item.id));
   };
 
@@ -1868,78 +1280,8 @@ export default class Splash extends Component {
             </View>
           </View>
         </TouchableOpacity>
-        {/* <View style={[styles.unitListInfo]}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: height * 0.02,
-            }}>
-            <View
-              style={{
-                alignItems: 'center',
-                borderRightWidth: width * 0.002,
-                paddingHorizontal: width * 0.02,
-              }}>
-              <Fire name="fire" color="firebrick" size={22} />
-              <Text style={styles.dataFieldText}>97295{'\n'}Cubic Feet</Text>
-            </View>
-            <View
-              style={{ alignItems: 'center', paddingHorizontal: width * 0.02 }}>
-              <Fire name="fire" color="firebrick" size={22} />
-              <Text style={styles.dataFieldText}>97295{'\n'}Cubic Feet</Text>
-            </View>
-            <View
-              style={{
-                alignItems: 'center',
-                borderLeftWidth: width * 0.002,
-                paddingHorizontal: width * 0.02,
-              }}>
-              <Fire name="fire" color="firebrick" size={22} />
-              <Text style={styles.dataFieldText}>97295{'\n'}Cubic Feet</Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              backgroundColor: 'purple',
-              height: height * 0.045,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: width * 0.02,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: width * 0.32,
-              }}>
-              <TouchableOpacity style={{ flexDirection: 'row' }}>
-                <Compact name="view-compact-outline" size={18} color="white" />
-                <Text style={styles.detailEndText}>View</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ flexDirection: 'row' }}
-                onPress={() => this.editAndToggleEdit(unit)}>
-                <Icon name="edit" size={18} color="white" />
-                <Text style={styles.detailEndText}>Edit</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              style={{ flexDirection: 'row' }}
-              onPress={() => this.deleteUnit(unit)}>
-              <Trash name="trash" size={18} color="white" />
-              <Text style={styles.detailEndText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </View>
     );
-  };
-  checkInput = (item) => {
-    console.log('check on press', item);
-    // this.addInput(text)
-    console.log(text);
   };
 
   clearBuildingModal = () => {
@@ -2140,20 +1482,7 @@ export default class Splash extends Component {
       </Text>
     </TouchableOpacity>
   );
-  _renderBuildList = (unit) => (
-    <TouchableOpacity
-      style={styles.meterListBtn}
-      onPress={() => this.showBuild(unit)}>
-      <Text
-        key={unit}
-        style={{
-          fontSize: 12,
-          color: this.state.meter3 ? 'black' : 'transparent',
-        }}>
-        {unit.item.name}
-      </Text>
-    </TouchableOpacity>
-  );
+  
 
   meterListSeperater = () => <View style={styles.line} />;
   loaderLoad = () => {
@@ -2226,13 +1555,6 @@ export default class Splash extends Component {
   addMeter = () => {
     this.toggleAddUtility();
   };
-  // showInfo = () => {
-  //   if (this._renderUnitList(item) === 1) {
-  //     // this.setState({ itemName: itemname })
-  //     // console.log(this.state.itemName)
-  //     return item.name
-  //   }
-  // }
 
   naviagateToEquip = () => {
     // this.toggleModal();
@@ -2383,8 +1705,8 @@ export default class Splash extends Component {
   };
 
   openAndClear = () => {
-    this.setState({showSearch: true});
-    this.setState({searchList: []});
+    this.setState({ showSearch: true });
+    this.setState({ searchList: [] });
   };
   openFilter = () => {
     this.context.getBillingCompany();
@@ -3834,8 +3156,9 @@ export default class Splash extends Component {
                 </View>
                 {/* </KeyboardAvoidingView> */}
               </Modal>
+              <>
               {/* Edit Modal */}
-              <Modal
+              {/* <Modal
                 animationIn="slideInDown"
                 animationOut="slideOutUp"
                 hasBackdrop={true}
@@ -3846,9 +3169,9 @@ export default class Splash extends Component {
                   <View style={[styles.modalInner]}>
                     <View
                       style={[styles.boxConatainer, { height: height * 0.6 }]}>
-                      <View style={[styles.boxInner]}>
+                      <View style={[styles.boxInner]}> */}
                         {/* Box Header */}
-                        <View style={styles.boxHeader}>
+                        {/* <View style={styles.boxHeader}>
                           <View style={styles.boxHeaderInner}>
                             <Icon
                               name={'business'}
@@ -3873,9 +3196,9 @@ export default class Splash extends Component {
                               />
                             </Pressable>
                           </View>
-                        </View>
+                        </View> */}
                         {/* Box Body */}
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        {/* <ScrollView showsVerticalScrollIndicator={false}>
                           <View style={{ flex: 1 }}>
                             <View style={styles.desciptionContainer}>
                               <Build
@@ -4047,9 +3370,9 @@ export default class Splash extends Component {
                               )}
                             </View>
                           </View>
-                        </ScrollView>
+                        </ScrollView> */}
                         {/* Box Footer */}
-                        <View style={styles.footerBtn}>
+                        {/* <View style={styles.footerBtn}>
                           <View style={styles.bottonContainer}>
                             <TouchableOpacity onPress={this.toggleModalEdit}>
                               <View style={styles.cancelBotton}>
@@ -4064,14 +3387,16 @@ export default class Splash extends Component {
                               </View>
                             </TouchableOpacity>
                           </View>
-                        </View>
-                      </View>
+                        </View> */}
+                      {/* </View>
                     </View>
                   </View>
                 </KeyboardAvoidingView>
-              </Modal>
+              </Modal> */}
+
+              
               {/* Add Utility */}
-              <Modal
+              {/* <Modal
                 animationIn="bounceInUp"
                 animationOut="bounceOutDown"
                 // backdropColor='white'
@@ -4085,7 +3410,8 @@ export default class Splash extends Component {
                     keyExtractor={(item) => item.id.toString()}
                   />
                 </View>
-              </Modal>
+              </Modal> */}
+              </>
               {/* Add Multiple Unit Modal */}
               <Modal
                 animationIn="slideInDown"
@@ -4560,47 +3886,12 @@ export default class Splash extends Component {
                       autoFocus="on"
                       onBarCodeRead={this.onScanned}
                       captureAudio={false}
-                    // onGoogleVisionBarcodesDetected={this.onSuccess}
-                    // androidCameraPermissionOptions={{
-                    //   title: "Open Camera",
-                    //   message: "Open Open",
-                    //   buttonPositive: 'OK',
-                    //   buttonNegative: "Not Ok",
-                    // }}
                     >
                       <BarcodeMask outerMaskOpacity={0} />
                       {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
                     </RNCamera>
                   </View>
                 )}
-                {/* {scanResult &&
-                    <Fragment>
-                      <Text style={{ color: 'white', textAlign: "center", fontSize: width * .08 }} >Result.!</Text>
-                      <View style={{ height: height * .4, backgroundColor: 'white', justifyContent: 'center', alignItems: "center", }}>
-                        <Text>Type:{result.type}</Text>
-                        <Text>Result:{result.data}</Text>
-                        <Text numberOfLines={1}>Raw Data:{result.rawData}</Text>
-                      </View>
-                    </Fragment>
-                  } */}
-                {/* <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: height * .02 }}> */}
-                {/* {scanResult &&
-                      <View>
-                        <TouchableOpacity onPress={this.scanAgain}>
-                          <View style={{ backgroundColor: '#25AAE1', borderRadius: width * .008, height: height * .05, width: width * .4, justifyContent: 'center' }}>
-                            <Text style={{ textAlign: "center", color: 'white', fontWeight: 'bold' }} >Scan Again</Text>
-                          </View>
-                        </TouchableOpacity>
-                        <Text style={{ textAlign: "center", color: "white" }}>OR</Text>
-                      </View>
-                    } */}
-                {/* <TouchableOpacity onPress={this.scannerModal}>
-                    <View style={{ backgroundColor: 'white', borderRadius: width * .008, height: height * .05, justifyContent: 'center', width: width * .4 }}>
-                      <Text style={{ textAlign: "center", color: '#25AAE1', fontWeight: 'bold' }} >Switch Off Scanner</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View> */}
-                {/* </View> */}
               </Modal>
             </View>
             <Filter
@@ -4668,7 +3959,7 @@ export default class Splash extends Component {
                       ) : null}
                     </View>
                     <TouchableOpacity
-                      onPress={() => this.setState({showSearch: false})}>
+                      onPress={() => this.setState({ showSearch: false })}>
                       <Close name="close" color="white" size={20} />
                     </TouchableOpacity>
                   </View>
