@@ -30,6 +30,7 @@ import Menu from 'react-native-vector-icons/Entypo';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Home from 'react-native-vector-icons/FontAwesome5';
+import Check from 'react-native-vector-icons/Feather';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import FilterIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Close from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -75,7 +76,8 @@ import {color} from 'react-native-reanimated';
 import {ActivityIndicator} from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {SafeAreaView} from 'react-navigation';
+// import {SafeAreaView} from 'react-navigation';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import clc from 'cli-color';
 import Index from '../../../Index';
 const {width, height} = Dimensions.get('window');
@@ -159,6 +161,7 @@ export default class Splash extends Component {
       newUnitAdd: '',
       meterList: false,
       showOtherInputs: false,
+      gotData: false,
       newSerial: '',
       newMeter: '',
       buildName: '',
@@ -618,6 +621,7 @@ export default class Splash extends Component {
   selectAndCloseAdd = async () => {
     this.toggleModalUnit();
     this.changeLayoutMeter2();
+    this.setState({gotData: false});
     if (!this.state.isModalUnitVisible) {
       const unitResponse = await this.api.get(
         `/property/equipment/meter/all-meters`,
@@ -627,6 +631,7 @@ export default class Splash extends Component {
         meterListArray: unitResponse?.data?.data.sort((a, b) =>
           a.name > b.name ? 1 : -1,
         ),
+        gotData: true,
       });
       console.log(
         'Check meter add--->',
@@ -1106,15 +1111,39 @@ export default class Splash extends Component {
 
   _renderTopList = (build) => {
     return (
-      // <KeyboardAvoidingView behavior="padding">
+      // build.item.id == buildingData.id
       <TouchableOpacity
         onPress={() => this.showArrayItem(build)}
         style={styles.infoTopViewContainer}>
         <View style={styles.infoTopViewInner}>
           <Build name="office-building" size={width * 0.06} />
-          <TextTicker duration={5000} style={styles.dataFieldText}>
+          <TextTicker
+            duration={5000}
+            style={[styles.dataFieldText, {width: width * 0.2}]}>
             {build.item.name}
           </TextTicker>
+          {build.item.id == this.state.buildingData.id && (
+            <View
+              style={{
+                position: 'absolute',
+                right: width * 0,
+                top: height * 0,
+                width: width * 0.035,
+                height: width * 0.035,
+                backgroundColor: '#25AAE1ec',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopRightRadius: width * 0.008,
+                borderBottomLeftRadius: width * 0.02,
+              }}>
+              <Check
+                name="check"
+                style={{marginLeft: width * 0.005}}
+                size={width * 0.02}
+                color="#fff"
+              />
+            </View>
+          )}
         </View>
         <Text
           style={{
@@ -1803,7 +1832,9 @@ export default class Splash extends Component {
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+
         {/* Building Edit Modal */}
         <UpdateModal
           isVisible={this.state.editModal}
@@ -1969,7 +2000,6 @@ export default class Splash extends Component {
             </TouchableOpacity>
           </View>
         </Modal>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
@@ -2799,6 +2829,7 @@ export default class Splash extends Component {
                                       name="plus"
                                       size={25}
                                       color="#25AAE1ec"
+                                      // color="#ff0000"
                                     />
                                     <Text
                                       style={{
@@ -2810,7 +2841,17 @@ export default class Splash extends Component {
                                   </Pressable>
                                 ) : (
                                   <View style={{marginLeft: width * 0.02}}>
-                                    <DotsLoader />
+                                    {this.state.gotData ? (
+                                      <Text
+                                        style={{
+                                          fontSize: height * 0.018,
+                                          color: '#25AAE1ec',
+                                        }}>
+                                        No Meters
+                                      </Text>
+                                    ) : (
+                                      <DotsLoader />
+                                    )}
                                   </View>
                                 )
                               }
@@ -2974,10 +3015,6 @@ export default class Splash extends Component {
                                       }}
                                       listProps={{
                                         nestedScrollEnabled: true,
-                                        // renderItem: ({item, index}) => {
-                                        //   console.log(index);
-                                        //   return <Text>{item.name}</Text>;
-                                        // },
                                       }}
                                     />
                                     {item.error ? (
@@ -4062,7 +4099,7 @@ export default class Splash extends Component {
             )}
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

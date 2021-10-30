@@ -53,6 +53,14 @@ const IonNavigatorConfig = {
   defaultNavigationOptions: {
     headerShown: false,
   },
+  tabBarOptions: {
+    safeAreaInsets: {
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    },
+  },
   navigationOptions: {
     tabBarLabel: 'Home',
     tabBarIcon: ({tintColor}) => (
