@@ -11,7 +11,7 @@ import {
 import { Fonts } from '../../../utils/fonts';
 
 //Packages
-
+import Base_URL from '../../../api/WebServices';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
 import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
@@ -20,6 +20,8 @@ import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Icon, IconToggle } from 'react-native-material-ui';
 import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import { create } from 'apisauce';
 
 // Components
 
@@ -87,7 +89,7 @@ export default class UpdateModal extends Component {
         error: '',
       },
     ],
-    measureOfUnit: [],
+    // measureOfUnit: [],
     measureOfUnitName: '',
     meterTypeData: {
       manufacturer: '',
@@ -95,7 +97,12 @@ export default class UpdateModal extends Component {
       multiplier: 1,
       unit_of_measure_id: '',
     },
+    meterListData: [],
+
   }
+  getToken = async () => {
+
+  };
   onChangeTypeBuilder = (e, index) => {
     // console.log('index: ' + index);
     // console.log('property name: ' + e.target.value);
@@ -185,6 +192,141 @@ export default class UpdateModal extends Component {
 
     this.setState({ meterTypeInputs: newArr });
   };
+  handleSaveMeterTypeBuilder = async () => {
+    if (!this.state.meterTypeData.manufacturer) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      });
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[0].error = 'Select manufacturer'; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    if (!this.state.meterTypeData.model) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      });
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[1].error = 'Select model'; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    if (!this.state.meterTypeData.multiplier) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      });
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[2].error = 'This should be greater then one '; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    }
+    if (!this.state.meterTypeData.unit_of_measure_id) {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      });
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      newArr[3].error = 'Select measure of unit '; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+      return;
+    } else {
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+        this.setState({ meterTypeInputs: newArr });
+      });
+      console.log('measureOfUnit Of_______', this.state.meterTypeData);
+      const token = await EncryptedStorage.getItem('user_token');
+      if (token != null) {
+        // console.log('token aya', token);
+        // this.setState({token: token});
+        this.api = create({
+          baseURL: Base_URL,
+          headers: {Authorization: 'Bearer ' + token},
+        });
+        }
+      const unitResponse = await this.api.post(
+        `/property/equipment/type/add-type`,
+        this.state.meterTypeData,
+      );
+      console.log('addtype response--->', unitResponse);
+      if (unitResponse?.ok) {
+      this.setState({ measureOfUnit: unitResponse?.data?.data }, () =>
+      console.log('measureOfUnit Of_______', this.state.measureOfUnit),
+      );
+      this.setState((prevState) => ({
+        ...prevState,
+        meterTypeData: {
+          // object that we want to update
+          ...prevState.meterTypeData, // keep all other key-value pairs
+          manufacturer: '',
+          model: '',
+          multiplier: 1,
+          unit_of_measure_id: '', // update the value of specific key
+        },
+        measureOfUnitName: '',
+      }),
+        () => this.props.meterTypeSelect({ 
+          name: 
+          unitResponse?.data?.data?.type?.model +
+          '(x' +
+          unitResponse?.data?.data?.type?.multiplier +
+          unitResponse?.data?.data?.type?.unit_of_measure +
+          ')',
+          id:unitResponse?.data?.data?.type?.id
+        }));
+      this.state.meterTypeInputs.map((item, index) => {
+        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+        if (index != 2) {
+          newArr[index].input = ''; // replace e.target.value with whatever you want to change it to
+        } else {
+          newArr[index].input = '1';
+        }
+        this.setState({ meterTypeInputs: newArr });
+      });
+      } else {
+        alert('Network error');
+      }
+    }
+  };
+
+  meterTypeClose = () => {
+    // this.setState({
+    //   isModalMeterVisible: false,
+    //   measureOfUnitName: '',
+    // });
+    this.setState((prevState) => ({
+      ...prevState,
+      meterTypeData: {
+        // object that we want to update
+        ...prevState.meterTypeData, // keep all other key-value pairs
+        manufacturer: '',
+        model: '',
+        multiplier: 1,
+        unit_of_measure_id: '', // update the value of specific key
+      },
+      measureOfUnitName: '',
+    }),
+    () => this.props.onCancel(false)
+    );
+    this.state.meterTypeInputs.map((item, index) => {
+      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+      if (index != 2) {
+        newArr[index].input = ''; // replace e.target.value with whatever you want to change it to
+      } else {
+        newArr[index].input = '1';
+      }
+      newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
+      this.setState({ meterTypeInputs: newArr });
+    });
+  };
   render() {
     const {
       title,
@@ -194,6 +336,7 @@ export default class UpdateModal extends Component {
       children,
       doneBtnTitle,
       onDone,
+      measureOfUnit
     } = this.props;
 
 
@@ -220,7 +363,7 @@ export default class UpdateModal extends Component {
                     />
                     <Text style={styles.modalHeading}>{title}</Text>
                     <Pressable
-                      onPress={onCancel}
+                      onPress={this.meterTypeClose}
                       android_ripple={{
                         color: 'black',
                         borderless: true,
@@ -348,8 +491,8 @@ export default class UpdateModal extends Component {
                                   style={[
                                     styles.inputContainer,
                                     {
-                                      width:width * 0.35
-                                       
+                                      width: width * 0.35
+
                                     },
                                   ]}>
                                   <MenuT
@@ -449,7 +592,7 @@ export default class UpdateModal extends Component {
                                       this.hideSuggestion(index)
                                     }>
                                     {index == 3
-                                      ? this.state.measureOfUnit.map(
+                                      ? measureOfUnit.map(
                                         (item) => (
                                           <MenuItem
                                             textStyle={
@@ -501,16 +644,16 @@ export default class UpdateModal extends Component {
                 {/* Box Footer */}
                 <View style={styles.footerBtn}>
                   <View style={styles.bottonContainer}>
-                    <TouchableOpacity onPress={onCancel}>
+                    <TouchableOpacity onPress={this.meterTypeClose}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{ color: 'black' }}>Cancel</Text>
+                        <Text style={{ color: 'black',fontFamily:Fonts.Montserrat }}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={onDone}>
+                    <TouchableOpacity onPress={this.handleSaveMeterTypeBuilder}>
                       <View style={styles.saveUnitBotton}>
                         <Plus name="plus" color="white" size={18} />
-                        <Text style={{ color: 'white' }}>{doneBtnTitle}</Text>
+                        <Text style={{ color: 'white',fontFamily:Fonts.Montserrat }}>{doneBtnTitle}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
