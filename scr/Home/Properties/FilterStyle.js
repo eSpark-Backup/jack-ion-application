@@ -88,6 +88,7 @@ export default styles = StyleSheet.create({
   },
   filterInputs: {
     width: '100%',
+    textTransform: 'capitalize',
   },
   filterUtility: {
     alignItems: 'center',
