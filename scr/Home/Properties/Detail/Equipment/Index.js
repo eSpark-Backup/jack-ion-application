@@ -118,7 +118,7 @@ export default class Splash extends Component {
     this.state = {
       noCode: false,
       hColor: '',
-      autoIncrement: false,
+      autoIncrement: true,
       unitIndex: 1,
       buildIndex: 0,
       pressedText: 'Select Type',
@@ -299,7 +299,7 @@ export default class Splash extends Component {
   onFocusFunction = () => {
     this.setState({loader: true, loaderBuildings: true});
     this.getToken();
-    console.log('Equip--->', this.props.navigation.state.params.item.item.id);
+    // console.log('Equip--->', this.props.navigation.state.params.item.item.id);
     this.setState({isModalVisible: false});
   };
 
@@ -401,10 +401,10 @@ export default class Splash extends Component {
           data,
         );
         console.log('Check unitResponse unit--->', unitResponse?.data?.data);
-        console.log(
-          'Check UNIT Meter --->',
-          unitResponse?.data?.data[1].unit_meter,
-        );
+        // console.log(
+        //   'Check UNIT Meter --->',
+        //   unitResponse?.data?.data[1].unit_meter,
+        // );
         // console.log('buildingData--->', this.state.buildingData);
 
         if (unitResponse?.ok == true) {
@@ -1118,8 +1118,8 @@ export default class Splash extends Component {
         <View style={styles.infoTopViewInner}>
           <Build name="office-building" size={width * 0.06} />
           <TextTicker
-            duration={5000}
-            style={[styles.dataFieldText, {width: width * 0.2}]}>
+            duration={6000}
+            style={[styles.dataFieldText, {width: width * 0.16}]}>
             {build.item.name}
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
@@ -1500,10 +1500,8 @@ export default class Splash extends Component {
   };
 
   _renderUnitList = ({item, index}) => (
-    // <View style={styles.addUnitListView}>
     <TextInput
       key={index}
-      // label="BILLING COMPANY*"
       value={item.name}
       dense={true}
       onChangeText={(text) => {
@@ -1521,8 +1519,6 @@ export default class Splash extends Component {
         },
       }}
     />
-    // {/* <Text style={{ color: '#25AAE1ec' }}>{item.num}</Text> */}
-    // </View>
   );
   _renderMeterTypes = ({item}) => (
     <TouchableOpacity onPress={() => this.showMeter({item})}>
@@ -3741,27 +3737,10 @@ export default class Splash extends Component {
                         </View>
                         {/* Modal Body */}
                         <ScrollView style={{flex: 1}}>
-                          {/* <View style={styles.desciptionContainer}>
-                            <Build
-                              name={'office-building'}
-                              size={height * 0.02}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.desciptionHeading}>Name*</Text>
-                          </View> */}
                           <View style={styles.inputContainer}>
                             <TextInput
-                              // label={'Name*'}
-                              // left={
-                              //   <Build
-                              //     name={'office-building'}
-                              //     size={height * 0.02}
-                              //     color="#5e5e5e"
-                              //   />
-                              // }
                               placeholder="Building Name"
                               error={this.state.error.buildingName}
-                              // dense={true}
                               onChangeText={(text) => {
                                 this.setState({buildName: text});
                               }}
@@ -3783,16 +3762,9 @@ export default class Splash extends Component {
                               {this.state.error.buildingName}
                             </HelperText>
                           ) : null}
-                          {/* <View style={styles.desciptionContainer}>
-                            <Text style={styles.desciptionHeading}>
-                              Description*
-                            </Text>
-                          </View> */}
                           <View style={styles.inputContainer}>
                             <TextInput
-                              // label="BILLING COMPANY*"
                               placeholder="Building Description"
-                              // dense={true}
                               onChangeText={(text) => {
                                 this.setState({buildDescription: text});
                               }}
@@ -4071,14 +4043,14 @@ export default class Splash extends Component {
               <View style={{width: width * 0.55, justifyContent: 'center'}}>
                 <ActivityIndicator size="large" color="black" />
               </View>
-            ) : this.state.dataBuild.length == 0 ? (
+            ) : this.state.realData.length == 0 ? (
               <View style={{width: width * 0.55, justifyContent: 'center'}}>
                 <Text
                   style={{
                     fontSize: width * 0.04,
                     textAlign: 'center',
                   }}>
-                  No data add Building
+                  No data add Unit
                 </Text>
               </View>
             ) : (

@@ -354,9 +354,8 @@ const App = ({navigation}) => {
     const response = await api.delete(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
-    getToken();
-    console.log('Check response', response?.data);
     alert(response?.data?.message);
+    navigation.navigate('Tools')
   };
 
   const renderUnitList = ({item, index}) => {
