@@ -131,10 +131,12 @@ class GlobalState extends React.Component {
     limitExceed: false,
     biller: '',
     loadFor: '',
+    searchPropName: '',
     propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
     offset: 0,
     searchOffset: 0,
+    filterSerial: '',
     searchList: [],
     propList: [],
   };
@@ -263,7 +265,7 @@ class GlobalState extends React.Component {
       this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', data);
       // console.log('Search property===>', response);
-      this.setState({loadFor: response.data.data.offset});
+      this.setState({searchOffset: response.data.data.offset});
       if (response?.data?.bool) {
         this.setState({searchList: response.data.data.properties});
         // console.log('Search property===>', response.data.data.properties);
@@ -312,6 +314,10 @@ class GlobalState extends React.Component {
 
   clearSearchList = () => {
     this.setState({searchList: []});
+  };
+
+  updateFilterSerial = (e) => {
+    this.setState({filterSerial: e});
   };
 
   updateBuilding = async (edit, id, params) => {
@@ -365,6 +371,8 @@ class GlobalState extends React.Component {
             deleteBuilding: this.deleteBuilding,
             updateBuilding: this.updateBuilding,
             biller: this.state.biller,
+            filterSerial: this.state.filterSerial,
+            updateFilterSerial: this.updateFilterSerial,
           }}>
           {this.props.children}
         </Context.Provider>

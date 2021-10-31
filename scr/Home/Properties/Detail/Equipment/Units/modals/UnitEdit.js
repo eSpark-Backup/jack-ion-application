@@ -47,7 +47,9 @@ export default function UnitEdit({
   unitDetails,
   meterTypes,
   buildingId,
-  reRun
+  reRun,
+  type,
+  modalName
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [typeOfMeters, setTypeOfMeters] = useState([]);
@@ -66,7 +68,7 @@ export default function UnitEdit({
     typeOfMeterIndex: '',
     meterTypeBuilder: false,
     lastUnitData: ''
-    
+
   });
   const [error, setError] = useState({
     errorUnits: ''
@@ -83,13 +85,14 @@ export default function UnitEdit({
 
   useEffect(() => {
     getToken();
+    // console.log('un in mod-->>',unitDetails)
   }, []);
 
   useEffect(() => {
     setMeterListArray(meterTypes);
     setState((oldState) => ({
       ...oldState,
-      lastUnitData: unitDetails.unit.name
+      lastUnitData: unitDetails?.unit?.name
     }));
   }, [meterTypes]);
 
@@ -99,7 +102,7 @@ export default function UnitEdit({
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const data = {
       id: value.id,
-      deviceSerialNum: '',
+      deviceSerialNum: type == 'meterDirect' || type == 'add' ? unitDetails?.unit?.meterSerial : '',
       deviceSerialError: '',
       meterType: '',
       meterTypeName: '',
@@ -313,82 +316,98 @@ export default function UnitEdit({
         errorUnits: 'Unit Required'
       }));
       return;
-    } else {
+    }
+    if (meterListData.length == 0 && (type == 'add' || type == 'meterDirect')) {
+      alert('Select meter and continue');
+      return;
+    }
+    if (type == 'add' || type == 'meterDirect' || meterListData.length != 0) {
       setError((oldState) => ({
         ...oldState,
         errorUnits: ''
       }));
-    // }
-    // if (meterListData.length == 0) {
-    //   alert('Select meter and continue');
-    //   return;
-    // }
-    // if (checkSerial.length) {
-    //   meterListData.map((data, index) => {
-    //     if (data.deviceSerialNum == '') {
-    //       let newArr = [...meterListData];
-    //       newArr[index].deviceSerialError = 'Device serial required';
-    //       setMeterListData(newArr);
-    //       return;
-    //     } else {
-    //       let newArr = [...meterListData];
-    //       newArr[index].deviceSerialError = '';
-    //       setMeterListData(newArr);
-    //     }
-    //   });
-    //   return;
-    // } else {
-    //   meterListData.map((data, index) => {
-    //     let newArr = [...meterListData];
-    //     newArr[index].deviceSerialError = '';
-    //     setMeterListData(newArr);
-    //   });
-    // }
-    // if (checkMeterType.length) {
-    //   meterListData.map((data, index) => {
-    //     if (data.meterType == '') {
-    //       let newArr = [...meterListData];
-    //       newArr[index].meterTypeError = 'Meter Type Required';
-    //       setMeterListData(newArr);
-    //       return;
-    //     } else {
-    //       let newArr = [...meterListData];
-    //       newArr[index].meterTypeError = '';
-    //       setMeterListData(newArr);
-    //     }
-    //   });
-    //   return;
-    // } else {
-    //   meterListData.map((data, index) => {
-    //     let newArr = [...meterListData];
-    //     newArr[index].meterTypeError = '';
-    //     setMeterListData(newArr);
-    //   });
-      var loopData = [];
-      meterListData.map((data, index) => {
-        loopData.push({
-          meter_id: data.id,
-          device_serial_number: data.deviceSerialNum,
-          meter_serial_number: data.meterSerialNum,
-          custom_meter_id: data.customMeterId,
-          type_id: data.meterType,
+      
+      if (checkSerial.length) {
+        meterListData.map((data, index) => {
+          if (data.deviceSerialNum == '') {
+            let newArr = [...meterListData];
+            newArr[index].deviceSerialError = 'Device serial required';
+            setMeterListData(newArr);
+            return;
+          } else {
+            let newArr = [...meterListData];
+            newArr[index].deviceSerialError = '';
+            setMeterListData(newArr);
+          }
         });
-      });
-
-      const data = {
-        name: state.lastUnitData,
-        building_id: buildingId,
-        meters: loopData,
-      };
-      console.log('data--->', data);
-        const unitResponse = await api.patch(
-          `/property/equipment/unit/update-unit/${unitDetails.unit.id}`,
-          data,
-        );
-        console.log('Check unitResponse add--->', unitResponse);
-        changeUtilityAndToggle();
-        reRun()
+        return;
+      } else {
+        meterListData.map((data, index) => {
+          let newArr = [...meterListData];
+          newArr[index].deviceSerialError = '';
+          setMeterListData(newArr);
+        });
+      }
+      if (checkMeterType.length) {
+        meterListData.map((data, index) => {
+          if (data.meterType == '') {
+            let newArr = [...meterListData];
+            newArr[index].meterTypeError = 'Meter Type Required';
+            setMeterListData(newArr);
+            return;
+          } else {
+            let newArr = [...meterListData];
+            newArr[index].meterTypeError = '';
+            setMeterListData(newArr);
+          }
+        });
+        return;
+      } else {
+        meterListData.map((data, index) => {
+          let newArr = [...meterListData];
+          newArr[index].meterTypeError = '';
+          setMeterListData(newArr);
+        });
+      }
     }
+    setError((oldState) => ({
+      ...oldState,
+      errorUnits: ''
+    }));
+
+    var loopData = [];
+    meterListData.map((data, index) => {
+      loopData.push({
+        meter_id: data.id,
+        device_serial_number: data.deviceSerialNum,
+        meter_serial_number: data.meterSerialNum,
+        custom_meter_id: data.customMeterId,
+        type_id: data.meterType,
+      });
+    });
+
+    let data = {
+      name: state.lastUnitData,
+      building_id: buildingId,
+      meters: loopData,
+    };
+    console.log('data--->', data);
+    if (type == 'add') {
+      const unitResponse = await api.post(
+        `/property/equipment/unit/add-unit`,
+        data,
+      );
+      changeUtilityAndToggle();
+      reRun(unitResponse?.data?.data)
+    } else {
+      const unitResponse = await api.patch(
+        `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
+        data,
+      );
+      changeUtilityAndToggle();
+      reRun(unitResponse?.data?.data)
+    }
+
   };
   return (
     <View>
@@ -407,7 +426,7 @@ export default function UnitEdit({
                 styles.boxConatainer,
                 {
                   height:
-                    meterListData.length == 0 ? height * 0.48 : height * 0.55,
+                    meterListData.length == 0 ? height * 0.46 : height * 0.55,
                 },
               ]}>
               <View style={styles.boxInner}>
@@ -419,7 +438,7 @@ export default function UnitEdit({
                       size={height * 0.05}
                       color="#5e5e5e"
                     />
-                    <Text style={styles.modalHeading}>Edit Unit</Text>
+                    <Text style={styles.modalHeading}>{modalName}</Text>
                     <Pressable
                       onPress={changeUtilityAndToggle}
                       android_ripple={{
@@ -475,10 +494,11 @@ export default function UnitEdit({
                         value={state.lastUnitData}
                         dense={true}
                         onChangeText={(text) => {
-                          setState((oldState) => ({
-                            ...oldState,
-                            lastUnitData: text
-                          }));
+                          type == 'meterDirect' ? null :
+                            setState((oldState) => ({
+                              ...oldState,
+                              lastUnitData: text
+                            }));
                         }}
                         style={styles.input}
                         error={error.errorUnits}
@@ -557,7 +577,7 @@ export default function UnitEdit({
                                 value={item.deviceSerialNum}
                                 dense={true}
                                 error={item.deviceSerialError}
-                                right={
+                                right={type == 'meterDirect' ? null :
                                   <TextInput.Icon
                                     name={() => (
                                       <TouchableOpacity
@@ -572,7 +592,7 @@ export default function UnitEdit({
                                     )}
                                   />
                                 }
-                                onChangeText={(text) =>
+                                onChangeText={(text) => type == 'meterDirect' ? null :
                                   onChangeMultipleField(
                                     text,
                                     meterIndex,
@@ -829,7 +849,18 @@ export default function UnitEdit({
                     <MenuT
                       visible={meterMenuVisible}
                       anchor={
-                        meterListArray.length ? (
+                        type == 'add' || type == 'meterDirect' ? ( 
+                          meterListData.length == 1 ?
+                          <View style={{ marginLeft: width * 0.02 }}>
+                            <Text
+                              style={{
+                                fontSize: height * 0.018,
+                                color: '#25AAE1ec',
+                              }}>
+                              No Meters
+                            </Text>
+                          </View>
+                          :
                           <Pressable
                             onPress={showMenu}
                             style={{
@@ -853,6 +884,30 @@ export default function UnitEdit({
                             </Text>
                           </Pressable>
                         ) : (
+                          meterListArray.length ? 
+                          <Pressable
+                            onPress={showMenu}
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'center',
+                            }}
+                            android_ripple={{
+                              color: '#25AAE1ec',
+                              borderless: true,
+                              radius: height * 0.08,
+                            }}>
+                            {/*//todo: Button for meter */}
+                            <Plus name="plus" size={25} color="#25AAE1ec" />
+                            <Text
+                              style={{
+                                fontSize: height * 0.018,
+                                color: '#25AAE1ec',
+                              }}>
+                              Meter
+                            </Text>
+                          </Pressable>
+                         : 
                           <View style={{ marginLeft: width * 0.02 }}>
                             <Text
                               style={{

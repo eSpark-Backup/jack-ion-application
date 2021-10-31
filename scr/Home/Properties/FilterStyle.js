@@ -33,7 +33,7 @@ export default styles = StyleSheet.create({
   },
   boxConatainer: {
     width: width * 0.85,
-    height: height * 0.6,
+    height: height * 0.35,
   },
   boxInner: {
     flex: 1,
@@ -41,6 +41,7 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.02,
     elevation: width * 0.02,
     alignItems: 'center',
+    overflow: 'hidden'
   },
   boxHeader: {
     width: width * 0.75,
@@ -88,6 +89,7 @@ export default styles = StyleSheet.create({
   },
   filterInputs: {
     width: '100%',
+    textTransform: 'capitalize',
   },
   filterUtility: {
     alignItems: 'center',

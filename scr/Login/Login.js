@@ -78,8 +78,8 @@ export default class Login extends Component {
     console.log(response.ok);
     if (!response.ok) {
       this.setState({
-        errName: '*Incorrect Username or Password',
-        errPass: '*Incorrect Username or Password',
+        errName: '*Incorrect Username',
+        errPass: '*Incorrect Password',
         isLoading: false,
       });
     } else if (response?.ok) {
@@ -184,12 +184,10 @@ export default class Login extends Component {
                 </View>
                 <View
                   style={{
-                    width: width,
+                    width: width * 0.75,
                     marginBottom: height * 0.02,
-                    // marginLeft: width * 0.15,
-                    // justifyContent: 'center',
-                    alignItems: 'center',
-                    // backgroundColor: 'blue',
+                    alignItems: 'flex-start',
+                    paddingLeft: width * 0.025,
                   }}>
                   {touched.email ? (
                     <Text style={{color: 'red'}}>
@@ -230,9 +228,10 @@ export default class Login extends Component {
                 </View>
                 <View
                   style={{
-                    width: width,
+                    width: width * 0.75,
                     marginBottom: height * 0.05,
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
+                    paddingLeft: width * 0.025,
                     // marginLeft: width * 0.15,
                   }}>
                   {touched.password ? (
@@ -263,7 +262,7 @@ export default class Login extends Component {
             )}
           </Formik>
           <View style={{marginLeft: width * 0.35, marginTop: height * 0.01}}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               disabled
               onPress={() => Alert.alert('In Progress')}>
               <Text
@@ -273,7 +272,7 @@ export default class Login extends Component {
                 }}>
                 Forgot Password?
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={{marginTop: height * 0.05}}>
             <TouchableOpacity

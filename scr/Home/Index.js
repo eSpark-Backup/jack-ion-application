@@ -74,6 +74,7 @@ class Splash extends Component {
 
 
   componentDidMount() {
+    // console.log('What we Get home',this.props.navigation.navigate('DashBoard'))
     SplashScreen.hide()
     this.requestLocationPermission()
   }

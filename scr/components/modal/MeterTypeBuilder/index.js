@@ -55,7 +55,7 @@ const models = [
     name: 'MJ09 Brass',
   },
 ];
-export default class UpdateModal extends Component {
+export default class MeterTypeBuilder extends Component {
 
   state = {
     meterTypeInputs: [
