@@ -11,9 +11,9 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxConatainer: {
-    width: width * 0.85,
-    height: height * 0.4,
-    marginTop:width * .03,
+    width: width * 1,
+    marginVertical:width * .03,
+    paddingHorizontal:width *.03,
   },
   boxInner: {
     flex: 1,
@@ -41,10 +41,10 @@ filterListText: {
 filterUtility: {
     alignItems: 'center',
     height:height * .16,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     padding : width * 0.02,
     elevation: 1,
-    marginVertical: width * 0.01,
+    marginVertical: width * 0.001,
   },
   propText: {
     textTransform: 'capitalize',

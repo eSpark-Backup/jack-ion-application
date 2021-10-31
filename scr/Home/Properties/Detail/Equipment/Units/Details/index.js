@@ -77,7 +77,7 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
+    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     setLoading(false);
@@ -296,7 +296,7 @@ const App = ({navigation}) => {
     if (data.length != 0) {
       setLoading(false);
     }
-  }, [unitMeter]);
+  }, [unitMeter,data]);
   const meterSwitcher = () => {
     switch (unitMeter?.meter_name) {
       case 'hot water':
@@ -345,13 +345,6 @@ const App = ({navigation}) => {
 
   const meterTypes = () => {
     let arr1 = [...meterListArray];
-    // const arr1 = [
-    //   {id: 1, title: 'Water'},
-    //   {id: 2, title: 'Hot Water'},
-    //   {id: 3, title: 'Cold Water'},
-    //   {id: 4, title: 'Gas'},
-    //   {id: 5, title: 'Electricity'},
-    // ];
     let arr2 = [...arrayOfUnits];
     const antiIntersection = arr1.filter(
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
@@ -675,6 +668,7 @@ const App = ({navigation}) => {
           closeModal={() => setEditUnitModalVisible(false)}
           reRun={() => getToken()}
           meterTypes={editMeterTypes}
+          modalName='Edit Unit'
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -776,12 +770,12 @@ const App = ({navigation}) => {
               />
             </View>
           </View>
-          <View style={{height: height * 0.05, bottom: height * 0.02}}>
+          <View style={{ marginVertical: height * 0.01,marginBottom:height * .06}}>
             <TouchableOpacity onPress={openEditModal}>
               <Icon
                 name="plus-circle"
                 type="feather"
-                size={width * 0.075}
+                size={width * 0.15}
                 color={'#25AAE1ec'}
               />
             </TouchableOpacity>
@@ -810,6 +804,7 @@ const App = ({navigation}) => {
           closeModal={() => setEditUnitModalVisible(false)}
           reRun={() => getToken()}
           meterTypes={editMeterTypes}
+          modalName='Edit Unit'
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}

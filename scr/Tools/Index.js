@@ -39,6 +39,7 @@ import Base_URL from '../api/WebServices';
 import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../components/Loader';
+import { withNavigation } from 'react-navigation';
 
 import Modal from 'react-native-modal';
 
@@ -51,7 +52,7 @@ import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
 const {width, height} = Dimensions.get('window');
 
-export default class Splash extends Component {
+class Tools extends Component {
   static navigationOptions = {
     title: 'Tools',
     tabBarIcon: ({tintColor}) => (
@@ -127,17 +128,21 @@ export default class Splash extends Component {
       let buildingName = buildingResponse?.data?.data?.building?.name;
       let propertyName = buildingResponse?.data?.data?.building?.property_name;
 
-      this.setState({loader: false});
+      this.setState({loader: false,},
+        () => this.props.navigation.navigate('MeterDetails', {
+          unitId: unitId,
+          buildingName: buildingName,
+          propertyName,
+          meterInfo:meterResponse?.data?.data?.meterinfo,
+        })
+        );
       this.toggleModal();
-      this.props.navigation.navigate('MeterDetails', {
-        unitId: unitId,
-        buildingName: buildingName,
-        propertyName,
-        meterInfo:meterResponse?.data?.data?.meterinfo,
-      });
+      
     } else {
-      this.props.navigation.navigate(
-        'RedirectMeter');
+      this.toggleModal();
+      this.setState({loader: false,},
+        () => this.props.navigation.navigate('RedirectMeter',{meterSerial:e?.data})
+        );
     }
 
     // console.log('Barcode Values', response);
@@ -170,6 +175,7 @@ export default class Splash extends Component {
   };
 
   componentDidMount() {
+    // console.log('What we Get tools',this.props.navigation.navigate('MeterDetails'))
     this.subs = [
       this.props.navigation.addListener('didFocus', () =>
       Animated.spring(this.state.springValue, {
@@ -479,3 +485,4 @@ export default class Splash extends Component {
     );
   }
 }
+export default Tools;
