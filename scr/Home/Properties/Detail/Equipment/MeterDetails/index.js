@@ -22,6 +22,7 @@ import {create} from 'apisauce';
 import Base_Url from '../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Chart,
   Line,
@@ -355,7 +356,7 @@ const App = ({navigation}) => {
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     alert(response?.data?.message);
-    navigation.navigate('Tools')
+    navigation.navigate('Tools');
   };
 
   const renderUnitList = ({item, index}) => {
@@ -634,7 +635,7 @@ const App = ({navigation}) => {
     return <Loader />;
   } else {
     return (
-      <View style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1}}>
         <Header
           leftComponent={{
             text: 'Close',
@@ -972,7 +973,7 @@ const App = ({navigation}) => {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 };

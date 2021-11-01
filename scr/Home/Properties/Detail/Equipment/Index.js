@@ -2805,7 +2805,7 @@ export default class Splash extends Component {
                             }}>
                             <MenuT
                               visible={this.state.visible}
-                              style={{height: height * 0.2}}
+                              // style={{height: height * 0.2}}
                               anchor={
                                 this.state.meterListArray.length ? (
                                   <Pressable
