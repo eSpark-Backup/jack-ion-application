@@ -125,6 +125,7 @@ export default class Splash extends Component {
       pressedUnit: '',
       pressedCode: '',
       pressedAndEdit: '',
+      changed: false,
       scanner: null,
       meterId: 0,
       barcodes: [],
@@ -134,6 +135,7 @@ export default class Splash extends Component {
       textStyle: false,
       loader: true,
       scanIndex: null,
+      getUtilities: [],
       searchList: [],
       meterListData: [],
       meterListArray: [],
@@ -371,14 +373,15 @@ export default class Splash extends Component {
       this.checkData();
     }
   };
-  get_filterVal = (payload) => {
-    console.log('Devce serial', payload);
+  get_filterVal = async (serial, meterId) => {
+    console.log('Devce serial', serial, meterId);
+
     this.setState({showFilter: false});
-    this.filerUnits(payload);
+    this.filerUnits(serial, meterId);
   };
 
   checkData = async () => {
-    const response = await this.api.get(
+    const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
     // console.log('Check response buildings--->', response);
@@ -430,11 +433,12 @@ export default class Splash extends Component {
     }
   };
 
-  filerUnits = async (serial) => {
+  filerUnits = async (serial, id) => {
     console.log('Get filert', serial);
     let data = {
       building_id: this.state.editBuildId,
       device_serial_number: serial,
+      meter_id: id,
     };
 
     if (serial) {
@@ -472,14 +476,13 @@ export default class Splash extends Component {
 
   searchUnits = async (e) => {
     this.setState({loadFor: e});
-    console.log('Get filert', serial);
+    console.log('Get filert', e);
     let data = {
       building_id: this.state.editBuildId,
       search: e,
-      device_serial_number: serial,
     };
 
-    if (e || serial) {
+    if (e) {
       this.setState({searchLoading: true});
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
@@ -1579,6 +1582,7 @@ export default class Splash extends Component {
       buildingData: build.item,
       editBuildDes: build.item.descriptions,
       editBuildId: build.item.id,
+      changed: true,
     });
     const data = {
       building_id: build.item.id,
@@ -1602,6 +1606,10 @@ export default class Splash extends Component {
       alert('Network Issue');
       this.setState({loader: false});
     }
+  };
+
+  changedFalse = () => {
+    this.setState({changed: false});
   };
 
   showMeter = (item) => {
@@ -1788,9 +1796,14 @@ export default class Splash extends Component {
     this.setState({showSearch: true});
     this.setState({searchList: []});
   };
-  openFilter = () => {
+  openFilter = async () => {
     this.context.getBillingCompany();
     this.setState({showFilter: true});
+    const unitResponse = await this.api.get(
+      `/property/equipment/meter/all-meters`,
+    );
+    console.log('Check meter add--->', unitResponse?.data?.data);
+    this.setState({getUtilities: unitResponse?.data?.data});
   };
 
   deleteBuilding = () => {
@@ -2576,6 +2589,7 @@ export default class Splash extends Component {
                                                       alignItems: 'center',
                                                     }}>
                                                     <TextTicker
+                                                      repeatSpacer={width * 0.5}
                                                       marqueeDelay={2000}
                                                       duration={6000}
                                                       style={{
@@ -3960,10 +3974,14 @@ export default class Splash extends Component {
             <Filter
               type="Units"
               onReset={this.get_filterVal}
+              utilityTypes={this.state.getUtilities}
               get_filterVal={this.get_filterVal}
+              changeChanged={this.changedFalse}
               isVisible={this.state.showFilter}
               close={() => this.setState({showFilter: !this.state.showFilter})}
               buildingName={this.state.buildingData.name}
+              buildiingId={this.state.editBuildId}
+              changed={this.state.changed}
             />
             {this.state.showSearch ? (
               <Modal
