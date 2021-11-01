@@ -1822,6 +1822,23 @@ export default class Splash extends Component {
     ]);
   };
 
+  compareObjects(object1, object2, key) {
+    const obj1 = object1[key].toUpperCase();
+    const obj2 = object2[key].toUpperCase();
+
+    const str1 = obj1.replace(/\s/g, '');
+    const str2 = obj2.replace(/\s/g, '');
+
+    if (str1 < str2) {
+      return -1;
+    }
+    if (str1 > str2) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
   render() {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
@@ -4063,7 +4080,10 @@ export default class Splash extends Component {
                 contentContainerStyle={{backgroundColor: '#F5F5F5'}}
                 numColumns={1}
                 initialNumToRender={realData.length}
-                data={realData}
+                // data={realData}
+                data={realData.sort((a, b) => {
+                  return this.compareObjects(a, b, 'name');
+                })}
                 renderItem={this._renderMyList}
                 // renderItem={(item, index) => console.log(item.index)}
                 keyExtractor={(item) => item.id.toString()}
