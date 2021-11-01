@@ -500,17 +500,11 @@ export default class Splash extends Component {
   };
 
   getLoopOfUnits = (text) => {
-    console.log('text-->', text);
     const n = text == undefined ? 10 : text;
-    var value = this.state.unitIndex - 1;
     var int = this.state.newUnit;
     var str = this.state.newUnit;
-    // var tName = 'arun_4874';
     int = parseInt(int.match(/\d+/)) + 1;
     str = str.replace(/[0-9]/g, '');
-    console.log('int-------->', int);
-    console.log('str-------->', str);
-
     var loopData = [];
     var i;
     for (i = 0; i < n; i++) {
@@ -518,12 +512,9 @@ export default class Splash extends Component {
         name: str + ' ' + int,
         num: value + 1,
       }),
-        (value = value + 1);
       int = int + 1;
     }
-    this.setState({unitsArray: loopData}, () =>
-      console.log('array--->', this.state.unitsArray),
-    );
+    this.setState({unitsArray: loopData});
   };
 
   addInput = (value, i) => {

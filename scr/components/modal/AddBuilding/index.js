@@ -188,6 +188,7 @@ export default function AddbuildingModal({
           name: state.unitsArray[i].name,
         });
       }
+      console.log('looppdata--->',loopData)
       setState((oldState) => ({
         ...oldState,
         unitsArraySend:loopData
@@ -203,7 +204,8 @@ export default function AddbuildingModal({
 
   const handleAddbuildingApi = async (data) => {
     const unitResponse = await api.post(`/property/equipment/building/add-building`,data);
-    if(unitResponse?.data?.bool){
+      console.log('buildResponse--->',unitResponse)
+      if(unitResponse?.data?.bool){
       changeUtilityAndToggle()
       reRun()
     }else{

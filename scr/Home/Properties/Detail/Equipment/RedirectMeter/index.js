@@ -287,7 +287,7 @@ export default class RedirectMeter extends Component {
     const response = await this.api.get(
       `/property/equipment/building/all-buildings/${item.id}`,
     );
-    // console.log('Check response buildings--->', response);
+    console.log('Check response buildings--->', response);
     if (response?.ok == true) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       this.setState({dataBuild: response?.data?.data});
@@ -590,8 +590,7 @@ export default class RedirectMeter extends Component {
           <View
             style={{
               ...styles.boxConatainer,
-              height:
-                this.state.dataBuild.length != 0 ? height * 0.2 : height * 0.12,
+              height:this.state.dataBuild.length != 0 ? height * 0.2 : height * 0.12,
             }}>
             <View style={styles.boxInner}>
               <View
