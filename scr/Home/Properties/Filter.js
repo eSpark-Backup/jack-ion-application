@@ -20,6 +20,7 @@ import DropDown from 'react-native-vector-icons/FontAwesome';
 import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
+import {DotsLoader} from 'react-native-indicator';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import Base_URL from '../../../scr/api/WebServices';
 import Modal from 'react-native-modal';
@@ -46,18 +47,6 @@ export default class Splash extends Component {
       searchName: '',
       utilityIndex: null,
       scan: false,
-      utilityTypes: [
-        {
-          id: 2,
-          type: 'cold water',
-          img: require('../../../Images/cold-water.png'),
-        },
-        {
-          id: 3,
-          type: 'hot water',
-          img: require('../../../Images/hot-water.png'),
-        },
-      ],
       Types: [
         {
           id: 2,
@@ -86,17 +75,18 @@ export default class Splash extends Component {
         },
       ],
       biller: '---',
+      changed: false,
+      buildingId: '',
       buildingName: '',
       unitName: '',
       serial: '',
     };
   }
   getUtilityType = (type, index) => {
-    this.setState({selectedType: type, utilityIndex: index});
-  };
-
-  getItemId = (id) => {
-    console.log('🚀 ~ file: Filter.js ~ line 91 ~ Splash ~ id', id);
+    this.setState({
+      selectedType: type,
+      utilityIndex: index === this.state.utilityIndex ? null : index,
+    });
   };
 
   getToken = async () => {
@@ -118,7 +108,6 @@ export default class Splash extends Component {
     this.setState({showList: true});
   };
 
-  //  [biller, setBiller] = useState(billing[0].name);
   componentDidMount() {
     this.context.getBillingCompany();
     SplashScreen.hide();
@@ -141,10 +130,13 @@ export default class Splash extends Component {
         search: this.state.searchName,
       };
       this.context.filterData(data);
+      this.props.close();
       this.setState({showList: false});
     } else {
-      console.log('filter serila_______', this.context.filterSerial);
-      this.props.get_filterVal(this.context.filterSerial);
+      this.props.get_filterVal(
+        this.context.filterSerial,
+        this.state.utilityIndex && this.state.utilityIndex + 1,
+      );
     }
   };
 
@@ -152,20 +144,13 @@ export default class Splash extends Component {
     this.context.checkData();
     this.props.close();
     this.setState({biller: ''});
-  };
-
-  onFilter = () => {
-    if (this.props.type == 'Properties') {
-      console.log('filter Properties_______');
-    } else {
-      console.log('filter serila_______', this.context.filterSerial);
-      this.props.get_filterVal(this.context.filterSerial);
-    }
+    this.context.updateFilterProperty('');
   };
 
   resetFilter = () => {
     this.props.onReset('');
     this.context.updateFilterSerial('');
+    this.setState({utilityIndex: null});
   };
 
   toggleScanner = async () => {
@@ -218,9 +203,38 @@ export default class Splash extends Component {
     this.setState({scan: false});
   };
 
+  typeSwitcher = (arg) => {
+    switch (arg) {
+      case 'hot water':
+        return require('../../../Images/hot-water.png');
+      case 'cold water':
+        return require('../../../Images/cold-water.png');
+      case 'electricity':
+        return require('../../../Images/electric.png');
+      case 'gas':
+        return require('../../../Images/gass.png');
+      case 'water':
+        return require('../../../Images/all-waters.png');
+      default:
+        break;
+    }
+  };
+
   render() {
     const {scan} = this.state;
-    const {isVisible, close, type, buildingName, style} = this.props;
+    const {
+      isVisible,
+      close,
+      type,
+      buildingName,
+      style,
+      utilityTypes,
+    } = this.props;
+    if (this.props.changed) {
+      this.context.updateFilterSerial('');
+      this.setState({utilityIndex: null});
+      this.props.changeChanged();
+    }
     return (
       <View>
         <StatusBar barStyle="dark-content" />
@@ -231,21 +245,12 @@ export default class Splash extends Component {
           // backdropColor='black'
           backdropOpacity={5}
           isVisible={this.state.isScannerVisible}>
-          {/* <View style={{
-                  flex: 1,
-                  justifyContent: "space-around",
-                  borderRadius: width * .02
-                  // height: height * .6,
-                  // alignItems: "center",
-                }} > */}
           {scan && (
             <View
               style={{
                 flex: 1,
                 justifyContent: 'space-around',
                 borderRadius: width * 0.02,
-                // height: height * .6,
-                // alignItems: "center",
               }}>
               <View
                 style={{
@@ -259,8 +264,6 @@ export default class Splash extends Component {
                     color="white"
                     name="keyboard-backspace"
                   />
-                  {/* <View style={{ backgroundColor: 'white', borderRadius: width * .008, height: height * .05, justifyContent: 'center', width: width * .4 }}>
-                        </View> */}
                 </TouchableOpacity>
                 <Text
                   style={{
@@ -283,7 +286,6 @@ export default class Splash extends Component {
                 onBarCodeRead={this.onScanned}
                 captureAudio={false}>
                 <BarcodeMask outerMaskOpacity={0} />
-                {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
               </RNCamera>
             </View>
           )}
@@ -292,7 +294,6 @@ export default class Splash extends Component {
         <Modal
           animationIn="slideInDown"
           animationOut="slideOutUp"
-          // avoidKeyboard={true}
           isVisible={isVisible}>
           <View style={styles.modalInner}>
             <View style={{...styles.boxConatainer, style}}>
@@ -310,27 +311,15 @@ export default class Splash extends Component {
                       <Text style={{fontSize: 20, color: '#25aae1'}}>
                         Filter
                       </Text>
-                      {/* <Progress.Bar
-                        progress={0.2}
-                        borderWidth={1}
-                        borderColor="#e1e1e1"
-                        color={0.2 == 1 ? '#1ED257' : '#18CADC'}
-                        width={width * 0.8}
-                        height={height * 0.01}
-                        style={{marginTop: 20}}
-                      />
-                      <Text style={{fontSize: width * 0.03}}>
-                        13 of 13 Properties Remaining
-                      </Text> */}
                     </View>
                   }
                   rightComponent={{
                     text: 'Reset',
                     style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
                     onPress: () => {
-                      type == 'Properties'
-                        ? this.onFocusFunction()
-                        : this.resetFilter();
+                      type == 'Units'
+                        ? this.resetFilter()
+                        : this.onFocusFunction();
                     },
                   }}
                   backgroundColor="#fff"
@@ -346,7 +335,10 @@ export default class Splash extends Component {
                         <Text style={styles.filterListText}>Name:</Text>
                         <TextInput
                           style={styles.filterInputs}
-                          onChangeText={(e) => this.setState({searchName: e})}
+                          value={this.context.filterPropName}
+                          onChangeText={(e) =>
+                            this.context.updateFilterProperty(e)
+                          }
                         />
                       </View>
                       <View style={styles.filterLists}>
@@ -365,13 +357,6 @@ export default class Splash extends Component {
                   {type == 'Properties' ? null : (
                     <View>
                       <View style={styles.currentReadContainer}>
-                        {/* <View style={styles.filterHeading}>
-                          <Text style={styles.filterListText}>
-                            {type == 'Properties'
-                              ? 'Property Details'
-                              : 'Details'}
-                          </Text>
-                        </View> */}
                         <View style={styles.inputFilterView}>
                           <Text style={styles.filterListText}>Building:</Text>
                           <TextInput
@@ -399,95 +384,69 @@ export default class Splash extends Component {
                       </View>
                     </View>
                   )}
-                  <View style={styles.currentReadContainer}>
-                    <View style={styles.inputFilterView}>
-                      <Text style={styles.filterListText}>Utility Types:</Text>
-                      <FlatList
-                        horizontal
-                        style={{marginLeft: width * 0.05}}
-                        data={this.state.utilityTypes}
-                        renderItem={({item, index}) => (
-                          <TouchableOpacity
+                  {type == 'Units' ? (
+                    <View style={styles.currentReadContainer}>
+                      <View style={styles.inputFilterView}>
+                        <Text style={styles.filterListText}>
+                          Utility Types:
+                        </Text>
+                        {utilityTypes.length ? (
+                          <FlatList
+                            horizontal
+                            style={{marginLeft: width * 0.05}}
+                            data={utilityTypes}
+                            renderItem={({item, index}) => (
+                              <TouchableOpacity
+                                style={{
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    index == this.state.utilityIndex
+                                      ? '#efefef'
+                                      : null,
+                                  padding: width * 0.015,
+                                  marginHorizontal: width * 0.02,
+                                  marginVertical: height * 0.01,
+                                }}
+                                onPress={() =>
+                                  this.getUtilityType(item.name, index)
+                                }>
+                                <Image
+                                  source={this.typeSwitcher(item.name)}
+                                  resizeMode="contain"
+                                  style={{
+                                    height: width * 0.06,
+                                    width: width * 0.055,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            )}
+                          />
+                        ) : (
+                          <View
                             style={{
-                              borderRadius: 10,
-                              backgroundColor:
-                                index == this.state.utilityIndex
-                                  ? '#efefef'
-                                  : null,
-                              padding: width * 0.015,
-                              marginHorizontal: width * 0.02,
-                              marginVertical: height * 0.01,
-                            }}
-                            onPress={() =>
-                              this.getUtilityType(item.type, index)
-                            }>
-                            <Image
-                              source={item.img}
-                              resizeMode="contain"
-                              style={{
-                                height: width * 0.06,
-                                width: width * 0.055,
-                              }}
-                            />
-                          </TouchableOpacity>
+                              paddingLeft: width * 0.035,
+                              marginVertical: width * 0.035,
+                            }}>
+                            <DotsLoader color="gray" />
+                          </View>
                         )}
-                      />
+                      </View>
                     </View>
-                    {/* <View style={styles.filterHeading}>
-                      <Text style={styles.filterListText}>Utility Types</Text>
-                    </View>
-                    <View style={styles.filterUtility}>
-                      <FlatList
-                        horizontal
-                        data={this.state.utilityTypes}
-                        renderItem={({item}) => (
-                          <TouchableOpacity
-                            onPress={() => this.getUtilityType(item.type)}>
-                            <Image
-                              source={item.img}
-                              resizeMode="contain"
-                              style={{
-                                height: width * 0.06,
-                                width: width * 0.055,
-                                marginHorizontal: width * 0.02,
-                              }}
-                            />
-                          </TouchableOpacity>
-                        )}
-                      />
-                    </View> */}
+                  ) : null}
+                  <View
+                    style={{
+                      ...styles.currentReadContainer,
+                      marginVertical: height * 0.015,
+                    }}>
+                    <TouchableOpacity
+                      style={{
+                        ...styles.filterUtility,
+                        backgroundColor: '#25aae1',
+                      }}
+                      onPress={this.filter}>
+                      <Text style={{color: '#fff'}}>Filter</Text>
+                    </TouchableOpacity>
                   </View>
-                  {type != 'Properties' ? (
-                    <View
-                      style={{
-                        ...styles.currentReadContainer,
-                        marginVertical: height * 0.015,
-                      }}>
-                      <TouchableOpacity
-                        style={{
-                          ...styles.filterUtility,
-                          backgroundColor: '#25aae1',
-                        }}
-                        onPress={this.filter}>
-                        <Text style={{color: '#fff'}}>Filter</Text>
-                      </TouchableOpacity>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        ...styles.currentReadContainer,
-                        marginVertical: height * 0.015,
-                      }}>
-                      <TouchableOpacity
-                        style={{
-                          ...styles.filterUtility,
-                          backgroundColor: '#25aae1',
-                        }}
-                        onPress={this.filter}>
-                        <Text style={{color: '#fff'}}>Filter</Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
                 </View>
               </View>
             </View>
