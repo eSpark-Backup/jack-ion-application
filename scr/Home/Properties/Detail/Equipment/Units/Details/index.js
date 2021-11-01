@@ -568,6 +568,7 @@ const App = ({navigation}) => {
                     <TextTicker
                       duration={6000}
                       marqueeDelay={2000}
+                      repeatSpacer={width * 0.6}
                       style={[
                         styles.listText,
                         {

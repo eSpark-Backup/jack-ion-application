@@ -1061,7 +1061,12 @@ export default class Splash extends Component {
               marginLeft: width * 0.01,
               // backgroundColor:'red'
             }}>
-            <TextTicker duration={5000} style={styles.dataFieldText} key={unit}>
+            <TextTicker
+              duration={6000}
+              marqueeDelay={2000}
+              repeatSpacer={width * 0.3}
+              style={styles.dataFieldText}
+              key={unit}>
               {unit.item.name}
             </TextTicker>
             <View
@@ -1119,6 +1124,8 @@ export default class Splash extends Component {
           <Build name="office-building" size={width * 0.06} />
           <TextTicker
             duration={6000}
+            marqueeDelay={2000}
+            repeatSpacer={width * 0.16}
             style={[styles.dataFieldText, {width: width * 0.16}]}>
             {build.item.name}
           </TextTicker>
@@ -1307,7 +1314,9 @@ export default class Splash extends Component {
                   // backgroundColor:'red'
                 }}>
                 <TextTicker
-                  duration={5000}
+                  duration={6000}
+                  marqueeDelay={2000}
+                  repeatSpacer={width * 0.3}
                   style={styles.dataFieldText}
                   key={unit}>
                   {unit.item.name}
@@ -2567,8 +2576,8 @@ export default class Splash extends Component {
                                                       alignItems: 'center',
                                                     }}>
                                                     <TextTicker
-                                                      marqueeDelay={1000}
-                                                      duration={5000}
+                                                      marqueeDelay={2000}
+                                                      duration={6000}
                                                       style={{
                                                         fontSize:
                                                           height * 0.018,

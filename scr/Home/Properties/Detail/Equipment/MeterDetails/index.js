@@ -355,7 +355,7 @@ const App = ({navigation}) => {
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     alert(response?.data?.message);
-    navigation.navigate('Tools')
+    navigation.navigate('Tools');
   };
 
   const renderUnitList = ({item, index}) => {
@@ -541,6 +541,7 @@ const App = ({navigation}) => {
                   {item.rightName == null ? null : (
                     <TextTicker
                       duration={6000}
+                      repeatSpacer={width * 0.6}
                       marqueeDelay={2000}
                       style={[
                         styles.listText,
