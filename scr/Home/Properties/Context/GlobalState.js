@@ -245,7 +245,7 @@ class GlobalState extends React.Component {
   };
 
   showBuildings = async (data) => {
-    const response = await this.api.get(
+    const response = await this.api.post(
       `/property/equipment/building/all-buildings/28303`,
     );
     console.log('Check response buildings--->', response);

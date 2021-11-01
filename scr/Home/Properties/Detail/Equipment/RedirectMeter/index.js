@@ -284,7 +284,7 @@ export default class RedirectMeter extends Component {
       propertyName: item.name,
       propertyDetails: item,
     });
-    const response = await this.api.get(
+    const response = await this.api.post(
       `/property/equipment/building/all-buildings/${item.id}`,
     );
     // console.log('Check response buildings--->', response);

@@ -378,7 +378,7 @@ export default class Splash extends Component {
   };
 
   checkData = async () => {
-    const response = await this.api.get(
+    const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
     // console.log('Check response buildings--->', response);
