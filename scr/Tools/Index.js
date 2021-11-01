@@ -50,6 +50,7 @@ import styles from './style';
 import {Ellipse} from 'react-native-svg';
 import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const {width, height} = Dimensions.get('window');
 
 class Tools extends Component {
@@ -249,7 +250,7 @@ class Tools extends Component {
     let {animatedValue, springValue} = this.state;
     const {result, scan, scanResult} = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {this.state.loader ? <Loader /> : null}
         <Modal
           animationIn="bounceInUp"
@@ -481,7 +482,7 @@ class Tools extends Component {
             </TouchableOpacity>
           </Animated.View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }
