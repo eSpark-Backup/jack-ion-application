@@ -39,7 +39,7 @@ import Base_URL from '../api/WebServices';
 import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../components/Loader';
-import { withNavigation } from 'react-navigation';
+import {withNavigation} from 'react-navigation';
 
 import Modal from 'react-native-modal';
 
@@ -94,7 +94,7 @@ class Tools extends Component {
   };
 
   onSuccess = async (e) => {
-    console.log('meter info ---->',e );
+    console.log('meter info ---->', e);
     this.setState({scan: false});
     this.setState({scanning: true});
     const check = e.data.substring(0);
@@ -121,28 +121,24 @@ class Tools extends Component {
         `/property/equipment/building/${buildingId}`,
       );
 
-      console.log(
-        'Get Building Name',
-        buildingResponse,
-      );
+      console.log('Get Building Name', buildingResponse);
       let buildingName = buildingResponse?.data?.data?.building?.name;
       let propertyName = buildingResponse?.data?.data?.building?.property_name;
 
-      this.setState({loader: false,},
-        () => this.props.navigation.navigate('MeterDetails', {
+      this.toggleModal();
+      this.setState({loader: false}, () =>
+        this.props.navigation.navigate('MeterDetails', {
           unitId: unitId,
           buildingName: buildingName,
           propertyName,
-          meterInfo:meterResponse?.data?.data?.meterinfo,
-        })
-        );
-      this.toggleModal();
-      
+          meterInfo: meterResponse?.data?.data?.meterinfo,
+        }),
+      );
     } else {
       this.toggleModal();
-      this.setState({loader: false,},
-        () => this.props.navigation.navigate('RedirectMeter',{meterSerial:e?.data})
-        );
+      this.setState({loader: false}, () =>
+        this.props.navigation.navigate('RedirectMeter', {meterSerial: e?.data}),
+      );
     }
 
     // console.log('Barcode Values', response);
@@ -177,13 +173,15 @@ class Tools extends Component {
   componentDidMount() {
     // console.log('What we Get tools',this.props.navigation.navigate('MeterDetails'))
     this.subs = [
-      this.props.navigation.addListener('didFocus', () =>
-      Animated.spring(this.state.springValue, {
-        toValue: 1,
-        friction: 3,
-        useNativeDriver: true,
-      }).start(),
-      this.getToken()
+      this.props.navigation.addListener(
+        'didFocus',
+        () =>
+          Animated.spring(this.state.springValue, {
+            toValue: 1,
+            friction: 3,
+            useNativeDriver: true,
+          }).start(),
+        this.getToken(),
       ),
       this.props.navigation.addListener('willBlur', () =>
         this.setState({springValue: new Animated.Value(0)}),
@@ -257,24 +255,9 @@ class Tools extends Component {
           // backdropColor='black'
           backdropOpacity={5}
           isVisible={this.state.isVisible}>
-          {this.state.scanning ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                borderRadius: width * 0.02,
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  textAlign: 'center',
-                  fontSize: width * 0.06,
-                }}>
-                Getting Meter Info...
-              </Text>
-            </View>
-          ) : (
+          
+
+          {scan ? (
             <View
               style={{
                 flex: 1,
@@ -289,83 +272,32 @@ class Tools extends Component {
                 }}>
                 Scan Barcode
               </Text>
-              {scan && (
-                <RNCamera
-                  ref={(ref) => {
-                    this.camera = ref;
-                  }}
-                  style={{flex: 1}}
-                  type={RNCamera.Constants.Type.back}
-                  autoFocus="on"
-                  onBarCodeRead={this.onSuccess}
-                  captureAudio={false}
-                  // onGoogleVisionBarcodesDetected={this.onSuccess}
-                  // androidCameraPermissionOptions={{
-                  //   title: "Open Camera",
-                  //   message: "Open Open",
-                  //   buttonPositive: 'OK',
-                  //   buttonNegative: "Not Ok",
-                  // }}
-                >
-                  <BarcodeMask outerMaskOpacity={0} />
-                  {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
-                </RNCamera>
-              )}
-              {scanResult && (
-                <Fragment>
-                  <Text
-                    style={{
-                      color: 'white',
-                      textAlign: 'center',
-                      fontSize: width * 0.08,
-                    }}>
-                    Result.!
-                  </Text>
-                  <View
-                    style={{
-                      height: height * 0.4,
-                      backgroundColor: 'white',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text>Type:{result.type}</Text>
-                    <Text>Result:{result.data}</Text>
-                    <Text numberOfLines={1}>Raw Data:{result.rawData}</Text>
-                  </View>
-                </Fragment>
-              )}
+              <RNCamera
+                ref={(ref) => {
+                  this.camera = ref;
+                }}
+                style={{flex: 1}}
+                type={RNCamera.Constants.Type.back}
+                autoFocus="on"
+                onBarCodeRead={this.onSuccess}
+                captureAudio={false}
+                // onGoogleVisionBarcodesDetected={this.onSuccess}
+                // androidCameraPermissionOptions={{
+                //   title: "Open Camera",
+                //   message: "Open Open",
+                //   buttonPositive: 'OK',
+                //   buttonNegative: "Not Ok",
+                // }}
+              >
+                <BarcodeMask outerMaskOpacity={0} />
+                {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
+              </RNCamera>
               <View
                 style={{
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   paddingVertical: height * 0.02,
                 }}>
-                {scanResult && (
-                  <View>
-                    <TouchableOpacity onPress={this.scanAgain}>
-                      <View
-                        style={{
-                          backgroundColor: '#25AAE1',
-                          borderRadius: width * 0.008,
-                          height: height * 0.05,
-                          width: width * 0.4,
-                          justifyContent: 'center',
-                        }}>
-                        <Text
-                          style={{
-                            textAlign: 'center',
-                            color: 'white',
-                            fontWeight: 'bold',
-                          }}>
-                          Scan Again
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <Text style={{textAlign: 'center', color: 'white'}}>
-                      OR
-                    </Text>
-                  </View>
-                )}
                 <TouchableOpacity onPress={this.toggleModal}>
                   <View
                     style={{
@@ -386,6 +318,23 @@ class Tools extends Component {
                   </View>
                 </TouchableOpacity>
               </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                borderRadius: width * 0.02,
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  fontSize: width * 0.06,
+                }}>
+                Getting Meter Info...
+              </Text>
             </View>
           )}
         </Modal>

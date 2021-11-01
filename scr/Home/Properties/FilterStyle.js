@@ -88,7 +88,7 @@ export default styles = StyleSheet.create({
     paddingHorizontal: height * 0.02,
   },
   filterInputs: {
-    width: '100%',
+    width: "55%",
     textTransform: 'capitalize',
   },
   filterUtility: {

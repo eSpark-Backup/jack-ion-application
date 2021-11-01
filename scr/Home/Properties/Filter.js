@@ -5,14 +5,21 @@ import {
   Dimensions,
   TouchableOpacity,
   Pressable,
+  PermissionsAndroid,
   StatusBar,
   ScrollView,
   TextInput,
   Image,
   FlatList,
+  Alert,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
+import Scanner from 'react-native-vector-icons/Ionicons';
+import Back from 'react-native-vector-icons/MaterialIcons';
 import DropDown from 'react-native-vector-icons/FontAwesome';
+import {RNCamera} from 'react-native-camera';
+import BarcodeMask from 'react-native-barcode-mask';
+import RNBeep from 'react-native-a-beep';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import Base_URL from '../../../scr/api/WebServices';
 import Modal from 'react-native-modal';
@@ -38,6 +45,7 @@ export default class Splash extends Component {
       selectedType: '',
       searchName: '',
       utilityIndex: null,
+      scan: false,
       utilityTypes: [
         {
           id: 2,
@@ -160,11 +168,127 @@ export default class Splash extends Component {
     this.context.updateFilterSerial('');
   };
 
+  toggleScanner = async () => {
+    try {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      if (granted === true) {
+        this.setState({hasAccess: true});
+        this.setState({isScannerVisible: true});
+        this.setState({scan: true});
+        console.log('Access');
+      } else {
+        this.setState({hasAccess: false});
+        Alert.alert(
+          "You don't have access for the Camera",
+          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+        );
+        console.log('Denied');
+      }
+      return granted;
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  onScanned = (e) => {
+    const check = e.data.substring(0, 4);
+    if (check == 'http') {
+      Linking.openURL(e.data).catch((err) =>
+        console.error('An error occured', err),
+      );
+    } else {
+      this.context.updateFilterSerial(e.data);
+      this.setState({
+        result: e,
+        scan: false,
+        newSerial: e.data,
+        isScannerVisible: false,
+      });
+
+      setTimeout(() => {
+        RNBeep.beep(false);
+      }, 500);
+    }
+  };
+
+  scannerModal = () => {
+    this.setState({isScannerVisible: false});
+    this.setState({scan: false});
+  };
+
   render() {
+    const {scan} = this.state;
     const {isVisible, close, type, buildingName, style} = this.props;
     return (
       <View>
         <StatusBar barStyle="dark-content" />
+        {/* Barcode Scanner */}
+        <Modal
+          animationIn="bounceInUp"
+          animationOut="bounceInDown"
+          // backdropColor='black'
+          backdropOpacity={5}
+          isVisible={this.state.isScannerVisible}>
+          {/* <View style={{
+                  flex: 1,
+                  justifyContent: "space-around",
+                  borderRadius: width * .02
+                  // height: height * .6,
+                  // alignItems: "center",
+                }} > */}
+          {scan && (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'space-around',
+                borderRadius: width * 0.02,
+                // height: height * .6,
+                // alignItems: "center",
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: height * 0.02,
+                }}>
+                <TouchableOpacity onPress={this.scannerModal}>
+                  <Back
+                    size={width * 0.08}
+                    color="white"
+                    name="keyboard-backspace"
+                  />
+                  {/* <View style={{ backgroundColor: 'white', borderRadius: width * .008, height: height * .05, justifyContent: 'center', width: width * .4 }}>
+                        </View> */}
+                </TouchableOpacity>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                    paddingLeft: width * 0.08,
+                  }}>
+                  Scan Barcode
+                </Text>
+              </View>
+              <RNCamera
+                ref={(ref) => {
+                  this.camera = ref;
+                }}
+                style={{flex: 1}}
+                type={RNCamera.Constants.Type.back}
+                autoFocus="on"
+                onBarCodeRead={this.onScanned}
+                captureAudio={false}>
+                <BarcodeMask outerMaskOpacity={0} />
+                {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
+              </RNCamera>
+            </View>
+          )}
+        </Modal>
+        {/*Filter Modal*/}
         <Modal
           animationIn="slideInDown"
           animationOut="slideOutUp"
@@ -267,6 +391,10 @@ export default class Splash extends Component {
                               this.context.updateFilterSerial(e)
                             }
                           />
+                          <TouchableOpacity
+                            onPress={() => this.toggleScanner()}>
+                            <Scanner name="scan" size={20} />
+                          </TouchableOpacity>
                         </View>
                       </View>
                     </View>
