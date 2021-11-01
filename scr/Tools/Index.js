@@ -39,7 +39,7 @@ import Base_URL from '../api/WebServices';
 import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../components/Loader';
-import { withNavigation } from 'react-navigation';
+import {withNavigation} from 'react-navigation';
 
 import Modal from 'react-native-modal';
 
@@ -50,7 +50,11 @@ import styles from './style';
 import {Ellipse} from 'react-native-svg';
 import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
+<<<<<<< HEAD
 import { SafeAreaView } from 'react-native-safe-area-context';
+=======
+import {SafeAreaView} from 'react-native-safe-area-context';
+>>>>>>> origin/master-fu-app
 const {width, height} = Dimensions.get('window');
 
 class Tools extends Component {
@@ -95,7 +99,7 @@ class Tools extends Component {
   };
 
   onSuccess = async (e) => {
-    console.log('meter info ---->',e );
+    console.log('meter info ---->', e);
     this.setState({scan: false});
     this.setState({scanning: true});
     const check = e.data.substring(0);
@@ -122,28 +126,24 @@ class Tools extends Component {
         `/property/equipment/building/${buildingId}`,
       );
 
-      console.log(
-        'Get Building Name',
-        buildingResponse,
-      );
+      console.log('Get Building Name', buildingResponse);
       let buildingName = buildingResponse?.data?.data?.building?.name;
       let propertyName = buildingResponse?.data?.data?.building?.property_name;
 
-      this.setState({loader: false,},
-        () => this.props.navigation.navigate('MeterDetails', {
+      this.setState({loader: false}, () =>
+        this.props.navigation.navigate('MeterDetails', {
           unitId: unitId,
           buildingName: buildingName,
           propertyName,
-          meterInfo:meterResponse?.data?.data?.meterinfo,
-        })
-        );
+          meterInfo: meterResponse?.data?.data?.meterinfo,
+        }),
+      );
       this.toggleModal();
-      
     } else {
       this.toggleModal();
-      this.setState({loader: false,},
-        () => this.props.navigation.navigate('RedirectMeter',{meterSerial:e?.data})
-        );
+      this.setState({loader: false}, () =>
+        this.props.navigation.navigate('RedirectMeter', {meterSerial: e?.data}),
+      );
     }
 
     // console.log('Barcode Values', response);
@@ -178,13 +178,15 @@ class Tools extends Component {
   componentDidMount() {
     // console.log('What we Get tools',this.props.navigation.navigate('MeterDetails'))
     this.subs = [
-      this.props.navigation.addListener('didFocus', () =>
-      Animated.spring(this.state.springValue, {
-        toValue: 1,
-        friction: 3,
-        useNativeDriver: true,
-      }).start(),
-      this.getToken()
+      this.props.navigation.addListener(
+        'didFocus',
+        () =>
+          Animated.spring(this.state.springValue, {
+            toValue: 1,
+            friction: 3,
+            useNativeDriver: true,
+          }).start(),
+        this.getToken(),
       ),
       this.props.navigation.addListener('willBlur', () =>
         this.setState({springValue: new Animated.Value(0)}),
@@ -250,6 +252,7 @@ class Tools extends Component {
     let {animatedValue, springValue} = this.state;
     const {result, scan, scanResult} = this.state;
     return (
+<<<<<<< HEAD
       <SafeAreaView style={styles.container}>
         {this.state.loader ? <Loader /> : null}
         <Modal
@@ -283,152 +286,243 @@ class Tools extends Component {
                 borderRadius: width * 0.02,
               }}>
               <Text
+=======
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          {this.state.loader ? <Loader /> : null}
+          <Modal
+            animationIn="bounceInUp"
+            animationOut="bounceInDown"
+            // backdropColor='black'
+            backdropOpacity={5}
+            isVisible={this.state.isVisible}>
+            {this.state.scanning ? (
+              <View
+>>>>>>> origin/master-fu-app
                 style={{
-                  color: 'white',
-                  textAlign: 'center',
-                  fontSize: width * 0.08,
+                  flex: 1,
+                  justifyContent: 'center',
+                  borderRadius: width * 0.02,
+                  alignItems: 'center',
                 }}>
-                Scan Barcode
-              </Text>
-              {scan && (
-                <RNCamera
-                  ref={(ref) => {
-                    this.camera = ref;
-                  }}
-                  style={{flex: 1}}
-                  type={RNCamera.Constants.Type.back}
-                  autoFocus="on"
-                  onBarCodeRead={this.onSuccess}
-                  captureAudio={false}
-                  // onGoogleVisionBarcodesDetected={this.onSuccess}
-                  // androidCameraPermissionOptions={{
-                  //   title: "Open Camera",
-                  //   message: "Open Open",
-                  //   buttonPositive: 'OK',
-                  //   buttonNegative: "Not Ok",
-                  // }}
-                >
-                  <BarcodeMask outerMaskOpacity={0} />
-                  {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
-                </RNCamera>
-              )}
-              {scanResult && (
-                <Fragment>
-                  <Text
-                    style={{
-                      color: 'white',
-                      textAlign: 'center',
-                      fontSize: width * 0.08,
-                    }}>
-                    Result.!
-                  </Text>
-                  <View
-                    style={{
-                      height: height * 0.4,
-                      backgroundColor: 'white',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text>Type:{result.type}</Text>
-                    <Text>Result:{result.data}</Text>
-                    <Text numberOfLines={1}>Raw Data:{result.rawData}</Text>
-                  </View>
-                </Fragment>
-              )}
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    fontSize: width * 0.06,
+                  }}>
+                  Getting Meter Info...
+                </Text>
+              </View>
+            ) : (
               <View
                 style={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingVertical: height * 0.02,
+                  flex: 1,
+                  justifyContent: 'space-around',
+                  borderRadius: width * 0.02,
                 }}>
-                {scanResult && (
-                  <View>
-                    <TouchableOpacity onPress={this.scanAgain}>
-                      <View
-                        style={{
-                          backgroundColor: '#25AAE1',
-                          borderRadius: width * 0.008,
-                          height: height * 0.05,
-                          width: width * 0.4,
-                          justifyContent: 'center',
-                        }}>
-                        <Text
-                          style={{
-                            textAlign: 'center',
-                            color: 'white',
-                            fontWeight: 'bold',
-                          }}>
-                          Scan Again
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <Text style={{textAlign: 'center', color: 'white'}}>
-                      OR
-                    </Text>
-                  </View>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    fontSize: width * 0.08,
+                  }}>
+                  Scan Barcode
+                </Text>
+                {scan && (
+                  <RNCamera
+                    ref={(ref) => {
+                      this.camera = ref;
+                    }}
+                    style={{flex: 1}}
+                    type={RNCamera.Constants.Type.back}
+                    autoFocus="on"
+                    onBarCodeRead={this.onSuccess}
+                    captureAudio={false}
+                    // onGoogleVisionBarcodesDetected={this.onSuccess}
+                    // androidCameraPermissionOptions={{
+                    //   title: "Open Camera",
+                    //   message: "Open Open",
+                    //   buttonPositive: 'OK',
+                    //   buttonNegative: "Not Ok",
+                    // }}
+                  >
+                    <BarcodeMask outerMaskOpacity={0} />
+                    {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
+                  </RNCamera>
                 )}
-                <TouchableOpacity onPress={this.toggleModal}>
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: width * 0.008,
-                      height: height * 0.05,
-                      justifyContent: 'center',
-                      width: width * 0.4,
-                    }}>
+                {scanResult && (
+                  <Fragment>
                     <Text
                       style={{
+                        color: 'white',
                         textAlign: 'center',
-                        color: '#25AAE1',
-                        fontWeight: 'bold',
+                        fontSize: width * 0.08,
                       }}>
-                      Switch Off Scanner
+                      Result.!
                     </Text>
-                  </View>
-                </TouchableOpacity>
+                    <View
+                      style={{
+                        height: height * 0.4,
+                        backgroundColor: 'white',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text>Type:{result.type}</Text>
+                      <Text>Result:{result.data}</Text>
+                      <Text numberOfLines={1}>Raw Data:{result.rawData}</Text>
+                    </View>
+                  </Fragment>
+                )}
+                <View
+                  style={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingVertical: height * 0.02,
+                  }}>
+                  {scanResult && (
+                    <View>
+                      <TouchableOpacity onPress={this.scanAgain}>
+                        <View
+                          style={{
+                            backgroundColor: '#25AAE1',
+                            borderRadius: width * 0.008,
+                            height: height * 0.05,
+                            width: width * 0.4,
+                            justifyContent: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              textAlign: 'center',
+                              color: 'white',
+                              fontWeight: 'bold',
+                            }}>
+                            Scan Again
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <Text style={{textAlign: 'center', color: 'white'}}>
+                        OR
+                      </Text>
+                    </View>
+                  )}
+                  <TouchableOpacity onPress={this.toggleModal}>
+                    <View
+                      style={{
+                        backgroundColor: 'white',
+                        borderRadius: width * 0.008,
+                        height: height * 0.05,
+                        justifyContent: 'center',
+                        width: width * 0.4,
+                      }}>
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          color: '#25AAE1',
+                          fontWeight: 'bold',
+                        }}>
+                        Switch Off Scanner
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </Modal>
+          <StatusBar backgroundColor="white" barStyle="default" />
+          <View style={styles.headerContainer}>
+            <View style={styles.headerInner}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+                style={styles.menuView}>
+                <Back
+                  size={width * 0.08}
+                  color="white"
+                  name="keyboard-backspace"
+                />
+              </TouchableOpacity>
+              <View style={styles.searchView}>
+                <Search
+                  name="search"
+                  size={height * 0.04}
+                  style={{marginLeft: width * 0.05}}
+                  color="white"
+                />
+                <TextInput
+                  placeholderTextColor="white"
+                  placeholder="Search"
+                  style={styles.search}
+                  onChangeText={(e) => this.setState({currentWei: e})}
+                />
               </View>
             </View>
-          )}
-        </Modal>
-        <StatusBar backgroundColor="white" barStyle="default" />
-        <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={styles.menuView}>
-              <Back
-                size={width * 0.08}
+          </View>
+          <View style={styles.headingContainer}>
+            <View style={styles.headingInner}>
+              <Tool
+                name="tools"
+                size={height * 0.03}
                 color="white"
-                name="keyboard-backspace"
+                style={styles.toolIcon}
               />
-            </TouchableOpacity>
-            <View style={styles.searchView}>
-              <Search
-                name="search"
-                size={height * 0.04}
-                style={{marginLeft: width * 0.05}}
-                color="white"
-              />
-              <TextInput
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
-              />
+              <Text style={styles.mainHeadiing}>Tools</Text>
             </View>
           </View>
-        </View>
-        <View style={styles.headingContainer}>
-          <View style={styles.headingInner}>
-            <Tool
-              name="tools"
-              size={height * 0.03}
-              color="white"
-              style={styles.toolIcon}
-            />
-            <Text style={styles.mainHeadiing}>Tools</Text>
+          <View style={styles.toolContainer}>
+            <Animated.View
+              style={{
+                transform: [{scale: springValue}],
+              }}>
+              <TouchableOpacity
+                style={styles.toolButton}
+                onPress={() => console.log('helo')}>
+                <Image
+                  source={require('../../Images/profileBack.jpg')}
+                  style={styles.toolImage}
+                />
+                <Cast name="cast" size={height * 0.06} color="white" />
+                <View>
+                  <Text style={styles.toolName}>Direct Connect</Text>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+            <Animated.View
+              style={{
+                transform: [{scale: springValue}],
+              }}>
+              <TouchableOpacity
+                style={styles.toolButton}
+                onPress={this.toggleModal}>
+                <Image
+                  source={require('../../Images/profileBack.jpg')}
+                  style={styles.toolImage}
+                />
+                <Scan name="barcode-sharp" size={height * 0.06} color="white" />
+                <View>
+                  <Text style={styles.toolName}>Barcode Scanner</Text>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+            <Animated.View
+              style={{
+                transform: [{scale: springValue}],
+              }}>
+              <TouchableOpacity
+                style={styles.toolButton}
+                onPress={() => console.log('helo')}>
+                <Image
+                  source={require('../../Images/profileBack.jpg')}
+                  style={styles.toolImage}
+                />
+                <Test name="signal" size={height * 0.06} color="white" />
+                <View>
+                  <Text style={styles.toolName}>Test Connect</Text>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </View>
+<<<<<<< HEAD
         <View style={styles.toolContainer}>
           <Animated.View
             style={{
@@ -482,6 +576,8 @@ class Tools extends Component {
             </TouchableOpacity>
           </Animated.View>
         </View>
+=======
+>>>>>>> origin/master-fu-app
       </SafeAreaView>
     );
   }
