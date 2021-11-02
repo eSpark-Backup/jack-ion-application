@@ -3538,6 +3538,7 @@ export default class Splash extends Component {
                       <TextInput
                         underlineColor="transparent"
                         dense={true}
+                        autoFocus={true}
                         placeholderTextColor="white"
                         placeholder="Search"
                         style={styles.search}
