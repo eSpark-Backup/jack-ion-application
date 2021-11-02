@@ -156,6 +156,7 @@ export default class RedirectMeter extends Component {
       const response = await this.api.post('/property/all', data);
       console.log('Search property===>', response);
       this.setState({searchOffset: response.data.data.offset});
+      console.log('Bool Response', response?.data?.bool);
       if (response?.data?.bool) {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         this.setState({propertyList: response.data.data.properties});
@@ -187,7 +188,7 @@ export default class RedirectMeter extends Component {
     if (this.state.loadFor) {
       this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', prop);
-      console.log('Search more property===>', response);
+      console.log('Search more property===>', response?.data);
       if (response?.data?.bool) {
         if (
           this.state.searchOffset != response.data.data.offset &&
@@ -202,6 +203,12 @@ export default class RedirectMeter extends Component {
             searchOffset: response.data.data.offset,
           });
         }
+        setTimeout(() => {
+          console.log('Check Searh Loader', this.state.searchLoading);
+          if (this.state.searchLoading) {
+            this.setState({searchLoading: false});
+          }
+        }, 3000);
       } else {
         Alert.alert('Error', 'Network Issues');
         this.setState({searchLoading: false});
@@ -290,6 +297,7 @@ export default class RedirectMeter extends Component {
     console.log('Check response buildings--->', response);
     if (response?.ok == true) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      console.log('Check response buildings--->', response?.data);
       this.setState({dataBuild: response?.data?.data});
       this.setState({loaderBuildings: false});
       if (response?.data?.data?.length == 0) {
@@ -530,6 +538,7 @@ export default class RedirectMeter extends Component {
                                 <View style={{width: width * 0.6}}>
                                   <TextTicker
                                     style={styles.propText}
+                                    repeatSpacer={width * 0.6}
                                     duration={6000}
                                     marqueeDelay={2000}>
                                     {item.name == null ? 'Untitled' : item.name}
@@ -542,6 +551,7 @@ export default class RedirectMeter extends Component {
                                       color: 'gray',
                                       fontSize: width * 0.03,
                                     }}
+                                    repeatSpacer={width * 0.6}
                                     duration={6000}
                                     marqueeDelay={2000}>
                                     {(item.street == null
@@ -675,7 +685,8 @@ export default class RedirectMeter extends Component {
                                   <TextTicker
                                     style={styles.propText}
                                     duration={6000}
-                                    marqueeDelay={2000}>
+                                    marqueeDelay={2000}
+                                    repeatSpacer={width * 0.6}>
                                     {item.name == null ? 'Untitled' : item.name}
                                   </TextTicker>
                                 </View>
@@ -841,7 +852,8 @@ export default class RedirectMeter extends Component {
                                   <TextTicker
                                     style={styles.propText}
                                     duration={6000}
-                                    marqueeDelay={2000}>
+                                    marqueeDelay={2000}
+                                    repeatSpacer={width * 0.6}>
                                     {item.name == null ? 'Untitled' : item.name}
                                   </TextTicker>
                                 </View>
