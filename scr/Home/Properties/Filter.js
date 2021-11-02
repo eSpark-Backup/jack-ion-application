@@ -123,8 +123,9 @@ export default class Splash extends Component {
   };
 
   filter = () => {
-    console.log("Utility Index",this.state.utilityIndex)
+    // console.log("Utility Index",this.state.utilityIndex)
     if (this.props.type == 'Properties') {
+
       let data = {
         offset: 0,
         billing: this.state.biller,
@@ -132,10 +133,12 @@ export default class Splash extends Component {
       };
       this.context.filterData(data);
       this.props.close();
+      this.props.filterWork();
       this.setState({showList: false});
     } else {
+      this.props.filterWork(true);
       this.props.get_filterVal(
-        this.context.filterSerial,
+      this.context.filterSerial,
         this.state.utilityIndex != null || undefined ? this.state.utilityIndex + 1 : null,
       );
     }
