@@ -134,8 +134,8 @@ export default class Login extends Component {
           </View>
           <Formik
             initialValues={{
-              email: 'esparktest@gmail.com',
-              password: '12345678',
+              email: 'strongone@gmail.com',
+              password: 'qwertyui',
             }}
             onSubmit={(values) => {
               console.log(values);

@@ -905,19 +905,19 @@ export default class Splash extends React.Component {
                   <Text style={styles.dataFieldText}>
                     {`${
                       this.state.listData.street == null
-                        ? ' - '
+                        ? ''
                         : this.state.listData.street
                     } \n ${
                       this.state.listData.city == null
-                        ? ' - '
-                        : this.state.listData.city
-                    }, ${
+                        ? ''
+                        : this.state.listData.city + " ,"
+                    } ${
                       this.state.listData.st == null
-                        ? ' - '
+                        ? ''
                         : this.state.listData.st
                     } ${
                       this.state.listData.zipcode == null
-                        ? ' - '
+                        ? ''
                         : this.state.listData.zipcode
                     }`}
                   </Text>

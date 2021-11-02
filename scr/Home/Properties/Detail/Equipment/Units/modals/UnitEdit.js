@@ -1079,7 +1079,7 @@ export default function UnitEdit({
                         )} */}
                           <Plus name={type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "plus" : 'pencil-plus'}color="white" size={18} />
                           <Text style={{ color: 'white' }}>
-                            {type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "Add Unit" : 'Edit Uit'}
+                            {type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "Add Unit" : 'Edit Unit'}
                           </Text>
                       </View>
                     </TouchableOpacity>
