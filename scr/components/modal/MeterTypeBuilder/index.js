@@ -427,7 +427,7 @@ export default class MeterTypeBuilder extends Component {
                                   padding: width * 0.027,
                                   margin: 0,
                                   borderColor: item.error
-                                    ? 'red'
+                                    ? '#A3001B'
                                     : 'black',
                                   borderWidth: width * 0.0019,
                                   borderRadius: width * 0.015,

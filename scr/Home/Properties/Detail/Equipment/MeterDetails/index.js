@@ -135,47 +135,47 @@ const App = ({navigation}) => {
       },
       {
         leftText: 'Model',
-        rightText: unitMeter?.type?.model ?? 'N/A',
+        rightText: unitMeter?.type?.device ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
-      {
-        leftText: 'Unit of Measure',
-        rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'Multiplier',
-        rightText: unitMeter?.type?.multiplier ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'Size',
-        rightText: unitMeter?.type?.size ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'Meter Serial',
-        rightText: unitMeter?.meter_serial_number ?? 'N/A',
-        leftIcon: 'barcode-outline',
-        leftType: 'ionicon',
-        type: 'feather',
-      },
-      {
-        leftText: 'Custom ID',
-        rightText: unitMeter?.custom_meter_id ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'IMR',
-        rightText: 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
+      // {
+      //   leftText: 'Unit of Measure',
+      //   rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'Multiplier',
+      //   rightText: unitMeter?.type?.multiplier ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'Size',
+      //   rightText: unitMeter?.type?.size ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'Meter Serial',
+      //   rightText: unitMeter?.meter_serial_number ?? 'N/A',
+      //   leftIcon: 'barcode-outline',
+      //   leftType: 'ionicon',
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'Custom ID',
+      //   rightText: unitMeter?.custom_meter_id ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'IMR',
+      //   rightText: 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
     ]);
     setMeterTypeData([
       {
@@ -184,14 +184,7 @@ const App = ({navigation}) => {
         data: [
           {
             leftName: 'Type',
-            rightName:
-              unitMeter?.type?.model +
-              ' ' +
-              '(x' +
-              unitMeter?.type?.multiplier +
-              ' ' +
-              unitMeter?.type?.unit_of_measure +
-              ')',
+            rightName:unitMeter?.type?.manufacturer +' ('+ unitMeter?.type?.device+')',
             rightIcon: 'chevron-down',
             type: 'feather',
           },

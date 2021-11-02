@@ -50,11 +50,7 @@ import styles from './style';
 import {Ellipse} from 'react-native-svg';
 import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
-<<<<<<< HEAD
-import { SafeAreaView } from 'react-native-safe-area-context';
-=======
 import {SafeAreaView} from 'react-native-safe-area-context';
->>>>>>> origin/master-fu-app
 const {width, height} = Dimensions.get('window');
 
 class Tools extends Component {
@@ -252,41 +248,6 @@ class Tools extends Component {
     let {animatedValue, springValue} = this.state;
     const {result, scan, scanResult} = this.state;
     return (
-<<<<<<< HEAD
-      <SafeAreaView style={styles.container}>
-        {this.state.loader ? <Loader /> : null}
-        <Modal
-          animationIn="bounceInUp"
-          animationOut="bounceInDown"
-          // backdropColor='black'
-          backdropOpacity={5}
-          isVisible={this.state.isVisible}>
-          {this.state.scanning ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                borderRadius: width * 0.02,
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  textAlign: 'center',
-                  fontSize: width * 0.06,
-                }}>
-                Getting Meter Info...
-              </Text>
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'space-around',
-                borderRadius: width * 0.02,
-              }}>
-              <Text
-=======
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
           {this.state.loader ? <Loader /> : null}
@@ -298,7 +259,6 @@ class Tools extends Component {
             isVisible={this.state.isVisible}>
             {this.state.scanning ? (
               <View
->>>>>>> origin/master-fu-app
                 style={{
                   flex: 1,
                   justifyContent: 'center',
@@ -522,62 +482,6 @@ class Tools extends Component {
             </Animated.View>
           </View>
         </View>
-<<<<<<< HEAD
-        <View style={styles.toolContainer}>
-          <Animated.View
-            style={{
-              transform: [{scale: springValue}],
-            }}>
-            <TouchableOpacity
-              style={styles.toolButton}
-              onPress={() => console.log('helo')}>
-              <Image
-                source={require('../../Images/profileBack.jpg')}
-                style={styles.toolImage}
-              />
-              <Cast name="cast" size={height * 0.06} color="white" />
-              <View>
-                <Text style={styles.toolName}>Direct Connect</Text>
-              </View>
-            </TouchableOpacity>
-          </Animated.View>
-          <Animated.View
-            style={{
-              transform: [{scale: springValue}],
-            }}>
-            <TouchableOpacity
-              style={styles.toolButton}
-              onPress={this.toggleModal}>
-              <Image
-                source={require('../../Images/profileBack.jpg')}
-                style={styles.toolImage}
-              />
-              <Scan name="barcode-sharp" size={height * 0.06} color="white" />
-              <View>
-                <Text style={styles.toolName}>Barcode Scanner</Text>
-              </View>
-            </TouchableOpacity>
-          </Animated.View>
-          <Animated.View
-            style={{
-              transform: [{scale: springValue}],
-            }}>
-            <TouchableOpacity
-              style={styles.toolButton}
-              onPress={() => console.log('helo')}>
-              <Image
-                source={require('../../Images/profileBack.jpg')}
-                style={styles.toolImage}
-              />
-              <Test name="signal" size={height * 0.06} color="white" />
-              <View>
-                <Text style={styles.toolName}>Test Connect</Text>
-              </View>
-            </TouchableOpacity>
-          </Animated.View>
-        </View>
-=======
->>>>>>> origin/master-fu-app
       </SafeAreaView>
     );
   }

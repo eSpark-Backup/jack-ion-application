@@ -131,29 +131,29 @@ const App = ({navigation}) => {
         type: 'feather',
       },
       {
-        leftText: 'Model',
-        rightText: unitMeter?.type?.model ?? 'N/A',
+        leftText: 'Device',
+        rightText: unitMeter?.type?.device ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
-      {
-        leftText: 'Unit of Measure',
-        rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'Multiplier',
-        rightText: unitMeter?.type?.multiplier ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'Size',
-        rightText: unitMeter?.type?.size ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
+      // {
+      //   leftText: 'Unit of Measure',
+      //   rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'Multiplier',
+      //   rightText: unitMeter?.type?.multiplier ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'Size',
+      //   rightText: unitMeter?.type?.size ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
       {
         leftText: 'Meter Serial',
         rightText: unitMeter?.meter_serial_number ?? 'N/A',
@@ -161,18 +161,18 @@ const App = ({navigation}) => {
         leftType: 'ionicon',
         type: 'feather',
       },
-      {
-        leftText: 'Custom ID',
-        rightText: unitMeter?.custom_meter_id ?? 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
-      {
-        leftText: 'IMR',
-        rightText: 'N/A',
-        leftIcon: null,
-        type: 'feather',
-      },
+      // {
+      //   leftText: 'Custom ID',
+      //   rightText: unitMeter?.custom_meter_id ?? 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
+      // {
+      //   leftText: 'IMR',
+      //   rightText: 'N/A',
+      //   leftIcon: null,
+      //   type: 'feather',
+      // },
     ]);
     setMeterTypeData([
       {
@@ -181,14 +181,7 @@ const App = ({navigation}) => {
         data: [
           {
             leftName: 'Type',
-            rightName:
-              unitMeter?.type?.model +
-              ' ' +
-              '(x' +
-              unitMeter?.type?.multiplier +
-              ' ' +
-              unitMeter?.type?.unit_of_measure +
-              ')',
+            rightName:unitMeter?.type?.manufacturer +' ('+ unitMeter?.type?.device+')',
             rightIcon: 'chevron-down',
             type: 'feather',
           },
@@ -667,7 +660,7 @@ const App = ({navigation}) => {
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(false)}
           reRun={() => getToken()}
-          meterTypes={editMeterTypes}
+          meterTypes={arrayOfUnits}
           modalName='Edit Unit'
           buildingName={buildingName}
           buildingId={buildingId}
@@ -803,7 +796,7 @@ const App = ({navigation}) => {
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(false)}
           reRun={() => getToken()}
-          meterTypes={editMeterTypes}
+          meterTypes={arrayOfUnits}
           modalName='Edit Unit'
           buildingName={buildingName}
           buildingId={buildingId}
