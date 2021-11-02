@@ -10,6 +10,7 @@ import {
   Dimensions,
   LayoutAnimation,
   PermissionsAndroid,
+  Alert,
   FlatList,
 } from 'react-native';
 import Modal from 'react-native-modal';
