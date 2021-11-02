@@ -157,13 +157,13 @@ const App = ({ navigation }) => {
       //   leftIcon: null,
       //   type: 'feather',
       // },
-      // {
-      //   leftText: 'Meter Serial',
-      //   rightText: unitMeter?.meter_serial_number ?? 'N/A',
-      //   leftIcon: 'barcode-outline',
-      //   leftType: 'ionicon',
-      //   type: 'feather',
-      // },
+      {
+        leftText: 'Meter Serial',
+        rightText: unitMeter?.meter_serial_number ?? 'N/A',
+        leftIcon: 'barcode-outline',
+        leftType: 'ionicon',
+        type: 'feather',
+      },
       // {
       //   leftText: 'Custom ID',
       //   rightText: unitMeter?.custom_meter_id ?? 'N/A',

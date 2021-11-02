@@ -397,8 +397,10 @@ export default class Splash extends Component {
                   // }
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.openFilter}>
-                <FilterIcon name="filter-outline" color="white" size={20} />
+              <TouchableOpacity
+                onPress={this.openFilter}
+                style={styles.filterButton}>
+                <FilterIcon name="filter-outline" color="#25AAE1ec" size={20} />
               </TouchableOpacity>
             </View>
           </View>
