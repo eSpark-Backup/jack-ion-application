@@ -34,8 +34,8 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import MeterTypeBuilder from '../../../../../../components/modal/MeterTypeBuilder';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import clc from 'cli-color';
-const { width, height } = Dimensions.get('window');
-const api = create({ baseURL: Base_URL });
+const {width, height} = Dimensions.get('window');
+const api = create({baseURL: Base_URL});
 
 export default function UnitEdit({
   modalVisible,
@@ -50,6 +50,8 @@ export default function UnitEdit({
   reRun,
   type,
   modalName,
+  doneIcon,
+  doneBtnTitle,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [meterMenuVisible, setMeterMenuVisible] = useState(false);
@@ -71,7 +73,7 @@ export default function UnitEdit({
     typeOfMeterIndex: '',
     meterTypeBuilder: false,
     lastUnitData: '',
-    meterList: []
+    meterList: [],
   });
   const [error, setError] = useState({
     errorUnits: '',
@@ -106,7 +108,7 @@ export default function UnitEdit({
 
   useEffect(() => {
     setMeterListArray(meterTypes);
-    console.log('un in mod-->>', unitDetails)
+    console.log('un in mod-->>', unitDetails);
     setState((oldState) => ({
       ...oldState,
       lastUnitData: unitDetails?.unit?.name,
@@ -375,16 +377,18 @@ export default function UnitEdit({
     newArr[index].meterType = some?.id; // replace e.target.value with whatever you want to change it to
     setMeterListData(newArr);
   };
+
   const handleAddNewUnit = async () => {
+    let matchUnit;
     if (type == 'add') {
-      const matchUnit = unitsArray?.filter(
-        (e) => e.name == state.lastUnitData,
-      );
+      matchUnit = unitsArray?.filter((e) => e.name == state.lastUnitData);
     }
     const checkSerial = meterListData.filter(
       (item) => item.deviceSerialNum === '',
     );
-    const checkManufacturer = meterListData.filter((item) => item.manufacturersId == '');
+    const checkManufacturer = meterListData.filter(
+      (item) => item.manufacturersId == '',
+    );
     const checkDevice = meterListData.filter((item) => item.meterType == '');
 
     if (!state.lastUnitData) {
@@ -393,14 +397,13 @@ export default function UnitEdit({
         errorUnits: 'Unit Required',
       }));
       return;
-    }
-    else {
+    } else {
       setError((oldState) => ({
         ...oldState,
         errorUnits: '',
       }));
     }
-    if (type == 'add' && matchUnit.length != 0 ) {
+    if (type == 'add' && matchUnit.length != 0) {
       setError((oldState) => ({
         ...oldState,
         errorUnits: 'This unit already exist',
@@ -412,11 +415,19 @@ export default function UnitEdit({
         errorUnits: '',
       }));
     }
-    if (meterListData.length == 0 && (type == 'addMeterDirect' || type == 'meterDirect' || type == 'add')) {
+    if (
+      meterListData.length == 0 &&
+      (type == 'addMeterDirect' || type == 'meterDirect' || type == 'add')
+    ) {
       alert('Select meter and continue');
       return;
     }
-    if (type == 'add' || type == 'meterDirect' || type == 'addMeterDirect' || meterListData.length != 0) {
+    if (
+      type == 'add' ||
+      type == 'meterDirect' ||
+      type == 'addMeterDirect' ||
+      meterListData.length != 0
+    ) {
       if (checkSerial.length) {
         meterListData.map((data, index) => {
           if (data.deviceSerialNum == '') {
@@ -503,20 +514,19 @@ export default function UnitEdit({
       );
       changeUtilityAndToggle();
       reRun(unitResponse?.data?.data);
-      console.log('datachecckk-->>', unitResponse?.data?.data)
+      console.log('datachecckk-->>', unitResponse?.data?.data);
     } else {
       try {
         const unitResponse = await api.patch(
           `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
           data,
-          console.log('datachecckk-->>', unitResponse)
+          console.log('datachecckk-->>', unitResponse),
         );
         changeUtilityAndToggle();
         reRun(unitResponse?.data?.data);
       } catch (e) {
-        console.log('e---->', e)
+        console.log('e---->', e);
       }
-
     }
   };
 
@@ -570,7 +580,7 @@ export default function UnitEdit({
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   keyboardShouldPersistTaps="handled">
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <View style={styles.desciptionContainer}>
                       <Build
                         name={'office-building'}
@@ -610,9 +620,9 @@ export default function UnitEdit({
                           type == 'meterDirect'
                             ? null
                             : setState((oldState) => ({
-                              ...oldState,
-                              lastUnitData: text,
-                            }));
+                                ...oldState,
+                                lastUnitData: text,
+                              }));
                         }}
                         style={styles.input}
                         error={error.errorUnits}
@@ -743,7 +753,7 @@ export default function UnitEdit({
                                 borderWidth: width * 0.0015,
                                 borderRadius: width * 0.015,
                               }}
-                              itemTextStyle={{ color: '#222' }}
+                              itemTextStyle={{color: '#222'}}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.1,
                               }}
@@ -755,7 +765,9 @@ export default function UnitEdit({
                                 style: {
                                   padding: width * 0.027,
                                   margin: 0,
-                                  borderColor: item.manufacturersError ? '#A3001B' : 'black',
+                                  borderColor: item.manufacturersError
+                                    ? '#A3001B'
+                                    : 'black',
                                   borderWidth: width * 0.0019,
                                   borderRadius: width * 0.015,
                                   backgroundColor: '#F6F6F6',
@@ -799,7 +811,7 @@ export default function UnitEdit({
                                 borderWidth: width * 0.0015,
                                 borderRadius: width * 0.015,
                               }}
-                              itemTextStyle={{ color: '#222' }}
+                              itemTextStyle={{color: '#222'}}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.1,
                               }}
@@ -811,7 +823,9 @@ export default function UnitEdit({
                                 style: {
                                   padding: width * 0.027,
                                   margin: 0,
-                                  borderColor: item.deviceError ? '#A3001B' : 'black',
+                                  borderColor: item.deviceError
+                                    ? '#A3001B'
+                                    : 'black',
                                   borderWidth: width * 0.0019,
                                   borderRadius: width * 0.015,
                                   backgroundColor: '#F6F6F6',
@@ -939,7 +953,7 @@ export default function UnitEdit({
                       anchor={
                         type == 'addMeterDirect' || type == 'meterDirect' ? (
                           meterListData.length == 1 ? (
-                            <View style={{ marginLeft: width * 0.02 }}>
+                            <View style={{marginLeft: width * 0.02}}>
                               <Text
                                 style={{
                                   fontSize: height * 0.018,
@@ -1002,7 +1016,7 @@ export default function UnitEdit({
                             </Text>
                           </Pressable>
                         ) : (
-                          <View style={{ marginLeft: width * 0.02 }}>
+                          <View style={{marginLeft: width * 0.02}}>
                             <Text
                               style={{
                                 fontSize: height * 0.018,
@@ -1043,8 +1057,17 @@ export default function UnitEdit({
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleAddNewUnit}>
                       <View style={styles.submitBotton}>
-                        <Plus name="pencil-plus" color="white" size={18} />
-                        <Text style={{color: 'white'}}>Edit Unit</Text>
+                        {doneIcon ? (
+                          <>
+                            {doneIcon}
+                            <Text style={{color: 'white'}}>{doneBtnTitle}</Text>
+                          </>
+                        ) : (
+                          <>
+                            <Plus name="pencil-plus" color="white" size={18} />
+                            <Text style={{color: 'white'}}>Edit Unit</Text>
+                          </>
+                        )}
                       </View>
                     </TouchableOpacity>
                   </View>
