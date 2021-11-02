@@ -73,7 +73,7 @@ export default styles = StyleSheet.create({
     padding: width * 0.01,
   },
   toolContainer: {
-    height: height * 0.71,
+    height: height * .9,
     width: width * 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -83,7 +83,7 @@ export default styles = StyleSheet.create({
     width: width * 0.85,
     backgroundColor: 'black',
     elevation: width * 0.04,
-    marginVertical: height * 0.01,
+    marginVertical: height * 0.04,
     borderColor: '#115b72',
     borderRadius: width * 0.03,
     justifyContent: 'center',

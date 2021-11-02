@@ -653,7 +653,7 @@ const App = ({navigation}) => {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <EditUnit
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
@@ -785,11 +785,11 @@ const App = ({navigation}) => {
             />
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   } else {
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <EditUnit
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
@@ -1202,7 +1202,7 @@ const App = ({navigation}) => {
               </TouchableOpacity>
             ))}
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 };
