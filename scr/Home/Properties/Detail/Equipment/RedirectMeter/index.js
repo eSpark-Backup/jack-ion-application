@@ -339,6 +339,7 @@ export default class RedirectMeter extends Component {
   getUnitId = async (item) => {
     this.setState({
       unitModalType: 'meterDirect',
+      meterTypesList:item.unit_meter
     });
     const data = {
       name: item.name,
@@ -350,11 +351,10 @@ export default class RedirectMeter extends Component {
     const antiIntersection = arr1.filter(
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
-    // console.log('antiIntersection--->', antiIntersection);
+    console.log('antiIntersection--->', antiIntersection);
     if (antiIntersection.length == 0) {
       alert('Meters are full please add new unit or add meter in someone else');
     } else {
-      this.setState({meterTypesList: antiIntersection});
       this.setState((prevState) => ({
         ...prevState,
         unitDetails: {
@@ -402,7 +402,7 @@ export default class RedirectMeter extends Component {
     };
     this.setState({
       unitModal: true,
-      unitModalType: 'add',
+      unitModalType: 'addMeterDirect',
       meterTypesList: this.state.meterList,
     });
     this.setState((prevState) => ({
@@ -425,6 +425,7 @@ export default class RedirectMeter extends Component {
       unitId: v?.unit?.id,
       unitName: v?.unit?.name,
     });
+    this.handleFinish()
   };
   render() {
     return (
@@ -938,7 +939,7 @@ export default class RedirectMeter extends Component {
               </View>
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               bottom: height * 0.02,
@@ -952,7 +953,7 @@ export default class RedirectMeter extends Component {
               title={'Finish'}
               buttonStyle={{backgroundColor: '#25AAE1ec'}}
             />
-          </View>
+          </View> */}
         </View>
         <EditUnit
           modalVisible={this.state.unitModal}

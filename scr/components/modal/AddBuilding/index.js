@@ -36,7 +36,6 @@ export default function AddbuildingModal({
   type,
   modalName
 }) {
-
   const [meterListArray, setMeterListArray] = useState([]);
   const [state, setState] = useState({
     buildName: '',
@@ -44,7 +43,6 @@ export default function AddbuildingModal({
     newUnit: 'Unit-0',
     unitsArray: [],
     autoIncrement: true,
-    unitsArraySend:[]
   });
   const [error, setError] = useState({
     units: '',
@@ -146,7 +144,6 @@ export default function AddbuildingModal({
       buildName: '',
       buildDescription: '',
       unitsArray: [],
-      unitsArraySend:[]
     }));
     setError((oldState) => ({
       ...oldState,
@@ -188,21 +185,19 @@ export default function AddbuildingModal({
           name: state.unitsArray[i].name,
         });
       }
-      console.log('looppdata--->',loopData)
-      setState((oldState) => ({
-        ...oldState,
-        unitsArraySend:loopData
-      }))
+      // console.log('looppdata--->',loopData)
+      
       handleAddbuildingApi({
         name: state.buildName,
         property_id: propertyId,
-        units: state.unitsArraySend,
+        units: loopData,
         descriptions: state.buildDescription,
       })
     }
   };
 
   const handleAddbuildingApi = async (data) => {
+    console.log('check data-->',data)
     const unitResponse = await api.post(`/property/equipment/building/add-building`,data);
       console.log('buildResponse--->',unitResponse)
       if(unitResponse?.data?.bool){

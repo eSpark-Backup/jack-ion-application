@@ -190,7 +190,7 @@ export default class Login extends Component {
                     paddingLeft: width * 0.025,
                   }}>
                   {touched.email ? (
-                    <Text style={{color: 'red'}}>
+                    <Text style={{color: '#A3001B'}}>
                       {errors.email || this.state.errName}
                     </Text>
                   ) : (
@@ -235,7 +235,7 @@ export default class Login extends Component {
                     // marginLeft: width * 0.15,
                   }}>
                   {touched.password ? (
-                    <Text style={{color: 'red'}}>
+                    <Text style={{color: '#A3001B'}}>
                       {errors.password || this.state.errPass}
                     </Text>
                   ) : (
