@@ -217,7 +217,7 @@ export default class SystemSettingExample extends Component {
     } = this.state
     return (
       <ScrollView style={styles.container}>
-        <StatusBar />
+        <StatusBar hidden />
         <ValueView
           title="Volume"
           btn={

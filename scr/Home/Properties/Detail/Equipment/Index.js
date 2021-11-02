@@ -1879,7 +1879,7 @@ export default class Splash extends Component {
     const { loader, loaderBuildings, meterTypeInputs } = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
 
         {/* Building Edit Modal */}
         <UpdateModal

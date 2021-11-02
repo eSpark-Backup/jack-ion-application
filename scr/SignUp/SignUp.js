@@ -199,10 +199,9 @@ export default class Login extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <StatusBar
+        <StatusBar hidden
           backgroundColor="#155AAA"
           barStyle="default"
-          hidden={false}
           showHideTransition={'fade'}
         />
       </KeyboardAvoidingView>

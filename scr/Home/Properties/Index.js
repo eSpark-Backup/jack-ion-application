@@ -349,7 +349,7 @@ export default class Splash extends Component {
     return (
       <View style={styles.container}>
         {this.context.isLoading ? <Loader /> : null}
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity

@@ -84,7 +84,7 @@ class Splash extends Component {
     return (
 
       <View style={styles.container}>
-        <StatusBar backgroundColor="#155AAA" barStyle="default" hidden={false} showHideTransition={'fade'} />
+        <StatusBar backgroundColor="#155AAA" barStyle="default" hidden showHideTransition={'fade'} />
         <View style={{ elevation: width * .05 }}>
           <Image
             source={require('../../Images/loogo.png')}
