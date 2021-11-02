@@ -474,7 +474,7 @@ export default class Splash extends React.Component {
                           backgroundColor: '#F6F6F6',
                           alignSelf: 'center',
                           borderColor: this.state.error.billingId
-                            ? 'red'
+                            ? '#A3001B'
                             : 'gray',
                           width: '95%',
                           height: '90%',
