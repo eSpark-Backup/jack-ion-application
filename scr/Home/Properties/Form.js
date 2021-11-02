@@ -560,7 +560,7 @@ export default class Splash extends React.Component {
                         {this.state.error.billingId}
                       </HelperText>
                     ) : null}
-                    <View style={styles.inputContainer}>
+                    {/* <View style={styles.inputContainer}>
                       <TextInput
                         label="MANAGEMENT COMPANY"
                         placeholder="Company Name"
@@ -579,7 +579,7 @@ export default class Splash extends React.Component {
                           },
                         }}
                       />
-                    </View>
+                    </View> */}
                     <View style={styles.inputContainer}>
                       <TextInput
                         label="CUSTOM ID*"
@@ -608,7 +608,7 @@ export default class Splash extends React.Component {
                         {this.state.error.propertyId}
                       </HelperText>
                     ) : null}
-                    <View style={styles.desciptionContainer}>
+                    {/* <View style={styles.desciptionContainer}>
                       <Icon
                         name={'contact-mail'}
                         size={height * 0.03}
@@ -722,7 +722,7 @@ export default class Splash extends React.Component {
                           },
                         }}
                       />
-                    </View>
+                    </View> */}
                   </View>
                 </ScrollView>
                 {/* Box Header */}
