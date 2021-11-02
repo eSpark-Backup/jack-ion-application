@@ -111,7 +111,7 @@ export default function UnitEdit({
       ...oldState,
       lastUnitData: unitDetails?.unit?.name,
     }));
-  }, [meterTypes]);
+  }, [meterTypes,unitDetails]);
 
   const addMeterInNewArray = async (value) => {
     setMeterMenuVisible(false);
@@ -300,6 +300,11 @@ export default function UnitEdit({
     newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
     setMeterListData(newArr);
   };
+  const onChangeMeterSerial = (e, index) => {
+    let newArr = [...meterListData]; // copying the old datas array
+    newArr[index].meterSerialNum = e; // replace e.target.value with whatever you want to change it to
+    setMeterListData(newArr);
+  };
   const onChangeManufacturer = (e, index) => {
     let newArr = [...meterListData]; // copying the old datas array
     newArr[index].manufacturersName = e; // replace e.target.value with whatever you want to change it to
@@ -372,6 +377,8 @@ export default function UnitEdit({
     let newArr = [...meterListData]; // copying the old datas array
     newArr[index].manufacturersName = some?.name; // replace e.target.value with whatever you want to change it to
     newArr[index].manufacturersId = some?.id; // replace e.target.value with whatever you want to change it to
+    newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
+    newArr[index].meterType = ''; // replace e.target.value with whatever you want to change it to
     setMeterListData(newArr);
     setState((oldState) => ({
       ...oldState,
@@ -847,27 +854,6 @@ export default function UnitEdit({
                                 {item.deviceError}
                               </HelperText>
                             ) : null}
-                            {/* <View style={styles.meterDesciptionContainer}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                Meter Attached To
-                              </Text>
-                            </View>
-                            <View style={styles.meterInputContainer}>
-                              <TextInput
-                                placeholder=""
-                                dense={true}
-                                keyboardType="numeric"
-                                style={styles.meterInput}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            </View> */}
                             {item.showOtherInputs == true ? (
                               <View>
                                 <View style={styles.meterDesciptionContainer}>
@@ -877,11 +863,13 @@ export default function UnitEdit({
                                 </View>
                                 <View style={styles.meterInputContainer}>
                                   <TextInput
-                                    placeholder=""
+                                    placeholder="Meter Serial"
                                     dense={true}
-                                    keyboardType="numeric"
                                     style={styles.meterInput}
                                     mode={'outlined'}
+                                    onChangeText={(text) =>
+                                      onChangeMeterSerial(text, meterIndex)
+                                    }
                                     theme={{
                                       colors: {
                                         text: '#25AAE1ec',
