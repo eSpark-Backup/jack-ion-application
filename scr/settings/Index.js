@@ -275,7 +275,7 @@ export default class Splash extends Component {
             source={require('../../Images/profileBack.jpg')}
             style={styles.backgroundImage}
           /> */}
-        <View style={styles.headerContainer}>
+        {/* <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
@@ -301,7 +301,7 @@ export default class Splash extends Component {
               />
             </View>
           </View>
-        </View>
+        </View> */}
         <View style={styles.headingContainer}>
           <View style={styles.headingInner}>
             <Settings

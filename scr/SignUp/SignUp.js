@@ -105,7 +105,7 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.02, marginRight: width * 0.24}}>
-          <Text style={{color: 'red'}}>{this.state.errName}</Text>
+          <Text style={{color: '#A3001B'}}>{this.state.errName}</Text>
         </View>
         <View style={styles.textInputContainer}>
           <Input
@@ -135,7 +135,7 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.02, marginRight: width * 0.24}}>
-          <Text style={{color: 'red'}}>{this.state.errPass}</Text>
+          <Text style={{color: '#A3001B'}}>{this.state.errPass}</Text>
         </View>
         <View style={styles.textInputContainer}>
           <Input
@@ -163,7 +163,7 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.05, marginRight: width * 0.24}}>
-          <Text style={{color: 'red'}}>{this.state.errPass}</Text>
+          <Text style={{color: '#A3001B'}}>{this.state.errPass}</Text>
         </View>
         <TouchableOpacity
           activeOpacity={0.8}

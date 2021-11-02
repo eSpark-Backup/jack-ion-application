@@ -174,7 +174,8 @@ export default class Splash extends Component {
           <TextTicker
             style={styles.propText}
             duration={6000}
-            marqueeDelay={2000}>
+            marqueeDelay={2000}
+            repeatSpacer={width * 0.6}>
             {prop.item.name == null ? 'Untitled' : prop.item.name}
           </TextTicker>
         </View>
@@ -183,7 +184,8 @@ export default class Splash extends Component {
           <TextTicker
             style={{color: 'gray'}}
             duration={6000}
-            marqueeDelay={2000}>
+            marqueeDelay={2000}
+            repeatSpacer={width * 0.6}>
             {(prop.item.street == null ? '' : prop.item.street + ', ') +
               (prop.item.st == null ? '' : prop.item.st + ', ') +
               (prop.item.city == null ? '' : prop.item.city + ', ') +
@@ -253,7 +255,8 @@ export default class Splash extends Component {
               <TextTicker
                 style={styles.propText}
                 duration={6000}
-                marqueeDelay={2000}>
+                marqueeDelay={2000}
+                repeatSpacer={width * 0.6}>
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
@@ -262,7 +265,8 @@ export default class Splash extends Component {
               <TextTicker
                 style={{color: 'gray'}}
                 duration={6000}
-                marqueeDelay={2000}>
+                marqueeDelay={2000}
+                repeatSpacer={width * 0.6}>
                 {(prop.item.street == null ? '' : prop.item.street + ', ') +
                   (prop.item.st == null ? '' : prop.item.st + ', ') +
                   (prop.item.city == null ? '' : prop.item.city + ', ') +

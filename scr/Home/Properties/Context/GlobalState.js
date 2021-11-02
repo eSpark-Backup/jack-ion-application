@@ -122,6 +122,7 @@ class GlobalState extends React.Component {
     editManageComp: '',
     editCustomId: '',
     filterDataName: '',
+    filterPropName: '',
     index: '',
     token: null,
     success: false,
@@ -245,7 +246,7 @@ class GlobalState extends React.Component {
   };
 
   showBuildings = async (data) => {
-    const response = await this.api.get(
+    const response = await this.api.post(
       `/property/equipment/building/all-buildings/28303`,
     );
     console.log('Check response buildings--->', response);
@@ -303,6 +304,12 @@ class GlobalState extends React.Component {
             searchOffset: response.data.data.offset,
           });
         }
+        setTimeout(() => {
+          console.log('Check Searh Loader', this.state.searchLoading);
+          if (this.state.searchLoading) {
+            this.setState({searchLoading: false});
+          }
+        }, 3000);
       } else {
         Alert.alert('Error', 'Network Issues');
         this.setState({searchLoading: false});
@@ -318,6 +325,9 @@ class GlobalState extends React.Component {
 
   updateFilterSerial = (e) => {
     this.setState({filterSerial: e});
+  };
+  updateFilterProperty = (e) => {
+    this.setState({filterPropName: e});
   };
 
   updateBuilding = async (edit, id, params) => {
@@ -373,6 +383,8 @@ class GlobalState extends React.Component {
             biller: this.state.biller,
             filterSerial: this.state.filterSerial,
             updateFilterSerial: this.updateFilterSerial,
+            filterPropName: this.state.filterPropName,
+            updateFilterProperty: this.updateFilterProperty,
           }}>
           {this.props.children}
         </Context.Provider>
