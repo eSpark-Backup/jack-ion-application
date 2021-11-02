@@ -62,7 +62,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {create} from 'apisauce';
 import UpdateModal from '../../../../components/modal/UpdateModal';
-import {Header, Button} from 'react-native-elements';
+import {Header, Button, Icon as Iconx} from 'react-native-elements';
 
 // Components
 import {Fonts} from '../../../../utils/fonts';
@@ -416,6 +416,7 @@ export default class Splash extends Component {
   };
 
   checkData = async () => {
+    this.setState({loader: true});
     const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
@@ -558,7 +559,7 @@ export default class Splash extends Component {
     for (i = 0; i < n; i++) {
       loopData.push({
         name: str + ' ' + int,
-        num: value + 1,
+        num: text + 1,
       }),
         (int = int + 1);
     }
@@ -1166,7 +1167,7 @@ export default class Splash extends Component {
             duration={6000}
             marqueeDelay={2000}
             repeatSpacer={width * 0.16}
-            style={[styles.dataFieldText, {width: width * 0.16}]}>
+            style={[styles.dataFieldText, {width: width * 0.165}]}>
             {build.item.name}
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
@@ -2429,6 +2430,10 @@ export default class Splash extends Component {
                 buildingName={this.state.buildingData.name}
                 buildingId={this.state.editBuildId}
                 unitDetails={this.state.unitData}
+                doneBtnTitle="Add Unit"
+                doneIcon={
+                  <Iconx name="plus" type="feather" size={18} color="#fff" />
+                }
                 handleEditUnit={() => {
                   // ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
                   this.setState({isModalUnitVisible: false});
