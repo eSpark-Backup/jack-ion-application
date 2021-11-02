@@ -529,9 +529,14 @@ export default function UnitEdit({
         `/property/equipment/unit/add-unit`,
         data,
       );
-      changeUtilityAndToggle();
-      reRun(unitResponse?.data?.data);
-      console.log('datachecckk-->>', unitResponse?.data?.data);
+
+      if (unitResponse?.data?.bool) {
+        changeUtilityAndToggle();
+        reRun(unitResponse?.data?.data);
+        console.log('datachecckk-->>', unitResponse?.data?.data);
+      } else {
+        alert(unitResponse?.data?.message);
+      }
     } else {
       try {
         const unitResponse = await api.patch(
@@ -539,8 +544,12 @@ export default function UnitEdit({
           data,
           console.log('datachecckk-->>', unitResponse),
         );
-        changeUtilityAndToggle();
-        reRun(unitResponse?.data?.data);
+        if (unitResponse?.data?.bool) {
+          changeUtilityAndToggle();
+          reRun(unitResponse?.data?.data);
+        } else {
+          alert(unitResponse?.data?.message);
+        }
       } catch (e) {
         console.log('e---->', e);
       }
@@ -972,6 +981,7 @@ export default function UnitEdit({
                                 flexDirection: 'row',
                                 justifyContent: 'flex-start',
                                 alignItems: 'center',
+                                zIndex: 1,
                               }}
                             // android_ripple={{
                             //   color: '#25AAE1ec',
@@ -1000,6 +1010,7 @@ export default function UnitEdit({
                               flexDirection: 'row',
                               justifyContent: 'flex-start',
                               alignItems: 'center',
+                              zIndex: 1,
                             }}
                           // android_ripple={{
                           //   color: '#25AAE1ec',

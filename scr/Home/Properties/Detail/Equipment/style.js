@@ -44,7 +44,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
   },
   search: {
-    minWidth: width * 0.6,
+    minWidth: width * 0.56,
     maxHeight: height * 0.055,
     borderBottomColor: '#25AAE1ec',
     fontSize: width * 0.04,
@@ -571,7 +571,7 @@ export default styles = StyleSheet.create({
   },
   filterButton: {
     backgroundColor: 'white',
-    padding: width * 0.01,
+    padding: width * 0.02,
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
