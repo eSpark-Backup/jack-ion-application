@@ -123,20 +123,21 @@ export default class Splash extends Component {
   };
 
   filter = () => {
-    console.log("Utility Index",this.state.utilityIndex)
+    console.log('Utility Index', this.state.utilityIndex);
     if (this.props.type == 'Properties') {
       let data = {
         offset: 0,
         billing: this.state.biller,
-        search: this.context.filterPropName,
+        search: this.state.searchName,
       };
       this.context.filterData(data);
       this.props.close();
-      this.setState({showList: false});
     } else {
       this.props.get_filterVal(
         this.context.filterSerial,
-        this.state.utilityIndex != null || undefined ? this.state.utilityIndex + 1 : null,
+        this.state.utilityIndex != null || undefined
+          ? this.state.utilityIndex + 1
+          : null,
       );
     }
   };
@@ -176,6 +177,11 @@ export default class Splash extends Component {
     } catch (err) {
       alert(err);
     }
+  };
+
+  onOkay = () => {
+    this.context.updateBiller(this.state.biller);
+    this.setState({showList: false});
   };
 
   onScanned = (e) => {
@@ -542,8 +548,7 @@ export default class Splash extends Component {
                       Cancel
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => this.setState({showList: false})}>
+                  <TouchableOpacity onPress={this.onOkay}>
                     <Text
                       style={{
                         fontSize: width * 0.032,
