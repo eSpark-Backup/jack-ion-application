@@ -181,7 +181,11 @@ const App = ({navigation}) => {
         data: [
           {
             leftName: 'Type',
-            rightName:unitMeter?.type?.manufacturer +' ('+ unitMeter?.type?.device+')',
+            rightName:
+              unitMeter?.type?.manufacturer +
+              ' (' +
+              unitMeter?.type?.device +
+              ')',
             rightIcon: 'chevron-down',
             type: 'feather',
           },
@@ -289,7 +293,7 @@ const App = ({navigation}) => {
     if (data.length != 0) {
       setLoading(false);
     }
-  }, [unitMeter,data]);
+  }, [unitMeter, data]);
   const meterSwitcher = () => {
     switch (unitMeter?.meter_name) {
       case 'hot water':
@@ -369,7 +373,9 @@ const App = ({navigation}) => {
       {text: 'Yes', onPress: () => deleteMeter()},
     ]);
   };
+
   const deleteMeter = async () => {
+    setDangerView(!dangerView);
     const response = await api.delete(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
@@ -377,6 +383,7 @@ const App = ({navigation}) => {
     console.log('Check response', response?.data);
     alert(response?.data?.message);
   };
+
   const renderUnitList = ({item, index}) => {
     return data?.data?.unit?.unit_meter?.length == 0 ? (
       index == 1 ? null : (
@@ -662,7 +669,7 @@ const App = ({navigation}) => {
           closeModal={() => setEditUnitModalVisible(false)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
-          modalName='Edit Unit'
+          modalName="Edit Unit"
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -764,7 +771,11 @@ const App = ({navigation}) => {
               />
             </View>
           </View>
-          <View style={{ marginVertical: height * 0.01,marginBottom:height * .06}}>
+          <View
+            style={{
+              marginVertical: height * 0.01,
+              marginBottom: height * 0.06,
+            }}>
             <TouchableOpacity onPress={openEditModal}>
               <Icon
                 name="plus-circle"
@@ -798,7 +809,7 @@ const App = ({navigation}) => {
           closeModal={() => setEditUnitModalVisible(false)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
-          modalName='Edit Unit'
+          modalName="Edit Unit"
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -1167,7 +1178,10 @@ const App = ({navigation}) => {
                   styles.meterStyle,
                   {borderColor: typeColor(item.meter_name)},
                 ]}
-                onPress={() => handleMeterSelect(item)}>
+                onPress={() => {
+                  handleMeterSelect(item);
+                  setDangerView(false);
+                }}>
                 {item.id == unitMeter?.id && (
                   <View
                     style={{
