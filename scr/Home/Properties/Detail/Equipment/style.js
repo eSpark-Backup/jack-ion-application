@@ -569,4 +569,11 @@ export default styles = StyleSheet.create({
   textCapitalize: {
     textTransform: 'capitalize',
   },
+  filterButton: {
+    backgroundColor: 'white',
+    padding: width * 0.01,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

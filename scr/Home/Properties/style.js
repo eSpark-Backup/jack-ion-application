@@ -242,4 +242,11 @@ export default styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 3,
   },
+  filterButton: {
+    backgroundColor: 'white',
+    padding: width * 0.01,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

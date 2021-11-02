@@ -74,7 +74,7 @@ export default class Splash extends Component {
           img: require('../../../Images/hot-water.png'),
         },
       ],
-      biller: '---',
+      biller: '',
       changed: false,
       buildingId: '',
       buildingName: '',
@@ -123,11 +123,12 @@ export default class Splash extends Component {
   };
 
   filter = () => {
+    console.log("Utility Index",this.state.utilityIndex)
     if (this.props.type == 'Properties') {
       let data = {
         offset: 0,
         billing: this.state.biller,
-        search: this.state.searchName,
+        search: this.context.filterPropName,
       };
       this.context.filterData(data);
       this.props.close();
@@ -135,7 +136,7 @@ export default class Splash extends Component {
     } else {
       this.props.get_filterVal(
         this.context.filterSerial,
-        this.state.utilityIndex && this.state.utilityIndex + 1,
+        this.state.utilityIndex != null || undefined ? this.state.utilityIndex + 1 : null,
       );
     }
   };
