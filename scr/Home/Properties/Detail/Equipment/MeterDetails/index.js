@@ -535,6 +535,7 @@ const App = ({navigation}) => {
                   {item.rightName == null ? null : (
                     <TextTicker
                       duration={6000}
+                      repeatSpacer={width * 0.6}
                       marqueeDelay={2000}
                       style={[
                         styles.listText,

@@ -126,6 +126,7 @@ export default class Splash extends Component {
       pressedUnit: '',
       pressedCode: '',
       pressedAndEdit: '',
+      changed: false,
       scanner: null,
       meterId: 0,
       barcodes: [],
@@ -135,6 +136,7 @@ export default class Splash extends Component {
       textStyle: false,
       loader: true,
       scanIndex: null,
+      getUtilities: [],
       searchList: [],
       meterListData: [],
       meterListArray: [],
@@ -375,10 +377,11 @@ export default class Splash extends Component {
       this.checkData();
     }
   };
-  get_filterVal = (payload) => {
-    console.log('Devce serial', payload);
-    this.setState({ showFilter: false });
-    this.filerUnits(payload);
+  get_filterVal = async (serial, meterId) => {
+    console.log('Devce serial', serial, meterId);
+
+    this.setState({showFilter: false});
+    this.filerUnits(serial, meterId);
   };
 
   checkData = async () => {
@@ -443,11 +446,12 @@ export default class Splash extends Component {
     }
   };
 
-  filerUnits = async (serial) => {
+  filerUnits = async (serial, id) => {
     console.log('Get filert', serial);
     let data = {
       building_id: this.state.editBuildId,
       device_serial_number: serial,
+      meter_id: id,
     };
 
     if (serial) {
@@ -484,16 +488,15 @@ export default class Splash extends Component {
   };
 
   searchUnits = async (e) => {
-    this.setState({ loadFor: e });
-    console.log('Get filert', serial);
+    this.setState({loadFor: e});
+    console.log('Get filert', e);
     let data = {
       building_id: this.state.editBuildId,
       search: e,
-      device_serial_number: serial,
     };
 
-    if (e || serial) {
-      this.setState({ searchLoading: true });
+    if (e) {
+      this.setState({searchLoading: true});
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
         data,
@@ -1064,7 +1067,12 @@ export default class Splash extends Component {
               marginLeft: width * 0.01,
               // backgroundColor:'red'
             }}>
-            <TextTicker duration={5000} style={styles.dataFieldText} key={unit}>
+            <TextTicker
+              duration={6000}
+              marqueeDelay={2000}
+              repeatSpacer={width * 0.3}
+              style={styles.dataFieldText}
+              key={unit}>
               {unit.item.name}
             </TextTicker>
             <View
@@ -1122,7 +1130,9 @@ export default class Splash extends Component {
           <Build name="office-building" size={width * 0.06} />
           <TextTicker
             duration={6000}
-            style={[styles.dataFieldText, { width: width * 0.16 }]}>
+            marqueeDelay={2000}
+            repeatSpacer={width * 0.16}
+            style={[styles.dataFieldText, {width: width * 0.16}]}>
             {build.item.name}
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
@@ -1310,7 +1320,9 @@ export default class Splash extends Component {
                   // backgroundColor:'red'
                 }}>
                 <TextTicker
-                  duration={5000}
+                  duration={6000}
+                  marqueeDelay={2000}
+                  repeatSpacer={width * 0.3}
                   style={styles.dataFieldText}
                   key={unit}>
                   {unit.item.name}
@@ -1573,6 +1585,7 @@ export default class Splash extends Component {
       buildingData: build.item,
       editBuildDes: build.item.descriptions,
       editBuildId: build.item.id,
+      changed: true,
     });
     const data = {
       building_id: build.item.id,
@@ -1604,6 +1617,10 @@ export default class Splash extends Component {
       alert('Network Issue');
       this.setState({ loader: false });
     }
+  };
+
+  changedFalse = () => {
+    this.setState({changed: false});
   };
 
   showMeter = (item) => {
@@ -1790,9 +1807,14 @@ export default class Splash extends Component {
     this.setState({ showSearch: true });
     this.setState({ searchList: [] });
   };
-  openFilter = () => {
+  openFilter = async () => {
     this.context.getBillingCompany();
-    this.setState({ showFilter: true });
+    this.setState({showFilter: true});
+    const unitResponse = await this.api.get(
+      `/property/equipment/meter/all-meters`,
+    );
+    console.log('Check meter add--->', unitResponse?.data?.data);
+    this.setState({getUtilities: unitResponse?.data?.data});
   };
 
   deleteBuilding = () => {
@@ -3385,10 +3407,14 @@ export default class Splash extends Component {
             <Filter
               type="Units"
               onReset={this.get_filterVal}
+              utilityTypes={this.state.getUtilities}
               get_filterVal={this.get_filterVal}
+              changeChanged={this.changedFalse}
               isVisible={this.state.showFilter}
               close={() => this.setState({ showFilter: !this.state.showFilter })}
               buildingName={this.state.buildingData.name}
+              buildiingId={this.state.editBuildId}
+              changed={this.state.changed}
             />
             {this.state.showSearch ? (
               <Modal

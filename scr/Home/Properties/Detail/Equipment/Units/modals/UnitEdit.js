@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -15,19 +15,19 @@ import {
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
-import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
-import { Fonts } from '../../../../../../utils/fonts';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
+import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
+import {Fonts} from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import { DotsLoader } from 'react-native-indicator';
+import {DotsLoader} from 'react-native-indicator';
 import TextTicker from 'react-native-text-ticker';
-import { create } from 'apisauce';
+import {create} from 'apisauce';
 import Base_URL from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { RNCamera } from 'react-native-camera';
+import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
@@ -1038,13 +1038,13 @@ export default function UnitEdit({
                     <TouchableOpacity onPress={changeUtilityAndToggle}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{ color: 'black' }}>Cancel</Text>
+                        <Text style={{color: 'black'}}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleAddNewUnit}>
                       <View style={styles.submitBotton}>
                         <Plus name="pencil-plus" color="white" size={18} />
-                        <Text style={{ color: 'white' }}>Edit Unit</Text>
+                        <Text style={{color: 'white'}}>Edit Unit</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -1094,7 +1094,7 @@ export default function UnitEdit({
               ref={(ref) => {
                 this.camera = ref;
               }}
-              style={{ flex: 1 }}
+              style={{flex: 1}}
               type={RNCamera.Constants.Type.back}
               autoFocus="on"
               onBarCodeRead={onScanned}
