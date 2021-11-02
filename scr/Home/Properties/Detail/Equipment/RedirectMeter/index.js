@@ -277,6 +277,47 @@ export default class RedirectMeter extends Component {
     }
   };
 
+  _customSort(data, order) {
+    function isNumber(v) {
+      return (+v).toString() === v;
+    }
+    var sort = {
+        asc: function (a, b) {
+          var i = 0,
+            l = Math.min(a.value.length, b.value.length);
+
+          while (i < l && a.value[i] === b.value[i]) {
+            i++;
+          }
+          if (i === l) {
+            return a.value.length - b.value.length;
+          }
+          if (isNumber(a.value[i]) && isNumber(b.value[i])) {
+            return a.value[i] - b.value[i];
+          }
+          return a.value[i].localeCompare(b.value[i]);
+        },
+        desc: function (a, b) {
+          return sort.asc(b, a);
+        },
+      },
+      mapped = data.map(function ({name}, i) {
+        var string = name.replace(/\d(?=[a-z])|[a-z](?=\.)/gi, '$&. .'),
+          string = name.replace(/\s/g, ''),
+          regex = /(\d+)|([^0-9.]+)/g,
+          m,
+          parts = [];
+        while ((m = regex.exec(string)) !== null) {
+          parts.push(m[0]);
+        }
+        return {index: i, value: parts, o: name, string: string};
+      });
+    mapped.sort(sort[order] || sort.asc);
+    return mapped.map(function (el) {
+      return data[el.index];
+    });
+  }
+
   getItemId = async (item) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
@@ -347,7 +388,7 @@ export default class RedirectMeter extends Component {
   getUnitId = async (item) => {
     this.setState({
       unitModalType: 'meterDirect',
-      meterTypesList:item.unit_meter
+      meterTypesList: item.unit_meter,
     });
     const data = {
       name: item.name,
@@ -433,7 +474,7 @@ export default class RedirectMeter extends Component {
       unitId: v?.unit?.id,
       unitName: v?.unit?.name,
     });
-    this.handleFinish()
+    this.handleFinish();
   };
   render() {
     return (
@@ -601,7 +642,8 @@ export default class RedirectMeter extends Component {
           <View
             style={{
               ...styles.boxConatainer,
-              height:this.state.dataBuild.length != 0 ? height * 0.2 : height * 0.12,
+              height:
+                this.state.dataBuild.length != 0 ? height * 0.2 : height * 0.12,
             }}>
             <View style={styles.boxInner}>
               <View
@@ -654,7 +696,7 @@ export default class RedirectMeter extends Component {
                     <View style={[styles.filterUtility]}>
                       <FlatList
                         style={{width: width * 0.9}}
-                        data={this.state.dataBuild}
+                        data={this._customSort(this.state.dataBuild)}
                         showsVerticalScrollIndicator={false}
                         numColumns={1}
                         initialNumToRender={this.state.dataBuild.length}
@@ -823,7 +865,7 @@ export default class RedirectMeter extends Component {
                     <View style={[styles.filterUtility]}>
                       <FlatList
                         style={{width: width * 0.9}}
-                        data={this.state.unitData}
+                        data={this._customSort(this.state.unitData)}
                         showsVerticalScrollIndicator={false}
                         numColumns={1}
                         initialNumToRender={this.state.unitData.length}
