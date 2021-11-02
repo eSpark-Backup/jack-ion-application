@@ -805,7 +805,7 @@ export default class Splash extends React.Component {
                           />
                         </View>
 
-                        <View style={styles.desciptionContainer}>
+                        {/* <View style={styles.desciptionContainer}>
                           <Icon
                             name={'folder-open'}
                             size={height * 0.03}
@@ -814,7 +814,7 @@ export default class Splash extends React.Component {
                           <Text style={styles.desciptionHeading}>
                             PORTFOLIO DETAILS
                           </Text>
-                        </View>
+                        </View> */}
                         {/* <View style={styles.inputContainer}>
                           <TextInput
                             label="BILLING COMPANY*"
@@ -836,7 +836,7 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View> */}
-                        <View style={styles.inputContainer}>
+                        {/* <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state.ManageComp}
                             label="MANAGEMENT COMPANY"
@@ -856,7 +856,7 @@ export default class Splash extends React.Component {
                               },
                             }}
                           />
-                        </View>
+                        </View> */}
                         {/* <View style={styles.inputContainer}>
                           <TextInput
                             label="CUSTOM ID*"
@@ -956,7 +956,7 @@ export default class Splash extends React.Component {
                   </Text>
                 </View>
               </View>
-              <View style={styles.infoViewContainer}>
+              {/* <View style={styles.infoViewContainer}>
                 <Text style={styles.dataFieldHeadings}>Office Contact #</Text>
                 <View style={styles.infoViewInner}>
                   <Globe name="phone" size={width * 0.06} />
@@ -966,8 +966,8 @@ export default class Splash extends React.Component {
                       : this.state.listData.office_contact_number}
                   </Text>
                 </View>
-              </View>
-              <View style={styles.contactViewContainer}>
+              </View> */}
+              {/* <View style={styles.contactViewContainer}>
                 <Text style={styles.dataFieldHeadings}>Contact Info</Text>
                 <View style={styles.contactInfoContainer}>
                   <View style={styles.contactInfoInner}>
@@ -1005,8 +1005,8 @@ export default class Splash extends React.Component {
                     style={styles.contactInput}
                   />
                 </View>
-              </View>
-              <View style={styles.contactViewContainer}>
+              </View> */}
+              {/* <View style={styles.contactViewContainer}>
                 <Text style={styles.dataFieldHeadings}>Manager Info</Text>
                 <View style={styles.contactInfoContainer}>
                   <View style={styles.contactInfoInner}>
@@ -1040,7 +1040,7 @@ export default class Splash extends React.Component {
                     style={styles.contactInput}
                   />
                 </View>
-              </View>
+              </View> */}
               <View style={style.footerContainer}>
                 <TouchableOpacity style={style.commentBottonContainer}>
                   <View style={style.commentBottonInner}>

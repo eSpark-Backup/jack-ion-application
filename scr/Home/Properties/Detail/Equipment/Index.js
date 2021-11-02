@@ -526,7 +526,7 @@ export default class Splash extends Component {
     for (i = 0; i < n; i++) {
       loopData.push({
         name: str + ' ' + int,
-        num: value + 1,
+        num: text + 1,
       }),
         int = int + 1;
     }
@@ -2093,8 +2093,10 @@ export default class Splash extends Component {
                 // }
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.openFilter}>
-                <FilterIcon name="filter-outline" color="white" size={20} />
+              <TouchableOpacity
+                onPress={this.openFilter}
+                style={styles.filterButton}>
+                <FilterIcon name="filter-outline" color="#25AAE1ec" size={20} />
               </TouchableOpacity>
             </View>
           </View>
