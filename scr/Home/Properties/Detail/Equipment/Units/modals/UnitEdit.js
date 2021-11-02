@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -15,19 +15,19 @@ import {
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
-import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
+import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import { Fonts } from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import {DotsLoader} from 'react-native-indicator';
+import { DotsLoader } from 'react-native-indicator';
 import TextTicker from 'react-native-text-ticker';
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import Base_URL from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
@@ -154,6 +154,9 @@ export default function UnitEdit({
     const unitResponse = await api.get(`/property/equipment/type/all-types`);
     // console.log('Check types add--->', unitResponse.data);
     setTypeOfMeters(unitResponse?.data?.data);
+    // console.log('Check types add state.meterList--->', state.meterList);
+    // console.log('Check types add meterListData--->', meterListData);
+    // console.log('Check types add meterMenuVisible--->', meterMenuVisible);
   };
 
   const deleteMeterInNewArray = (value) => {
@@ -170,10 +173,16 @@ export default function UnitEdit({
       ...oldState,
       meterList: newArray.sort((a, b) => (a.name > b.name ? 1 : -1)),
     }));
+    
+    
     // setMeterListArray(newArray.sort((a, b) => (a.name > b.name ? 1 : -1)));
   };
   //!----------->
-
+  // useEffect(() => {
+  //   console.log('Check types use state.meterList--->', state.meterList);
+  //   console.log('Check types use meterListData--->', meterListData);
+  //   console.log('Check types use meterMenuVisible--->', meterMenuVisible);
+  // }, [meterListData,meterMenuVisible,state]);
   const showMoreInputs = (value, index) => {
     let newArr = [...meterListData]; // copying the old datas array
     newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
@@ -400,7 +409,7 @@ export default function UnitEdit({
         errorUnits: '',
       }));
     }
-    if (type == 'add' && matchUnit.length != 0 ) {
+    if (type == 'add' && matchUnit.length != 0) {
       setError((oldState) => ({
         ...oldState,
         errorUnits: 'This unit already exist',
@@ -520,6 +529,11 @@ export default function UnitEdit({
     }
   };
 
+  const handleOpenMeterSelection = () => {
+    console.log('e-ss--->')
+    setMeterMenuVisible(true);
+    callApi();
+  }
   return (
     <View>
       <Modal
@@ -833,7 +847,7 @@ export default function UnitEdit({
                                 {item.deviceError}
                               </HelperText>
                             ) : null}
-                            <View style={styles.meterDesciptionContainer}>
+                            {/* <View style={styles.meterDesciptionContainer}>
                               <Text style={styles.meterDesciptionHeading}>
                                 Meter Attached To
                               </Text>
@@ -853,7 +867,7 @@ export default function UnitEdit({
                                   },
                                 }}
                               />
-                            </View>
+                            </View> */}
                             {item.showOtherInputs == true ? (
                               <View>
                                 <View style={styles.meterDesciptionContainer}>
@@ -877,7 +891,7 @@ export default function UnitEdit({
                                     }}
                                   />
                                 </View>
-                                <View style={styles.meterDesciptionContainer}>
+                                {/* <View style={styles.meterDesciptionContainer}>
                                   <Text style={styles.meterDesciptionHeading}>
                                     Custom Meter ID
                                   </Text>
@@ -897,7 +911,7 @@ export default function UnitEdit({
                                       },
                                     }}
                                   />
-                                </View>
+                                </View> */}
                               </View>
                             ) : (
                               console.log('Check Item', item)
@@ -949,21 +963,19 @@ export default function UnitEdit({
                               </Text>
                             </View>
                           ) : (
-                            <Pressable
-                              onPress={() => {
-                                setMeterMenuVisible(true);
-                                callApi();
-                              }}
+                            <TouchableOpacity
+                              onPress={handleOpenMeterSelection}
                               style={{
                                 flexDirection: 'row',
                                 justifyContent: 'flex-start',
                                 alignItems: 'center',
                               }}
-                              android_ripple={{
-                                color: '#25AAE1ec',
-                                borderless: true,
-                                radius: height * 0.08,
-                              }}>
+                            // android_ripple={{
+                            //   color: '#25AAE1ec',
+                            //   borderless: true,
+                            //   radius: height * 0.08,
+                            // }}
+                            >
                               {/*//todo: Button for meter */}
                               <Plus name="plus" size={25} color="#25AAE1ec" />
                               <Text
@@ -973,10 +985,10 @@ export default function UnitEdit({
                                 }}>
                                 Meter
                               </Text>
-                            </Pressable>
+                            </TouchableOpacity>
                           )
                         ) : state.meterList.length ? (
-                          <Pressable
+                          <TouchableOpacity
                             onPress={() => {
                               setMeterMenuVisible(true);
                               callApi();
@@ -986,11 +998,12 @@ export default function UnitEdit({
                               justifyContent: 'flex-start',
                               alignItems: 'center',
                             }}
-                            android_ripple={{
-                              color: '#25AAE1ec',
-                              borderless: true,
-                              radius: height * 0.08,
-                            }}>
+                          // android_ripple={{
+                          //   color: '#25AAE1ec',
+                          //   borderless: true,
+                          //   radius: height * 0.08,
+                          // }}
+                          >
                             {/*//todo: Button for meter */}
                             <Plus name="plus" size={25} color="#25AAE1ec" />
                             <Text
@@ -1000,7 +1013,7 @@ export default function UnitEdit({
                               }}>
                               Meter
                             </Text>
-                          </Pressable>
+                          </TouchableOpacity>
                         ) : (
                           <View style={{ marginLeft: width * 0.02 }}>
                             <Text
@@ -1038,13 +1051,13 @@ export default function UnitEdit({
                     <TouchableOpacity onPress={changeUtilityAndToggle}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{color: 'black'}}>Cancel</Text>
+                        <Text style={{ color: 'black' }}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleAddNewUnit}>
                       <View style={styles.submitBotton}>
                         <Plus name="pencil-plus" color="white" size={18} />
-                        <Text style={{color: 'white'}}>Edit Unit</Text>
+                        <Text style={{ color: 'white' }}>Edit Unit</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -1094,7 +1107,7 @@ export default function UnitEdit({
               ref={(ref) => {
                 this.camera = ref;
               }}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               type={RNCamera.Constants.Type.back}
               autoFocus="on"
               onBarCodeRead={onScanned}

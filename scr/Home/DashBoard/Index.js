@@ -126,7 +126,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <StatusBar  hidden backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.menuView}>

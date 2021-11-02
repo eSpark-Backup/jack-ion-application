@@ -237,7 +237,7 @@ export default class Splash extends Component {
     }
     return (
       <View>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar hidden barStyle="dark-content" />
         {/* Barcode Scanner */}
         <Modal
           animationIn="bounceInUp"
