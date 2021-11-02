@@ -97,7 +97,7 @@ class GlobalState extends React.Component {
   };
 
   filterData = async (sort) => {
-    this.setState({biller: sort.billing});
+    // this.setState({biller: sort.billing});
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
@@ -323,6 +323,10 @@ class GlobalState extends React.Component {
     this.setState({searchList: []});
   };
 
+  updateBiller = (val) => {
+    this.setState({biller: val});
+  };
+
   updateFilterSerial = (e) => {
     this.setState({filterSerial: e});
   };
@@ -381,6 +385,7 @@ class GlobalState extends React.Component {
             deleteBuilding: this.deleteBuilding,
             updateBuilding: this.updateBuilding,
             biller: this.state.biller,
+            updateBiller: this.updateBiller,
             filterSerial: this.state.filterSerial,
             updateFilterSerial: this.updateFilterSerial,
             filterPropName: this.state.filterPropName,

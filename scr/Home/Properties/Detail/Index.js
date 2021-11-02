@@ -653,7 +653,7 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={styles.inputContainer}>
+                        {/* <View style={styles.inputContainer}>
                           <TextInput
                             // placeholder={this.state.info?.address}
                             label="Property ID*"
@@ -682,7 +682,7 @@ export default class Splash extends React.Component {
                               },
                             }}
                           />
-                        </View>
+                        </View> */}
                         <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state?.listData?.street}
