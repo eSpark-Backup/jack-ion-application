@@ -214,7 +214,7 @@ export default class Splash extends Component {
       editBuildDes: '',
       showSearch: false,
       showFilter: false,
-      filterWork:false,
+      filterWork: false,
       newUnitInfo: {
         indexUnits: '',
         unitBuild: '',
@@ -419,7 +419,7 @@ export default class Splash extends Component {
   };
 
   checkData = async () => {
-      this.setState({ loader: true, filterWork:false});
+    this.setState({filterWork: false });
     const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
@@ -474,6 +474,14 @@ export default class Splash extends Component {
           this.setState({ loader: false });
         }
       } else {
+        console.log('False chala', response?.data?.data?.length);
+        if (response?.data?.data?.length == 0) {
+          this.setState({
+            realData: [],
+            lastUnitData: '',
+            newUnit: 'Unit-0',
+          });
+        }
         this.setState({ loader: false });
       }
     } else {
@@ -491,7 +499,7 @@ export default class Splash extends Component {
     };
 
     if (serial) {
-      this.setState({ loader: true,});
+      this.setState({ loader: true, });
 
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
@@ -507,7 +515,7 @@ export default class Splash extends Component {
         this.setState({ loader: false });
       }
     } else {
-      this.setState({ loader: true,});
+      this.setState({ loader: true, });
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
         data,
@@ -562,7 +570,7 @@ export default class Splash extends Component {
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + ' ' + int,
+        name: str + int,
         num: text + 1,
       }),
         (int = int + 1);
@@ -1625,7 +1633,7 @@ export default class Splash extends Component {
       editBuildDes: build.item.descriptions,
       editBuildId: build.item.id,
       changed: true,
-      filterWork:false
+      filterWork: false
     });
     const data = {
       building_id: build.item.id,
@@ -3506,7 +3514,7 @@ export default class Splash extends Component {
               buildingName={this.state.buildingData.name}
               buildiingId={this.state.editBuildId}
               changed={this.state.changed}
-              filterWork={(e) => this.setState({ filterWork: e },console.log(e,"filterWork:false"))}
+              filterWork={(e) => this.setState({ filterWork: e }, console.log(e, "filterWork:false"))}
 
             />
             {this.state.showSearch ? (
