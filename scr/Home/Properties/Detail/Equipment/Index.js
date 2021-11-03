@@ -416,7 +416,6 @@ export default class Splash extends Component {
   };
 
   checkData = async () => {
-    this.setState({loader: true});
     const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
@@ -471,6 +470,14 @@ export default class Splash extends Component {
           this.setState({loader: false});
         }
       } else {
+        console.log('False chala', response?.data?.data?.length);
+        if (response?.data?.data?.length == 0) {
+          this.setState({
+            realData: [],
+            lastUnitData: '',
+            newUnit: 'Unit-0',
+          });
+        }
         this.setState({loader: false});
       }
     } else {
@@ -558,7 +565,7 @@ export default class Splash extends Component {
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + ' ' + int,
+        name: str + int,
         num: text + 1,
       }),
         (int = int + 1);
