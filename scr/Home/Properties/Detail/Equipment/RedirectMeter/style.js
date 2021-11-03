@@ -21,7 +21,7 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.02,
     elevation: width * 0.02,
     alignItems: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   currentReadContainer: {
     width: '100%',
