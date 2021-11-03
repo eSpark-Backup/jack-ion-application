@@ -347,15 +347,18 @@ export default function UnitEdit({
 
   const changeUtilityAndToggle = () => {
     setMeterListData([]);
-    setState((oldState) => ({
-      ...oldState,
-      lastUnitData: '',
-    }));
+
     setError((oldState) => ({
       ...oldState,
       errorUnits: '',
     }));
     closeModal();
+    if (type == 'addMeterDirect' || type == 'add') {
+      setState((oldState) => ({
+        ...oldState,
+        lastUnitData: '',
+      }));
+    }
     // console.log('data--->');
   };
 
@@ -655,6 +658,9 @@ export default function UnitEdit({
                               lastUnitData: text,
                             }));
                         }}
+                        disabled={type == 'meterDirect'
+                          ? true
+                          : false}
                         style={styles.input}
                         error={error.errorUnits}
                         mode={'outlined'}
@@ -728,7 +734,7 @@ export default function UnitEdit({
                                 dense={true}
                                 error={item.deviceSerialError}
                                 right={
-                                  type == 'meterDirect' ? null : (
+                                  type == 'meterDirect' || type == "addMeterDirect" ? null : (
                                     <TextInput.Icon
                                       name={() => (
                                         <TouchableOpacity
@@ -742,10 +748,13 @@ export default function UnitEdit({
                                   )
                                 }
                                 onChangeText={(text) =>
-                                  type == 'meterDirect'
+                                  type == 'meterDirect' || type == "addMeterDirect"
                                     ? null
                                     : onChangeMultipleField(text, meterIndex)
                                 }
+                                disabled={type == 'meterDirect' || type == "addMeterDirect"
+                                  ? true
+                                  : false}
                                 style={styles.meterInput}
                                 mode={'outlined'}
                                 theme={{
@@ -1077,10 +1086,10 @@ export default function UnitEdit({
                           </>
                         ) : (
                         )} */}
-                          <Plus name={type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "plus" : 'pencil-plus'}color="white" size={18} />
-                          <Text style={{ color: 'white' }}>
-                            {type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "Add Unit" : 'Edit Unit'}
-                          </Text>
+                        <Plus name={type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "plus" : 'pencil-plus'} color="white" size={18} />
+                        <Text style={{ color: 'white' }}>
+                          {type == 'meterDirect' || type == 'addMeterDirect' || type == 'add' ? "Add Unit" : 'Edit Unit'}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   </View>
