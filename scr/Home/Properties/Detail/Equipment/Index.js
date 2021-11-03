@@ -411,9 +411,9 @@ export default class Splash extends Component {
   };
   get_filterVal = async (serial, meterId) => {
     console.log('Devce serial', serial, meterId);
-    if(this.state.filterWork){
-      this.setState({filterWork:false})
-    }
+    // if(this.state.filterWork){
+    //   this.setState({filterWork:false})
+    // }
     this.setState({ showFilter: false });
     this.filerUnits(serial, meterId);
   };
@@ -3506,7 +3506,7 @@ export default class Splash extends Component {
               buildingName={this.state.buildingData.name}
               buildiingId={this.state.editBuildId}
               changed={this.state.changed}
-              filterWork={() => this.setState({ filterWork: true },console.log(this.state.filterWork,"filterWork:false"))}
+              filterWork={(e) => this.setState({ filterWork: e },console.log(e,"filterWork:false"))}
 
             />
             {this.state.showSearch ? (

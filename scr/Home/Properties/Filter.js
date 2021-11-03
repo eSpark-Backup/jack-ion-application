@@ -153,6 +153,7 @@ export default class Splash extends Component {
 
   resetFilter = () => {
     this.props.onReset('');
+    this.props.filterWork(false);
     this.context.updateFilterSerial('');
     this.setState({utilityIndex: null});
   };
