@@ -129,7 +129,7 @@ export default class Splash extends Component {
       let data = {
         offset: 0,
         billing: this.state.biller,
-        search: this.context.filterPropName,
+        search: this.state.searchName,
       };
       this.context.filterData(data);
       this.props.close();
@@ -179,6 +179,11 @@ export default class Splash extends Component {
     } catch (err) {
       alert(err);
     }
+  };
+
+  onOkay = () => {
+    this.context.updateBiller(this.state.biller);
+    this.setState({showList: false});
   };
 
   onScanned = (e) => {
@@ -545,8 +550,7 @@ export default class Splash extends Component {
                       Cancel
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => this.setState({showList: false})}>
+                  <TouchableOpacity onPress={this.onOkay}>
                     <Text
                       style={{
                         fontSize: width * 0.032,
