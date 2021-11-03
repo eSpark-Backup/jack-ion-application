@@ -191,7 +191,7 @@ export default class Splash extends Component {
       selected: false,
       animatedValue: new Animated.Value(0),
       newBuild: 'A',
-      newUnit: 'Unit-0',
+      newUnit: 'Unit-1',
       newUnitAdd: '',
       meterList: false,
       showOtherInputs: false,
@@ -419,7 +419,7 @@ export default class Splash extends Component {
   };
 
   checkData = async () => {
-    this.setState({filterWork: false });
+    this.setState({ filterWork: false, });
     const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
@@ -457,8 +457,8 @@ export default class Splash extends Component {
 
           console.log('lastElement--->', lastElement);
           this.setState({
-            lastUnitData: lastElement?.name,
-            newUnit: lastElement?.name,
+            lastUnitData: lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
+            newUnit: lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
           });
           this.setState((prevState) => ({
             ...prevState,
@@ -475,13 +475,13 @@ export default class Splash extends Component {
         }
       } else {
         console.log('False chala', response?.data?.data?.length);
-        if (response?.data?.data?.length == 0) {
-          this.setState({
-            realData: [],
-            lastUnitData: '',
-            newUnit: 'Unit-0',
-          });
-        }
+        // if (response?.data?.data?.length == 0) {
+        this.setState({
+          realData: [],
+          lastUnitData: 'Unit-0',
+          newUnit: 'Unit-0',
+        });
+        // }
         this.setState({ loader: false });
       }
     } else {
@@ -562,6 +562,8 @@ export default class Splash extends Component {
 
   getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
+    console.log('this.state.newUnit===>', this.state.newUnit);
+
     var int = this.state.newUnit;
     var str = this.state.newUnit;
     int = parseInt(int.match(/\d+/)) + 1;
@@ -580,7 +582,31 @@ export default class Splash extends Component {
 
   addInput = (value, i) => {
     // console.log(value, 'value-->');
-    // console.log('Index-->', i);
+
+    // var makeIntArra = value.split("");
+    // var makeInt = '';
+    // makeIntArra.map((item, index) => {
+    //   makeInt = makeInt + (
+    //     makeIntArra[index] == ' ' ? '' :
+    //       (
+    //         isNaN(makeIntArra[index]) ? 
+    //         parseInt(value.match(/\d+/)) + 1 : makeArra[index]
+    //       )
+    //   )
+    // })
+    // var makeArra = value.split("");
+    // var makeString = '';
+    // makeArra.map((item, index) => {
+    //   makeString = makeString + (
+    //     makeArra[index] == ' ' ? '' :
+    //       (
+    //         !isNaN(makeArra[index]) ? 
+    //         parseInt(value.match(/\d+/)) + 1 : makeArra[index]
+    //       )
+    //   )
+    // })
+    // console.log('makeArra-->', makeArra);
+    // console.log('makeString-->', makeString);
     this.setState({ newUnit: value });
     if (this.state.autoIncrement == true) {
       var int = value;
@@ -737,7 +763,7 @@ export default class Splash extends Component {
     this.toggleModalUnit();
     this.setState({ uScr: false });
     this.setState({ newBuild: 'A' });
-    // this.setState({ newUnit: '' });
+    // this.setState({ newUnit: 'Unit-0' });
     this.setState({ newSerial: '' });
     this.setState({ newMeter: '' });
     this.setState({ newMeter: '', meterListData: [] });
@@ -1425,6 +1451,7 @@ export default class Splash extends Component {
     this.setState({
       isModalBuildVisible: !this.state.isModalBuildVisible,
       buildName: '',
+      // newUnit: 'Unit-0',
       unitsArray: [],
     });
     this.setState((prevState) => ({
@@ -1649,8 +1676,8 @@ export default class Splash extends Component {
       let arry = unitResponse?.data?.data;
       let lastElement = arry[arry.length - 1];
       this.setState({
-        lastUnitData: lastElement?.name,
-        newUnit: lastElement?.name,
+        lastUnitData: lastElement?.name == undefined ? this.state.newUnit : lastElement?.name,
+        newUnit: lastElement?.name == undefined ? this.state.newUnit : lastElement?.name,
       });
       this.setState((prevState) => ({
         ...prevState,

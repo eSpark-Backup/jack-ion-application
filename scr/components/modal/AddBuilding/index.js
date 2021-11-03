@@ -47,7 +47,6 @@ export default function AddbuildingModal({
   const [error, setError] = useState({
     units: '',
     buildingName: '',
-
   });
   const getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -71,7 +70,7 @@ export default function AddbuildingModal({
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + ' ' + int,
+        name: str + '' + int,
       }),
         // (value = value + 1);
         int = int + 1;
@@ -82,7 +81,8 @@ export default function AddbuildingModal({
     }));
   };
 
-  const addInput = (value, i) => {
+  const addInput = (value, i,vindex) => {
+    console.log('vindex--->>',vindex)
     setState((oldState) => ({
       ...oldState,
       newUnit: value
@@ -121,8 +121,8 @@ export default function AddbuildingModal({
       key={index}
       value={item.name}
       dense={true}
-      onChangeText={(text) => {
-        addInput(text, index);
+      onChangeText={(text,valueIndex) => {
+        addInput(text, index,valueIndex);
       }}
       style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
       scrollEnabled={false}
@@ -143,6 +143,7 @@ export default function AddbuildingModal({
       ...oldState,
       buildName: '',
       buildDescription: '',
+      newUnit: 'Unit-0',
       unitsArray: [],
     }));
     setError((oldState) => ({

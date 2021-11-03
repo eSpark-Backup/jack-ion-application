@@ -129,7 +129,7 @@ export default class Splash extends Component {
       let data = {
         offset: 0,
         billing: this.state.biller,
-        search: this.state.searchName,
+        search: this.context.filterPropName,
       };
       this.context.filterData(data);
       this.props.close();
@@ -306,7 +306,7 @@ export default class Splash extends Component {
           animationOut="slideOutUp"
           isVisible={isVisible}>
           <View style={styles.modalInner}>
-            <View style={{...styles.boxConatainer, style}}>
+            <View style={[{...styles.boxConatainer, style},{height:type == 'Units' ? height * .42: height * .25}]}>
               <View style={styles.boxInner}>
                 {/* Box Header */}
                 <Header
@@ -341,7 +341,7 @@ export default class Splash extends Component {
                 <View style={{width: '100%'}}>
                   {type == 'Properties' ? (
                     <View style={styles.currentReadContainer}>
-                      <View style={styles.inputFilterView}>
+                      {/* <View style={styles.inputFilterView}>
                         <Text style={styles.filterListText}>Name:</Text>
                         <TextInput
                           style={styles.filterInputs}
@@ -350,7 +350,7 @@ export default class Splash extends Component {
                             this.context.updateFilterProperty(e)
                           }
                         />
-                      </View>
+                      </View> */}
                       <View style={styles.filterLists}>
                         <Text style={styles.filterListText}>Billing</Text>
                         <TouchableOpacity
