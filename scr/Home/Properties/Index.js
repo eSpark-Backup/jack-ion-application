@@ -55,6 +55,7 @@ export default class Splash extends Component {
       propertyList: null,
       showFilter: false,
       showSearch: false,
+      filterWork:false
     };
 
     if (Platform.OS === 'android') {
@@ -345,11 +346,14 @@ export default class Splash extends Component {
       this.setState({loadScreen: false});
       this.setState({Loading: true});
     }
-
+    if (!this.context.filterWork && this.state.filterWork) {
+      // console.log('Condition Success');
+      this.setState({filterWork: false});
+    }
     return (
       <View style={styles.container}>
         {this.context.isLoading ? <Loader /> : null}
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
@@ -397,8 +401,10 @@ export default class Splash extends Component {
                   // }
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.openFilter}>
-                <FilterIcon name="filter-outline" color="white" size={20} />
+              <TouchableOpacity
+                onPress={this.openFilter}
+                style={styles.filterButton}>
+                <FilterIcon name="filter-outline" color={this.state.filterWork ? "#25AAE1ec" : "black"} size={20} />
               </TouchableOpacity>
             </View>
           </View>
@@ -409,6 +415,7 @@ export default class Splash extends Component {
             type="Properties"
             isVisible={this.state.showFilter}
             close={() => this.setState({showFilter: !this.state.showFilter})}
+            filterWork={() => this.setState({filterWork:true})}
           />
           {this.state.showSearch ? (
             <Modal
@@ -442,6 +449,7 @@ export default class Splash extends Component {
                   <Search name="search" size={height * 0.04} color="white" />
                   <TextInput
                     underlineColor="transparent"
+                    autoFocus={true}
                     dense={true}
                     placeholderTextColor="white"
                     placeholder="Search"

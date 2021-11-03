@@ -54,7 +54,7 @@ export default class MainAdscreen extends Component {
   render() {
     return (
       <>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle="dark-content" hidden/>
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"

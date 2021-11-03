@@ -31,7 +31,7 @@ export default class Splash extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="black" barStyle="default" hidden={true} showHideTransition={'fade'}></StatusBar>
+        <StatusBar  backgroundColor="black" barStyle="default" hidden={true} showHideTransition={'fade'} />
         <LinearGradient colors={['white', '#c7d9ff', '#4f87ff']}
           style={styles.linear}
           start={{ x: 2, y: 0. }}

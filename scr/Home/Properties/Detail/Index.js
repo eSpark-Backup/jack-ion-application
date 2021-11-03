@@ -477,7 +477,7 @@ export default class Splash extends React.Component {
             </TouchableOpacity>
           </View>
         </Modal>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
@@ -653,36 +653,7 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={styles.inputContainer}>
-                          <TextInput
-                            // placeholder={this.state.info?.address}
-                            label="Property ID*"
-                            error={this.state.error.property_id}
-                            value={this.state?.listData?.property_id}
-                            placeholder={this.state?.listData?.property_id}
-                            style={styles.input}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  property_id: text, // update the value of specific key
-                                },
-                              }));
-                            }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
+
                         <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state?.listData?.street}
@@ -804,8 +775,37 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-
-                        <View style={styles.desciptionContainer}>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            // placeholder={this.state.info?.address}
+                            label="Custom ID*"
+                            error={this.state.error.property_id}
+                            value={this.state?.listData?.property_id}
+                            placeholder={this.state?.listData?.property_id}
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState((prevState) => ({
+                                ...prevState,
+                                listData: {
+                                  // object that we want to update
+                                  ...prevState.listData, // keep all other key-value pairs
+                                  property_id: text, // update the value of specific key
+                                },
+                              }));
+                            }}
+                            // onChangeText={text => { this.editThis(text) }}
+                            onBlur={this.editThis}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        {/* <View style={styles.desciptionContainer}>
                           <Icon
                             name={'folder-open'}
                             size={height * 0.03}
@@ -814,7 +814,7 @@ export default class Splash extends React.Component {
                           <Text style={styles.desciptionHeading}>
                             PORTFOLIO DETAILS
                           </Text>
-                        </View>
+                        </View> */}
                         {/* <View style={styles.inputContainer}>
                           <TextInput
                             label="BILLING COMPANY*"
@@ -836,7 +836,7 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View> */}
-                        <View style={styles.inputContainer}>
+                        {/* <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state.ManageComp}
                             label="MANAGEMENT COMPANY"
@@ -856,7 +856,7 @@ export default class Splash extends React.Component {
                               },
                             }}
                           />
-                        </View>
+                        </View> */}
                         {/* <View style={styles.inputContainer}>
                           <TextInput
                             label="CUSTOM ID*"
@@ -905,19 +905,19 @@ export default class Splash extends React.Component {
                   <Text style={styles.dataFieldText}>
                     {`${
                       this.state.listData.street == null
-                        ? ' - '
+                        ? ''
                         : this.state.listData.street
                     } \n ${
                       this.state.listData.city == null
-                        ? ' - '
-                        : this.state.listData.city
-                    }, ${
+                        ? ''
+                        : this.state.listData.city + " ,"
+                    } ${
                       this.state.listData.st == null
-                        ? ' - '
+                        ? ''
                         : this.state.listData.st
                     } ${
                       this.state.listData.zipcode == null
-                        ? ' - '
+                        ? ''
                         : this.state.listData.zipcode
                     }`}
                   </Text>
@@ -956,7 +956,7 @@ export default class Splash extends React.Component {
                   </Text>
                 </View>
               </View>
-              <View style={styles.infoViewContainer}>
+              {/* <View style={styles.infoViewContainer}>
                 <Text style={styles.dataFieldHeadings}>Office Contact #</Text>
                 <View style={styles.infoViewInner}>
                   <Globe name="phone" size={width * 0.06} />
@@ -966,8 +966,8 @@ export default class Splash extends React.Component {
                       : this.state.listData.office_contact_number}
                   </Text>
                 </View>
-              </View>
-              <View style={styles.contactViewContainer}>
+              </View> */}
+              {/* <View style={styles.contactViewContainer}>
                 <Text style={styles.dataFieldHeadings}>Contact Info</Text>
                 <View style={styles.contactInfoContainer}>
                   <View style={styles.contactInfoInner}>
@@ -1005,8 +1005,8 @@ export default class Splash extends React.Component {
                     style={styles.contactInput}
                   />
                 </View>
-              </View>
-              <View style={styles.contactViewContainer}>
+              </View> */}
+              {/* <View style={styles.contactViewContainer}>
                 <Text style={styles.dataFieldHeadings}>Manager Info</Text>
                 <View style={styles.contactInfoContainer}>
                   <View style={styles.contactInfoInner}>
@@ -1040,7 +1040,7 @@ export default class Splash extends React.Component {
                     style={styles.contactInput}
                   />
                 </View>
-              </View>
+              </View> */}
               <View style={style.footerContainer}>
                 <TouchableOpacity style={style.commentBottonContainer}>
                   <View style={style.commentBottonInner}>

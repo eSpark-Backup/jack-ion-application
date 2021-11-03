@@ -74,7 +74,7 @@ export default class Splash extends Component {
           img: require('../../../Images/hot-water.png'),
         },
       ],
-      biller: '---',
+      biller: '',
       changed: false,
       buildingId: '',
       buildingName: '',
@@ -123,19 +123,23 @@ export default class Splash extends Component {
   };
 
   filter = () => {
+    // console.log("Utility Index",this.state.utilityIndex)
     if (this.props.type == 'Properties') {
+
       let data = {
         offset: 0,
         billing: this.state.biller,
-        search: this.state.searchName,
+        search: this.context.filterPropName,
       };
       this.context.filterData(data);
       this.props.close();
+      this.props.filterWork();
       this.setState({showList: false});
     } else {
+      this.props.filterWork(true);
       this.props.get_filterVal(
-        this.context.filterSerial,
-        this.state.utilityIndex && this.state.utilityIndex + 1,
+      this.context.filterSerial,
+        this.state.utilityIndex != null || undefined ? this.state.utilityIndex + 1 : null,
       );
     }
   };
@@ -149,6 +153,7 @@ export default class Splash extends Component {
 
   resetFilter = () => {
     this.props.onReset('');
+    this.props.filterWork(false);
     this.context.updateFilterSerial('');
     this.setState({utilityIndex: null});
   };
@@ -175,6 +180,11 @@ export default class Splash extends Component {
     } catch (err) {
       alert(err);
     }
+  };
+
+  onOkay = () => {
+    this.context.updateBiller(this.state.biller);
+    this.setState({showList: false});
   };
 
   onScanned = (e) => {
@@ -237,7 +247,7 @@ export default class Splash extends Component {
     }
     return (
       <View>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar hidden barStyle="dark-content" />
         {/* Barcode Scanner */}
         <Modal
           animationIn="bounceInUp"
@@ -296,7 +306,7 @@ export default class Splash extends Component {
           animationOut="slideOutUp"
           isVisible={isVisible}>
           <View style={styles.modalInner}>
-            <View style={{...styles.boxConatainer, style}}>
+            <View style={[{...styles.boxConatainer, style},{height:type == 'Units' ? height * .42: height * .25}]}>
               <View style={styles.boxInner}>
                 {/* Box Header */}
                 <Header
@@ -331,7 +341,7 @@ export default class Splash extends Component {
                 <View style={{width: '100%'}}>
                   {type == 'Properties' ? (
                     <View style={styles.currentReadContainer}>
-                      <View style={styles.inputFilterView}>
+                      {/* <View style={styles.inputFilterView}>
                         <Text style={styles.filterListText}>Name:</Text>
                         <TextInput
                           style={styles.filterInputs}
@@ -340,7 +350,7 @@ export default class Splash extends Component {
                             this.context.updateFilterProperty(e)
                           }
                         />
-                      </View>
+                      </View> */}
                       <View style={styles.filterLists}>
                         <Text style={styles.filterListText}>Billing</Text>
                         <TouchableOpacity
@@ -541,8 +551,7 @@ export default class Splash extends Component {
                       Cancel
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => this.setState({showList: false})}>
+                  <TouchableOpacity onPress={this.onOkay}>
                     <Text
                       style={{
                         fontSize: width * 0.032,
