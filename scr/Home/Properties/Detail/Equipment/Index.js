@@ -62,7 +62,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import { create } from 'apisauce';
 import UpdateModal from '../../../../components/modal/UpdateModal';
-import { Header, Button } from 'react-native-elements';
+import { Header, Button, Icon as Iconx } from 'react-native-elements';
 
 // Components
 import { Fonts } from '../../../../utils/fonts';
@@ -83,6 +83,7 @@ import clc from 'cli-color';
 import Index from '../../../Index';
 const { width, height } = Dimensions.get('window');
 let listViewRef;
+let buildListViewRef;
 let manufacturers = [
   {
     id: 1,
@@ -111,6 +112,36 @@ const models = [
     name: 'MJ09 Brass',
   },
 ];
+
+const sortAlphaNumeric = (a, b) => {
+  var reA = /[^a-zA-Z]/g;
+  var reN = /[^0-9]/g;
+  var AInt = parseInt(a.name, 10);
+  var BInt = parseInt(b.name, 10);
+  if (isNaN(AInt) && isNaN(BInt)) {
+    var aA = a.name.replace(reA, '');
+    var bA = b.name.replace(reA, '');
+    if (aA === bA) {
+      var aN = parseInt(a.name.replace(reN, ''), 10);
+      var bN = parseInt(b.name.replace(reN, ''), 10);
+      return aN === bN ? 0 : aN > bN ? 1 : -1;
+    } else {
+      return aA > bA ? 1 : -1;
+    }
+  } else if (isNaN(AInt)) {
+    //A is not an Int
+    return 1; //to make alphanumeric sort first return 1 here
+  } else if (isNaN(BInt)) {
+    //B is not an Int
+    return -1; //to make alphanumeric sort first return -1 here
+  } else if (AInt == BInt) {
+    var aA = a.name.replace(reA, '');
+    var bA = b.name.replace(reA, '');
+    return aA > bA ? 1 : -1;
+  } else {
+    return AInt > BInt ? 1 : -1;
+  }
+};
 
 export default class Splash extends Component {
   static contextType = ContextProp;
@@ -160,7 +191,7 @@ export default class Splash extends Component {
       selected: false,
       animatedValue: new Animated.Value(0),
       newBuild: 'A',
-      newUnit: 'Unit-0',
+      newUnit: 'Unit-1',
       newUnitAdd: '',
       meterList: false,
       showOtherInputs: false,
@@ -176,13 +207,14 @@ export default class Splash extends Component {
       buildingData: [],
       lastUnitData: '',
       unitData: {
-        unit: ''
+        unit: '',
       },
       editModal: false,
       editBuilding: '',
       editBuildDes: '',
       showSearch: false,
       showFilter: false,
+      filterWork: false,
       newUnitInfo: {
         indexUnits: '',
         unitBuild: '',
@@ -379,12 +411,15 @@ export default class Splash extends Component {
   };
   get_filterVal = async (serial, meterId) => {
     console.log('Devce serial', serial, meterId);
-
-    this.setState({showFilter: false});
+    // if(this.state.filterWork){
+    //   this.setState({filterWork:false})
+    // }
+    this.setState({ showFilter: false });
     this.filerUnits(serial, meterId);
   };
 
   checkData = async () => {
+    this.setState({ filterWork: false, });
     const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
@@ -407,22 +442,23 @@ export default class Splash extends Component {
           `/property/equipment/unit/all-units`,
           data,
         );
-        console.log('Check unitResponse unit--->', unitResponse?.data?.data);
-        // console.log(
-        //   'Check UNIT Meter --->',
-        //   unitResponse?.data?.data[1].unit_meter,
-        // );
-        // console.log('buildingData--->', this.state.buildingData);
+        console.log(
+          clc.xterm(121)(
+            'Check unitResponse unit--->',
+            unitResponse?.data?.data,
+          ),
+        );
+        // this.handleSorting(unitResponse?.data?.data);
 
         if (unitResponse?.ok == true) {
           this.setState({ realData: unitResponse?.data?.data, loader: false });
           let arry = unitResponse?.data?.data;
           let lastElement = arry[arry.length - 1];
 
-          console.log('lastElement--->', lastElement)
+          console.log('lastElement--->', lastElement);
           this.setState({
-            lastUnitData: lastElement?.name,
-            newUnit: lastElement?.name,
+            lastUnitData: lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
+            newUnit: lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
           });
           this.setState((prevState) => ({
             ...prevState,
@@ -438,6 +474,14 @@ export default class Splash extends Component {
           this.setState({ loader: false });
         }
       } else {
+        console.log('False chala', response?.data?.data?.length);
+        // if (response?.data?.data?.length == 0) {
+        this.setState({
+          realData: [],
+          lastUnitData: 'Unit-0',
+          newUnit: 'Unit-0',
+        });
+        // }
         this.setState({ loader: false });
       }
     } else {
@@ -455,7 +499,8 @@ export default class Splash extends Component {
     };
 
     if (serial) {
-      this.setState({ loader: true });
+      this.setState({ loader: true, });
+
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
         data,
@@ -470,7 +515,7 @@ export default class Splash extends Component {
         this.setState({ loader: false });
       }
     } else {
-      this.setState({ loader: true });
+      this.setState({ loader: true, });
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
         data,
@@ -488,7 +533,7 @@ export default class Splash extends Component {
   };
 
   searchUnits = async (e) => {
-    this.setState({loadFor: e});
+    this.setState({ loadFor: e });
     console.log('Get filert', e);
     let data = {
       building_id: this.state.editBuildId,
@@ -496,7 +541,7 @@ export default class Splash extends Component {
     };
 
     if (e) {
-      this.setState({searchLoading: true});
+      this.setState({ searchLoading: true });
       const unitResponse = await this.api.post(
         `/property/equipment/unit/all-units`,
         data,
@@ -517,6 +562,8 @@ export default class Splash extends Component {
 
   getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
+    console.log('this.state.newUnit===>', this.state.newUnit);
+
     var int = this.state.newUnit;
     var str = this.state.newUnit;
     int = parseInt(int.match(/\d+/)) + 1;
@@ -525,17 +572,41 @@ export default class Splash extends Component {
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + ' ' + int,
-        num: value + 1,
+        name: str + int,
+        num: text + 1,
       }),
-        int = int + 1;
+        (int = int + 1);
     }
     this.setState({ unitsArray: loopData });
   };
 
   addInput = (value, i) => {
     // console.log(value, 'value-->');
-    // console.log('Index-->', i);
+
+    // var makeIntArra = value.split("");
+    // var makeInt = '';
+    // makeIntArra.map((item, index) => {
+    //   makeInt = makeInt + (
+    //     makeIntArra[index] == ' ' ? '' :
+    //       (
+    //         isNaN(makeIntArra[index]) ? 
+    //         parseInt(value.match(/\d+/)) + 1 : makeArra[index]
+    //       )
+    //   )
+    // })
+    // var makeArra = value.split("");
+    // var makeString = '';
+    // makeArra.map((item, index) => {
+    //   makeString = makeString + (
+    //     makeArra[index] == ' ' ? '' :
+    //       (
+    //         !isNaN(makeArra[index]) ? 
+    //         parseInt(value.match(/\d+/)) + 1 : makeArra[index]
+    //       )
+    //   )
+    // })
+    // console.log('makeArra-->', makeArra);
+    // console.log('makeString-->', makeString);
     this.setState({ newUnit: value });
     if (this.state.autoIncrement == true) {
       var int = value;
@@ -692,7 +763,7 @@ export default class Splash extends Component {
     this.toggleModalUnit();
     this.setState({ uScr: false });
     this.setState({ newBuild: 'A' });
-    // this.setState({ newUnit: '' });
+    // this.setState({ newUnit: 'Unit-0' });
     this.setState({ newSerial: '' });
     this.setState({ newMeter: '' });
     this.setState({ newMeter: '', meterListData: [] });
@@ -1122,17 +1193,19 @@ export default class Splash extends Component {
 
   _renderTopList = (build) => {
     return (
-      // build.item.id == buildingData.id
       <TouchableOpacity
-        onPress={() => this.showArrayItem(build)}
-        style={styles.infoTopViewContainer}>
-        <View style={styles.infoTopViewInner}>
+        onPress={() => {
+          this.showArrayItem(build);
+          buildListViewRef.scrollToIndex({ index: build.index });
+        }}
+        style={[styles.infoTopViewContainer]}>
+        <View style={[styles.infoTopViewInner]}>
           <Build name="office-building" size={width * 0.06} />
           <TextTicker
             duration={6000}
             marqueeDelay={2000}
             repeatSpacer={width * 0.16}
-            style={[styles.dataFieldText, {width: width * 0.16}]}>
+            style={[styles.dataFieldText, { width: width * 0.165 }]}>
             {build.item.name}
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
@@ -1314,7 +1387,7 @@ export default class Splash extends Component {
                   flexDirection: 'column',
                   // alignItems: 'center',
                   justifyContent: 'center',
-                  width: width * 0.3,
+                  width: width * 0.7,
                   overflow: 'hidden',
                   marginLeft: width * 0.01,
                   // backgroundColor:'red'
@@ -1322,7 +1395,7 @@ export default class Splash extends Component {
                 <TextTicker
                   duration={6000}
                   marqueeDelay={2000}
-                  repeatSpacer={width * 0.3}
+                  repeatSpacer={width * 0.7}
                   style={styles.dataFieldText}
                   key={unit}>
                   {unit.item.name}
@@ -1355,7 +1428,7 @@ export default class Splash extends Component {
                 <Text style={styles.dataFieldText}>Meters</Text> */}
               {/* </View> */}
               {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[styles.programDevice]}
                 onPress={() => this.programDevice(unit)}>
                 <View style={styles.proDeviceContent}>
@@ -1366,7 +1439,7 @@ export default class Splash extends Component {
                   />
                   <Text style={styles.propDeviceText}>Program Device</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </TouchableOpacity>
@@ -1378,6 +1451,7 @@ export default class Splash extends Component {
     this.setState({
       isModalBuildVisible: !this.state.isModalBuildVisible,
       buildName: '',
+      // newUnit: 'Unit-0',
       unitsArray: [],
     });
     this.setState((prevState) => ({
@@ -1586,6 +1660,7 @@ export default class Splash extends Component {
       editBuildDes: build.item.descriptions,
       editBuildId: build.item.id,
       changed: true,
+      filterWork: false
     });
     const data = {
       building_id: build.item.id,
@@ -1601,8 +1676,8 @@ export default class Splash extends Component {
       let arry = unitResponse?.data?.data;
       let lastElement = arry[arry.length - 1];
       this.setState({
-        lastUnitData: lastElement?.name,
-        newUnit: lastElement?.name,
+        lastUnitData: lastElement?.name == undefined ? this.state.newUnit : lastElement?.name,
+        newUnit: lastElement?.name == undefined ? this.state.newUnit : lastElement?.name,
       });
       this.setState((prevState) => ({
         ...prevState,
@@ -1620,7 +1695,7 @@ export default class Splash extends Component {
   };
 
   changedFalse = () => {
-    this.setState({changed: false});
+    this.setState({ changed: false });
   };
 
   showMeter = (item) => {
@@ -1809,12 +1884,12 @@ export default class Splash extends Component {
   };
   openFilter = async () => {
     this.context.getBillingCompany();
-    this.setState({showFilter: true});
+    this.setState({ showFilter: true });
     const unitResponse = await this.api.get(
       `/property/equipment/meter/all-meters`,
     );
     console.log('Check meter add--->', unitResponse?.data?.data);
-    this.setState({getUtilities: unitResponse?.data?.data});
+    this.setState({ getUtilities: unitResponse?.data?.data });
   };
 
   deleteBuilding = () => {
@@ -1872,14 +1947,56 @@ export default class Splash extends Component {
     }
   }
 
+  _customSort(data, order) {
+    function isNumber(v) {
+      return (+v).toString() === v;
+    }
+    var sort = {
+      asc: function (a, b) {
+        var i = 0,
+          l = Math.min(a.value.length, b.value.length);
+
+        while (i < l && a.value[i] === b.value[i]) {
+          i++;
+        }
+        if (i === l) {
+          return a.value.length - b.value.length;
+        }
+        if (isNumber(a.value[i]) && isNumber(b.value[i])) {
+          return a.value[i] - b.value[i];
+        }
+        return a.value[i].localeCompare(b.value[i]);
+      },
+      desc: function (a, b) {
+        return sort.asc(b, a);
+      },
+    },
+      mapped = data.map(function ({ name }, i) {
+        var string = name.replace(/\d(?=[a-z])|[a-z](?=\.)/gi, '$&. .'),
+          string = name.replace(/\s/g, ''),
+          regex = /(\d+)|([^0-9.]+)/g,
+          m,
+          parts = [];
+        while ((m = regex.exec(string)) !== null) {
+          parts.push(m[0]);
+        }
+        return { index: i, value: parts, o: name, string: string };
+      });
+    mapped.sort(sort[order] || sort.asc);
+    return mapped.map(function (el) {
+      return data[el.index];
+    });
+  }
+
   render() {
+    console.log('_++++++++++++++>>>>>', this.state.realData);
     const { result, scan, scanResult } = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const { loader, loaderBuildings, meterTypeInputs } = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
 
         {/* Building Edit Modal */}
         <UpdateModal
@@ -2093,8 +2210,10 @@ export default class Splash extends Component {
                 // }
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.openFilter}>
-                <FilterIcon name="filter-outline" color="white" size={20} />
+              <TouchableOpacity
+                onPress={this.openFilter}
+                style={styles.filterButton}>
+                <FilterIcon name="filter-outline" color={this.state.filterWork ? "#25AAE1ec" : "black"} size={20} />
               </TouchableOpacity>
             </View>
           </View>
@@ -2323,6 +2442,9 @@ export default class Splash extends Component {
                 </View>
               ) : (
                 <FlatList
+                  ref={(ref) => {
+                    buildListViewRef = ref;
+                  }}
                   style={{
                     // padding:width * .01,
                     height: width * 0.22,
@@ -2345,14 +2467,18 @@ export default class Splash extends Component {
                 closeModal={() => this.setState({ isModalUnitVisible: false })}
                 reRun={() => this.checkData()}
                 meterTypes={[]}
-                modalName='Add Unit'
+                modalName="Add Unit"
                 type={'add'}
                 buildingName={this.state.buildingData.name}
                 buildingId={this.state.editBuildId}
                 unitDetails={this.state.unitData}
+                doneBtnTitle="Add Unit"
+                doneIcon={
+                  <Iconx name="plus" type="feather" size={18} color="#fff" />
+                }
                 handleEditUnit={() => {
                   // ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
-                  this.setState({ isModalUnitVisible: false })
+                  this.setState({ isModalUnitVisible: false });
                 }}
                 unitsArray={this.state.realData}
               />
@@ -3415,6 +3541,8 @@ export default class Splash extends Component {
               buildingName={this.state.buildingData.name}
               buildiingId={this.state.editBuildId}
               changed={this.state.changed}
+              filterWork={(e) => this.setState({ filterWork: e }, console.log(e, "filterWork:false"))}
+
             />
             {this.state.showSearch ? (
               <Modal
@@ -3452,6 +3580,7 @@ export default class Splash extends Component {
                       <TextInput
                         underlineColor="transparent"
                         dense={true}
+                        autoFocus={true}
                         placeholderTextColor="white"
                         placeholder="Search"
                         style={styles.search}
@@ -3523,10 +3652,7 @@ export default class Splash extends Component {
                 contentContainerStyle={{ backgroundColor: '#F5F5F5' }}
                 numColumns={1}
                 initialNumToRender={realData.length}
-                // data={realData}
-                data={realData.sort((a, b) => {
-                  return this.compareObjects(a, b, 'name');
-                })}
+                data={this._customSort(realData)}
                 renderItem={this._renderMyList}
                 // renderItem={(item, index) => console.log(item.index)}
                 keyExtractor={(item) => item.id.toString()}

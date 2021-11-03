@@ -35,7 +35,7 @@ class GlobalState extends React.Component {
 
   checkData = async () => {
     this.setState({biller: ''});
-    this.setState({isLoading: true, filterDataName: ''});
+    this.setState({isLoading: true, filterDataName: '',filterWork:false});
     let data = {
       offset: 0,
     };
@@ -97,7 +97,7 @@ class GlobalState extends React.Component {
   };
 
   filterData = async (sort) => {
-    this.setState({biller: sort.billing});
+    this.setState({biller: sort.billing,filterWork:true});
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
@@ -140,6 +140,7 @@ class GlobalState extends React.Component {
     filterSerial: '',
     searchList: [],
     propList: [],
+    filterWork:false
   };
 
   addProp = async (info) => {
@@ -323,6 +324,10 @@ class GlobalState extends React.Component {
     this.setState({searchList: []});
   };
 
+  updateBiller = (val) => {
+    this.setState({biller: val});
+  };
+
   updateFilterSerial = (e) => {
     this.setState({filterSerial: e});
   };
@@ -381,10 +386,12 @@ class GlobalState extends React.Component {
             deleteBuilding: this.deleteBuilding,
             updateBuilding: this.updateBuilding,
             biller: this.state.biller,
+            updateBiller: this.updateBiller,
             filterSerial: this.state.filterSerial,
             updateFilterSerial: this.updateFilterSerial,
             filterPropName: this.state.filterPropName,
             updateFilterProperty: this.updateFilterProperty,
+            filterWork:this.state.filterWork
           }}>
           {this.props.children}
         </Context.Provider>

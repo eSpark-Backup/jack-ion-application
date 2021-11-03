@@ -265,7 +265,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar
+        <StatusBar 
           backgroundColor="#155AAA"
           barStyle="default"
           hidden={true}
