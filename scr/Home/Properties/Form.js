@@ -268,6 +268,13 @@ export default class Splash extends React.Component {
   handleDropDownData = (value) => {
     this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
     this.setState({open: !this.state.open});
+    this.setState((prevState) => ({
+      error: {
+        // object that we want to update
+        ...prevState.error, // keep all other key-value pairs
+        billingId: '',
+      },
+    }));
   };
   handleCloseDropDown = () => {
     this.setState({BillingCompany: 'BILLING COMPANY'});
@@ -350,6 +357,13 @@ export default class Splash extends React.Component {
                         // onChangeText={(text) => { this.setState({ info: { propName: text } }) }}
                         onChangeText={(text) => {
                           this.setState({Name: text});
+                          this.setState((prevState) => ({
+                            error: {
+                              // object that we want to update
+                              ...prevState.error, // keep all other key-value pairs
+                              property: '',
+                            },
+                          }));
                         }}
                         error={this.state.error.property}
                         // onChangeText={(text) => this.change(text)}
@@ -379,6 +393,13 @@ export default class Splash extends React.Component {
                         style={styles.input}
                         onChangeText={(text) => {
                           this.setState({Street: text});
+                          this.setState((prevState) => ({
+                            error: {
+                              // object that we want to update
+                              ...prevState.error, // keep all other key-value pairs
+                              street: '',
+                            },
+                          }));
                         }}
                         mode={'outlined'}
                         theme={{
@@ -589,6 +610,13 @@ export default class Splash extends React.Component {
                         // value={'A1 Equities'}
                         onChangeText={(text) => {
                           this.setState({CustomId: text});
+                          this.setState((prevState) => ({
+                            error: {
+                              // object that we want to update
+                              ...prevState.error, // keep all other key-value pairs
+                              propertyId: '',
+                            },
+                          }));
                         }}
                         // dense={true}
                         mode={'outlined'}
