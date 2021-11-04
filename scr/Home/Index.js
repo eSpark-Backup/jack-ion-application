@@ -14,10 +14,12 @@ import {
   FlatList,
   LayoutAnimation,
   UIManager,
+  Alert,
   TextInput,
   Animated,
   PermissionsAndroid,
-  Pressable
+  Pressable,
+  BackHandler
 } from 'react-native';
 import TabIcon from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
@@ -71,14 +73,33 @@ class Splash extends Component {
       alert(err)
     }
   };
-
+  
 
   componentDidMount() {
     // console.log('What we Get home',this.props.navigation.navigate('DashBoard'))
+    
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+
     SplashScreen.hide()
     this.requestLocationPermission()
   }
-
+  backAction = () => {
+    Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel"
+      },
+      { text: "YES", onPress: () => BackHandler.exitApp() }
+    ]);
+    return true;
+  };
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
   render() {
     let { animatedValue1, animatedValue } = this.state;
     return (

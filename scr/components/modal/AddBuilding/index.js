@@ -62,18 +62,22 @@ export default function AddbuildingModal({
 
   const getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
-    var int = state.newUnit;
-    var str = state.newUnit;
-    int = parseInt(int.match(/\d+/)) + 1;
-    str = str.replace(/[0-9]/g, '');
+    var intValue = state.newUnit;
+    var firstStr = state.newUnit.split(parseInt(state.newUnit.match(/\d+/)))[0];
+    var lastStr = state.newUnit.split(parseInt(state.newUnit.match(/\d+/)))[1];
+    var intValue = parseInt(intValue.match(/\d+/)) + 1;
+    // var int = state.newUnit;
+    // var str = state.newUnit;
+    // int = parseInt(int.match(/\d+/)) + 1;
+    // str = str.replace(/[0-9]/g, '');
     var loopData = [];
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + '' + int,
+        name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
       }),
         // (value = value + 1);
-        int = int + 1;
+        intValue = intValue + 1;
     }
     setState((oldState) => ({
       ...oldState,

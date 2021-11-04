@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
   Alert,
+  BackHandler,
   ToastAndroid,
 } from 'react-native';
 import { Header, Button, Icon } from 'react-native-elements';
@@ -77,7 +78,18 @@ const App = ({ navigation }) => {
   useEffect(() => {
     getToken();
   }, [testId]);
+  useEffect(() => {
+    const backAction = () => {navigation.navigate('Tools')
+      return true;
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
@@ -129,13 +141,13 @@ const App = ({ navigation }) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.type?.manufacturer ?? 'N/A',
+        rightText: unitMeter?.device?.manufacturer?.name ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
       {
-        leftText: 'Model',
-        rightText: unitMeter?.type?.device ?? 'N/A',
+        leftText: 'Device',
+        rightText: unitMeter?.device?.name ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
@@ -184,7 +196,7 @@ const App = ({ navigation }) => {
         data: [
           {
             leftName: 'Type',
-            rightName: unitMeter?.type?.manufacturer + ' (' + unitMeter?.type?.device + ')',
+            rightName: unitMeter?.device?.manufacturer?.name + ' (' + unitMeter?.device?.name + ')',
             rightIcon: 'chevron-down',
             type: 'feather',
           },
