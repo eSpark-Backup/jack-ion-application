@@ -327,7 +327,7 @@ export default class Splash extends Component {
     }).start();
   };
   componentDidMount() {
-    this.setState({ loader: true, loaderBuildings: true });
+    // this.setState({ loader: true, loaderBuildings: true });
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
@@ -419,7 +419,7 @@ export default class Splash extends Component {
   };
 
   checkData = async () => {
-    this.setState({ filterWork: false, });
+    this.setState({ filterWork: false, loader: true, loaderBuildings: true });
     const response = await this.api.post(
       `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
     );
@@ -581,51 +581,28 @@ export default class Splash extends Component {
   };
 
   addInput = (value, i) => {
-    // console.log(value, 'value-->');
-
-    // var makeIntArra = value.split("");
-    // var makeInt = '';
-    // makeIntArra.map((item, index) => {
-    //   makeInt = makeInt + (
-    //     makeIntArra[index] == ' ' ? '' :
-    //       (
-    //         isNaN(makeIntArra[index]) ? 
-    //         parseInt(value.match(/\d+/)) + 1 : makeArra[index]
-    //       )
-    //   )
-    // })
-    // var makeArra = value.split("");
-    // var makeString = '';
-    // makeArra.map((item, index) => {
-    //   makeString = makeString + (
-    //     makeArra[index] == ' ' ? '' :
-    //       (
-    //         !isNaN(makeArra[index]) ? 
-    //         parseInt(value.match(/\d+/)) + 1 : makeArra[index]
-    //       )
-    //   )
-    // })
-    // console.log('makeArra-->', makeArra);
-    // console.log('makeString-->', makeString);
     this.setState({ newUnit: value });
     if (this.state.autoIncrement == true) {
-      var int = value;
-      var str = value;
-      // var tName = 'arun_4874';
-      int = parseInt(int.match(/\d+/));
-      str = str.replace(/[0-9]/g, '');
+      var intValue = value;
+      var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
+      var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
+      var intValue = parseInt(intValue.match(/\d+/));
+      // console.log('firstStr-->', firstStr);
+      // console.log('lastStr-->', lastStr);
+      // console.log('intValue-->', intValue);
+
+      // console.log('response adadad-->', (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''));
       let unitsArray = [...this.state.unitsArray];
       this.state.unitsArray.map((item, index) => {
         if (index >= i) {
           unitsArray[index] = {
             ...unitsArray[index],
-            name: str + (isNaN(int) ? '' : int),
+            name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
           };
           this.setState({ unitsArray }, () =>
             console.log('onchane===>', this.state.unitsArray),
           );
-          int = int + 1;
-          console.log('int---check', int);
+          intValue = intValue + 1;
         }
       });
     } else {
@@ -1451,7 +1428,6 @@ export default class Splash extends Component {
     this.setState({
       isModalBuildVisible: !this.state.isModalBuildVisible,
       buildName: '',
-      // newUnit: 'Unit-0',
       unitsArray: [],
     });
     this.setState((prevState) => ({
@@ -1463,8 +1439,44 @@ export default class Splash extends Component {
         units: '',
       },
     }));
+    if (this.state.realData.length != 0) {
+      console.log('check---.>',)
+      let lastElement = this.state.realData[this.state.realData.length - 1].name;
+      this.setState({
+        newUnit: lastElement,
+      });
+    } else {
+      this.setState({
+        newUnit: 'Unit-0',
+      });
+    }
   };
 
+  clearMutlipleUniModal = () => {
+    this.setState({
+      isModalMunitVisible: !this.state.isModalMunitVisible,
+      // newUnit: 'Unit-0',
+      unitsArray: [],
+    });
+    this.setState((prevState) => ({
+      ...prevState,
+      error: {
+        // object that we want to update
+        ...prevState.error, // keep all other key-value pairs
+        units: '', // update the value of specific key
+      },
+    }));
+    if (this.state.realData.length != 0) {
+      let lastElement = this.state.realData[this.state.realData.length - 1].name;
+      this.setState({
+        newUnit: lastElement,
+      });
+    } else {
+      this.setState({
+        newUnit: 'Unit-0',
+      });
+    }
+  };
   addMultipleUnits = () => {
     if (this.state.unitsArray.length === 0) {
       this.setState((prevState) => ({
@@ -1503,17 +1515,18 @@ export default class Splash extends Component {
   };
 
   handleAddMUnitsApi = async (data) => {
-    this.setState({ loader: true, loaderBuildings: true });
-    console.log('data--->', data);
+    // console.log('data--->', data);
     const unitResponse = await this.api.post(
       `/property/equipment/unit/add-multiple-units`,
       data,
     );
     console.log('Check unitResponse buildings--->', unitResponse);
-    this.setState({
-      isModalMunitVisible: false,
-    });
-    this.checkData();
+    if (unitResponse?.ok) {
+      this.setState({ isModalMunitVisible: false });
+      this.checkData();
+    } else {
+      alert(unitResponse?.data?.message);
+    }
   };
 
   newBuilding = () => {
@@ -1572,20 +1585,21 @@ export default class Splash extends Component {
           descriptions: this.state.buildDescription,
         }),
       );
-      this.setState({ isModalBuildVisible: false });
     }
   };
   handleAddbuildingApi = async (data) => {
-    this.setState({ loader: true, loaderBuildings: true });
-    console.log('data--->', data);
+    // console.log('data--->', data);
     const unitResponse = await this.api.post(
       `/property/equipment/building/add-building`,
       data,
     );
     console.log('Check unitResponse buildings--->', unitResponse);
-    this.setState({ buildName: '', buildDescription: '' });
-
-    this.checkData();
+    if (unitResponse?.ok) {
+      this.setState({ buildName: '', buildDescription: '', isModalBuildVisible: false });
+      this.checkData();
+    } else {
+      alert(unitResponse?.data?.message);
+    }
   };
 
   _renderUnitList = ({ item, index }) => (
@@ -1989,7 +2003,7 @@ export default class Splash extends Component {
   }
 
   render() {
-    console.log('_++++++++++++++>>>>>', this.state.realData);
+    // console.log('_++++++++++++++>>>>>', this.state.realData);
     const { result, scan, scanResult } = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
@@ -2177,12 +2191,13 @@ export default class Splash extends Component {
             <View style={styles.searchView}>
               <TouchableOpacity
                 activeOpacity={1}
+                // disabled={this.state.dataBuild == 0 ? true : false}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   height: height * 0.08,
                 }}
-                onPress={this.openAndClear}>
+                onPress={this.state.dataBuild == 0 ? () => Alert.alert('Alert', 'No building found add building') : this.openAndClear}>
                 <Search
                   name="search"
                   size={height * 0.04}
@@ -2211,7 +2226,8 @@ export default class Splash extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={this.openFilter}
+                onPress={this.state.dataBuild == 0 ? () => Alert.alert('Alert', 'No building found add building') : this.openFilter}
+                // disabled={this.state.dataBuild == 0 ? true : false}
                 style={styles.filterButton}>
                 <FilterIcon name="filter-outline" color={this.state.filterWork ? "#25AAE1ec" : "black"} size={20} />
               </TouchableOpacity>
@@ -3093,14 +3109,9 @@ export default class Splash extends Component {
                               size={height * 0.05}
                               color="#5e5e5e"
                             />
-                            <Text style={styles.modalHeading}>New Units</Text>
+                            <Text style={styles.modalHeading}>Add Multiple Units</Text>
                             <Pressable
-                              onPress={() =>
-                                this.setState({
-                                  isModalMunitVisible: !this.state
-                                    .isModalMunitVisible,
-                                })
-                              }
+                              onPress={this.clearMutlipleUniModal}
                               android_ripple={{
                                 color: 'black',
                                 borderless: true,
@@ -3252,12 +3263,7 @@ export default class Splash extends Component {
                         <View style={styles.footerBtn}>
                           <View style={styles.bottonContainer}>
                             <TouchableOpacity
-                              onPress={() =>
-                                this.setState({
-                                  isModalMunitVisible: !this.state
-                                    .isModalMunitVisible,
-                                })
-                              }>
+                              onPress={this.clearMutlipleUniModal}>
                               <View style={styles.cancelBotton}>
                                 <Plus name="close" color="black" size={18} />
                                 <Text style={{ color: 'black' }}>Cancel</Text>
