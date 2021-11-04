@@ -260,6 +260,10 @@ export default function AddbuildingModal({
                     placeholder="Building Name"
                     error={error.buildingName}
                     onChangeText={(text) => {
+                      setError((oldState) => ({
+                        ...oldState,
+                        buildingName: ''
+                      }));
                       setState((oldState) => ({
                         ...oldState,
                         buildName: text
@@ -331,6 +335,10 @@ export default function AddbuildingModal({
                       error={error.units}
                       placeholder="# of Units"
                       onChangeText={(text) => {
+                        setError((oldState) => ({
+                          ...oldState,
+                          units: '',
+                        }));
                         getLoopOfUnits(text);
                       }}
                       style={{
