@@ -51,7 +51,7 @@ import {
   VictoryAxis,
 } from 'victory-native';
 import ContextProp from '../Context/propContext';
-import {TextInput, Button, FAB} from 'react-native-paper';
+import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 
 // Components
 import {Fonts} from '../../../utils/fonts';
@@ -109,7 +109,6 @@ export default class Splash extends React.Component {
     this.state = {
       isModalVisible: false,
       points: 80,
-      editName: '',
       animatedValue: new Animated.Value(0),
       clientName: '',
       address: '',
@@ -140,17 +139,17 @@ export default class Splash extends React.Component {
         editCustomId: '',
       },
       error: {
-        property: false,
-        property_id: false,
-        street: false,
-        city: false,
-        zipcode: false,
+        property: '',
+        property_id: '',
+        street: '',
+        city: '',
+        zipcode: '',
       },
-      // editName: '',
-      // editAddress: '',
-      // editBillComp: '',
-      // editManageComp: '',
-      // editCustomId: '',
+      editName: '',
+      editStreet: '',
+      editCity: '',
+      editZipcode: '',
+      editProperty_id: '',
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -171,6 +170,7 @@ export default class Splash extends React.Component {
       info: this.props.navigation.state.params.item,
       listData: this.props.navigation.state.params.item.item,
     });
+
     console.log(this.props.navigation.state.params.item.item);
     // this.setState({ index: this.state.info?.isIndex })
   }
@@ -190,16 +190,42 @@ export default class Splash extends React.Component {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
   toggleModalEditProp = () => {
-    this.setState({
-      Name: this.state.listData.name,
-      Address: this.state.listData.address,
-      BillComp: this.state.listData.billComp,
-      ManageComp: this.state.listData.managementComp,
-      CustomId: this.state.listData.customId,
-    });
+    // this.setState({
+    //   Name: this.state.listData.name,
+    //   Address: this.state.listData.address,
+    //   BillComp: this.state.listData.billComp,
+    //   ManageComp: this.state.listData.managementComp,
+    //   CustomId: this.state.listData.customId,
+    // });
     this.setState({
       isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
     });
+    this.setState((prevState) => ({
+      ...prevState,
+      error: {
+        // object that we want to update
+        ...prevState.error, // keep all other key-value pairs
+        property: '',
+        property_id: '',
+        street: '', // update the value of specific key
+      },
+    }));
+  };
+  onCancel = () => {
+    this.setState({
+      listData: this.props.navigation.state.params.item.item,
+      isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
+    });
+    this.setState((prevState) => ({
+      ...prevState,
+      error: {
+        // object that we want to update
+        ...prevState.error, // keep all other key-value pairs
+        property: '',
+        property_id: '',
+        street: '', // update the value of specific key
+      },
+    }));
   };
   editThis = () => {
     this.setState(
@@ -228,16 +254,17 @@ export default class Splash extends React.Component {
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          name: true, // update the value of specific key
+          property: 'Invalid Property', // update the value of specific key
         },
       }));
+      return;
     } else {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          name: false, // update the value of specific key
+          property: false, // update the value of specific key
         },
       }));
     }
@@ -247,9 +274,10 @@ export default class Splash extends React.Component {
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          property_id: true, // update the value of specific key
+          property_id: 'Invalid Custom ID', // update the value of specific key
         },
       }));
+      return;
     } else {
       this.setState((prevState) => ({
         ...prevState,
@@ -266,9 +294,10 @@ export default class Splash extends React.Component {
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          street: true, // update the value of specific key
+          street: 'Invalid Street Name', // update the value of specific key
         },
       }));
+      return;
     } else {
       this.setState((prevState) => ({
         ...prevState,
@@ -276,44 +305,6 @@ export default class Splash extends React.Component {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
           street: false, // update the value of specific key
-        },
-      }));
-    }
-    if (this.state?.listData?.city === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          city: true, // update the value of specific key
-        },
-      }));
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          city: false, // update the value of specific key
-        },
-      }));
-    }
-    if (this.state?.listData?.zipcode === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          zipcode: true, // update the value of specific key
-        },
-      }));
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          zipcode: false, // update the value of specific key
         },
       }));
       const data = {
@@ -593,7 +584,7 @@ export default class Splash extends React.Component {
                         />
                         <Text style={styles.modalHeading}>Edit Property</Text>
                         <Pressable
-                          onPress={this.toggleModalEditProp}
+                          onPress={this.onCancel}
                           android_ripple={{
                             color: 'black',
                             borderless: true,
@@ -627,9 +618,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             label="Property Name*"
                             value={this.state?.listData?.name}
-                            placeholder={this.state?.listData?.name}
-                            error={this.state.error.name}
-                            // placeholder="Enter Name"
+                            error={this.state.error.property}
                             onChangeText={(text) => {
                               this.setState((prevState) => ({
                                 ...prevState,
@@ -638,10 +627,14 @@ export default class Splash extends React.Component {
                                   ...prevState.listData, // keep all other key-value pairs
                                   name: text, // update the value of specific key
                                 },
+                                error: {
+                                  // object that we want to update
+                                  ...prevState.error, // keep all other key-value pairs
+                                  property: '',
+                                },
                               }));
                             }}
-                            // onChangeText={(text) => { this.editThis(text) }}
-                            onBlur={this.editThis}
+                            // onBlur={this.editThis}
                             style={styles.input}
                             mode={'outlined'}
                             theme={{
@@ -653,11 +646,17 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
+                        {this.state.error.property ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.property}>
+                            {this.state.error.property}
+                          </HelperText>
+                        ) : null}
 
                         <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state?.listData?.street}
-                            placeholder={this.state?.listData?.street}
                             error={this.state.error.street}
                             label="Street*"
                             style={styles.input}
@@ -669,10 +668,13 @@ export default class Splash extends React.Component {
                                   ...prevState.listData, // keep all other key-value pairs
                                   street: text, // update the value of specific key
                                 },
+                                error: {
+                                  // object that we want to update
+                                  ...prevState.error, // keep all other key-value pairs
+                                  street: '',
+                                },
                               }));
                             }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -683,11 +685,17 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
+                        {this.state.error.street ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.street}>
+                            {this.state.error.street}
+                          </HelperText>
+                        ) : null}
                         <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state?.listData?.st}
                             error={this.state.error.st}
-                            placeholder={this.state?.listData?.st}
                             label="St"
                             style={styles.input}
                             onChangeText={(text) => {
@@ -700,8 +708,6 @@ export default class Splash extends React.Component {
                                 },
                               }));
                             }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -723,7 +729,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             value={this.state?.listData?.city}
                             error={this.state.error.city}
-                            placeholder={this.state?.listData?.city}
+                            // placeholder={this.state?.listData?.city}
                             label="City"
                             style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
@@ -736,8 +742,6 @@ export default class Splash extends React.Component {
                                 },
                               }));
                             }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -750,7 +754,6 @@ export default class Splash extends React.Component {
                           <TextInput
                             value={this.state?.listData?.zipcode}
                             error={this.state.error.zipcode}
-                            placeholder={this.state?.listData?.zipcode}
                             label="ZipCode"
                             style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
@@ -763,8 +766,6 @@ export default class Splash extends React.Component {
                                 },
                               }));
                             }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -777,11 +778,9 @@ export default class Splash extends React.Component {
                         </View>
                         <View style={styles.inputContainer}>
                           <TextInput
-                            // placeholder={this.state.info?.address}
                             label="Custom ID*"
                             error={this.state.error.property_id}
                             value={this.state?.listData?.property_id}
-                            placeholder={this.state?.listData?.property_id}
                             style={styles.input}
                             onChangeText={(text) => {
                               this.setState((prevState) => ({
@@ -791,10 +790,13 @@ export default class Splash extends React.Component {
                                   ...prevState.listData, // keep all other key-value pairs
                                   property_id: text, // update the value of specific key
                                 },
+                                error: {
+                                  // object that we want to update
+                                  ...prevState.error, // keep all other key-value pairs
+                                  property_id: '',
+                                },
                               }));
                             }}
-                            // onChangeText={text => { this.editThis(text) }}
-                            onBlur={this.editThis}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -805,6 +807,13 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
+                        {this.state.error.property_id ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.property_id}>
+                            {this.state.error.property_id}
+                          </HelperText>
+                        ) : null}
                         {/* <View style={styles.desciptionContainer}>
                           <Icon
                             name={'folder-open'}
@@ -910,7 +919,7 @@ export default class Splash extends React.Component {
                     } \n ${
                       this.state.listData.city == null
                         ? ''
-                        : this.state.listData.city + " ,"
+                        : this.state.listData.city + ' ,'
                     } ${
                       this.state.listData.st == null
                         ? ''

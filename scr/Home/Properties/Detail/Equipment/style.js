@@ -322,6 +322,7 @@ export default styles = StyleSheet.create({
     color: 'black',
     fontFamily: Fonts.ComfortaaRegular,
     right: width * 0.02,
+    textAlign:'center'
   },
   desciptionContainer: {
     height: height * 0.035,
