@@ -62,18 +62,22 @@ export default function AddbuildingModal({
 
   const getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
-    var int = state.newUnit;
-    var str = state.newUnit;
-    int = parseInt(int.match(/\d+/)) + 1;
-    str = str.replace(/[0-9]/g, '');
+    var intValue = state.newUnit;
+    var firstStr = state.newUnit.split(parseInt(state.newUnit.match(/\d+/)))[0];
+    var lastStr = state.newUnit.split(parseInt(state.newUnit.match(/\d+/)))[1];
+    var intValue = parseInt(intValue.match(/\d+/)) + 1;
+    // var int = state.newUnit;
+    // var str = state.newUnit;
+    // int = parseInt(int.match(/\d+/)) + 1;
+    // str = str.replace(/[0-9]/g, '');
     var loopData = [];
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + '' + int,
+        name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
       }),
         // (value = value + 1);
-        int = int + 1;
+        intValue = intValue + 1;
     }
     setState((oldState) => ({
       ...oldState,
@@ -81,29 +85,30 @@ export default function AddbuildingModal({
     }));
   };
 
-  const addInput = (value, i,vindex) => {
-    console.log('vindex--->>',vindex)
+  const addInput = (value, i, vindex) => {
+    console.log('vindex--->>', vindex)
     setState((oldState) => ({
       ...oldState,
       newUnit: value
     }));
     if (state.autoIncrement == true) {
-      var int = value;
-      var str = value;
-      int = parseInt(int.match(/\d+/));
-      str = str.replace(/[0-9]/g, '');
+      var intValue = value;
+      var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
+      var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
+      var intValue = parseInt(intValue.match(/\d+/));
+
       let unitsArray = [...state.unitsArray];
       state.unitsArray.map((item, index) => {
         if (index >= i) {
           unitsArray[index] = {
             ...unitsArray[index],
-            name: str + (isNaN(int) ? '' : int),
+            name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
           };
           setState((oldState) => ({
             ...oldState,
             unitsArray
           }));
-          int = int + 1;
+          intValue = intValue + 1;
         }
       });
     } else {
@@ -121,8 +126,8 @@ export default function AddbuildingModal({
       key={index}
       value={item.name}
       dense={true}
-      onChangeText={(text,valueIndex) => {
-        addInput(text, index,valueIndex);
+      onChangeText={(text, valueIndex) => {
+        addInput(text, index, valueIndex);
       }}
       style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
       scrollEnabled={false}
@@ -187,7 +192,7 @@ export default function AddbuildingModal({
         });
       }
       // console.log('looppdata--->',loopData)
-      
+
       handleAddbuildingApi({
         name: state.buildName,
         property_id: propertyId,
@@ -198,13 +203,13 @@ export default function AddbuildingModal({
   };
 
   const handleAddbuildingApi = async (data) => {
-    console.log('check data-->',data)
-    const unitResponse = await api.post(`/property/equipment/building/add-building`,data);
-      console.log('buildResponse--->',unitResponse)
-      if(unitResponse?.data?.bool){
+    console.log('check data-->', data)
+    const unitResponse = await api.post(`/property/equipment/building/add-building`, data);
+    console.log('buildResponse--->', unitResponse)
+    if (unitResponse?.data?.bool) {
       changeUtilityAndToggle()
       reRun()
-    }else{
+    } else {
       alert(unitResponse?.data?.message)
     }
   };
@@ -260,6 +265,10 @@ export default function AddbuildingModal({
                     placeholder="Building Name"
                     error={error.buildingName}
                     onChangeText={(text) => {
+                      setError((oldState) => ({
+                        ...oldState,
+                        buildingName: ''
+                      }));
                       setState((oldState) => ({
                         ...oldState,
                         buildName: text
@@ -331,6 +340,10 @@ export default function AddbuildingModal({
                       error={error.units}
                       placeholder="# of Units"
                       onChangeText={(text) => {
+                        setError((oldState) => ({
+                          ...oldState,
+                          units: '',
+                        }));
                         getLoopOfUnits(text);
                       }}
                       style={{
