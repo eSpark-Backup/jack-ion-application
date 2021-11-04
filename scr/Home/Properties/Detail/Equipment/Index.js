@@ -564,20 +564,24 @@ export default class Splash extends Component {
 
   getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
-    console.log('this.state.newUnit===>', this.state.newUnit);
+    // console.log('this.state.newUnit===>', this.state.newUnit);
+    var intValue = this.state.newUnit;
+    var firstStr = this.state.newUnit.split(parseInt(this.state.newUnit.match(/\d+/)))[0];
+    var lastStr = this.state.newUnit.split(parseInt(this.state.newUnit.match(/\d+/)))[1];
+    var intValue = parseInt(intValue.match(/\d+/)) + 1;
 
-    var int = this.state.newUnit;
-    var str = this.state.newUnit;
-    int = parseInt(int.match(/\d+/)) + 1;
-    str = str.replace(/[0-9]/g, '');
+    // var int = this.state.newUnit;
+    // var str = this.state.newUnit;
+    // int = parseInt(int.match(/\d+/)) + 1;
+    // str = str.replace(/[0-9]/g, '');
     var loopData = [];
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: str + int,
+        name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
         num: text + 1,
       }),
-        (int = int + 1);
+        (intValue = intValue + 1);
     }
     this.setState({unitsArray: loopData});
   };

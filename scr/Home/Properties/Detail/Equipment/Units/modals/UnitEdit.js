@@ -276,6 +276,7 @@ export default function UnitEdit({
     } else {
       let newArr = [...meterListData]; // copying the old datas array
       newArr[state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
+      newArr[state.scanIndex].deviceSerialError = "" // replace e.target.value with whatever you want to change it to
       setMeterListData(newArr);
       setState((oldState) => ({
         ...oldState,
@@ -283,6 +284,7 @@ export default function UnitEdit({
         scan: false,
         newSerial: e.data,
         isScannerVisible: false,
+
       }));
       setTimeout(() => {
         RNBeep.beep(false);
@@ -524,7 +526,7 @@ export default function UnitEdit({
         meter_id: data.id,
         device_serial_number: data.deviceSerialNum,
         meter_serial_number: data.meterSerialNum,
-        type_id: data.meterType,
+        device_id: data.meterType,
       });
     });
     let data = {
