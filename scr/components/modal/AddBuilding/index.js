@@ -81,29 +81,30 @@ export default function AddbuildingModal({
     }));
   };
 
-  const addInput = (value, i,vindex) => {
-    console.log('vindex--->>',vindex)
+  const addInput = (value, i, vindex) => {
+    console.log('vindex--->>', vindex)
     setState((oldState) => ({
       ...oldState,
       newUnit: value
     }));
     if (state.autoIncrement == true) {
-      var int = value;
-      var str = value;
-      int = parseInt(int.match(/\d+/));
-      str = str.replace(/[0-9]/g, '');
+      var intValue = value;
+      var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
+      var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
+      var intValue = parseInt(intValue.match(/\d+/));
+
       let unitsArray = [...state.unitsArray];
       state.unitsArray.map((item, index) => {
         if (index >= i) {
           unitsArray[index] = {
             ...unitsArray[index],
-            name: str + (isNaN(int) ? '' : int),
+            name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
           };
           setState((oldState) => ({
             ...oldState,
             unitsArray
           }));
-          int = int + 1;
+          intValue = intValue + 1;
         }
       });
     } else {
@@ -121,8 +122,8 @@ export default function AddbuildingModal({
       key={index}
       value={item.name}
       dense={true}
-      onChangeText={(text,valueIndex) => {
-        addInput(text, index,valueIndex);
+      onChangeText={(text, valueIndex) => {
+        addInput(text, index, valueIndex);
       }}
       style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
       scrollEnabled={false}
@@ -187,7 +188,7 @@ export default function AddbuildingModal({
         });
       }
       // console.log('looppdata--->',loopData)
-      
+
       handleAddbuildingApi({
         name: state.buildName,
         property_id: propertyId,
@@ -198,13 +199,13 @@ export default function AddbuildingModal({
   };
 
   const handleAddbuildingApi = async (data) => {
-    console.log('check data-->',data)
-    const unitResponse = await api.post(`/property/equipment/building/add-building`,data);
-      console.log('buildResponse--->',unitResponse)
-      if(unitResponse?.data?.bool){
+    console.log('check data-->', data)
+    const unitResponse = await api.post(`/property/equipment/building/add-building`, data);
+    console.log('buildResponse--->', unitResponse)
+    if (unitResponse?.data?.bool) {
       changeUtilityAndToggle()
       reRun()
-    }else{
+    } else {
       alert(unitResponse?.data?.message)
     }
   };
