@@ -3,14 +3,12 @@ import {Fonts} from '../../../utils/fonts';
 
 //Packages
 
-//Files
 const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-    // alignItems:'center',
   },
   headerContainer: {
     width: width * 1,
@@ -42,15 +40,6 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.1,
     elevation: width * 0.01,
     flexDirection: 'row',
-    // marginLeft: width * .03,
-    // width: width * .8,
-    // height: height * .06,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: '#25AAE1ec',
-    // borderRadius: width * .1,
-    // elevation: 5,
-    // flexDirection: 'row'
   },
   search: {
     minWidth: width * 0.6,
@@ -58,12 +47,6 @@ export default styles = StyleSheet.create({
     borderBottomColor: '#25AAE1ec',
     fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
-    // width: width * .7,
-    // height: height * .07,
-    // borderBottomColor: '#25AAE1ec',
-    // fontSize: width * .04,
-    // fontFamily: Fonts.Montserrat,
-    // color: 'white',
   },
   headingContainer: {
     width: width * 1,
@@ -84,7 +67,7 @@ export default styles = StyleSheet.create({
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
-    marginBottom: height * 0.1,
+    marginBottom: width * 0.1,
   },
   map: {
     width: width * 1,
@@ -154,48 +137,10 @@ export default styles = StyleSheet.create({
   dataFieldText: {
     fontSize: height * 0.022,
     fontFamily: Fonts.Montserrat,
-    // marginLeft: width * 0.01,
     width: width * 0.7,
     textAlign: 'center',
   },
-  contactViewContainer: {
-    width: width * 0.9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // marginBottom: height * .02,
-    // borderRadius: width * .05,
-  },
-  contactInfoContainer: {
-    height: height * 0.09,
-    width: width * 0.9,
-    // borderBottomWidth: width * .002,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  contactInfoInner: {
-    height: height * 0.074,
-    width: width * 0.14,
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#25AAE1ec',
-    left: width * 0.03,
-    position: 'absolute',
-    borderTopLeftRadius: width * 0.01,
-    borderBottomLeftRadius: width * 0.01,
-  },
-  contactInput: {
-    height: height * 0.074,
-    width: width * 0.7,
-    fontSize: height * 0.02,
-    borderTopWidth: width * 0.001,
-    borderBottomWidth: width * 0.001,
-    borderRightWidth: width * 0.001,
-    position: 'absolute',
-    left: width * 0.17,
-    backgroundColor: 'white',
-  },
+
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -225,8 +170,6 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     flexDirection: 'row',
-    // marginBottom: height * .02,
-    // borderRadius: width * .05,
   },
   barView: {
     alignItems: 'center',
@@ -248,49 +191,30 @@ export default styles = StyleSheet.create({
   // ------------------------------------------------
 
   sideModalContainer: {
-    // height: height,
     width: width * 0.6,
-
-    // maxHeight: height * 0.816,
-    // maxWidth: width * 0.38,
-    // top: height * 0.064,
     left: width * -0.05,
-    // backgroundColor: '#2B5460',
-    // borderTopRightRadius: width * 0.02,
-    // borderBottomRightRadius: width * 0.02,
-    // elevation: width * .005,
   },
   drawerMainContainer: {
-    // flex: 1,
     height: height,
-    // height: height * 0.1,
-    // backgroundColor: '#6B6C6F',
     backgroundColor: '#fff',
-    // borderTopRightRadius: width * 0.02,
-    // borderBottomRightRadius: width * 0.02,
     justifyContent: 'space-between',
   },
   drawerContentContainer: {
     marginTop: height * -0.6,
     width: width * 0.367,
     flexDirection: 'column',
-    // backgroundColor: 'yellow',
-    // backgroundColor: "#83d0f1",
     top: 20,
     left: 5,
     borderTopLeftRadius: width * 0.015,
     borderBottomLeftRadius: width * 0.015,
     padding: height * 0.008,
-    // height: height * .2,
   },
   drawerContent: {
-    // backgroundColor: 'red',
     marginTop: height * 0.02,
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingBottom: height * 0.01,
     paddingTop: height * 0.01,
-    // borderBottomWidth: width * 0.005,
   },
   drawerbtn: {
     marginBottom: height * 0.01354,
@@ -299,21 +223,20 @@ export default styles = StyleSheet.create({
     fontWeight: 'normal',
   },
 
+  drawerBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: height * 0.015,
+  },
+
+  drawerBtnIcon: {marginRight: width * 0.02},
+
   // ----------------------------------------------------
 
   // Modal
-  modalContainer: {
-    // elevation: width * .005,
-    // borderRadius: width * .02,
-    // backgroundColor: 'white',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // maxHeight: height * .8,
-    // maxWidth: width * 1,
-    // borderWidth: height * .005,
-  },
+
   modalInner: {
-    // flex: 1,
     elevation: width * 0.005,
     borderRadius: width * 0.02,
     backgroundColor: 'white',
@@ -334,7 +257,6 @@ export default styles = StyleSheet.create({
     elevation: width * 0.02,
     alignItems: 'center',
     justifyContent: 'center',
-    // borderColor: '#5F4B2F'
   },
   boxHeader: {
     width: width * 0.75,
@@ -342,9 +264,6 @@ export default styles = StyleSheet.create({
   },
   boxHeaderInner: {
     flex: 1,
-    // backgroundColor: 'white',
-    // borderBottomWidth:height * .005,
-    // borderColor:'#5F4B2F',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
@@ -377,40 +296,10 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    // height: height * .07,
     width: width * 0.75,
     fontSize: height * 0.018,
   },
-  // contactInfoContainer:{
-  //     height: height * .09,
-  //     width: width * .8,
-  //     // borderBottomWidth: width * .002,
-  //     flexDirection: 'row',
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  // },
-  // contactInfoInner:{
-  //     height: height * .074,
-  //     width: width * .14,
-  //     borderWidth: 1,
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //     backgroundColor: '#25AAE1ec',
-  //     left: width * .025,
-  //     position: 'absolute',
-  //     borderTopLeftRadius: width * .01,
-  //     borderBottomLeftRadius: width * .01,
-  // },
-  // contactInput:{
-  //     height: height * .07,
-  //     width: width * .61,
-  //     fontSize: height * .018,
-  //     borderTopWidth: 1,
-  //     borderBottomWidth: 1,
-  //     borderRightWidth: 1,
-  //     position: 'absolute',
-  //     left: width * .165,
-  // },
+
   bottonContainer: {
     flex: 1,
     justifyContent: 'center',

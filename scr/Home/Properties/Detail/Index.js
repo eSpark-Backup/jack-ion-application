@@ -1,40 +1,27 @@
-import React, {Component, version} from 'react';
+import React from 'react';
 
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  ActivityIndicator,
   StatusBar,
   Dimensions,
-  // TextInput,
-  Animated,
   ScrollView,
   TouchableOpacity,
-  LayoutAnimation,
   UIManager,
-  // Button,
   Pressable,
   Alert,
 } from 'react-native';
 
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Menu from 'react-native-vector-icons/Entypo';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
+import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
-import Globe from 'react-native-vector-icons/Feather';
-import Build from 'react-native-vector-icons/Ionicons';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Modal from 'react-native-modal';
 import Folder from 'react-native-vector-icons/Feather';
-import Tag from 'react-native-vector-icons/Feather';
 import Equip from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
 import Message from 'react-native-vector-icons/Feather';
@@ -44,18 +31,14 @@ import {Icon, IconToggle} from 'react-native-material-ui';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {
   VictoryChart,
-  VictoryGroup,
   VictoryBar,
-  VictoryTheme,
   VictoryLegend,
   VictoryAxis,
 } from 'victory-native';
 import ContextProp from '../Context/propContext';
-import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
+import {TextInput, FAB, HelperText} from 'react-native-paper';
 
 // Components
-import {Fonts} from '../../../utils/fonts';
-import Drawer from 'react-native-drawer';
 import styles from './style';
 import style from './style';
 import Base_URL from '../../../api/WebServices';
@@ -92,16 +75,6 @@ const dataBar2 = {
   ],
 };
 
-const dataBar = [
-  {quarter: 'MON', earnings: 16500},
-  {quarter: 'TUE', earnings: 14250},
-  {quarter: 'WED', earnings: 19000},
-  {quarter: 'THU', earnings: 1200},
-  {quarter: 'FRI', earnings: 10000},
-  {quarter: 'SAT', earnings: 11000},
-  {quarter: 'SUN', earnings: 12000},
-];
-
 export default class Splash extends React.Component {
   static contextType = ContextProp;
   constructor() {
@@ -109,35 +82,7 @@ export default class Splash extends React.Component {
     this.state = {
       isModalVisible: false,
       points: 80,
-      animatedValue: new Animated.Value(0),
-      clientName: '',
-      address: '',
-      addressDetail: '',
-      billCompany: '',
-      billCompanyDetail: '',
-      managementCompany: 'Management Company',
-      customId: '',
-      managementCompanyDetail: 'Mark Bollinger',
-      customIdDetail: '012021',
-      Name: '',
-      city: '',
-      zipcode: '',
-      Address: '',
-      BillComp: '',
-      ManageComp: '',
-      CustomId: '',
       listData: {},
-      getData: {},
-      index: '',
-      data: {
-        atIndex: null,
-        id: '',
-        editName: '',
-        editAddress: '',
-        editBillComp: '',
-        editManageComp: '',
-        editCustomId: '',
-      },
       error: {
         property: '',
         property_id: '',
@@ -145,11 +90,6 @@ export default class Splash extends React.Component {
         city: '',
         zipcode: '',
       },
-      editName: '',
-      editStreet: '',
-      editCity: '',
-      editZipcode: '',
-      editProperty_id: '',
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -157,46 +97,20 @@ export default class Splash extends React.Component {
   }
 
   componentDidMount() {
-    // const some_array = [...this.context.propList]
-    // this.setState({ profileList: some_array[0] })
-    console.log(
-      'What we get in Listdata',
-      this.props.navigation.state.params.item.item,
-    );
-
-    console.log('Kiya Mila', this.props.navigation.state.params.item.index);
-
     this.setState({
-      info: this.props.navigation.state.params.item,
       listData: this.props.navigation.state.params.item.item,
     });
-
-    console.log(this.props.navigation.state.params.item.item);
-    // this.setState({ index: this.state.info?.isIndex })
   }
 
   getBack = () => {
     this.props.navigation.goBack();
-    // this.props.navigation.navigate('Properties');
   };
 
-  _start = () => {
-    Animated.timing(this.state.fadeValue, {
-      toValue: 1,
-      duration: 1000,
-    }).start();
-  };
   toggleModal = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
+
   toggleModalEditProp = () => {
-    // this.setState({
-    //   Name: this.state.listData.name,
-    //   Address: this.state.listData.address,
-    //   BillComp: this.state.listData.billComp,
-    //   ManageComp: this.state.listData.managementComp,
-    //   CustomId: this.state.listData.customId,
-    // });
     this.setState({
       isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
     });
@@ -211,6 +125,7 @@ export default class Splash extends React.Component {
       },
     }));
   };
+
   onCancel = () => {
     this.setState({
       listData: this.props.navigation.state.params.item.item,
@@ -227,26 +142,7 @@ export default class Splash extends React.Component {
       },
     }));
   };
-  editThis = () => {
-    this.setState(
-      Object.assign(this.state.data, {atIndex: this.state.info?.isIndex}),
-    );
-    this.setState(Object.assign(this.state.data, {id: this.state.info?.id}));
-    this.setState(Object.assign(this.state.data, {editName: this.state.Name}));
-    this.setState(
-      Object.assign(this.state.data, {editAddress: this.state.Address}),
-    );
-    this.setState(
-      Object.assign(this.state.data, {editBillComp: this.state.BillComp}),
-    );
-    this.setState(
-      Object.assign(this.state.data, {editManageComp: this.state.ManageComp}),
-    );
-    this.setState(
-      Object.assign(this.state.data, {editCustomId: this.state.CustomId}),
-    );
-    this.context.editProperty(this.state.data);
-  };
+
   editProp = async () => {
     if (this.state?.listData?.name === '') {
       this.setState((prevState) => ({
@@ -332,48 +228,22 @@ export default class Splash extends React.Component {
       } else {
         Alert.alert('Error', 'Network Issues');
       }
-
-      // api
-      //   .patch(`/property/update/${this.state?.listData?.id}`, data)
-      //   .then((res) => {
-      //     console.log(res.data);
-      //     if (res?.data?.bool) {
-      //       this.toggleModalEditProp();
-      //     } else {
-      //       Alert.alert('Error', 'Network Issues');
-      //     }
-      //   });
-      // this.props.navigation.navigate('Properties');
     }
   };
-  changeLayoutMeter = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({
-      meter: !this.state.meter,
-      meterDown: !this.state.meterDown,
-      animatedValue: new Animated.Value(0),
-    });
-    setTimeout(() => {
-      Animated.timing(this.state.animatedValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
-    }, 10);
-  };
+
   naviagateToEquip = () => {
-    // this.toggleModal();
     this.setState({isModalVisible: false});
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
+
   naviagateToDetail = () => {
-    // this.toggleModal();
     this.setState({isModalVisible: false});
     this.props.navigation.navigate(
       'Detail',
       this.props.navigation.state.params,
     );
   };
+
   naviagateToChart = () => {
     this.toggleModal();
     this.props.navigation.navigate(
@@ -381,14 +251,13 @@ export default class Splash extends React.Component {
       this.props.navigation.state.params,
     );
   };
+
   naviagateToSupport = () => {
-    // this.toggleModal();
     this.setState({isModalVisible: false});
     this.props.navigation.navigate('Support');
   };
 
   render() {
-    // console.log('What we get in Listdata',this.context.propList);
     return (
       <View style={styles.container}>
         <Modal
@@ -406,7 +275,6 @@ export default class Splash extends React.Component {
                 name="menu"
                 size={height * 0.05}
                 color="white"
-                // style={{right: 90}}
                 onPress={this.toggleModal}
                 style={{backgroundColor: '#35afe2'}}
               />
@@ -418,7 +286,7 @@ export default class Splash extends React.Component {
                     name="account-details-outline"
                     size={height * 0.035}
                     color="#7575ff"
-                    style={{marginRight: width * 0.02}}
+                    style={styles.drawerBtnIcon}
                   />
                   <Text style={styles.drawerbtn}>Profile</Text>
                 </View>
@@ -429,7 +297,7 @@ export default class Splash extends React.Component {
                     name="rss"
                     size={height * 0.035}
                     color="#ff9f71"
-                    style={{marginRight: width * 0.02}}
+                    style={styles.drawerBtnIcon}
                   />
                   <Text style={styles.drawerbtn}>Units</Text>
                 </View>
@@ -440,28 +308,19 @@ export default class Splash extends React.Component {
                     name="pie-chart"
                     size={height * 0.035}
                     color="#009349"
-                    style={{marginRight: width * 0.02}}
+                    style={styles.drawerBtnIcon}
                   />
                   <Text style={styles.drawerbtn}>Charts</Text>
                 </View>
               </TouchableOpacity>
             </View>
             <TouchableOpacity onPress={this.naviagateToSupport}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingBottom: height * 0.015,
-                }}>
+              <View style={styles.drawerBottom}>
                 <Detail
                   name="help-circle-outline"
                   size={height * 0.035}
                   color="#35afe2"
-                  style={{
-                    marginBottom: height * 0.009,
-                    marginRight: width * 0.02,
-                  }}
+                  style={{...styles.drawerBtnIcon, marginRight: width * 0.02}}
                 />
                 <Text style={styles.drawerbtn}>Support</Text>
               </View>
@@ -549,7 +408,7 @@ export default class Splash extends React.Component {
                 draggable /> */}
             </MapView>
             <View style={styles.clientName}>
-              <Build name="md-business-outline" size={width * 0.08} />
+              <Properties name="home-city-outline" size={width * 0.08} />
               <Text style={styles.clientNameHeading}>
                 {this.state.listData.name == null
                   ? 'Untitled'
@@ -568,9 +427,7 @@ export default class Splash extends React.Component {
             <Modal
               animationIn="slideInDown"
               animationOut="slideOutUp"
-              // avoidKeyboard={true}
-              isVisible={this.state.isModalAdEditPropVisible}
-              style={styles.modalContainer}>
+              isVisible={this.state.isModalAdEditPropVisible}>
               <View style={styles.modalInner}>
                 <View style={styles.boxConatainer}>
                   <View style={styles.boxInner}>
@@ -634,7 +491,6 @@ export default class Splash extends React.Component {
                                 },
                               }));
                             }}
-                            // onBlur={this.editThis}
                             style={styles.input}
                             mode={'outlined'}
                             theme={{
@@ -653,7 +509,6 @@ export default class Splash extends React.Component {
                             {this.state.error.property}
                           </HelperText>
                         ) : null}
-
                         <View style={styles.inputContainer}>
                           <TextInput
                             value={this.state?.listData?.street}
@@ -729,7 +584,6 @@ export default class Splash extends React.Component {
                           <TextInput
                             value={this.state?.listData?.city}
                             error={this.state.error.city}
-                            // placeholder={this.state?.listData?.city}
                             label="City"
                             style={[styles.input, {width: width * 0.36}]}
                             onChangeText={(text) => {
@@ -814,79 +668,6 @@ export default class Splash extends React.Component {
                             {this.state.error.property_id}
                           </HelperText>
                         ) : null}
-                        {/* <View style={styles.desciptionContainer}>
-                          <Icon
-                            name={'folder-open'}
-                            size={height * 0.03}
-                            color="#5e5e5e"
-                          />
-                          <Text style={styles.desciptionHeading}>
-                            PORTFOLIO DETAILS
-                          </Text>
-                        </View> */}
-                        {/* <View style={styles.inputContainer}>
-                          <TextInput
-                            label="BILLING COMPANY*"
-                            // placeholder="Like ION Energy Solutions, etc"
-                            value={this.state.BillComp}
-                            // dense={true}
-                            onChangeText={(text) => {
-                              this.setState({BillComp: text});
-                            }}
-                            onBlur={this.editThis}
-                            style={styles.input}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View> */}
-                        {/* <View style={styles.inputContainer}>
-                          <TextInput
-                            value={this.state.ManageComp}
-                            label="MANAGEMENT COMPANY"
-                            placeholder="Company Name"
-                            style={styles.input}
-                            onChangeText={(text) => {
-                              this.setState({ManageComp: text});
-                            }}
-                            onBlur={this.editThis}
-                            // dense={true}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View> */}
-                        {/* <View style={styles.inputContainer}>
-                          <TextInput
-                            label="CUSTOM ID*"
-                            value={this.state.CustomId}
-                            placeholder="Company specific Id"
-                            style={styles.input}
-                            onChangeText={(text) => {
-                              this.setState({CustomId: text});
-                            }}
-                            onBlur={this.editThis}
-                            // dense={true}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View> */}
                       </View>
                     </ScrollView>
                     {/* Box Header */}
@@ -897,7 +678,6 @@ export default class Splash extends React.Component {
                           style={styles.submitBotton}
                           color="white"
                           icon="check"
-                          // loading={false}
                           label="Update"
                         />
                       </View>
@@ -932,28 +712,6 @@ export default class Splash extends React.Component {
                   </Text>
                 </View>
               </View>
-              {/* <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>
-                  {this.state.billCompany}
-                </Text>
-                <View style={styles.infoViewInner}>
-                  <Globe name="globe" size={width * 0.06} />
-                  <Text style={styles.dataFieldText}>
-                    {this.state.listData.billComp}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>
-                  {this.state.managementCompany}
-                </Text>
-                <View style={styles.infoViewInner}>
-                  <Folder name="folder" size={width * 0.06} />
-                  <Text style={styles.dataFieldText}>
-                    {this.state.listData.managementComp}
-                  </Text>
-                </View>
-              </View> */}
               <View style={styles.infoViewContainer}>
                 <Text style={styles.dataFieldHeadings}>CUSTOM ID</Text>
                 <View style={styles.infoViewInner}>
@@ -965,91 +723,6 @@ export default class Splash extends React.Component {
                   </Text>
                 </View>
               </View>
-              {/* <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>Office Contact #</Text>
-                <View style={styles.infoViewInner}>
-                  <Globe name="phone" size={width * 0.06} />
-                  <Text style={styles.dataFieldText}>
-                    {this.state.listData.office_contact_number == null
-                      ? '--'
-                      : this.state.listData.office_contact_number}
-                  </Text>
-                </View>
-              </View> */}
-              {/* <View style={styles.contactViewContainer}>
-                <Text style={styles.dataFieldHeadings}>Contact Info</Text>
-                <View style={styles.contactInfoContainer}>
-                  <View style={styles.contactInfoInner}>
-                    <Icon
-                      name="account-box"
-                      size={height * 0.04}
-                      color="white"
-                      maxOpacity={0.5}
-                    />
-                  </View>
-                  <TextInput
-                    value={
-                      this.state.listData.contact_name == null
-                        ? '-'
-                        : this.state.listData.contact_name
-                    }
-                    placeholder="Contact Name"
-                    onChangeText={(text) => console.log(text)}
-                    style={styles.contactInput}
-                  />
-                </View>
-                <View style={styles.contactInfoContainer}>
-                  <View style={styles.contactInfoInner}>
-                    <Icon
-                      name="mail-outline"
-                      size={height * 0.04}
-                      color="white"
-                      maxOpacity={0.5}
-                    />
-                  </View>
-                  <TextInput
-                    value={this.state.listData.contact_email}
-                    placeholder="Email"
-                    onChangeText={(text) => console.log(text)}
-                    style={styles.contactInput}
-                  />
-                </View>
-              </View> */}
-              {/* <View style={styles.contactViewContainer}>
-                <Text style={styles.dataFieldHeadings}>Manager Info</Text>
-                <View style={styles.contactInfoContainer}>
-                  <View style={styles.contactInfoInner}>
-                    <Icon
-                      name="account-box"
-                      size={height * 0.04}
-                      color="white"
-                      maxOpacity={0.5}
-                    />
-                  </View>
-                  <TextInput
-                    value={this.state.listData.Contact}
-                    placeholder="Contact Name"
-                    onChangeText={(text) => console.log(text)}
-                    style={styles.contactInput}
-                  />
-                </View>
-                <View style={styles.contactInfoContainer}>
-                  <View style={styles.contactInfoInner}>
-                    <Icon
-                      name="mail-outline"
-                      size={height * 0.04}
-                      color="white"
-                      maxOpacity={0.5}
-                    />
-                  </View>
-                  <TextInput
-                    value={this.state.listData.Contact_Email}
-                    placeholder="Email"
-                    onChangeText={(text) => console.log(text)}
-                    style={styles.contactInput}
-                  />
-                </View>
-              </View> */}
               <View style={style.footerContainer}>
                 <TouchableOpacity style={style.commentBottonContainer}>
                   <View style={style.commentBottonInner}>
@@ -1138,8 +811,6 @@ export default class Splash extends React.Component {
                       },
                     }}
                   />
-                  {/* <VictoryBar data={dataBar2.planned} style={{ data: { fill: 'orange' } }} /> */}
-                  {/* <VictoryBar data={dataBar} x='quater' y='earnings' /> */}
                   <VictoryAxis />
                 </VictoryChart>
                 <VictoryLegend

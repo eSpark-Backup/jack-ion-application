@@ -1,10 +1,9 @@
-import React, {Component, useContext, useEffect, useState} from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
   Dimensions,
   TouchableOpacity,
-  Pressable,
   PermissionsAndroid,
   StatusBar,
   ScrollView,
@@ -13,7 +12,6 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import * as Progress from 'react-native-progress';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import DropDown from 'react-native-vector-icons/FontAwesome';
@@ -21,7 +19,6 @@ import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import {DotsLoader} from 'react-native-indicator';
-import {Icon, IconToggle} from 'react-native-material-ui';
 import Base_URL from '../../../scr/api/WebServices';
 import Modal from 'react-native-modal';
 import {Header} from 'react-native-elements';
@@ -47,33 +44,6 @@ export default class Splash extends Component {
       searchName: '',
       utilityIndex: null,
       scan: false,
-      Types: [
-        {
-          id: 2,
-          type: 'cold water',
-          img: require('../../../Images/cold-water.png'),
-        },
-        {
-          id: 3,
-          type: 'hot water',
-          img: require('../../../Images/hot-water.png'),
-        },
-        {
-          id: 3,
-          type: 'hot water',
-          img: require('../../../Images/hot-water.png'),
-        },
-        {
-          id: 3,
-          type: 'hot water',
-          img: require('../../../Images/hot-water.png'),
-        },
-        {
-          id: 3,
-          type: 'hot water',
-          img: require('../../../Images/hot-water.png'),
-        },
-      ],
       biller: '',
       changed: false,
       buildingId: '',
@@ -87,19 +57,6 @@ export default class Splash extends Component {
       selectedType: type,
       utilityIndex: index === this.state.utilityIndex ? null : index,
     });
-  };
-
-  getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      console.log('token aya', token);
-      this.setState({token: token});
-      api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-      this.getBillingCompany();
-    }
   };
 
   getBillingCompany = () => {
@@ -123,9 +80,7 @@ export default class Splash extends Component {
   };
 
   filter = () => {
-    // console.log("Utility Index",this.state.utilityIndex)
     if (this.props.type == 'Properties') {
-
       let data = {
         offset: 0,
         billing: this.state.biller,
@@ -138,8 +93,10 @@ export default class Splash extends Component {
     } else {
       this.props.filterWork(true);
       this.props.get_filterVal(
-      this.context.filterSerial,
-        this.state.utilityIndex != null || undefined ? this.state.utilityIndex + 1 : null,
+        this.context.filterSerial,
+        this.state.utilityIndex != null || undefined
+          ? this.state.utilityIndex + 1
+          : null,
       );
     }
   };
@@ -252,22 +209,11 @@ export default class Splash extends Component {
         <Modal
           animationIn="bounceInUp"
           animationOut="bounceInDown"
-          // backdropColor='black'
           backdropOpacity={5}
           isVisible={this.state.isScannerVisible}>
           {scan && (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'space-around',
-                borderRadius: width * 0.02,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: height * 0.02,
-                }}>
+            <View style={styles.scannerContainer}>
+              <View style={styles.scannerHeader}>
                 <TouchableOpacity onPress={this.scannerModal}>
                   <Back
                     size={width * 0.08}
@@ -275,16 +221,7 @@ export default class Splash extends Component {
                     name="keyboard-backspace"
                   />
                 </TouchableOpacity>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    fontSize: 20,
-                    paddingLeft: width * 0.08,
-                  }}>
-                  Scan Barcode
-                </Text>
+                <Text style={styles.scannerHeading}>Scan Barcode</Text>
               </View>
               <RNCamera
                 ref={(ref) => {
@@ -306,7 +243,11 @@ export default class Splash extends Component {
           animationOut="slideOutUp"
           isVisible={isVisible}>
           <View style={styles.modalInner}>
-            <View style={[{...styles.boxConatainer, style},{height:type == 'Units' ? height * .42: height * .35}]}>
+            <View
+              style={[
+                {...styles.boxConatainer, style},
+                {height: type == 'Units' ? height * 0.42 : height * 0.35},
+              ]}>
               <View style={styles.boxInner}>
                 {/* Box Header */}
                 <Header
@@ -317,10 +258,8 @@ export default class Splash extends Component {
                     onPress: close,
                   }}
                   centerComponent={
-                    <View style={{alignItems: 'center'}}>
-                      <Text style={{fontSize: 20, color: '#25aae1'}}>
-                        Filter
-                      </Text>
+                    <View style={styles.headerCenter}>
+                      <Text style={styles.headerCenterText}>Filter</Text>
                     </View>
                   }
                   rightComponent={{
@@ -333,10 +272,7 @@ export default class Splash extends Component {
                     },
                   }}
                   backgroundColor="#fff"
-                  containerStyle={{
-                    borderBottomWidth: width * 0.003,
-                    elevation: 1,
-                  }}
+                  containerStyle={styles.filterHeader}
                 />
                 <View style={{width: '100%'}}>
                   {type == 'Properties' ? (
@@ -355,8 +291,8 @@ export default class Splash extends Component {
                         <Text style={styles.filterListText}>Billing</Text>
                         <TouchableOpacity
                           onPress={this.getBillingCompany}
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Text style={{fontSize: width * 0.04}}>
+                          style={styles.billingButton}>
+                          <Text style={styles.filterListText}>
                             {this.context.biller}
                           </Text>
                           <DropDown name="caret-down" size={20} />
@@ -403,19 +339,16 @@ export default class Splash extends Component {
                         {utilityTypes.length ? (
                           <FlatList
                             horizontal
-                            style={{marginLeft: width * 0.05}}
+                            style={styles.utilityList}
                             data={utilityTypes}
                             renderItem={({item, index}) => (
                               <TouchableOpacity
                                 style={{
-                                  borderRadius: 10,
+                                  ...styles.UtilityTypeBtn,
                                   backgroundColor:
                                     index == this.state.utilityIndex
                                       ? '#efefef'
                                       : null,
-                                  padding: width * 0.015,
-                                  marginHorizontal: width * 0.02,
-                                  marginVertical: height * 0.01,
                                 }}
                                 onPress={() =>
                                   this.getUtilityType(item.name, index)
@@ -423,20 +356,13 @@ export default class Splash extends Component {
                                 <Image
                                   source={this.typeSwitcher(item.name)}
                                   resizeMode="contain"
-                                  style={{
-                                    height: width * 0.06,
-                                    width: width * 0.055,
-                                  }}
+                                  style={styles.UtilityTypeImg}
                                 />
                               </TouchableOpacity>
                             )}
                           />
                         ) : (
-                          <View
-                            style={{
-                              paddingLeft: width * 0.035,
-                              marginVertical: width * 0.035,
-                            }}>
+                          <View style={styles.utilityDots}>
                             <DotsLoader color="gray" />
                           </View>
                         )}
@@ -462,58 +388,17 @@ export default class Splash extends Component {
             </View>
           </View>
         </Modal>
-
-        <Modal
-          isVisible={this.state.showList}
-          style={{
-            elevation: width * 0.005,
-            borderRadius: width * 0.02,
-            maxHeight: height * 1,
-            maxWidth: width * 1,
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              width: width * 0.5,
-              height: height * 0.35,
-            }}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'white',
-                borderRadius: width * 0.02,
-                elevation: width * 0.02,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: width * 0.02,
-                  elevation: width * 0.02,
-                  alignItems: 'center',
-                  width: width * 0.45,
-                  height: height * 0.3,
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    height: '20%',
-                    justifyContent: 'center',
-                    borderBottomWidth: 0.5,
-                    paddingLeft: width * 0.05,
-                  }}>
+        <Modal isVisible={this.state.showList}>
+          <View style={styles.billingModalInner}>
+            <View style={{...styles.boxConatainer, width: width * 0.6}}>
+              <View style={styles.boxInner}>
+                <View style={styles.billingModalHeader}>
                   <Text style={{fontSize: width * 0.04}}>Billing</Text>
                 </View>
-                <View style={{width: '100%', height: '60%'}}>
+                <View style={styles.companyList}>
                   <ScrollView>
                     {this.state.billCompanies.map((item) => (
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginVertical: height * 0.005,
-                        }}>
+                      <View style={styles.billingCompnay}>
                         <RadioButton
                           value={item.name}
                           status={
@@ -529,39 +414,12 @@ export default class Splash extends Component {
                   </ScrollView>
                 </View>
 
-                <View
-                  style={{
-                    width: '100%',
-                    height: '20%',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    borderTopWidth: 0.5,
-                    paddingRight: width * 0.03,
-                  }}>
+                <View style={styles.billingModalBottom}>
                   <TouchableOpacity onPress={this.cancelButton}>
-                    <Text
-                      style={{
-                        fontSize: width * 0.032,
-                        marginHorizontal: 5,
-                        textTransform: 'uppercase',
-                        fontWeight: 'bold',
-                        color: '#18CADC',
-                      }}>
-                      Cancel
-                    </Text>
+                    <Text style={styles.billingModalBtns}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={this.onOkay}>
-                    <Text
-                      style={{
-                        fontSize: width * 0.032,
-                        marginHorizontal: 5,
-                        textTransform: 'uppercase',
-                        fontWeight: 'bold',
-                        color: '#18CADC',
-                      }}>
-                      Ok
-                    </Text>
+                    <Text style={styles.billingModalBtns}>Ok</Text>
                   </TouchableOpacity>
                 </View>
               </View>
