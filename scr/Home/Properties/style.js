@@ -80,6 +80,62 @@ export default styles = StyleSheet.create({
     fontSize: height * 0.04,
     color: 'white',
   },
+  linearGradient: {
+    width: width * 0.5,
+    height: height * 0.15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: width * 0.003,
+  },
+  gradienttext: {
+    fontFamily: Fonts.Handlee,
+    fontSize: width * 0.055,
+    color: 'white',
+  },
+
+  searchButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: height * 0.08,
+  },
+
+  searchModalContainer: {
+    elevation: width * 0.005,
+    width: width * 1,
+    height: height * 1,
+    justifyContent: 'flex-start',
+    left: '-5%',
+    top: '-2.5%',
+  },
+
+  searchModalInner: {
+    width: width * 1,
+    height: height * 0.08,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#25AAE1ec',
+    elevation: width * 0.01,
+    flexDirection: 'row',
+  },
+
+  searchModalInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  searchModalButtons: {
+    width: width * 0.05,
+  },
+
+  searchList: {
+    alignItems: 'center',
+    paddingVertical: height * 0.005,
+  },
+
+  propertyList: {
+    flex: 1,
+    width: width * 1,
+  },
 
   // Modal
   modalContainer: {
@@ -115,9 +171,6 @@ export default styles = StyleSheet.create({
   },
   boxHeaderInner: {
     flex: 1,
-    // backgroundColor: 'white',
-    // borderBottomWidth:height * .005,
-    // borderColor:'#5F4B2F',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
@@ -128,7 +181,6 @@ export default styles = StyleSheet.create({
     fontSize: width * 0.03,
     color: 'white',
     marginHorizontal: width * 0.05,
-    // marginLeft: width * .09,
   },
   headerbotton: {
     height: height * 0.083,
@@ -149,23 +201,18 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Handlee,
     fontSize: width * 0.015,
     color: 'gray',
-    // marginLeft: width * .09,
   },
   boxBody: {
     flexDirection: 'column',
     width: width * 0.47,
     height: height * 0.2,
     padding: width * 0.006,
-    // justifyContent: "flex-end" ,
-    // alignItems: "center"
   },
   boxBodyInner: {
-    // flex: 4,
     padding: width * 0.002,
     paddingLeft: width * 0.04,
     paddingRight: width * 0.04,
     flexDirection: 'row',
-    // backgroundColor:'red',
     borderTopRightRadius: width * 0.005,
     borderTopLeftRadius: width * 0.025,
     justifyContent: 'space-between',
@@ -189,7 +236,6 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.025,
     color: '#001522',
-    // textAlign: 'center',
     textShadowOffset: {
       width: width * 0.002,
       height: height * 0.002,
@@ -197,14 +243,24 @@ export default styles = StyleSheet.create({
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },
-  logoShadowStyle: {
-    // textShadowOffset: {
-    //     width: width * 0.002,
-    //     height: height * 0.002,
-    // },
-    // textShadowRadius: width * .005,
-    // textShadowColor: '#09BAF2',
+
+  buildUnitCountContainer: {
+    alignItems: 'center',
+    marginHorizontal: width * 0.01,
   },
+
+  buildUnitCount: {
+    fontFamily: Fonts.Montserrat,
+    fontSize: width * 0.035,
+    color: '#001522',
+    textShadowOffset: {
+      width: width * 0.002,
+      height: height * 0.002,
+    },
+    textShadowRadius: width * 0.005,
+    textShadowColor: '#09BAF2',
+  },
+
   mainView: {
     alignItems: 'flex-start',
   },
@@ -248,6 +304,5 @@ export default styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
 });

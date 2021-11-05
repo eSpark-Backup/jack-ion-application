@@ -19,25 +19,16 @@ import {
 } from 'react-native';
 
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
-import Menu from 'react-native-vector-icons/Entypo';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
-import Search from 'react-native-vector-icons/EvilIcons';
-import Properties from 'react-native-vector-icons/FontAwesome5';
-import TabIcon from 'react-native-vector-icons/Entypo';
-import Back from 'react-native-vector-icons/MaterialIcons';
+
+import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Loader from '../../components/Loader';
-import Tag from 'react-native-vector-icons/Feather';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Modal from 'react-native-modal';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 // Components
 import {Fonts} from '../../utils/fonts';
 import styles from './FormStyle';
-import {Ellipse} from 'react-native-svg';
 import ContextProp from './Context/propContext';
 import {create} from 'apisauce';
 import {call} from 'react-native-reanimated';
@@ -111,15 +102,7 @@ export default class Splash extends React.Component {
   toggleModalAddProp = () => {
     this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
   };
-  change = (e) => {
-    console.log('LELE', e);
 
-    var info = {...this.state.info};
-    info.propName = e;
-
-    console.log('111', info);
-    this.setState({info});
-  };
   clearInputs = () => {
     this.toggleModalAddProp();
     this.setState({Name: ''});
@@ -136,10 +119,6 @@ export default class Splash extends React.Component {
     this.setState({ContactEmail: ''});
     this.setState({BillingCompanyId: '', BillingCompany: 'BILLING COMPANY'});
     this.setState({error: ''});
-  };
-
-  handleLoader = () => {
-    this.setState({loadScreen: true});
   };
 
   addProperty = () => {
@@ -246,6 +225,7 @@ export default class Splash extends React.Component {
       this.clearInputs();
     }
   };
+
   setValue(callback) {
     this.setState((state) => ({
       value: callback(state),
@@ -255,16 +235,11 @@ export default class Splash extends React.Component {
     }, 1000);
   }
 
-  setItems(callback) {
-    // this.setState(state => ({
-    //   items: callback(state.items)
-    // }));
-    console.log('--->item', callback);
-  }
   handleOpenDropDown = () => {
     this.context.getBillingCompany();
     this.setState({open: !this.state.open});
   };
+
   handleDropDownData = (value) => {
     this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
     this.setState({open: !this.state.open});
@@ -276,6 +251,7 @@ export default class Splash extends React.Component {
       },
     }));
   };
+
   handleCloseDropDown = () => {
     this.setState({BillingCompany: 'BILLING COMPANY'});
     this.setState({open: false});
@@ -299,12 +275,11 @@ export default class Splash extends React.Component {
             maxOpacity={0.5}
           />
         </Pressable>
-        <Properties name="laptop-house" size={height * 0.035} color="white" />
+        <Properties name="home-city-outline" size={height * 0.035} color="white" />
         <Text style={styles.mainHeadiing}>Properties</Text>
         <Modal
           animationIn="slideInDown"
           animationOut="slideOutUp"
-          // avoidKeyboard={true}
           isVisible={this.state.isModalAddPropVisible}
           style={styles.modalContainer}>
           <View style={styles.modalInner}>
@@ -353,8 +328,6 @@ export default class Splash extends React.Component {
                     <View style={styles.inputContainer}>
                       <TextInput
                         placeholder="Enter Property Name*"
-                        // value={text}
-                        // onChangeText={(text) => { this.setState({ info: { propName: text } }) }}
                         onChangeText={(text) => {
                           this.setState({Name: text});
                           this.setState((prevState) => ({
@@ -366,8 +339,6 @@ export default class Splash extends React.Component {
                           }));
                         }}
                         error={this.state.error.property}
-                        // onChangeText={(text) => this.change(text)}
-                        // value={this.state.info.Name}
                         style={styles.input}
                         mode={'outlined'}
                         theme={{
@@ -477,7 +448,6 @@ export default class Splash extends React.Component {
                         }}
                       />
                     </View>
-
                     <View style={styles.desciptionContainer}>
                       <Icon
                         name={'folder-open'}
@@ -492,49 +462,21 @@ export default class Splash extends React.Component {
                       <TouchableOpacity
                         onPress={this.handleOpenDropDown}
                         style={{
-                          backgroundColor: '#F6F6F6',
-                          alignSelf: 'center',
+                          ...styles.billingCompanyBtn,
                           borderColor: this.state.error.billingId
                             ? '#A3001B'
                             : 'gray',
-                          width: '95%',
-                          height: '90%',
-                          borderWidth: width * 0.003,
-                          borderRadius: width * 0.01,
-                          justifyContent: 'center',
-                          paddingHorizontal: width * 0.03,
                         }}>
                         <Text>{this.state.BillingCompany}</Text>
                       </TouchableOpacity>
-
                       <Modal
                         animationIn="fadeIn"
                         animationOut="fadeOut"
                         isVisible={this.state.open}
-                        style={{
-                          height: height * 0.4,
-                        }}>
-                        <View
-                          style={{
-                            padding: width * 0.05,
-                            backgroundColor: 'white',
-                            borderRadius: width * 0.02,
-                            elevation: width * 0.02,
-                            alignItems: 'center',
-                          }}>
-                          <View
-                            style={{
-                              width: '100%',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              flexDirection: 'row',
-                            }}>
-                            <Text
-                              style={{
-                                color: 'black',
-                                fontSize: height * 0.028,
-                                fontFamily: Fonts.ComfortaaRegular,
-                              }}>
+                        style={styles.billingModalContainer}>
+                        <View style={styles.billingModalInner}>
+                          <View style={styles.billingModalHeader}>
+                            <Text style={styles.billingModalHeading}>
                               Billing Companies
                             </Text>
                             <Pressable
@@ -556,18 +498,7 @@ export default class Splash extends React.Component {
                             this.context.propitemList.map((data) => (
                               <TouchableOpacity
                                 onPress={() => this.handleDropDownData(data)}
-                                style={{
-                                  backgroundColor: '#F6F6F6',
-                                  alignSelf: 'center',
-                                  borderColor: 'gray',
-                                  width: '85%',
-                                  height: height * 0.09,
-                                  borderWidth: width * 0.003,
-                                  borderRadius: width * 0.01,
-                                  justifyContent: 'center',
-                                  paddingHorizontal: width * 0.03,
-                                  marginVertical: height * 0.005,
-                                }}>
+                                style={styles.billingCompanies}>
                                 <Text>{data.name}</Text>
                               </TouchableOpacity>
                             ))}
@@ -581,33 +512,12 @@ export default class Splash extends React.Component {
                         {this.state.error.billingId}
                       </HelperText>
                     ) : null}
-                    {/* <View style={styles.inputContainer}>
-                      <TextInput
-                        label="MANAGEMENT COMPANY"
-                        placeholder="Company Name"
-                        style={styles.input}
-                        // value={'A1 Equities'}
-                        onChangeText={(text) => {
-                          this.setState({ManageComp: text});
-                        }}
-                        // dense={true}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
-                        }}
-                      />
-                    </View> */}
                     <View style={styles.inputContainer}>
                       <TextInput
                         label="CUSTOM ID*"
                         placeholder="Company specific Id"
                         error={this.state.error.propertyId}
                         style={styles.input}
-                        // value={'A1 Equities'}
                         onChangeText={(text) => {
                           this.setState({CustomId: text});
                           this.setState((prevState) => ({
@@ -618,7 +528,6 @@ export default class Splash extends React.Component {
                             },
                           }));
                         }}
-                        // dense={true}
                         mode={'outlined'}
                         theme={{
                           colors: {
@@ -636,121 +545,6 @@ export default class Splash extends React.Component {
                         {this.state.error.propertyId}
                       </HelperText>
                     ) : null}
-                    {/* <View style={styles.desciptionContainer}>
-                      <Icon
-                        name={'contact-mail'}
-                        size={height * 0.03}
-                        color="#5e5e5e"
-                      />
-                      <Text style={styles.desciptionHeading}>
-                        CONTACT INFO (OPTIONAL)
-                      </Text>
-                    </View>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Icon
-                          name="account-box"
-                          size={height * 0.04}
-                          color="white"
-                          maxOpacity={0.5}
-                        />
-                      </View>
-                      <TextInput
-                        placeholder="Contact Name"
-                        onChangeText={(text) =>
-                          this.setState({ContactName: text})
-                        }
-                        style={styles.contactInput}
-                        // mode={"outlined"}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                            background: '#ffffffaa',
-                          },
-                        }}
-                      />
-                    </View>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Tag
-                          name="tag"
-                          size={height * 0.04}
-                          color="white"
-                          maxOpacity={0.5}
-                        />
-                      </View>
-                      <TextInput
-                        placeholder="Title or Job Description"
-                        onChangeText={(text) =>
-                          this.setState({ContactTitle: text})
-                        }
-                        style={styles.contactInput}
-                        // mode={"outlined"}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                            background: '#ffffffaa',
-                          },
-                        }}
-                      />
-                    </View>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Icon
-                          name="local-phone"
-                          size={height * 0.04}
-                          color="white"
-                          maxOpacity={0.5}
-                        />
-                      </View>
-                      <TextInput
-                        placeholder="Phone"
-                        keyboardType="number-pad"
-                        onChangeText={(text) =>
-                          this.setState({ContactPhone: text})
-                        }
-                        style={styles.contactInput}
-                        // mode={"outlined"}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                            background: '#ffffffaa',
-                          },
-                        }}
-                      />
-                    </View>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Icon
-                          name="mail-outline"
-                          size={height * 0.04}
-                          color="white"
-                          maxOpacity={0.5}
-                        />
-                      </View>
-                      <TextInput
-                        placeholder="Email"
-                        onChangeText={(text) =>
-                          this.setState({ContactEmail: text})
-                        }
-                        style={styles.contactInput}
-                        // mode={"outlined"}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                            background: '#ffffffaa',
-                          },
-                        }}
-                      />
-                    </View> */}
                   </View>
                 </ScrollView>
                 {/* Box Header */}
@@ -761,7 +555,6 @@ export default class Splash extends React.Component {
                       style={styles.submitBotton}
                       color="white"
                       icon="check"
-                      // loading={false}
                       label="Add property"
                     />
                   </View>
