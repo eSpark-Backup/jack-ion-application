@@ -1148,7 +1148,7 @@ const App = ({navigation}) => {
                 {item.id == unitMeter?.id && (
                   <View
                     style={[
-                      styles.selectedMeterContainer,
+                      styles.meterInner,
                       {backgroundColor: typeColor(item.meter_name)},
                     ]}>
                     <Check
