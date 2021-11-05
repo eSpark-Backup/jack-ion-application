@@ -64,6 +64,7 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import { create } from 'apisauce';
 import UpdateModal from '../../../../components/modal/UpdateModal';
 import { Header, Button, Icon as Iconx } from 'react-native-elements';
+import AddBuilding from '../../../../components/modal/AddBuilding/index';
 
 // Components
 import { Fonts } from '../../../../utils/fonts';
@@ -211,6 +212,7 @@ export default class Splash extends Component {
         unit: '',
       },
       editModal: false,
+      buildingModalType: '',
       editBuilding: '',
       editBuildDes: '',
       showSearch: false,
@@ -279,11 +281,6 @@ export default class Splash extends Component {
           input: '',
           error: '',
         },
-        // {
-        //   name: 'SIZE*',
-        //   showList: false,
-        //   input: '',
-        // },
         {
           name: 'MULTIPLIER*',
           showList: false,
@@ -428,22 +425,14 @@ export default class Splash extends Component {
           editBuildDes: response?.data?.data[0].descriptions,
           editBuildId: response?.data?.data[0].id,
         });
-        console.log('Building Id', response?.data?.data[0].id);
+        // console.log('Building Id', response?.data?.data[0].id);
         const data = {
           building_id: response?.data?.data[0].id,
         };
-        // this.setState({items: response?.data?.data});
         const unitResponse = await this.api.post(
           `/property/equipment/unit/all-units`,
           data,
         );
-        console.log(
-          clc.xterm(121)(
-            'Check unitResponse unit--->',
-            unitResponse?.data?.data,
-          ),
-        );
-        // this.handleSorting(unitResponse?.data?.data);
 
         if (unitResponse?.ok == true) {
           this.setState({ realData: unitResponse?.data?.data, loader: false });
@@ -559,16 +548,10 @@ export default class Splash extends Component {
 
   getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
-    // console.log('this.state.newUnit===>', this.state.newUnit);
     var intValue = this.state.newUnit;
     var firstStr = this.state.newUnit.split(parseInt(this.state.newUnit.match(/\d+/)))[0];
     var lastStr = this.state.newUnit.split(parseInt(this.state.newUnit.match(/\d+/)))[1];
     var intValue = parseInt(intValue.match(/\d+/)) + 1;
-
-    // var int = this.state.newUnit;
-    // var str = this.state.newUnit;
-    // int = parseInt(int.match(/\d+/)) + 1;
-    // str = str.replace(/[0-9]/g, '');
     var loopData = [];
     var i;
     for (i = 0; i < n; i++) {
@@ -588,11 +571,6 @@ export default class Splash extends Component {
       var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
       var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
       var intValue = parseInt(intValue.match(/\d+/));
-      // console.log('firstStr-->', firstStr);
-      // console.log('lastStr-->', lastStr);
-      // console.log('intValue-->', intValue);
-
-      // console.log('response adadad-->', (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''));
       let unitsArray = [...this.state.unitsArray];
       this.state.unitsArray.map((item, index) => {
         if (index >= i) {
@@ -671,14 +649,16 @@ export default class Splash extends Component {
     this.setState({ gotData: false });
   };
   selectAndCloseAddMultiple = () => {
-    this.toggleModalMunit();
-    this.changeLayoutMeter2();
-    this.getLoopOfUnits();
+    this.toggleModalBuild();
+    this.setState({ buildingModalType: 'Multyple' })
+    // this.changeLayoutMeter2();
+    // this.getLoopOfUnits();
   };
   selectAndCloseAddBuild = () => {
     this.toggleModalBuild();
-    this.changeLayoutMeter2();
-    this.getLoopOfUnits();
+    this.setState({ buildingModalType: '' })
+    // this.changeLayoutMeter2();
+    // this.getLoopOfUnits();
   };
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -1108,25 +1088,6 @@ export default class Splash extends Component {
               )}
             </View>
           </View>
-          {/* <View style={[styles.meterReading]}> */}
-          {/* <Text style={styles.dataFieldText}>
-                  {unit.item?.unit_meter?.length}
-                </Text>
-                <Text style={styles.dataFieldText}>Meters</Text> */}
-          {/* </View> */}
-          {/* <Text style={styles.dataFieldText}>{unit.item.code}</Text> */}
-          <TouchableOpacity
-            style={[styles.programDevice]}
-            onPress={() => this.programDevice(unit)}>
-            <View style={styles.proDeviceContent}>
-              <Barcode
-                name="barcode-scan"
-                size={height * 0.025}
-                color="purple"
-              />
-              <Text style={styles.propDeviceText}>Program Device</Text>
-            </View>
-          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -1796,9 +1757,6 @@ export default class Splash extends Component {
       );
       console.log('addtype response--->', unitResponse);
       if (unitResponse?.ok) {
-        // this.setState({ measureOfUnit: unitResponse?.data?.data }, () =>
-        // console.log('measureOfUnit Of_______', this.state.measureOfUnit),
-        // );
         let newArr = [...this.state.meterListData]; // copying the old datas array
         newArr[this.state.typeOfMeterIndex].meterTypeName =
           // unitResponse?.data?.data?.type?.manufacturer +
@@ -1998,7 +1956,10 @@ export default class Splash extends Component {
       return data[el.index];
     });
   }
-
+  handleAddBuilding = () => {
+    this.setState({ isModalBuildVisible: false });
+    this.checkData();
+  };
   render() {
     const { result, scan, scanResult } = this.state;
     const realData = this.state.realData;
@@ -2268,7 +2229,7 @@ export default class Splash extends Component {
                     <Message
                       name="chevron-down"
                       size={height * 0.02}
-                      color="purple"
+                      color="#3E4A4F"
                       style={{ marginLeft: width * 0.02 }}
                     />
                   </TouchableOpacity>
@@ -2319,7 +2280,7 @@ export default class Splash extends Component {
                     <Message
                       name="chevron-down"
                       size={height * 0.02}
-                      color="purple"
+                      color="#3E4A4F"
                       style={{ marginLeft: width * 0.02 }}
                     />
                   </TouchableOpacity>
@@ -2360,6 +2321,7 @@ export default class Splash extends Component {
                             }
                             name="house-user"
                             size={height * 0.02}
+                            color="#3E4A4F"
                           />
                           <Text
                             style={[
@@ -2393,6 +2355,7 @@ export default class Splash extends Component {
                                 : '#000'
                             }
                             name="house-user"
+                            color="#3E4A4F"
                             size={height * 0.02}
                           />
                           <Text
@@ -2420,7 +2383,7 @@ export default class Splash extends Component {
                           justifyContent: 'space-between',
                           alignItems: 'flex-start',
                         }}>
-                        <Build name="office-building" size={height * 0.02} />
+                        <Build name="building" size={width * 0.04} color="#3E4A4F" />
                         <Text
                           style={{
                             fontSize: 14,
@@ -2484,411 +2447,20 @@ export default class Splash extends Component {
                 }}
                 unitsArray={this.state.realData}
               />
-              {/* Add Multiple Unit Modal */}
-              <Modal
-                animationIn="slideInDown"
-                animationOut="slideOutUp"
-                hasBackdrop={true}
-                backdropColor="black"
-                isVisible={this.state.isModalMunitVisible}
-                style={styles.modal1Container}>
-                <KeyboardAvoidingView behavior="padding">
-                  <View style={styles.modalInner}>
-                    <View style={styles.mUnitboxConatainer}>
-                      <View style={styles.boxInner}>
-                        {/* Add Multiple Unit Modal Header */}
-                        <View style={styles.boxHeader}>
-                          <View style={styles.boxHeaderInner}>
-                            <Icon
-                              name={'business'}
-                              size={height * 0.05}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.modalHeading}>Add Multiple Units</Text>
-                            <Pressable
-                              onPress={this.clearMutlipleUniModal}
-                              android_ripple={{
-                                color: 'black',
-                                borderless: true,
-                                radius: width * 0.03,
-                              }}>
-                              <Icon
-                                name="cancel"
-                                size={height * 0.035}
-                                color="black"
-                                maxOpacity={0.5}
-                              />
-                            </Pressable>
-                          </View>
-                        </View>
-                        {/* Modal Body */}
-                        <ScrollView style={{ flex: 1 }}>
-                          <View style={styles.desciptionContainer}>
-                            <Build
-                              name={'office-building'}
-                              size={height * 0.02}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.desciptionHeading}>
-                              BUILDING*
-                            </Text>
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Building Name"
-                              value={this.state.buildingData.name}
-                              editable={false}
-                              showSoftInputOnFocus={false}
-                              style={styles.input}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.desciptionContainer}>
-                            <Text style={styles.desciptionHeading}>
-                              Description*
-                            </Text>
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Building Description"
-                              value={this.state.editBuildDes}
-                              onChangeText={(text) => {
-                                this.setState({ editBuildDes: text });
-                              }}
-                              style={styles.input}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.desciptionContainer}>
-                            <Home
-                              name={'house-user'}
-                              size={height * 0.02}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.desciptionHeading}>
-                              # OF UNITS
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              height: height * 0.1,
-                              width: width * 0.8,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderBottomWidth: width * 0.001,
-                              // paddingHorizontal: width * 0.01,
-                              // backgroundColor:'red'
-                            }}>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                width: width * 0.75,
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                // backgroundColor:'red'
-                              }}>
-                              <TextInput
-                                // label="BILLING COMPANY*"
-                                keyboardType="numeric"
-                                error={this.state.error.units}
-                                placeholder="# of Units"
-                                // dense={true}
-                                onChangeText={(text) => {
-                                  this.getLoopOfUnits(text);
-                                  this.setState((prevState) => ({
-                                    error: {
-                                      // object that we want to update
-                                      ...prevState.error, // keep all other key-value pairs
-                                      units: '',
-                                    },
-                                  }));
-                                }}
-                                style={{
-                                  height: height * 0.07,
-                                  width: width * 0.35,
-                                  fontSize: height * 0.018,
-                                }}
-                                scrollEnabled={false}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                              <CheckBox
-                                value={this.state.autoIncrement}
-                                onValueChange={() =>
-                                  this.setState({
-                                    autoIncrement: !this.state.autoIncrement,
-                                  })
-                                }
-                              />
-                              <Text style={{ fontSize: width * 0.035 }}>
-                                Auto Increment
-                              </Text>
-                            </View>
-                          </View>
-                          {this.state.error.units ? (
-                            <HelperText
-                              type="error"
-                              visible={this.state.error.units}>
-                              {this.state.error.units}
-                            </HelperText>
-                          ) : null}
-                          <FlatList
-                            data={this.state.unitsArray}
-                            initialNumToRender={this.state.noOfUnits}
-                            renderItem={(item, index) =>
-                              this._renderUnitList(item, index)
-                            }
-                            keyExtractor={(item, index) => index.toString()}
-                          />
-                        </ScrollView>
-                        {/* Box Footer */}
-                        <View style={styles.footerBtn}>
-                          <View style={styles.bottonContainer}>
-                            <TouchableOpacity
-                              onPress={this.clearMutlipleUniModal}>
-                              <View style={styles.cancelBotton}>
-                                <Plus name="close" color="black" size={18} />
-                                <Text style={{ color: 'black' }}>Cancel</Text>
-                              </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => this.addMultipleUnits()}>
-                              <View style={styles.saveUnitBotton}>
-                                <Plus name="plus" color="white" size={18} />
-                                <Text style={{ color: 'white' }}>Add Units</Text>
-                              </View>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-                </KeyboardAvoidingView>
-              </Modal>
-              {/* Add Building Modal */}
-              <Modal
-                animationIn="slideInDown"
-                animationOut="slideOutUp"
-                hasBackdrop={true}
-                backdropColor="black"
-                isVisible={this.state.isModalBuildVisible}
-                // isVisible={true}
-                style={styles.modal1Container}>
-                <KeyboardAvoidingView behavior="padding">
-                  <View style={styles.modalInner}>
-                    <View style={styles.mUnitboxConatainer}>
-                      <View style={styles.boxInner}>
-                        {/* Add Mutiple Unit Modal Header */}
-                        <View style={styles.boxHeader}>
-                          <View style={styles.boxHeaderInner}>
-                            <Icon
-                              name={'business'}
-                              size={height * 0.05}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.modalHeading}>
-                              New Building
-                            </Text>
-                            <Pressable
-                              onPress={this.clearBuildingModal}
-                              android_ripple={{
-                                color: 'black',
-                                borderless: true,
-                                radius: width * 0.03,
-                              }}>
-                              <Icon
-                                name="cancel"
-                                size={height * 0.035}
-                                color="black"
-                                maxOpacity={0.5}
-                              />
-                            </Pressable>
-                          </View>
-                        </View>
-                        {/* Modal Body */}
-                        <ScrollView style={{ flex: 1 }}>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Building Name"
-                              error={this.state.error.buildingName}
-                              onChangeText={(text) => {
-                                this.setState({ buildName: text });
-                                this.setState((prevState) => ({
-                                  error: {
-                                    // object that we want to update
-                                    ...prevState.error, // keep all other key-value pairs
-                                    buildingName: '',
-                                  },
-                                }));
-                              }}
-                              style={styles.input}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          {this.state.error.buildingName ? (
-                            <HelperText
-                              type="error"
-                              visible={this.state.error.buildingName}>
-                              {this.state.error.buildingName}
-                            </HelperText>
-                          ) : null}
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Building Description"
-                              onChangeText={(text) => {
-                                this.setState({ buildDescription: text });
-                              }}
-                              style={styles.input}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.desciptionContainer}>
-                            <Home
-                              name={'house-user'}
-                              size={height * 0.02}
-                              color="#5e5e5e"
-                            />
-                            <Text style={styles.desciptionHeading}>
-                              # OF UNITS
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              height: height * 0.1,
-                              width: width * 0.8,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderBottomWidth: width * 0.001,
-                              // paddingHorizontal: width * 0.01,
-                              // backgroundColor:'red'
-                            }}>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                width: width * 0.75,
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                // backgroundColor:'red'
-                              }}>
-                              <TextInput
-                                // label="BILLING COMPANY*"
-                                keyboardType="numeric"
-                                error={this.state.error.units}
-                                placeholder="# of Units"
-                                // dense={true}
-                                onChangeText={(text) => {
-                                  this.getLoopOfUnits(text);
-                                  this.setState((prevState) => ({
-                                    error: {
-                                      // object that we want to update
-                                      ...prevState.error, // keep all other key-value pairs
-                                      units: '',
-                                    },
-                                  }));
-                                }}
-                                style={{
-                                  height: height * 0.07,
-                                  width: width * 0.35,
-                                  fontSize: height * 0.018,
-                                }}
-                                scrollEnabled={false}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                              <CheckBox
-                                value={this.state.autoIncrement}
-                                onValueChange={() =>
-                                  this.setState({
-                                    autoIncrement: !this.state.autoIncrement,
-                                  })
-                                }
-                              />
-                              <Text style={{ fontSize: width * 0.035 }}>
-                                Auto Increment
-                              </Text>
-                            </View>
-                          </View>
-                          {this.state.error.units ? (
-                            <HelperText
-                              type="error"
-                              visible={this.state.error.units}>
-                              {this.state.error.units}
-                            </HelperText>
-                          ) : null}
-                          <FlatList
-                            data={this.state.unitsArray}
-                            initialNumToRender={this.state.noOfUnits}
-                            renderItem={(item, index) =>
-                              this._renderUnitList(item, index)
-                            }
-                            keyExtractor={(item, index) => index.toString()}
-                          />
-                        </ScrollView>
-                        {/* Box Footer */}
-                        <View style={styles.footerBtn}>
-                          <View style={styles.bottonContainer}>
-                            <TouchableOpacity onPress={this.clearBuildingModal}>
-                              <View style={styles.cancelBotton}>
-                                <Plus name="close" color="black" size={18} />
-                                <Text style={{ color: 'black' }}>Cancel</Text>
-                              </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => this.newBuilding()}>
-                              <View style={styles.saveUnitBotton}>
-                                <Plus name="plus" color="white" size={18} />
-                                <Text style={{ color: 'white' }}>Add Build</Text>
-                              </View>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-                </KeyboardAvoidingView>
-              </Modal>
-              {/* Barcode Scanner */}
-              
+              <AddBuilding
+                modalVisible={this.state.isModalBuildVisible}
+                type={this.state.buildingModalType}
+                modalName="New Building"
+                closeModal={() => this.setState({ isModalBuildVisible: false })}
+                reRun={this.handleAddBuilding}
+                propertyId={this.props.navigation.state.params.item.item.id}
+                lastUnitName={this.state.newUnit}
+                buildData={{
+                  buildingName: this.state.buildingData.name,
+                  buildDes: this.state.editBuildDes,
+                  buildId: this.state.editBuildId
+                }}
+              />
             </View>
             <Filter
               type="Units"
