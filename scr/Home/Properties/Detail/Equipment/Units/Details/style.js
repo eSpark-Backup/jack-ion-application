@@ -17,9 +17,35 @@ export default styles = StyleSheet.create({
     marginVertical: width * 0.05,
     height: height * 0.15,
   },
+  headerContainerStyle: {borderBottomWidth: width * 0.003, elevation: 1},
+  imgHeader: {
+    height: width * 0.06,
+    width: width * 0.055,
+    marginRight: width * 0.025,
+  },
+  emptyMeterText: {
+    fontSize: width * 0.05,
+    fontFamily: Fonts.ComfortaaRegular,
+    textAlign: 'center',
+    width: width * 0.9,
+    alignSelf: 'center',
+  },
+  metersImgContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addMeterButtonContainer: {
+    marginVertical: height * 0.01,
+    marginBottom: height * 0.06,
+  },
   listOuter: {paddingVertical: width * 0.02},
-  listContainer: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'},
-  listText: { textAlign: 'center', fontSize: width * 0.04},
+  listContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  listText: {textAlign: 'center', fontSize: width * 0.04},
   listGreyText: {color: '#5c5c5ccf', fontSize: width * 0.04},
   listDivider: {
     marginTop: height * 0.02,
@@ -38,6 +64,26 @@ export default styles = StyleSheet.create({
     fontSize: width * 0.035,
     color: '#8c8c8c',
   },
+  dangerBtn: {
+    backgroundColor: '#e24b4b',
+    marginVertical: height * 0.015,
+  },
+  selectedMeterContainer: {
+    position: 'absolute',
+    right: width * 0,
+    top: height * 0,
+    width: width * 0.035,
+    height: width * 0.035,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: width * 0.02,
+  },
+  rightedIcon: {alignSelf: 'center', marginRight: width * 0.01},
+  leftedIcon: {marginLeft: width * 0.03, alignSelf: 'center'},
+
+  flexRow: {flexDirection: 'row'},
+  flexColoum: {flexDirection: 'column'},
+  centerIcon: {alignSelf: 'center'},
   currentReadInnerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -131,23 +177,22 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
   },
   meterInner: {
-    position: 'absolute', 
-    right:width * 0,
-    top:height * 0,
-    width:width * .035,
-    height:width * .035,
-    alignItems:'center',
-    justifyContent:'center',
-    borderBottomLeftRadius:width * .02
-    },
+    position: 'absolute',
+    right: width * 0,
+    top: height * 0,
+    width: width * 0.035,
+    height: width * 0.035,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: width * 0.02,
+  },
   meterImg: {
     height: width * 0.07,
     width: width * 0.07,
   },
-  noDataMeterImg:{
-    // backgroundColor: 'red',
+  noDataMeterImg: {
     height: width * 0.25,
     width: width * 0.25,
   },
-  headerText: {fontSize: width * 0.05, color: '#000'}
+  headerText: {fontSize: width * 0.05, color: '#000'},
 });
