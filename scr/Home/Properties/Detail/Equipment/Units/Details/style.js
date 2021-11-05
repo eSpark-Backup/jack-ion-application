@@ -68,16 +68,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#e24b4b',
     marginVertical: height * 0.015,
   },
-  selectedMeterContainer: {
-    position: 'absolute',
-    right: width * 0,
-    top: height * 0,
-    width: width * 0.035,
-    height: width * 0.035,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomLeftRadius: width * 0.02,
-  },
+
   rightedIcon: {alignSelf: 'center', marginRight: width * 0.01},
   leftedIcon: {marginLeft: width * 0.03, alignSelf: 'center'},
 
