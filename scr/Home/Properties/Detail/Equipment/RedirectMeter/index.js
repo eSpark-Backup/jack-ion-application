@@ -848,21 +848,6 @@ export default class RedirectMeter extends Component {
               </View>
             </View>
           </View>
-          {/* <View
-            style={{
-              position: 'absolute',
-              bottom: height * 0.02,
-              width: width * 0.9,
-              alignSelf: 'center',
-            }}>
-            <Button
-              onPress={this.handleFinish}
-              disabled={this.state.finish}
-              titleStyle={{textTransform: 'capitalize'}}
-              title={'Finish'}
-              buttonStyle={{backgroundColor: '#25AAE1ec'}}
-            />
-          </View> */}
         </View>
         <EditUnit
           modalVisible={this.state.unitModal}

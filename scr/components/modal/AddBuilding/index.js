@@ -34,7 +34,9 @@ export default function AddbuildingModal({
   propertyId,
   reRun,
   type,
-  modalName
+  modalName,
+  lastUnitName,
+  buildData
 }) {
   const [meterListArray, setMeterListArray] = useState([]);
   const [state, setState] = useState({
@@ -54,22 +56,28 @@ export default function AddbuildingModal({
       console.log('It Worked', token);
       api.setHeader('Authorization', 'Bearer ' + token);
     }
+    getLoopOfUnits();
   };
   useEffect(() => {
-    getLoopOfUnits();
+    setState((oldState) => ({
+      ...oldState,
+      newUnit: lastUnitName == undefined ? 'Unit-0' : lastUnitName,
+      buildName: type == 'Multyple' ? buildData.buildingName == undefined ? '' : buildData.buildingName : '',
+      buildDescription:type == 'Multyple' ? buildData.buildDes == undefined ? '' : buildData.buildDes : '',
+    }));
     getToken();
   }, [modalVisible]);
+  // useEffect(() => {
+  // }, [state.newUnit]);
+
 
   const getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
-    var intValue = state.newUnit;
-    var firstStr = state.newUnit.split(parseInt(state.newUnit.match(/\d+/)))[0];
-    var lastStr = state.newUnit.split(parseInt(state.newUnit.match(/\d+/)))[1];
+    var initialValue = lastUnitName == undefined ? state.newUnit : lastUnitName
+    var intValue = initialValue;
+    var firstStr = initialValue.split(parseInt(initialValue.match(/\d+/)))[0];
+    var lastStr = initialValue.split(parseInt(initialValue.match(/\d+/)))[1];
     var intValue = parseInt(intValue.match(/\d+/)) + 1;
-    // var int = state.newUnit;
-    // var str = state.newUnit;
-    // int = parseInt(int.match(/\d+/)) + 1;
-    // str = str.replace(/[0-9]/g, '');
     var loopData = [];
     var i;
     for (i = 0; i < n; i++) {
@@ -85,8 +93,8 @@ export default function AddbuildingModal({
     }));
   };
 
-  const addInput = (value, i, vindex) => {
-    console.log('vindex--->>', vindex)
+  const addInput = (value, i) => {
+    // console.log('vindex--->>', vindex)
     setState((oldState) => ({
       ...oldState,
       newUnit: value
@@ -126,8 +134,8 @@ export default function AddbuildingModal({
       key={index}
       value={item.name}
       dense={true}
-      onChangeText={(text, valueIndex) => {
-        addInput(text, index, valueIndex);
+      onChangeText={(text) => {
+        addInput(text, index);
       }}
       style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
       scrollEnabled={false}
@@ -192,25 +200,44 @@ export default function AddbuildingModal({
         });
       }
       // console.log('looppdata--->',loopData)
+      if (type == 'Multyple') {
+        handleAddbuildingApi({
+          building_id: buildData.buildId,
+          units: loopData,
+          descriptions: state.buildDescription,
+        })
+      } else {
+        handleAddbuildingApi({
+          name: state.buildName,
+          property_id: propertyId,
+          units: loopData,
+          descriptions: state.buildDescription,
+        })
+      }
 
-      handleAddbuildingApi({
-        name: state.buildName,
-        property_id: propertyId,
-        units: loopData,
-        descriptions: state.buildDescription,
-      })
     }
   };
 
   const handleAddbuildingApi = async (data) => {
-    console.log('check data-->', data)
-    const unitResponse = await api.post(`/property/equipment/building/add-building`, data);
-    console.log('buildResponse--->', unitResponse)
-    if (unitResponse?.data?.bool) {
-      changeUtilityAndToggle()
-      reRun()
+    // console.log('check data-->', data)
+    if (type == 'Multyple') {
+      const unitResponse = await api.post(`/property/equipment/unit/add-multiple-units`, data);
+      console.log('buildResponse--->', unitResponse)
+      if (unitResponse?.data?.bool) {
+        changeUtilityAndToggle()
+        reRun()
+      } else {
+        alert(unitResponse?.data?.message)
+      }
     } else {
-      alert(unitResponse?.data?.message)
+      const unitResponse = await api.post(`/property/equipment/building/add-building`, data);
+      console.log('buildResponse--->', unitResponse)
+      if (unitResponse?.data?.bool) {
+        changeUtilityAndToggle()
+        reRun()
+      } else {
+        alert(unitResponse?.data?.message)
+      }
     }
   };
 
@@ -221,7 +248,6 @@ export default function AddbuildingModal({
       hasBackdrop={true}
       backdropColor="black"
       isVisible={modalVisible}
-    // isVisible={true}
     >
       <KeyboardAvoidingView behavior="padding">
         <View style={styles.modalInner}>
@@ -263,6 +289,8 @@ export default function AddbuildingModal({
                 <View style={styles.inputContainer}>
                   <TextInput
                     placeholder="Building Name"
+                    value={state.buildName}
+                    disabled={type == 'Multyple' ? true : false}
                     error={error.buildingName}
                     onChangeText={(text) => {
                       setError((oldState) => ({
@@ -295,6 +323,7 @@ export default function AddbuildingModal({
                 <View style={styles.inputContainer}>
                   <TextInput
                     placeholder="Building Description"
+                    value={state.buildDescription}
                     onChangeText={(text) => {
                       setState((oldState) => ({
                         ...oldState,
