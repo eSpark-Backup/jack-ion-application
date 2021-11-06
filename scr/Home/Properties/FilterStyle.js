@@ -16,13 +16,84 @@ export default styles = StyleSheet.create({
   currentReadContainer: {
     width: '100%',
   },
-  modalContainer: {
-    // elevation: width * 0.005,
-    // borderRadius: width * 0.02,
-    // backgroundColor: 'white',
-    // maxHeight: height * .7,
-    // maxWidth: width * 1,
+  filterHeader: {
+    borderBottomWidth: width * 0.003,
+    elevation: 1,
   },
+  billingButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  utilityList: {
+    marginLeft: width * 0.05,
+  },
+
+  UtilityTypeBtn: {
+    borderRadius: 10,
+    padding: width * 0.015,
+    marginHorizontal: width * 0.02,
+    marginVertical: height * 0.01,
+  },
+
+  UtilityTypeImg: {
+    height: width * 0.06,
+    width: width * 0.055,
+  },
+
+  utilityDots: {
+    paddingLeft: width * 0.035,
+    marginVertical: width * 0.035,
+  },
+  billingModalInner: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  billingModalHeader: {
+    width: '100%',
+    height: '20%',
+    justifyContent: 'center',
+    borderBottomWidth: 0.5,
+    paddingLeft: width * 0.05,
+  },
+
+  billingModalBtns: {
+    fontSize: width * 0.032,
+    marginHorizontal: 5,
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    color: '#18CADC',
+  },
+  billingModalBottom: {
+    width: '100%',
+    height: '20%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderTopWidth: 0.5,
+    paddingRight: width * 0.03,
+  },
+
+  companyList: {
+    width: '100%',
+    height: '60%',
+  },
+
+  billingCompnay: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: height * 0.005,
+  },
+
+  headerCenter: {
+    alignItems: 'center',
+  },
+  headerCenterText: {
+    fontSize: 20,
+    color: '#25aae1',
+  },
+
   modalInner: {
     elevation: width * 0.005,
     borderRadius: width * 0.02,
@@ -41,7 +112,7 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.02,
     elevation: width * 0.02,
     alignItems: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   boxHeader: {
     width: width * 0.75,
@@ -88,7 +159,7 @@ export default styles = StyleSheet.create({
     paddingHorizontal: height * 0.02,
   },
   filterInputs: {
-    width: "55%",
+    width: '55%',
     textTransform: 'capitalize',
   },
   filterUtility: {
@@ -97,7 +168,22 @@ export default styles = StyleSheet.create({
     padding: height * 0.02,
     elevation: 1,
     marginVertical: height * 0.001,
-    // position:'absolute',
-    // bottom:height * .02
+  },
+  scannerContainer: {
+    flex: 1,
+    justifyContent: 'space-around',
+    borderRadius: width * 0.02,
+  },
+  scannerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: height * 0.02,
+  },
+  scannerHeading: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+    paddingLeft: width * 0.08,
   },
 });

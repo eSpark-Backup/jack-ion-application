@@ -134,6 +134,8 @@ export default class Login extends Component {
           </View>
           <Formik
             initialValues={{
+              // email: 'esparktest@gmail.com',
+              // password: '12345678',
               email: 'strongone@gmail.com',
               password: 'qwertyui',
             }}
@@ -295,7 +297,8 @@ export default class Login extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <StatusBar hidden
+          <StatusBar
+            hidden
             backgroundColor="#155AAA"
             barStyle="default"
             showHideTransition={'fade'}
