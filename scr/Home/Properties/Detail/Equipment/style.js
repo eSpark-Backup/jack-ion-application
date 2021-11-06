@@ -1,10 +1,10 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../../../utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../../../utils/fonts';
 
 //Packages
 
 //Files
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -34,7 +34,7 @@ export default styles = StyleSheet.create({
   },
   searchView: {
     marginLeft: width * 0.03,
-    paddingHorizontal:width * .02,
+    paddingHorizontal: width * .02,
     width: width * 0.8,
     height: width * 0.1,
     justifyContent: 'space-between',
@@ -127,17 +127,60 @@ export default styles = StyleSheet.create({
   infoViewInner: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: width * .01
+  },
+  unitNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: width * 0.6,
+    overflow: 'hidden',
+  },
+  unitDetailContainer: {
+    width: width * .25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  unitDetailInnerif: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: width * .25,
+    marginVertical: width * .005,
+    paddingVertical: width * .005,
+  },
+  unitDetailInnerElse: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: width * .25,
+    paddingVertical: width * .005,
+  },
+  unitDetailInnerElseText: {
+    fontSize: width * 0.02,
+    color: '#3E4A4F',
+    fontFamily: Fonts.Montserrat
+  },
+  unitDetailInnerElseIcon:{
+    marginHorizontal: width * 0.005,
+    position:'absolute',
+    right:width * .0
+  },
+  untiDetailImage: {
+    height: width * 0.03,
+    width: width * 0.03,
+  },
+  unitDetailSeprater: {
+    borderColor: '#3E4A4F50',
+    position: 'absolute',
+    width: width * .23,
+    borderRadius: width * 1,
+    alignSelf: 'center'
   },
   unitListInfo: {
     height: height * 0,
     overflow: 'hidden',
-    // bottom: height * .011,
-    // backgroundColor: 'white',
-    // borderRadius: width * .02,
-    // borderTopRightRadius: width * 0,
-    // borderTopLeftRadius: width * 0,
   },
   isSelectedUnit: {
     // backgroundColor: "#FA7B5F",
@@ -167,13 +210,41 @@ export default styles = StyleSheet.create({
     // textAlign: 'center',
   },
   dataFieldText: {
-    fontSize: height * 0.018,
+    fontSize: width * 0.03,
     fontFamily: Fonts.Montserrat,
-    marginLeft: width * 0.01,
     textAlign: 'center',
     textTransform: 'capitalize',
-    color:"#3E4A4F"
+    color: "#3E4A4F"
 
+  },
+  buildingSelectIcon: {
+    position: 'absolute',
+    right: width * 0,
+    top: height * 0,
+    width: width * 0.035,
+    height: width * 0.035,
+    backgroundColor: '#25AAE1ec',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopRightRadius: width * 0.008,
+    borderBottomLeftRadius: width * 0.02,
+  },
+  buildingUnitName: {
+    paddingHorizontal: 10,
+    fontSize: width * 0.05,
+    textAlign: 'center',
+    fontFamily: Fonts.Montserrat,
+    color: '#3E4A4F'
+  },
+  buildingEditBtn: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: width * 0.01,
+    backgroundColor: '#25AAE1ec',
+    borderBottomLeftRadius: width * 0.01,
+    borderBottomRightRadius: width * 0.01,
   },
   dropDown: {
     flexDirection: 'row',
@@ -325,7 +396,7 @@ export default styles = StyleSheet.create({
     color: 'black',
     fontFamily: Fonts.ComfortaaRegular,
     right: width * 0.02,
-    textAlign:'center'
+    textAlign: 'center'
   },
   desciptionContainer: {
     height: height * 0.035,
@@ -575,9 +646,9 @@ export default styles = StyleSheet.create({
   },
   filterButton: {
     backgroundColor: 'white',
-    borderRadius:width * .06 ,
-    height:width * .08,
-    width:width * .08,
+    borderRadius: width * .06,
+    height: width * .08,
+    width: width * .08,
     alignItems: 'center',
     justifyContent: 'center',
   },

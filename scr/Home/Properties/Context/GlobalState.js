@@ -3,13 +3,7 @@ import Context from './propContext';
 import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import axios from 'axios';
-import clc from 'cli-color';
 import {Alert} from 'react-native';
-
-// const baseURL = 'http://51.178.36.223/api';
-
-// const ContextProp = React.createContext('default Value')
 
 class GlobalState extends React.Component {
   componentDidMount() {
@@ -19,13 +13,11 @@ class GlobalState extends React.Component {
     console.log('Get Token');
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
-      // console.log('token aya', token);
       this.setState({token: token});
       this.api = create({
         baseURL: Base_URL,
         headers: {Authorization: 'Bearer ' + token},
       });
-      // this.checkData();
     }
   };
 
@@ -42,7 +34,6 @@ class GlobalState extends React.Component {
     const response = await this.api.post('/property/all', data);
     // console.log('respone property===>', response.data.data.properties);
     this.setState({
-      success: response.data.bool,
       offset: response.data.data.offset,
     });
     if (response?.data?.bool) {
@@ -66,9 +57,6 @@ class GlobalState extends React.Component {
     };
     const response = await this.api.post('/property/all', data);
     // console.log('respone property===>', response.data.data);
-    this.setState({
-      success: response.data.bool,
-    });
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
       console.log('response.data.data.offset===>', response.data.data.offset);
@@ -80,7 +68,6 @@ class GlobalState extends React.Component {
         let data2 = response.data.data.properties;
         data.push(...data2);
         this.setState({propList: data});
-        // console.log('new array', data);
         this.setState({listLoader: false, offset: response.data.data.offset});
         this.setState({limitExceed: false});
       } else {
@@ -91,10 +78,6 @@ class GlobalState extends React.Component {
       Alert.alert('Error', 'Network Issues');
       this.setState({listLoader: false});
     }
-  };
-
-  changeOffset = () => {
-    this.setState({offset: 0});
   };
 
   filterData = async (sort) => {
@@ -117,16 +100,9 @@ class GlobalState extends React.Component {
   };
 
   state = {
-    editName: '',
-    editAddress: '',
-    editBillComp: '',
-    editManageComp: '',
-    editCustomId: '',
     filterDataName: '',
     filterPropName: '',
-    index: '',
     token: null,
-    success: false,
     isLoading: true,
     searchLoading: false,
     listLoader: false,
@@ -134,7 +110,6 @@ class GlobalState extends React.Component {
     biller: '',
     loadFor: '',
     searchPropName: '',
-    propList1: ['Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas', 'Sugar Mamas'],
     itemList: [],
     offset: 0,
     searchOffset: 0,
@@ -170,93 +145,13 @@ class GlobalState extends React.Component {
       }
     });
 
-    // const response = await this.api.post('/property/all');
-    // this.setState({propList: response.data.data.properties});
-  };
-
-  addUnits = (info) => {
-    // console.log('On Add Unit', this.state.propList[info.indexUnits].dataTop[info.indexBuild].list)
-    this.state.propList[info.indexUnits].dataTop[info.indexBuild].list.push({
-      id:
-        this.state.propList[info.indexUnits].dataTop[info.indexBuild].list
-          .length + 1,
-      build: info.unitBuild,
-      name: info.unitName,
-      code: info.unitSerial,
-      type: info.unitMeter,
-    });
-  };
-
-  addBuilding = (building) => {
-    // console.log(building)
-    // console.log(this.state.propList[building.indexUnits].dataTop)
-    // this.state.propList[building.indexUnits].dataTop.push({
-    //   id: this.state.propList[building.indexUnits].dataTop.length + 1,
-    //   name: building.newBuildName,
-    //   list: building.newBuildUnits,
-    // });
-    const unitResponse = this.api.post(
-      `/property/equipment/building/add-building`,
-      building,
-    );
-    console.log('Check unitResponse buildings--->', unitResponse);
-  };
-
-  profileWeGet = (profile) => {
-    // this.setState({ index: profile })
-    // console.log('We Get', this.state.propList)
-  };
-
-  editProperty = async (editData) => {
-    // console.log('editproperty===>', editData);
-  };
-
-  editUnit = (editData) => {
-    // console.log('On Add Unit', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
-    // console.log('On Edit Unit Index', editData)
-
-    const some_array = [
-      ...this.state.propList[editData.indexUnits].dataTop[editData.indexBuild]
-        .list,
-    ];
-    some_array[editData.atIndex] = {
-      id: editData.id,
-      build: editData.editBuild,
-      name: editData.editUnit,
-      code: editData.editSerial,
-      type: editData.editMeter,
-    };
-    // console.log('What we are getin', some_array)
-    // this.setState(Object.assign(this.state.propList[0](this.state.propList.dataTop[0],{list: some_array})))
-    this.setState(
-      Object.assign(
-        this.state.propList[editData.indexUnits].dataTop[editData.indexBuild],
-        {list: some_array},
-      ),
-    );
-    // console.log('Kiya Edit Howa', this.state.propList[editData.indexUnits].dataTop[editData.unitBuild].list)
-  };
-  jumpToDetail = () => {
-    this.props.navigation.navigate('Detail');
-    // this.selectedProp()
   };
   getBillingCompany = async () => {
     const response = await this.api.get('/property/billing-company/all');
     console.log('Check response', response?.data?.data?.billingCompany);
-    // this.setState({ success: response.data.bool });
     this.setState({itemList: response?.data?.data?.billingCompany});
   };
 
-  showBuildings = async (data) => {
-    const response = await this.api.post(
-      `/property/equipment/building/all-buildings/28303`,
-    );
-    console.log('Check response buildings--->', response);
-    // console.log('Check response buildings--->', `/property/equipment/building/all-buildings/${data}`);
-
-    // this.setState({ success: response.data.bool });
-    // this.setState({ itemList: response?.data?.data?.billingCompany });
-  };
   searchProperties = async (e) => {
     this.setState({loadFor: e});
     let data = {
@@ -359,40 +254,29 @@ class GlobalState extends React.Component {
         <Context.Provider
           value={{
             propList: this.state.propList,
-            success: this.state.success,
-            propPerty: this.state.propPerty,
-            profileIndex: this.state.profileIndex,
             propitemList: this.state.itemList,
+            isLoading: this.state.isLoading,
+            searchList: this.state.searchList,
+            searchLoading: this.state.searchLoading,
+            listLoader: this.state.listLoader,
+            biller: this.state.biller,
+            filterSerial: this.state.filterSerial,
+            filterPropName: this.state.filterPropName,
+            filterWork: this.state.filterWork,
             addProp: this.addProp,
-            addUnits: this.addUnits,
-            addBuilding: this.addBuilding,
-            editUnit: this.editUnit,
-            editProperty: this.editProperty,
-            profileWeGet: this.profileWeGet,
-            jumpToDetail: this.jumpToDetail,
             checkData: this.checkData,
             getToken: this.getToken,
             getBillingCompany: this.getBillingCompany,
             clearData: this.clearData,
-            showBuildings: this.showBuildings,
-            isLoading: this.state.isLoading,
             filterData: this.filterData,
             searchProperties: this.searchProperties,
-            searchList: this.state.searchList,
-            searchLoading: this.state.searchLoading,
             clearSearchList: this.clearSearchList,
             loadMoreData: this.loadMoreData,
-            listLoader: this.state.listLoader,
             loadSearchData: this.loadSearchData,
-            deleteBuilding: this.deleteBuilding,
             updateBuilding: this.updateBuilding,
-            biller: this.state.biller,
             updateBiller: this.updateBiller,
-            filterSerial: this.state.filterSerial,
             updateFilterSerial: this.updateFilterSerial,
-            filterPropName: this.state.filterPropName,
             updateFilterProperty: this.updateFilterProperty,
-            filterWork: this.state.filterWork,
           }}>
           {this.props.children}
         </Context.Provider>
