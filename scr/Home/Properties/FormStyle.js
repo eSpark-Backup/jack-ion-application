@@ -30,20 +30,11 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.04,
     color: 'white',
-    marginLeft: 10
+    marginLeft: 10,
   },
 
   // Modal
-  modalContainer: {
-    // elevation: width * .005,
-    // borderRadius: width * .02,
-    // backgroundColor: 'white',
-    // maxHeight: height * 1,
-    // maxWidth: width * 1,
-    // borderWidth: height * .005,
-  },
   modalInner: {
-    // flex: 1,
     elevation: width * 0.005,
     borderRadius: width * 0.02,
     backgroundColor: 'white',
@@ -56,7 +47,6 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     width: width * 0.85,
     height: height * 0.6,
-    // justifyContent: "center",
   },
   boxInner: {
     flex: 1,
@@ -64,7 +54,6 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.02,
     elevation: width * 0.02,
     alignItems: 'center',
-    // borderColor: '#5F4B2F'
   },
   boxHeader: {
     width: width * 0.75,
@@ -72,9 +61,6 @@ export default styles = StyleSheet.create({
   },
   boxHeaderInner: {
     flex: 1,
-    // backgroundColor: 'white',
-    // borderBottomWidth:height * .005,
-    // borderColor:'#5F4B2F',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
@@ -107,39 +93,8 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    // height: height * .07,
     width: width * 0.75,
     fontSize: height * 0.018,
-  },
-  contactInfoContainer: {
-    height: height * 0.09,
-    width: width * 0.8,
-    // borderBottomWidth: width * .002,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  contactInfoInner: {
-    height: height * 0.074,
-    width: width * 0.14,
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#25AAE1ec',
-    left: width * 0.025,
-    position: 'absolute',
-    borderTopLeftRadius: width * 0.01,
-    borderBottomLeftRadius: width * 0.01,
-  },
-  contactInput: {
-    height: height * 0.07,
-    width: width * 0.61,
-    fontSize: height * 0.018,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
-    position: 'absolute',
-    left: width * 0.165,
   },
   bottonContainer: {
     flex: 1,
@@ -147,7 +102,6 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
   },
   submitBotton: {
-    // width: width * .4,
     height: height * 0.06,
     alignItems: 'center',
     justifyContent: 'center',
