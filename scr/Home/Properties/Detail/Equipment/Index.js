@@ -318,12 +318,12 @@ export default class Splash extends Component {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
-  _start = () => {
-    Animated.timing(this.state.fadeValue, {
-      toValue: 1,
-      duration: 1000,
-    }).start();
-  };
+  // _start = () => {
+  //   Animated.timing(this.state.fadeValue, {
+  //     toValue: 1,
+  //     duration: 1000,
+  //   }).start();
+  // };
   componentDidMount() {
     // this.setState({ loader: true, loaderBuildings: true });
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -335,59 +335,57 @@ export default class Splash extends Component {
   onFocusFunction = () => {
     this.setState({ loader: true, loaderBuildings: true });
     this.getToken();
-    // console.log('Equip--->', this.props.navigation.state.params.item.item.id);
     this.setState({ isModalVisible: false });
   };
 
-  showSuggestion = (index) => {
-    let newArr = [...this.state.meterTypeInputs];
-    newArr[index].showList = !newArr[index].showList;
+  // showSuggestion = (index) => {
+  //   let newArr = [...this.state.meterTypeInputs];
+  //   newArr[index].showList = !newArr[index].showList;
+  //   this.setState({ meterTypeInputs: newArr });
+  // };
 
-    this.setState({ meterTypeInputs: newArr });
-  };
-
-  hideSuggestion = (index, val, name) => {
-    let newArr = [...this.state.meterTypeInputs];
-    newArr[index].showList = !newArr[index].showList;
-    newArr[index].input = val;
-    newArr[index].error = '';
-    this.setState({ meterTypeInputs: newArr }, () =>
-      console.log('Meter Type', this.state.meterTypeInputs),
-    );
-    if (index == 0) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, manufacturer: val },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-    if (index == 1) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, model: val },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-    if (index == 2) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, multiplier: val },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-    if (index == 3) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: val },
-          measureOfUnitName: name,
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-  };
+  // hideSuggestion = (index, val, name) => {
+  //   let newArr = [...this.state.meterTypeInputs];
+  //   newArr[index].showList = !newArr[index].showList;
+  //   newArr[index].input = val;
+  //   newArr[index].error = '';
+  //   this.setState({ meterTypeInputs: newArr }, () =>
+  //     console.log('Meter Type', this.state.meterTypeInputs),
+  //   );
+  //   if (index == 0) {
+  //     this.setState(
+  //       {
+  //         meterTypeData: { ...this.state.meterTypeData, manufacturer: val },
+  //       },
+  //       () => console.log('Meter Type', this.state.meterTypeData),
+  //     );
+  //   }
+  //   if (index == 1) {
+  //     this.setState(
+  //       {
+  //         meterTypeData: { ...this.state.meterTypeData, model: val },
+  //       },
+  //       () => console.log('Meter Type', this.state.meterTypeData),
+  //     );
+  //   }
+  //   if (index == 2) {
+  //     this.setState(
+  //       {
+  //         meterTypeData: { ...this.state.meterTypeData, multiplier: val },
+  //       },
+  //       () => console.log('Meter Type', this.state.meterTypeData),
+  //     );
+  //   }
+  //   if (index == 3) {
+  //     this.setState(
+  //       {
+  //         meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: val },
+  //         measureOfUnitName: name,
+  //       },
+  //       () => console.log('Meter Type', this.state.meterTypeData),
+  //     );
+  //   }
+  // };
 
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -402,10 +400,7 @@ export default class Splash extends Component {
     }
   };
   get_filterVal = async (serial, meterId) => {
-    console.log('Devce serial', serial, meterId);
-    // if(this.state.filterWork){
-    //   this.setState({filterWork:false})
-    // }
+    // console.log('Devce serial', serial, meterId);
     this.setState({ showFilter: false });
     this.filerUnits(serial, meterId);
   };
@@ -564,34 +559,30 @@ export default class Splash extends Component {
     this.setState({ unitsArray: loopData });
   };
 
-  addInput = (value, i) => {
-    this.setState({ newUnit: value });
-    if (this.state.autoIncrement == true) {
-      var intValue = value;
-      var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
-      var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
-      var intValue = parseInt(intValue.match(/\d+/));
-      let unitsArray = [...this.state.unitsArray];
-      this.state.unitsArray.map((item, index) => {
-        if (index >= i) {
-          unitsArray[index] = {
-            ...unitsArray[index],
-            name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
-          };
-          this.setState({ unitsArray }, () =>
-            console.log('onchane===>', this.state.unitsArray),
-          );
-          intValue = intValue + 1;
-        }
-      });
-    } else {
-      let unitsArray = [...this.state.unitsArray];
-      unitsArray[i] = { ...unitsArray[i], name: value };
-      this.setState({ unitsArray }, () =>
-        console.log('onchane===>', this.state.unitsArray),
-      );
-    }
-  };
+  // addInput = (value, i) => {
+  //   this.setState({ newUnit: value });
+  //   if (this.state.autoIncrement == true) {
+  //     var intValue = value;
+  //     var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
+  //     var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
+  //     var intValue = parseInt(intValue.match(/\d+/));
+  //     let unitsArray = [...this.state.unitsArray];
+  //     this.state.unitsArray.map((item, index) => {
+  //       if (index >= i) {
+  //         unitsArray[index] = {
+  //           ...unitsArray[index],
+  //           name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
+  //         };
+  //         this.setState({ unitsArray });
+  //         intValue = intValue + 1;
+  //       }
+  //     });
+  //   } else {
+  //     let unitsArray = [...this.state.unitsArray];
+  //     unitsArray[i] = { ...unitsArray[i], name: value };
+  //     this.setState({ unitsArray });
+  //   }
+  // };
 
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
@@ -599,9 +590,9 @@ export default class Splash extends Component {
   toggleModalUnit = () => {
     this.setState({ isModalUnitVisible: !this.state.isModalUnitVisible });
   };
-  toggleModalMunit = () => {
-    this.setState({ isModalMunitVisible: !this.state.isModalMunitVisible });
-  };
+  // toggleModalMunit = () => {
+  //   this.setState({ isModalMunitVisible: !this.state.isModalMunitVisible });
+  // };
   toggleModalBuild = () => {
     this.setState({ isModalBuildVisible: !this.state.isModalBuildVisible });
   };
@@ -1534,27 +1525,27 @@ export default class Splash extends Component {
     }
   };
 
-  _renderUnitList = ({ item, index }) => (
-    <TextInput
-      key={index}
-      value={item.name}
-      dense={true}
-      onChangeText={(text) => {
-        this.addInput(text, index);
-      }}
-      style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
-      scrollEnabled={false}
-      underlineColor="transparent"
-      mode={'outlined'}
-      theme={{
-        colors: {
-          text: '#25AAE1ec',
-          primary: '#25AAE1ec',
-          selectionColor: 'red',
-        },
-      }}
-    />
-  );
+  // _renderUnitList = ({ item, index }) => (
+  //   <TextInput
+  //     key={index}
+  //     value={item.name}
+  //     dense={true}
+  //     onChangeText={(text) => {
+  //       this.addInput(text, index);
+  //     }}
+  //     style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
+  //     scrollEnabled={false}
+  //     underlineColor="transparent"
+  //     mode={'outlined'}
+  //     theme={{
+  //       colors: {
+  //         text: '#25AAE1ec',
+  //         primary: '#25AAE1ec',
+  //         selectionColor: 'red',
+  //       },
+  //     }}
+  //   />
+  // );
   _renderMeterTypes = ({ item }) => (
     <TouchableOpacity onPress={() => this.showMeter({ item })}>
       <View style={styles.meterTypeContainer}>
@@ -2415,12 +2406,8 @@ export default class Splash extends Component {
                 </View>
               ) : (
                 <FlatList
-                  ref={(ref) => {
-                    buildListViewRef = ref;
-                  }}
-                  style={{
-                    height: width * 0.22,
-                  }}
+                  ref={(ref) => {buildListViewRef = ref}}
+                  style={{height: width * 0.22}}
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
                   data={this.state.dataBuild}
@@ -2428,40 +2415,40 @@ export default class Splash extends Component {
                   keyExtractor={(item) => item.id.toString()}
                 />
               )}
-              <EditUnit
-                modalVisible={this.state.isModalUnitVisible}
-                closeModal={() => this.setState({ isModalUnitVisible: false })}
-                reRun={() => this.checkData()}
-                meterTypes={[]}
-                modalName="Add Unit"
-                type={'add'}
-                buildingName={this.state.buildingData.name}
-                buildingId={this.state.editBuildId}
-                unitDetails={this.state.unitData}
-                doneBtnTitle="Add Unit"
-                doneIcon={
-                  <Iconx name="plus" type="feather" size={18} color="#fff" />
-                }
-                handleEditUnit={() => {
-                  this.setState({ isModalUnitVisible: false });
-                }}
-                unitsArray={this.state.realData}
-              />
-              <AddBuilding
-                modalVisible={this.state.isModalBuildVisible}
-                type={this.state.buildingModalType}
-                modalName="New Building"
-                closeModal={() => this.setState({ isModalBuildVisible: false })}
-                reRun={this.handleAddBuilding}
-                propertyId={this.props.navigation.state.params.item.item.id}
-                lastUnitName={this.state.newUnit}
-                buildData={{
-                  buildingName: this.state.buildingData.name,
-                  buildDes: this.state.editBuildDes,
-                  buildId: this.state.editBuildId
-                }}
-              />
             </View>
+            <EditUnit
+              modalVisible={this.state.isModalUnitVisible}
+              closeModal={() => this.setState({ isModalUnitVisible: false })}
+              reRun={() => this.checkData()}
+              meterTypes={[]}
+              modalName="Add Unit"
+              type={'add'}
+              buildingName={this.state.buildingData.name}
+              buildingId={this.state.editBuildId}
+              unitDetails={this.state.unitData}
+              doneBtnTitle="Add Unit"
+              doneIcon={
+                <Iconx name="plus" type="feather" size={18} color="#fff" />
+              }
+              handleEditUnit={() => {
+                this.setState({ isModalUnitVisible: false });
+              }}
+              unitsArray={this.state.realData}
+            />
+            <AddBuilding
+              modalVisible={this.state.isModalBuildVisible}
+              type={this.state.buildingModalType}
+              modalName="New Building"
+              closeModal={() => this.setState({ isModalBuildVisible: false })}
+              reRun={this.handleAddBuilding}
+              propertyId={this.props.navigation.state.params.item.item.id}
+              lastUnitName={this.state.newUnit}
+              buildData={{
+                buildingName: this.state.buildingData.name,
+                buildDes: this.state.editBuildDes,
+                buildId: this.state.editBuildId
+              }}
+            />
             <Filter
               type="Units"
               onReset={this.get_filterVal}
@@ -2499,7 +2486,6 @@ export default class Splash extends Component {
                       justifyContent: 'space-around',
                       alignItems: 'center',
                       backgroundColor: '#25AAE1ec',
-                      // borderRadius: width * 0.1,
                       elevation: width * 0.01,
                       flexDirection: 'row',
                     }}>
