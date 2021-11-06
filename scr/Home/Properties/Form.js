@@ -275,13 +275,16 @@ export default class Splash extends React.Component {
             maxOpacity={0.5}
           />
         </Pressable>
-        <Properties name="home-city-outline" size={height * 0.035} color="white" />
+        <Properties
+          name="home-city-outline"
+          size={height * 0.035}
+          color="white"
+        />
         <Text style={styles.mainHeadiing}>Properties</Text>
         <Modal
           animationIn="slideInDown"
           animationOut="slideOutUp"
-          isVisible={this.state.isModalAddPropVisible}
-          style={styles.modalContainer}>
+          isVisible={this.state.isModalAddPropVisible}>
           <View style={styles.modalInner}>
             <View style={styles.boxConatainer}>
               <View style={styles.boxInner}>
