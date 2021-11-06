@@ -17,9 +17,33 @@ export default styles = StyleSheet.create({
     marginVertical: width * 0.05,
     height: height * 0.15,
   },
+  meterTypeImg: {
+    height: height * 0.09,
+    width: height * 0.09,
+  },
+  flexRow: {flexDirection: 'row'},
+  flexColumn: {flexDirection: 'column'},
+  centerIcon: {alignSelf: 'center'},
+  dangerBtn: {
+    backgroundColor: '#e24b4b',
+    marginBottom: height * 0.03,
+  },
+  imgHeader: {
+    height: width * 0.06,
+    width: width * 0.055,
+    marginRight: width * 0.025,
+  },
+  headerContainer: {
+    borderBottomWidth: width * 0.003,
+    elevation: 1,
+  },
   listOuter: {paddingVertical: width * 0.02},
-  listContainer: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'},
-  listText: { textAlign: 'center', fontSize: width * 0.04},
+  listContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  listText: {textAlign: 'center', fontSize: width * 0.04},
   listGreyText: {color: '#5c5c5ccf', fontSize: width * 0.04},
   listDivider: {
     marginTop: height * 0.02,
@@ -131,23 +155,23 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
   },
   meterInner: {
-    position: 'absolute', 
-    right:width * 0,
-    top:height * 0,
-    width:width * .035,
-    height:width * .035,
-    alignItems:'center',
-    justifyContent:'center',
-    borderBottomLeftRadius:width * .02
-    },
+    position: 'absolute',
+    right: width * 0,
+    top: height * 0,
+    width: width * 0.035,
+    height: width * 0.035,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: width * 0.02,
+  },
   meterImg: {
     height: width * 0.07,
     width: width * 0.07,
   },
-  noDataMeterImg:{
+  noDataMeterImg: {
     // backgroundColor: 'red',
     height: width * 0.25,
     width: width * 0.25,
   },
-  headerText: {fontSize: width * 0.05, color: '#000'}
+  headerText: {fontSize: width * 0.05, color: '#000'},
 });

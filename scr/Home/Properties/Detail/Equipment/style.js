@@ -24,7 +24,7 @@ export default styles = StyleSheet.create({
   },
   menuView: {
     width: width * 0.15,
-    height: height * 0.06,
+    height: width * 0.1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
@@ -34,9 +34,10 @@ export default styles = StyleSheet.create({
   },
   searchView: {
     marginLeft: width * 0.03,
+    paddingHorizontal:width * .02,
     width: width * 0.8,
-    height: height * 0.06,
-    justifyContent: 'flex-start',
+    height: width * 0.1,
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
     borderRadius: width * 0.1,
@@ -52,7 +53,7 @@ export default styles = StyleSheet.create({
   },
   headingContainer: {
     width: width * 1,
-    height: height * 0.07,
+    height: width * 0.12,
   },
   headingInner: {
     flex: 1,
@@ -64,7 +65,7 @@ export default styles = StyleSheet.create({
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.04,
+    fontSize: width * 0.06,
     color: 'white',
   },
   bodyContainer: {
@@ -171,6 +172,8 @@ export default styles = StyleSheet.create({
     marginLeft: width * 0.01,
     textAlign: 'center',
     textTransform: 'capitalize',
+    color:"#3E4A4F"
+
   },
   dropDown: {
     flexDirection: 'row',
@@ -178,7 +181,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     borderWidth: height * 0.0015,
-    borderColor: 'purple',
+    borderColor: '#3E4a4f',
     backgroundColor: 'white',
     borderRadius: width * 0.015,
     marginBottom: width * 0.02,
@@ -193,7 +196,7 @@ export default styles = StyleSheet.create({
   },
   dropDownText: {
     fontSize: height * 0.02,
-    color: 'purple',
+    color: '#3E4a4f',
     fontFamily: Fonts.WorkSansRegular,
   },
   dropDownList: {
@@ -572,8 +575,9 @@ export default styles = StyleSheet.create({
   },
   filterButton: {
     backgroundColor: 'white',
-    padding: width * 0.02,
-    borderRadius: 50,
+    borderRadius:width * .06 ,
+    height:width * .08,
+    width:width * .08,
     alignItems: 'center',
     justifyContent: 'center',
   },
