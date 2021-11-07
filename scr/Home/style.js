@@ -1,7 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native"
 import { Fonts } from '../utils/fonts';
 
-//Packages
 
 //Files
 const { width, height } = Dimensions.get('window');
@@ -30,13 +29,10 @@ export default styles = StyleSheet.create({
   mainBotton:{
     justifyContent: 'center',
     alignItems: 'center',
-    // height: height * .38,
-    // width: width * .92,
     borderRadius: height * .01,
     elevation:width * .05,
     width: width * .8,
     height: height * .22,
-    // paddingVertical: width * .05,
     backgroundColor: 'white',    
   },
   bottonContainer:{

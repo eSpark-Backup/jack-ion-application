@@ -10,9 +10,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
   },
-  text: {
-    fontSize: 50,
-  },
+
   currentReadContainer: {
     width: '100%',
   },

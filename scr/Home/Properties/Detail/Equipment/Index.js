@@ -86,131 +86,24 @@ import Index from '../../../Index';
 const { width, height } = Dimensions.get('window');
 let listViewRef;
 let buildListViewRef;
-let manufacturers = [
-  {
-    id: 1,
-    name: 'AMCO',
-  },
-  {
-    id: 2,
-    name: 'Badger',
-  },
-  {
-    id: 3,
-    name: 'Conservice',
-  },
-];
-const models = [
-  {
-    id: 1,
-    name: 'C4000 Digital Compound (AMCO Bypass)',
-  },
-  {
-    id: 2,
-    name: 'Compound RTR',
-  },
-  {
-    id: 3,
-    name: 'MJ09 Brass',
-  },
-];
-
-const sortAlphaNumeric = (a, b) => {
-  var reA = /[^a-zA-Z]/g;
-  var reN = /[^0-9]/g;
-  var AInt = parseInt(a.name, 10);
-  var BInt = parseInt(b.name, 10);
-  if (isNaN(AInt) && isNaN(BInt)) {
-    var aA = a.name.replace(reA, '');
-    var bA = b.name.replace(reA, '');
-    if (aA === bA) {
-      var aN = parseInt(a.name.replace(reN, ''), 10);
-      var bN = parseInt(b.name.replace(reN, ''), 10);
-      return aN === bN ? 0 : aN > bN ? 1 : -1;
-    } else {
-      return aA > bA ? 1 : -1;
-    }
-  } else if (isNaN(AInt)) {
-    //A is not an Int
-    return 1; //to make alphanumeric sort first return 1 here
-  } else if (isNaN(BInt)) {
-    //B is not an Int
-    return -1; //to make alphanumeric sort first return -1 here
-  } else if (AInt == BInt) {
-    var aA = a.name.replace(reA, '');
-    var bA = b.name.replace(reA, '');
-    return aA > bA ? 1 : -1;
-  } else {
-    return AInt > BInt ? 1 : -1;
-  }
-};
 
 export default class Splash extends Component {
   static contextType = ContextProp;
   constructor() {
     super();
     this.state = {
-      noCode: false,
-      hColor: '',
-      autoIncrement: true,
-      unitIndex: 1,
-      buildIndex: 0,
-      pressedText: 'Select Type',
-      pressedUnit: '',
-      pressedCode: '',
-      pressedAndEdit: '',
       changed: false,
-      scanner: null,
       meterId: 0,
-      barcodes: [],
-      scan: false,
-      scanResult: false,
-      isModalMeterVisible: false,
-      textStyle: false,
       loader: true,
-      scanIndex: null,
       getUtilities: [],
       searchList: [],
-      meterListData: [],
-      meterListArray: [],
-      open: false,
-      value: null,
-      items: [
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' },
-      ],
-      uScr: false,
-      unitInputIndex: 0,
-      itemName: '',
-      file: null,
-      addU: false,
       isModalVisible: false,
       isModalUnitVisible: false,
-      isModalMunitVisible: false,
-      points: 80,
-      custom_meter_id: '',
-      meterSerial: '',
-      selected: false,
-      animatedValue: new Animated.Value(0),
-      newBuild: 'A',
       newUnit: 'Unit-1',
-      newUnitAdd: '',
-      meterList: false,
-      showOtherInputs: false,
-      gotData: false,
-      newSerial: '',
-      newMeter: '',
-      buildName: '',
-      buildDescription: '',
       loaderBuildings: true,
-      visible: false,
-      unitsArray: [],
-      unitsArraySend: [],
       buildingData: [],
       lastUnitData: '',
-      unitData: {
-        unit: '',
-      },
+      unitData: { unit: '' },
       editModal: false,
       buildingModalType: '',
       editBuilding: '',
@@ -218,114 +111,22 @@ export default class Splash extends Component {
       showSearch: false,
       showFilter: false,
       filterWork: false,
-      newUnitInfo: {
-        indexUnits: '',
-        unitBuild: '',
-        unitName: '',
-        unitSerial: '',
-        unitMeter: '',
-      },
-      newBuildInfo: {
-        newBuildIndex: '',
-        newBuildName: '',
-        newBuildUnits: [],
-      },
-      editData: {
-        atIndex: '',
-        id: '',
-        editBuild: '',
-        editUnit: '',
-        editSerial: '',
-        editMeter: '',
-      },
       dataBuild: [],
-      meterTypeData: {
-        manufacturer: '',
-        model: '',
-        multiplier: 1,
-        unit_of_measure_id: '',
-      },
-      typeOfMeters: [],
-      typeOfMetersVisible: false,
-      typeOfMeterIndex: '',
-      measureOfUnit: [],
-      selectedManufacuter: [],
-      selectedModel: [],
-      dataActivityTop: [],
-      dataActivity: [],
       realData: [],
-      ListA: [],
-      vals: '',
-      ListB: [],
-      ListC: [],
       error: {
         buildingName: false,
         units: false,
+        editBuilding:''
       },
-      measureOfUnitName: '',
-      errorUnits: {
-        units: '',
-        meter: false,
-        deviceSerial: '',
-      },
-      meterTypeInputs: [
-        {
-          name: 'MANUFACTURER*',
-          showList: false,
-          input: '',
-          error: '',
-        },
-        {
-          name: 'MODEL*',
-          showList: false,
-          input: '',
-          error: '',
-        },
-        {
-          name: 'MULTIPLIER*',
-          showList: false,
-          input: '1',
-          error: '',
-        },
-        {
-          name: 'UNIT OF MEASURE*',
-          showList: false,
-          input: '',
-          error: '',
-        },
-      ],
       editBuildId: 0,
     };
-    this.state.realData = this.state.realData.map((item) => {
-      item.isSelected = false;
-      item.checkBarcode = false;
-      item.checkMeterRead = false;
-      item.checkProgramDevice = false;
-      item.isSelectedClass = styles.infoViewContainer;
-      item.isSelectedView = styles.unitListInfo;
-      item.barcode = styles.barcodeVisible;
-      item.meterRead = styles.meterReading;
-      item.programDevice = styles.programDevice;
-
-      return item;
-    });
-    this.state.dataActivity = this.state.dataActivity.map((element) => {
-      element.build = this.state.buildName;
-      return element;
-    });
 
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
-  // _start = () => {
-  //   Animated.timing(this.state.fadeValue, {
-  //     toValue: 1,
-  //     duration: 1000,
-  //   }).start();
-  // };
+
   componentDidMount() {
-    // this.setState({ loader: true, loaderBuildings: true });
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
@@ -337,55 +138,6 @@ export default class Splash extends Component {
     this.getToken();
     this.setState({ isModalVisible: false });
   };
-
-  // showSuggestion = (index) => {
-  //   let newArr = [...this.state.meterTypeInputs];
-  //   newArr[index].showList = !newArr[index].showList;
-  //   this.setState({ meterTypeInputs: newArr });
-  // };
-
-  // hideSuggestion = (index, val, name) => {
-  //   let newArr = [...this.state.meterTypeInputs];
-  //   newArr[index].showList = !newArr[index].showList;
-  //   newArr[index].input = val;
-  //   newArr[index].error = '';
-  //   this.setState({ meterTypeInputs: newArr }, () =>
-  //     console.log('Meter Type', this.state.meterTypeInputs),
-  //   );
-  //   if (index == 0) {
-  //     this.setState(
-  //       {
-  //         meterTypeData: { ...this.state.meterTypeData, manufacturer: val },
-  //       },
-  //       () => console.log('Meter Type', this.state.meterTypeData),
-  //     );
-  //   }
-  //   if (index == 1) {
-  //     this.setState(
-  //       {
-  //         meterTypeData: { ...this.state.meterTypeData, model: val },
-  //       },
-  //       () => console.log('Meter Type', this.state.meterTypeData),
-  //     );
-  //   }
-  //   if (index == 2) {
-  //     this.setState(
-  //       {
-  //         meterTypeData: { ...this.state.meterTypeData, multiplier: val },
-  //       },
-  //       () => console.log('Meter Type', this.state.meterTypeData),
-  //     );
-  //   }
-  //   if (index == 3) {
-  //     this.setState(
-  //       {
-  //         meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: val },
-  //         measureOfUnitName: name,
-  //       },
-  //       () => console.log('Meter Type', this.state.meterTypeData),
-  //     );
-  //   }
-  // };
 
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -541,80 +293,15 @@ export default class Splash extends Component {
     }
   };
 
-  getLoopOfUnits = (text) => {
-    const n = text == undefined ? 10 : text;
-    var intValue = this.state.newUnit;
-    var firstStr = this.state.newUnit.split(parseInt(this.state.newUnit.match(/\d+/)))[0];
-    var lastStr = this.state.newUnit.split(parseInt(this.state.newUnit.match(/\d+/)))[1];
-    var intValue = parseInt(intValue.match(/\d+/)) + 1;
-    var loopData = [];
-    var i;
-    for (i = 0; i < n; i++) {
-      loopData.push({
-        name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
-        num: text + 1,
-      }),
-        (intValue = intValue + 1);
-    }
-    this.setState({ unitsArray: loopData });
-  };
-
-  // addInput = (value, i) => {
-  //   this.setState({ newUnit: value });
-  //   if (this.state.autoIncrement == true) {
-  //     var intValue = value;
-  //     var firstStr = value.split(parseInt(value.match(/\d+/)))[0];
-  //     var lastStr = value.split(parseInt(value.match(/\d+/)))[1];
-  //     var intValue = parseInt(intValue.match(/\d+/));
-  //     let unitsArray = [...this.state.unitsArray];
-  //     this.state.unitsArray.map((item, index) => {
-  //       if (index >= i) {
-  //         unitsArray[index] = {
-  //           ...unitsArray[index],
-  //           name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
-  //         };
-  //         this.setState({ unitsArray });
-  //         intValue = intValue + 1;
-  //       }
-  //     });
-  //   } else {
-  //     let unitsArray = [...this.state.unitsArray];
-  //     unitsArray[i] = { ...unitsArray[i], name: value };
-  //     this.setState({ unitsArray });
-  //   }
-  // };
-
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
   toggleModalUnit = () => {
     this.setState({ isModalUnitVisible: !this.state.isModalUnitVisible });
   };
-  // toggleModalMunit = () => {
-  //   this.setState({ isModalMunitVisible: !this.state.isModalMunitVisible });
-  // };
   toggleModalBuild = () => {
     this.setState({ isModalBuildVisible: !this.state.isModalBuildVisible });
   };
-  toggleModalEdit = () => {
-    this.setState({ isModalEditVisible: !this.state.isModalEditVisible });
-  };
-  toggleAddUtility = () => {
-    this.setState({ isModaladdUVisible: !this.state.isModaladdUVisible });
-  };
-  scannerModal = () => {
-    this.setState({ isScannerVisible: false });
-    this.setState({ scan: false });
-  };
-
-  hideMenu = () => {
-    this.setState({ visible: false });
-  };
-
-  showMenu = () => {
-    this.setState({ visible: true });
-  };
-
   naviagateToDetail = () => {
     this.setState({ isModalVisible: false });
     this.props.navigation.navigate(
@@ -637,19 +324,15 @@ export default class Splash extends Component {
   selectAndCloseAdd = async () => {
     this.toggleModalUnit();
     this.changeLayoutMeter2();
-    this.setState({ gotData: false });
+    // this.setState({ gotData: false });
   };
   selectAndCloseAddMultiple = () => {
     this.toggleModalBuild();
     this.setState({ buildingModalType: 'Multyple' })
-    // this.changeLayoutMeter2();
-    // this.getLoopOfUnits();
   };
   selectAndCloseAddBuild = () => {
     this.toggleModalBuild();
     this.setState({ buildingModalType: '' })
-    // this.changeLayoutMeter2();
-    // this.getLoopOfUnits();
   };
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -659,376 +342,6 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({ meter2: !this.state.meter2, meter: false });
   };
-  changeLayoutMeter3 = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({ meter3: !this.state.meter3 });
-    Keyboard.dismiss();
-  };
-  changeLayoutUnit = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({ addU: !this.state.addU });
-  };
-  changeLayoutEdit = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({ editU: !this.state.editU });
-  };
-
-  changeLayoutUtilityScr = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({ uScr: !this.state.uScr });
-  };
-
-  changeAnimation = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  };
-
-  changeUtilityAndToggle = () => {
-    this.toggleModalUnit();
-    this.setState({ uScr: false });
-    this.setState({ newBuild: 'A' });
-    this.setState({ newSerial: '' });
-    this.setState({ newMeter: '' });
-    this.setState({ newMeter: '', meterListData: [] });
-    this.setState((prevState) => ({
-      ...prevState,
-      errorUnits: {
-        // object that we want to update
-        ...prevState.errorUnits, // keep all other key-value pairs
-        units: '', // update the value of specific key
-      },
-    }));
-  };
-  changeUtilityAndToggleAddU = () => {
-    this.toggleAddUtility();
-    this.changeLayoutUtilityScr();
-  };
-  editAndToggleEdit = (unit) => {
-    this.toggleModalEdit();
-    this.actionOnPress(unit);
-  };
-  programDevice = (unit) => {
-    this.toggleModalEdit();
-    unit.item.isSelected = true;
-  };
-  handleAddNewUnit = async () => {
-    const matchUnit = this.state.realData.filter(
-      (e) => e.name == this.state.lastUnitData,
-    );
-    const checkSerial = this.state.meterListData.filter(
-      (item) => item.deviceSerialNum === '',
-    );
-    const checkMeterType = this.state.meterListData.filter(
-      (item) => item.meterType == '',
-    );
-
-    if (!this.state.lastUnitData) {
-      this.setState((prevState) => ({
-        ...prevState,
-        errorUnits: {
-          // object that we want to update
-          ...prevState.errorUnits, // keep all other key-value pairs
-          units: 'Unit Required', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        errorUnits: {
-          // object that we want to update
-          ...prevState.errorUnits, // keep all other key-value pairs
-          units: '', // update the value of specific key
-        },
-      }));
-    }
-    if (matchUnit.length != 0) {
-      this.setState((prevState) => ({
-        ...prevState,
-        errorUnits: {
-          // object that we want to update
-          ...prevState.errorUnits, // keep all other key-value pairs
-          units: 'This unit already exist', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        errorUnits: {
-          // object that we want to update
-          ...prevState.errorUnits, // keep all other key-value pairs
-          units: '', // update the value of specific key
-        },
-      }));
-    }
-    if (this.state.meterListData.length == 0) {
-      alert('Select meter and continue');
-      return;
-    }
-    if (checkSerial.length) {
-      this.state.meterListData.map((data, index) => {
-        if (data.deviceSerialNum == '') {
-          let newArr = [...this.state.meterListData];
-          newArr[index].deviceSerialError = 'Device serial required';
-          this.setState({ meterListData: newArr });
-          return;
-        } else {
-          let newArr = [...this.state.meterListData];
-          newArr[index].deviceSerialError = '';
-          this.setState({ meterListData: newArr });
-        }
-      });
-    } else {
-      this.state.meterListData.map((data, index) => {
-        let newArr = [...this.state.meterListData];
-        newArr[index].deviceSerialError = '';
-        this.setState({ meterListData: newArr });
-      });
-    }
-    if (checkMeterType.length) {
-      this.state.meterListData.map((data, index) => {
-        if (data.meterType == '') {
-          let newArr = [...this.state.meterListData];
-          newArr[index].meterTypeError = 'Meter Type Required';
-          this.setState({ meterListData: newArr });
-          return;
-        } else {
-          let newArr = [...this.state.meterListData];
-          newArr[index].meterTypeError = '';
-          this.setState({ meterListData: newArr });
-        }
-      });
-    } else {
-      this.state.meterListData.map((data, index) => {
-        let newArr = [...this.state.meterListData];
-        newArr[index].meterTypeError = '';
-        this.setState({ meterListData: newArr });
-      });
-      var loopData = [];
-      this.state.meterListData.map((data, index) => {
-        loopData.push({
-          meter_id: data.id,
-          device_serial_number: data.deviceSerialNum,
-          meter_serial_number: data.meterSerialNum,
-          custom_meter_id: data.customMeterId,
-          type_id: data.meterType,
-        });
-      });
-      const data = {
-        name: this.state.lastUnitData,
-        building_id: this.state.buildingData.id,
-        meters: loopData,
-      };
-      console.log('data--->', data);
-      try {
-        const unitResponse = await this.api.post(
-          `/property/equipment/unit/add-unit`,
-          data,
-        );
-        console.log('Check unitResponse add--->', unitResponse);
-        this.setState({ loader: true, loaderBuildings: true });
-      } catch (e) {
-        alert(e);
-        console.log('errorrr--->', e);
-      }
-      this.changeUtilityAndToggle();
-    }
-  };
-  addMeterInNewArray = async (value) => {
-    this.setState({ visible: false });
-    console.log('value Of selectable meter_______', value);
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    const data = {
-      id: value.id,
-      deviceSerialNum: '',
-      deviceSerialError: '',
-      meterType: '',
-      meterTypeName: '',
-      meterTypeError: '',
-      meterAttachedTo: '',
-      meterAttachedError: '',
-      meterSerialNum: '12357841',
-      customMeterId: '6564678',
-      name: value.name,
-      icon: value.icon,
-      meterTypeMenu: false,
-    };
-    const newArray = [...this.state.meterListData];
-    newArray.push(data);
-    this.setState({ meterListData: newArray });
-    const newList = this.state.meterListArray.filter(
-      (item) => item.id !== value.id,
-    );
-    this.setState({ meterListArray: newList });
-    const unitResponse = await this.api.get(
-      `/property/equipment/type/all-types`,
-    );
-    console.log('Check types add--->', unitResponse.data);
-    this.setState({ typeOfMeters: unitResponse?.data?.data }, () =>
-      console.log('Meter Type Of_______', this.state.typeOfMeters),
-    );
-  };
-  showMoreInputs = (value, index) => {
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }, () =>
-      console.log('e--->', this.state.meterListData),
-    );
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  };
-
-  onChangeMultipleField = (e, index) => {
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }, () =>
-      console.log('e--->', this.state.meterListData),
-    );
-  };
-  onChangeTypeBuilder = (e, index) => {
-    let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-    newArr[index].input = e; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterTypeInputs: newArr }, () =>
-      console.log('e--->', this.state.meterTypeInputs),
-    );
-    if (index == 0) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, manufacturer: e },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-    if (index == 1) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, model: e },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-    if (index == 2) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, multiplier: Number(e) },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-    if (index == 3) {
-      this.setState(
-        {
-          meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: e },
-        },
-        () => console.log('Meter Type', this.state.meterTypeData),
-      );
-    }
-  };
-  showTypesOfMeter = (item, index) => {
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].meterTypeMenu = true; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }, () =>
-      console.log('e--->', this.state.meterListData),
-    );
-  };
-  hideTypesOfMeter = (item, index) => {
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr }, () =>
-      console.log('e--->', this.state.meterListData),
-    );
-  };
-  onGetMeterTypeId = (item, index) => {
-    let newArr = [...this.state.meterListData]; // copying the old datas array
-    newArr[index].meterTypeName =
-      item.model +
-      ' ' +
-      '(x' +
-      item.multiplier +
-      ' ' +
-      item.unit_of_measure +
-      ')'; // replace e.target.value with whatever you want to change it to
-    newArr[index].meterType = item.id; // replace e.target.value with whatever you want to change it to
-    // console.log(newArr[index],'mter types') // replace e.target.value with whatever you want to change it to
-    newArr[index].meterTypeMenu = false; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterListData: newArr });
-  };
-
-  deleteMeterInNewArray = (value) => {
-    const newList = this.state.meterListData.filter(
-      (item) => item.id !== value.id,
-    );
-    this.setState({ meterListData: newList });
-
-    const data = {
-      id: value.id,
-      name: value.name,
-      icon: value.icon,
-    };
-    const newArray = [...this.state.meterListArray];
-    newArray.push(data);
-    this.setState({
-      meterListArray: newArray.sort((a, b) => (a.name > b.name ? 1 : -1)),
-    });
-  };
-  toggleScanner = async (value) => {
-    this.setState({ scanIndex: value });
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        this.setState({ hasAccess: true });
-        this.setState({ isScannerVisible: true });
-        this.setState({ scanResult: false });
-        this.setState({ scan: true });
-        console.log('Access');
-      } else {
-        this.setState({ hasAccess: false });
-        Alert.alert(
-          "You don't have access for the Camera",
-          'Kindly TurnOn Camera Permission from Settings to use Scanner',
-        );
-        console.log('Denied');
-      }
-      return granted;
-    } catch (err) {
-      alert(err);
-    }
-  };
-  onScanned = (e) => {
-    const check = e.data.substring(0, 4);
-    if (check == 'http') {
-      Linking.openURL(e.data).catch((err) =>
-        console.error('An error occured', err),
-      );
-    } else {
-      let newArr = [...this.state.meterListData]; // copying the old datas array
-      newArr[this.state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterListData: newArr }, () =>
-        console.log('e--->', this.state.meterListData),
-      );
-      this.setState({
-        result: e,
-        scan: false,
-        newSerial: e.data,
-        isScannerVisible: false,
-      });
-
-      setTimeout(() => {
-        RNBeep.beep(false);
-      }, 500);
-    }
-  };
-
-  editOnPress = () => {
-    if (this.state.typedBuild == '' || this.state.typedUnit == '') {
-      alert('Kindly Fill the Required');
-    } else {
-      this.editUnit();
-      this.toggleModalEdit();
-    }
-  };
-
   _renderSearchPropList = (unit) => (
     <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
       <View style={[styles.infoViewContainer]}>
@@ -1043,12 +356,10 @@ export default class Splash extends Component {
           <View
             style={{
               flexDirection: 'column',
-              // alignItems: 'center',
               justifyContent: 'center',
               width: width * 0.3,
               overflow: 'hidden',
               marginLeft: width * 0.01,
-              // backgroundColor:'red'
             }}>
             <TextTicker
               duration={6000}
@@ -1065,7 +376,6 @@ export default class Splash extends Component {
               }}>
               {unit.item?.unit_meter.length ? (
                 unit.item?.unit_meter?.map((item) => (
-                  // console.log('item--->meter', item),
                   <Image
                     source={this.typeSwitcher(item.meter_name)}
                     style={{
@@ -1084,7 +394,110 @@ export default class Splash extends Component {
     </TouchableOpacity>
   );
 
-  _renderTopList = (build) => {
+
+
+  buildingEditOpen = (item) => {
+    this.setState({
+      editModal: true,
+      editBuilding: item.name,
+      editBuildDes: item.descriptions,
+      editBuildId: item.id,
+    });
+  };
+
+  actionOnPress = (unit) => {
+    this.props.navigation.navigate('U_Details', {
+      unitId: unit.item.id,
+      buildingName: this.state.buildingData.name,
+      buildingId: this.state.editBuildId,
+    });
+    this.setState({ showSearch: false, loader: true, loaderBuildings: true });
+  };
+  typeSwitcher = (arg) => {
+    switch (arg) {
+      case 'hot water':
+        return require('../../../../../Images/hot-water.png');
+      case 'cold water':
+        return require('../../../../../Images/cold-water.png');
+      case 'electricity':
+        return require('../../../../../Images/electric.png');
+      case 'gas':
+        return require('../../../../../Images/gass.png');
+      case 'water':
+        return require('../../../../../Images/all-waters.png');
+      default:
+        break;
+    }
+  };
+  _renderUnitList = (unit) => {
+    return (
+      <View>
+        <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
+          <View style={[styles.infoViewContainer]}>
+            <View style={styles.infoViewInner}>
+              <View
+                style={styles.unitNameContainer}>
+                <Home
+                  name="house-user"
+                  size={width * 0.07}
+                  color="#3E4A4F"
+                  style={{marginRight: width * 0.01}}
+                />
+                <TextTicker
+                  duration={6000}
+                  marqueeDelay={2000}
+                  repeatSpacer={width * 0.7}
+                  style={styles.dataFieldText}
+                  key={unit}>
+                  {unit.item.name}
+                </TextTicker>
+              </View>
+              <View
+                style={styles.unitDetailContainer}>
+                {unit?.item?.unit_meter?.length ? (
+                  unit?.item?.unit_meter?.map((item, index) => (
+                    <>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          repeatSpacer={width * 0.17}
+                          style={[styles.dataFieldText, { width: width * .17, fontSize: width * 0.02 }]}
+                        >
+                          {item?.device_serial_number}
+                        </TextTicker>
+                        <Barcode
+                          name="barcode"
+                          size={width * 0.03}
+                          style={{marginHorizontal: width * 0.005}}
+                        />
+                      </View>
+                      <View style={[styles.unitDetailSeprater,{borderBottomWidth: index == 0 && unit?.item?.unit_meter?.length > 1 ? width * .004 : 0,}]} />
+                    </>
+                  ))
+                ) : (
+                  <View style={styles.unitDetailInnerElse}>
+                    <Text style={styles.unitDetailInnerElseText}>No meters</Text>
+                    <Barcode
+                      name="barcode-off"
+                      size={width * 0.03}
+                      style={styles.unitDetailInnerElseIcon}
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  _renderBuildingList = (build) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -1103,18 +516,7 @@ export default class Splash extends Component {
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
             <View
-              style={{
-                position: 'absolute',
-                right: width * 0,
-                top: height * 0,
-                width: width * 0.035,
-                height: width * 0.035,
-                backgroundColor: '#25AAE1ec',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderTopRightRadius: width * 0.008,
-                borderBottomLeftRadius: width * 0.02,
-              }}>
+              style={styles.buildingSelectIcon}>
               <Check
                 name="check"
                 style={{ marginLeft: width * 0.005 }}
@@ -1125,317 +527,18 @@ export default class Splash extends Component {
           )}
         </View>
         <Text
-          style={{
-            paddingHorizontal: 10,
-            fontSize: width * 0.05,
-            textAlign: 'center',
-            fontFamily: Fonts.Montserrat,
-            color: '#3E4A4F'
-          }}>
+          style={styles.buildingUnitName}>
           {build.item.unit_count} Units
         </Text>
         <TouchableOpacity
           onPress={() => this.buildingEditOpen(build.item)}
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: width * 0.01,
-            backgroundColor: '#25AAE1ec',
-            borderBottomLeftRadius: width * 0.01,
-            borderBottomRightRadius: width * 0.01,
-          }}>
+          style={styles.buildingEditBtn}>
           <Text style={{ color: 'white', fontFamily: Fonts.Montserrat, fontSize: width * 0.03, }}>Edit</Text>
           <Edit name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
       </TouchableOpacity>
-      // </KeyboardAvoidingVie  w>
+      // </KeyboardAvoidingVie>
     );
-  };
-
-  buildingEditOpen = (item) => {
-    console.log(item, 'item--------->');
-    this.setState({
-      editModal: true,
-      editBuilding: item.name,
-      editBuildDes: item.descriptions,
-      editBuildId: item.id,
-    });
-  };
-
-  editUnit = () => {
-    this.setState(
-      Object.assign(this.state.editData, { indexUnits: this.state.unitIndex }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { indexBuild: this.state.buildIndex }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { atIndex: this.state.pressedIndex }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { id: this.state.pressedID }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { editBuild: this.state.typedBuild }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { editUnit: this.state.typedUnit }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { editSerial: this.state.typedCode }),
-    );
-    this.setState(
-      Object.assign(this.state.editData, { editMeter: this.state.typedMType }),
-    );
-    this.context.editUnit(this.state.editData);
-    this.setState({
-      realData: this.context.propList[this.state.unitIndex].dataTop[
-        this.state.buildIndex
-      ].list,
-    });
-  };
-  editOnPress2 = () => {
-    let arrays = [...this.state.ListA];
-    this.setState((prevState) => ({
-      ListA: [...prevState.arrayvar, newelement],
-    }));
-    // this.setState({ ListA: this.state.ListA.map(el => (el.name === 'A-01')) })
-    // const index = this.state.ListA.map(el => (el.name === 'A-01' ? { ...el, key: id } : el))
-    this.setState({ arrays });
-    // console.log('Index oF List', index);
-  };
-
-  //todo: Unit Click Event +++++++++++++++++++++++
-  actionOnPress = (unit) => {
-    this.props.navigation.navigate('U_Details', {
-      unitId: unit.item.id,
-      buildingName: this.state.buildingData.name,
-      buildingId: this.state.editBuildId,
-    });
-    this.setState({ showSearch: false, loader: true, loaderBuildings: true });
-    console.log(clc.cyan('Selected :', unit.item.id));
-  };
-
-  checkValues = (unit) => {
-    if (unit.item.code === '') {
-      unit.item.checkBarcode = true;
-      unit.item.checkProgramDevice = false;
-    } else {
-      unit.item.checkBarcode = false;
-      unit.item.checkProgramDevice = true;
-    }
-    if (unit.item.type === '') {
-      unit.item.checkMeterRead = true;
-    } else {
-      unit.item.checkMeterRead = false;
-    }
-
-    unit.item.barcode = unit.item.checkBarcode
-      ? styles.barcodeHide
-      : styles.barcodeVisible;
-    unit.item.meterRead = unit.item.checkMeterRead
-      ? styles.barcodeHide
-      : styles.meterReading;
-    unit.item.programDevice = unit.item.checkProgramDevice
-      ? styles.barcodeHide
-      : styles.programDevice;
-  };
-
-  //todo: Units List
-  typeSwitcher = (arg) => {
-    switch (arg) {
-      case 'hot water':
-        return require('../../../../../Images/hot-water.png');
-      case 'cold water':
-        return require('../../../../../Images/cold-water.png');
-      case 'electricity':
-        return require('../../../../../Images/electric.png');
-      case 'gas':
-        return require('../../../../../Images/gass.png');
-      case 'water':
-        return require('../../../../../Images/all-waters.png');
-      default:
-        break;
-    }
-  };
-  _renderMyList = (unit) => {
-    this.checkValues(unit);
-    return (
-      <View>
-        <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
-          <View style={[styles.infoViewContainer]}>
-            <View style={styles.infoViewInner}>
-              <Home
-                name="house-user"
-                size={width * 0.07}
-                color="#3E4A4F"
-                style={{
-                  marginLeft: width * 0.01,
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  width: width * 0.7,
-                  overflow: 'hidden',
-                  marginLeft: width * 0.01,
-                }}>
-                <TextTicker
-                  duration={6000}
-                  marqueeDelay={2000}
-                  repeatSpacer={width * 0.7}
-                  style={styles.dataFieldText}
-                  key={unit}>
-                  {unit.item.name}
-                </TextTicker>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginLeft: width * 0.01,
-                  }}>
-                  {unit.item?.unit_meter.length ? (
-                    unit.item?.unit_meter?.map((item) => (
-                      // console.log('item--->meter', item),
-                      <Image
-                        source={this.typeSwitcher(item.meter_name)}
-                        style={{
-                          height: width * 0.05,
-                          width: width * 0.05,
-                        }}
-                      />
-                    ))
-                  ) : (
-                    <Text style={{ color: '#3E4A4F', fontFamily: Fonts.Montserrat }}>No meters</Text>
-                  )}
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  clearBuildingModal = () => {
-    this.setState({
-      isModalBuildVisible: !this.state.isModalBuildVisible,
-      buildName: '',
-      unitsArray: [],
-    });
-    this.setState((prevState) => ({
-      ...prevState,
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        buildingName: '', // update the value of specific key
-        units: '',
-      },
-    }));
-    if (this.state.realData.length != 0) {
-      console.log('check---.>',)
-      let lastElement = this.state.realData[this.state.realData.length - 1].name;
-      this.setState({
-        newUnit: lastElement,
-      });
-    } else {
-      this.setState({
-        newUnit: 'Unit-0',
-      });
-    }
-  };
-  clearMultipleUnitsModal = () => {
-    this.setState({
-      isModalMunitVisible: !this.state.isModalMunitVisible,
-    });
-    this.setState((prevState) => ({
-      ...prevState,
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        buildingName: '', // update the value of specific key
-        units: '',
-      },
-    }));
-  };
-
-  clearMutlipleUniModal = () => {
-    this.setState({
-      isModalMunitVisible: !this.state.isModalMunitVisible,
-      // newUnit: 'Unit-0',
-      unitsArray: [],
-    });
-    this.setState((prevState) => ({
-      ...prevState,
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        units: '', // update the value of specific key
-      },
-    }));
-    if (this.state.realData.length != 0) {
-      let lastElement = this.state.realData[this.state.realData.length - 1].name;
-      this.setState({
-        newUnit: lastElement,
-      });
-    } else {
-      this.setState({
-        newUnit: 'Unit-0',
-      });
-    }
-  };
-  addMultipleUnits = () => {
-    if (this.state.unitsArray.length === 0) {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          units: 'Empty units', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          units: '', // update the value of specific key
-        },
-      }));
-      var loopData = [];
-      var i;
-      for (i = 0; i < this.state.unitsArray.length; i++) {
-        loopData.push({
-          name: this.state.unitsArray[i].name,
-        });
-      }
-      this.setState({ unitsArraySend: loopData }, () =>
-        this.handleAddMUnitsApi({
-          building_id: this.state.editBuildId,
-          units: this.state.unitsArraySend,
-          descriptions: this.state.editBuildDes,
-        }),
-      );
-    }
-  };
-
-  handleAddMUnitsApi = async (data) => {
-    // console.log('data--->', data);
-    const unitResponse = await this.api.post(
-      `/property/equipment/unit/add-multiple-units`,
-      data,
-    );
-    console.log('Check unitResponse buildings--->', unitResponse);
-    if (unitResponse?.ok) {
-      this.setState({ isModalMunitVisible: false });
-      this.checkData();
-    } else {
-      alert(unitResponse?.data?.message);
-    }
   };
 
   clearUpdateBuild = () => {
@@ -1451,146 +554,7 @@ export default class Splash extends Component {
       },
     }));
   };
-
-  newBuilding = () => {
-    console.log('BUILD Name', this.state.buildName);
-    if (this.state.buildName === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          buildingName: 'Invalid Building Name', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          buildingName: '', // update the value of specific key
-        },
-      }));
-    }
-    if (this.state.unitsArray.length === 0) {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          units: 'Empty units', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          units: '', // update the value of specific key
-        },
-      }));
-      var loopData = [];
-      var i;
-      for (i = 0; i < this.state.unitsArray.length; i++) {
-        loopData.push({
-          name: this.state.unitsArray[i].name,
-        });
-      }
-      this.setState({ unitsArraySend: loopData }, () =>
-        this.handleAddbuildingApi({
-          name: this.state.buildName,
-          property_id: this.props.navigation.state.params.item.item.id,
-          units: this.state.unitsArraySend,
-          descriptions: this.state.buildDescription,
-        }),
-      );
-    }
-  };
-  handleAddbuildingApi = async (data) => {
-    // console.log('data--->', data);
-    const unitResponse = await this.api.post(
-      `/property/equipment/building/add-building`,
-      data,
-    );
-    console.log('Check unitResponse buildings--->', unitResponse);
-    if (unitResponse?.ok) {
-      this.setState({ buildName: '', buildDescription: '', isModalBuildVisible: false });
-      this.checkData();
-    } else {
-      alert(unitResponse?.data?.message);
-    }
-  };
-
-  // _renderUnitList = ({ item, index }) => (
-  //   <TextInput
-  //     key={index}
-  //     value={item.name}
-  //     dense={true}
-  //     onChangeText={(text) => {
-  //       this.addInput(text, index);
-  //     }}
-  //     style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
-  //     scrollEnabled={false}
-  //     underlineColor="transparent"
-  //     mode={'outlined'}
-  //     theme={{
-  //       colors: {
-  //         text: '#25AAE1ec',
-  //         primary: '#25AAE1ec',
-  //         selectionColor: 'red',
-  //       },
-  //     }}
-  //   />
-  // );
-  _renderMeterTypes = ({ item }) => (
-    <TouchableOpacity onPress={() => this.showMeter({ item })}>
-      <View style={styles.meterTypeContainer}>
-        {/* <View style={{height: height * .08}}> */}
-        <Image
-          resizeMode="contain"
-          source={item.image}
-          style={styles.meterTypeView}
-        />
-        {/* </View> */}
-        <Text
-          key={item}
-          style={{
-            width: width * 0.265,
-            fontFamily: Fonts.Montserrat,
-            fontSize: height * 0.034,
-            color: item.color,
-          }}>
-          {item.name}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-  _renderMeterTypeList = ({ item }) => (
-    <TouchableOpacity
-      style={styles.meterListBtn}
-      onPress={() => this.showMeter2({ item })}>
-      <Drop name={item.icon} size={15} color="#3E89BF" />
-      <Text key={item} style={{ fontSize: 12 }}>
-        {item.name}
-      </Text>
-    </TouchableOpacity>
-  );
-
-  meterListSeperater = () => <View style={styles.line} />;
-  loaderLoad = () => {
-    this.setState({ isModalVisible: false });
-    this.setState({ loader: true });
-    setTimeout(() => {
-      this.setState({ loader: false });
-    }, 1000);
-  };
-
   showArrayItem = async (build) => {
-    // console.log('What Item We Get', build.item.id)
     this.setState({
       loader: true,
       buildingData: build.item,
@@ -1606,8 +570,6 @@ export default class Splash extends Component {
       `/property/equipment/unit/all-units`,
       data,
     );
-    console.log('Check unitResponse buildings--->', unitResponse);
-    // console.log('buildingData--->', this.state.buildingData);
     if (unitResponse?.ok == true) {
       this.setState({ realData: unitResponse?.data?.data, loader: false });
       let arry = unitResponse?.data?.data;
@@ -1630,7 +592,6 @@ export default class Splash extends Component {
           unit: { name: lastElement?.name }, // update the value of specific key
         },
       }));
-      // console.log('lastElement--->', this.state.lastUnitData);
     } else {
       alert('Network Issue');
       this.setState({ loader: false });
@@ -1641,187 +602,15 @@ export default class Splash extends Component {
     this.setState({ changed: false });
   };
 
-  showMeter = (item) => {
-    console.log('Selected 2', item);
-    this.setState({ pressedText: item.item.name, meterId: item.item.id });
-    this.setState({ hColor: item.item.color });
-    this.setState({ isModaladdUVisible: false });
-    this.changeLayoutUtilityScr();
-    this.setState({ noCode: false });
-    this.setState({ editU: false });
-    this.setState({ pressedType: item.item.name });
-    // this.setState({ uScr: false })
-  };
-  showMeter2 = (item) => {
-    // console.log('Selected', item);
-    this.setState({ pressedText: item.item.name, meterId: item.item.id });
-    this.setState({ hColor: item.item.color });
-    this.setState({ isModaladdUVisible: false });
-    this.changeUtilityAndToggleAddU();
-    this.setState({ uScr: true, meterList: !this.state.meterList });
-  };
-
-  showBuild = (unit) => {
-    // console.log('Selected 2', unit.item.name)
-    // console.log('Selected 2', item.item.name)
-    this.setState({ buildIndex: unit.index });
-    this.setState({ newBuild: unit.item.name });
-    this.changeLayoutMeter3();
-  };
-  addMeter = () => {
-    this.toggleAddUtility();
-  };
-
   naviagateToEquip = () => {
-    // this.toggleModal();
     this.setState({ isModalVisible: false });
-  };
-
-  handleMetertypeModal = async (index) => {
-    const unitResponse = await this.api.get(
-      `/property/equipment/unit-of-measure/all`,
-    );
-    this.setState(
-      { measureOfUnit: unitResponse?.data?.data, typeOfMeterIndex: index },
-      () => console.log('measureOfUnit Of_______', this.state.measureOfUnit),
-    );
-    this.setState({
-      isModalMeterVisible: true,
-    });
-  };
-
-  handleSaveMeterTypeBuilder = async () => {
-    if (!this.state.meterTypeData.manufacturer) {
-      this.state.meterTypeInputs.map((item, index) => {
-        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
-      });
-      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-      newArr[0].error = 'Select manufacturer'; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
-      return;
-    }
-    if (!this.state.meterTypeData.model) {
-      this.state.meterTypeInputs.map((item, index) => {
-        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
-      });
-      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-      newArr[1].error = 'Select model'; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
-      return;
-    }
-    if (!this.state.meterTypeData.multiplier) {
-      this.state.meterTypeInputs.map((item, index) => {
-        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
-      });
-      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-      newArr[2].error = 'This should be greater then one '; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
-      return;
-    }
-    if (!this.state.meterTypeData.unit_of_measure_id) {
-      this.state.meterTypeInputs.map((item, index) => {
-        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
-      });
-      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-      newArr[3].error = 'Select measure of unit '; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
-      return;
-    } else {
-      this.state.meterTypeInputs.map((item, index) => {
-        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-        newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
-      });
-      console.log('measureOfUnit Of_______', this.state.meterTypeData);
-
-      const unitResponse = await this.api.post(
-        `/property/equipment/type/add-type`,
-        this.state.meterTypeData,
-      );
-      console.log('addtype response--->', unitResponse);
-      if (unitResponse?.ok) {
-        let newArr = [...this.state.meterListData]; // copying the old datas array
-        newArr[this.state.typeOfMeterIndex].meterTypeName =
-          // unitResponse?.data?.data?.type?.manufacturer +
-          // '-' +
-          unitResponse?.data?.data?.type?.model +
-          '(x' +
-          unitResponse?.data?.data?.type?.multiplier +
-          unitResponse?.data?.data?.type?.unit_of_measure +
-          ')'; // replace e.target.value with whatever you want to change it to
-        newArr[this.state.typeOfMeterIndex].meterType =
-          unitResponse?.data?.data?.type?.id;
-        this.setState({ meterListData: newArr });
-        this.setState({
-          isModalMeterVisible: false,
-        });
-        this.setState((prevState) => ({
-          ...prevState,
-          meterTypeData: {
-            // object that we want to update
-            ...prevState.meterTypeData, // keep all other key-value pairs
-            manufacturer: '',
-            model: '',
-            multiplier: 1,
-            unit_of_measure_id: '', // update the value of specific key
-          },
-          measureOfUnitName: '',
-        }));
-        this.state.meterTypeInputs.map((item, index) => {
-          let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-          if (index != 2) {
-            newArr[index].input = ''; // replace e.target.value with whatever you want to change it to
-          } else {
-            newArr[index].input = '1';
-          }
-          this.setState({ meterTypeInputs: newArr });
-        });
-      } else {
-        alert('Network error');
-      }
-    }
-  };
-
-  meterTypeClose = () => {
-    this.setState({
-      isModalMeterVisible: false,
-      measureOfUnitName: '',
-    });
-    this.setState((prevState) => ({
-      ...prevState,
-      meterTypeData: {
-        // object that we want to update
-        ...prevState.meterTypeData, // keep all other key-value pairs
-        manufacturer: '',
-        model: '',
-        multiplier: 1,
-        unit_of_measure_id: '', // update the value of specific key
-      },
-    }));
-    this.state.meterTypeInputs.map((item, index) => {
-      let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-      if (index != 2) {
-        newArr[index].input = ''; // replace e.target.value with whatever you want to change it to
-      } else {
-        newArr[index].input = '1';
-      }
-      newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
-    });
   };
 
   openAndClear = () => {
     this.setState({ showSearch: true });
     this.setState({ searchList: [] });
   };
+
   openFilter = async () => {
     this.context.getBillingCompany();
     this.setState({ showFilter: true });
@@ -1889,23 +678,6 @@ export default class Splash extends Component {
       { text: 'OK', onPress: () => this.deleteBuilding() },
     ]);
   };
-
-  compareObjects(object1, object2, key) {
-    const obj1 = object1[key].toUpperCase();
-    const obj2 = object2[key].toUpperCase();
-
-    const str1 = obj1.replace(/\s/g, '');
-    const str2 = obj2.replace(/\s/g, '');
-
-    if (str1 < str2) {
-      return -1;
-    }
-    if (str1 > str2) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
 
   _customSort(data, order) {
     function isNumber(v) {
@@ -2019,7 +791,6 @@ export default class Splash extends Component {
               </View>
               <View style={styles.inputContainer}>
                 <TextInput
-                  // label="BILLING COMPANY*"
                   value={this.state.editBuildDes}
                   dense={true}
                   onChangeText={(text) => {
@@ -2406,12 +1177,12 @@ export default class Splash extends Component {
                 </View>
               ) : (
                 <FlatList
-                  ref={(ref) => {buildListViewRef = ref}}
-                  style={{height: width * 0.22}}
+                  ref={(ref) => { buildListViewRef = ref }}
+                  style={{ height: width * 0.22 }}
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
                   data={this.state.dataBuild}
-                  renderItem={this._renderTopList}
+                  renderItem={this._renderBuildingList}
                   keyExtractor={(item) => item.id.toString()}
                 />
               )}
@@ -2577,7 +1348,7 @@ export default class Splash extends Component {
                 numColumns={1}
                 initialNumToRender={realData.length}
                 data={this._customSort(realData)}
-                renderItem={this._renderMyList}
+                renderItem={this._renderUnitList}
                 keyExtractor={(item) => item.id.toString()}
               />
             )}
