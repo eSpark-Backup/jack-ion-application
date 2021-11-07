@@ -11,12 +11,9 @@ import {
 
 //Packages
 
-import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
-
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 
 // Components
 
