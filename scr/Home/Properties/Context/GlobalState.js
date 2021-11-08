@@ -144,7 +144,6 @@ class GlobalState extends React.Component {
         Alert.alert('Error', 'Network Issues');
       }
     });
-
   };
   getBillingCompany = async () => {
     const response = await this.api.get('/property/billing-company/all');
@@ -240,12 +239,14 @@ class GlobalState extends React.Component {
       );
       console.log('Check Update', response?.data);
       alert(response?.data?.message);
-    } else {
+    } else if (edit == false) {
       const response = await this.api.delete(
         `/property/equipment/building/${id}`,
       );
       console.log('Check response', response?.data);
       alert(response?.data?.message);
+    } else {
+      null;
     }
   };
   render() {
