@@ -62,6 +62,7 @@ export default styles = StyleSheet.create({
   input: {
     width: width * 0.75,
     fontSize: width * 0.03,
+    textTransform: 'capitalize',
   },
   footerBtn: {
     width: width * 0.8,
