@@ -71,7 +71,13 @@ export default class Splash extends Component {
       dataBuild: [],
       realData: [],
       fileMenuVisible: false,
-      FileArray: [{ name: 'Upload File' }, { name: 'Download File' }],
+      addMenuVisible: false,
+      FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
+      AddArray: [
+        {name: 'Add a Unit', func: this.selectAndCloseAdd},
+        {name: 'Add Multiple', func: this.selectAndCloseAddMultiple},
+        {name: 'Add a Building', func: this.selectAndCloseAddBuild},
+      ],
       error: {
         buildingName: false,
         units: false,
@@ -281,15 +287,19 @@ export default class Splash extends Component {
 
   selectAndCloseAdd = async () => {
     this.toggleModalUnit();
-    this.changeLayoutMeter2();
+    this.setState({addMenuVisible: false});
+    // this.changeLayoutMeter2();
+    // this.setState({ gotData: false });
   };
   selectAndCloseAddMultiple = () => {
     this.toggleModalBuild();
-    this.setState({ buildingModalType: 'Multyple' });
+    this.setState({addMenuVisible: false});
+    this.setState({buildingModalType: 'Multyple'});
   };
   selectAndCloseAddBuild = () => {
     this.toggleModalBuild();
-    this.setState({ buildingModalType: '' });
+    this.setState({addMenuVisible: false});
+    this.setState({buildingModalType: ''});
   };
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -528,7 +538,7 @@ export default class Splash extends Component {
       `/property/equipment/meter/all-meters`,
     );
     console.log('Check meter add--->', unitResponse?.data?.data);
-    this.setState({ getUtilities: unitResponse?.data?.data });
+    this.setState({getUtilities: unitResponse?.data?.data});
   };
 
   _customSort(data, order) {
@@ -576,9 +586,11 @@ export default class Splash extends Component {
     this.checkData();
   };
   handleUpdateBuilding = (cond, data) => {
-    this.setState({ editModal: false });
-    this.context.updateBuilding(cond, this.state.editBuildId, data);
-    this.checkData();
+    if (cond != null) {
+      this.context.updateBuilding(cond, this.state.editBuildId, data);
+      this.onFocusFunction();
+    }
+    this.setState({editModal: false});
   };
   render() {
     const { result, scan, scanResult } = this.state;
@@ -594,14 +606,13 @@ export default class Splash extends Component {
           isVisible={this.state.editModal}
           title="Edit Building"
           doneBtnTitle="Update Building"
-          style={{ height: height * 0.55 }}
+          style={{height: height * 0.55}}
           reRun={this.handleUpdateBuilding}
           buildingData={{
             buildingId: this.state.editBuildId,
             buildingName: this.state.editBuilding,
             buildingDes: this.state.editBuildDes,
-          }}>
-        </UpdateModal>
+          }}></UpdateModal>
         {/* Drawer Modal */}
         <Drawer
           isVisible={this.state.isModalVisible}
@@ -687,6 +698,7 @@ export default class Splash extends Component {
                   paddingHorizontal: width * 0.03,
                   justifyContent: 'center',
                   borderRightWidth: width * 0.001,
+                  width: width * 0.4,
                 }}>
                 <MenuT
                   visible={this.state.fileMenuVisible}
@@ -707,6 +719,9 @@ export default class Splash extends Component {
                         style={{ marginLeft: width * 0.02 }}
                       />
                     </TouchableOpacity>
+                  }
+                  onRequestClose={() =>
+                    this.setState({fileMenuVisible: false})
                   }>
                   {this.state.FileArray.map((item) => (
                     <View>
@@ -718,141 +733,72 @@ export default class Splash extends Component {
                     </View>
                   ))}
                 </MenuT>
-                <View
-                  style={{
-                    marginTop: this.state.meter2 ? width * 0.018 : 0,
-                    width: width * 0.35,
-                  }}>
-                  <TouchableOpacity
-                    style={styles.dropDown}
-                    onPress={this.changeLayoutMeter2}>
-                    <Feather
-                      name="plus"
-                      size={height * 0.025}
-                      color="#3E4A4F"
-                    />
-                    <Text style={styles.dropDownText}>Add</Text>
-                    <Feather
-                      name="chevron-down"
-                      size={height * 0.02}
-                      color="#3E4A4F"
-                      style={{ marginLeft: width * 0.02 }}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={[
-                      styles.dropDownList,
-                      {
-                        height: !this.state.meter2
-                          ? height * 0.0
-                          : height * 0.18,
-                        borderWidth: this.state.meter2 ? height * 0.001 : 0,
-                      },
-                    ]}>
-                    <View
-                      style={{
-                        padding: height * 0.015,
-                        justifyContent: 'space-between',
-                        flexDirection: 'column',
-                        height: height * 0.12,
-                      }}>
-                      <TouchableOpacity
-                        disabled={
-                          this.state.dataBuild.length == 0 ? true : false
-                        }
-                        onPress={this.selectAndCloseAdd}>
-                        <View
-                          style={{
-                            // backgroundColor: 'green',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            width: width * 0.23,
-                          }}>
-                          <FontAwesome5
-                            color={
-                              this.state.dataBuild.length == 0
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            size={height * 0.02}
-                            color="#3E4A4F"
-                          />
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            Add a Unit
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        disabled={
-                          this.state.dataBuild.length == 0 ? true : false
-                        }
-                        onPress={this.selectAndCloseAddMultiple}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            width: width * 0.265,
-                          }}>
-                          <FontAwesome5
-                            color={
-                              this.state.dataBuild.length == 0
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            color="#3E4A4F"
-                            size={height * 0.02}
-                          />
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            Add Multiple{'\n'}Units
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity onPress={this.selectAndCloseAddBuild}>
+
+                <MenuT
+                  visible={this.state.addMenuVisible}
+                  anchor={
+                    <TouchableOpacity
+                      style={styles.dropDown}
+                      onPress={() => this.setState({addMenuVisible: true})}>
+                      <Feather
+                        name="plus"
+                        size={height * 0.025}
+                        color="#3E4A4F"
+                      />
+                      <Text style={styles.dropDownText}>Add</Text>
+                      <Feather
+                        name="chevron-down"
+                        size={height * 0.02}
+                        color="#3E4A4F"
+                        style={{marginLeft: width * 0.02}}
+                      />
+                    </TouchableOpacity>
+                  }
+                  onRequestClose={() => this.setState({addMenuVisible: false})}>
+                  {this.state.AddArray.map((item, index) => (
+                    <MenuItem
+                      disabled={this.state.dataBuild.length == 0 ? true : false}
+                      onPress={item.func}>
                       <View
                         style={{
-                          padding: width * 0.03,
-                          borderTopWidth: height * 0.001,
-                          borderColor: 'gray',
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                          alignItems: 'flex-start',
+                          width: width * 0.265,
                         }}>
-                        <FontAwesome5
-                          name="building"
-                          size={width * 0.04}
-                          color="#3E4A4F"
-                        />
+                        {index < 2 ? (
+                          <FontAwesome5
+                            color={
+                              this.state.dataBuild.length == 0
+                                ? '#817e7e80'
+                                : '#000'
+                            }
+                            name="house-user"
+                            size={height * 0.02}
+                            color="#3E4A4F"
+                          />
+                        ) : (
+                          <FontAwesome5
+                            name="building"
+                            size={width * 0.04}
+                            color="#3E4A4F"
+                          />
+                        )}
                         <Text
-                          style={{
-                            fontSize: 14,
-                          }}>
-                          Add a Building
+                          style={[
+                            styles.dropDownListText,
+                            {
+                              color:
+                                this.state.dataBuild.length == 0
+                                  ? '#817e7e80'
+                                  : '#000',
+                            },
+                          ]}>
+                          {item.name}
                         </Text>
                       </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                    </MenuItem>
+                  ))}
+                </MenuT>
               </View>
 
               {/* Top Lists */}
