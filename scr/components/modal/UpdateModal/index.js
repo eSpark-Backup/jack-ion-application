@@ -8,6 +8,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   ScrollView,
+  Alert,
 } from 'react-native';
 
 //Packages
@@ -30,6 +31,7 @@ export default class UpdateModal extends Component {
     this.state = {
       editBuilding: '',
       editBuildDes: '',
+      modalVisible: false,
       error: {
         buildingName: false,
         units: false,
@@ -44,10 +46,12 @@ export default class UpdateModal extends Component {
       descriptions: this.state.editBuildDes,
     };
     this.props.reRun(true, data);
+    this.setState({modalVisible: false});
   };
 
   deleteBuilding = () => {
     this.props.reRun(false);
+    this.setState({modalVisible: false});
   };
 
   deleteAlert = () => {
@@ -98,6 +102,7 @@ export default class UpdateModal extends Component {
         ...prevState.error, // keep all other key-value pairs
         editBuilding: '', // update the value of specific key
       },
+      modalVisible: false,
     }));
     this.props.reRun(null);
   };
@@ -114,6 +119,13 @@ export default class UpdateModal extends Component {
       onDelete,
       buildingData,
     } = this.props;
+    if (isVisible && this.state.modalVisible == false) {
+      this.setState({
+        editBuilding: buildingData.buildingName,
+        editBuildDes: buildingData.buildingDes,
+        modalVisible: true,
+      });
+    }
     return (
       <Modal
         animationIn="slideInDown"
@@ -135,7 +147,7 @@ export default class UpdateModal extends Component {
                     />
                     <Text style={styles.modalHeading}>{title}</Text>
                     <Pressable
-                      onPress={onCancel}
+                      onPress={this.clearUpdateBuild}
                       android_ripple={{
                         color: 'black',
                         borderless: true,

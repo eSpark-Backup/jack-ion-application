@@ -239,14 +239,12 @@ class GlobalState extends React.Component {
       );
       console.log('Check Update', response?.data);
       alert(response?.data?.message);
-    } else if (edit == false) {
+    } else {
       const response = await this.api.delete(
         `/property/equipment/building/${id}`,
       );
       console.log('Check response', response?.data);
       alert(response?.data?.message);
-    } else {
-      null;
     }
   };
   render() {

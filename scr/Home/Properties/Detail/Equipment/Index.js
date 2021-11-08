@@ -115,7 +115,13 @@ export default class Splash extends Component {
       dataBuild: [],
       realData: [],
       fileMenuVisible: false,
+      addMenuVisible: false,
       FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
+      AddArray: [
+        {name: 'Add a Unit', func: this.selectAndCloseAdd},
+        {name: 'Add Multiple', func: this.selectAndCloseAddMultiple},
+        {name: 'Add a Building', func: this.selectAndCloseAddBuild},
+      ],
       error: {
         buildingName: false,
         units: false,
@@ -326,15 +332,18 @@ export default class Splash extends Component {
 
   selectAndCloseAdd = async () => {
     this.toggleModalUnit();
-    this.changeLayoutMeter2();
+    this.setState({addMenuVisible: false});
+    // this.changeLayoutMeter2();
     // this.setState({ gotData: false });
   };
   selectAndCloseAddMultiple = () => {
     this.toggleModalBuild();
+    this.setState({addMenuVisible: false});
     this.setState({buildingModalType: 'Multyple'});
   };
   selectAndCloseAddBuild = () => {
     this.toggleModalBuild();
+    this.setState({addMenuVisible: false});
     this.setState({buildingModalType: ''});
   };
   changeLayoutMeter = () => {
@@ -639,64 +648,6 @@ export default class Splash extends Component {
     this.setState({getUtilities: unitResponse?.data?.data});
   };
 
-  deleteBuilding = () => {
-    this.setState({editModal: false});
-    this.context.updateBuilding(false, this.state.editBuildId);
-    this.setState({loader: true, loaderBuildings: true});
-    this.onFocusFunction();
-  };
-
-  updateBuilding = () => {
-    this.setState({editModal: false});
-    let data = {
-      name: this.state.editBuilding,
-      descriptions: this.state.editBuildDes,
-    };
-    this.context.updateBuilding(true, this.state.editBuildId, data);
-    this.setState({loader: true, loaderBuildings: true});
-    this.onFocusFunction();
-  };
-
-  editAlert = () => {
-    if (this.state.editBuilding === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          editBuilding: 'Invalid Building Name', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          editBuilding: '', // update the value of specific key
-        },
-      }));
-      Alert.alert('Update Building', 'Are you sure you want to Update?', [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => this.updateBuilding()},
-      ]);
-    }
-  };
-
-  deleteAlert = () => {
-    Alert.alert('Delete Building', 'Are you sure you want to Delete?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => this.deleteBuilding()},
-    ]);
-  };
-
   _customSort(data, order) {
     function isNumber(v) {
       return (+v).toString() === v;
@@ -742,9 +693,11 @@ export default class Splash extends Component {
     this.checkData();
   };
   handleUpdateBuilding = (cond, data) => {
+    if (cond != null) {
+      this.context.updateBuilding(cond, this.state.editBuildId, data);
+      this.onFocusFunction();
+    }
     this.setState({editModal: false});
-    this.context.updateBuilding(cond, this.state.editBuildId, data);
-    this.checkData();
   };
   render() {
     const {result, scan, scanResult} = this.state;
@@ -761,107 +714,12 @@ export default class Splash extends Component {
           title="Edit Building"
           doneBtnTitle="Update Building"
           style={{height: height * 0.55}}
-          // onCancel={this.clearUpdateBuild}
-          // onDone={this.editAlert}
-          // onDelete={this.deleteAlert}
           reRun={this.handleUpdateBuilding}
           buildingData={{
             buildingId: this.state.editBuildId,
             buildingName: this.state.editBuilding,
             buildingDes: this.state.editBuildDes,
-          }}>
-          {/* <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{flex: 1}}>
-              <View style={styles.desciptionContainer}>
-                <Build
-                  name={'office-building'}
-                  size={height * 0.02}
-                  color="#5e5e5e"
-                />
-                <Text style={styles.desciptionHeading}>BUILDING*</Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  // label="Name*"
-                  value={this.state.editBuilding}
-                  dense={true}
-                  error={this.state.error.editBuilding}
-                  onChangeText={(text) => {
-                    this.setState({editBuilding: text});
-                    this.setState((prevState) => ({
-                      error: {
-                        // object that we want to update
-                        ...prevState.error, // keep all other key-value pairs
-                        editBuilding: '',
-                      },
-                    }));
-                  }}
-                  style={styles.input}
-                  mode={'outlined'}
-                  theme={{
-                    colors: {
-                      text: '#25AAE1ec',
-                      primary: '#25AAE1ec',
-                      selectionColor: 'red',
-                    },
-                  }}
-                />
-              </View>
-              {this.state.error.editBuilding ? (
-                <HelperText
-                  type="error"
-                  visible={this.state.error.editBuilding}>
-                  {this.state.error.editBuilding}
-                </HelperText>
-              ) : null}
-              <View style={styles.desciptionContainer}>
-                <Text style={styles.desciptionHeading}>
-                  Building Despcription*
-                </Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  value={this.state.editBuildDes}
-                  dense={true}
-                  onChangeText={(text) => {
-                    this.setState({editBuildDes: text});
-                  }}
-                  style={styles.input}
-                  mode={'outlined'}
-                  theme={{
-                    colors: {
-                      text: '#25AAE1ec',
-                      primary: '#25AAE1ec',
-                      selectionColor: 'red',
-                    },
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  alignItems: 'center',
-                  overflow: 'hidden',
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'column',
-                    width: width * 0.75,
-                    alignSelf: 'center',
-                    marginVertical: width * 0.05,
-                  }}>
-                  <Button
-                    titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete Building`}
-                    buttonStyle={{
-                      backgroundColor: '#e24b4b',
-                    }}
-                    onPress={() => this.deleteAlert()}
-                  />
-                </View>
-              </View>
-            </View>
-          </ScrollView> */}
-        </UpdateModal>
+          }}></UpdateModal>
         {/* Drawer Modal */}
         <Drawer
           isVisible={this.state.isModalVisible}
@@ -871,84 +729,7 @@ export default class Splash extends Component {
           naviagateToChart={this.naviagateToChart}
           naviagateToSupport={this.naviagateToSupport}
         />
-        {/* <Modal
-          animationIn="slideInLeft"
-          animationOut="slideOutLeft"
-          isVisible={this.state.isModalVisible}
-          swipeDirection="left"
-          onSwipeStart={this.toggleModal}
-          onBackdropPress={this.toggleModal}
-          backdropColor="black"
-          style={styles.modalContainer}>
-          <View style={styles.drawerMainContainer}>
-            <View style={{marginTop: StatusBar.currentHeight}}>
-              <Menu
-                name="menu"
-                size={height * 0.05}
-                color="white"
-                // style={{right: 90}}
-                onPress={this.toggleModal}
-                style={{backgroundColor: '#35afe2'}}
-              />
-            </View>
-            <View style={styles.drawerContentContainer}>
-              <TouchableOpacity onPress={this.naviagateToDetail}>
-                <View style={styles.drawerContent}>
-                  <Detail
-                    name="account-details-outline"
-                    size={height * 0.035}
-                    color="#7575ff"
-                    style={{marginRight: width * 0.02}}
-                  />
-                  <Text style={styles.drawerbtn}>Profile</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.naviagateToEquip}>
-                <View style={styles.drawerContent}>
-                  <Equip
-                    name="rss"
-                    size={height * 0.035}
-                    color="#ff9f71"
-                    style={{marginRight: width * 0.02}}
-                  />
-                  <Text style={styles.drawerbtn}>Units</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.naviagateToChart}>
-                <View style={styles.drawerContent}>
-                  <Chart
-                    name="pie-chart"
-                    size={height * 0.035}
-                    color="#009349"
-                    style={{marginRight: width * 0.02}}
-                  />
-                  <Text style={styles.drawerbtn}>Charts</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={this.naviagateToSupport}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingBottom: height * 0.015,
-                  // backgroundColor: 'pink',
-                }}>
-                <Detail
-                  name="help-circle-outline"
-                  size={height * 0.035}
-                  color="#35afe2"
-                  style={{
-                    marginBottom: height * 0.009,
-                    marginRight: width * 0.02,
-                  }}
-                />
-                <Text style={styles.drawerbtn}>Support</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal> */}
+
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
@@ -1035,6 +816,7 @@ export default class Splash extends Component {
                   paddingHorizontal: width * 0.03,
                   justifyContent: 'center',
                   borderRightWidth: width * 0.001,
+                  width: width * 0.4,
                 }}>
                 <MenuT
                   visible={this.state.fileMenuVisible}
@@ -1055,6 +837,9 @@ export default class Splash extends Component {
                         style={{marginLeft: width * 0.02}}
                       />
                     </TouchableOpacity>
+                  }
+                  onRequestClose={() =>
+                    this.setState({fileMenuVisible: false})
                   }>
                   {this.state.FileArray.map((item) => (
                     <View>
@@ -1066,188 +851,72 @@ export default class Splash extends Component {
                     </View>
                   ))}
                 </MenuT>
-                {/* <View style={{ width: width * 0.35 }}>
-                  <TouchableOpacity
-                    style={styles.dropDown}
-                    onPress={this.changeLayoutMeter}>
-                    <Message name="file" size={height * 0.025} color="#3E4A4F" />
-                    <Text style={styles.dropDownText}>File</Text>
-                    <Message
-                      name="chevron-down"
-                      size={height * 0.02}
-                      color="#3E4A4F"
-                      style={{ marginLeft: width * 0.02 }}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={[
-                      styles.dropDownList,
-                      {
-                        height: this.state.meter ? height * 0.09 : 0,
-                        borderWidth: this.state.meter ? height * 0.001 : 0,
-                        marginBottom: this.state.meter ? height * 0.01 : 0,
-                      },
-                    ]}>
-                    <View
-                      style={{
-                        padding: height * 0.008,
-                        justifyContent: 'space-between',
-                        height: height * 0.08,
-                      }}>
-                      <TouchableOpacity
-                        onPress={() => Alert.alert('Upload File Pressed')}>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.dropDownListText}>
-                            Upload File
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => Alert.alert('Download File Pressed')}>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.dropDownListText}>
-                            Download File
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View> */}
-                <View
-                  style={{
-                    marginTop: this.state.meter2 ? width * 0.018 : 0,
-                    width: width * 0.35,
-                  }}>
-                  <TouchableOpacity
-                    style={styles.dropDown}
-                    onPress={this.changeLayoutMeter2}>
-                    <Message
-                      name="plus"
-                      size={height * 0.025}
-                      color="#3E4A4F"
-                    />
-                    <Text style={styles.dropDownText}>Add</Text>
-                    <Message
-                      name="chevron-down"
-                      size={height * 0.02}
-                      color="#3E4A4F"
-                      style={{marginLeft: width * 0.02}}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={[
-                      styles.dropDownList,
-                      {
-                        height: !this.state.meter2
-                          ? height * 0.0
-                          : height * 0.18,
-                        borderWidth: this.state.meter2 ? height * 0.001 : 0,
-                      },
-                    ]}>
-                    <View
-                      style={{
-                        padding: height * 0.015,
-                        justifyContent: 'space-between',
-                        flexDirection: 'column',
-                        height: height * 0.12,
-                      }}>
-                      <TouchableOpacity
-                        disabled={
-                          this.state.dataBuild.length == 0 ? true : false
-                        }
-                        onPress={this.selectAndCloseAdd}>
-                        <View
-                          style={{
-                            // backgroundColor: 'green',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            width: width * 0.23,
-                          }}>
-                          <Home
-                            color={
-                              this.state.dataBuild.length == 0
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            size={height * 0.02}
-                            color="#3E4A4F"
-                          />
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            Add a Unit
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        disabled={
-                          this.state.dataBuild.length == 0 ? true : false
-                        }
-                        onPress={this.selectAndCloseAddMultiple}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            width: width * 0.265,
-                          }}>
-                          <Home
-                            color={
-                              this.state.dataBuild.length == 0
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            color="#3E4A4F"
-                            size={height * 0.02}
-                          />
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            Add Multiple{'\n'}Units
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity onPress={this.selectAndCloseAddBuild}>
+
+                <MenuT
+                  visible={this.state.addMenuVisible}
+                  anchor={
+                    <TouchableOpacity
+                      style={styles.dropDown}
+                      onPress={() => this.setState({addMenuVisible: true})}>
+                      <Message
+                        name="plus"
+                        size={height * 0.025}
+                        color="#3E4A4F"
+                      />
+                      <Text style={styles.dropDownText}>Add</Text>
+                      <Message
+                        name="chevron-down"
+                        size={height * 0.02}
+                        color="#3E4A4F"
+                        style={{marginLeft: width * 0.02}}
+                      />
+                    </TouchableOpacity>
+                  }
+                  onRequestClose={() => this.setState({addMenuVisible: false})}>
+                  {this.state.AddArray.map((item, index) => (
+                    <MenuItem
+                      disabled={this.state.dataBuild.length == 0 ? true : false}
+                      onPress={item.func}>
                       <View
                         style={{
-                          padding: width * 0.03,
-                          borderTopWidth: height * 0.001,
-                          borderColor: 'gray',
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                          alignItems: 'flex-start',
+                          width: width * 0.265,
                         }}>
-                        <Build
-                          name="building"
-                          size={width * 0.04}
-                          color="#3E4A4F"
-                        />
+                        {index < 2 ? (
+                          <Home
+                            color={
+                              this.state.dataBuild.length == 0
+                                ? '#817e7e80'
+                                : '#000'
+                            }
+                            name="house-user"
+                            size={height * 0.02}
+                            color="#3E4A4F"
+                          />
+                        ) : (
+                          <Build
+                            name="building"
+                            size={width * 0.04}
+                            color="#3E4A4F"
+                          />
+                        )}
                         <Text
-                          style={{
-                            fontSize: 14,
-                          }}>
-                          Add a Building
+                          style={[
+                            styles.dropDownListText,
+                            {
+                              color:
+                                this.state.dataBuild.length == 0
+                                  ? '#817e7e80'
+                                  : '#000',
+                            },
+                          ]}>
+                          {item.name}
                         </Text>
                       </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                    </MenuItem>
+                  ))}
+                </MenuT>
               </View>
 
               {/* Top Lists */}
