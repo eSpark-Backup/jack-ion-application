@@ -45,7 +45,7 @@ export default class Splash extends Component {
   static navigationOptions = {
     title: 'Support',
     tabBarIcon: ({tintColor}) => (
-      <TabIcon name="contact-mail" color={tintColor} size={height * 0.033} />
+      <TabIcon name="contact-mail" color={tintColor} size={width * 0.05} />
     ),
   };
   constructor() {
