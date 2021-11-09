@@ -1,7 +1,5 @@
 import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../../../../utils/fonts';
 
-//Files
 const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
@@ -58,10 +56,7 @@ export default styles = StyleSheet.create({
     padding: width * 0.04,
   },
   listInnerText: {fontSize: width * 0.035},
-  listInnerGreyText: {
-    fontSize: width * 0.035,
-    color: '#8c8c8c',
-  },
+
   currentReadInnerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -136,42 +131,4 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: width * 0.05,
   },
-  footerStyle: {
-    width: width,
-    height: height * 0.1,
-    backgroundColor: '#fff',
-    elevation: width * 0.07,
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  meterStyle: {
-    width: width * 0.15,
-    height: width * 0.13,
-    backgroundColor: 'white',
-    marginHorizontal: width * 0.025,
-    elevation: width * 0.01,
-    borderWidth: width * 0.005,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  meterInner: {
-    position: 'absolute',
-    right: width * 0,
-    top: height * 0,
-    width: width * 0.035,
-    height: width * 0.035,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomLeftRadius: width * 0.02,
-  },
-  meterImg: {
-    height: width * 0.07,
-    width: width * 0.07,
-  },
-  noDataMeterImg: {
-    // backgroundColor: 'red',
-    height: width * 0.25,
-    width: width * 0.25,
-  },
-  headerText: {fontSize: width * 0.05, color: '#000'},
 });
