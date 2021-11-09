@@ -22,20 +22,17 @@ const AuthNavigatorConfig = {
     inactiveTintColor: 'white',
     activeTintColor: 'black',
     labelStyle: {
-      fontSize: height * 0.02,
+      fontSize: width * 0.03,
       fontFamily: Fonts.BalsamiqSansRegular,
       // fontWeight: 'bold'
     },
     style: {
       backgroundColor: '#25AAE1ec',
-      paddingVertical: height * 0.01,
-      height: height * 0.085,
+      paddingVertical: width * 0.015,
+      height: width * 0.16,
       alignSelf: 'center',
-      // borderTopWidth: width * .005 ,
-      // borderColor: 'black',
       justifyContent: 'center',
       alignItems: 'center',
-      // borderTopRightRadius:width * .1
     },
   },
 };

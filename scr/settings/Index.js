@@ -79,7 +79,7 @@ export default class Splash extends Component {
       <TabIcon
         name="settings-applications"
         color={tintColor}
-        size={height * 0.035}
+        size={width * 0.05}
       />
     ),
   };

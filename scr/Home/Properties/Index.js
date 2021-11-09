@@ -165,7 +165,7 @@ export default class Splash extends Component {
       !this.state.stopLoader
     ) {
       this.setState({stopLoader: true});
-      console.log(clc.green('agayayaaa_____'));
+      // console.log(clc.green('agayayaaa_____'));
       this.setState({Loading: false});
     }
     return (
