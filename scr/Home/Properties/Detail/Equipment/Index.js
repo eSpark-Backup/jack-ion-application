@@ -5,86 +5,43 @@ import {
   View,
   StatusBar,
   Dimensions,
-  Animated,
-  ScrollView,
   TouchableOpacity,
   LayoutAnimation,
   FlatList,
   UIManager,
-  Pressable,
   Alert,
   Image,
-  Keyboard,
-  PermissionsAndroid,
-  Frag,
   KeyboardAvoidingView,
-  // TextInput
-  CheckBox,
-  TouchableWithoutFeedback,
-  BackHandler,
 } from 'react-native';
-
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
 import Menu from 'react-native-vector-icons/Entypo';
 import Search from 'react-native-vector-icons/EvilIcons';
-import Back from 'react-native-vector-icons/MaterialIcons';
-import Home from 'react-native-vector-icons/FontAwesome5';
-import Check from 'react-native-vector-icons/Feather';
-import Build from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
 import Ionic from 'react-native-vector-icons/Ionicons';
-import FilterIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Close from 'react-native-vector-icons/MaterialCommunityIcons';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
-import Barcode from 'react-native-vector-icons/MaterialCommunityIcons';
-import Drop from 'react-native-vector-icons/Ionicons';
-import Scanner from 'react-native-vector-icons/Ionicons';
-import Chart from 'react-native-vector-icons/Feather';
-import Delete from 'react-native-vector-icons/MaterialIcons';
-import Equip from 'react-native-vector-icons/Feather';
-import Message from 'react-native-vector-icons/Feather';
-import Trash from 'react-native-vector-icons/Feather';
-import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import Edit from 'react-native-vector-icons/MaterialIcons';
-import Equipment from 'react-native-vector-icons/FontAwesome';
-import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import Compact from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
 import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
-import { DotsLoader } from 'react-native-indicator';
-import { RNCamera } from 'react-native-camera';
-import BarcodeMask from 'react-native-barcode-mask';
-import RNBeep from 'react-native-a-beep';
 import Base_URL from '../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import TextTicker from 'react-native-text-ticker';
-import DropDownPicker from 'react-native-dropdown-picker';
-import SearchableDropdown from 'react-native-searchable-dropdown';
 import { create } from 'apisauce';
 import UpdateModal from '../../../../components/modal/UpdateModal';
 import { Header, Button, Icon as Iconx } from 'react-native-elements';
 import AddBuilding from '../../../../components/modal/AddBuilding/index';
+import Drawer from '../../../../components/modal/Drawer/index';
 
 // Components
 import { Fonts } from '../../../../utils/fonts';
-import File from './Form';
 import styles from './style';
-import style from './style';
 import ContextProp from '../../Context/propContext';
 import Filter from '../../Filter';
-// import { FlatList } from 'react-native-gesture-handler';
-import { color } from 'react-native-reanimated';
 import { ActivityIndicator } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
 import EditUnit from './Units/modals/UnitEdit';
 import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
-// import {SafeAreaView} from 'react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import clc from 'cli-color';
-import Index from '../../../Index';
 const { width, height } = Dimensions.get('window');
-let listViewRef;
 let buildListViewRef;
 
 export default class Splash extends Component {
@@ -113,10 +70,18 @@ export default class Splash extends Component {
       filterWork: false,
       dataBuild: [],
       realData: [],
+      fileMenuVisible: false,
+      addMenuVisible: false,
+      FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
+      AddArray: [
+        {name: 'Add a Unit', func: this.selectAndCloseAdd},
+        {name: 'Add Multiple', func: this.selectAndCloseAddMultiple},
+        {name: 'Add a Building', func: this.selectAndCloseAddBuild},
+      ],
       error: {
         buildingName: false,
         units: false,
-        editBuilding:''
+        editBuilding: '',
       },
       editBuildId: 0,
     };
@@ -272,7 +237,6 @@ export default class Splash extends Component {
       building_id: this.state.editBuildId,
       search: e,
     };
-
     if (e) {
       this.setState({ searchLoading: true });
       const unitResponse = await this.api.post(
@@ -323,16 +287,19 @@ export default class Splash extends Component {
 
   selectAndCloseAdd = async () => {
     this.toggleModalUnit();
-    this.changeLayoutMeter2();
+    this.setState({addMenuVisible: false});
+    // this.changeLayoutMeter2();
     // this.setState({ gotData: false });
   };
   selectAndCloseAddMultiple = () => {
     this.toggleModalBuild();
-    this.setState({ buildingModalType: 'Multyple' })
+    this.setState({addMenuVisible: false});
+    this.setState({buildingModalType: 'Multyple'});
   };
   selectAndCloseAddBuild = () => {
     this.toggleModalBuild();
-    this.setState({ buildingModalType: '' })
+    this.setState({addMenuVisible: false});
+    this.setState({buildingModalType: ''});
   };
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -342,59 +309,6 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({ meter2: !this.state.meter2, meter: false });
   };
-  _renderSearchPropList = (unit) => (
-    <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
-      <View style={[styles.infoViewContainer]}>
-        <View style={styles.infoViewInner}>
-          <Home
-            name="house-user"
-            size={width * 0.07}
-            style={{
-              marginLeft: width * 0.01,
-            }}
-          />
-          <View
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'center',
-              width: width * 0.3,
-              overflow: 'hidden',
-              marginLeft: width * 0.01,
-            }}>
-            <TextTicker
-              duration={6000}
-              marqueeDelay={2000}
-              repeatSpacer={width * 0.3}
-              style={styles.dataFieldText}
-              key={unit}>
-              {unit.item.name}
-            </TextTicker>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginLeft: width * 0.01,
-              }}>
-              {unit.item?.unit_meter.length ? (
-                unit.item?.unit_meter?.map((item) => (
-                  <Image
-                    source={this.typeSwitcher(item.meter_name)}
-                    style={{
-                      height: width * 0.05,
-                      width: width * 0.05,
-                    }}
-                  />
-                ))
-              ) : (
-                <Text>No meters</Text>
-              )}
-            </View>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-
 
   buildingEditOpen = (item) => {
     this.setState({
@@ -431,17 +345,17 @@ export default class Splash extends Component {
   };
   _renderUnitList = (unit) => {
     return (
-      <View>
+      <View
+        style={{ alignItems: 'center' }}>
         <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
           <View style={[styles.infoViewContainer]}>
             <View style={styles.infoViewInner}>
-              <View
-                style={styles.unitNameContainer}>
-                <Home
+              <View style={styles.unitNameContainer}>
+                <FontAwesome5
                   name="house-user"
                   size={width * 0.07}
                   color="#3E4A4F"
-                  style={{marginRight: width * 0.01}}
+                  style={{ marginRight: width * 0.01 }}
                 />
                 <TextTicker
                   duration={6000}
@@ -452,8 +366,7 @@ export default class Splash extends Component {
                   {unit.item.name}
                 </TextTicker>
               </View>
-              <View
-                style={styles.unitDetailContainer}>
+              <View style={styles.unitDetailContainer}>
                 {unit?.item?.unit_meter?.length ? (
                   unit?.item?.unit_meter?.map((item, index) => (
                     <>
@@ -466,23 +379,37 @@ export default class Splash extends Component {
                           duration={10000}
                           marqueeDelay={2000}
                           repeatSpacer={width * 0.17}
-                          style={[styles.dataFieldText, { width: width * .17, fontSize: width * 0.02 }]}
-                        >
+                          style={[
+                            styles.dataFieldText,
+                            { width: width * 0.17, fontSize: width * 0.025 },
+                          ]}>
                           {item?.device_serial_number}
                         </TextTicker>
-                        <Barcode
+                        <MaterialCommunityIcons
                           name="barcode"
                           size={width * 0.03}
-                          style={{marginHorizontal: width * 0.005}}
+                          style={{ marginHorizontal: width * 0.005 }}
                         />
                       </View>
-                      <View style={[styles.unitDetailSeprater,{borderBottomWidth: index == 0 && unit?.item?.unit_meter?.length > 1 ? width * .004 : 0,}]} />
+                      <View
+                        style={[
+                          styles.unitDetailSeprater,
+                          {
+                            borderBottomWidth:
+                              index == 0 && unit?.item?.unit_meter?.length > 1
+                                ? width * 0.004
+                                : 0,
+                          },
+                        ]}
+                      />
                     </>
                   ))
                 ) : (
                   <View style={styles.unitDetailInnerElse}>
-                    <Text style={styles.unitDetailInnerElseText}>No meters</Text>
-                    <Barcode
+                    <Text style={styles.unitDetailInnerElseText}>
+                      No meters
+                    </Text>
+                    <MaterialCommunityIcons
                       name="barcode-off"
                       size={width * 0.03}
                       style={styles.unitDetailInnerElseIcon}
@@ -506,7 +433,7 @@ export default class Splash extends Component {
         }}
         style={[styles.infoTopViewContainer]}>
         <View style={[styles.infoTopViewInner]}>
-          <Build name="building" size={width * 0.04} color="#3E4A4F" />
+          <FontAwesome5 name="building" size={width * 0.04} color="#3E4A4F" />
           <TextTicker
             duration={6000}
             marqueeDelay={2000}
@@ -515,9 +442,8 @@ export default class Splash extends Component {
             {build.item.name}
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
-            <View
-              style={styles.buildingSelectIcon}>
-              <Check
+            <View style={styles.buildingSelectIcon}>
+              <Feather
                 name="check"
                 style={{ marginLeft: width * 0.005 }}
                 size={width * 0.02}
@@ -526,34 +452,28 @@ export default class Splash extends Component {
             </View>
           )}
         </View>
-        <Text
-          style={styles.buildingUnitName}>
+        <Text style={styles.buildingUnitName}>
           {build.item.unit_count} Units
         </Text>
         <TouchableOpacity
           onPress={() => this.buildingEditOpen(build.item)}
           style={styles.buildingEditBtn}>
-          <Text style={{ color: 'white', fontFamily: Fonts.Montserrat, fontSize: width * 0.03, }}>Edit</Text>
-          <Edit name="edit" color="white" size={width * 0.04} />
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: Fonts.Montserrat,
+              fontSize: width * 0.03,
+            }}>
+            Edit
+          </Text>
+          <MaterialIcons name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
       </TouchableOpacity>
       // </KeyboardAvoidingVie>
     );
   };
 
-  clearUpdateBuild = () => {
-    this.setState({
-      editModal: false,
-    });
-    this.setState((prevState) => ({
-      ...prevState,
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        editBuilding: '', // update the value of specific key
-      },
-    }));
-  };
+
   showArrayItem = async (build) => {
     this.setState({
       loader: true,
@@ -618,65 +538,7 @@ export default class Splash extends Component {
       `/property/equipment/meter/all-meters`,
     );
     console.log('Check meter add--->', unitResponse?.data?.data);
-    this.setState({ getUtilities: unitResponse?.data?.data });
-  };
-
-  deleteBuilding = () => {
-    this.setState({ editModal: false });
-    this.context.updateBuilding(false, this.state.editBuildId);
-    this.setState({ loader: true, loaderBuildings: true });
-    this.onFocusFunction();
-  };
-
-  updateBuilding = () => {
-    this.setState({ editModal: false });
-    let data = {
-      name: this.state.editBuilding,
-      descriptions: this.state.editBuildDes,
-    };
-    this.context.updateBuilding(true, this.state.editBuildId, data);
-    this.setState({ loader: true, loaderBuildings: true });
-    this.onFocusFunction();
-  };
-
-  editAlert = () => {
-    if (this.state.editBuilding === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          editBuilding: 'Invalid Building Name', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          editBuilding: '', // update the value of specific key
-        },
-      }));
-      Alert.alert('Update Building', 'Are you sure you want to Update?', [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        { text: 'OK', onPress: () => this.updateBuilding() },
-      ]);
-    }
-  };
-
-  deleteAlert = () => {
-    Alert.alert('Delete Building', 'Are you sure you want to Delete?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      { text: 'OK', onPress: () => this.deleteBuilding() },
-    ]);
+    this.setState({getUtilities: unitResponse?.data?.data});
   };
 
   _customSort(data, order) {
@@ -723,6 +585,13 @@ export default class Splash extends Component {
     this.setState({ isModalBuildVisible: false });
     this.checkData();
   };
+  handleUpdateBuilding = (cond, data) => {
+    if (cond != null) {
+      this.context.updateBuilding(cond, this.state.editBuildId, data);
+      this.onFocusFunction();
+    }
+    this.setState({editModal: false});
+  };
   render() {
     const { result, scan, scanResult } = this.state;
     const realData = this.state.realData;
@@ -737,217 +606,61 @@ export default class Splash extends Component {
           isVisible={this.state.editModal}
           title="Edit Building"
           doneBtnTitle="Update Building"
-          style={{ height: height * 0.55 }}
-          onCancel={this.clearUpdateBuild}
-          onDone={this.editAlert}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ flex: 1 }}>
-              <View style={styles.desciptionContainer}>
-                <Build
-                  name={'office-building'}
-                  size={height * 0.02}
-                  color="#5e5e5e"
-                />
-                <Text style={styles.desciptionHeading}>BUILDING*</Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  // label="Name*"
-                  value={this.state.editBuilding}
-                  dense={true}
-                  error={this.state.error.editBuilding}
-                  onChangeText={(text) => {
-                    this.setState({ editBuilding: text });
-                    this.setState((prevState) => ({
-                      error: {
-                        // object that we want to update
-                        ...prevState.error, // keep all other key-value pairs
-                        editBuilding: '',
-                      },
-                    }));
-                  }}
-                  style={styles.input}
-                  mode={'outlined'}
-                  theme={{
-                    colors: {
-                      text: '#25AAE1ec',
-                      primary: '#25AAE1ec',
-                      selectionColor: 'red',
-                    },
-                  }}
-                />
-              </View>
-              {this.state.error.editBuilding ? (
-                <HelperText
-                  type="error"
-                  visible={this.state.error.editBuilding}>
-                  {this.state.error.editBuilding}
-                </HelperText>
-              ) : null}
-              <View style={styles.desciptionContainer}>
-                <Text style={styles.desciptionHeading}>
-                  Building Despcription*
-                </Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  value={this.state.editBuildDes}
-                  dense={true}
-                  onChangeText={(text) => {
-                    this.setState({ editBuildDes: text });
-                  }}
-                  style={styles.input}
-                  mode={'outlined'}
-                  theme={{
-                    colors: {
-                      text: '#25AAE1ec',
-                      primary: '#25AAE1ec',
-                      selectionColor: 'red',
-                    },
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  alignItems: 'center',
-                  overflow: 'hidden',
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'column',
-                    width: width * 0.75,
-                    alignSelf: 'center',
-                    marginVertical: width * 0.05,
-                  }}>
-                  <Button
-                    titleStyle={{ textTransform: 'capitalize' }}
-                    title={`Delete Building`}
-                    buttonStyle={{
-                      backgroundColor: '#e24b4b',
-                    }}
-                    onPress={() => this.deleteAlert()}
-                  />
-                </View>
-              </View>
-            </View>
-          </ScrollView>
-        </UpdateModal>
+          style={{height: height * 0.55}}
+          reRun={this.handleUpdateBuilding}
+          buildingData={{
+            buildingId: this.state.editBuildId,
+            buildingName: this.state.editBuilding,
+            buildingDes: this.state.editBuildDes,
+          }}></UpdateModal>
         {/* Drawer Modal */}
-        <Modal
-          animationIn="slideInLeft"
-          animationOut="slideOutLeft"
+        <Drawer
           isVisible={this.state.isModalVisible}
-          swipeDirection="left"
-          onSwipeStart={this.toggleModal}
-          onBackdropPress={this.toggleModal}
-          backdropColor="black"
-          style={styles.modalContainer}>
-          <View style={styles.drawerMainContainer}>
-            <View style={{ marginTop: StatusBar.currentHeight }}>
-              <Menu
-                name="menu"
-                size={height * 0.05}
-                color="white"
-                // style={{right: 90}}
-                onPress={this.toggleModal}
-                style={{ backgroundColor: '#35afe2' }}
-              />
-            </View>
-            <View style={styles.drawerContentContainer}>
-              <TouchableOpacity onPress={this.naviagateToDetail}>
-                <View style={styles.drawerContent}>
-                  <Detail
-                    name="account-details-outline"
-                    size={height * 0.035}
-                    color="#7575ff"
-                    style={{ marginRight: width * 0.02 }}
-                  />
-                  <Text style={styles.drawerbtn}>Profile</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.naviagateToEquip}>
-                <View style={styles.drawerContent}>
-                  <Equip
-                    name="rss"
-                    size={height * 0.035}
-                    color="#ff9f71"
-                    style={{ marginRight: width * 0.02 }}
-                  />
-                  <Text style={styles.drawerbtn}>Units</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.naviagateToChart}>
-                <View style={styles.drawerContent}>
-                  <Chart
-                    name="pie-chart"
-                    size={height * 0.035}
-                    color="#009349"
-                    style={{ marginRight: width * 0.02 }}
-                  />
-                  <Text style={styles.drawerbtn}>Charts</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={this.naviagateToSupport}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingBottom: height * 0.015,
-                  // backgroundColor: 'pink',
-                }}>
-                <Detail
-                  name="help-circle-outline"
-                  size={height * 0.035}
-                  color="#35afe2"
-                  style={{
-                    marginBottom: height * 0.009,
-                    marginRight: width * 0.02,
-                  }}
-                />
-                <Text style={styles.drawerbtn}>Support</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+          onCancel={this.toggleModal}
+          naviagateToDetail={this.naviagateToDetail}
+          naviagateToEquip={this.naviagateToEquip}
+          naviagateToChart={this.naviagateToChart}
+          naviagateToSupport={this.naviagateToSupport}
+        />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
               style={styles.menuView}>
-              <Back
+              <MaterialIcons
                 size={width * 0.08}
                 color="white"
                 name="keyboard-backspace"
               />
             </TouchableOpacity>
             <View style={styles.searchView}>
-              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <View
+                style={styles.searchBtnContainer}>
                 <TouchableOpacity
                   activeOpacity={1}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    height: width * 0.1,
-                    width: width * .6,
-                  }}
-                  onPress={this.state.dataBuild == 0 ? () => Alert.alert('Alert', 'No building found add building') : this.openAndClear}>
-                  <Search
-                    name="search"
-                    size={height * 0.04}
-                    color="white"
-                  />
+                  style={styles.searchBtn}
+                  onPress={
+                    this.state.dataBuild == 0
+                      ? () =>
+                        Alert.alert('Alert', 'No building found add building')
+                      : this.openAndClear
+                  }>
+                  <Search name="search" size={height * 0.04} color="white" />
                   <Text style={{ color: 'white' }}>Search</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                onPress={this.state.dataBuild == 0 ? () => Alert.alert('Alert', 'No building found add building') : this.openFilter}
+                onPress={
+                  this.state.dataBuild == 0
+                    ? () =>
+                      Alert.alert('Alert', 'No building found add building')
+                    : this.openFilter
+                }
                 style={styles.filterButton}>
-                <FilterIcon
+                <MaterialCommunityIcons
                   name="filter-outline"
                   color={this.state.filterWork ? '#25AAE1ec' : 'black'}
-                  size={width * .05}
+                  size={width * 0.05}
                 />
               </TouchableOpacity>
             </View>
@@ -959,10 +672,15 @@ export default class Splash extends Component {
               name="menu"
               size={width * 0.08}
               color="white"
-              style={{ position: 'absolute', left: width * .02 }}
+              style={{ position: 'absolute', left: width * 0.02 }}
               onPress={this.toggleModal}
             />
-            <View style={{ flexDirection: 'row', justifyContent: "center", alignItems: 'center' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Ionic
                 name="md-business-outline"
                 size={width * 0.06}
@@ -972,7 +690,6 @@ export default class Splash extends Component {
             </View>
           </View>
         </View>
-        {/* <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}> */}
         <View style={styles.bodyContainer}>
           <View style={styles.mainDataContainer}>
             <View style={styles.mainData}>
@@ -981,181 +698,107 @@ export default class Splash extends Component {
                   paddingHorizontal: width * 0.03,
                   justifyContent: 'center',
                   borderRightWidth: width * 0.001,
+                  width: width * 0.4,
                 }}>
-                <View style={{ width: width * 0.35 }}>
-                  <TouchableOpacity
-                    style={styles.dropDown}
-                    onPress={this.changeLayoutMeter}>
-                    <Message name="file" size={height * 0.025} color="#3E4A4F" />
-                    <Text style={styles.dropDownText}>File</Text>
-                    <Message
-                      name="chevron-down"
-                      size={height * 0.02}
-                      color="#3E4A4F"
-                      style={{ marginLeft: width * 0.02 }}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={[
-                      styles.dropDownList,
-                      {
-                        height: this.state.meter ? height * 0.09 : 0,
-                        borderWidth: this.state.meter ? height * 0.001 : 0,
-                        marginBottom: this.state.meter ? height * 0.01 : 0,
-                      },
-                    ]}>
-                    <View
-                      style={{
-                        padding: height * 0.008,
-                        justifyContent: 'space-between',
-                        height: height * 0.08,
-                      }}>
-                      <TouchableOpacity
-                        onPress={() => Alert.alert('Upload File Pressed')}>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.dropDownListText}>
-                            Upload File
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => Alert.alert('Download File Pressed')}>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.dropDownListText}>
-                            Download File
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
+                <MenuT
+                  visible={this.state.fileMenuVisible}
+                  anchor={
+                    <TouchableOpacity
+                      style={styles.dropDown}
+                      onPress={() => this.setState({ fileMenuVisible: true })}>
+                      <Feather
+                        name="file"
+                        size={height * 0.025}
+                        color="#3E4A4F"
+                      />
+                      <Text style={styles.dropDownText}>File</Text>
+                      <Feather
+                        name="chevron-down"
+                        size={height * 0.02}
+                        color="#3E4A4F"
+                        style={{ marginLeft: width * 0.02 }}
+                      />
+                    </TouchableOpacity>
+                  }
+                  onRequestClose={() =>
+                    this.setState({fileMenuVisible: false})
+                  }>
+                  {this.state.FileArray.map((item) => (
+                    <View>
+                      <MenuItem
+                        style={styles.dropDownListText}
+                        onPress={() => this.setState({ fileMenuVisible: false })}>
+                        {item.name}
+                      </MenuItem>
                     </View>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    marginTop: this.state.meter2 ? width * 0.018 : 0,
-                    width: width * 0.35,
-                  }}>
-                  <TouchableOpacity
-                    style={styles.dropDown}
-                    onPress={this.changeLayoutMeter2}>
-                    <Message name="plus" size={height * 0.025} color="#3E4A4F" />
-                    <Text style={styles.dropDownText}>Add</Text>
-                    <Message
-                      name="chevron-down"
-                      size={height * 0.02}
-                      color="#3E4A4F"
-                      style={{ marginLeft: width * 0.02 }}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={[
-                      styles.dropDownList,
-                      {
-                        height: !this.state.meter2
-                          ? height * 0.0
-                          : height * 0.18,
-                        borderWidth: this.state.meter2 ? height * 0.001 : 0,
-                      },
-                    ]}>
-                    <View
-                      style={{
-                        padding: height * 0.015,
-                        justifyContent: 'space-between',
-                        flexDirection: 'column',
-                        height: height * 0.12,
-                      }}>
-                      <TouchableOpacity
-                        disabled={
-                          this.state.dataBuild.length == 0 ? true : false
-                        }
-                        onPress={this.selectAndCloseAdd}>
-                        <View
-                          style={{
-                            // backgroundColor: 'green',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            width: width * 0.23,
-                          }}>
-                          <Home
-                            color={
-                              this.state.dataBuild.length == 0
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            size={height * 0.02}
-                            color="#3E4A4F"
-                          />
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            Add a Unit
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        disabled={
-                          this.state.dataBuild.length == 0 ? true : false
-                        }
-                        onPress={this.selectAndCloseAddMultiple}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            width: width * 0.265,
-                          }}>
-                          <Home
-                            color={
-                              this.state.dataBuild.length == 0
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            color="#3E4A4F"
-                            size={height * 0.02}
-                          />
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            Add Multiple{'\n'}Units
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity onPress={this.selectAndCloseAddBuild}>
+                  ))}
+                </MenuT>
+
+                <MenuT
+                  visible={this.state.addMenuVisible}
+                  anchor={
+                    <TouchableOpacity
+                      style={styles.dropDown}
+                      onPress={() => this.setState({addMenuVisible: true})}>
+                      <Feather
+                        name="plus"
+                        size={height * 0.025}
+                        color="#3E4A4F"
+                      />
+                      <Text style={styles.dropDownText}>Add</Text>
+                      <Feather
+                        name="chevron-down"
+                        size={height * 0.02}
+                        color="#3E4A4F"
+                        style={{marginLeft: width * 0.02}}
+                      />
+                    </TouchableOpacity>
+                  }
+                  onRequestClose={() => this.setState({addMenuVisible: false})}>
+                  {this.state.AddArray.map((item, index) => (
+                    <MenuItem
+                      disabled={this.state.dataBuild.length == 0 ? true : false}
+                      onPress={item.func}>
                       <View
                         style={{
-                          padding: width * 0.03,
-                          borderTopWidth: height * 0.001,
-                          borderColor: 'gray',
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                          alignItems: 'flex-start',
+                          width: width * 0.265,
                         }}>
-                        <Build name="building" size={width * 0.04} color="#3E4A4F" />
+                        {index < 2 ? (
+                          <FontAwesome5
+                            color={
+                              this.state.dataBuild.length == 0
+                                ? '#817e7e80'
+                                : '#000'
+                            }
+                            name="house-user"
+                            size={height * 0.02}
+                            color="#3E4A4F"
+                          />
+                        ) : (
+                          <FontAwesome5
+                            name="building"
+                            size={width * 0.04}
+                            color="#3E4A4F"
+                          />
+                        )}
                         <Text
-                          style={{
-                            fontSize: 14,
-                          }}>
-                          Add a Building
+                          style={[
+                            styles.dropDownListText,
+                            {
+                              color:
+                                this.state.dataBuild.length == 0
+                                  ? '#817e7e80'
+                                  : '#000',
+                            },
+                          ]}>
+                          {item.name}
                         </Text>
                       </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                    </MenuItem>
+                  ))}
+                </MenuT>
               </View>
 
               {/* Top Lists */}
@@ -1166,18 +809,15 @@ export default class Splash extends Component {
               ) : this.state.dataBuild.length == 0 ? (
                 <View style={{ width: width * 0.55, justifyContent: 'center' }}>
                   <Text
-                    style={{
-                      fontSize: width * 0.04,
-                      textAlign: 'center',
-                      fontFamily: Fonts.Montserrat,
-                      color: '#3E4A4F'
-                    }}>
+                    style={styles.noDataStyling}>
                     No data add Building
                   </Text>
                 </View>
               ) : (
                 <FlatList
-                  ref={(ref) => { buildListViewRef = ref }}
+                  ref={(ref) => {
+                    buildListViewRef = ref;
+                  }}
                   style={{ height: width * 0.22 }}
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
@@ -1217,7 +857,7 @@ export default class Splash extends Component {
               buildData={{
                 buildingName: this.state.buildingData.name,
                 buildDes: this.state.editBuildDes,
-                buildId: this.state.editBuildId
+                buildId: this.state.editBuildId,
               }}
             />
             <Filter
@@ -1241,81 +881,55 @@ export default class Splash extends Component {
             {this.state.showSearch ? (
               <Modal
                 isVisible={this.state.showSearch}
-                style={{
-                  elevation: width * 0.005,
-                  width: width * 1,
-                  height: height * 1,
-                  justifyContent: 'flex-start',
-                  left: '-5%',
-                  top: '-2.5%',
-                }}>
+                style={styles.searchModalContainer}>
                 <KeyboardAvoidingView behavior="padding">
                   <View
-                    style={{
-                      width: width * 1,
-                      height: height * 0.08,
-                      justifyContent: 'space-around',
-                      alignItems: 'center',
-                      backgroundColor: '#25AAE1ec',
-                      elevation: width * 0.01,
-                      flexDirection: 'row',
-                    }}>
+                    style={styles.searchModalInner}>
+                    <Search
+                      name="search"
+                      size={width * 0.07}
+                      color="white"
+                    />
+                    <TextInput
+                      underlineColor="transparent"
+                      dense={true}
+                      autoFocus={true}
+                      placeholderTextColor="white"
+                      placeholder="Search"
+                      style={styles.search}
+                      onChangeText={(e) => this.searchUnits(e)}
+                      theme={{
+                        colors: {
+                          text: 'white',
+                          primary: '#25dAE1',
+                          selectionColor: 'transparent',
+                          background: 'transparent',
+                        },
+                      }}
+                    />
                     <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      <Search
-                        name="search"
-                        size={height * 0.04}
-                        color="white"
-                      />
-                      <TextInput
-                        underlineColor="transparent"
-                        dense={true}
-                        autoFocus={true}
-                        placeholderTextColor="white"
-                        placeholder="Search"
-                        style={styles.search}
-                        onChangeText={(e) => this.searchUnits(e)}
-                        theme={{
-                          colors: {
-                            text: 'white',
-                            primary: '#25dAE1',
-                            selectionColor: 'transparent',
-                            background: 'transparent',
-                          },
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        width: width * 0.05,
-                      }}>
+                      style={{ position: 'absolute', right: width * .1 }}>
                       {this.state.searchLoading ? (
                         <ActivityIndicator color="white" size="small" />
                       ) : null}
                     </View>
                     <TouchableOpacity
-                      onPress={() => this.setState({ showSearch: false })}>
-                      <Close name="close" color="white" size={20} />
+                      onPress={() => this.setState({ showSearch: false })}
+                    >
+                      <MaterialCommunityIcons name="close" color="white" size={width * .055} />
                     </TouchableOpacity>
                   </View>
                   <View
-                    style={{
-                      alignItems: 'center',
-                      paddingVertical: height * 0.005,
-                    }}>
+                    style={styles.searchDataListContainer}>
                     <FlatList
+                      style={{ marginBottom: width * 0.2, }}
                       data={this.state.searchList}
-                      renderItem={this._renderSearchPropList}
+                      renderItem={this._renderUnitList}
                       removeClippedSubviews={false}
                       maxToRenderPerBatch={150}
                       windowSize={100}
                       keyExtractor={(item, index) => index.toString()}
                       showsVerticalScrollIndicator={false}
-                      onEndReachedThreshold={width * 0.001}
-                      onEndReached={this.context.loadSearchData}
                     />
                   </View>
                 </KeyboardAvoidingView>
@@ -1328,29 +942,26 @@ export default class Splash extends Component {
             ) : this.state.realData.length == 0 ? (
               <View style={{ width: width * 0.55, justifyContent: 'center' }}>
                 <Text
-                  style={{
-                    fontSize: width * 0.04,
-                    textAlign: 'center',
-                    fontFamily: Fonts.Montserrat,
-                    color: '#3E4A4F'
-                  }}>
+                  style={styles.noDataStyling}>
                   No data add Unit
                 </Text>
               </View>
             ) : (
-              <FlatList
-                ref={(ref) => {
-                  listViewRef = ref;
-                }}
-                showsVerticalScrollIndicator={false}
-                style={{ marginBottom: height * 0.41 }}
-                contentContainerStyle={{ backgroundColor: '#F5F5F5' }}
-                numColumns={1}
-                initialNumToRender={realData.length}
-                data={this._customSort(realData)}
-                renderItem={this._renderUnitList}
-                keyExtractor={(item) => item.id.toString()}
-              />
+              <View style={{ width: width * 1, backgroundColor: '#F5F5F5' }}>
+                <FlatList
+                  ref={(ref) => {
+                    listViewRef = ref;
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  style={{ marginBottom: width * 0.29, }}
+                  contentContainerStyle={{ backgroundColor: '#F5F5F5' }}
+                  numColumns={1}
+                  initialNumToRender={realData.length}
+                  data={this._customSort(realData)}
+                  renderItem={this._renderUnitList}
+                  keyExtractor={(item) => item.id.toString()}
+                />
+              </View>
             )}
           </View>
         </View>

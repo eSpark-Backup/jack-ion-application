@@ -35,7 +35,7 @@ const IonNavigatorConfig = {
   navigationOptions: {
     tabBarLabel: 'Home',
     tabBarIcon: ({tintColor}) => (
-      <TabIcon name="home-circle" color={tintColor} size={height * 0.035} />
+      <TabIcon name="home-circle" color={tintColor} size={width * 0.05} />
     ),
   },
 };

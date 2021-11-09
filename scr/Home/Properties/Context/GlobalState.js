@@ -144,7 +144,6 @@ class GlobalState extends React.Component {
         Alert.alert('Error', 'Network Issues');
       }
     });
-
   };
   getBillingCompany = async () => {
     const response = await this.api.get('/property/billing-company/all');
