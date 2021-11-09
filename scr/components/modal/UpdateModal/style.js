@@ -41,6 +41,29 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.ComfortaaRegular,
     right: width * 0.02,
   },
+  desciptionContainer: {
+    height: height * 0.035,
+    width: width * 0.7,
+    alignSelf: 'center',
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+  },
+  desciptionHeading: {
+    fontSize: height * 0.015,
+    color: 'black',
+    textTransform: 'uppercase',
+    fontFamily: Fonts.ComfortaaRegular,
+  },
+  inputContainer: {
+    width: width * 0.8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    width: width * 0.75,
+    fontSize: width * 0.03,
+    textTransform: 'capitalize',
+  },
   footerBtn: {
     width: width * 0.8,
     height: height * 0.1,
