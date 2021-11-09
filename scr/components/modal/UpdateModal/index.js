@@ -112,11 +112,7 @@ export default class UpdateModal extends Component {
       title,
       style,
       isVisible,
-      onCancel,
-      children,
       doneBtnTitle,
-      onDone,
-      onDelete,
       buildingData,
     } = this.props;
     if (isVisible && this.state.modalVisible == false) {
