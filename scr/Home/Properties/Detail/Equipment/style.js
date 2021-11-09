@@ -10,11 +10,10 @@ export default styles = StyleSheet.create({
   },
   headerContainer: {
     width: width * 1,
-    height: height * 0.09,
+    height: width * 0.15,
   },
   headerInner: {
     flex: 1,
-    backgroundColor: 'white',
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -40,16 +39,29 @@ export default styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'row',
   },
+  searchBtnContainer:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchBtn:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: width * 0.1,
+    width: width * 0.6,
+  },
   search: {
-    minWidth: width * 0.56,
-    maxHeight: height * 0.055,
+    width: width * 0.8,
+    maxHeight: width * 0.1,
     borderBottomColor: '#25AAE1ec',
+    paddingRight:width * 0.05,
     fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
   },
   headingContainer: {
     width: width * 1,
     height: width * 0.12,
+
   },
   headingInner: {
     flex: 1,
@@ -66,18 +78,50 @@ export default styles = StyleSheet.create({
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
-    marginBottom: height * 0.1,
+    flex:1,
   },
 
   mainDataContainer: {
-    width: width * 1,
+    flex:1,
     alignItems: 'center',
   },
   mainData: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    paddingHorizontal: width * 0.02,
-    paddingVertical: height * 0.02,
+    paddingVertical: width * 0.02,
+  },
+  searchModalContainer:{
+    elevation: width * 0.005,
+    width: width * 1,
+    height: height * 1,
+    justifyContent: 'flex-start',
+    left: '-5%',
+    top: '-2.5%',
+  },
+  searchModalInner:{
+    width: width * 1,
+    height: width * 0.15,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#25AAE1',
+    elevation: width * 0.01,
+    flexDirection: 'row',
+    paddingHorizontal: width * 0.01,
+
+  },
+  searchIconStyle:{
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchDataListContainer:{
+    alignItems: 'center',
+    paddingVertical: height * 0.005,
+  },
+  noDataStyling:{
+    fontSize: width * 0.04,
+    textAlign: 'center',
+    fontFamily: Fonts.Montserrat,
+    color: '#3E4A4F',
   },
   infoTopViewContainer: {
     width: width * 0.3,
@@ -89,7 +133,7 @@ export default styles = StyleSheet.create({
   infoViewContainer: {
     width: width * 0.9,
     overflow: 'hidden',
-    height: height * 0.08,
+    height: width * 0.16,
     backgroundColor: 'white',
     justifyContent: 'center',
     marginVertical: height * 0.01,
@@ -137,7 +181,7 @@ export default styles = StyleSheet.create({
     paddingVertical: width * 0.005,
   },
   unitDetailInnerElseText: {
-    fontSize: width * 0.02,
+    fontSize: width * 0.025,
     color: '#3E4A4F',
     fontFamily: Fonts.Montserrat,
   },

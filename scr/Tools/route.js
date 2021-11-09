@@ -25,7 +25,7 @@ const IonNavigatorConfig = {
   navigationOptions: {
     tabBarLabel: 'Tools',
     tabBarIcon: ({tintColor}) => (
-      <TabIcon name="toolbox" color={tintColor} size={height * 0.033} />
+      <TabIcon name="toolbox" color={tintColor} size={width * 0.05} />
     ),
   },
 };

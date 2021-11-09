@@ -11,7 +11,6 @@ import {
   Image,
   Alert,
   BackHandler,
-  ToastAndroid,
 } from 'react-native';
 import {Header, Button, Icon} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
@@ -31,15 +30,11 @@ import {
   HorizontalAxis,
   VerticalAxis,
 } from 'react-native-responsive-linechart';
-import {Fonts} from '../../../../../utils/fonts';
 
 // Components
 import styles from './style';
-import {Checkbox, Divider} from 'react-native-paper';
-import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
-import style from './style';
 const {width, height} = Dimensions.get('window');
 
 const api = create({
@@ -61,12 +56,9 @@ const App = ({navigation}) => {
   const [meterTypeData, setMeterTypeData] = useState([]);
   const [remoteReaderData, setRemoteReaderData] = useState([]);
   const [unitData, setUnitData] = useState([]);
-  const [editUnitModalVisible, setEditUnitModalVisible] = useState(false);
   const [meterListArray, setMeterListArray] = useState([]);
-  const [editMeterTypes, setEditMeterTypes] = useState([]);
 
   const {
-    unitId,
     buildingName,
     propertyName,
     meterInfo,
@@ -110,7 +102,6 @@ const App = ({navigation}) => {
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       console.log('token aya', token);
-      // this.setState({token: token});
       api.setHeader('Authorization', 'Bearer ' + token);
       getUnitDetail();
       getMeterTypes();
@@ -132,7 +123,6 @@ const App = ({navigation}) => {
     {x: 9, y: 13.5},
     {x: 10, y: 18},
   ];
-  const arrayOfUnits = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
     switch (arg) {
