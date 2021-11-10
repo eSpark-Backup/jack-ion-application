@@ -25,6 +25,7 @@ import {TextInput, Button} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 // Components
 import Add from './Form';
@@ -254,7 +255,7 @@ export default class Splash extends Component {
       this.setState({filterWork: false});
     }
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {this.context.isLoading ? <Loader /> : null}
         <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
         <View style={styles.headerContainer}>
@@ -385,7 +386,7 @@ export default class Splash extends Component {
             onEndReached={() => this.LoadData()}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

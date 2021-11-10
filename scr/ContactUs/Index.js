@@ -132,8 +132,15 @@ export default class Splash extends Component {
         </View>
         <View style={{flex: 1}}>
           <View style={styles.onlineOfflineView}>
-            <View style={styles.onlineView} />
-            <Text style={styles.onlineText}>Contact Us</Text>
+            <View
+              style={{
+                borderBottomWidth: width * 0.002,
+                // width: width * 0.6,
+                justifyContent: 'center',
+                padding: width * 0.02,
+              }}>
+              <Text style={styles.onlineText}>Contact Us</Text>
+            </View>
           </View>
           <View>
             <View
@@ -150,7 +157,7 @@ export default class Splash extends Component {
               <View style={styles.insideBottonView}>
                 <Text style={{fontSize: width * 0.09, color: 'purple'}}>
                   <Phone name="phone" size={width * 0.07} />
-                  844.538.8203 
+                  844.538.8203
                 </Text>
               </View>
             </View>

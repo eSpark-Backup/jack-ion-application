@@ -18,6 +18,7 @@ import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
 import Equip from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Icon, IconToggle} from 'react-native-material-ui';
 
 // Components
@@ -41,7 +42,7 @@ export default class DrawerModal extends Component {
       onDone,
     } = this.props;
     return (
-        <Modal
+      <Modal
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         isVisible={isVisible}
@@ -50,7 +51,7 @@ export default class DrawerModal extends Component {
         onBackdropPress={onCancel}
         backdropColor="black"
         style={styles.modalContainer}>
-        <View style={styles.drawerMainContainer}>
+        <SafeAreaView style={styles.drawerMainContainer}>
           <View style={{marginTop: StatusBar.currentHeight}}>
             <Menu
               name="menu"
@@ -116,7 +117,7 @@ export default class DrawerModal extends Component {
               <Text style={styles.drawerbtn}>Support</Text>
             </View>
           </TouchableOpacity>
-        </View>
+        </SafeAreaView>
       </Modal>
     );
   }
