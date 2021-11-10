@@ -1,9 +1,6 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Fonts} from '../../../utils/fonts';
 
-//Packages
-
-//Files
 const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
@@ -78,7 +75,6 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    // margin: width * .02,
   },
   cancelBotton: {
     width: width * 0.205,
@@ -93,7 +89,6 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
   },
   saveUnitBotton: {
-    // width: width * 0.25,
     height: height * 0.05,
     flexDirection: 'row',
     alignItems: 'center',
