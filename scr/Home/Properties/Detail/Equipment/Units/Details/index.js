@@ -29,7 +29,17 @@ import {
   Area,
   HorizontalAxis,
   VerticalAxis,
+  Tooltip,
 } from 'react-native-responsive-linechart';
+
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryLegend,
+  VictoryAxis,
+  VictoryTheme,
+  VictoryLine,
+} from 'victory-native';
 import {Fonts} from '../../../../../../utils/fonts';
 
 import EditUnit from '../modals/UnitEdit';
@@ -45,6 +55,14 @@ const {width, height} = Dimensions.get('window');
 const api = create({
   baseURL: Base_Url,
 });
+
+export const MyToolTip = (value, position) => {
+  return (
+    <View style={{height: 50, width: 50, backgroundColor: 'pink'}}>
+      <Text>{value.y}</Text>
+    </View>
+  );
+};
 
 const App = ({navigation}) => {
   const scrollViewRef = useRef();
@@ -65,25 +83,190 @@ const App = ({navigation}) => {
   const [editUnitMenuVisible, setEditUnitMenuVisible] = useState(false);
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
+  const [chartData, setChartData] = useState([]);
+  const [x, setX] = useState('x:');
+  const [y, setY] = useState('y:');
+
+  const getDataSetOne = () => {
+    return [
+      {x: new Date(2000, 1, 1), y: 12},
+      {x: new Date(2000, 6, 1), y: 10},
+      {x: new Date(2000, 12, 1), y: 11},
+      {x: new Date(2001, 1, 1), y: 5},
+      {x: new Date(2002, 1, 1), y: 4},
+      {x: new Date(2003, 1, 1), y: 6},
+      {x: new Date(2004, 1, 1), y: 5},
+      {x: new Date(2005, 1, 1), y: 7},
+      {x: new Date(2006, 1, 1), y: 8},
+      {x: new Date(2007, 1, 1), y: 9},
+      {x: new Date(2008, 1, 1), y: -8.5},
+      {x: new Date(2009, 1, 1), y: -9},
+      {x: new Date(2010, 1, 1), y: 5},
+      {x: new Date(2013, 1, 1), y: 1},
+      {x: new Date(2014, 1, 1), y: 2},
+      {x: new Date(2015, 1, 1), y: -5},
+    ];
+  };
+
+  const getDataSetTwo = () => {
+    return [
+      {x: new Date(2000, 1, 1), y: 5},
+      {x: new Date(2003, 1, 1), y: 6},
+      {x: new Date(2004, 1, 1), y: 4},
+      {x: new Date(2005, 1, 1), y: 10},
+      {x: new Date(2006, 1, 1), y: 12},
+      {x: new Date(2007, 2, 1), y: 48},
+      {x: new Date(2008, 1, 1), y: 19},
+      {x: new Date(2009, 1, 1), y: 31},
+      {x: new Date(2011, 1, 1), y: 49},
+      {x: new Date(2014, 1, 1), y: 40},
+      {x: new Date(2015, 1, 1), y: 21},
+    ];
+  };
+
+  const getTickValues = () => {
+    return [
+      'nov 11 10 AM',
+      'nov 11 10 AM',
+      'nov 11 10 AM',
+      'nov 11 10 AM',
+      'nov 11 10 AM',
+      'nov 11 10 AM',
+      // new Date(1999, 1, 1),
+      // new Date(2000, 1, 1),
+      // new Date(2001, 1, 1),
+      // new Date(2002, 1, 1),
+      // new Date(2003, 1, 1),
+      // new Date(2004, 1, 1),
+      // new Date(2005, 1, 1),
+      // new Date(2006, 1, 1),
+      // new Date(2007, 1, 1),
+      // new Date(2008, 1, 1),
+      // new Date(2009, 1, 1),
+      // new Date(2010, 1, 1),
+      // new Date(2011, 1, 1),
+      // new Date(2012, 1, 1),
+      // new Date(2013, 1, 1),
+      // new Date(2014, 1, 1),
+      // new Date(2015, 1, 1),
+      // new Date(2016, 1, 1),
+    ];
+  };
+
+  const getStyles = () => {
+    const BLUE_COLOR = '#00a3de';
+    const RED_COLOR = '#7c270b';
+
+    return {
+      parent: {
+        background: '#ccdee8',
+        boxSizing: 'border-box',
+        display: 'inline',
+        padding: 0,
+        fontFamily: "'Fira Sans', sans-serif",
+      },
+      title: {
+        textAnchor: 'start',
+        verticalAnchor: 'end',
+        fill: '#000000',
+        fontFamily: 'inherit',
+        fontSize: '18px',
+        fontWeight: 'bold',
+      },
+      labelNumber: {
+        textAnchor: 'middle',
+        fill: '#ffffff',
+        fontFamily: 'inherit',
+        fontSize: '14px',
+      },
+
+      // INDEPENDENT AXIS
+      axisYears: {
+        axis: {stroke: 'black', strokeWidth: 1},
+        // ticks: {
+        //   size: ({tick}) => {
+        //     const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
+        //     return tickSize;
+        //   },
+        //   stroke: 'black',
+        //   strokeWidth: 1,
+        // },
+        // tickLabels: {
+        //   fill: 'black',
+        //   fontFamily: 'inherit',
+        //   fontSize: 16,
+        // },
+      },
+
+      // DATA SET ONE
+      axisOne: {
+        grid: {
+          stroke: ({tick}) => (tick === 0 ? 'transparent' : '#ffffff'),
+          strokeWidth: 2,
+        },
+        axis: {stroke: BLUE_COLOR, strokeWidth: 0},
+        ticks: {strokeWidth: 0},
+        tickLabels: {
+          fill: BLUE_COLOR,
+          fontFamily: 'inherit',
+          fontSize: 16,
+        },
+      },
+      labelOne: {
+        fill: BLUE_COLOR,
+        fontFamily: 'inherit',
+        fontSize: 12,
+        fontStyle: 'italic',
+      },
+      lineOne: {
+        data: {stroke: BLUE_COLOR, strokeWidth: 4.5},
+      },
+      axisOneCustomLabel: {
+        fill: BLUE_COLOR,
+        fontFamily: 'inherit',
+        fontWeight: 300,
+        fontSize: 21,
+      },
+
+      // DATA SET TWO
+      axisTwo: {
+        axis: {stroke: RED_COLOR, strokeWidth: 0},
+        tickLabels: {
+          fill: RED_COLOR,
+          fontFamily: 'inherit',
+          fontSize: 16,
+        },
+      },
+      labelTwo: {
+        textAnchor: 'end',
+        fill: RED_COLOR,
+        fontFamily: 'inherit',
+        fontSize: 12,
+        fontStyle: 'italic',
+      },
+      lineTwo: {
+        data: {stroke: RED_COLOR, strokeWidth: 4.5},
+      },
+
+      // HORIZONTAL LINE
+      lineThree: {
+        data: {stroke: '#e95f46', strokeWidth: 2},
+      },
+    };
+  };
+  const styled = getStyles();
+  const dataSetOne = getDataSetOne();
+  const dataSetTwo = getDataSetTwo();
+  const tickValues = getTickValues();
 
   const {unitId, buildingName, buildingId} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
   const testChartData = [
-    {x: -2, y: 15},
-    {x: -1, y: 10},
-    {x: 0, y: 12},
-    {x: 1, y: 7},
-    {x: 2, y: 6},
-    {x: 3, y: 8},
-    {x: 4, y: 10},
-    {x: 5, y: 8},
-    {x: 6, y: 12},
-    {x: 7, y: 14},
-    {x: 8, y: 12},
-    {x: 9, y: 13.5},
-    {x: 10, y: 18},
+    // {x: 0},
+    // {x: 1},
+    // {x: 5},
   ];
   useEffect(() => {
     getToken();
@@ -91,9 +274,16 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
+    console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
+    let unitMeterId = res.data?.data?.unit?.unit_meter?.[0].id;
+    const chartRes = await api.post(
+      `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
+    );
+
+    console.log('Chart Data', chartRes.data?.data);
+
     setLoading(false);
   };
 
@@ -1059,33 +1249,157 @@ const App = ({navigation}) => {
               <View
                 style={{
                   alignSelf: 'center',
+                  alignItems: 'center',
                 }}>
-                <Chart
+                <VictoryChart>
+                  {/* <VictoryLine
+                    style={{
+                      data: {stroke: '#c43a31'},
+                      parent: {border: '1px solid #ccc'},
+                    }}
+                    data={[
+                      {x: 1, y: 2},
+                      {x: 2, y: 3},
+                      {x: 3, y: 5},
+                      {x: 4, y: 4},
+                      {x: 5, y: 7},
+                    ]}
+                  /> */}
+
+                  <VictoryAxis
+                    // scale="time"
+                    standalone={false}
+                    style={styled.axisYears}
+                    // domain={['10', '15']}
+                    tickValues={['NoV 11', 'NoV 12', 'NoV 13']}
+                    // tickFormat={(x) => {
+                    //   console.log('Check', x);
+                    //   if (x.getFullYear() === 2000) {
+                    //     return x;
+                    //   }
+                    //   if (x.getFullYear() % 5 === 0) {
+                    //     return x.getFullYear().toString().slice(2);
+                    //   }
+                    // }}
+                  />
+                  <VictoryAxis
+                    dependentAxis
+                    domain={[1200]}
+                    offsetX={50}
+                    // maxDomain={{x: 1000}}
+                    // tickValues={[2, 4, 6, 8, 10]}
+                    orientation="left"
+                    standalone={false}
+                    style={styled.axisOne}
+                  />
+                  {/* <VictoryLine
+                    data={[
+                      {x: new Date(1999, 1, 1), y: 0},
+                      {x: new Date(2014, 6, 1), y: 0},
+                    ]}
+                    domain={{
+                      x: [new Date(1999, 1, 1), new Date(2016, 1, 1)],
+                      y: [-10, 15],
+                    }}
+                    scale={{x: 'time', y: 'linear'}}
+                    standalone={false}
+                    style={styled.lineThree}
+                  /> */}
+                  {/* <VictoryLine
+                    data={dataSetOne}
+                    domain={{
+                      x: [new Date(1999, 1, 1), new Date(2016, 1, 1)],
+                      y: [-10, 15],
+                    }}
+                    interpolation="monotoneX"
+                    scale={{x: 'time', y: 'linear'}}
+                    standalone={false}
+                    style={styled.lineOne}
+                  /> */}
+                  <VictoryAxis
+                    dependentAxis
+                    // tickValues={[200, 400, 6000, 8000, 10000]}
+                    domain={[0, 200]}
+                    orientation="right"
+                    standalone={false}
+                    style={styled.axisTwo}
+                  />
+                  {/* <VictoryLine
+                    data={dataSetTwo}
+                    domain={{
+                      x: [new Date(1999, 1, 1), new Date(2016, 1, 1)],
+                      y: [0, 50],
+                    }}
+                    interpolation="monotoneX"
+                    scale={{x: 'time', y: 'linear'}}
+                    standalone={false}
+                    style={styled.lineTwo}
+                  /> */}
+                </VictoryChart>
+                {/* <Chart
                   style={styles.chartStyle}
                   data={testChartData}
                   padding={styles.chartPadding}
-                  xDomain={{min: -2, max: 10}}
-                  yDomain={{min: 0, max: 20}}>
-                  <VerticalAxis
-                    tickCount={11}
-                    theme={{labels: {formatter: (v) => v.toFixed(2)}}}
-                  />
-                  <HorizontalAxis tickCount={5} />
-                  <Area
-                    theme={{
-                      gradient: {
-                        from: {color: '#5D84B6'},
-                        to: {color: '#DFDFDF', opacity: 0.4},
-                      },
-                    }}
+                  xDomain={{min: 0, max: 10}}
+                  yDomain={{min: 0, max: 50000}}>
+                  <HorizontalAxis
+                    tickCount={5}
+                    tickValues={['3/2/2000', 5, 52, 53]}
+                    theme={{grid: {visible: false}}}
                   />
                   <Line
+                    data={[
+                      {x: 15, y: 20000},
+                      {x: 5, y: 6},
+                      {x: 6, y: 10},
+                      {x: 8, y: 15},
+                      {x: 10, y: 20},
+                    ]}
+                    tooltipComponent={
+                      <Tooltip
+                        // value={{x: x, y: y}}
+                        theme={{
+                          label: {color: '#fff'},
+                          shape: {
+                            color: '#a1a1a1',
+                            border: {color: '#000', opacity: 1, width: 2},
+                          },
+                        }}
+                      />
+                    }
+                    smoothing="bezier"
+                    tension={0.3}
                     theme={{
-                      stroke: {color: '#5D84B6', width: 5},
+                      stroke: {color: '#a1a1a1', width: 2},
                       scatter: {default: {width: 4, height: 4, rx: 2}},
                     }}
                   />
-                </Chart>
+                  <Line
+                    tooltipComponent={
+                      <Tooltip
+                        // value={{x: x, y: y}}
+                        theme={{
+                          label: {color: '#fff'},
+                          shape: {
+                            color: '#5D84B6',
+                            border: {color: '#000', opacity: 1, width: 2},
+                          },
+                        }}
+                      />
+                    }
+                    data={[
+                      {x: 15, y: 5},
+                      {x: 5, y: 6},
+                      {x: 6, y: 10},
+                      {x: 8, y: 15},
+                      {x: 10, y: 20},
+                    ]}
+                    theme={{
+                      stroke: {color: '#5D84B6', width: 2},
+                      scatter: {default: {width: 4, height: 4, rx: 2}},
+                    }}
+                  />
+                </Chart> */}
                 <View style={styles.legendContainer}>
                   <View style={styles.flexRow}>
                     <View style={styles.meterUsageBox} />
