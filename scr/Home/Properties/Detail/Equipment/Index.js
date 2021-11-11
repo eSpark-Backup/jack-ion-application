@@ -12,6 +12,7 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 //Packages
 import Menu from 'react-native-vector-icons/Entypo';
@@ -51,6 +52,7 @@ export default class Splash extends Component {
     super();
     this.state = {
       changed: false,
+      flag: true,
       meterId: 0,
       loader: true,
       getUtilities: [],
@@ -287,20 +289,46 @@ export default class Splash extends Component {
   };
 
   selectAndCloseAdd = async () => {
-    this.toggleModalUnit();
-    this.setState({addMenuVisible: false});
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        this.toggleModalUnit();
+      }, 450);
+      this.setState({addMenuVisible: false});
+    }
+    if (Platform.OS == 'android') {
+      this.toggleModalUnit();
+      this.setState({addMenuVisible: false});
+    }
     // this.changeLayoutMeter2();
     // this.setState({ gotData: false });
   };
   selectAndCloseAddMultiple = () => {
-    this.toggleModalBuild();
-    this.setState({addMenuVisible: false});
-    this.setState({buildingModalType: 'Multyple'});
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        this.toggleModalBuild();
+      }, 450);
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: 'Multyple'});
+    }
+    if (Platform.OS == 'android') {
+      this.toggleModalBuild();
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: 'Multyple'});
+    }
   };
   selectAndCloseAddBuild = () => {
-    this.toggleModalBuild();
-    this.setState({addMenuVisible: false});
-    this.setState({buildingModalType: ''});
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        this.toggleModalBuild();
+      }, 450);
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: ''});
+    }
+    if (Platform.OS == 'android') {
+      this.toggleModalBuild();
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: ''});
+    }
   };
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -823,6 +851,9 @@ export default class Splash extends Component {
               )}
             </View>
             <EditUnit
+              flag={this.state.flag}
+              enableFlag={() => this.setState({flag: true})}
+              disableFlag={() => this.setState({flag: false})}
               modalVisible={this.state.isModalUnitVisible}
               closeModal={() => this.setState({isModalUnitVisible: false})}
               reRun={() => this.checkData()}
