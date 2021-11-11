@@ -6,7 +6,7 @@ const {width, height} = Dimensions.get('window');
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
   },
   headerContainer: {
     width: width * 1,
@@ -39,12 +39,12 @@ export default styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'row',
   },
-  searchBtnContainer:{
+  searchBtnContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  searchBtn:{
+  searchBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     height: width * 0.1,
@@ -54,14 +54,13 @@ export default styles = StyleSheet.create({
     width: width * 0.8,
     maxHeight: width * 0.1,
     borderBottomColor: '#25AAE1ec',
-    paddingRight:width * 0.05,
+    paddingRight: width * 0.05,
     fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
   },
   headingContainer: {
     width: width * 1,
     height: width * 0.12,
-
   },
   headingInner: {
     flex: 1,
@@ -78,11 +77,11 @@ export default styles = StyleSheet.create({
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
-    flex:1,
+    flex: 1,
   },
 
   mainDataContainer: {
-    flex:1,
+    flex: 1,
     alignItems: 'center',
   },
   mainData: {
@@ -90,7 +89,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingVertical: width * 0.02,
   },
-  searchModalContainer:{
+  searchModalContainer: {
     elevation: width * 0.005,
     width: width * 1,
     height: height * 1,
@@ -98,7 +97,7 @@ export default styles = StyleSheet.create({
     left: '-5%',
     top: '-2.5%',
   },
-  searchModalInner:{
+  searchModalInner: {
     width: width * 1,
     height: width * 0.15,
     justifyContent: 'space-between',
@@ -107,17 +106,16 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     flexDirection: 'row',
     paddingHorizontal: width * 0.01,
-
   },
-  searchIconStyle:{
+  searchIconStyle: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  searchDataListContainer:{
+  searchDataListContainer: {
     alignItems: 'center',
     paddingVertical: height * 0.005,
   },
-  noDataStyling:{
+  noDataStyling: {
     fontSize: width * 0.04,
     textAlign: 'center',
     fontFamily: Fonts.Montserrat,

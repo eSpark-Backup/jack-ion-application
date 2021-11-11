@@ -25,6 +25,7 @@ import {TextInput, Button} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
+import CustumStatusBar from '../../components/StatusBar';
 
 // Components
 import Add from './Form';
@@ -254,79 +255,36 @@ export default class Splash extends Component {
       this.setState({filterWork: false});
     }
     return (
-      <View style={styles.container}>
-        {this.context.isLoading ? <Loader /> : null}
-        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
-        <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={styles.menuView}>
-              <Back
-                size={width * 0.08}
-                color="white"
-                name="keyboard-backspace"
-              />
-            </TouchableOpacity>
-            <View style={styles.searchView}>
+      <>
+        <CustumStatusBar />
+        <View style={styles.container}>
+          {this.context.isLoading ? <Loader /> : null}
+          <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
+          <View style={styles.headerContainer}>
+            <View style={styles.headerInner}>
               <TouchableOpacity
-                activeOpacity={1}
-                style={styles.searchButton}
-                onPress={this.openAndClear}>
-                <Search
-                  name="search"
-                  size={height * 0.04}
-                  style={{marginLeft: width * 0.05}}
+                onPress={() => this.props.navigation.goBack()}
+                style={styles.menuView}>
+                <Back
+                  size={width * 0.08}
                   color="white"
-                />
-                <TextInput
-                  disabled={true}
-                  underlineColor="transparent"
-                  dense={true}
-                  placeholderTextColor="white"
-                  placeholder="Search"
-                  style={styles.search}
-                  onChangeText={(e) => this.context.searchProperties(e)}
-                  theme={{
-                    colors: {
-                      text: 'white',
-                      primary: '#25dAE1',
-                      selectionColor: 'transparent',
-                      background: 'transparent',
-                    },
-                  }}
+                  name="keyboard-backspace"
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this.openFilter}
-                style={styles.filterButton}>
-                <FilterIcon
-                  name="filter-outline"
-                  color={this.state.filterWork ? '#25AAE1ec' : 'black'}
-                  size={20}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        <View style={styles.headingContainer}>
-          <Add loader={this.handleLoader} />
-          <Filter
-            type="Properties"
-            isVisible={this.state.showFilter}
-            close={() => this.setState({showFilter: !this.state.showFilter})}
-            filterWork={() => this.setState({filterWork: true})}
-          />
-          {this.state.showSearch ? (
-            <Modal
-              isVisible={this.state.showSearch}
-              style={styles.searchModalContainer}>
-              <View style={styles.searchModalInner}>
-                <View style={styles.searchModalInput}>
-                  <Search name="search" size={height * 0.04} color="white" />
+              <View style={styles.searchView}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={styles.searchButton}
+                  onPress={this.openAndClear}>
+                  <Search
+                    name="search"
+                    size={height * 0.04}
+                    style={{marginLeft: width * 0.05}}
+                    color="white"
+                  />
                   <TextInput
+                    disabled={true}
                     underlineColor="transparent"
-                    autoFocus={true}
                     dense={true}
                     placeholderTextColor="white"
                     placeholder="Search"
@@ -341,51 +299,97 @@ export default class Splash extends Component {
                       },
                     }}
                   />
-                </View>
-                <View style={styles.searchModalButtons}>
-                  {this.context.searchLoading ? (
-                    <ActivityIndicator color="white" size="small" />
-                  ) : null}
-                </View>
-                <TouchableOpacity onPress={this.closeAndClear}>
-                  <Close name="close" color="white" size={20} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this.openFilter}
+                  style={styles.filterButton}>
+                  <FilterIcon
+                    name="filter-outline"
+                    color={this.state.filterWork ? '#25AAE1ec' : 'black'}
+                    size={20}
+                  />
                 </TouchableOpacity>
               </View>
-              <View style={styles.searchList}>
-                <FlatList
-                  data={this.context.searchList}
-                  renderItem={this._renderSearchPropList}
-                  removeClippedSubviews={false}
-                  maxToRenderPerBatch={150}
-                  windowSize={100}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                  onEndReachedThreshold={width * 0.001}
-                  onEndReached={this.context.loadSearchData}
-                />
-              </View>
-            </Modal>
-          ) : null}
+            </View>
+          </View>
+          <View style={styles.headingContainer}>
+            <Add loader={this.handleLoader} />
+            <Filter
+              type="Properties"
+              isVisible={this.state.showFilter}
+              close={() => this.setState({showFilter: !this.state.showFilter})}
+              filterWork={() => this.setState({filterWork: true})}
+            />
+            {this.state.showSearch ? (
+              <Modal
+                isVisible={this.state.showSearch}
+                style={styles.searchModalContainer}>
+                <View style={styles.searchModalInner}>
+                  <View style={styles.searchModalInput}>
+                    <Search name="search" size={height * 0.04} color="white" />
+                    <TextInput
+                      underlineColor="transparent"
+                      autoFocus={true}
+                      dense={true}
+                      placeholderTextColor="white"
+                      placeholder="Search"
+                      style={styles.search}
+                      onChangeText={(e) => this.context.searchProperties(e)}
+                      theme={{
+                        colors: {
+                          text: 'white',
+                          primary: '#25dAE1',
+                          selectionColor: 'transparent',
+                          background: 'transparent',
+                        },
+                      }}
+                    />
+                  </View>
+                  <View style={styles.searchModalButtons}>
+                    {this.context.searchLoading ? (
+                      <ActivityIndicator color="white" size="small" />
+                    ) : null}
+                  </View>
+                  <TouchableOpacity onPress={this.closeAndClear}>
+                    <Close name="close" color="white" size={20} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.searchList}>
+                  <FlatList
+                    data={this.context.searchList}
+                    renderItem={this._renderSearchPropList}
+                    removeClippedSubviews={false}
+                    maxToRenderPerBatch={150}
+                    windowSize={100}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    onEndReachedThreshold={width * 0.001}
+                    onEndReached={this.context.loadSearchData}
+                  />
+                </View>
+              </Modal>
+            ) : null}
+          </View>
+          <View style={styles.propertyList}>
+            <FlatList
+              data={this.context.propList}
+              renderItem={this._renderPropList}
+              removeClippedSubviews={false}
+              maxToRenderPerBatch={150}
+              windowSize={100}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              ListFooterComponent={() =>
+                this.context.listLoader ? (
+                  <ActivityIndicator color="#25dAE1" size="large" />
+                ) : null
+              }
+              onEndReachedThreshold={width * 0.0001}
+              onEndReached={() => this.LoadData()}
+            />
+          </View>
         </View>
-        <View style={styles.propertyList}>
-          <FlatList
-            data={this.context.propList}
-            renderItem={this._renderPropList}
-            removeClippedSubviews={false}
-            maxToRenderPerBatch={150}
-            windowSize={100}
-            keyExtractor={(item, index) => index.toString()}
-            showsVerticalScrollIndicator={false}
-            ListFooterComponent={() =>
-              this.context.listLoader ? (
-                <ActivityIndicator color="#25dAE1" size="large" />
-              ) : null
-            }
-            onEndReachedThreshold={width * 0.0001}
-            onEndReached={() => this.LoadData()}
-          />
-        </View>
-      </View>
+      </>
     );
   }
 }

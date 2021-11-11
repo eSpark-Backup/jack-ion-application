@@ -19,6 +19,7 @@ import Equip from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
+import CustumStatusBar from '../../StatusBar';
 
 // Components
 
@@ -41,7 +42,7 @@ export default class DrawerModal extends Component {
       onDone,
     } = this.props;
     return (
-        <Modal
+      <Modal
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         isVisible={isVisible}
@@ -50,6 +51,7 @@ export default class DrawerModal extends Component {
         onBackdropPress={onCancel}
         backdropColor="black"
         style={styles.modalContainer}>
+        <CustumStatusBar backColor />
         <View style={styles.drawerMainContainer}>
           <View style={{marginTop: StatusBar.currentHeight}}>
             <Menu

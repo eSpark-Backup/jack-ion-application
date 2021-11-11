@@ -37,6 +37,7 @@ import {Fonts} from '../../../../../utils/fonts';
 
 import styles from './style';
 import style from './style';
+import CustumStatusBar from '../../../../../components/StatusBar';
 const {width, height} = Dimensions.get('window');
 
 export default class RedirectMeter extends Component {
@@ -478,7 +479,8 @@ export default class RedirectMeter extends Component {
   };
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <CustumStatusBar />
         {this.state.loader ? <Loader /> : null}
         <Header
           leftComponent={{
@@ -872,7 +874,7 @@ export default class RedirectMeter extends Component {
           reRun={this.handleAddBuilding}
           propertyId={this.state.propertyId}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 }

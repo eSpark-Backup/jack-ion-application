@@ -34,6 +34,7 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import TabIcon from 'react-native-vector-icons/MaterialIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
+import CustumStatusBar from '../components/StatusBar';
 import Modal from 'react-native-modal';
 
 // Components
@@ -265,12 +266,8 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar 
-          backgroundColor="#155AAA"
-          barStyle="default"
-          hidden={true}
-          showHideTransition={'fade'}
-        />
+        <CustumStatusBar backColor />
+
         {/* <Image
             source={require('../../Images/profileBack.jpg')}
             style={styles.backgroundImage}

@@ -36,6 +36,7 @@ import LinearGradient from 'react-native-linear-gradient';
 // Components
 import {Fonts} from '../utils/fonts';
 import styles from './style';
+import CustumStatusBar from '../components/StatusBar';
 
 const {width, height} = Dimensions.get('window');
 const IC_ARR_DOWN = require('../../Images/down.png');
@@ -91,7 +92,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" hidden />
+        <CustumStatusBar />
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
@@ -131,10 +132,10 @@ export default class Splash extends Component {
           </View>
         </View>
         <View style={{flex: 1}}>
-          <View style={styles.onlineOfflineView}>
+          {/* <View style={styles.onlineOfflineView}>
             <View style={styles.onlineView} />
             <Text style={styles.onlineText}>Contact Us</Text>
-          </View>
+          </View> */}
           <View>
             <View
               style={{
@@ -150,7 +151,7 @@ export default class Splash extends Component {
               <View style={styles.insideBottonView}>
                 <Text style={{fontSize: width * 0.09, color: 'purple'}}>
                   <Phone name="phone" size={width * 0.07} />
-                  844.538.8203 
+                  844.538.8203
                 </Text>
               </View>
             </View>
