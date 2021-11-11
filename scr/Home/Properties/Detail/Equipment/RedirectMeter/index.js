@@ -46,6 +46,7 @@ export default class RedirectMeter extends Component {
     super();
     this.state = {
       isVisible: false,
+      flag: true,
       barcodes: [],
       loader: false,
       scan: false,
@@ -872,6 +873,9 @@ export default class RedirectMeter extends Component {
             </View>
           </View>
           <EditUnit
+            flag={this.state.flag}
+            enableFlag={() => this.setState({flag: true})}
+            disableFlag={() => this.setState({flag: false})}
             modalVisible={this.state.unitModal}
             type={this.state.unitModalType}
             modalName="Add meter"

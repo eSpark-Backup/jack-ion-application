@@ -87,6 +87,7 @@ const App = ({navigation}) => {
   const [dataSet, setDataSet] = useState([]);
   const [x, setX] = useState('x:');
   const [y, setY] = useState('y:');
+  const [flag, setFlag] = useState(true);
 
   const getDataSetOne = () => {
     return [
@@ -888,11 +889,14 @@ const App = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <EditUnit
+          flag={flag}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
-          closeModal={() => setEditUnitModalVisible(false)}
+          closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
@@ -1005,6 +1009,9 @@ const App = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <EditUnit
+          flag={flag}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}

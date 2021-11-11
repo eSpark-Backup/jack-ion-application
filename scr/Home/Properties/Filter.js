@@ -11,6 +11,7 @@ import {
   Image,
   FlatList,
   Alert,
+  Platform,
 } from 'react-native';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Back from 'react-native-vector-icons/MaterialIcons';
@@ -28,6 +29,7 @@ import {RadioButton} from 'react-native-paper';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import ContextProp from './Context/propContext';
 import {create} from 'apisauce';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 const {width, height} = Dimensions.get('window');
 let api;
@@ -50,6 +52,7 @@ export default class Splash extends Component {
       buildingName: '',
       unitName: '',
       serial: '',
+      isScannerVisible: false,
     };
   }
   getUtilityType = (type, index) => {
@@ -60,9 +63,21 @@ export default class Splash extends Component {
   };
 
   getBillingCompany = () => {
-    this.context.getBillingCompany();
-    this.setState({billCompanies: this.context.propitemList});
-    this.setState({showList: true});
+    if (Platform.OS == 'android') {
+      console.log('chala');
+      this.context.getBillingCompany();
+      this.setState({billCompanies: this.context.propitemList});
+      this.setState({showList: true});
+    }
+    if (Platform.OS == 'ios') {
+      console.log('chala');
+      this.context.getBillingCompany();
+      this.setState({billCompanies: this.context.propitemList});
+      this.props.close();
+      setTimeout(() => {
+        this.setState({showList: true});
+      }, 800);
+    }
   };
 
   componentDidMount() {
@@ -75,6 +90,11 @@ export default class Splash extends Component {
   };
 
   cancelButton = () => {
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        this.props.close();
+      }, 400);
+    }
     this.setState({showList: false});
     this.setState({biller: this.context.biller});
   };
@@ -116,32 +136,72 @@ export default class Splash extends Component {
   };
 
   toggleScanner = async () => {
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        this.setState({hasAccess: true});
-        this.setState({isScannerVisible: true});
-        this.setState({scan: true});
-        console.log('Access');
-      } else {
-        this.setState({hasAccess: false});
-        Alert.alert(
-          "You don't have access for the Camera",
-          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
-        console.log('Denied');
+        if (granted === true) {
+          this.setState({hasAccess: true});
+          this.setState({isScannerVisible: true});
+          this.setState({scan: true});
+          console.log('Access');
+        } else {
+          this.setState({hasAccess: false});
+          Alert.alert(
+            "You don't have access for the Camera",
+            'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          );
+          console.log('Denied');
+        }
+        return granted;
+      } catch (err) {
+        alert(err);
       }
-      return granted;
-    } catch (err) {
-      alert(err);
+    }
+    if (Platform.OS == 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          if (result == RESULTS.GRANTED) {
+            this.props.close();
+            setTimeout(() => {
+              this.setState({hasAccess: true});
+              this.setState({isScannerVisible: true});
+              this.setState({scan: true});
+              console.log('Access');
+            }, 450);
+          }
+          if (result == RESULTS.DENIED) {
+            this.setState({hasAccess: false});
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+            console.log('Denied');
+          }
+          if (result == RESULTS.BLOCKED) {
+            this.setState({hasAccess: false});
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+            console.log('Denied');
+          }
+        })
+        .catch((error) => {
+          console.log('Error aya hai kuch', error);
+        });
     }
   };
 
   onOkay = () => {
     this.context.updateBiller(this.state.biller);
     this.setState({showList: false});
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        this.props.close();
+      }, 450);
+    }
   };
 
   onScanned = (e) => {
@@ -158,7 +218,9 @@ export default class Splash extends Component {
         newSerial: e.data,
         isScannerVisible: false,
       });
-
+      setTimeout(() => {
+        this.props.close();
+      }, 450);
       setTimeout(() => {
         RNBeep.beep(false);
       }, 500);
@@ -168,6 +230,11 @@ export default class Splash extends Component {
   scannerModal = () => {
     this.setState({isScannerVisible: false});
     this.setState({scan: false});
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        this.props.close();
+      }, 400);
+    }
   };
 
   typeSwitcher = (arg) => {
