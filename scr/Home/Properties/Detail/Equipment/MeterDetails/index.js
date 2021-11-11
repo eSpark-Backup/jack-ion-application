@@ -12,7 +12,7 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
-import {Header, Button, Icon} from 'react-native-elements';
+import {Header, Button, Icon, Divider} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
@@ -58,11 +58,7 @@ const App = ({navigation}) => {
   const [unitData, setUnitData] = useState([]);
   const [meterListArray, setMeterListArray] = useState([]);
 
-  const {
-    buildingName,
-    propertyName,
-    meterInfo,
-  } = navigation.state.params; //? Dynamic Ids
+  const {buildingName, propertyName, meterInfo} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
