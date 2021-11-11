@@ -11,6 +11,7 @@ import {
   LayoutAnimation,
   PermissionsAndroid,
   Alert,
+  Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,8 +31,10 @@ import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-const { width, height } = Dimensions.get('window');
-const api = create({ baseURL: Base_URL });
+import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+const {width, height} = Dimensions.get('window');
+const api = create({baseURL: Base_URL});
 
 export default function UnitEdit({
   modalVisible,
@@ -44,6 +47,9 @@ export default function UnitEdit({
   reRun,
   type,
   modalName,
+  flag,
+  enableFlag,
+  disableFlag,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [meterMenuVisible, setMeterMenuVisible] = useState(false);
@@ -85,8 +91,10 @@ export default function UnitEdit({
     }));
   };
 
-  useEffect(() => {
-    getToken();
+  useUpdateEffect(() => {
+    if (flag) {
+      getToken();
+    }
   }, [modalVisible]);
 
   useEffect(() => {
@@ -138,6 +146,7 @@ export default function UnitEdit({
   };
 
   const deleteMeterInNewArray = (value) => {
+    disableFlag();
     const newList = meterListData.filter((item) => item.id !== value.id);
     setMeterListData(newList);
     const data = {
@@ -162,34 +171,76 @@ export default function UnitEdit({
   };
 
   const toggleScanner = async (value) => {
+    disableFlag();
     setState((oldState) => ({
       ...oldState,
       scanIndex: value,
     }));
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        setState((oldState) => ({
-          ...oldState,
-          isScannerVisible: true,
-          hasAccess: true,
-          scan: true,
-        }));
-      } else {
-        setState((oldState) => ({
-          ...oldState,
-          hasAccess: false,
-        }));
-        Alert.alert(
-          "You don't have access for the Camera",
-          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
+        if (granted === true) {
+          setState((oldState) => ({
+            ...oldState,
+            isScannerVisible: true,
+            hasAccess: true,
+            scan: true,
+          }));
+        } else {
+          setState((oldState) => ({
+            ...oldState,
+            hasAccess: false,
+          }));
+          Alert.alert(
+            "You don't have access for the Camera",
+            'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          );
+        }
+        return granted;
+      } catch (err) {
+        alert(err);
       }
-      return granted;
-    } catch (err) {
-      alert(err);
+    }
+    if (Platform.OS == 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          if (result == RESULTS.GRANTED) {
+            closeModal();
+            setTimeout(() => {
+              setState((oldState) => ({
+                ...oldState,
+                isScannerVisible: true,
+                hasAccess: true,
+                scan: true,
+              }));
+            }, 450);
+          }
+          if (result == RESULTS.DENIED) {
+            setState((oldState) => ({
+              ...oldState,
+              hasAccess: false,
+            }));
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+          }
+          if (result == RESULTS.BLOCKED) {
+            setState((oldState) => ({
+              ...oldState,
+              hasAccess: false,
+            }));
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+          }
+        })
+        .catch((e) => {
+          alert(err);
+        });
     }
   };
   const onScanned = (e) => {
@@ -210,6 +261,11 @@ export default function UnitEdit({
         newSerial: e.data,
         isScannerVisible: false,
       }));
+      if (Platform.OS == 'ios') {
+        setTimeout(() => {
+          closeModal();
+        }, 400);
+      }
       setTimeout(() => {
         RNBeep.beep(false);
       }, 500);
@@ -221,6 +277,11 @@ export default function UnitEdit({
       isScannerVisible: false,
       scan: false,
     }));
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        closeModal();
+      }, 400);
+    }
   };
   //!-------->
   const onChangeMultipleField = (e, index) => {
@@ -256,8 +317,8 @@ export default function UnitEdit({
   };
 
   const changeUtilityAndToggle = () => {
+    enableFlag();
     setMeterListData([]);
-
     setError((oldState) => ({
       ...oldState,
       errorUnits: '',
