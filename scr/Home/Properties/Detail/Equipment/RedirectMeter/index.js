@@ -479,402 +479,423 @@ export default class RedirectMeter extends Component {
   };
   render() {
     return (
-      <View style={styles.container}>
-        <CustumStatusBar />
-        {this.state.loader ? <Loader /> : null}
-        <Header
-          leftComponent={{
-            text: 'Close',
-            style: {fontSize: width * 0.05, color: '#000'},
-            onPress: () => this.props.navigation.goBack(),
-          }}
-          centerComponent={
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{fontSize: width * 0.05}}>Add meter directly</Text>
-            </View>
-          }
-          backgroundColor="#fff"
-          containerStyle={styles.headerContainer}
-        />
-        <View style={{height: height * 0.85}}>
-          <View
-            style={{
-              ...styles.boxConatainer,
-              height:
-                this.state.propertyList.length != 0
-                  ? height * 0.27
-                  : height * 0.12,
-            }}>
-            <View style={styles.boxInner}>
-              <View style={styles.propertiesContainer}>
-                <Properties
-                  name="home-city-outline"
-                  size={width * 0.04}
-                  color="#115b72"
-                />
-                <Text style={styles.propertiesText}>Properties</Text>
+      <>
+        <View style={styles.container}>
+          {this.state.loader ? <Loader /> : null}
+          <Header
+            leftComponent={{
+              text: 'Close',
+              style: {fontSize: width * 0.05, color: '#000'},
+              onPress: () => this.props.navigation.goBack(),
+            }}
+            centerComponent={
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{fontSize: width * 0.05}}>Add meter directly</Text>
               </View>
-              <View style={{width: '100%'}}>
-                <View style={styles.currentReadContainer}>
-                  <View style={styles.inputFilterView}>
-                    <TextInput
-                      style={{width: width * 0.3}}
-                      value={this.state.loadFor}
-                      placeholder="Search"
-                      onChangeText={(e) =>
-                        !this.state.finish ? null : this.searchProperties(e)
-                      }
-                    />
-                    {this.state.searchLoading ? (
-                      <ActivityIndicator
-                        color="gray"
-                        size="small"
-                        style={styles.loaderStyle}
+            }
+            backgroundColor="#fff"
+            containerStyle={styles.headerContainer}
+          />
+          <View style={{height: height * 0.85}}>
+            <View
+              style={{
+                ...styles.boxConatainer,
+                height:
+                  this.state.propertyList.length != 0
+                    ? height * 0.27
+                    : height * 0.12,
+              }}>
+              <View style={styles.boxInner}>
+                <View style={styles.propertiesContainer}>
+                  <Properties
+                    name="home-city-outline"
+                    size={width * 0.04}
+                    color="#115b72"
+                  />
+                  <Text style={styles.propertiesText}>Properties</Text>
+                </View>
+                <View style={{width: '100%'}}>
+                  <View style={styles.currentReadContainer}>
+                    <View style={styles.inputFilterView}>
+                      <TextInput
+                        style={{width: width * 0.3, height: height * 0.05}}
+                        value={this.state.loadFor}
+                        placeholder="Search Here..."
+                        onChangeText={(e) =>
+                          !this.state.finish ? null : this.searchProperties(e)
+                        }
                       />
+                      {this.state.searchLoading ? (
+                        <ActivityIndicator
+                          color="gray"
+                          size="small"
+                          style={styles.loaderStyle}
+                        />
+                      ) : null}
+                    </View>
+                    {this.state.propertyList.length != 0 ? (
+                      <View style={styles.filterUtility}>
+                        <FlatList
+                          style={{width: width * 0.9}}
+                          data={this.state.propertyList}
+                          showsVerticalScrollIndicator={false}
+                          numColumns={1}
+                          initialNumToRender={this.state.propertyList.length}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({item}) => (
+                            <TouchableOpacity
+                              onPress={() =>
+                                !this.state.finish ? null : this.getItemId(item)
+                              }>
+                              <View style={styles.propertiesListContainer}>
+                                <Properties
+                                  name="home-city-outline"
+                                  size={width * 0.04}
+                                  color="#115b72"
+                                />
+                                <View style={{marginLeft: width * 0.01}}>
+                                  <View style={{width: width * 0.6}}>
+                                    <TextTicker
+                                      style={styles.propText}
+                                      repeatSpacer={width * 0.6}
+                                      duration={6000}
+                                      marqueeDelay={2000}>
+                                      {item.name == null
+                                        ? 'Untitled'
+                                        : item.name}
+                                    </TextTicker>
+                                  </View>
+
+                                  <View style={{width: width * 0.6}}>
+                                    <TextTicker
+                                      style={styles.dimTextTicker}
+                                      repeatSpacer={width * 0.6}
+                                      duration={6000}
+                                      marqueeDelay={2000}>
+                                      {(item.street == null
+                                        ? ''
+                                        : item.street + ', ') +
+                                        (item.st == null
+                                          ? ''
+                                          : item.st + ', ') +
+                                        (item.city == null
+                                          ? ''
+                                          : item.city + ', ') +
+                                        (item.zipcode == null
+                                          ? ''
+                                          : item.zipcode)}
+                                    </TextTicker>
+                                  </View>
+                                </View>
+                                {item.id == this.state.propertyId && (
+                                  <View style={styles.propertyCheckContainer}>
+                                    <Check
+                                      name="check"
+                                      size={width * 0.04}
+                                      color="#fff"
+                                    />
+                                  </View>
+                                )}
+                              </View>
+                            </TouchableOpacity>
+                          )}
+                          onEndReachedThreshold={width * 0.0001}
+                          onEndReached={() => this.loadSearchData()}
+                        />
+                      </View>
                     ) : null}
                   </View>
-                  {this.state.propertyList.length != 0 ? (
-                    <View style={styles.filterUtility}>
-                      <FlatList
-                        style={{width: width * 0.9}}
-                        data={this.state.propertyList}
-                        showsVerticalScrollIndicator={false}
-                        numColumns={1}
-                        initialNumToRender={this.state.propertyList.length}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item}) => (
-                          <TouchableOpacity
-                            onPress={() =>
-                              !this.state.finish ? null : this.getItemId(item)
-                            }>
-                            <View style={styles.propertiesListContainer}>
-                              <Properties
-                                name="home-city-outline"
-                                size={width * 0.04}
-                                color="#115b72"
-                              />
-                              <View style={{marginLeft: width * 0.01}}>
-                                <View style={{width: width * 0.6}}>
-                                  <TextTicker
-                                    style={styles.propText}
-                                    repeatSpacer={width * 0.6}
-                                    duration={6000}
-                                    marqueeDelay={2000}>
-                                    {item.name == null ? 'Untitled' : item.name}
-                                  </TextTicker>
-                                </View>
-
-                                <View style={{width: width * 0.6}}>
-                                  <TextTicker
-                                    style={styles.dimTextTicker}
-                                    repeatSpacer={width * 0.6}
-                                    duration={6000}
-                                    marqueeDelay={2000}>
-                                    {(item.street == null
-                                      ? ''
-                                      : item.street + ', ') +
-                                      (item.st == null ? '' : item.st + ', ') +
-                                      (item.city == null
-                                        ? ''
-                                        : item.city + ', ') +
-                                      (item.zipcode == null
-                                        ? ''
-                                        : item.zipcode)}
-                                  </TextTicker>
-                                </View>
-                              </View>
-                              {item.id == this.state.propertyId && (
-                                <View style={styles.propertyCheckContainer}>
-                                  <Check
-                                    name="check"
-                                    size={width * 0.04}
-                                    color="#fff"
-                                  />
-                                </View>
-                              )}
-                            </View>
-                          </TouchableOpacity>
-                        )}
-                        onEndReachedThreshold={width * 0.0001}
-                        onEndReached={() => this.loadSearchData()}
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                ...styles.boxConatainer,
+                height:
+                  this.state.dataBuild.length != 0
+                    ? height * 0.2
+                    : height * 0.12,
+              }}>
+              <View style={styles.boxInner}>
+                <View style={styles.buildingContainer}>
+                  <View style={styles.buildingInnerContainer}>
+                    <Build
+                      name="building"
+                      size={width * 0.04}
+                      color="#115b72"
+                    />
+                    <Text style={styles.buildingText}>Buildings</Text>
+                  </View>
+                  {this.state.propertyId ? (
+                    <TouchableOpacity
+                      style={{zIndex: 1}}
+                      onPress={() =>
+                        this.setState({buildModal: !this.state.buildModal})
+                      }>
+                      <Icon
+                        name="plus-circle"
+                        type="feather"
+                        size={width * 0.06}
+                        color={'#25AAE1ec'}
                       />
-                    </View>
+                    </TouchableOpacity>
                   ) : null}
                 </View>
-              </View>
-            </View>
-          </View>
-          <View
-            style={{
-              ...styles.boxConatainer,
-              height:
-                this.state.dataBuild.length != 0 ? height * 0.2 : height * 0.12,
-            }}>
-            <View style={styles.boxInner}>
-              <View style={styles.buildingContainer}>
-                <View style={styles.buildingInnerContainer}>
-                  <Build name="building" size={width * 0.04} color="#115b72" />
-                  <Text style={styles.buildingText}>Buildings</Text>
-                </View>
-                {this.state.propertyId ? (
-                  <TouchableOpacity
-                    style={{zIndex: 1}}
-                    onPress={() =>
-                      this.setState({buildModal: !this.state.buildModal})
-                    }>
-                    <Icon
-                      name="plus-circle"
-                      type="feather"
-                      size={width * 0.06}
-                      color={'#25AAE1ec'}
-                    />
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-              <View style={{width: '100%'}}>
-                <View style={styles.currentReadContainer}>
-                  {!this.state.propertyId ? (
-                    <View style={styles.buildingDefaultView}>
-                      <Text style={styles.buildingPropertySelectText}>
-                        Please select property first
-                      </Text>
-                    </View>
-                  ) : this.state.loaderBuildings ? (
-                    <View style={styles.buildingLoaderContainer}>
-                      <DotsLoader color="gray" />
-                    </View>
-                  ) : this.state.dataBuild.length != 0 ? (
-                    <View style={[styles.filterUtility]}>
-                      <FlatList
-                        style={{width: width * 0.9}}
-                        data={this._customSort(this.state.dataBuild)}
-                        showsVerticalScrollIndicator={false}
-                        numColumns={1}
-                        initialNumToRender={this.state.dataBuild.length}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item}) => (
-                          <TouchableOpacity
-                            onPress={() =>
-                              !this.state.finish
-                                ? null
-                                : this.getBuildingId(item)
-                            }>
-                            <View style={styles.buildingListContainer}>
-                              <Build
-                                name="building"
-                                size={width * 0.04}
-                                color="#115b72"
-                              />
-                              <View style={{marginLeft: width * 0.01}}>
-                                <View style={{width: width * 0.6}}>
-                                  <TextTicker
-                                    style={styles.propText}
-                                    duration={6000}
-                                    marqueeDelay={2000}
-                                    repeatSpacer={width * 0.6}>
-                                    {item.name == null ? 'Untitled' : item.name}
-                                  </TextTicker>
-                                </View>
-                                <Text style={styles.buildingUnitCountText}>
-                                  {item.unit_count} Units
-                                </Text>
-                              </View>
-                              {item.id == this.state.buildingId && (
-                                <View style={styles.buildingCheckContainer}>
-                                  <Check
-                                    name="check"
-                                    size={width * 0.04}
-                                    color="#fff"
-                                  />
-                                </View>
-                              )}
-                            </View>
-                          </TouchableOpacity>
-                        )}
-                      />
-                    </View>
-                  ) : (
-                    <View style={styles.emptyBuildingContainer}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                        }}>
-                        <Text style={styles.emptyBuildingText}>
-                          No buildings found add new building
+                <View style={{width: '100%'}}>
+                  <View style={styles.currentReadContainer}>
+                    {!this.state.propertyId ? (
+                      <View style={styles.buildingDefaultView}>
+                        <Text style={styles.buildingPropertySelectText}>
+                          Please select property first
                         </Text>
-                        <Build
-                          name="hand-point-right"
-                          size={width * 0.04}
-                          color="black"
+                      </View>
+                    ) : this.state.loaderBuildings ? (
+                      <View style={styles.buildingLoaderContainer}>
+                        <DotsLoader color="gray" />
+                      </View>
+                    ) : this.state.dataBuild.length != 0 ? (
+                      <View style={[styles.filterUtility]}>
+                        <FlatList
+                          style={{width: width * 0.9}}
+                          data={this._customSort(this.state.dataBuild)}
+                          showsVerticalScrollIndicator={false}
+                          numColumns={1}
+                          initialNumToRender={this.state.dataBuild.length}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({item}) => (
+                            <TouchableOpacity
+                              onPress={() =>
+                                !this.state.finish
+                                  ? null
+                                  : this.getBuildingId(item)
+                              }>
+                              <View style={styles.buildingListContainer}>
+                                <Build
+                                  name="building"
+                                  size={width * 0.04}
+                                  color="#115b72"
+                                />
+                                <View style={{marginLeft: width * 0.01}}>
+                                  <View style={{width: width * 0.6}}>
+                                    <TextTicker
+                                      style={styles.propText}
+                                      duration={6000}
+                                      marqueeDelay={2000}
+                                      repeatSpacer={width * 0.6}>
+                                      {item.name == null
+                                        ? 'Untitled'
+                                        : item.name}
+                                    </TextTicker>
+                                  </View>
+                                  <Text style={styles.buildingUnitCountText}>
+                                    {item.unit_count} Units
+                                  </Text>
+                                </View>
+                                {item.id == this.state.buildingId && (
+                                  <View style={styles.buildingCheckContainer}>
+                                    <Check
+                                      name="check"
+                                      size={width * 0.04}
+                                      color="#fff"
+                                    />
+                                  </View>
+                                )}
+                              </View>
+                            </TouchableOpacity>
+                          )}
                         />
                       </View>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({buildModal: !this.state.buildModal})
-                        }>
-                        <Icon
-                          name="plus-circle"
-                          type="feather"
-                          size={width * 0.06}
-                          color={'#25AAE1ec'}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )}
+                    ) : (
+                      <View style={styles.emptyBuildingContainer}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                          }}>
+                          <Text style={styles.emptyBuildingText}>
+                            No buildings found add new building
+                          </Text>
+                          <Build
+                            name="hand-point-right"
+                            size={width * 0.04}
+                            color="black"
+                          />
+                        </View>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.setState({buildModal: !this.state.buildModal})
+                          }>
+                          <Icon
+                            name="plus-circle"
+                            type="feather"
+                            size={width * 0.06}
+                            color={'#25AAE1ec'}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          <View
-            style={{
-              ...styles.boxConatainer,
-              height:
-                this.state.unitData.length != 0 ? height * 0.2 : height * 0.12,
-            }}>
-            <View style={styles.boxInner}>
-              <View style={styles.unitsContainer}>
-                <View style={styles.unitsInnerContainer}>
-                  <Home name="house-user" size={width * 0.04} color="#115b72" />
-                  <Text style={styles.unitsText}>Units</Text>
-                </View>
-                {this.state.buildingId ? (
-                  <TouchableOpacity
-                    style={{zIndex: 1}}
-                    onPress={this.handleAddUnit}>
-                    <Icon
-                      name="plus-circle"
-                      type="feather"
-                      size={width * 0.06}
-                      color={'#25AAE1ec'}
+            <View
+              style={{
+                ...styles.boxConatainer,
+                height:
+                  this.state.unitData.length != 0
+                    ? height * 0.2
+                    : height * 0.12,
+              }}>
+              <View style={styles.boxInner}>
+                <View style={styles.unitsContainer}>
+                  <View style={styles.unitsInnerContainer}>
+                    <Home
+                      name="house-user"
+                      size={width * 0.04}
+                      color="#115b72"
                     />
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-              <View style={{width: '100%'}}>
-                <View style={styles.currentReadContainer}>
-                  {!this.state.buildingId ? (
-                    <View style={styles.unitsDefaultView}>
-                      <Text style={styles.unitsBuildingSelectText}>
-                        Please select building
-                      </Text>
-                    </View>
-                  ) : this.state.unitLoader ? (
-                    <View style={styles.unitsLoaderContainer}>
-                      <DotsLoader color="gray" />
-                    </View>
-                  ) : this.state.unitData.length != 0 ? (
-                    <View style={[styles.filterUtility]}>
-                      <FlatList
-                        style={{width: width * 0.9}}
-                        data={this._customSort(this.state.unitData)}
-                        showsVerticalScrollIndicator={false}
-                        numColumns={1}
-                        initialNumToRender={this.state.unitData.length}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item}) => (
-                          <TouchableOpacity
-                            onPress={() =>
-                              !this.state.finish ? null : this.getUnitId(item)
-                            }>
-                            <View style={styles.unitsListContainer}>
-                              <Home
-                                name="house-user"
-                                size={width * 0.04}
-                                color="#115b72"
-                              />
-                              <View style={{marginLeft: width * 0.01}}>
-                                <View style={{width: width * 0.6}}>
-                                  <TextTicker
-                                    style={styles.propText}
-                                    duration={6000}
-                                    marqueeDelay={2000}
-                                    repeatSpacer={width * 0.6}>
-                                    {item.name == null ? 'Untitled' : item.name}
-                                  </TextTicker>
-                                </View>
-                                <View style={styles.unitsMeterContainer}>
-                                  {item?.unit_meter?.length ? (
-                                    item?.unit_meter?.map((item) => (
-                                      // console.log('item--->meter', item),
-                                      <Image
-                                        source={this.typeSwitcher(
-                                          item.meter_name,
-                                        )}
-                                        style={styles.unitsMeterImgStyle}
-                                      />
-                                    ))
-                                  ) : (
-                                    <Text style={styles.unitsNoMeterText}>
-                                      No meters
-                                    </Text>
-                                  )}
-                                </View>
-                              </View>
-                              {item.id == this.state.unitId && (
-                                <View style={styles.unitsCheckContainer}>
-                                  <Check
-                                    name="check"
-                                    size={width * 0.04}
-                                    color="#fff"
-                                  />
-                                </View>
-                              )}
-                            </View>
-                          </TouchableOpacity>
-                        )}
+                    <Text style={styles.unitsText}>Units</Text>
+                  </View>
+                  {this.state.buildingId ? (
+                    <TouchableOpacity
+                      style={{zIndex: 1}}
+                      onPress={this.handleAddUnit}>
+                      <Icon
+                        name="plus-circle"
+                        type="feather"
+                        size={width * 0.06}
+                        color={'#25AAE1ec'}
                       />
-                    </View>
-                  ) : (
-                    <View style={styles.emptyunitsContainer}>
-                      <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.emptyUnitsText}>
-                          No units found add new unit
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+                <View style={{width: '100%'}}>
+                  <View style={styles.currentReadContainer}>
+                    {!this.state.buildingId ? (
+                      <View style={styles.unitsDefaultView}>
+                        <Text style={styles.unitsBuildingSelectText}>
+                          Please select building
                         </Text>
-                        <Build
-                          name="hand-point-right"
-                          size={width * 0.04}
-                          color="black"
+                      </View>
+                    ) : this.state.unitLoader ? (
+                      <View style={styles.unitsLoaderContainer}>
+                        <DotsLoader color="gray" />
+                      </View>
+                    ) : this.state.unitData.length != 0 ? (
+                      <View style={[styles.filterUtility]}>
+                        <FlatList
+                          style={{width: width * 0.9}}
+                          data={this._customSort(this.state.unitData)}
+                          showsVerticalScrollIndicator={false}
+                          numColumns={1}
+                          initialNumToRender={this.state.unitData.length}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({item}) => (
+                            <TouchableOpacity
+                              onPress={() =>
+                                !this.state.finish ? null : this.getUnitId(item)
+                              }>
+                              <View style={styles.unitsListContainer}>
+                                <Home
+                                  name="house-user"
+                                  size={width * 0.04}
+                                  color="#115b72"
+                                />
+                                <View style={{marginLeft: width * 0.01}}>
+                                  <View style={{width: width * 0.6}}>
+                                    <TextTicker
+                                      style={styles.propText}
+                                      duration={6000}
+                                      marqueeDelay={2000}
+                                      repeatSpacer={width * 0.6}>
+                                      {item.name == null
+                                        ? 'Untitled'
+                                        : item.name}
+                                    </TextTicker>
+                                  </View>
+                                  <View style={styles.unitsMeterContainer}>
+                                    {item?.unit_meter?.length ? (
+                                      item?.unit_meter?.map((item) => (
+                                        // console.log('item--->meter', item),
+                                        <Image
+                                          source={this.typeSwitcher(
+                                            item.meter_name,
+                                          )}
+                                          style={styles.unitsMeterImgStyle}
+                                        />
+                                      ))
+                                    ) : (
+                                      <Text style={styles.unitsNoMeterText}>
+                                        No meters
+                                      </Text>
+                                    )}
+                                  </View>
+                                </View>
+                                {item.id == this.state.unitId && (
+                                  <View style={styles.unitsCheckContainer}>
+                                    <Check
+                                      name="check"
+                                      size={width * 0.04}
+                                      color="#fff"
+                                    />
+                                  </View>
+                                )}
+                              </View>
+                            </TouchableOpacity>
+                          )}
                         />
                       </View>
-                      <TouchableOpacity onPress={this.handleAddUnit}>
-                        <Icon
-                          name="plus-circle"
-                          type="feather"
-                          size={width * 0.06}
-                          color={'#25AAE1ec'}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )}
+                    ) : (
+                      <View style={styles.emptyunitsContainer}>
+                        <View style={{flexDirection: 'row'}}>
+                          <Text style={styles.emptyUnitsText}>
+                            No units found add new unit
+                          </Text>
+                          <Build
+                            name="hand-point-right"
+                            size={width * 0.04}
+                            color="black"
+                          />
+                        </View>
+                        <TouchableOpacity onPress={this.handleAddUnit}>
+                          <Icon
+                            name="plus-circle"
+                            type="feather"
+                            size={width * 0.06}
+                            color={'#25AAE1ec'}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
                 </View>
               </View>
             </View>
           </View>
+          <EditUnit
+            modalVisible={this.state.unitModal}
+            type={this.state.unitModalType}
+            modalName="Add meter"
+            meterMenuVisible={this.state.editUnitMenuVisible}
+            showMenu={() => this.setState({editUnitMenuVisible: true})}
+            hideMenu={() => this.setState({editUnitMenuVisible: false})}
+            closeModal={() => this.setState({unitModal: false})}
+            reRun={this.handleFinishUnit}
+            meterTypes={this.state.meterTypesList}
+            buildingName={this.state.buildginName}
+            buildingId={this.state.buildingId}
+            unitDetails={this.state.unitDetails}
+            itemPressHandle={() => this.setState({editUnitMenuVisible: false})}
+          />
+          <AddBuilding
+            modalVisible={this.state.buildModal}
+            type="meterDirect"
+            modalName="New Building"
+            closeModal={() => this.setState({buildModal: false})}
+            reRun={this.handleAddBuilding}
+            propertyId={this.state.propertyId}
+          />
         </View>
-        <EditUnit
-          modalVisible={this.state.unitModal}
-          type={this.state.unitModalType}
-          modalName="Add meter"
-          meterMenuVisible={this.state.editUnitMenuVisible}
-          showMenu={() => this.setState({editUnitMenuVisible: true})}
-          hideMenu={() => this.setState({editUnitMenuVisible: false})}
-          closeModal={() => this.setState({unitModal: false})}
-          reRun={this.handleFinishUnit}
-          meterTypes={this.state.meterTypesList}
-          buildingName={this.state.buildginName}
-          buildingId={this.state.buildingId}
-          unitDetails={this.state.unitDetails}
-          itemPressHandle={() => this.setState({editUnitMenuVisible: false})}
-        />
-        <AddBuilding
-          modalVisible={this.state.buildModal}
-          type="meterDirect"
-          modalName="New Building"
-          closeModal={() => this.setState({buildModal: false})}
-          reRun={this.handleAddBuilding}
-          propertyId={this.state.propertyId}
-        />
-      </View>
+      </>
     );
   }
 }

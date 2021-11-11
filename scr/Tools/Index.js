@@ -19,6 +19,7 @@ import {
   Alert,
   Linking,
   PermissionsAndroid,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -40,6 +41,7 @@ import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../components/Loader';
 import {withNavigation} from 'react-navigation';
+import {PERMISSIONS, check, RESULTS} from 'react-native-permissions';
 
 import Modal from 'react-native-modal';
 
@@ -201,27 +203,60 @@ class Tools extends Component {
   };
   hasCameraPermission = async () => {};
   toggleModal = async () => {
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        this.setState({hasAccess: true, scanning: false});
-        this.setState({isVisible: !this.state.isVisible});
-        this.setState({scan: true});
-        this.setState({scanResult: false});
-        console.log('Access');
-      } else {
-        this.setState({hasAccess: false});
-        Alert.alert(
-          "You don't have access for the Camera",
-          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
-        console.log('Denied');
+        if (granted === true) {
+          this.setState({hasAccess: true, scanning: false});
+          this.setState({isVisible: !this.state.isVisible});
+          this.setState({scan: true});
+          this.setState({scanResult: false});
+          console.log('Access');
+        } else {
+          this.setState({hasAccess: false});
+          Alert.alert(
+            "You don't have access for the Camera",
+            'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          );
+          console.log('Denied');
+        }
+        return granted;
+      } catch (err) {
+        alert(err);
       }
-      return granted;
-    } catch (err) {
-      alert(err);
+    }
+    if (Platform.OS == 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          if (result == RESULTS.GRANTED) {
+            this.setState({hasAccess: true, scanning: false});
+            this.setState({isVisible: !this.state.isVisible});
+            this.setState({scan: true});
+            this.setState({scanResult: false});
+            console.log('Access');
+          }
+          if (result == RESULTS.DENIED) {
+            this.setState({hasAccess: false});
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+            console.log('Denied');
+          }
+          if (result == RESULTS.BLOCKED) {
+            this.setState({hasAccess: false});
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+            console.log('Denied');
+          }
+        })
+        .catch((error) => {
+          alert(error);
+        });
     }
   };
 
@@ -265,6 +300,7 @@ class Tools extends Component {
                   flex: 1,
                   justifyContent: 'space-around',
                   borderRadius: width * 0.02,
+                  marginTop: Platform.OS == 'ios' && height * 0.03,
                 }}>
                 <Text
                   style={{

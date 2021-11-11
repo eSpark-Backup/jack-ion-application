@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Pressable,
+  Platform,
   KeyboardAvoidingView,
 } from 'react-native';
 
@@ -98,7 +99,9 @@ export default class DrawerModal extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={naviagateToSupport}>
+          <TouchableOpacity
+            style={{bottom: Platform.OS == 'ios' && height * 0.05}}
+            onPress={naviagateToSupport}>
             <View
               style={{
                 flexDirection: 'row',

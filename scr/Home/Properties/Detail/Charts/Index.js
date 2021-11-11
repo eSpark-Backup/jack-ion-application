@@ -18,6 +18,7 @@ import {
   UIManager,
   Button,
   Pressable,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -52,6 +53,7 @@ import {
 import {Fonts} from '../../../../utils/fonts';
 import styles from './style';
 import style from './style';
+import CustumStatusBar from '../../../../components/StatusBar';
 const {width, height} = Dimensions.get('window');
 
 const dataBar2 = {
@@ -136,9 +138,12 @@ export default class Splash extends Component {
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
   naviagateToDetail = () => {
-    this.toggleModal()
-    this.props.navigation.navigate('Detail', this.props.navigation.state.params);
-  }
+    this.toggleModal();
+    this.props.navigation.navigate(
+      'Detail',
+      this.props.navigation.state.params,
+    );
+  };
   naviagateToSupport = () => {
     // this.toggleModal();
     this.setState({isModalVisible: false});
@@ -148,6 +153,7 @@ export default class Splash extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <CustumStatusBar />
         <Modal
           animationIn="slideInLeft"
           animationOut="slideOutLeft"
@@ -157,6 +163,7 @@ export default class Splash extends Component {
           onBackdropPress={this.toggleModal}
           backdropColor="black"
           style={styles.modalContainer}>
+          <CustumStatusBar backColor />
           <View style={styles.drawerMainContainer}>
             <View style={{marginTop: StatusBar.currentHeight}}>
               <Menu
@@ -203,7 +210,9 @@ export default class Splash extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={this.naviagateToSupport}>
+            <TouchableOpacity
+              style={{bottom: Platform.OS == 'ios' && height * 0.05}}
+              onPress={this.naviagateToSupport}>
               <View
                 style={{
                   flexDirection: 'row',

@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 import {Fonts} from '../../../../../utils/fonts';
 
 //Files
@@ -68,7 +68,7 @@ export default styles = StyleSheet.create({
 
   propertiesContainer: {
     width: '100%',
-    height: height * 0.02,
+    height: Platform.OS == 'ios' ? height * 0.06 : height * 0.03,
     borderBottomWidth: 0.5,
     paddingLeft: width * 0.02,
     paddingVertical: width * 0.04,

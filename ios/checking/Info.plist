@@ -47,10 +47,6 @@
 	<string>Please Allow on your App</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Please Allow on your App</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Please Allow on your App</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Please Allow on your App</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Please Allow on your App</string>
 	<key>NSMicrophoneUsageDescription</key>

@@ -6,16 +6,18 @@ platform :ios, '10.0'
 target 'checking' do
   config = use_native_modules!
   permissions_path = '../node_modules/react-native-permissions/ios'
-
+  rn_maps_path = '../node_modules/react-native-maps'
+  
   use_react_native!(:path => config["reactNativePath"])
-
+  
   pod 'TextToSpeech', :path => '../node_modules/react-native-tts'
-
+  
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
-
+  
   pod 'RCTSystemSetting', :path => '../node_modules/react-native-system-setting'
-
-
+  
+  pod 'react-native-google-maps', :path => rn_maps_path
+  
   pod 'Permission-BluetoothPeripheral', :path => "#{permissions_path}/BluetoothPeripheral"
   pod 'Permission-Calendars', :path => "#{permissions_path}/Calendars"
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
@@ -36,6 +38,7 @@ target 'checking' do
     # Pods for testing
   end
 
+  
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
