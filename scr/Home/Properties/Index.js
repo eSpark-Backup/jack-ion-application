@@ -324,6 +324,7 @@ export default class Splash extends Component {
               <Modal
                 isVisible={this.state.showSearch}
                 style={styles.searchModalContainer}>
+                <CustumStatusBar backColor transparent />
                 <View style={styles.searchModalInner}>
                   <View style={styles.searchModalInput}>
                     <Search name="search" size={height * 0.04} color="white" />
@@ -356,6 +357,7 @@ export default class Splash extends Component {
                 </View>
                 <View style={styles.searchList}>
                   <FlatList
+                    style={{marginBottom: width * 0.2}}
                     data={this.context.searchList}
                     renderItem={this._renderSearchPropList}
                     removeClippedSubviews={false}
