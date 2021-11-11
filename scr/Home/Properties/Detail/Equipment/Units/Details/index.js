@@ -23,6 +23,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Base_Url from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../../components/Loader';
+import {Svg, G} from 'react-native-svg';
 import {
   Chart,
   Line,
@@ -84,62 +85,78 @@ const App = ({navigation}) => {
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [dataSet, setDataSet] = useState([]);
   const [x, setX] = useState('x:');
   const [y, setY] = useState('y:');
 
   const getDataSetOne = () => {
     return [
-      {x: new Date(2000, 1, 1), y: 12},
-      {x: new Date(2000, 6, 1), y: 10},
-      {x: new Date(2000, 12, 1), y: 11},
-      {x: new Date(2001, 1, 1), y: 5},
-      {x: new Date(2002, 1, 1), y: 4},
-      {x: new Date(2003, 1, 1), y: 6},
-      {x: new Date(2004, 1, 1), y: 5},
-      {x: new Date(2005, 1, 1), y: 7},
-      {x: new Date(2006, 1, 1), y: 8},
-      {x: new Date(2007, 1, 1), y: 9},
-      {x: new Date(2008, 1, 1), y: -8.5},
-      {x: new Date(2009, 1, 1), y: -9},
-      {x: new Date(2010, 1, 1), y: 5},
-      {x: new Date(2013, 1, 1), y: 1},
-      {x: new Date(2014, 1, 1), y: 2},
-      {x: new Date(2015, 1, 1), y: -5},
+      // {x: new Date(2000, 1, 1), y: 12},
+      // {x: new Date(2000, 6, 1), y: 10},
+      // {x: new Date(2000, 12, 1), y: 11},
+      // {x: new Date(2001, 1, 1), y: 5},
+      // {x: new Date(2002, 1, 1), y: 4},
+      // {x: new Date(2003, 1, 1), y: 6},
+      // {x: new Date(2004, 1, 1), y: 5},
+      // {x: new Date(2005, 1, 1), y: 7},
+      // {x: new Date(2006, 1, 1), y: 8},
+      // {x: new Date(2007, 1, 1), y: 9},
+      // {x: new Date(2008, 1, 1), y: -8.5},
+      // {x: new Date(2009, 1, 1), y: -9},
+      // {x: new Date(2010, 1, 1), y: 5},
+      // {x: new Date(2013, 1, 1), y: 1},
+      // {x: new Date(2014, 1, 1), y: 2},
+      // {x: new Date(2015, 1, 1), y: -5},
+      {x: new Date(2021, 10, 7), y: 1},
+      {x: new Date(2021, 10, 8), y: 6},
+      {x: new Date(2021, 10, 9), y: 8},
+      {x: new Date(2021, 10, 10), y: 9},
+      {x: new Date(2021, 10, 11), y: 11},
     ];
   };
 
   const getDataSetTwo = () => {
     return [
-      {x: new Date(2000, 1, 1), y: 5},
-      {x: new Date(2003, 1, 1), y: 6},
-      {x: new Date(2004, 1, 1), y: 4},
-      {x: new Date(2005, 1, 1), y: 10},
-      {x: new Date(2006, 1, 1), y: 12},
-      {x: new Date(2007, 2, 1), y: 48},
-      {x: new Date(2008, 1, 1), y: 19},
-      {x: new Date(2009, 1, 1), y: 31},
-      {x: new Date(2011, 1, 1), y: 49},
-      {x: new Date(2014, 1, 1), y: 40},
-      {x: new Date(2015, 1, 1), y: 21},
+      // {x: new Date(2000, 1, 1), y: 5},
+      // {x: new Date(2003, 1, 1), y: 6},
+      // {x: new Date(2004, 1, 1), y: 4},
+      // {x: new Date(2005, 1, 1), y: 10},
+      // {x: new Date(2006, 1, 1), y: 12},
+      // {x: new Date(2007, 2, 1), y: 48},
+      // {x: new Date(2008, 1, 1), y: 19},
+      // {x: new Date(2009, 1, 1), y: 31},
+      // {x: new Date(2011, 1, 1), y: 49},
+      // {x: new Date(2014, 1, 1), y: 40},
+      // {x: new Date(2015, 1, 1), y: 21},
+      {x: new Date(2021, 10, 7), y: 1},
+      {x: new Date(2021, 10, 8), y: 5},
+      {x: new Date(2021, 10, 9), y: 2},
+      {x: new Date(2021, 10, 10), y: 1},
+      {x: new Date(2021, 10, 11), y: 2},
     ];
   };
 
   const getTickValues = () => {
     return [
-      'nov 11 10 AM',
-      'nov 11 10 AM',
-      'nov 11 10 AM',
-      'nov 11 10 AM',
-      'nov 11 10 AM',
-      'nov 11 10 AM',
-      // new Date(1999, 1, 1),
-      // new Date(2000, 1, 1),
-      // new Date(2001, 1, 1),
+      // 'nov 11 10 AM',
+      // 'nov 11 10 AM',
+      // 'nov 11 10 AM',
+      // 'nov 11 10 AM',
+      // 'nov 11 10 AM',
+      // 'nov 11 10 AM',
+
+      // new Date('August 19, 1975 20:15:30'),
+      // new Date('August 19, 1975 21:15:30'),
+      // new Date('August 19, 1975 23:15:30'),
       // new Date(2002, 1, 1),
       // new Date(2003, 1, 1),
       // new Date(2004, 1, 1),
       // new Date(2005, 1, 1),
-      // new Date(2006, 1, 1),
+      new Date(2021, 10, 7),
+      new Date(2021, 10, 8),
+      new Date(2021, 10, 9),
+      new Date(2021, 10, 10),
+      new Date(2021, 10, 11),
       // new Date(2007, 1, 1),
       // new Date(2008, 1, 1),
       // new Date(2009, 1, 1),
@@ -159,10 +176,12 @@ const App = ({navigation}) => {
 
     return {
       parent: {
-        background: '#ccdee8',
-        boxSizing: 'border-box',
-        display: 'inline',
-        padding: 0,
+        background: 'red',
+        // boxSizing: 'border-box',
+        // display: 'inline',
+        // padding: 0,
+        width: width,
+        height: height * 0.5,
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
@@ -183,31 +202,33 @@ const App = ({navigation}) => {
       // INDEPENDENT AXIS
       axisYears: {
         axis: {stroke: 'black', strokeWidth: 1},
-        // ticks: {
-        //   size: ({tick}) => {
-        //     const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
-        //     return tickSize;
-        //   },
-        //   stroke: 'black',
-        //   strokeWidth: 1,
-        // },
-        // tickLabels: {
-        //   fill: 'black',
-        //   fontFamily: 'inherit',
-        //   fontSize: 16,
-        // },
+        ticks: {
+          size: ({tick}) => {
+            const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
+            return tickSize;
+          },
+          stroke: 'black',
+          strokeWidth: 1,
+        },
+        tickLabels: {
+          fill: 'black',
+          fontFamily: 'inherit',
+          fontSize: 16,
+        },
       },
 
       // DATA SET ONE
       axisOne: {
         grid: {
-          stroke: ({tick}) => (tick === 0 ? 'transparent' : '#ffffff'),
+          stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
           strokeWidth: 2,
         },
-        axis: {stroke: BLUE_COLOR, strokeWidth: 0},
-        ticks: {strokeWidth: 0},
+        axis: {stroke: BLUE_COLOR, strokeWidth: 1},
+        ticks: {
+          strokeWidth: 0,
+        },
         tickLabels: {
-          fill: BLUE_COLOR,
+          fill: '#5D84B6',
           fontFamily: 'inherit',
           fontSize: 16,
         },
@@ -219,7 +240,7 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineOne: {
-        data: {stroke: BLUE_COLOR, strokeWidth: 4.5},
+        data: {stroke: '#5D84B6', strokeWidth: 4.5},
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
@@ -230,9 +251,10 @@ const App = ({navigation}) => {
 
       // DATA SET TWO
       axisTwo: {
-        axis: {stroke: RED_COLOR, strokeWidth: 0},
+        axis: {stroke: RED_COLOR, strokeWidth: 1},
+        ticks: {strokeWidth: 0},
         tickLabels: {
-          fill: RED_COLOR,
+          fill: '#DFDFDF',
           fontFamily: 'inherit',
           fontSize: 16,
         },
@@ -245,7 +267,7 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineTwo: {
-        data: {stroke: RED_COLOR, strokeWidth: 4.5},
+        data: {stroke: '#DFDFDF', strokeWidth: 4.5},
       },
 
       // HORIZONTAL LINE
@@ -277,13 +299,14 @@ const App = ({navigation}) => {
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
-    let unitMeterId = res.data?.data?.unit?.unit_meter?.[0].id;
+    let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     const chartRes = await api.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
     );
 
-    console.log('Chart Data', chartRes.data?.data);
-
+    console.log('Chart Data', chartRes.data?.data?.dataset[1]);
+    setChartData(chartRes.data?.data);
+    setDataSet(chartRes.data?.data?.dataset);
     setLoading(false);
   };
 
@@ -515,10 +538,17 @@ const App = ({navigation}) => {
         break;
     }
   };
-  const handleMeterSelect = (data) => {
+  const handleMeterSelect = async (data) => {
     // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setLoading(true);
+      const chartRes = await api.post(
+        `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
+      );
+
+      console.log('Chart Data', chartRes.data?.data?.dataset[1]);
+      setChartData(chartRes.data?.data);
+      setDataSet(chartRes.data?.data?.dataset);
       setUnitMeter(data);
     }
   };
@@ -1049,7 +1079,8 @@ const App = ({navigation}) => {
                       fontSize: iconSize,
                       color: typeColor(unitMeter?.meter_name),
                     }}>
-                    3,782 Gallons
+                    {dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0}{' '}
+                    Gallons
                   </Text>
                   <RightArrow
                     name="chevron-thin-right"
@@ -1246,96 +1277,67 @@ const App = ({navigation}) => {
               {/*
               //todo: Add Chart here 
               */}
-              <View
-                style={{
-                  alignSelf: 'center',
-                  alignItems: 'center',
-                }}>
-                <VictoryChart>
-                  {/* <VictoryLine
-                    style={{
-                      data: {stroke: '#c43a31'},
-                      parent: {border: '1px solid #ccc'},
-                    }}
-                    data={[
-                      {x: 1, y: 2},
-                      {x: 2, y: 3},
-                      {x: 3, y: 5},
-                      {x: 4, y: 4},
-                      {x: 5, y: 7},
-                    ]}
-                  /> */}
+              <View style={{alignItems: 'center'}}>
+                <Svg style={styled.parent} viewBox="0 0 400 150">
+                  <G transform={'translate(0, -100)'}>
+                    {/* <VictoryChart> */}
+                    <VictoryAxis
+                      scale="time"
+                      standalone={false}
+                      style={styled.axisYears}
+                      tickValues={tickValues}
+                      tickFormat={(date) =>
+                        // console.log('Date', date.toLocaleString().slice(0, 5))
+                        // date.toLocaleString('en-us', {month: 'short'})
+                        date.toLocaleString().slice(0, 6)
+                      }
+                    />
+                    {/* Dependent axis for data set one. */}
+                    <VictoryAxis
+                      dependentAxis
+                      domain={[0, 15]}
+                      offsetX={50}
+                      orientation="left"
+                      standalone={false}
+                      style={styled.axisOne}
+                    />
+                    {/* Dataset one */}
+                    <VictoryLine
+                      data={dataSetOne}
+                      domain={{
+                        x: [new Date(2021, 10, 7), new Date(2021, 10, 11)],
+                        y: [0, 15],
+                      }}
+                      interpolation="monotoneX"
+                      scale={{x: 'time', y: 'linear'}}
+                      standalone={false}
+                      style={styled.lineOne}
+                    />
+                    {/* Dependent axis for data set two. */}
+                    <VictoryAxis
+                      dependentAxis
+                      domain={[0, 11]}
+                      orientation="right"
+                      standalone={false}
+                      style={styled.axisTwo}
+                      // tickFormat={(x) => `${x / 1000000}`}
+                    />
+                    {/* Dataset two */}
+                    <VictoryLine
+                      data={dataSetTwo}
+                      domain={{
+                        x: [new Date(2021, 10, 7), new Date(2021, 10, 11)],
+                        y: [0, 11],
+                      }}
+                      interpolation="monotoneX"
+                      scale={{x: 'time', y: 'linear'}}
+                      standalone={false}
+                      style={styled.lineTwo}
+                    />
+                    {/* </VictoryChart> */}
+                  </G>
+                </Svg>
 
-                  <VictoryAxis
-                    // scale="time"
-                    standalone={false}
-                    style={styled.axisYears}
-                    // domain={['10', '15']}
-                    tickValues={['NoV 11', 'NoV 12', 'NoV 13']}
-                    // tickFormat={(x) => {
-                    //   console.log('Check', x);
-                    //   if (x.getFullYear() === 2000) {
-                    //     return x;
-                    //   }
-                    //   if (x.getFullYear() % 5 === 0) {
-                    //     return x.getFullYear().toString().slice(2);
-                    //   }
-                    // }}
-                  />
-                  <VictoryAxis
-                    dependentAxis
-                    domain={[1200]}
-                    offsetX={50}
-                    // maxDomain={{x: 1000}}
-                    // tickValues={[2, 4, 6, 8, 10]}
-                    orientation="left"
-                    standalone={false}
-                    style={styled.axisOne}
-                  />
-                  {/* <VictoryLine
-                    data={[
-                      {x: new Date(1999, 1, 1), y: 0},
-                      {x: new Date(2014, 6, 1), y: 0},
-                    ]}
-                    domain={{
-                      x: [new Date(1999, 1, 1), new Date(2016, 1, 1)],
-                      y: [-10, 15],
-                    }}
-                    scale={{x: 'time', y: 'linear'}}
-                    standalone={false}
-                    style={styled.lineThree}
-                  /> */}
-                  {/* <VictoryLine
-                    data={dataSetOne}
-                    domain={{
-                      x: [new Date(1999, 1, 1), new Date(2016, 1, 1)],
-                      y: [-10, 15],
-                    }}
-                    interpolation="monotoneX"
-                    scale={{x: 'time', y: 'linear'}}
-                    standalone={false}
-                    style={styled.lineOne}
-                  /> */}
-                  <VictoryAxis
-                    dependentAxis
-                    // tickValues={[200, 400, 6000, 8000, 10000]}
-                    domain={[0, 200]}
-                    orientation="right"
-                    standalone={false}
-                    style={styled.axisTwo}
-                  />
-                  {/* <VictoryLine
-                    data={dataSetTwo}
-                    domain={{
-                      x: [new Date(1999, 1, 1), new Date(2016, 1, 1)],
-                      y: [0, 50],
-                    }}
-                    interpolation="monotoneX"
-                    scale={{x: 'time', y: 'linear'}}
-                    standalone={false}
-                    style={styled.lineTwo}
-                  /> */}
-                </VictoryChart>
                 {/* <Chart
                   style={styles.chartStyle}
                   data={testChartData}
