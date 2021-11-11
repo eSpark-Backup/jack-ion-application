@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform, StatusBar} from 'react-native';
 import {Fonts} from '../../../utils/fonts';
 
 //Packages
@@ -31,6 +31,7 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
   },
   searchView: {
+    // marginTop: Platform.OS == 'ios' ? height * 0.1: 0,
     marginLeft: width * 0.03,
     width: width * 0.8,
     height: height * 0.06,

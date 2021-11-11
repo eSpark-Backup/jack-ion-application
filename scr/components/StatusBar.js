@@ -14,11 +14,13 @@ const MyStatusBar = ({backgroundColor, ...props}) => (
     </SafeAreaView>
   </View>
 );
-const CustumStatusBar = ({backColor}) => {
+const CustumStatusBar = ({backColor, transparent}) => {
   return (
     <View style={styles.container}>
       <MyStatusBar
-        backgroundColor={backColor ? '#35afe2' : '#fff'}
+        backgroundColor={
+          backColor ? (transparent ? 'transparent' : '#35afe2') : '#fff'
+        }
         barStyle="light-content"
       />
     </View>

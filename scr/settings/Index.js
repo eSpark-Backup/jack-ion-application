@@ -37,7 +37,13 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
 import CustumStatusBar from '../components/StatusBar';
 import Modal from 'react-native-modal';
-import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import {
+  check,
+  PERMISSIONS,
+  RESULTS,
+  request,
+  openSettings,
+} from 'react-native-permissions';
 
 // Components
 import {Fonts} from '../utils/fonts';
@@ -141,9 +147,31 @@ export default class Splash extends Component {
       request(PERMISSIONS.IOS.CAMERA)
         .then((result) => {
           console.log('kia hai result camera ka', result);
+          if (result == RESULTS.GRANTED) {
+            this.setState({hasCameraAccess: true});
+
+            Alert.alert(
+              "You've access for the Camera",
+              'To Change the Permission Open Settings',
+              [
+                {text: 'Ok', style: 'cancel'},
+                {
+                  text: 'Open Settings',
+                  onPress: () =>
+                    openSettings().catch(() =>
+                      console.warn('cannot open settings!'),
+                    ),
+                },
+              ],
+            );
+          } else {
+            this.setState({hasCameraAccess: false});
+            alert("You don't have access for the Camera");
+            // console.log('Denied',)
+          }
         })
         .catch((e) => {
-          console.log('error at e', e);
+          alert(err);
         });
     }
     if (Platform.OS == 'android') {
