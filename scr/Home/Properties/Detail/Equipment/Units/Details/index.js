@@ -35,7 +35,6 @@ import {
 
 import {
   VictoryChart,
-  VictoryBar,
   VictoryLegend,
   VictoryAxis,
   VictoryTheme,
