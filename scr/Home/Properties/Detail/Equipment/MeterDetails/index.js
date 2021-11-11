@@ -143,7 +143,7 @@ const App = ({navigation}) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.device?.manufacturer?.name ?? 'N/A',
+        rightText: unitMeter?.device?.manufacturer ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
