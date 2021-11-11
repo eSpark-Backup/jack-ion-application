@@ -65,6 +65,7 @@ const App = ({navigation}) => {
   const [editUnitMenuVisible, setEditUnitMenuVisible] = useState(false);
   const [meterListArray, setMeterListArray] = useState([]);
   const [editMeterTypes, setEditMeterTypes] = useState([]);
+  const [flag, setFlag] = useState(true);
 
   const {unitId, buildingName, buildingId} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
@@ -669,11 +670,14 @@ const App = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <EditUnit
+          flag={flag}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
-          closeModal={() => setEditUnitModalVisible(false)}
+          closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
@@ -786,6 +790,9 @@ const App = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <EditUnit
+          flag={flag}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}
