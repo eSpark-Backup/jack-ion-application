@@ -179,8 +179,8 @@ const App = ({navigation}) => {
         // boxSizing: 'border-box',
         // display: 'inline',
         // padding: 0,
-        width: width,
-        height: height * 0.5,
+        width: width * 1,
+        height: width * .4,
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
@@ -212,7 +212,7 @@ const App = ({navigation}) => {
         tickLabels: {
           fill: 'black',
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: width * .025,
         },
       },
 
@@ -229,13 +229,13 @@ const App = ({navigation}) => {
         tickLabels: {
           fill: '#5D84B6',
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: width * .025,
         },
       },
       labelOne: {
         fill: BLUE_COLOR,
         fontFamily: 'inherit',
-        fontSize: 12,
+        fontSize: width * .025,
         fontStyle: 'italic',
       },
       lineOne: {
@@ -245,7 +245,7 @@ const App = ({navigation}) => {
         fill: BLUE_COLOR,
         fontFamily: 'inherit',
         fontWeight: 300,
-        fontSize: 21,
+        fontSize: width * .025,
       },
 
       // DATA SET TWO
@@ -253,20 +253,20 @@ const App = ({navigation}) => {
         axis: {stroke: RED_COLOR, strokeWidth: 1},
         ticks: {strokeWidth: 0},
         tickLabels: {
-          fill: '#DFDFDF',
+          fill: 'gray',
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: width * .025,
         },
       },
       labelTwo: {
         textAnchor: 'end',
         fill: RED_COLOR,
         fontFamily: 'inherit',
-        fontSize: 12,
+        fontSize: width * .025,
         fontStyle: 'italic',
       },
       lineTwo: {
-        data: {stroke: '#DFDFDF', strokeWidth: 4.5},
+        data: {stroke: 'gray', strokeWidth: 4.5},
       },
 
       // HORIZONTAL LINE
@@ -353,7 +353,7 @@ const App = ({navigation}) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.device?.manufacturer?.name ?? 'N/A',
+        rightText: unitMeter?.device?.manufacturer ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
@@ -409,7 +409,7 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.device?.manufacturer?.name +
+              unitMeter?.device?.manufacturer +
               ' (' +
               unitMeter?.device?.name +
               ')',
@@ -1277,7 +1277,7 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={{alignItems: 'center'}}>
-                <Svg style={styled.parent} viewBox="0 0 400 150">
+                <Svg style={styled.parent} >
                   <G transform={'translate(0, -100)'}>
                     {/* <VictoryChart> */}
                     <VictoryAxis
