@@ -755,15 +755,19 @@ export default class Splash extends Component {
                   onRequestClose={() => this.setState({addMenuVisible: false})}>
                   {this.state.AddArray.map((item, index) => (
                     <MenuItem
-                      disabled={this.state.dataBuild.length == 0 ? true : false}
+                      disabled={
+                        index < 2 && this.state.dataBuild.length == 0
+                          ? true
+                          : false
+                      }
                       onPress={item.func}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          width: width * 0.265,
-                        }}>
-                        {index < 2 ? (
+                      {index < 2 ? (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            width: width * 0.265,
+                          }}>
                           <FontAwesome5
                             color={
                               this.state.dataBuild.length == 0
@@ -772,28 +776,43 @@ export default class Splash extends Component {
                             }
                             name="house-user"
                             size={height * 0.02}
-                            color="#3E4A4F"
                           />
-                        ) : (
+                          <Text
+                            style={[
+                              styles.dropDownListText,
+                              {
+                                color:
+                                  this.state.dataBuild.length == 0
+                                    ? '#817e7e80'
+                                    : '#000',
+                              },
+                            ]}>
+                            {item.name}
+                          </Text>
+                        </View>
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            width: width * 0.265,
+                          }}>
                           <FontAwesome5
                             name="building"
                             size={width * 0.04}
                             color="#3E4A4F"
                           />
-                        )}
-                        <Text
-                          style={[
-                            styles.dropDownListText,
-                            {
-                              color:
-                                this.state.dataBuild.length == 0
-                                  ? '#817e7e80'
-                                  : '#000',
-                            },
-                          ]}>
-                          {item.name}
-                        </Text>
-                      </View>
+                          <Text
+                            style={[
+                              styles.dropDownListText,
+                              {
+                                color: '#000',
+                              },
+                            ]}>
+                            {item.name}
+                          </Text>
+                        </View>
+                      )}
                     </MenuItem>
                   ))}
                 </MenuT>
