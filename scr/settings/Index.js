@@ -18,6 +18,7 @@ import {
   PermissionsAndroid,
   LogBox,
   Alert,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -34,7 +35,15 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import TabIcon from 'react-native-vector-icons/MaterialIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
+import CustumStatusBar from '../components/StatusBar';
 import Modal from 'react-native-modal';
+import {
+  check,
+  PERMISSIONS,
+  RESULTS,
+  request,
+  openSettings,
+} from 'react-native-permissions';
 
 // Components
 import {Fonts} from '../utils/fonts';
@@ -134,31 +143,64 @@ export default class Splash extends Component {
   };
 
   requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.setState({hasCameraAccess: true});
-        // console.log('Access',)
-        Alert.alert(
-          "You've access for the Camera",
-          'To Change the Permission Open Settings ',
-          [
-            {text: 'Ok', style: 'cancel'},
-            {
-              text: 'Open Settings',
-              onPress: () => this._openAppSetting(),
-            },
-          ],
+    if (Platform.OS == 'ios') {
+      request(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          console.log('kia hai result camera ka', result);
+          if (result == RESULTS.GRANTED) {
+            this.setState({hasCameraAccess: true});
+
+            Alert.alert(
+              "You've access for the Camera",
+              'To Change the Permission Open Settings',
+              [
+                {text: 'Ok', style: 'cancel'},
+                {
+                  text: 'Open Settings',
+                  onPress: () =>
+                    openSettings().catch(() =>
+                      console.warn('cannot open settings!'),
+                    ),
+                },
+              ],
+            );
+          } else {
+            this.setState({hasCameraAccess: false});
+            alert("You don't have access for the Camera");
+            // console.log('Denied',)
+          }
+        })
+        .catch((e) => {
+          alert(err);
+        });
+    }
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
-      } else {
-        this.setState({hasCameraAccess: false});
-        alert("You don't have access for the Camera");
-        // console.log('Denied',)
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          this.setState({hasCameraAccess: true});
+          // console.log('Access',)
+          Alert.alert(
+            "You've access for the Camera",
+            'To Change the Permission Open Settings',
+            [
+              {text: 'Ok', style: 'cancel'},
+              {
+                text: 'Open Settings',
+                onPress: () => this._openAppSetting(),
+              },
+            ],
+          );
+        } else {
+          this.setState({hasCameraAccess: false});
+          alert("You don't have access for the Camera");
+          // console.log('Denied',)
+        }
+      } catch (err) {
+        alert(err);
       }
-    } catch (err) {
-      alert(err);
     }
   };
 
@@ -191,20 +233,59 @@ export default class Splash extends Component {
     }
   };
   hasCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        this.setState({hasCameraAccess: true});
-        // console.log('Access',)
-      } else {
-        this.setState({hasCameraAccess: false});
-        // console.log('Denied',)
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        if (granted === true) {
+          this.setState({hasCameraAccess: true});
+          // console.log('Access',)
+        } else {
+          this.setState({hasCameraAccess: false});
+          // console.log('Denied',)
+        }
+        return granted;
+      } catch (err) {
+        alert(err);
       }
-      return granted;
-    } catch (err) {
-      alert(err);
+    }
+    if (Platform.OS == 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              console.log(
+                'This feature is not available (on this device / in this context) on ios',
+              );
+              this.setState({hasCameraAccess: false});
+              break;
+            case RESULTS.DENIED:
+              console.log(
+                'The permission has not been requested / is denied but requestable on ios',
+              );
+              this.setState({hasCameraAccess: false});
+              break;
+            case RESULTS.LIMITED:
+              console.log(
+                'The permission is limited: some actions are possible on ios',
+              );
+              break;
+            case RESULTS.GRANTED:
+              console.log('The permission is granted on ios');
+              this.setState({hasCameraAccess: true});
+              break;
+            case RESULTS.BLOCKED:
+              console.log(
+                'The permission is denied and not requestable anymore on ios',
+              );
+              this.setState({hasCameraAccess: false});
+              break;
+          }
+        })
+        .catch((error) => {
+          console.log('Error aya hai kuch', error);
+        });
     }
   };
   hasStoragePermission = async () => {
@@ -265,12 +346,8 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar 
-          backgroundColor="#155AAA"
-          barStyle="default"
-          hidden={true}
-          showHideTransition={'fade'}
-        />
+        {Platform.OS == 'ios' && <CustumStatusBar backColor />}
+
         {/* <Image
             source={require('../../Images/profileBack.jpg')}
             style={styles.backgroundImage}

@@ -10,6 +10,7 @@ import {
   UIManager,
   Pressable,
   Alert,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -43,6 +44,7 @@ import styles from './style';
 import style from './style';
 import Base_URL from '../../../api/WebServices';
 import {create} from 'apisauce';
+import CustumStatusBar from '../../../components/StatusBar';
 const {width, height} = Dimensions.get('window');
 const api = create({
   baseURL: Base_URL,
@@ -259,577 +261,598 @@ export default class Splash extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Modal
-          animationIn="slideInLeft"
-          animationOut="slideOutLeft"
-          isVisible={this.state.isModalVisible}
-          swipeDirection="left"
-          onSwipeStart={this.toggleModal}
-          onBackdropPress={this.toggleModal}
-          backdropColor="black"
-          style={styles.sideModalContainer}>
-          <View style={styles.drawerMainContainer}>
-            <View style={{marginTop: StatusBar.currentHeight}}>
+      <>
+        {Platform.OS == 'ios' && <CustumStatusBar />}
+        <View style={styles.container}>
+          <Modal
+            animationIn="slideInLeft"
+            animationOut="slideOutLeft"
+            isVisible={this.state.isModalVisible}
+            swipeDirection="left"
+            onSwipeStart={() => this.toggleModal()}
+            onBackdropPress={() => this.toggleModal()}
+            backdropColor="black"
+            statusBarTranslucent
+            style={styles.sideModalContainer}>
+            <CustumStatusBar backColor />
+            <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
+            <View style={styles.drawerMainContainer}>
+              <View>
+                <Menu
+                  name="menu"
+                  size={height * 0.05}
+                  color="white"
+                  onPress={() => this.toggleModal()}
+                  style={{backgroundColor: '#35afe2'}}
+                />
+              </View>
+              <View style={styles.drawerContentContainer}>
+                <TouchableOpacity onPress={() => this.naviagateToDetail()}>
+                  <View style={styles.drawerContent}>
+                    <Detail
+                      name="account-details-outline"
+                      size={height * 0.035}
+                      color="#7575ff"
+                      style={styles.drawerBtnIcon}
+                    />
+                    <Text style={styles.drawerbtn}>Profile</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.naviagateToEquip()}>
+                  <View style={styles.drawerContent}>
+                    <Equip
+                      name="rss"
+                      size={height * 0.035}
+                      color="#ff9f71"
+                      style={styles.drawerBtnIcon}
+                    />
+                    <Text style={styles.drawerbtn}>Units</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.naviagateToChart()}>
+                  <View style={styles.drawerContent}>
+                    <Chart
+                      name="pie-chart"
+                      size={height * 0.035}
+                      color="#009349"
+                      style={styles.drawerBtnIcon}
+                    />
+                    <Text style={styles.drawerbtn}>Charts</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={{bottom: height * 0.05}}
+                onPress={this.naviagateToSupport}>
+                <View
+                  style={[
+                    styles.drawerBottom,
+                    {
+                      flexDirection: 'row',
+                      // alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingBottom: height * 0.015,
+                      marginBottom: height * 0.01,
+                    },
+                  ]}>
+                  <Detail
+                    name="help-circle-outline"
+                    size={height * 0.035}
+                    color="#35afe2"
+                    style={{
+                      ...styles.drawerBtnIcon,
+                      bottom: Platform.OS == 'ios' ? 2 : null,
+                    }}
+                  />
+                  <Text style={styles.drawerbtn}>Support</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+          <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
+          <View style={styles.headerContainer}>
+            <View style={styles.headerInner}>
+              <TouchableOpacity
+                onPress={() => this.getBack()}
+                style={styles.menuView}>
+                <Back
+                  size={width * 0.08}
+                  color="white"
+                  name="keyboard-backspace"
+                />
+              </TouchableOpacity>
+              <View style={styles.searchView}>
+                <Search
+                  name="search"
+                  size={height * 0.04}
+                  style={{marginLeft: width * 0.05}}
+                  color="white"
+                />
+                <TextInput
+                  dense={true}
+                  underlineColor="transparent"
+                  placeholderTextColor="white"
+                  placeholder="Search"
+                  style={styles.search}
+                  onChangeText={(e) => this.setState({currentWei: e})}
+                  theme={{
+                    colors: {
+                      text: 'white',
+                      primary: '#25dAE1',
+                      selectionColor: 'transparent',
+                      background: 'transparent',
+                    },
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.headingContainer}>
+            <View style={styles.headingInner}>
               <Menu
                 name="menu"
-                size={height * 0.05}
-                color="white"
-                onPress={this.toggleModal}
-                style={{backgroundColor: '#35afe2'}}
-              />
-            </View>
-            <View style={styles.drawerContentContainer}>
-              <TouchableOpacity onPress={this.naviagateToDetail}>
-                <View style={styles.drawerContent}>
-                  <Detail
-                    name="account-details-outline"
-                    size={height * 0.035}
-                    color="#7575ff"
-                    style={styles.drawerBtnIcon}
-                  />
-                  <Text style={styles.drawerbtn}>Profile</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.naviagateToEquip}>
-                <View style={styles.drawerContent}>
-                  <Equip
-                    name="rss"
-                    size={height * 0.035}
-                    color="#ff9f71"
-                    style={styles.drawerBtnIcon}
-                  />
-                  <Text style={styles.drawerbtn}>Units</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.naviagateToChart}>
-                <View style={styles.drawerContent}>
-                  <Chart
-                    name="pie-chart"
-                    size={height * 0.035}
-                    color="#009349"
-                    style={styles.drawerBtnIcon}
-                  />
-                  <Text style={styles.drawerbtn}>Charts</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={this.naviagateToSupport}>
-              <View style={styles.drawerBottom}>
-                <Detail
-                  name="help-circle-outline"
-                  size={height * 0.035}
-                  color="#35afe2"
-                  style={{...styles.drawerBtnIcon, marginRight: width * 0.02}}
-                />
-                <Text style={styles.drawerbtn}>Support</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-        <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
-        <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
-            <TouchableOpacity
-              onPress={() => this.getBack()}
-              style={styles.menuView}>
-              <Back
-                size={width * 0.08}
-                color="white"
-                name="keyboard-backspace"
-              />
-            </TouchableOpacity>
-            <View style={styles.searchView}>
-              <Search
-                name="search"
                 size={height * 0.04}
-                style={{marginLeft: width * 0.05}}
                 color="white"
+                style={{right: 90}}
+                onPress={this.toggleModal}
               />
-              <TextInput
-                dense={true}
-                underlineColor="transparent"
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
-                theme={{
-                  colors: {
-                    text: 'white',
-                    primary: '#25dAE1',
-                    selectionColor: 'transparent',
-                    background: 'transparent',
-                  },
-                }}
-              />
+              <View style={{flexDirection: 'row', right: 15}}>
+                <Detail
+                  name="account-details-outline"
+                  size={height * 0.05}
+                  color="white"
+                  style={{top: height * 0.002}}
+                />
+                <Text style={styles.mainHeadiing}>Profile</Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.headingContainer}>
-          <View style={styles.headingInner}>
-            <Menu
-              name="menu"
-              size={height * 0.04}
-              color="white"
-              style={{right: 90}}
-              onPress={this.toggleModal}
-            />
-            <View style={{flexDirection: 'row', right: 15}}>
-              <Detail
-                name="account-details-outline"
-                size={height * 0.05}
-                color="white"
-                style={{top: height * 0.002}}
-              />
-              <Text style={styles.mainHeadiing}>Profile</Text>
-            </View>
-          </View>
-        </View>
-        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
-          <View style={styles.bodyContainer}>
-            <MapView
-              style={styles.map}
-              scrollEnabled={false}
-              initialRegion={this.state.initialRegion}
-              zoomEnabled={true}
-              provider={PROVIDER_GOOGLE}
-              initialRegion={{
-                latitude: 38.2462342,
-                longitude: -85.5375814,
-                latitudeDelta: 0.00034,
-                longitudeDelta: 0.0004,
-              }}>
-              {/* <Marker
+          <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+            <View style={styles.bodyContainer}>
+              <MapView
+                style={styles.map}
+                scrollEnabled={false}
+                initialRegion={this.state.initialRegion}
+                zoomEnabled={true}
+                provider={PROVIDER_GOOGLE}
+                initialRegion={{
+                  latitude: 38.2462342,
+                  longitude: -85.5375814,
+                  latitudeDelta: 0.00034,
+                  longitudeDelta: 0.0004,
+                }}>
+                {/* <Marker
                 coordinate={{
                   "latitude": 38.2462342,
                   "longitude": -85.5375814,
                 }}
                 title={"Your Location"}
                 draggable /> */}
-            </MapView>
-            <View style={styles.clientName}>
-              <Properties name="home-city-outline" size={width * 0.08} />
-              <Text style={styles.clientNameHeading}>
-                {this.state.listData.name == null
-                  ? 'Untitled'
-                  : this.state.listData.name}
-              </Text>
-              <Pressable
-                style={styles.clientDataEdit}
-                onPress={() => this.toggleModalEditProp()}
-                android_ripple={{
-                  color: 'white',
-                  radius: width * 0.1,
-                }}>
-                <Text style={styles.editBottonText}>Edit</Text>
-              </Pressable>
-            </View>
-            <Modal
-              animationIn="slideInDown"
-              animationOut="slideOutUp"
-              isVisible={this.state.isModalAdEditPropVisible}>
-              <View style={styles.modalInner}>
-                <View style={styles.boxConatainer}>
-                  <View style={styles.boxInner}>
-                    {/* Box Header */}
-                    <View style={styles.boxHeader}>
-                      <View style={styles.boxHeaderInner}>
-                        <Icon
-                          name={'business'}
-                          size={height * 0.05}
-                          color="#5e5e5e"
-                        />
-                        <Text style={styles.modalHeading}>Edit Property</Text>
-                        <Pressable
-                          onPress={this.onCancel}
-                          android_ripple={{
-                            color: 'black',
-                            borderless: true,
-                            radius: width * 0.03,
-                          }}>
+              </MapView>
+              <View style={styles.clientName}>
+                <Properties name="home-city-outline" size={width * 0.08} />
+                <Text style={styles.clientNameHeading}>
+                  {this.state.listData.name == null
+                    ? 'Untitled'
+                    : this.state.listData.name}
+                </Text>
+                <Pressable
+                  style={styles.clientDataEdit}
+                  onPress={() => this.toggleModalEditProp()}
+                  android_ripple={{
+                    color: 'white',
+                    radius: width * 0.1,
+                  }}>
+                  <Text style={styles.editBottonText}>Edit</Text>
+                </Pressable>
+              </View>
+              <Modal
+                animationIn="slideInDown"
+                animationOut="slideOutUp"
+                isVisible={this.state.isModalAdEditPropVisible}>
+                <View style={styles.modalInner}>
+                  <View style={styles.boxConatainer}>
+                    <View style={styles.boxInner}>
+                      {/* Box Header */}
+                      <View style={styles.boxHeader}>
+                        <View style={styles.boxHeaderInner}>
                           <Icon
-                            name="cancel"
-                            size={height * 0.035}
-                            color="black"
-                            maxOpacity={0.5}
-                          />
-                        </Pressable>
-                      </View>
-                    </View>
-                    {/* Box Body */}
-                    <ScrollView
-                      style={{height: height * 0.6}}
-                      showsVerticalScrollIndicator={false}>
-                      <View style={{flex: 1}}>
-                        <View style={styles.desciptionContainer}>
-                          <Icon
-                            name={'location-on'}
-                            size={height * 0.03}
+                            name={'business'}
+                            size={height * 0.05}
                             color="#5e5e5e"
                           />
-                          <Text style={styles.desciptionHeading}>
-                            PROPERTY INFORMATION
-                          </Text>
+                          <Text style={styles.modalHeading}>Edit Property</Text>
+                          <Pressable
+                            onPress={this.onCancel}
+                            android_ripple={{
+                              color: 'black',
+                              borderless: true,
+                              radius: width * 0.03,
+                            }}>
+                            <Icon
+                              name="cancel"
+                              size={height * 0.035}
+                              color="black"
+                              maxOpacity={0.5}
+                            />
+                          </Pressable>
                         </View>
-                        <View style={styles.inputContainer}>
-                          <TextInput
-                            label="Property Name*"
-                            value={this.state?.listData?.name}
-                            error={this.state.error.property}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  name: text, // update the value of specific key
-                                },
-                                error: {
-                                  // object that we want to update
-                                  ...prevState.error, // keep all other key-value pairs
-                                  property: '',
-                                },
-                              }));
-                            }}
-                            style={styles.input}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
-                        {this.state.error.property ? (
-                          <HelperText
-                            type="error"
-                            visible={this.state.error.property}>
-                            {this.state.error.property}
-                          </HelperText>
-                        ) : null}
-                        <View style={styles.inputContainer}>
-                          <TextInput
-                            value={this.state?.listData?.street}
-                            error={this.state.error.street}
-                            label="Street*"
-                            style={styles.input}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  street: text, // update the value of specific key
-                                },
-                                error: {
-                                  // object that we want to update
-                                  ...prevState.error, // keep all other key-value pairs
-                                  street: '',
-                                },
-                              }));
-                            }}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
-                        {this.state.error.street ? (
-                          <HelperText
-                            type="error"
-                            visible={this.state.error.street}>
-                            {this.state.error.street}
-                          </HelperText>
-                        ) : null}
-                        <View style={styles.inputContainer}>
-                          <TextInput
-                            value={this.state?.listData?.st}
-                            error={this.state.error.st}
-                            label="St"
-                            style={styles.input}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  st: text, // update the value of specific key
-                                },
-                              }));
-                            }}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
-                        <View
-                          style={[
-                            styles.inputContainer,
-                            {
-                              flexDirection: 'row',
-                              justifyContent: 'space-evenly',
-                            },
-                          ]}>
-                          <TextInput
-                            value={this.state?.listData?.city}
-                            error={this.state.error.city}
-                            label="City"
-                            style={[styles.input, {width: width * 0.36}]}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  city: text, // update the value of specific key
-                                },
-                              }));
-                            }}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                          <TextInput
-                            value={this.state?.listData?.zipcode}
-                            error={this.state.error.zipcode}
-                            label="ZipCode"
-                            style={[styles.input, {width: width * 0.36}]}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  zipcode: text, // update the value of specific key
-                                },
-                              }));
-                            }}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
-                        <View style={styles.inputContainer}>
-                          <TextInput
-                            label="Custom ID*"
-                            error={this.state.error.property_id}
-                            value={this.state?.listData?.property_id}
-                            style={styles.input}
-                            onChangeText={(text) => {
-                              this.setState((prevState) => ({
-                                ...prevState,
-                                listData: {
-                                  // object that we want to update
-                                  ...prevState.listData, // keep all other key-value pairs
-                                  property_id: text, // update the value of specific key
-                                },
-                                error: {
-                                  // object that we want to update
-                                  ...prevState.error, // keep all other key-value pairs
-                                  property_id: '',
-                                },
-                              }));
-                            }}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                          />
-                        </View>
-                        {this.state.error.property_id ? (
-                          <HelperText
-                            type="error"
-                            visible={this.state.error.property_id}>
-                            {this.state.error.property_id}
-                          </HelperText>
-                        ) : null}
                       </View>
-                    </ScrollView>
-                    {/* Box Header */}
-                    <View style={styles.boxHeader}>
-                      <View style={styles.bottonContainer}>
-                        <FAB
-                          onPress={this.editProp}
-                          style={styles.submitBotton}
-                          color="white"
-                          icon="check"
-                          label="Update"
-                        />
+                      {/* Box Body */}
+                      <ScrollView
+                        style={{height: height * 0.6}}
+                        showsVerticalScrollIndicator={false}>
+                        <View style={{flex: 1}}>
+                          <View style={styles.desciptionContainer}>
+                            <Icon
+                              name={'location-on'}
+                              size={height * 0.03}
+                              color="#5e5e5e"
+                            />
+                            <Text style={styles.desciptionHeading}>
+                              PROPERTY INFORMATION
+                            </Text>
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              label="Property Name*"
+                              value={this.state?.listData?.name}
+                              error={this.state.error.property}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    name: text, // update the value of specific key
+                                  },
+                                  error: {
+                                    // object that we want to update
+                                    ...prevState.error, // keep all other key-value pairs
+                                    property: '',
+                                  },
+                                }));
+                              }}
+                              style={styles.input}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          {this.state.error.property ? (
+                            <HelperText
+                              type="error"
+                              visible={this.state.error.property}>
+                              {this.state.error.property}
+                            </HelperText>
+                          ) : null}
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              value={this.state?.listData?.street}
+                              error={this.state.error.street}
+                              label="Street*"
+                              style={styles.input}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    street: text, // update the value of specific key
+                                  },
+                                  error: {
+                                    // object that we want to update
+                                    ...prevState.error, // keep all other key-value pairs
+                                    street: '',
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          {this.state.error.street ? (
+                            <HelperText
+                              type="error"
+                              visible={this.state.error.street}>
+                              {this.state.error.street}
+                            </HelperText>
+                          ) : null}
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              value={this.state?.listData?.st}
+                              error={this.state.error.st}
+                              label="St"
+                              style={styles.input}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    st: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                flexDirection: 'row',
+                                justifyContent: 'space-evenly',
+                              },
+                            ]}>
+                            <TextInput
+                              value={this.state?.listData?.city}
+                              error={this.state.error.city}
+                              label="City"
+                              style={[styles.input, {width: width * 0.36}]}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    city: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                            <TextInput
+                              value={this.state?.listData?.zipcode}
+                              error={this.state.error.zipcode}
+                              label="ZipCode"
+                              style={[styles.input, {width: width * 0.36}]}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    zipcode: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              label="Custom ID*"
+                              error={this.state.error.property_id}
+                              value={this.state?.listData?.property_id}
+                              style={styles.input}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    property_id: text, // update the value of specific key
+                                  },
+                                  error: {
+                                    // object that we want to update
+                                    ...prevState.error, // keep all other key-value pairs
+                                    property_id: '',
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          {this.state.error.property_id ? (
+                            <HelperText
+                              type="error"
+                              visible={this.state.error.property_id}>
+                              {this.state.error.property_id}
+                            </HelperText>
+                          ) : null}
+                        </View>
+                      </ScrollView>
+                      {/* Box Header */}
+                      <View style={styles.boxHeader}>
+                        <View style={styles.bottonContainer}>
+                          <FAB
+                            onPress={this.editProp}
+                            style={styles.submitBotton}
+                            color="white"
+                            icon="check"
+                            label="Update"
+                          />
+                        </View>
                       </View>
                     </View>
                   </View>
                 </View>
-              </View>
-            </Modal>
-            <View style={styles.mainDataContainer}>
-              <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
-                <View style={styles.infoViewInner}>
-                  <Locate name="map-pin" size={width * 0.06} />
-                  <Text style={styles.dataFieldText}>
-                    {`${
-                      this.state.listData.street == null
-                        ? ''
-                        : this.state.listData.street
-                    } \n ${
-                      this.state.listData.city == null
-                        ? ''
-                        : this.state.listData.city + ' ,'
-                    } ${
-                      this.state.listData.st == null
-                        ? ''
-                        : this.state.listData.st
-                    } ${
-                      this.state.listData.zipcode == null
-                        ? ''
-                        : this.state.listData.zipcode
-                    }`}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.infoViewContainer}>
-                <Text style={styles.dataFieldHeadings}>CUSTOM ID</Text>
-                <View style={styles.infoViewInner}>
-                  <Folder name="folder" size={width * 0.06} />
-                  <Text style={styles.dataFieldText}>
-                    {this.state.listData.property_id == null
-                      ? '--'
-                      : this.state.listData.property_id}
-                  </Text>
-                </View>
-              </View>
-              <View style={style.footerContainer}>
-                <TouchableOpacity style={style.commentBottonContainer}>
-                  <View style={style.commentBottonInner}>
-                    <Message
-                      name="message-circle"
-                      size={height * 0.03}
-                      color="purple"
-                    />
-                    <Text style={style.commentBottonText}>Comments(0)</Text>
+              </Modal>
+              <View style={styles.mainDataContainer}>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
+                  <View style={styles.infoViewInner}>
+                    <Locate name="map-pin" size={width * 0.06} />
+                    <Text style={styles.dataFieldText}>
+                      {`${
+                        this.state.listData.street == null
+                          ? ''
+                          : this.state.listData.street
+                      } \n ${
+                        this.state.listData.city == null
+                          ? ''
+                          : this.state.listData.city + ' ,'
+                      } ${
+                        this.state.listData.st == null
+                          ? ''
+                          : this.state.listData.st
+                      } ${
+                        this.state.listData.zipcode == null
+                          ? ''
+                          : this.state.listData.zipcode
+                      }`}
+                    </Text>
                   </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={style.commentBottonContainer}>
-                  <View style={style.commentBottonInner}>
-                    <Docs
-                      name="document-text-outline"
-                      size={height * 0.03}
-                      style={{color: 'purple', top: 2}}
-                    />
-                    <Text style={style.commentBottonText}>Docs(0)</Text>
+                </View>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>CUSTOM ID</Text>
+                  <View style={styles.infoViewInner}>
+                    <Folder name="folder" size={width * 0.06} />
+                    <Text style={styles.dataFieldText}>
+                      {this.state.listData.property_id == null
+                        ? '--'
+                        : this.state.listData.property_id}
+                    </Text>
                   </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.barViewContainer}>
-                <View style={styles.barView}>
-                  <AnimatedCircularProgress
-                    size={height * 0.2}
-                    width={height * 0.035}
-                    backgroundWidth={height * 0.035}
-                    fill={this.state.points}
-                    tintColor="#09BAF2"
-                    backgroundColor="#3d5875"
-                    arcSweepAngle={360}
-                    rotation={0}
-                    lineCap="butt">
-                    {(fill) => (
-                      <Text style={styles.barText}>
-                        Transceiver {'\n'} {Math.round((100 * fill) / 100)} %
-                      </Text>
-                    )}
-                  </AnimatedCircularProgress>
                 </View>
-                <View style={styles.barView}>
-                  <AnimatedCircularProgress
-                    size={height * 0.2}
-                    width={height * 0.035}
-                    backgroundWidth={height * 0.035}
-                    fill={this.state.points}
-                    tintColor="#09BAF2"
-                    backgroundColor="#3d5875"
-                    arcSweepAngle={360}
-                    rotation={0}
-                    lineCap="butt">
-                    {(fill) => (
-                      <Text style={styles.barText}>
-                        Repeater {'\n'} {Math.round((100 * fill) / 100)} %
-                      </Text>
-                    )}
-                  </AnimatedCircularProgress>
+                <View style={style.footerContainer}>
+                  <TouchableOpacity style={style.commentBottonContainer}>
+                    <View style={style.commentBottonInner}>
+                      <Message
+                        name="message-circle"
+                        size={height * 0.03}
+                        color="purple"
+                      />
+                      <Text style={style.commentBottonText}>Comments(0)</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={style.commentBottonContainer}>
+                    <View style={style.commentBottonInner}>
+                      <Docs
+                        name="document-text-outline"
+                        size={height * 0.03}
+                        style={{color: 'purple', top: 2}}
+                      />
+                      <Text style={style.commentBottonText}>Docs(0)</Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </View>
-              <View style={{height: height * 0.45}}>
-                <VictoryChart
-                  style={{height: height * 0.1}}
-                  domainPadding={{x: 20}}
-                  animate={{duration: 500}}>
-                  <VictoryBar
-                    data={dataBar2.actual}
-                    style={{data: {fill: 'tomato', height: height * 0.01}}}
-                    // labels={({ datum }) => datum.y}
-                    animate={{
-                      // duration: 2000,
-                      onLoad: {
-                        duration: 1500,
-                        before: () => ({
-                          _y: 1,
-                          // _x: 1,
-                          fill: 'yellow',
-                          label: 'BYE',
-                        }),
-                        after: () => ({
-                          _y: 15,
-                          _x: 1,
-                          fill: 'yellow',
-                          // label: "HI"
-                        }),
+                <View style={styles.barViewContainer}>
+                  <View style={styles.barView}>
+                    <AnimatedCircularProgress
+                      size={height * 0.2}
+                      width={height * 0.035}
+                      backgroundWidth={height * 0.035}
+                      fill={this.state.points}
+                      tintColor="#09BAF2"
+                      backgroundColor="#3d5875"
+                      arcSweepAngle={360}
+                      rotation={0}
+                      lineCap="butt">
+                      {(fill) => (
+                        <Text style={styles.barText}>
+                          Transceiver {'\n'} {Math.round((100 * fill) / 100)} %
+                        </Text>
+                      )}
+                    </AnimatedCircularProgress>
+                  </View>
+                  <View style={styles.barView}>
+                    <AnimatedCircularProgress
+                      size={height * 0.2}
+                      width={height * 0.035}
+                      backgroundWidth={height * 0.035}
+                      fill={this.state.points}
+                      tintColor="#09BAF2"
+                      backgroundColor="#3d5875"
+                      arcSweepAngle={360}
+                      rotation={0}
+                      lineCap="butt">
+                      {(fill) => (
+                        <Text style={styles.barText}>
+                          Repeater {'\n'} {Math.round((100 * fill) / 100)} %
+                        </Text>
+                      )}
+                    </AnimatedCircularProgress>
+                  </View>
+                </View>
+                <View style={{height: height * 0.45}}>
+                  <VictoryChart
+                    style={{height: height * 0.1}}
+                    domainPadding={{x: 20}}
+                    animate={{duration: 500}}>
+                    <VictoryBar
+                      data={dataBar2.actual}
+                      style={{data: {fill: 'tomato', height: height * 0.01}}}
+                      // labels={({ datum }) => datum.y}
+                      animate={{
+                        // duration: 2000,
+                        onLoad: {
+                          duration: 1500,
+                          before: () => ({
+                            _y: 1,
+                            // _x: 1,
+                            fill: 'yellow',
+                            label: 'BYE',
+                          }),
+                          after: () => ({
+                            _y: 15,
+                            _x: 1,
+                            fill: 'yellow',
+                            // label: "HI"
+                          }),
+                        },
+                      }}
+                    />
+                    <VictoryAxis />
+                  </VictoryChart>
+                  <VictoryLegend
+                    x={Dimensions.get('screen').width / 2 - 70}
+                    orientation="horizontal"
+                    data={[
+                      {
+                        name: 'Check In History',
+                        symbol: {
+                          fill: 'tomato',
+                        },
                       },
-                    }}
+                    ]}
                   />
-                  <VictoryAxis />
-                </VictoryChart>
-                <VictoryLegend
-                  x={Dimensions.get('screen').width / 2 - 70}
-                  orientation="horizontal"
-                  data={[
-                    {
-                      name: 'Check In History',
-                      symbol: {
-                        fill: 'tomato',
-                      },
-                    },
-                  ]}
-                />
+                </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      </>
     );
   }
 }

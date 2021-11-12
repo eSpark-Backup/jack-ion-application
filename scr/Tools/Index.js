@@ -1,4 +1,4 @@
-import React, { Component, Fragment, version } from 'react';
+import React, {Component, Fragment, version} from 'react';
 
 import {
   AppRegistry,
@@ -19,6 +19,7 @@ import {
   Alert,
   Linking,
   PermissionsAndroid,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -33,30 +34,32 @@ import Tool from 'react-native-vector-icons/Entypo';
 import Cast from 'react-native-vector-icons/Feather';
 import Scan from 'react-native-vector-icons/Ionicons';
 import Test from 'react-native-vector-icons/Entypo';
-import { RNCamera } from 'react-native-camera';
+import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import Base_URL from '../api/WebServices';
-import { create } from 'apisauce';
+import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../components/Loader';
-import { withNavigation } from 'react-navigation';
+import {withNavigation} from 'react-navigation';
+import {PERMISSIONS, check, RESULTS} from 'react-native-permissions';
 
 import Modal from 'react-native-modal';
 
 // Components
-import { Fonts } from '../utils/fonts';
+import {Fonts} from '../utils/fonts';
 
 import styles from './style';
-import { Ellipse } from 'react-native-svg';
-import { ceil, set } from 'react-native-reanimated';
+import {Ellipse} from 'react-native-svg';
+import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
-import { SafeAreaView } from 'react-native-safe-area-context';
-const { width, height } = Dimensions.get('window');
+import {SafeAreaView} from 'react-native-safe-area-context';
+import CustumStatusBar from '../components/StatusBar';
+const {width, height} = Dimensions.get('window');
 
 class Tools extends Component {
   static navigationOptions = {
     title: 'Tools',
-    tabBarIcon: ({ tintColor }) => (
+    tabBarIcon: ({tintColor}) => (
       <TabIcon name="toolbox" color={tintColor} size={height * 0.033} />
     ),
   };
@@ -86,10 +89,10 @@ class Tools extends Component {
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       // console.log('token aya', token);
-      this.setState({ token: token });
+      this.setState({token: token});
       this.api = create({
         baseURL: Base_URL,
-        headers: { Authorization: 'Bearer ' + token },
+        headers: {Authorization: 'Bearer ' + token},
       });
     }
   };
@@ -127,7 +130,7 @@ class Tools extends Component {
       let propertyName = buildingResponse?.data?.data?.building?.property_name;
       // this.toggleModal();
 
-      this.setState({loader: false,isVisible: !this.state.isVisible}, () =>
+      this.setState({loader: false, isVisible: !this.state.isVisible}, () =>
         this.props.navigation.navigate('MeterDetails', {
           unitId: unitId,
           buildingName: buildingName,
@@ -137,7 +140,7 @@ class Tools extends Component {
       );
     } else {
       // this.toggleModal();
-      this.setState({loader: false,isVisible: !this.state.isVisible}, () =>
+      this.setState({loader: false, isVisible: !this.state.isVisible}, () =>
         this.props.navigation.navigate('RedirectMeter', {meterSerial: e?.data}),
       );
     }
@@ -185,11 +188,11 @@ class Tools extends Component {
         this.getToken(),
       ),
       this.props.navigation.addListener('willBlur', () =>
-        this.setState({ springValue: new Animated.Value(0) }),
+        this.setState({springValue: new Animated.Value(0)}),
       ),
     ];
-    const { navigation } = this.props;
-    this.focusListener = navigation.addListener('didFocus', () => { });
+    const {navigation} = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {});
   }
 
   _start = () => {
@@ -198,29 +201,62 @@ class Tools extends Component {
       duration: 1000,
     }).start();
   };
-  hasCameraPermission = async () => { };
+  hasCameraPermission = async () => {};
   toggleModal = async () => {
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        this.setState({ hasAccess: true, scanning: false });
-        this.setState({ isVisible: !this.state.isVisible });
-        this.setState({ scan: true });
-        this.setState({ scanResult: false });
-        console.log('Access');
-      } else {
-        this.setState({ hasAccess: false });
-        Alert.alert(
-          "You don't have access for the Camera",
-          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
-        console.log('Denied');
+        if (granted === true) {
+          this.setState({hasAccess: true, scanning: false});
+          this.setState({isVisible: !this.state.isVisible});
+          this.setState({scan: true});
+          this.setState({scanResult: false});
+          console.log('Access');
+        } else {
+          this.setState({hasAccess: false});
+          Alert.alert(
+            "You don't have access for the Camera",
+            'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          );
+          console.log('Denied');
+        }
+        return granted;
+      } catch (err) {
+        alert(err);
       }
-      return granted;
-    } catch (err) {
-      alert(err);
+    }
+    if (Platform.OS == 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          if (result == RESULTS.GRANTED) {
+            this.setState({hasAccess: true, scanning: false});
+            this.setState({isVisible: !this.state.isVisible});
+            this.setState({scan: true});
+            this.setState({scanResult: false});
+            console.log('Access');
+          }
+          if (result == RESULTS.DENIED) {
+            this.setState({hasAccess: false});
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+            console.log('Denied');
+          }
+          if (result == RESULTS.BLOCKED) {
+            this.setState({hasAccess: false});
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+            console.log('Denied');
+          }
+        })
+        .catch((error) => {
+          alert(error);
+        });
     }
   };
 
@@ -248,14 +284,17 @@ class Tools extends Component {
     let {animatedValue, springValue} = this.state;
     const {result, scan, scanResult} = this.state;
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
+      <View style={{flex: 1}}>
+        <CustumStatusBar />
+        {/* <StatusBar backgroundColor="#fff" /> */}
+        <View style={[styles.container]}>
           {this.state.loader ? <Loader /> : null}
           <Modal
             animationIn="bounceInUp"
             animationOut="bounceInDown"
             // backdropColor='black'
             backdropOpacity={5}
+            statusBarTranslucent
             isVisible={this.state.isVisible}>
             {scan ? (
               <View
@@ -263,6 +302,7 @@ class Tools extends Component {
                   flex: 1,
                   justifyContent: 'space-around',
                   borderRadius: width * 0.02,
+                  marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
                 }}>
                 <Text
                   style={{
@@ -276,18 +316,18 @@ class Tools extends Component {
                   ref={(ref) => {
                     this.camera = ref;
                   }}
-                  style={{ flex: 1 }}
+                  style={{flex: 1}}
                   type={RNCamera.Constants.Type.back}
                   autoFocus="on"
                   onBarCodeRead={this.onSuccess}
                   captureAudio={false}
-                // onGoogleVisionBarcodesDetected={this.onSuccess}
-                // androidCameraPermissionOptions={{
-                //   title: "Open Camera",
-                //   message: "Open Open",
-                //   buttonPositive: 'OK',
-                //   buttonNegative: "Not Ok",
-                // }}
+                  // onGoogleVisionBarcodesDetected={this.onSuccess}
+                  // androidCameraPermissionOptions={{
+                  //   title: "Open Camera",
+                  //   message: "Open Open",
+                  //   buttonPositive: 'OK',
+                  //   buttonNegative: "Not Ok",
+                  // }}
                 >
                   <BarcodeMask outerMaskOpacity={0} />
                   {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
@@ -353,7 +393,7 @@ class Tools extends Component {
           <View style={styles.toolContainer}>
             <Animated.View
               style={{
-                transform: [{ scale: springValue }],
+                transform: [{scale: springValue}],
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
@@ -370,7 +410,7 @@ class Tools extends Component {
             </Animated.View>
             <Animated.View
               style={{
-                transform: [{ scale: springValue }],
+                transform: [{scale: springValue}],
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
@@ -387,7 +427,7 @@ class Tools extends Component {
             </Animated.View>
             <Animated.View
               style={{
-                transform: [{ scale: springValue }],
+                transform: [{scale: springValue}],
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
@@ -404,7 +444,7 @@ class Tools extends Component {
             </Animated.View>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }

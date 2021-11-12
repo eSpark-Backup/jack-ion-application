@@ -6,7 +6,7 @@ const {width, height} = Dimensions.get('window');
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
   },
   headerContainer: {
     width: width * 1,
@@ -39,12 +39,12 @@ export default styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'row',
   },
-  searchBtnContainer:{
+  searchBtnContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  searchBtn:{
+  searchBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     height: width * 0.1,
@@ -54,14 +54,13 @@ export default styles = StyleSheet.create({
     width: width * 0.8,
     maxHeight: width * 0.1,
     borderBottomColor: '#25AAE1ec',
-    paddingRight:width * 0.05,
+    paddingRight: width * 0.05,
     fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
   },
   headingContainer: {
     width: width * 1,
     height: width * 0.12,
-
   },
   headingInner: {
     flex: 1,
@@ -78,11 +77,11 @@ export default styles = StyleSheet.create({
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
-    flex:1,
+    flex: 1,
   },
 
   mainDataContainer: {
-    flex:1,
+    flex: 1,
     alignItems: 'center',
   },
   mainData: {
@@ -90,7 +89,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingVertical: width * 0.02,
   },
-  searchModalContainer:{
+  searchModalContainer: {
     elevation: width * 0.005,
     width: width * 1,
     height: height * 1,
@@ -98,7 +97,7 @@ export default styles = StyleSheet.create({
     left: '-5%',
     top: '-2.5%',
   },
-  searchModalInner:{
+  searchModalInner: {
     width: width * 1,
     height: width * 0.15,
     justifyContent: 'space-between',
@@ -107,17 +106,16 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     flexDirection: 'row',
     paddingHorizontal: width * 0.01,
-
   },
-  searchIconStyle:{
+  searchIconStyle: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  searchDataListContainer:{
+  searchDataListContainer: {
     alignItems: 'center',
     paddingVertical: height * 0.005,
   },
-  noDataStyling:{
+  noDataStyling: {
     fontSize: width * 0.04,
     textAlign: 'center',
     fontFamily: Fonts.Montserrat,
@@ -150,56 +148,64 @@ export default styles = StyleSheet.create({
   infoViewInner: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: '',
     alignItems: 'center',
     paddingHorizontal: width * 0.01,
   },
   unitNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: width * 0.6,
+    width: width * 0.38,
+    // backgroundColor:'blue',
     overflow: 'hidden',
   },
   unitDetailContainer: {
-    width: width * 0.25,
-    alignItems: 'center',
-    justifyContent: 'center',
+    maxWidth: width * 0.5,
+    // alignItems: 'f',
+    justifyContent: 'flex-start',
+    // padding: width * 0.02,
+    // backgroundColor:'red',
   },
   unitDetailInnerif: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
-    width: width * 0.25,
-    marginVertical: width * 0.005,
-    paddingVertical: width * 0.005,
+    maxWidth: width * 0.23,
+    marginRight: width * 0.02,
+    marginVertical: width * 0.01,
+    // padding: width * 0.005,
+    // backgroundColor: 'red',
+
   },
   unitDetailInnerElse: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: width * 0.25,
-    paddingVertical: width * 0.005,
+    justifyContent: 'center',
+    width: width * 0.45,
+    padding: width * 0.02,
+    borderWidth:width * .002,
+    borderRadius:width * .01
   },
   unitDetailInnerElseText: {
-    fontSize: width * 0.025,
+    fontSize: width * 0.035,
     color: '#3E4A4F',
     fontFamily: Fonts.Montserrat,
   },
   unitDetailInnerElseIcon: {
-    marginHorizontal: width * 0.005,
-    position: 'absolute',
-    right: width * 0.0,
+    marginRight: width * 0.01,
   },
   untiDetailImage: {
     height: width * 0.03,
     width: width * 0.03,
+    marginRight: width * 0.01
   },
   unitDetailSeprater: {
     borderColor: '#3E4A4F50',
     position: 'absolute',
-    width: width * 0.23,
+    width: '100%',
+    // flex:1,
     borderRadius: width * 1,
-    alignSelf: 'center',
+    bottom:width * -.005
   },
   dataFieldText: {
     fontSize: width * 0.03,
