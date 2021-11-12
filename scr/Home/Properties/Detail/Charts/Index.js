@@ -220,14 +220,15 @@ export default class Splash extends Component {
                   // alignItems: 'center',
                   justifyContent: 'center',
                   paddingBottom: height * 0.015,
+                  marginBottom: height * 0.01,
                 }}>
                 <Detail
                   name="help-circle-outline"
                   size={height * 0.035}
                   color="#35afe2"
                   style={{
-                    marginBottom: height * 0.009,
                     marginRight: width * 0.02,
+                    bottom: Platform.OS == 'ios' ? 2 : null,
                   }}
                 />
                 <Text style={styles.drawerbtn}>Support</Text>

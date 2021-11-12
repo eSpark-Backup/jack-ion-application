@@ -324,12 +324,25 @@ export default class Splash extends React.Component {
               <TouchableOpacity
                 style={{bottom: height * 0.05}}
                 onPress={this.naviagateToSupport}>
-                <View style={[styles.drawerBottom]}>
+                <View
+                  style={[
+                    styles.drawerBottom,
+                    {
+                      flexDirection: 'row',
+                      // alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingBottom: height * 0.015,
+                      marginBottom: height * 0.01,
+                    },
+                  ]}>
                   <Detail
                     name="help-circle-outline"
                     size={height * 0.035}
                     color="#35afe2"
-                    style={{...styles.drawerBtnIcon}}
+                    style={{
+                      ...styles.drawerBtnIcon,
+                      bottom: Platform.OS == 'ios' ? 2 : null,
+                    }}
                   />
                   <Text style={styles.drawerbtn}>Support</Text>
                 </View>

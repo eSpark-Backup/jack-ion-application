@@ -797,7 +797,7 @@ const App = ({navigation}) => {
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
-          closeModal={() => setEditUnitModalVisible(false)}
+          closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"

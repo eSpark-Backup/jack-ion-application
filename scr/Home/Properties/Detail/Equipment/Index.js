@@ -783,30 +783,46 @@ export default class Splash extends Component {
                   onRequestClose={() => this.setState({addMenuVisible: false})}>
                   {this.state.AddArray.map((item, index) => (
                     <MenuItem
-                      disabled={this.state.dataBuild.length == 0 ? true : false}
+                      disabled={
+                        this.state.dataBuild.length == 0 && index !== 2
+                          ? true
+                          : false
+                      }
                       onPress={item.func}>
                       <View
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          width: width * 0.265,
+                          padding: width * 0.02,
                         }}>
                         {index < 2 ? (
                           <FontAwesome5
                             color={
-                              this.state.dataBuild.length == 0
+                              this.state.dataBuild.length == 0 && index !== 2
                                 ? '#817e7e80'
                                 : '#000'
                             }
                             name="house-user"
-                            size={height * 0.02}
+                            size={width * 0.04}
                             color="#3E4A4F"
+                            style={{
+                              paddingHorizontal:
+                                Platform.OS == 'ios' ? width * 0.025 : null,
+                              paddingRight:
+                                Platform.OS == 'android' ? width * 0.025 : null,
+                            }}
                           />
                         ) : (
                           <FontAwesome5
                             name="building"
                             size={width * 0.04}
                             color="#3E4A4F"
+                            style={{
+                              paddingHorizontal:
+                                Platform.OS == 'ios' ? width * 0.028 : null,
+                              paddingRight:
+                                Platform.OS == 'android' ? width * 0.035 : null,
+                              left: Platform.OS == 'android' ? 3 : null,
+                            }}
                           />
                         )}
                         <Text
@@ -814,7 +830,7 @@ export default class Splash extends Component {
                             styles.dropDownListText,
                             {
                               color:
-                                this.state.dataBuild.length == 0
+                                this.state.dataBuild.length == 0 && index !== 2
                                   ? '#817e7e80'
                                   : '#000',
                             },
@@ -855,7 +871,11 @@ export default class Splash extends Component {
               enableFlag={() => this.setState({flag: true})}
               disableFlag={() => this.setState({flag: false})}
               modalVisible={this.state.isModalUnitVisible}
-              closeModal={() => this.setState({isModalUnitVisible: false})}
+              closeModal={() =>
+                this.setState({
+                  isModalUnitVisible: !this.state.isModalUnitVisible,
+                })
+              }
               reRun={() => this.checkData()}
               meterTypes={[]}
               modalName="Add Unit"
