@@ -6,7 +6,7 @@ import Properties from 'react-native-vector-icons/FontAwesome5';
 import Setting from 'react-native-vector-icons/Feather';
 import Home from './Home/route';
 import Settings from './settings/Index';
-import Tools from './Tools/route';  
+import Tools from './Tools/route';
 import Support from './ContactUs/Index';
 
 import {StatusBar, TouchableOpacity, Image, Dimensions} from 'react-native';
@@ -16,7 +16,6 @@ const {width, height} = Dimensions.get('window');
 
 const AuthNavigatorConfig = {
   initialRouteName: 'Home',
-  swipeEnabled: true,
   tabBarPosition: 'bottom',
   tabBarOptions: {
     inactiveTintColor: 'white',

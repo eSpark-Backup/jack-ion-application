@@ -119,12 +119,12 @@ export default styles = StyleSheet.create({
   },
   chartStyle: {
     height: height * 0.3,
-    width: width * 0.9,
+    width: width,
   },
-  chartPadding: {left: 40, bottom: 20, right: 20, top: 20},
+  chartPadding: {left: 40, bottom: 20, right: 40, top: 20},
   legendContainer: {flexDirection: 'row', alignSelf: 'center'},
   meterUsageBox: {
-    backgroundColor: '#DFDFDF',
+    backgroundColor: 'gray',
     width: width * 0.03,
     height: width * 0.03,
     alignSelf: 'center',

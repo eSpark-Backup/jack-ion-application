@@ -46,8 +46,9 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
   },
   desciptionHeading: {
-    fontSize: height * 0.015,
+    fontSize: width * 0.03,
     color: 'black',
+    marginLeft: width * 0.02,
     textTransform: 'uppercase',
     fontFamily: Fonts.ComfortaaRegular,
   },

@@ -47,8 +47,8 @@ export default class Login extends Component {
     };
   }
 
-  //todo: For testing enter email: bednar.douglas@example.net
-  //todo: For testing enter password: password
+  //todo: For testing enter email: strongone@gmail.com
+  //todo: For testing enter password: qwertyui
 
   setLoggedIn = async () => {
     try {
@@ -134,8 +134,6 @@ export default class Login extends Component {
           </View>
           <Formik
             initialValues={{
-              // email: 'esparktest@gmail.com',
-              // password: '12345678',
               email: 'strongone@gmail.com',
               password: 'qwertyui',
             }}
