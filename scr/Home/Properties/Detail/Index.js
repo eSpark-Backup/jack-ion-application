@@ -10,6 +10,7 @@ import {
   UIManager,
   Pressable,
   Alert,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -261,30 +262,32 @@ export default class Splash extends React.Component {
   render() {
     return (
       <>
-        <CustumStatusBar />
+        {Platform.OS == 'ios' && <CustumStatusBar />}
         <View style={styles.container}>
           <Modal
             animationIn="slideInLeft"
             animationOut="slideOutLeft"
             isVisible={this.state.isModalVisible}
             swipeDirection="left"
-            onSwipeStart={this.toggleModal}
-            onBackdropPress={this.toggleModal}
+            onSwipeStart={() => this.toggleModal()}
+            onBackdropPress={() => this.toggleModal()}
             backdropColor="black"
+            statusBarTranslucent
             style={styles.sideModalContainer}>
             <CustumStatusBar backColor />
+            <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
             <View style={styles.drawerMainContainer}>
-              <View style={{marginTop: StatusBar.currentHeight}}>
+              <View>
                 <Menu
                   name="menu"
                   size={height * 0.05}
                   color="white"
-                  onPress={this.toggleModal}
+                  onPress={() => this.toggleModal()}
                   style={{backgroundColor: '#35afe2'}}
                 />
               </View>
               <View style={styles.drawerContentContainer}>
-                <TouchableOpacity onPress={this.naviagateToDetail}>
+                <TouchableOpacity onPress={() => this.naviagateToDetail()}>
                   <View style={styles.drawerContent}>
                     <Detail
                       name="account-details-outline"
@@ -295,7 +298,7 @@ export default class Splash extends React.Component {
                     <Text style={styles.drawerbtn}>Profile</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.naviagateToEquip}>
+                <TouchableOpacity onPress={() => this.naviagateToEquip()}>
                   <View style={styles.drawerContent}>
                     <Equip
                       name="rss"
@@ -306,7 +309,7 @@ export default class Splash extends React.Component {
                     <Text style={styles.drawerbtn}>Units</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.naviagateToChart}>
+                <TouchableOpacity onPress={() => this.naviagateToChart()}>
                   <View style={styles.drawerContent}>
                     <Chart
                       name="pie-chart"
@@ -319,14 +322,27 @@ export default class Splash extends React.Component {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                style={{bottom: Platform.OS == 'ios' && height * 0.05}}
+                style={{bottom: height * 0.05}}
                 onPress={this.naviagateToSupport}>
-                <View style={styles.drawerBottom}>
+                <View
+                  style={[
+                    styles.drawerBottom,
+                    {
+                      flexDirection: 'row',
+                      // alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingBottom: height * 0.015,
+                      marginBottom: height * 0.01,
+                    },
+                  ]}>
                   <Detail
                     name="help-circle-outline"
                     size={height * 0.035}
                     color="#35afe2"
-                    style={{...styles.drawerBtnIcon, marginRight: width * 0.02}}
+                    style={{
+                      ...styles.drawerBtnIcon,
+                      bottom: Platform.OS == 'ios' ? 2 : null,
+                    }}
                   />
                   <Text style={styles.drawerbtn}>Support</Text>
                 </View>

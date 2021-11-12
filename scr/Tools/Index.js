@@ -286,13 +286,15 @@ class Tools extends Component {
     return (
       <View style={{flex: 1}}>
         <CustumStatusBar />
-        <View style={styles.container}>
+        {/* <StatusBar backgroundColor="#fff" /> */}
+        <View style={[styles.container]}>
           {this.state.loader ? <Loader /> : null}
           <Modal
             animationIn="bounceInUp"
             animationOut="bounceInDown"
             // backdropColor='black'
             backdropOpacity={5}
+            statusBarTranslucent
             isVisible={this.state.isVisible}>
             {scan ? (
               <View
@@ -300,7 +302,7 @@ class Tools extends Component {
                   flex: 1,
                   justifyContent: 'space-around',
                   borderRadius: width * 0.02,
-                  marginTop: Platform.OS == 'ios' && height * 0.03,
+                  marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
                 }}>
                 <Text
                   style={{

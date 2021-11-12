@@ -218,9 +218,11 @@ export default class Splash extends Component {
         newSerial: e.data,
         isScannerVisible: false,
       });
-      setTimeout(() => {
-        this.props.close();
-      }, 450);
+      if (Platform.OS == 'ios') {
+        setTimeout(() => {
+          this.props.close();
+        }, 450);
+      }
       setTimeout(() => {
         RNBeep.beep(false);
       }, 500);
@@ -313,7 +315,7 @@ export default class Splash extends Component {
             <View
               style={[
                 {...styles.boxConatainer, style},
-                {height: type == 'Units' ? height * 0.42 : height * 0.35},
+                // {height: type == 'Units' ? height * 0.35 : height * 0.35},
               ]}>
               <View style={styles.boxInner}>
                 {/* Box Header */}
@@ -457,7 +459,7 @@ export default class Splash extends Component {
         </Modal>
         <Modal isVisible={this.state.showList}>
           <View style={styles.billingModalInner}>
-            <View style={{...styles.boxConatainer, width: width * 0.6}}>
+            <View style={{height: '50%', width: '60%'}}>
               <View style={styles.boxInner}>
                 <View style={styles.billingModalHeader}>
                   <Text style={{fontSize: width * 0.04}}>Billing</Text>
@@ -466,15 +468,38 @@ export default class Splash extends Component {
                   <ScrollView>
                     {this.state.billCompanies.map((item) => (
                       <View style={styles.billingCompnay}>
-                        <RadioButton
-                          value={item.name}
-                          status={
-                            this.state.biller === item.name
-                              ? 'checked'
-                              : 'unchecked'
-                          }
-                          onPress={() => this.listSelection(item.name)}
-                        />
+                        {Platform.OS == 'ios' ? (
+                          <View
+                            style={{
+                              borderRadius: height * 0.1,
+                              backgroundColor: '#94949424',
+                              borderWidth: 1,
+                              borderColor: 'grey',
+                              margin: width * 0.01,
+                            }}>
+                            <RadioButton
+                              value={item.name}
+                              status={
+                                this.state.biller === item.name
+                                  ? 'checked'
+                                  : 'unchecked'
+                              }
+                              color="#25aae1"
+                              onPress={() => this.listSelection(item.name)}
+                            />
+                          </View>
+                        ) : (
+                          <RadioButton
+                            value={item.name}
+                            status={
+                              this.state.biller === item.name
+                                ? 'checked'
+                                : 'unchecked'
+                            }
+                            color="#25aae1"
+                            onPress={() => this.listSelection(item.name)}
+                          />
+                        )}
                         <Text>{item.name}</Text>
                       </View>
                     ))}

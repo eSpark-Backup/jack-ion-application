@@ -261,14 +261,14 @@ export default function UnitEdit({
         newSerial: e.data,
         isScannerVisible: false,
       }));
-      if (Platform.OS == 'ios') {
-        setTimeout(() => {
-          closeModal();
-        }, 400);
-      }
       setTimeout(() => {
         RNBeep.beep(false);
       }, 500);
+    }
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        closeModal();
+      }, 400);
     }
   };
   const scannerModal = () => {
@@ -565,6 +565,7 @@ export default function UnitEdit({
         animationOut="slideOutUp"
         hasBackdrop={true}
         backdropColor="black"
+        statusBarTranslucent
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.modalInner}>
@@ -1098,6 +1099,7 @@ export default function UnitEdit({
         animationIn="bounceInUp"
         animationOut="bounceInDown"
         backdropOpacity={5}
+        statusBarTranslucent
         isVisible={state.isScannerVisible}>
         {state.scan && (
           <View

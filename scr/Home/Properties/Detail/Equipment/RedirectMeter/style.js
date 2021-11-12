@@ -10,7 +10,10 @@ export default styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
   },
-  headerContainer: {borderBottomWidth: width * 0.003, elevation: 1},
+  headerContainer: {
+    borderBottomWidth: width * 0.003,
+    elevation: 1,
+  },
   boxConatainer: {
     width: width * 1,
     marginVertical: width * 0.03,
@@ -23,7 +26,14 @@ export default styles = StyleSheet.create({
     borderRadius: width * 0.02,
     elevation: width * 0.02,
     alignItems: 'center',
-    overflow: 'hidden',
+    // overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.36,
+    shadowRadius: 6.68,
   },
   currentReadContainer: {
     width: '100%',
@@ -68,10 +78,9 @@ export default styles = StyleSheet.create({
 
   propertiesContainer: {
     width: '100%',
-    height: Platform.OS == 'ios' ? height * 0.06 : height * 0.03,
+    height: Platform.OS == 'ios' ? height * 0.04 : height * 0.04,
     borderBottomWidth: 0.5,
     paddingLeft: width * 0.02,
-    paddingVertical: width * 0.04,
     alignItems: 'center',
     flexDirection: 'row',
   },

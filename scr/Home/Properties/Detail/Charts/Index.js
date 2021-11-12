@@ -153,7 +153,7 @@ export default class Splash extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <CustumStatusBar />
+        {Platform.OS == 'ios' && <CustumStatusBar />}
         <Modal
           animationIn="slideInLeft"
           animationOut="slideOutLeft"
@@ -162,15 +162,16 @@ export default class Splash extends Component {
           onSwipeStart={this.toggleModal}
           onBackdropPress={this.toggleModal}
           backdropColor="black"
+          statusBarTranslucent
           style={styles.modalContainer}>
           <CustumStatusBar backColor />
-          <View style={styles.drawerMainContainer}>
-            <View style={{marginTop: StatusBar.currentHeight}}>
+          <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
+          <View style={[styles.drawerMainContainer]}>
+            <View>
               <Menu
                 name="menu"
                 size={height * 0.05}
                 color="white"
-                // style={{right: 90}}
                 onPress={this.toggleModal}
                 style={{backgroundColor: '#35afe2'}}
               />
@@ -211,22 +212,23 @@ export default class Splash extends Component {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              style={{bottom: Platform.OS == 'ios' && height * 0.05}}
+              style={{bottom: height * 0.05}}
               onPress={this.naviagateToSupport}>
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'center',
+                  // alignItems: 'center',
                   justifyContent: 'center',
                   paddingBottom: height * 0.015,
+                  marginBottom: height * 0.01,
                 }}>
                 <Detail
                   name="help-circle-outline"
                   size={height * 0.035}
                   color="#35afe2"
                   style={{
-                    marginBottom: height * 0.009,
                     marginRight: width * 0.02,
+                    bottom: Platform.OS == 'ios' ? 2 : null,
                   }}
                 />
                 <Text style={styles.drawerbtn}>Support</Text>
