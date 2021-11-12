@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 import {Fonts} from '../../utils/fonts';
 
 //Files
@@ -100,12 +100,12 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  boxConatainer: {
-    width: width * 0.85,
-    height: height * 0.35,
-  },
+  // boxConatainer: {
+  //   width: width * 0.85,
+  //   height: height * 0.38,
+  // },
   boxInner: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#F5F5F5',
     borderRadius: width * 0.02,
     elevation: width * 0.02,
@@ -151,6 +151,7 @@ export default styles = StyleSheet.create({
   inputFilterView: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: Platform.OS == 'ios' ? height * 0.06 : null,
     backgroundColor: '#fff',
     elevation: 1,
     marginVertical: height * 0.001,

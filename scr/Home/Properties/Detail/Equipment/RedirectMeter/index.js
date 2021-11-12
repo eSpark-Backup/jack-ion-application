@@ -882,7 +882,7 @@ export default class RedirectMeter extends Component {
             meterMenuVisible={this.state.editUnitMenuVisible}
             showMenu={() => this.setState({editUnitMenuVisible: true})}
             hideMenu={() => this.setState({editUnitMenuVisible: false})}
-            closeModal={() => this.setState({unitModal: false})}
+            closeModal={() => this.setState({unitModal: !this.state.unitModal})}
             reRun={this.handleFinishUnit}
             meterTypes={this.state.meterTypesList}
             buildingName={this.state.buildginName}

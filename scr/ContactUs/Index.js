@@ -122,12 +122,14 @@ export default class Splash extends Component {
           </View>
         </View>
         <View style={styles.headingContainer}>
-          <View style={styles.headingInner}>
+          <View style={[styles.headingInner]}>
             <Help
               name="help-circle"
               size={width * 0.07}
               color="white"
-              style={{marginRight: width * 0.01}}
+              style={{
+                marginRight: width * 0.01,
+              }}
             />
             <Text style={styles.mainHeadiing}>Support</Text>
           </View>
