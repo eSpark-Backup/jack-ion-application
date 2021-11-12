@@ -37,7 +37,8 @@ import {
   VictoryChart,
   VictoryLegend,
   VictoryAxis,
-  VictoryTheme,
+  VictoryLabel,
+  VictoryBar,
   VictoryLine,
 } from 'victory-native';
 import {Fonts} from '../../../../../../utils/fonts';
@@ -85,8 +86,24 @@ const App = ({navigation}) => {
   const [editMeterTypes, setEditMeterTypes] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [dataSet, setDataSet] = useState([]);
+  const [meterUsage, setMeterUsage] = useState([]);
+  const [readDate, setReadDate] = useState([]);
   const [x, setX] = useState('x:');
   const [y, setY] = useState('y:');
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
 
   const getDataSetOne = () => {
     return [
@@ -106,11 +123,18 @@ const App = ({navigation}) => {
       // {x: new Date(2013, 1, 1), y: 1},
       // {x: new Date(2014, 1, 1), y: 2},
       // {x: new Date(2015, 1, 1), y: -5},
-      {x: new Date(2021, 10, 7), y: 1},
-      {x: new Date(2021, 10, 8), y: 6},
-      {x: new Date(2021, 10, 9), y: 8},
-      {x: new Date(2021, 10, 10), y: 9},
-      {x: new Date(2021, 10, 11), y: 11},
+      // {x: new Date(2021, 10, 7), y: 1},
+      // {x: new Date(2021, 10, 8), y: 6},
+      {
+        x: new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
+        y: dataSet.length > 0 ? dataSet[0] : 0,
+      },
+      {
+        x: new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+        y: dataSet.length > 0 ? dataSet[1] : 0,
+      },
+      // {x: new Date(2021, 10, 10), y: 9},
+      // {x: new Date(2021, 10, 11), y: 11},
     ];
   };
 
@@ -127,11 +151,18 @@ const App = ({navigation}) => {
       // {x: new Date(2011, 1, 1), y: 49},
       // {x: new Date(2014, 1, 1), y: 40},
       // {x: new Date(2015, 1, 1), y: 21},
-      {x: new Date(2021, 10, 7), y: 1},
-      {x: new Date(2021, 10, 8), y: 5},
-      {x: new Date(2021, 10, 9), y: 2},
-      {x: new Date(2021, 10, 10), y: 1},
-      {x: new Date(2021, 10, 11), y: 2},
+      // {x: new Date(2021, 10, 7), y: 1},
+      // {x: new Date(2021, 10, 8), y: 5},
+      {
+        x: new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
+        y: meterUsage.length > 0 ? meterUsage[0] : 0,
+      },
+      {
+        x: new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+        y: meterUsage.length > 0 ? meterUsage[1] : 0,
+      },
+      // {x: new Date(2021, 10, 10), y: 1},
+      // {x: new Date(2021, 10, 11), y: 2},
     ];
   };
 
@@ -151,11 +182,12 @@ const App = ({navigation}) => {
       // new Date(2003, 1, 1),
       // new Date(2004, 1, 1),
       // new Date(2005, 1, 1),
-      new Date(2021, 10, 7),
-      new Date(2021, 10, 8),
-      new Date(2021, 10, 9),
-      new Date(2021, 10, 10),
-      new Date(2021, 10, 11),
+      // new Date(2021, 10, 7),
+      // new Date(2021, 10, 8),
+      new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
+      new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+      // new Date(2021, 10, 10),
+      // new Date(2021, 10, 11),
       // new Date(2007, 1, 1),
       // new Date(2008, 1, 1),
       // new Date(2009, 1, 1),
@@ -180,7 +212,7 @@ const App = ({navigation}) => {
         // display: 'inline',
         // padding: 0,
         width: width,
-        height: height * 0.5,
+        height: height * 0.4,
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
@@ -212,7 +244,7 @@ const App = ({navigation}) => {
         tickLabels: {
           fill: 'black',
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: 12,
         },
       },
 
@@ -303,9 +335,11 @@ const App = ({navigation}) => {
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
     );
 
-    console.log('Chart Data', chartRes.data?.data?.dataset[1]);
+    console.log('Chart Data', chartRes.data?.data?.label[0].slice(4, 6));
     setChartData(chartRes.data?.data);
     setDataSet(chartRes.data?.data?.dataset);
+    setMeterUsage(chartRes.data?.data?.meterUsage);
+    setReadDate(chartRes.data?.data?.label);
     setLoading(false);
   };
 
@@ -1277,8 +1311,11 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={{alignItems: 'center'}}>
-                <Svg style={styled.parent} viewBox="0 0 400 150">
-                  <G transform={'translate(0, -100)'}>
+                <Svg
+                  style={styled.parent}
+                  // viewBox="0 0 400 150"
+                >
+                  <G transform={'translate(0, -10)'}>
                     {/* <VictoryChart> */}
                     <VictoryAxis
                       scale="time"
@@ -1286,11 +1323,25 @@ const App = ({navigation}) => {
                       style={styled.axisYears}
                       tickValues={tickValues}
                       tickFormat={(date) =>
-                        // console.log('Date', date.toLocaleString().slice(0, 5))
+                        // console.log('Date', date.toString())
                         // date.toLocaleString('en-us', {month: 'short'})
-                        date.toLocaleString().slice(0, 6)
+                        months[date.getMonth()] +
+                        ' ' +
+                        `0${date.getDate()}` +
+                        ' ' +
+                        `${date.getHours()} AM`
                       }
+                      domainPadding={{x: 20}}
                     />
+
+                    <VictoryBar
+                      data={dataSetTwo}
+                      domainPadding={{x: 20}}
+                      labels={({datum}) => datum.y}
+                      style={{data: {fill: '#DFDFDF'}}}
+                      labelComponent={<VictoryLabel dy={30} />}
+                    />
+
                     {/* Dependent axis for data set one. */}
                     <VictoryAxis
                       dependentAxis
@@ -1304,7 +1355,10 @@ const App = ({navigation}) => {
                     <VictoryLine
                       data={dataSetOne}
                       domain={{
-                        x: [new Date(2021, 10, 7), new Date(2021, 10, 11)],
+                        x: [
+                          new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
+                          new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+                        ],
                         y: [0, 15],
                       }}
                       interpolation="monotoneX"
@@ -1315,24 +1369,28 @@ const App = ({navigation}) => {
                     {/* Dependent axis for data set two. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 11]}
+                      domain={[0, 6]}
                       orientation="right"
                       standalone={false}
                       style={styled.axisTwo}
                       // tickFormat={(x) => `${x / 1000000}`}
                     />
                     {/* Dataset two */}
-                    <VictoryLine
+                    {/* <VictoryLine
                       data={dataSetTwo}
                       domain={{
-                        x: [new Date(2021, 10, 7), new Date(2021, 10, 11)],
-                        y: [0, 11],
+                        x: [
+                          new Date(2021, 10, 9, 9, 0),
+                          new Date(2021, 10, 9, 10, 0),
+                        ],
+                        y: [0, 6],
                       }}
                       interpolation="monotoneX"
                       scale={{x: 'time', y: 'linear'}}
                       standalone={false}
                       style={styled.lineTwo}
-                    />
+                    /> */}
+
                     {/* </VictoryChart> */}
                   </G>
                 </Svg>
