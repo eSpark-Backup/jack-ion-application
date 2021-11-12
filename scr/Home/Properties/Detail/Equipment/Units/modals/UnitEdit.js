@@ -736,7 +736,8 @@ export default function UnitEdit({
                                         <TouchableOpacity
                                           onPress={() =>
                                             toggleScanner(meterIndex)
-                                          }>
+                                          }
+                                          style={{zIndex:1}}>
                                           <Scanner name="scan" size={20} />
                                         </TouchableOpacity>
                                       )}
