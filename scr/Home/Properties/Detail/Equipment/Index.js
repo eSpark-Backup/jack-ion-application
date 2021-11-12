@@ -908,7 +908,9 @@ export default class Splash extends Component {
               <Modal
                 isVisible={this.state.showSearch}
                 style={styles.searchModalContainer}>
-                <CustumStatusBar backColor transparent />
+                {Platform.OS == 'ios' && (
+                  <CustumStatusBar backColor transparent />
+                )}
                 <KeyboardAvoidingView behavior="padding">
                   <View style={styles.searchModalInner}>
                     <Search name="search" size={width * 0.07} color="white" />

@@ -218,7 +218,8 @@ export default styles = StyleSheet.create({
     paddingTop: height * 0.01,
   },
   drawerbtn: {
-    marginBottom: height * 0.01354,
+    // marginBottom: height * 0.003,
+    // textAlignVertical: 'top',
     fontSize: height * 0.025,
     color: 'black',
     fontWeight: 'normal',
@@ -226,9 +227,9 @@ export default styles = StyleSheet.create({
 
   drawerBottom: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: height * 0.015,
+    // paddingBottom: height * 0.015,
   },
 
   drawerBtnIcon: {marginRight: width * 0.02},

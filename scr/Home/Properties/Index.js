@@ -9,6 +9,7 @@ import {
   LayoutAnimation,
   UIManager,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 
 //Packages
@@ -259,7 +260,7 @@ export default class Splash extends Component {
         <CustumStatusBar />
         <View style={styles.container}>
           {this.context.isLoading ? <Loader /> : null}
-          <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
+          {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
               <TouchableOpacity
@@ -324,7 +325,9 @@ export default class Splash extends Component {
               <Modal
                 isVisible={this.state.showSearch}
                 style={styles.searchModalContainer}>
-                <CustumStatusBar backColor transparent />
+                {Platform.OS == 'ios' && (
+                  <CustumStatusBar backColor transparent />
+                )}
                 <View style={styles.searchModalInner}>
                   <View style={styles.searchModalInput}>
                     <Search name="search" size={height * 0.04} color="white" />

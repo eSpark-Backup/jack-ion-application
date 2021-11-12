@@ -51,10 +51,12 @@ export default class DrawerModal extends Component {
         onSwipeStart={onCancel}
         onBackdropPress={onCancel}
         backdropColor="black"
+        statusBarTranslucent
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
+        <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
         <View style={styles.drawerMainContainer}>
-          <View style={{marginTop: StatusBar.currentHeight}}>
+          <View>
             <Menu
               name="menu"
               size={height * 0.05}
@@ -100,7 +102,7 @@ export default class DrawerModal extends Component {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            style={{bottom: Platform.OS == 'ios' && height * 0.05}}
+            style={{bottom: height * 0.05}}
             onPress={naviagateToSupport}>
             <View
               style={{

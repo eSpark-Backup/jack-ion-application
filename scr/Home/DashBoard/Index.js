@@ -15,6 +15,7 @@ import {
   LayoutAnimation,
   UIManager,
   TextInput,
+  Platform,
 } from 'react-native';
 import Menu from 'react-native-vector-icons/Entypo';
 import Camera from 'react-native-vector-icons/EvilIcons';
@@ -127,7 +128,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <CustumStatusBar />
+        {Platform.OS == 'ios' && <CustumStatusBar />}
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity

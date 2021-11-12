@@ -16,6 +16,7 @@ import {
   UIManager,
   TextInput,
   Button,
+  Platform,
 } from 'react-native';
 
 import Search from 'react-native-vector-icons/EvilIcons';
@@ -92,7 +93,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <CustumStatusBar />
+        {Platform.OS == 'ios' && <CustumStatusBar />}
         <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity

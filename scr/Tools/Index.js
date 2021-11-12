@@ -285,8 +285,9 @@ class Tools extends Component {
     const {result, scan, scanResult} = this.state;
     return (
       <View style={{flex: 1}}>
-        <CustumStatusBar />
-        <View style={styles.container}>
+        {/* <CustumStatusBar /> */}
+        <StatusBar backgroundColor="#fff" />
+        <View style={[styles.container]}>
           {this.state.loader ? <Loader /> : null}
           <Modal
             animationIn="bounceInUp"
