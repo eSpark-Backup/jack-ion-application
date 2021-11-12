@@ -346,7 +346,7 @@ export default class Splash extends Component {
 
     return (
       <View style={styles.container}>
-        <CustumStatusBar backColor />
+        {Platform.OS == 'ios' && <CustumStatusBar backColor />}
 
         {/* <Image
             source={require('../../Images/profileBack.jpg')}
