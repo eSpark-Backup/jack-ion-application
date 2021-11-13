@@ -163,8 +163,8 @@ export default class UpdateModal extends Component {
                   <View style={{flex: 1}}>
                     <View style={styles.desciptionContainer}>
                       <Build
-                        name={'office-building'}
-                        size={height * 0.02}
+                        name={'building'}
+                        size={width * 0.04}
                         color="#5e5e5e"
                       />
                       <Text style={styles.desciptionHeading}>BUILDING*</Text>
