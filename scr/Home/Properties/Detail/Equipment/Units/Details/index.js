@@ -104,6 +104,7 @@ const App = ({navigation}) => {
     'Nov',
     'Dec',
   ];
+  const [flag, setFlag] = useState(true);
 
   const getDataSetOne = () => {
     return [
@@ -244,7 +245,7 @@ const App = ({navigation}) => {
         tickLabels: {
           fill: 'black',
           fontFamily: 'inherit',
-          fontSize: 12,
+          fontSize: width * 0.025,
         },
       },
 
@@ -261,13 +262,13 @@ const App = ({navigation}) => {
         tickLabels: {
           fill: '#5D84B6',
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: width * 0.025,
         },
       },
       labelOne: {
         fill: BLUE_COLOR,
         fontFamily: 'inherit',
-        fontSize: 12,
+        fontSize: width * 0.025,
         fontStyle: 'italic',
       },
       lineOne: {
@@ -277,7 +278,7 @@ const App = ({navigation}) => {
         fill: BLUE_COLOR,
         fontFamily: 'inherit',
         fontWeight: 300,
-        fontSize: 21,
+        fontSize: width * 0.025,
       },
 
       // DATA SET TWO
@@ -285,20 +286,20 @@ const App = ({navigation}) => {
         axis: {stroke: RED_COLOR, strokeWidth: 1},
         ticks: {strokeWidth: 0},
         tickLabels: {
-          fill: '#DFDFDF',
+          fill: 'gray',
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: width * 0.025,
         },
       },
       labelTwo: {
         textAnchor: 'end',
         fill: RED_COLOR,
         fontFamily: 'inherit',
-        fontSize: 12,
+        fontSize: width * 0.025,
         fontStyle: 'italic',
       },
       lineTwo: {
-        data: {stroke: '#DFDFDF', strokeWidth: 4.5},
+        data: {stroke: 'gray', strokeWidth: 4.5},
       },
 
       // HORIZONTAL LINE
@@ -387,7 +388,7 @@ const App = ({navigation}) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.device?.manufacturer?.name ?? 'N/A',
+        rightText: unitMeter?.device?.manufacturer ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
@@ -443,7 +444,7 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.device?.manufacturer?.name +
+              unitMeter?.device?.manufacturer +
               ' (' +
               unitMeter?.device?.name +
               ')',
@@ -922,11 +923,14 @@ const App = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <EditUnit
+          flag={flag}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
-          closeModal={() => setEditUnitModalVisible(false)}
+          closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
@@ -1039,11 +1043,14 @@ const App = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <EditUnit
+          flag={flag}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
-          closeModal={() => setEditUnitModalVisible(false)}
+          closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
@@ -1395,70 +1402,6 @@ const App = ({navigation}) => {
                   </G>
                 </Svg>
 
-                {/* <Chart
-                  style={styles.chartStyle}
-                  data={testChartData}
-                  padding={styles.chartPadding}
-                  xDomain={{min: 0, max: 10}}
-                  yDomain={{min: 0, max: 50000}}>
-                  <HorizontalAxis
-                    tickCount={5}
-                    tickValues={['3/2/2000', 5, 52, 53]}
-                    theme={{grid: {visible: false}}}
-                  />
-                  <Line
-                    data={[
-                      {x: 15, y: 20000},
-                      {x: 5, y: 6},
-                      {x: 6, y: 10},
-                      {x: 8, y: 15},
-                      {x: 10, y: 20},
-                    ]}
-                    tooltipComponent={
-                      <Tooltip
-                        // value={{x: x, y: y}}
-                        theme={{
-                          label: {color: '#fff'},
-                          shape: {
-                            color: '#a1a1a1',
-                            border: {color: '#000', opacity: 1, width: 2},
-                          },
-                        }}
-                      />
-                    }
-                    smoothing="bezier"
-                    tension={0.3}
-                    theme={{
-                      stroke: {color: '#a1a1a1', width: 2},
-                      scatter: {default: {width: 4, height: 4, rx: 2}},
-                    }}
-                  />
-                  <Line
-                    tooltipComponent={
-                      <Tooltip
-                        // value={{x: x, y: y}}
-                        theme={{
-                          label: {color: '#fff'},
-                          shape: {
-                            color: '#5D84B6',
-                            border: {color: '#000', opacity: 1, width: 2},
-                          },
-                        }}
-                      />
-                    }
-                    data={[
-                      {x: 15, y: 5},
-                      {x: 5, y: 6},
-                      {x: 6, y: 10},
-                      {x: 8, y: 15},
-                      {x: 10, y: 20},
-                    ]}
-                    theme={{
-                      stroke: {color: '#5D84B6', width: 2},
-                      scatter: {default: {width: 4, height: 4, rx: 2}},
-                    }}
-                  />
-                </Chart> */}
                 <View style={styles.legendContainer}>
                   <View style={styles.flexRow}>
                     <View style={styles.meterUsageBox} />

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,25 +11,28 @@ import {
   LayoutAnimation,
   PermissionsAndroid,
   Alert,
+  Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
-import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
+import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import { Fonts } from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import Base_URL from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
 
@@ -44,6 +47,9 @@ export default function UnitEdit({
   reRun,
   type,
   modalName,
+  flag,
+  enableFlag,
+  disableFlag,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [meterMenuVisible, setMeterMenuVisible] = useState(false);
@@ -85,8 +91,10 @@ export default function UnitEdit({
     }));
   };
 
-  useEffect(() => {
-    getToken();
+  useUpdateEffect(() => {
+    if (flag) {
+      getToken();
+    }
   }, [modalVisible]);
 
   useEffect(() => {
@@ -112,6 +120,8 @@ export default function UnitEdit({
       meterTypeError: '',
       meterAttachedTo: '',
       manufacturersId: '',
+      initialMeterReadingError: '',
+      initialMeterReading: '',
       manufacturersName: '',
       manufacturersError: '',
       deviceId: '',
@@ -136,6 +146,7 @@ export default function UnitEdit({
   };
 
   const deleteMeterInNewArray = (value) => {
+    disableFlag();
     const newList = meterListData.filter((item) => item.id !== value.id);
     setMeterListData(newList);
     const data = {
@@ -160,34 +171,76 @@ export default function UnitEdit({
   };
 
   const toggleScanner = async (value) => {
+    disableFlag();
     setState((oldState) => ({
       ...oldState,
       scanIndex: value,
     }));
-    try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === true) {
-        setState((oldState) => ({
-          ...oldState,
-          isScannerVisible: true,
-          hasAccess: true,
-          scan: true,
-        }));
-      } else {
-        setState((oldState) => ({
-          ...oldState,
-          hasAccess: false,
-        }));
-        Alert.alert(
-          "You don't have access for the Camera",
-          'Kindly TurnOn Camera Permission from Settings to use Scanner',
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
+        if (granted === true) {
+          setState((oldState) => ({
+            ...oldState,
+            isScannerVisible: true,
+            hasAccess: true,
+            scan: true,
+          }));
+        } else {
+          setState((oldState) => ({
+            ...oldState,
+            hasAccess: false,
+          }));
+          Alert.alert(
+            "You don't have access for the Camera",
+            'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          );
+        }
+        return granted;
+      } catch (err) {
+        alert(err);
       }
-      return granted;
-    } catch (err) {
-      alert(err);
+    }
+    if (Platform.OS == 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          if (result == RESULTS.GRANTED) {
+            closeModal();
+            setTimeout(() => {
+              setState((oldState) => ({
+                ...oldState,
+                isScannerVisible: true,
+                hasAccess: true,
+                scan: true,
+              }));
+            }, 450);
+          }
+          if (result == RESULTS.DENIED) {
+            setState((oldState) => ({
+              ...oldState,
+              hasAccess: false,
+            }));
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+          }
+          if (result == RESULTS.BLOCKED) {
+            setState((oldState) => ({
+              ...oldState,
+              hasAccess: false,
+            }));
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            );
+          }
+        })
+        .catch((e) => {
+          alert(err);
+        });
     }
   };
   const onScanned = (e) => {
@@ -212,6 +265,11 @@ export default function UnitEdit({
         RNBeep.beep(false);
       }, 500);
     }
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        closeModal();
+      }, 400);
+    }
   };
   const scannerModal = () => {
     setState((oldState) => ({
@@ -219,12 +277,23 @@ export default function UnitEdit({
       isScannerVisible: false,
       scan: false,
     }));
+    if (Platform.OS == 'ios') {
+      setTimeout(() => {
+        closeModal();
+      }, 400);
+    }
   };
   //!-------->
   const onChangeMultipleField = (e, index) => {
     let newArr = [...meterListData]; // copying the old datas array
     newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
     newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
+    setMeterListData(newArr);
+  };
+  const onChangeInitialReading = (e, index) => {
+    let newArr = [...meterListData]; // copying the old datas array
+    newArr[index].initialMeterReading = e; // replace e.target.value with whatever you want to change it to
+    newArr[index].initialMeterReadingError = ''; // replace e.target.value with whatever you want to change it to
     setMeterListData(newArr);
   };
   const onChangeMeterSerial = (e, index) => {
@@ -248,8 +317,8 @@ export default function UnitEdit({
   };
 
   const changeUtilityAndToggle = () => {
+    enableFlag();
     setMeterListData([]);
-
     setError((oldState) => ({
       ...oldState,
       errorUnits: '',
@@ -305,6 +374,9 @@ export default function UnitEdit({
     }
     const checkSerial = meterListData.filter(
       (item) => item.deviceSerialNum === '',
+    );
+    const checkInitial = meterListData.filter(
+      (item) => item.initialMeterReading === '',
     );
     const checkManufacturer = meterListData.filter(
       (item) => item.manufacturersId == '',
@@ -369,6 +441,27 @@ export default function UnitEdit({
           setMeterListData(newArr);
         });
       }
+      if (checkInitial.length) {
+        meterListData.map((data, index) => {
+          if (data.initialMeterReading == '') {
+            let newArr = [...meterListData];
+            newArr[index].initialMeterReadingError = 'Initial meter reading required';
+            setMeterListData(newArr);
+            return;
+          } else {
+            let newArr = [...meterListData];
+            newArr[index].initialMeterReadingError = '';
+            setMeterListData(newArr);
+          }
+        });
+        return;
+      } else {
+        meterListData.map((data, index) => {
+          let newArr = [...meterListData];
+          newArr[index].deviceSerialError = '';
+          setMeterListData(newArr);
+        });
+      }
       if (checkManufacturer.length) {
         meterListData.map((data, index) => {
           if (data.meterType == '') {
@@ -419,6 +512,7 @@ export default function UnitEdit({
         device_serial_number: data.deviceSerialNum,
         meter_serial_number: data.meterSerialNum,
         device_id: data.meterType,
+        initial_meter_reading: data.initialMeterReading
       });
     });
     let data = {
@@ -471,6 +565,7 @@ export default function UnitEdit({
         animationOut="slideOutUp"
         hasBackdrop={true}
         backdropColor="black"
+        statusBarTranslucent
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.modalInner}>
@@ -512,7 +607,7 @@ export default function UnitEdit({
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   keyboardShouldPersistTaps="handled">
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <View style={styles.desciptionContainer}>
                       <Build
                         name={'office-building'}
@@ -556,9 +651,9 @@ export default function UnitEdit({
                           type == 'meterDirect'
                             ? null
                             : setState((oldState) => ({
-                                ...oldState,
-                                lastUnitData: text,
-                              }));
+                              ...oldState,
+                              lastUnitData: text,
+                            }));
                         }}
                         disabled={type == 'meterDirect' ? true : false}
                         style={styles.input}
@@ -635,13 +730,14 @@ export default function UnitEdit({
                                 error={item.deviceSerialError}
                                 right={
                                   type == 'meterDirect' ||
-                                  type == 'addMeterDirect' ? null : (
+                                    type == 'addMeterDirect' ? null : (
                                     <TextInput.Icon
                                       name={() => (
                                         <TouchableOpacity
                                           onPress={() =>
                                             toggleScanner(meterIndex)
-                                          }>
+                                          }
+                                          style={{zIndex:1}}>
                                           <Scanner name="scan" size={20} />
                                         </TouchableOpacity>
                                       )}
@@ -650,13 +746,13 @@ export default function UnitEdit({
                                 }
                                 onChangeText={(text) =>
                                   type == 'meterDirect' ||
-                                  type == 'addMeterDirect'
+                                    type == 'addMeterDirect'
                                     ? null
                                     : onChangeMultipleField(text, meterIndex)
                                 }
                                 disabled={
                                   type == 'meterDirect' ||
-                                  type == 'addMeterDirect'
+                                    type == 'addMeterDirect'
                                     ? true
                                     : false
                                 }
@@ -670,11 +766,35 @@ export default function UnitEdit({
                                   },
                                 }}></TextInput>
                             </View>
-                            {item.deviceSerialError ? (
+                            <View style={styles.meterDesciptionContainer}>
+                              <Text style={styles.meterDesciptionHeading}>
+                                Initial Meter Reading
+                              </Text>
+                            </View>
+                            <View style={styles.meterInputContainer}>
+                              <TextInput
+                                keyboardType="numeric"
+                                placeholder="Serial Number"
+                                value={item.initialMeterReading}
+                                dense={true}
+                                error={item.initialMeterReadingError}
+                                onChangeText={(text) => onChangeInitialReading(text, meterIndex)
+                                }
+                                style={styles.meterInput}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }} />
+                            </View>
+                            {item.initialMeterReadingError ? (
                               <HelperText
                                 type="error"
-                                visible={item.deviceSerialError}>
-                                {item.deviceSerialError}
+                                visible={item.initialMeterReadingError}>
+                                {item.initialMeterReadingError}
                               </HelperText>
                             ) : null}
                             {/*//todoK */}
@@ -697,7 +817,7 @@ export default function UnitEdit({
                                 borderWidth: width * 0.0015,
                                 borderRadius: width * 0.015,
                               }}
-                              itemTextStyle={{color: '#222'}}
+                              itemTextStyle={{ color: '#222' }}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.1,
                               }}
@@ -755,7 +875,7 @@ export default function UnitEdit({
                                 borderWidth: width * 0.0015,
                                 borderRadius: width * 0.015,
                               }}
-                              itemTextStyle={{color: '#222'}}
+                              itemTextStyle={{ color: '#222' }}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.1,
                               }}
@@ -857,7 +977,7 @@ export default function UnitEdit({
                       anchor={
                         type == 'addMeterDirect' || type == 'meterDirect' ? (
                           meterListData.length == 1 ? (
-                            <View style={{marginLeft: width * 0.02}}>
+                            <View style={{ marginLeft: width * 0.02 }}>
                               <Text
                                 style={{
                                   fontSize: height * 0.018,
@@ -909,7 +1029,7 @@ export default function UnitEdit({
                             </Text>
                           </TouchableOpacity>
                         ) : (
-                          <View style={{marginLeft: width * 0.02}}>
+                          <View style={{ marginLeft: width * 0.02 }}>
                             <Text
                               style={{
                                 fontSize: height * 0.018,
@@ -944,7 +1064,7 @@ export default function UnitEdit({
                     <TouchableOpacity onPress={changeUtilityAndToggle}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{color: 'black'}}>Cancel</Text>
+                        <Text style={{ color: 'black' }}>Cancel</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleAddNewUnit}>
@@ -952,18 +1072,18 @@ export default function UnitEdit({
                         <Plus
                           name={
                             type == 'meterDirect' ||
-                            type == 'addMeterDirect' ||
-                            type == 'add'
+                              type == 'addMeterDirect' ||
+                              type == 'add'
                               ? 'plus'
                               : 'pencil-plus'
                           }
                           color="white"
                           size={18}
                         />
-                        <Text style={{color: 'white'}}>
+                        <Text style={{ color: 'white' }}>
                           {type == 'meterDirect' ||
-                          type == 'addMeterDirect' ||
-                          type == 'add'
+                            type == 'addMeterDirect' ||
+                            type == 'add'
                             ? 'Add Unit'
                             : 'Edit Unit'}
                         </Text>
@@ -980,6 +1100,7 @@ export default function UnitEdit({
         animationIn="bounceInUp"
         animationOut="bounceInDown"
         backdropOpacity={5}
+        statusBarTranslucent
         isVisible={state.isScannerVisible}>
         {state.scan && (
           <View
@@ -1016,7 +1137,7 @@ export default function UnitEdit({
               ref={(ref) => {
                 this.camera = ref;
               }}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               type={RNCamera.Constants.Type.back}
               autoFocus="on"
               onBarCodeRead={onScanned}

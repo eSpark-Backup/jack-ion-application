@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform, StatusBar} from 'react-native';
 import {Fonts} from '../../../utils/fonts';
 
 //Packages
@@ -31,6 +31,7 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
   },
   searchView: {
+    // marginTop: Platform.OS == 'ios' ? height * 0.1: 0,
     marginLeft: width * 0.03,
     width: width * 0.8,
     height: height * 0.06,
@@ -217,7 +218,8 @@ export default styles = StyleSheet.create({
     paddingTop: height * 0.01,
   },
   drawerbtn: {
-    marginBottom: height * 0.01354,
+    // marginBottom: height * 0.003,
+    // textAlignVertical: 'top',
     fontSize: height * 0.025,
     color: 'black',
     fontWeight: 'normal',
@@ -225,9 +227,9 @@ export default styles = StyleSheet.create({
 
   drawerBottom: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: height * 0.015,
+    // paddingBottom: height * 0.015,
   },
 
   drawerBtnIcon: {marginRight: width * 0.02},

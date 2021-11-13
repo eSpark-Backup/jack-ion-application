@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -6,27 +6,26 @@ import {
   TouchableOpacity,
   Pressable,
   KeyboardAvoidingView,
-  CheckBox,
   ScrollView,
-  FlatList
+  FlatList,
 } from 'react-native';
-
+import CheckBox from '@react-native-community/checkbox';
 //Packages
 
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
 import Home from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
-import { create } from 'apisauce';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
+import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 // Components
 
 import styles from './style';
-const { width, height } = Dimensions.get('window');
-const api = create({ baseURL: Base_URL });
+const {width, height} = Dimensions.get('window');
+const api = create({baseURL: Base_URL});
 
 export default function AddbuildingModal({
   modalVisible,
@@ -36,7 +35,7 @@ export default function AddbuildingModal({
   type,
   modalName,
   lastUnitName,
-  buildData
+  buildData,
 }) {
   const [meterListArray, setMeterListArray] = useState([]);
   const [state, setState] = useState({
@@ -62,18 +61,27 @@ export default function AddbuildingModal({
     setState((oldState) => ({
       ...oldState,
       newUnit: lastUnitName == undefined ? 'Unit-0' : lastUnitName,
-      buildName: type == 'Multyple' ? buildData.buildingName == undefined ? '' : buildData.buildingName : '',
-      buildDescription:type == 'Multyple' ? buildData.buildDes == undefined ? '' : buildData.buildDes : '',
+      buildName:
+        type == 'Multyple'
+          ? buildData.buildingName == undefined
+            ? ''
+            : buildData.buildingName
+          : '',
+      buildDescription:
+        type == 'Multyple'
+          ? buildData.buildDes == undefined
+            ? ''
+            : buildData.buildDes
+          : '',
     }));
     getToken();
   }, [modalVisible]);
   // useEffect(() => {
   // }, [state.newUnit]);
 
-
   const getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
-    var initialValue = lastUnitName == undefined ? state.newUnit : lastUnitName
+    var initialValue = lastUnitName == undefined ? state.newUnit : lastUnitName;
     var intValue = initialValue;
     var firstStr = initialValue.split(parseInt(initialValue.match(/\d+/)))[0];
     var lastStr = initialValue.split(parseInt(initialValue.match(/\d+/)))[1];
@@ -82,14 +90,17 @@ export default function AddbuildingModal({
     var i;
     for (i = 0; i < n; i++) {
       loopData.push({
-        name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
+        name:
+          (firstStr != undefined ? firstStr : '') +
+          (isNaN(intValue) ? '' : intValue) +
+          (lastStr != undefined ? lastStr : ''),
       }),
         // (value = value + 1);
-        intValue = intValue + 1;
+        (intValue = intValue + 1);
     }
     setState((oldState) => ({
       ...oldState,
-      unitsArray: loopData
+      unitsArray: loopData,
     }));
   };
 
@@ -97,7 +108,7 @@ export default function AddbuildingModal({
     // console.log('vindex--->>', vindex)
     setState((oldState) => ({
       ...oldState,
-      newUnit: value
+      newUnit: value,
     }));
     if (state.autoIncrement == true) {
       var intValue = value;
@@ -110,26 +121,29 @@ export default function AddbuildingModal({
         if (index >= i) {
           unitsArray[index] = {
             ...unitsArray[index],
-            name: (firstStr != undefined ? firstStr : '') + (isNaN(intValue) ? '' : intValue) + (lastStr != undefined ? lastStr : ''),
+            name:
+              (firstStr != undefined ? firstStr : '') +
+              (isNaN(intValue) ? '' : intValue) +
+              (lastStr != undefined ? lastStr : ''),
           };
           setState((oldState) => ({
             ...oldState,
-            unitsArray
+            unitsArray,
           }));
           intValue = intValue + 1;
         }
       });
     } else {
       let unitsArray = [...state.unitsArray];
-      unitsArray[i] = { ...unitsArray[i], name: value };
+      unitsArray[i] = {...unitsArray[i], name: value};
       setState((oldState) => ({
         ...oldState,
-        unitsArray
+        unitsArray,
       }));
     }
   };
 
-  const _renderUnitList = ({ item, index }) => (
+  const _renderUnitList = ({item, index}) => (
     <TextInput
       key={index}
       value={item.name}
@@ -137,7 +151,7 @@ export default function AddbuildingModal({
       onChangeText={(text) => {
         addInput(text, index);
       }}
-      style={[styles.input, { alignSelf: 'center', fontSize: width * 0.03 }]}
+      style={[styles.input, {alignSelf: 'center', fontSize: width * 0.03}]}
       scrollEnabled={false}
       underlineColor="transparent"
       mode={'outlined'}
@@ -164,21 +178,20 @@ export default function AddbuildingModal({
       buildingName: '', // update the value of specific key
       units: '',
     }));
-    closeModal()
+    closeModal();
   };
-
 
   const newBuilding = () => {
     if (state.buildName === '') {
       setError((oldState) => ({
         ...oldState,
-        buildingName: 'Invalid Building Name'
+        buildingName: 'Invalid Building Name',
       }));
       return;
     } else {
       setError((oldState) => ({
         ...oldState,
-        buildingName: ''
+        buildingName: '',
       }));
     }
     if (state.unitsArray.length === 0) {
@@ -205,38 +218,43 @@ export default function AddbuildingModal({
           building_id: buildData.buildId,
           units: loopData,
           descriptions: state.buildDescription,
-        })
+        });
       } else {
         handleAddbuildingApi({
           name: state.buildName,
           property_id: propertyId,
           units: loopData,
           descriptions: state.buildDescription,
-        })
+        });
       }
-
     }
   };
 
   const handleAddbuildingApi = async (data) => {
     // console.log('check data-->', data)
     if (type == 'Multyple') {
-      const unitResponse = await api.post(`/property/equipment/unit/add-multiple-units`, data);
-      console.log('buildResponse--->', unitResponse)
+      const unitResponse = await api.post(
+        `/property/equipment/unit/add-multiple-units`,
+        data,
+      );
+      console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
-        changeUtilityAndToggle()
-        reRun()
+        changeUtilityAndToggle();
+        reRun();
       } else {
-        alert(unitResponse?.data?.message)
+        alert(unitResponse?.data?.message);
       }
     } else {
-      const unitResponse = await api.post(`/property/equipment/building/add-building`, data);
-      console.log('buildResponse--->', unitResponse)
+      const unitResponse = await api.post(
+        `/property/equipment/building/add-building`,
+        data,
+      );
+      console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
-        changeUtilityAndToggle()
-        reRun()
+        changeUtilityAndToggle();
+        reRun();
       } else {
-        alert(unitResponse?.data?.message)
+        alert(unitResponse?.data?.message);
       }
     }
   };
@@ -247,8 +265,7 @@ export default function AddbuildingModal({
       animationOut="slideOutUp"
       hasBackdrop={true}
       backdropColor="black"
-      isVisible={modalVisible}
-    >
+      isVisible={modalVisible}>
       <KeyboardAvoidingView behavior="padding">
         <View style={styles.modalInner}>
           <View
@@ -285,7 +302,7 @@ export default function AddbuildingModal({
                 </View>
               </View>
               {/* Box Body */}
-              <ScrollView style={{ flex: 1 }}>
+              <ScrollView style={{flex: 1}}>
                 <View style={styles.inputContainer}>
                   <TextInput
                     placeholder="Building Name"
@@ -295,11 +312,11 @@ export default function AddbuildingModal({
                     onChangeText={(text) => {
                       setError((oldState) => ({
                         ...oldState,
-                        buildingName: ''
+                        buildingName: '',
                       }));
                       setState((oldState) => ({
                         ...oldState,
-                        buildName: text
+                        buildName: text,
                       }));
                     }}
                     style={styles.input}
@@ -314,9 +331,7 @@ export default function AddbuildingModal({
                   />
                 </View>
                 {error.buildingName ? (
-                  <HelperText
-                    type="error"
-                    visible={error.buildingName}>
+                  <HelperText type="error" visible={error.buildingName}>
                     {error.buildingName}
                   </HelperText>
                 ) : null}
@@ -327,7 +342,7 @@ export default function AddbuildingModal({
                     onChangeText={(text) => {
                       setState((oldState) => ({
                         ...oldState,
-                        buildDescription: text
+                        buildDescription: text,
                       }));
                     }}
                     style={styles.input}
@@ -347,9 +362,7 @@ export default function AddbuildingModal({
                     size={height * 0.02}
                     color="#5e5e5e"
                   />
-                  <Text style={styles.desciptionHeading}>
-                    # OF UNITS
-                  </Text>
+                  <Text style={styles.desciptionHeading}># OF UNITS</Text>
                 </View>
                 <View
                   style={{
@@ -394,27 +407,24 @@ export default function AddbuildingModal({
                       onValueChange={() =>
                         setState((oldState) => ({
                           ...oldState,
-                          autoIncrement: !state.autoIncrement
-                        }))}
+                          autoIncrement: !state.autoIncrement,
+                        }))
+                      }
                     />
-                    <Text style={{ fontSize: width * 0.035 }}>
+                    <Text style={{fontSize: width * 0.035}}>
                       Auto Increment
                     </Text>
                   </View>
                 </View>
                 {error.units ? (
-                  <HelperText
-                    type="error"
-                    visible={error.units}>
+                  <HelperText type="error" visible={error.units}>
                     {error.units}
                   </HelperText>
                 ) : null}
                 <FlatList
                   data={state.unitsArray}
                   // initialNumToRender={this.state.noOfUnits}
-                  renderItem={(item, index) =>
-                    _renderUnitList(item, index)
-                  }
+                  renderItem={(item, index) => _renderUnitList(item, index)}
                   keyExtractor={(item, index) => index.toString()}
                 />
               </ScrollView>
@@ -424,13 +434,13 @@ export default function AddbuildingModal({
                   <TouchableOpacity onPress={changeUtilityAndToggle}>
                     <View style={styles.cancelBotton}>
                       <Plus name="close" color="black" size={18} />
-                      <Text style={{ color: 'black' }}>Cancel</Text>
+                      <Text style={{color: 'black'}}>Cancel</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={newBuilding}>
                     <View style={styles.submitBotton}>
                       <Plus name="plus" color="white" size={18} />
-                      <Text style={{ color: 'white' }}>Add Building</Text>
+                      <Text style={{color: 'white'}}>Add Building</Text>
                     </View>
                   </TouchableOpacity>
                 </View>

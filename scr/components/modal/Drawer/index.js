@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Pressable,
+  Platform,
   KeyboardAvoidingView,
 } from 'react-native';
 
@@ -19,6 +20,7 @@ import Equip from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
+import CustumStatusBar from '../../StatusBar';
 
 // Components
 
@@ -41,7 +43,7 @@ export default class DrawerModal extends Component {
       onDone,
     } = this.props;
     return (
-        <Modal
+      <Modal
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         isVisible={isVisible}
@@ -49,9 +51,12 @@ export default class DrawerModal extends Component {
         onSwipeStart={onCancel}
         onBackdropPress={onCancel}
         backdropColor="black"
+        statusBarTranslucent
         style={styles.modalContainer}>
+        <CustumStatusBar backColor />
+        <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
         <View style={styles.drawerMainContainer}>
-          <View style={{marginTop: StatusBar.currentHeight}}>
+          <View>
             <Menu
               name="menu"
               size={height * 0.05}
@@ -96,24 +101,27 @@ export default class DrawerModal extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={naviagateToSupport}>
+          <TouchableOpacity
+            style={{bottom: height * 0.05}}
+            onPress={naviagateToSupport}>
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'center',
+                // alignItems: 'center',
                 justifyContent: 'center',
                 paddingBottom: height * 0.015,
+                marginBottom: height * 0.01,
               }}>
               <Detail
                 name="help-circle-outline"
                 size={height * 0.035}
                 color="#35afe2"
                 style={{
-                  marginBottom: height * 0.009,
                   marginRight: width * 0.02,
+                  bottom: Platform.OS == 'ios' ? 2 : null,
                 }}
               />
-              <Text style={styles.drawerbtn}>Support</Text>
+              <Text style={[styles.drawerbtn]}>Support</Text>
             </View>
           </TouchableOpacity>
         </View>
