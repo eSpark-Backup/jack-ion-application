@@ -181,21 +181,21 @@ const App = ({navigation}) => {
         // display: 'inline',
         // padding: 0,
         width: width * 1,
-        height: width * .4,
+        height: height * 0.35,
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
         textAnchor: 'start',
         verticalAnchor: 'end',
         fill: '#000000',
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: '18px',
         fontWeight: 'bold',
       },
       labelNumber: {
         textAnchor: 'middle',
         fill: '#ffffff',
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: '14px',
       },
 
@@ -212,8 +212,8 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: 'black',
-          fontFamily: 'inherit',
-          fontSize: width * .025,
+          // fontFamily: 'inherit',
+          fontSize: width * 0.025,
         },
       },
 
@@ -229,14 +229,14 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: '#5D84B6',
-          fontFamily: 'inherit',
-          fontSize: width * .025,
+          // fontFamily: 'inherit',
+          fontSize: width * 0.025,
         },
       },
       labelOne: {
         fill: BLUE_COLOR,
-        fontFamily: 'inherit',
-        fontSize: width * .025,
+        // fontFamily: 'inherit',
+        fontSize: width * 0.025,
         fontStyle: 'italic',
       },
       lineOne: {
@@ -244,9 +244,9 @@ const App = ({navigation}) => {
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontWeight: 300,
-        fontSize: width * .025,
+        fontSize: width * 0.025,
       },
 
       // DATA SET TWO
@@ -255,15 +255,15 @@ const App = ({navigation}) => {
         ticks: {strokeWidth: 0},
         tickLabels: {
           fill: 'gray',
-          fontFamily: 'inherit',
-          fontSize: width * .025,
+          // fontFamily: 'inherit',
+          fontSize: width * 0.025,
         },
       },
       labelTwo: {
         textAnchor: 'end',
         fill: RED_COLOR,
-        fontFamily: 'inherit',
-        fontSize: width * .025,
+        // fontFamily: 'inherit',
+        fontSize: width * 0.025,
         fontStyle: 'italic',
       },
       lineTwo: {
@@ -1284,8 +1284,8 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={{alignItems: 'center'}}>
-                <Svg style={styled.parent} >
-                  <G transform={'translate(0, -100)'}>
+                <Svg style={styled.parent}>
+                  <G transform={'translate(0, -10)'}>
                     {/* <VictoryChart> */}
                     <VictoryAxis
                       scale="time"
