@@ -175,7 +175,6 @@ export default styles = StyleSheet.create({
     marginVertical: width * 0.01,
     // padding: width * 0.005,
     // backgroundColor: 'red',
-
   },
   unitDetailInnerElse: {
     flexDirection: 'row',
@@ -183,8 +182,8 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     width: width * 0.45,
     padding: width * 0.02,
-    borderWidth:width * .002,
-    borderRadius:width * .01
+    borderWidth: width * 0.002,
+    borderRadius: width * 0.01,
   },
   unitDetailInnerElseText: {
     fontSize: width * 0.035,
@@ -197,7 +196,7 @@ export default styles = StyleSheet.create({
   untiDetailImage: {
     height: width * 0.03,
     width: width * 0.03,
-    marginRight: width * 0.01
+    marginRight: width * 0.01,
   },
   unitDetailSeprater: {
     borderColor: '#3E4A4F50',
@@ -205,7 +204,7 @@ export default styles = StyleSheet.create({
     width: '100%',
     // flex:1,
     borderRadius: width * 1,
-    bottom:width * -.005
+    bottom: width * -0.005,
   },
   dataFieldText: {
     fontSize: width * 0.03,
@@ -242,6 +241,12 @@ export default styles = StyleSheet.create({
     backgroundColor: '#25AAE1ec',
     borderBottomLeftRadius: width * 0.01,
     borderBottomRightRadius: width * 0.01,
+  },
+  dropDownContainer: {
+    paddingHorizontal: width * 0.03,
+    justifyContent: 'center',
+    borderRightWidth: width * 0.001,
+    width: width * 0.4,
   },
   dropDown: {
     flexDirection: 'row',

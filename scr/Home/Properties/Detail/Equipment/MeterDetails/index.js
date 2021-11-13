@@ -199,7 +199,7 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.device?.manufacturer?.name +
+              unitMeter?.device?.manufacturer +
               ' (' +
               unitMeter?.device?.name +
               ')',
