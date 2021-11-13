@@ -86,8 +86,11 @@ const App = ({navigation}) => {
   const [editMeterTypes, setEditMeterTypes] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [dataSet, setDataSet] = useState([]);
-  const [meterUsage, setMeterUsage] = useState([]);
   const [readDate, setReadDate] = useState([]);
+  const [meterUsage, setMeterUsage] = useState([]);
+  const [meterReadData, setMeterReadData] = useState([]);
+  const [meterUsageData, setMeterUsageData] = useState([]);
+  const [dateData, setDateData] = useState([]);
   const [x, setX] = useState('x:');
   const [y, setY] = useState('y:');
   const months = [
@@ -127,11 +130,23 @@ const App = ({navigation}) => {
       // {x: new Date(2021, 10, 7), y: 1},
       // {x: new Date(2021, 10, 8), y: 6},
       {
-        x: new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
+        x: new Date(
+          2021,
+          10,
+          readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
+          9,
+          0,
+        ),
         y: dataSet.length > 0 ? dataSet[0] : 0,
       },
       {
-        x: new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+        x: new Date(
+          2021,
+          10,
+          readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
+          10,
+          0,
+        ),
         y: dataSet.length > 0 ? dataSet[1] : 0,
       },
       // {x: new Date(2021, 10, 10), y: 9},
@@ -155,11 +170,23 @@ const App = ({navigation}) => {
       // {x: new Date(2021, 10, 7), y: 1},
       // {x: new Date(2021, 10, 8), y: 5},
       {
-        x: new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
+        x: new Date(
+          2021,
+          10,
+          readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
+          9,
+          0,
+        ),
         y: meterUsage.length > 0 ? meterUsage[0] : 0,
       },
       {
-        x: new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+        x: new Date(
+          2021,
+          10,
+          readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
+          10,
+          0,
+        ),
         y: meterUsage.length > 0 ? meterUsage[1] : 0,
       },
       // {x: new Date(2021, 10, 10), y: 1},
@@ -185,8 +212,20 @@ const App = ({navigation}) => {
       // new Date(2005, 1, 1),
       // new Date(2021, 10, 7),
       // new Date(2021, 10, 8),
-      new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
-      new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+      new Date(
+        2021,
+        10,
+        readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
+        9,
+        0,
+      ),
+      new Date(
+        2021,
+        10,
+        readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
+        10,
+        0,
+      ),
       // new Date(2021, 10, 10),
       // new Date(2021, 10, 11),
       // new Date(2007, 1, 1),
@@ -328,7 +367,7 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
+    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
@@ -336,13 +375,62 @@ const App = ({navigation}) => {
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
     );
 
-    console.log('Chart Data', chartRes.data?.data?.label[0].slice(4, 6));
-    setChartData(chartRes.data?.data);
+    console.log('Chart Data', chartRes.data?.data);
     setDataSet(chartRes.data?.data?.dataset);
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
+    let MeterUsage = chartRes.data?.data?.meterUsage;
+    let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM'];
+    let DataSet = chartRes.data?.data?.dataset;
+
+    let Read = [];
+    let Usage = [];
+    let TimeDate = [];
+
+    for (let i = 0; i < chartRes.data?.data?.meterUsage.length; i++) {
+      let tt = {};
+      let uu = {};
+      let vv = {};
+      tt.x = new Date(
+        2021,
+        10,
+        ReadData[i]?.slice(4, 6),
+        ReadData[i]?.slice(7, 9),
+        0,
+      );
+      tt.y = MeterUsage[i];
+      uu.x = new Date(
+        2021,
+        10,
+        ReadData[i]?.slice(4, 6),
+        ReadData[i]?.slice(7, 9),
+        0,
+      );
+      uu.y = DataSet[i];
+      vv = new Date(
+        2021,
+        10,
+        ReadData[i]?.slice(4, 6),
+        ReadData[i]?.slice(7, 9),
+        0,
+      );
+      Read.push(uu);
+      Usage.push(tt);
+      TimeDate.push(vv);
+    }
+    setMeterReadData(Read);
+    setMeterUsageData(Usage);
+    setDateData(TimeDate);
+
     setLoading(false);
   };
+
+  console.log('Meter Read Data', getDataSetOne());
+  console.log('Chart Data Received', meterReadData, meterUsageData, dateData);
+
+  // const getChartData = () => {
+
+  // }
 
   const getMeterTypes = async () => {
     const res = await api.get('/property/equipment/meter/all-meters');
@@ -354,7 +442,7 @@ const App = ({navigation}) => {
     setLoading(true);
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
-      console.log('token aya', token);
+      // console.log('token aya', token);
       // this.setState({token: token});
       api.setHeader('Authorization', 'Bearer ' + token);
       getUnitDetail();
@@ -581,7 +669,6 @@ const App = ({navigation}) => {
       );
 
       console.log('Chart Data', chartRes.data?.data?.dataset[1]);
-      setChartData(chartRes.data?.data);
       setDataSet(chartRes.data?.data?.dataset);
       setUnitMeter(data);
     }
@@ -916,7 +1003,7 @@ const App = ({navigation}) => {
     );
   };
 
-  console.log(clc.red('data', JSON.stringify(data.data)));
+  // console.log(clc.red('data', JSON.stringify(data.data)));
   if (loading) {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
@@ -1318,32 +1405,32 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={{alignItems: 'center'}}>
-                <Svg
-                  style={styled.parent}
-                  // viewBox="0 0 400 150"
-                >
+                <Svg style={styled.parent}>
                   <G transform={'translate(0, -10)'}>
                     {/* <VictoryChart> */}
                     <VictoryAxis
                       scale="time"
                       standalone={false}
                       style={styled.axisYears}
-                      tickValues={tickValues}
+                      // tickValues={tickValues}
+                      tickValues={dateData.length > 0 ? dateData : tickValues}
                       tickFormat={(date) =>
                         // console.log('Date', date.toString())
-                        // date.toLocaleString('en-us', {month: 'short'})
                         months[date.getMonth()] +
                         ' ' +
                         `0${date.getDate()}` +
                         ' ' +
                         `${date.getHours()} AM`
                       }
-                      domainPadding={{x: 20}}
+                      domainPadding={{x: width * 0.05}}
                     />
 
                     <VictoryBar
-                      data={dataSetTwo}
-                      domainPadding={{x: 20}}
+                      // data={dataSetTwo}
+                      data={
+                        meterUsageData.length > 0 ? meterUsageData : dataSetTwo
+                      }
+                      domainPadding={{x: width * 0.05}}
                       labels={({datum}) => datum.y}
                       style={{data: {fill: '#DFDFDF'}}}
                       labelComponent={<VictoryLabel dy={30} />}
@@ -1360,11 +1447,26 @@ const App = ({navigation}) => {
                     />
                     {/* Dataset one */}
                     <VictoryLine
-                      data={dataSetOne}
+                      // data={dataSetOne}
+                      data={
+                        meterReadData.length > 0 ? meterReadData : dataSetOne
+                      }
                       domain={{
                         x: [
-                          new Date(2021, 10, readDate[0]?.slice(4, 6), 9, 0),
-                          new Date(2021, 10, readDate[1]?.slice(4, 6), 10, 0),
+                          new Date(
+                            2021,
+                            10,
+                            readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
+                            10,
+                            0,
+                          ),
+                          new Date(
+                            2021,
+                            10,
+                            readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
+                            11,
+                            0,
+                          ),
                         ],
                         y: [0, 15],
                       }}
