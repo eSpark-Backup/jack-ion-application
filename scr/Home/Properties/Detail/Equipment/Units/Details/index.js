@@ -90,9 +90,21 @@ const App = ({navigation}) => {
   const [meterUsage, setMeterUsage] = useState([]);
   const [meterReadData, setMeterReadData] = useState([]);
   const [meterUsageData, setMeterUsageData] = useState([]);
+  const [meterReadDomain, setMeterReadDomain] = useState([]);
   const [dateData, setDateData] = useState([]);
-  const [x, setX] = useState('x:');
-  const [y, setY] = useState('y:');
+  let DataDates = [
+    'Nov 09 10 AM',
+    'Nov 09 11 AM',
+    'Nov 10 03 PM',
+    'Nov 11 05 PM',
+    'Nov 12 09 AM',
+    'Nov 13 10 AM',
+    'Nov 13 11 AM',
+    'Nov 14 10 AM',
+    'Nov 15 07 PM',
+    'Nov 15 08 PM',
+  ];
+
   const months = [
     'Jan',
     'Feb',
@@ -111,133 +123,106 @@ const App = ({navigation}) => {
 
   const getDataSetOne = () => {
     return [
-      // {x: new Date(2000, 1, 1), y: 12},
-      // {x: new Date(2000, 6, 1), y: 10},
-      // {x: new Date(2000, 12, 1), y: 11},
-      // {x: new Date(2001, 1, 1), y: 5},
-      // {x: new Date(2002, 1, 1), y: 4},
-      // {x: new Date(2003, 1, 1), y: 6},
-      // {x: new Date(2004, 1, 1), y: 5},
-      // {x: new Date(2005, 1, 1), y: 7},
-      // {x: new Date(2006, 1, 1), y: 8},
-      // {x: new Date(2007, 1, 1), y: 9},
-      // {x: new Date(2008, 1, 1), y: -8.5},
-      // {x: new Date(2009, 1, 1), y: -9},
-      // {x: new Date(2010, 1, 1), y: 5},
-      // {x: new Date(2013, 1, 1), y: 1},
-      // {x: new Date(2014, 1, 1), y: 2},
-      // {x: new Date(2015, 1, 1), y: -5},
-      // {x: new Date(2021, 10, 7), y: 1},
-      // {x: new Date(2021, 10, 8), y: 6},
       {
-        x: new Date(
-          2021,
-          10,
-          readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
-          9,
-          0,
-        ),
-        y: dataSet.length > 0 ? dataSet[0] : 0,
+        x: new Date(2021, months.indexOf(DataDates[0].slice(0, 3)), 9),
+        y: 5,
       },
       {
-        x: new Date(
-          2021,
-          10,
-          readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
-          10,
-          0,
-        ),
-        y: dataSet.length > 0 ? dataSet[1] : 0,
+        x: new Date(2021, months.indexOf(DataDates[1].slice(0, 3)), 9),
+        y: 11,
       },
-      // {x: new Date(2021, 10, 10), y: 9},
-      // {x: new Date(2021, 10, 11), y: 11},
+      {
+        x: new Date(2021, months.indexOf(DataDates[2].slice(0, 3)), 10),
+        y: 14,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[3].slice(0, 3)), 11),
+        y: 22,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[4].slice(0, 3)), 12),
+        y: 29,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[5].slice(0, 3)), 13),
+        y: 33,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[6].slice(0, 3)), 13),
+        y: 36,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[7].slice(0, 3)), 14),
+        y: 42,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[8].slice(0, 3)), 15),
+        y: 46,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[9].slice(0, 3)), 15),
+        y: 51,
+      },
     ];
   };
 
   const getDataSetTwo = () => {
     return [
-      // {x: new Date(2000, 1, 1), y: 5},
-      // {x: new Date(2003, 1, 1), y: 6},
-      // {x: new Date(2004, 1, 1), y: 4},
-      // {x: new Date(2005, 1, 1), y: 10},
-      // {x: new Date(2006, 1, 1), y: 12},
-      // {x: new Date(2007, 2, 1), y: 48},
-      // {x: new Date(2008, 1, 1), y: 19},
-      // {x: new Date(2009, 1, 1), y: 31},
-      // {x: new Date(2011, 1, 1), y: 49},
-      // {x: new Date(2014, 1, 1), y: 40},
-      // {x: new Date(2015, 1, 1), y: 21},
-      // {x: new Date(2021, 10, 7), y: 1},
-      // {x: new Date(2021, 10, 8), y: 5},
       {
-        x: new Date(
-          2021,
-          10,
-          readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
-          9,
-          0,
-        ),
-        y: meterUsage.length > 0 ? meterUsage[0] : 0,
+        x: new Date(2021, 10, 9),
+        y: 5,
       },
       {
-        x: new Date(
-          2021,
-          10,
-          readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
-          10,
-          0,
-        ),
-        y: meterUsage.length > 0 ? meterUsage[1] : 0,
+        x: new Date(2021, 10, 9),
+        y: 6,
       },
-      // {x: new Date(2021, 10, 10), y: 1},
-      // {x: new Date(2021, 10, 11), y: 2},
+      {
+        x: new Date(2021, 10, 10),
+        y: 3,
+      },
+      {
+        x: new Date(2021, 10, 11),
+        y: 8,
+      },
+      {
+        x: new Date(2021, 10, 12),
+        y: 7,
+      },
+      {
+        x: new Date(2021, 10, 13),
+        y: 4,
+      },
+      {
+        x: new Date(2021, 10, 13),
+        y: 3,
+      },
+      {
+        x: new Date(2021, 10, 14),
+        y: 6,
+      },
+      {
+        x: new Date(2021, 10, 15),
+        y: 4,
+      },
+      {
+        x: new Date(2021, 10, 15),
+        y: 5,
+      },
     ];
   };
 
   const getTickValues = () => {
     return [
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-
-      // new Date('August 19, 1975 20:15:30'),
-      // new Date('August 19, 1975 21:15:30'),
-      // new Date('August 19, 1975 23:15:30'),
-      // new Date(2002, 1, 1),
-      // new Date(2003, 1, 1),
-      // new Date(2004, 1, 1),
-      // new Date(2005, 1, 1),
-      // new Date(2021, 10, 7),
-      // new Date(2021, 10, 8),
-      new Date(
-        2021,
-        10,
-        readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
-        9,
-        0,
-      ),
-      new Date(
-        2021,
-        10,
-        readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
-        10,
-        0,
-      ),
-      // new Date(2021, 10, 10),
-      // new Date(2021, 10, 11),
-      // new Date(2007, 1, 1),
-      // new Date(2008, 1, 1),
-      // new Date(2009, 1, 1),
-      // new Date(2010, 1, 1),
-      // new Date(2011, 1, 1),
-      // new Date(2012, 1, 1),
-      // new Date(2013, 1, 1),
-      // new Date(2014, 1, 1),
-      // new Date(2015, 1, 1),
-      // new Date(2016, 1, 1),
+      new Date(2021, 10, 9),
+      new Date(2021, 10, 9),
+      new Date(2021, 10, 10),
+      new Date(2021, 10, 11),
+      new Date(2021, 10, 12),
+      new Date(2021, 10, 13),
+      new Date(2021, 10, 13),
+      new Date(2021, 10, 14),
+      new Date(2021, 10, 15),
+      new Date(2021, 10, 15),
     ];
   };
 
@@ -248,9 +233,6 @@ const App = ({navigation}) => {
     return {
       parent: {
         background: 'red',
-        // boxSizing: 'border-box',
-        // display: 'inline',
-        // padding: 0,
         width: width,
         height: height * 0.4,
         fontFamily: "'Fira Sans', sans-serif",
@@ -290,10 +272,10 @@ const App = ({navigation}) => {
 
       // DATA SET ONE
       axisOne: {
-        grid: {
-          stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
-          strokeWidth: 2,
-        },
+        // grid: {
+        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#5D84B6'),
+        //   strokeWidth: 1,
+        // },
         axis: {stroke: BLUE_COLOR, strokeWidth: 1},
         ticks: {
           strokeWidth: 0,
@@ -322,6 +304,10 @@ const App = ({navigation}) => {
 
       // DATA SET TWO
       axisTwo: {
+        // grid: {
+        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
+        //   strokeWidth: 1,
+        // },
         axis: {stroke: RED_COLOR, strokeWidth: 1},
         ticks: {strokeWidth: 0},
         tickLabels: {
@@ -380,12 +366,13 @@ const App = ({navigation}) => {
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
     let MeterUsage = chartRes.data?.data?.meterUsage;
-    let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM'];
+    let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
     let DataSet = chartRes.data?.data?.dataset;
 
     let Read = [];
     let Usage = [];
     let TimeDate = [];
+    let ReadDomain = [];
 
     for (let i = 0; i < chartRes.data?.data?.meterUsage.length; i++) {
       let tt = {};
@@ -419,14 +406,15 @@ const App = ({navigation}) => {
       TimeDate.push(vv);
     }
     setMeterReadData(Read);
+    setMeterReadDomain(Read);
     setMeterUsageData(Usage);
     setDateData(TimeDate);
 
     setLoading(false);
   };
 
-  console.log('Meter Read Data', getDataSetOne());
-  console.log('Chart Data Received', meterReadData, meterUsageData, dateData);
+  // console.log('Meter Read Data', getDataSetOne());
+  // console.log('Chart Data Received', meterReadData, meterUsageData, dateData);
 
   // const getChartData = () => {
 
@@ -1412,94 +1400,82 @@ const App = ({navigation}) => {
                       scale="time"
                       standalone={false}
                       style={styled.axisYears}
-                      // tickValues={tickValues}
-                      tickValues={dateData.length > 0 ? dateData : tickValues}
-                      tickFormat={(date) =>
-                        // console.log('Date', date.toString())
-                        months[date.getMonth()] +
-                        ' ' +
-                        `0${date.getDate()}` +
-                        ' ' +
-                        `${date.getHours()} AM`
+                      tickValues={tickValues}
+                      // tickValues={dateData.length > 0 ? dateData : tickValues}
+                      tickFormat={
+                        (date) =>
+                          // console.log('Date', date.toString())
+                          months[date.getMonth()] +
+                          ' ' +
+                          (date.getDate() > 9
+                            ? `${date.getDate()}`
+                            : `0${date.getDate()}`)
+                        //   +
+                        // ' '
+                        // +
+                        // `${date.getHours()} AM`
                       }
                       domainPadding={{x: width * 0.05}}
                     />
 
                     <VictoryBar
-                      // data={dataSetTwo}
-                      data={
-                        meterUsageData.length > 0 ? meterUsageData : dataSetTwo
-                      }
+                      data={dataSetTwo}
+                      // data={
+                      //   meterUsageData.length > 0 ? meterUsageData : dataSetTwo
+                      // }
+                      barWidth={width * 0.1}
+                      standalone={false}
                       domainPadding={{x: width * 0.05}}
-                      labels={({datum}) => datum.y}
-                      style={{data: {fill: '#DFDFDF'}}}
+                      labels={({datum}) => {
+                        for (let i = 0; i < DataDates.length; i++) {
+                          return `${datum.y} ${'\n'} ${DataDates[i].slice(7)}`;
+                        }
+                      }}
+                      style={{
+                        data: {fill: '#DFDFDF'},
+                        labels: {
+                          fontSize: width * 0.02,
+                        },
+                      }}
                       labelComponent={<VictoryLabel dy={30} />}
                     />
 
                     {/* Dependent axis for data set one. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 15]}
+                      domain={[5, 55]}
                       offsetX={50}
                       orientation="left"
                       standalone={false}
                       style={styled.axisOne}
                     />
+
                     {/* Dataset one */}
                     <VictoryLine
-                      // data={dataSetOne}
-                      data={
-                        meterReadData.length > 0 ? meterReadData : dataSetOne
-                      }
+                      // data={
+                      //   meterReadData.length > 0 ? meterReadData : dataSetOne
+                      // }
+                      data={dataSetOne}
+                      domainPadding={{x: width * 0.05}}
                       domain={{
-                        x: [
-                          new Date(
-                            2021,
-                            10,
-                            readDate.length > 0 ? readDate[0]?.slice(4, 6) : 0,
-                            10,
-                            0,
-                          ),
-                          new Date(
-                            2021,
-                            10,
-                            readDate.length > 0 ? readDate[1]?.slice(4, 6) : 0,
-                            11,
-                            0,
-                          ),
-                        ],
-                        y: [0, 15],
+                        x: [new Date(2021, 10, 9), new Date(2021, 10, 15)],
+                        y: [5, 55],
                       }}
                       interpolation="monotoneX"
                       scale={{x: 'time', y: 'linear'}}
                       standalone={false}
                       style={styled.lineOne}
                     />
+
                     {/* Dependent axis for data set two. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 6]}
+                      domain={[0, 8]}
                       orientation="right"
                       standalone={false}
                       style={styled.axisTwo}
                       // tickFormat={(x) => `${x / 1000000}`}
                     />
-                    {/* Dataset two */}
-                    {/* <VictoryLine
-                      data={dataSetTwo}
-                      domain={{
-                        x: [
-                          new Date(2021, 10, 9, 9, 0),
-                          new Date(2021, 10, 9, 10, 0),
-                        ],
-                        y: [0, 6],
-                      }}
-                      interpolation="monotoneX"
-                      scale={{x: 'time', y: 'linear'}}
-                      standalone={false}
-                      style={styled.lineTwo}
-                    /> */}
-
                     {/* </VictoryChart> */}
                   </G>
                 </Svg>
