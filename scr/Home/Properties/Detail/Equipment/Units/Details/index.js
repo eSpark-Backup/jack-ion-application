@@ -95,14 +95,14 @@ const App = ({navigation}) => {
   let DataDates = [
     'Nov 09 10 AM',
     'Nov 09 11 AM',
-    'Nov 10 03 PM',
-    'Nov 11 05 PM',
-    'Nov 12 09 AM',
-    'Nov 13 10 AM',
-    'Nov 13 11 AM',
-    'Nov 14 10 AM',
-    'Nov 15 07 PM',
-    'Nov 15 08 PM',
+    // 'Nov 10 03 PM',
+    // 'Nov 11 05 PM',
+    // 'Nov 12 09 AM',
+    // 'Nov 13 10 AM',
+    // 'Nov 13 11 AM',
+    // 'Nov 14 10 AM',
+    // 'Nov 15 07 PM',
+    // 'Nov 15 08 PM',
   ];
 
   const months = [
@@ -131,38 +131,38 @@ const App = ({navigation}) => {
         x: new Date(2021, months.indexOf(DataDates[1].slice(0, 3)), 9),
         y: 11,
       },
-      {
-        x: new Date(2021, months.indexOf(DataDates[2].slice(0, 3)), 10),
-        y: 14,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[3].slice(0, 3)), 11),
-        y: 22,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[4].slice(0, 3)), 12),
-        y: 29,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[5].slice(0, 3)), 13),
-        y: 33,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[6].slice(0, 3)), 13),
-        y: 36,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[7].slice(0, 3)), 14),
-        y: 42,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[8].slice(0, 3)), 15),
-        y: 46,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[9].slice(0, 3)), 15),
-        y: 51,
-      },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[2].slice(0, 3)), 10),
+      //   y: 14,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[3].slice(0, 3)), 11),
+      //   y: 22,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[4].slice(0, 3)), 12),
+      //   y: 29,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[5].slice(0, 3)), 13),
+      //   y: 33,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[6].slice(0, 3)), 13),
+      //   y: 36,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[7].slice(0, 3)), 14),
+      //   y: 42,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[8].slice(0, 3)), 15),
+      //   y: 46,
+      // },
+      // {
+      //   x: new Date(2021, months.indexOf(DataDates[9].slice(0, 3)), 15),
+      //   y: 51,
+      // },
     ];
   };
 
@@ -176,38 +176,38 @@ const App = ({navigation}) => {
         x: new Date(2021, 10, 9),
         y: 6,
       },
-      {
-        x: new Date(2021, 10, 10),
-        y: 3,
-      },
-      {
-        x: new Date(2021, 10, 11),
-        y: 8,
-      },
-      {
-        x: new Date(2021, 10, 12),
-        y: 7,
-      },
-      {
-        x: new Date(2021, 10, 13),
-        y: 4,
-      },
-      {
-        x: new Date(2021, 10, 13),
-        y: 3,
-      },
-      {
-        x: new Date(2021, 10, 14),
-        y: 6,
-      },
-      {
-        x: new Date(2021, 10, 15),
-        y: 4,
-      },
-      {
-        x: new Date(2021, 10, 15),
-        y: 5,
-      },
+      // {
+      //   x: new Date(2021, 10, 10),
+      //   y: 3,
+      // },
+      // {
+      //   x: new Date(2021, 10, 11),
+      //   y: 8,
+      // },
+      // {
+      //   x: new Date(2021, 10, 12),
+      //   y: 7,
+      // },
+      // {
+      //   x: new Date(2021, 10, 13),
+      //   y: 4,
+      // },
+      // {
+      //   x: new Date(2021, 10, 13),
+      //   y: 3,
+      // },
+      // {
+      //   x: new Date(2021, 10, 14),
+      //   y: 6,
+      // },
+      // {
+      //   x: new Date(2021, 10, 15),
+      //   y: 4,
+      // },
+      // {
+      //   x: new Date(2021, 10, 15),
+      //   y: 5,
+      // },
     ];
   };
 
@@ -215,14 +215,14 @@ const App = ({navigation}) => {
     return [
       new Date(2021, 10, 9),
       new Date(2021, 10, 9),
-      new Date(2021, 10, 10),
-      new Date(2021, 10, 11),
-      new Date(2021, 10, 12),
-      new Date(2021, 10, 13),
-      new Date(2021, 10, 13),
-      new Date(2021, 10, 14),
-      new Date(2021, 10, 15),
-      new Date(2021, 10, 15),
+      // new Date(2021, 10, 10),
+      // new Date(2021, 10, 11),
+      // new Date(2021, 10, 12),
+      // new Date(2021, 10, 13),
+      // new Date(2021, 10, 13),
+      // new Date(2021, 10, 14),
+      // new Date(2021, 10, 15),
+      // new Date(2021, 10, 15),
     ];
   };
 
@@ -293,7 +293,7 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineOne: {
-        data: {stroke: '#5D84B6', strokeWidth: 4.5},
+        data: {stroke: '#5D84B6', strokeWidth: 2},
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
@@ -342,11 +342,7 @@ const App = ({navigation}) => {
   console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
-  const testChartData = [
-    // {x: 0},
-    // {x: 1},
-    // {x: 5},
-  ];
+
   useEffect(() => {
     getToken();
   }, []);
@@ -366,7 +362,8 @@ const App = ({navigation}) => {
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
     let MeterUsage = chartRes.data?.data?.meterUsage;
-    let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
+    // let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
+    let ReadData = chartRes.data?.data?.label;
     let DataSet = chartRes.data?.data?.dataset;
 
     let Read = [];
@@ -374,34 +371,32 @@ const App = ({navigation}) => {
     let TimeDate = [];
     let ReadDomain = [];
 
-    for (let i = 0; i < chartRes.data?.data?.meterUsage.length; i++) {
+    console.log('Check Data', ReadData[0].slice(7, 9));
+
+    for (let i = 0; i < chartRes.data?.data?.dataset.length; i++) {
+      console.log('Contition Chali..|||||||');
       let tt = {};
       let uu = {};
       let vv = {};
+
       tt.x = new Date(
         2021,
-        10,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
-        ReadData[i]?.slice(7, 9),
-        0,
       );
       tt.y = MeterUsage[i];
       uu.x = new Date(
         2021,
-        10,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
-        ReadData[i]?.slice(7, 9),
-        0,
       );
       uu.y = DataSet[i];
-      vv = new Date(
+      (vv = new Date(
         2021,
-        10,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
-        ReadData[i]?.slice(7, 9),
-        0,
-      );
-      Read.push(uu);
+      )),
+        Read.push(uu);
       Usage.push(tt);
       TimeDate.push(vv);
     }
@@ -414,7 +409,7 @@ const App = ({navigation}) => {
   };
 
   // console.log('Meter Read Data', getDataSetOne());
-  // console.log('Chart Data Received', meterReadData, meterUsageData, dateData);
+  console.log('Chart Data Received', meterReadData, meterUsageData, dateData);
 
   // const getChartData = () => {
 
@@ -1400,8 +1395,8 @@ const App = ({navigation}) => {
                       scale="time"
                       standalone={false}
                       style={styled.axisYears}
-                      tickValues={tickValues}
-                      // tickValues={dateData.length > 0 ? dateData : tickValues}
+                      // tickValues={tickValues}
+                      tickValues={dateData.length > 0 ? dateData : tickValues}
                       tickFormat={
                         (date) =>
                           // console.log('Date', date.toString())
@@ -1419,31 +1414,38 @@ const App = ({navigation}) => {
                     />
 
                     <VictoryBar
-                      data={dataSetTwo}
-                      // data={
-                      //   meterUsageData.length > 0 ? meterUsageData : dataSetTwo
-                      // }
+                      // data={dataSetTwo}
+                      data={
+                        meterUsageData.length > 0 ? meterUsageData : dataSetTwo
+                      }
                       barWidth={width * 0.1}
                       standalone={false}
                       domainPadding={{x: width * 0.05}}
-                      labels={({datum}) => {
-                        for (let i = 0; i < DataDates.length; i++) {
-                          return `${datum.y} ${'\n'} ${DataDates[i].slice(7)}`;
-                        }
-                      }}
+                      // padding={{bottom: 2}}
+                      labels={({datum, index}) =>
+                        `${datum.y} ${'\n'}${
+                          readDate.length > 0
+                            ? readDate[index]?.slice(7)
+                            : '12 AM'
+                        }`
+                      }
                       style={{
                         data: {fill: '#DFDFDF'},
                         labels: {
                           fontSize: width * 0.02,
                         },
                       }}
-                      labelComponent={<VictoryLabel dy={30} />}
+                      labelComponent={<VictoryLabel dy={15} />}
                     />
 
                     {/* Dependent axis for data set one. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[5, 55]}
+                      domain={[
+                        dataSet?.length > 0 ? dataSet[0] : 0,
+                        // 16,
+                        dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0,
+                      ]}
                       offsetX={50}
                       orientation="left"
                       standalone={false}
@@ -1452,15 +1454,47 @@ const App = ({navigation}) => {
 
                     {/* Dataset one */}
                     <VictoryLine
-                      // data={
-                      //   meterReadData.length > 0 ? meterReadData : dataSetOne
-                      // }
-                      data={dataSetOne}
+                      data={
+                        meterReadData.length > 0 ? meterReadData : dataSetOne
+                      }
+                      // data={dataSetOne}
                       domainPadding={{x: width * 0.05}}
-                      domain={{
-                        x: [new Date(2021, 10, 9), new Date(2021, 10, 15)],
-                        y: [5, 55],
-                      }}
+                      domain={
+                        readDate.length > 0
+                          ? {
+                              x: [
+                                new Date(
+                                  2021,
+                                  months.indexOf(readDate[0]?.slice(0, 3)),
+                                  readDate[0]?.slice(4, 6),
+                                ),
+                                new Date(
+                                  2021,
+                                  months.indexOf(
+                                    readDate[readDate?.length - 1]?.slice(0, 3),
+                                  ),
+                                  readDate[readDate?.length - 1]?.slice(4, 6),
+                                ),
+                              ],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
+                          : {
+                              x: [new Date(2021, 0, 0), new Date(2021, 0, 0)],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
+                      }
                       interpolation="monotoneX"
                       scale={{x: 'time', y: 'linear'}}
                       standalone={false}
@@ -1470,7 +1504,7 @@ const App = ({navigation}) => {
                     {/* Dependent axis for data set two. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 8]}
+                      domain={[0, 25]}
                       orientation="right"
                       standalone={false}
                       style={styled.axisTwo}
