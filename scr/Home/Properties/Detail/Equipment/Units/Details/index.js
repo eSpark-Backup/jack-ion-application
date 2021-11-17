@@ -90,7 +90,6 @@ const App = ({navigation}) => {
   const [meterUsage, setMeterUsage] = useState([]);
   const [meterReadData, setMeterReadData] = useState([]);
   const [meterUsageData, setMeterUsageData] = useState([]);
-  const [meterReadDomain, setMeterReadDomain] = useState([]);
   const [dateData, setDateData] = useState([]);
   let DataDates = [
     'Nov 09 10 AM',
@@ -124,11 +123,11 @@ const App = ({navigation}) => {
   const getDataSetOne = () => {
     return [
       {
-        x: new Date(2021, months.indexOf(DataDates[0].slice(0, 3)), 9),
+        x: new Date(2021, months.indexOf(DataDates[0]?.slice(0, 3)), 9),
         y: 5,
       },
       {
-        x: new Date(2021, months.indexOf(DataDates[1].slice(0, 3)), 9),
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 9),
         y: 11,
       },
       // {
@@ -361,17 +360,16 @@ const App = ({navigation}) => {
     setDataSet(chartRes.data?.data?.dataset);
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
-    let MeterUsage = chartRes.data?.data?.meterUsage;
     // let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
+    let MeterUsage = chartRes.data?.data?.meterUsage;
     let ReadData = chartRes.data?.data?.label;
     let DataSet = chartRes.data?.data?.dataset;
 
     let Read = [];
     let Usage = [];
     let TimeDate = [];
-    let ReadDomain = [];
 
-    console.log('Check Data', ReadData[0].slice(7, 9));
+    console.log('Check Data', ReadData[0]?.slice(7, 9));
 
     for (let i = 0; i < chartRes.data?.data?.dataset.length; i++) {
       console.log('Contition Chali..|||||||');
@@ -401,7 +399,6 @@ const App = ({navigation}) => {
       TimeDate.push(vv);
     }
     setMeterReadData(Read);
-    setMeterReadDomain(Read);
     setMeterUsageData(Usage);
     setDateData(TimeDate);
 
@@ -1391,27 +1388,6 @@ const App = ({navigation}) => {
                 <Svg style={styled.parent}>
                   <G transform={'translate(0, -10)'}>
                     {/* <VictoryChart> */}
-                    <VictoryAxis
-                      scale="time"
-                      standalone={false}
-                      style={styled.axisYears}
-                      // tickValues={tickValues}
-                      tickValues={dateData.length > 0 ? dateData : tickValues}
-                      tickFormat={
-                        (date) =>
-                          // console.log('Date', date.toString())
-                          months[date.getMonth()] +
-                          ' ' +
-                          (date.getDate() > 9
-                            ? `${date.getDate()}`
-                            : `0${date.getDate()}`)
-                        //   +
-                        // ' '
-                        // +
-                        // `${date.getHours()} AM`
-                      }
-                      domainPadding={{x: width * 0.05}}
-                    />
 
                     <VictoryBar
                       // data={dataSetTwo}
@@ -1421,7 +1397,6 @@ const App = ({navigation}) => {
                       barWidth={width * 0.1}
                       standalone={false}
                       domainPadding={{x: width * 0.05}}
-                      // padding={{bottom: 2}}
                       labels={({datum, index}) =>
                         `${datum.y} ${'\n'}${
                           readDate.length > 0
@@ -1504,11 +1479,40 @@ const App = ({navigation}) => {
                     {/* Dependent axis for data set two. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 25]}
+                      domain={[
+                        0,
+                        meterUsage.length > 0
+                          ? Math.max(...meterUsage) < 1
+                            ? 1
+                            : Math.max(...meterUsage)
+                          : 1,
+                      ]}
                       orientation="right"
                       standalone={false}
                       style={styled.axisTwo}
                       // tickFormat={(x) => `${x / 1000000}`}
+                    />
+
+                    <VictoryAxis
+                      scale="time"
+                      standalone={false}
+                      style={styled.axisYears}
+                      // tickValues={tickValues}
+                      tickValues={dateData.length > 0 ? dateData : tickValues}
+                      tickFormat={
+                        (date) =>
+                          // console.log('Date', date.toString())
+                          months[date.getMonth()] +
+                          ' ' +
+                          (date.getDate() > 9
+                            ? `${date.getDate()}`
+                            : `0${date.getDate()}`)
+                        //   +
+                        // ' '
+                        // +
+                        // `${date.getHours()} AM`
+                      }
+                      domainPadding={{x: width * 0.05, y: height * 0.5}}
                     />
                     {/* </VictoryChart> */}
                   </G>

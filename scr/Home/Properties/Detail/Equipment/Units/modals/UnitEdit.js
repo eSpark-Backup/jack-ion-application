@@ -87,7 +87,7 @@ export default function UnitEdit({
     console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
       ...oldState,
-      meterList: antiIntersection,
+      meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
     }));
   };
 
@@ -779,7 +779,7 @@ export default function UnitEdit({
                             <View style={styles.meterInputContainer}>
                               <TextInput
                                 keyboardType="numeric"
-                                placeholder="Serial Number"
+                                placeholder="Initial Meter Reading"
                                 value={item.initialMeterReading}
                                 dense={true}
                                 error={item.initialMeterReadingError}
