@@ -87,7 +87,7 @@ export default function UnitEdit({
     console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
       ...oldState,
-      meterList: antiIntersection,
+      meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
     }));
   };
 
@@ -653,10 +653,11 @@ export default function UnitEdit({
                           }));
                           type == 'meterDirect'
                             ? null
-                            : setState((oldState) => ({
+                            : (setState((oldState) => ({
                                 ...oldState,
                                 lastUnitData: text,
-                              }));
+                              })),
+                              console.log('unit Name', state.lastUnitData));
                         }}
                         disabled={type == 'meterDirect' ? true : false}
                         style={styles.input}
@@ -777,7 +778,7 @@ export default function UnitEdit({
                             <View style={styles.meterInputContainer}>
                               <TextInput
                                 keyboardType="numeric"
-                                placeholder="Serial Number"
+                                placeholder="Initial Meter Reading"
                                 value={item.initialMeterReading}
                                 dense={true}
                                 error={item.initialMeterReadingError}
@@ -942,9 +943,8 @@ export default function UnitEdit({
                                   />
                                 </View>
                               </View>
-                            ) : (
-                              console.log('Check Item', item)
-                            )}
+                            ) : // console.log('Check Item', item)
+                            null}
                             <TouchableOpacity
                               onPress={() => showMoreInputs(item, meterIndex)}
                               style={{

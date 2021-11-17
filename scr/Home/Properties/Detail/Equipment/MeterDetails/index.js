@@ -12,14 +12,6 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
-import {Svg, G} from 'react-native-svg';
-import {
-  VictoryChart,
-  VictoryLegend,
-  VictoryAxis,
-  VictoryTheme,
-  VictoryLine,
-} from 'victory-native';
 import {Header, Button, Icon, Divider} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
@@ -31,13 +23,16 @@ import Base_Url from '../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {Svg, G} from 'react-native-svg';
 import {
-  Chart,
-  Line,
-  Area,
-  HorizontalAxis,
-  VerticalAxis,
-} from 'react-native-responsive-linechart';
+  VictoryChart,
+  VictoryLegend,
+  VictoryAxis,
+  VictoryLabel,
+  VictoryBar,
+  VictoryLine,
+} from 'victory-native';
 
 // Components
 import styles from './style';
@@ -65,86 +60,58 @@ const App = ({navigation}) => {
   const [remoteReaderData, setRemoteReaderData] = useState([]);
   const [unitData, setUnitData] = useState([]);
   const [meterListArray, setMeterListArray] = useState([]);
+  const [dataSet, setDataSet] = useState([]);
+  const [readDate, setReadDate] = useState([]);
+  const [meterUsage, setMeterUsage] = useState([]);
+  const [meterReadData, setMeterReadData] = useState([]);
+  const [meterUsageData, setMeterUsageData] = useState([]);
+  const [dateData, setDateData] = useState([]);
+
+  let DataDates = ['Nov 09 10 AM', 'Nov 09 11 AM'];
+
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
 
   const getDataSetOne = () => {
     return [
-      // {x: new Date(2000, 1, 1), y: 12},
-      // {x: new Date(2000, 6, 1), y: 10},
-      // {x: new Date(2000, 12, 1), y: 11},
-      // {x: new Date(2001, 1, 1), y: 5},
-      // {x: new Date(2002, 1, 1), y: 4},
-      // {x: new Date(2003, 1, 1), y: 6},
-      // {x: new Date(2004, 1, 1), y: 5},
-      // {x: new Date(2005, 1, 1), y: 7},
-      // {x: new Date(2006, 1, 1), y: 8},
-      // {x: new Date(2007, 1, 1), y: 9},
-      // {x: new Date(2008, 1, 1), y: -8.5},
-      // {x: new Date(2009, 1, 1), y: -9},
-      // {x: new Date(2010, 1, 1), y: 5},
-      // {x: new Date(2013, 1, 1), y: 1},
-      // {x: new Date(2014, 1, 1), y: 2},
-      // {x: new Date(2015, 1, 1), y: -5},
-      {x: new Date(2021, 10, 7), y: 1},
-      {x: new Date(2021, 10, 8), y: 6},
-      {x: new Date(2021, 10, 9), y: 8},
-      {x: new Date(2021, 10, 10), y: 9},
-      {x: new Date(2021, 10, 11), y: 11},
+      {
+        x: new Date(2021, months.indexOf(DataDates[0]?.slice(0, 3)), 9),
+        y: 5,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 9),
+        y: 11,
+      },
     ];
   };
 
   const getDataSetTwo = () => {
     return [
-      // {x: new Date(2000, 1, 1), y: 5},
-      // {x: new Date(2003, 1, 1), y: 6},
-      // {x: new Date(2004, 1, 1), y: 4},
-      // {x: new Date(2005, 1, 1), y: 10},
-      // {x: new Date(2006, 1, 1), y: 12},
-      // {x: new Date(2007, 2, 1), y: 48},
-      // {x: new Date(2008, 1, 1), y: 19},
-      // {x: new Date(2009, 1, 1), y: 31},
-      // {x: new Date(2011, 1, 1), y: 49},
-      // {x: new Date(2014, 1, 1), y: 40},
-      // {x: new Date(2015, 1, 1), y: 21},
-      {x: new Date(2021, 10, 7), y: 1},
-      {x: new Date(2021, 10, 8), y: 5},
-      {x: new Date(2021, 10, 9), y: 2},
-      {x: new Date(2021, 10, 10), y: 1},
-      {x: new Date(2021, 10, 11), y: 2},
+      {
+        x: new Date(2021, 10, 9),
+        y: 5,
+      },
+      {
+        x: new Date(2021, 10, 9),
+        y: 6,
+      },
     ];
   };
 
   const getTickValues = () => {
-    return [
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-      // 'nov 11 10 AM',
-
-      // new Date('August 19, 1975 20:15:30'),
-      // new Date('August 19, 1975 21:15:30'),
-      // new Date('August 19, 1975 23:15:30'),
-      // new Date(2002, 1, 1),
-      // new Date(2003, 1, 1),
-      // new Date(2004, 1, 1),
-      // new Date(2005, 1, 1),
-      new Date(2021, 10, 7),
-      new Date(2021, 10, 8),
-      new Date(2021, 10, 9),
-      new Date(2021, 10, 10),
-      new Date(2021, 10, 11),
-      // new Date(2007, 1, 1),
-      // new Date(2008, 1, 1),
-      // new Date(2009, 1, 1),
-      // new Date(2010, 1, 1),
-      // new Date(2011, 1, 1),
-      // new Date(2012, 1, 1),
-      // new Date(2013, 1, 1),
-      // new Date(2014, 1, 1),
-      // new Date(2015, 1, 1),
-      // new Date(2016, 1, 1),
-    ];
+    return [new Date(2021, 10, 9), new Date(2021, 10, 9)];
   };
 
   const getStyles = () => {
@@ -154,25 +121,22 @@ const App = ({navigation}) => {
     return {
       parent: {
         background: 'red',
-        // boxSizing: 'border-box',
-        // display: 'inline',
-        // padding: 0,
-        width: width * 1,
-        height: height * 0.35,
+        width: width,
+        height: height * 0.4,
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
         textAnchor: 'start',
         verticalAnchor: 'end',
         fill: '#000000',
-        // fontFamily: 'inherit',
+        fontFamily: 'inherit',
         fontSize: '18px',
         fontWeight: 'bold',
       },
       labelNumber: {
         textAnchor: 'middle',
         fill: '#ffffff',
-        // fontFamily: 'inherit',
+        fontFamily: 'inherit',
         fontSize: '14px',
       },
 
@@ -189,57 +153,61 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: 'black',
-          // fontFamily: 'inherit',
+          fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
 
       // DATA SET ONE
       axisOne: {
-        grid: {
-          stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
-          strokeWidth: 2,
-        },
+        // grid: {
+        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#5D84B6'),
+        //   strokeWidth: 1,
+        // },
         axis: {stroke: BLUE_COLOR, strokeWidth: 1},
         ticks: {
           strokeWidth: 0,
         },
         tickLabels: {
           fill: '#5D84B6',
-          // fontFamily: 'inherit',
+          fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
       labelOne: {
         fill: BLUE_COLOR,
-        // fontFamily: 'inherit',
+        fontFamily: 'inherit',
         fontSize: width * 0.025,
         fontStyle: 'italic',
       },
       lineOne: {
-        data: {stroke: '#5D84B6', strokeWidth: 4.5},
+        data: {stroke: '#5D84B6', strokeWidth: 2},
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
-        // fontFamily: 'inherit',
+        fontFamily: 'inherit',
         fontWeight: 300,
         fontSize: width * 0.025,
       },
 
       // DATA SET TWO
       axisTwo: {
+        // grid: {
+        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
+        //   strokeWidth: 1,
+        // },
         axis: {stroke: RED_COLOR, strokeWidth: 1},
         ticks: {strokeWidth: 0},
         tickLabels: {
           fill: 'gray',
-          // fontFamily: 'inherit',
+          fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
       labelTwo: {
         textAnchor: 'end',
         fill: RED_COLOR,
-        // fontFamily: 'inherit',
+        fontFamily: 'inherit',
         fontSize: width * 0.025,
         fontStyle: 'italic',
       },
@@ -253,6 +221,7 @@ const App = ({navigation}) => {
       },
     };
   };
+
   const styled = getStyles();
   const dataSetOne = getDataSetOne();
   const dataSetTwo = getDataSetTwo();
@@ -279,11 +248,63 @@ const App = ({navigation}) => {
 
     return () => backHandler.remove();
   }, []);
+
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(meterInfo);
+    let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
+    const chartRes = await api.post(
+      `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
+    );
+
+    console.log('Chart Data', chartRes.data?.data);
+    setDataSet(chartRes.data?.data?.dataset);
+    setMeterUsage(chartRes.data?.data?.meterUsage);
+    setReadDate(chartRes.data?.data?.label);
+    // let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
+    let MeterUsage = chartRes.data?.data?.meterUsage;
+    let ReadData = chartRes.data?.data?.label;
+    let DataSet = chartRes.data?.data?.dataset;
+
+    let Read = [];
+    let Usage = [];
+    let TimeDate = [];
+
+    console.log('Check Data', ReadData[0]?.slice(7, 9));
+
+    for (let i = 0; i < chartRes.data?.data?.dataset.length; i++) {
+      console.log('Contition Chali..|||||||');
+      let tt = {};
+      let uu = {};
+      let vv = {};
+
+      tt.x = new Date(
+        2021,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      );
+      tt.y = MeterUsage[i];
+      uu.x = new Date(
+        2021,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      );
+      uu.y = DataSet[i];
+      (vv = new Date(
+        2021,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      )),
+        Read.push(uu);
+      Usage.push(tt);
+      TimeDate.push(vv);
+    }
+    setMeterReadData(Read);
+    setMeterUsageData(Usage);
+    setDateData(TimeDate);
+
     setLoading(false);
   };
 
@@ -888,7 +909,8 @@ const App = ({navigation}) => {
                       fontSize: width * 0.08,
                       color: typeColor(unitMeter?.meter_name),
                     }}>
-                    3,782 Gallons
+                    {dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0}{' '}
+                    Gallons
                   </Text>
                   <RightArrow
                     name="chevron-thin-right"
@@ -1085,131 +1107,139 @@ const App = ({navigation}) => {
               {/*
               //todo: Add Chart here 
               */}
-              <View style={{alignItems: 'center'}}>
+              <View style={styles.centerIcon}>
                 <Svg style={styled.parent}>
                   <G transform={'translate(0, -10)'}>
                     {/* <VictoryChart> */}
-                    <VictoryAxis
-                      scale="time"
-                      standalone={false}
-                      style={styled.axisYears}
-                      tickValues={tickValues}
-                      tickFormat={(date) =>
-                        // console.log('Date', date.toLocaleString().slice(0, 5))
-                        // date.toLocaleString('en-us', {month: 'short'})
-                        date.toLocaleString().slice(0, 6)
+
+                    <VictoryBar
+                      // data={dataSetTwo}
+                      data={
+                        meterUsageData.length > 0 ? meterUsageData : dataSetTwo
                       }
+                      barWidth={width * 0.1}
+                      standalone={false}
+                      domainPadding={{x: width * 0.05}}
+                      labels={({datum, index}) =>
+                        `${datum.y} ${'\n'}${
+                          readDate.length > 0
+                            ? readDate[index]?.slice(7)
+                            : '12 AM'
+                        }`
+                      }
+                      style={{
+                        data: {fill: '#DFDFDF'},
+                        labels: {
+                          fontSize: width * 0.02,
+                        },
+                      }}
+                      labelComponent={<VictoryLabel dy={15} />}
                     />
+
                     {/* Dependent axis for data set one. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 15]}
+                      domain={[
+                        dataSet?.length > 0 ? dataSet[0] : 0,
+                        // 16,
+                        dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0,
+                      ]}
                       offsetX={50}
                       orientation="left"
                       standalone={false}
                       style={styled.axisOne}
                     />
+
                     {/* Dataset one */}
                     <VictoryLine
-                      data={dataSetOne}
-                      domain={{
-                        x: [new Date(2021, 10, 7), new Date(2021, 10, 11)],
-                        y: [0, 15],
-                      }}
+                      data={
+                        meterReadData.length > 0 ? meterReadData : dataSetOne
+                      }
+                      // data={dataSetOne}
+                      domainPadding={{x: width * 0.05}}
+                      domain={
+                        readDate.length > 0
+                          ? {
+                              x: [
+                                new Date(
+                                  2021,
+                                  months.indexOf(readDate[0]?.slice(0, 3)),
+                                  readDate[0]?.slice(4, 6),
+                                ),
+                                new Date(
+                                  2021,
+                                  months.indexOf(
+                                    readDate[readDate?.length - 1]?.slice(0, 3),
+                                  ),
+                                  readDate[readDate?.length - 1]?.slice(4, 6),
+                                ),
+                              ],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
+                          : {
+                              x: [new Date(2021, 0, 0), new Date(2021, 0, 0)],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
+                      }
                       interpolation="monotoneX"
                       scale={{x: 'time', y: 'linear'}}
                       standalone={false}
                       style={styled.lineOne}
                     />
+
                     {/* Dependent axis for data set two. */}
                     <VictoryAxis
                       dependentAxis
-                      domain={[0, 11]}
+                      domain={[
+                        0,
+                        meterUsage.length > 0
+                          ? Math.max(...meterUsage) < 1
+                            ? 1
+                            : Math.max(...meterUsage)
+                          : 1,
+                      ]}
                       orientation="right"
                       standalone={false}
                       style={styled.axisTwo}
                       // tickFormat={(x) => `${x / 1000000}`}
                     />
-                    {/* Dataset two */}
-                    <VictoryLine
-                      data={dataSetTwo}
-                      domain={{
-                        x: [new Date(2021, 10, 7), new Date(2021, 10, 11)],
-                        y: [0, 11],
-                      }}
-                      interpolation="monotoneX"
-                      scale={{x: 'time', y: 'linear'}}
+
+                    <VictoryAxis
+                      scale="time"
                       standalone={false}
-                      style={styled.lineTwo}
+                      style={styled.axisYears}
+                      // tickValues={tickValues}
+                      tickValues={dateData.length > 0 ? dateData : tickValues}
+                      tickFormat={
+                        (date) =>
+                          // console.log('Date', date.toString())
+                          months[date.getMonth()] +
+                          ' ' +
+                          (date.getDate() > 9
+                            ? `${date.getDate()}`
+                            : `0${date.getDate()}`)
+                        //   +
+                        // ' '
+                        // +
+                        // `${date.getHours()} AM`
+                      }
+                      domainPadding={{x: width * 0.05, y: height * 0.5}}
                     />
                     {/* </VictoryChart> */}
                   </G>
                 </Svg>
-
-                {/* <Chart
-                  style={styles.chartStyle}
-                  data={testChartData}
-                  padding={styles.chartPadding}
-                  xDomain={{min: 0, max: 10}}
-                  yDomain={{min: 0, max: 50000}}>
-                  <HorizontalAxis
-                    tickCount={5}
-                    tickValues={['3/2/2000', 5, 52, 53]}
-                    theme={{grid: {visible: false}}}
-                  />
-                  <Line
-                    data={[
-                      {x: 15, y: 20000},
-                      {x: 5, y: 6},
-                      {x: 6, y: 10},
-                      {x: 8, y: 15},
-                      {x: 10, y: 20},
-                    ]}
-                    tooltipComponent={
-                      <Tooltip
-                        // value={{x: x, y: y}}
-                        theme={{
-                          label: {color: '#fff'},
-                          shape: {
-                            color: '#a1a1a1',
-                            border: {color: '#000', opacity: 1, width: 2},
-                          },
-                        }}
-                      />
-                    }
-                    smoothing="bezier"
-                    tension={0.3}
-                    theme={{
-                      stroke: {color: '#a1a1a1', width: 2},
-                      scatter: {default: {width: 4, height: 4, rx: 2}},
-                    }}
-                  />
-                  <Line
-                    tooltipComponent={
-                      <Tooltip
-                        // value={{x: x, y: y}}
-                        theme={{
-                          label: {color: '#fff'},
-                          shape: {
-                            color: '#5D84B6',
-                            border: {color: '#000', opacity: 1, width: 2},
-                          },
-                        }}
-                      />
-                    }
-                    data={[
-                      {x: 15, y: 5},
-                      {x: 5, y: 6},
-                      {x: 6, y: 10},
-                      {x: 8, y: 15},
-                      {x: 10, y: 20},
-                    ]}
-                    theme={{
-                      stroke: {color: '#5D84B6', width: 2},
-                      scatter: {default: {width: 4, height: 4, rx: 2}},
-                    }}
-                  />
-                </Chart> */}
                 <View style={styles.legendContainer}>
                   <View style={styles.flexRow}>
                     <View style={styles.meterUsageBox} />
