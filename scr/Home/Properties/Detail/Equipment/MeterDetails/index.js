@@ -31,6 +31,16 @@ import {
   VerticalAxis,
 } from 'react-native-responsive-linechart';
 
+import {Svg, G} from 'react-native-svg';
+import {
+  VictoryChart,
+  VictoryLegend,
+  VictoryAxis,
+  VictoryLabel,
+  VictoryBar,
+  VictoryLine,
+} from 'victory-native';
+
 // Components
 import styles from './style';
 import clc from 'cli-color';
@@ -57,6 +67,172 @@ const App = ({navigation}) => {
   const [remoteReaderData, setRemoteReaderData] = useState([]);
   const [unitData, setUnitData] = useState([]);
   const [meterListArray, setMeterListArray] = useState([]);
+  const [dataSet, setDataSet] = useState([]);
+  const [readDate, setReadDate] = useState([]);
+  const [meterUsage, setMeterUsage] = useState([]);
+  const [meterReadData, setMeterReadData] = useState([]);
+  const [meterUsageData, setMeterUsageData] = useState([]);
+  const [dateData, setDateData] = useState([]);
+
+  let DataDates = ['Nov 09 10 AM', 'Nov 09 11 AM'];
+
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  const getDataSetOne = () => {
+    return [
+      {
+        x: new Date(2021, months.indexOf(DataDates[0]?.slice(0, 3)), 9),
+        y: 5,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 9),
+        y: 11,
+      },
+    ];
+  };
+
+  const getDataSetTwo = () => {
+    return [
+      {
+        x: new Date(2021, 10, 9),
+        y: 5,
+      },
+      {
+        x: new Date(2021, 10, 9),
+        y: 6,
+      },
+    ];
+  };
+
+  const getTickValues = () => {
+    return [new Date(2021, 10, 9), new Date(2021, 10, 9)];
+  };
+
+  const getStyles = () => {
+    const BLUE_COLOR = '#00a3de';
+    const RED_COLOR = '#7c270b';
+
+    return {
+      parent: {
+        background: 'red',
+        width: width,
+        height: height * 0.4,
+        fontFamily: "'Fira Sans', sans-serif",
+      },
+      title: {
+        textAnchor: 'start',
+        verticalAnchor: 'end',
+        fill: '#000000',
+        fontFamily: 'inherit',
+        fontSize: '18px',
+        fontWeight: 'bold',
+      },
+      labelNumber: {
+        textAnchor: 'middle',
+        fill: '#ffffff',
+        fontFamily: 'inherit',
+        fontSize: '14px',
+      },
+
+      // INDEPENDENT AXIS
+      axisYears: {
+        axis: {stroke: 'black', strokeWidth: 1},
+        ticks: {
+          size: ({tick}) => {
+            const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
+            return tickSize;
+          },
+          stroke: 'black',
+          strokeWidth: 1,
+        },
+        tickLabels: {
+          fill: 'black',
+          fontFamily: 'inherit',
+          fontSize: width * 0.025,
+        },
+      },
+
+      // DATA SET ONE
+      axisOne: {
+        // grid: {
+        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#5D84B6'),
+        //   strokeWidth: 1,
+        // },
+        axis: {stroke: BLUE_COLOR, strokeWidth: 1},
+        ticks: {
+          strokeWidth: 0,
+        },
+        tickLabels: {
+          fill: '#5D84B6',
+          fontFamily: 'inherit',
+          fontSize: width * 0.025,
+        },
+      },
+      labelOne: {
+        fill: BLUE_COLOR,
+        fontFamily: 'inherit',
+        fontSize: width * 0.025,
+        fontStyle: 'italic',
+      },
+      lineOne: {
+        data: {stroke: '#5D84B6', strokeWidth: 2},
+      },
+      axisOneCustomLabel: {
+        fill: BLUE_COLOR,
+        fontFamily: 'inherit',
+        fontWeight: 300,
+        fontSize: width * 0.025,
+      },
+
+      // DATA SET TWO
+      axisTwo: {
+        // grid: {
+        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
+        //   strokeWidth: 1,
+        // },
+        axis: {stroke: RED_COLOR, strokeWidth: 1},
+        ticks: {strokeWidth: 0},
+        tickLabels: {
+          fill: 'gray',
+          fontFamily: 'inherit',
+          fontSize: width * 0.025,
+        },
+      },
+      labelTwo: {
+        textAnchor: 'end',
+        fill: RED_COLOR,
+        fontFamily: 'inherit',
+        fontSize: width * 0.025,
+        fontStyle: 'italic',
+      },
+      lineTwo: {
+        data: {stroke: 'gray', strokeWidth: 4.5},
+      },
+
+      // HORIZONTAL LINE
+      lineThree: {
+        data: {stroke: '#e95f46', strokeWidth: 2},
+      },
+    };
+  };
+
+  const styled = getStyles();
+  const dataSetOne = getDataSetOne();
+  const dataSetTwo = getDataSetTwo();
+  const tickValues = getTickValues();
 
   const {buildingName, propertyName, meterInfo} = navigation.state.params; //? Dynamic Ids
   console.log('aya kuch ++', navigation.state.params.unitId);
@@ -79,11 +255,63 @@ const App = ({navigation}) => {
 
     return () => backHandler.remove();
   }, []);
+
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(meterInfo);
+    let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
+    const chartRes = await api.post(
+      `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
+    );
+
+    console.log('Chart Data', chartRes.data?.data);
+    setDataSet(chartRes.data?.data?.dataset);
+    setMeterUsage(chartRes.data?.data?.meterUsage);
+    setReadDate(chartRes.data?.data?.label);
+    // let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
+    let MeterUsage = chartRes.data?.data?.meterUsage;
+    let ReadData = chartRes.data?.data?.label;
+    let DataSet = chartRes.data?.data?.dataset;
+
+    let Read = [];
+    let Usage = [];
+    let TimeDate = [];
+
+    console.log('Check Data', ReadData[0]?.slice(7, 9));
+
+    for (let i = 0; i < chartRes.data?.data?.dataset.length; i++) {
+      console.log('Contition Chali..|||||||');
+      let tt = {};
+      let uu = {};
+      let vv = {};
+
+      tt.x = new Date(
+        2021,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      );
+      tt.y = MeterUsage[i];
+      uu.x = new Date(
+        2021,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      );
+      uu.y = DataSet[i];
+      (vv = new Date(
+        2021,
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      )),
+        Read.push(uu);
+      Usage.push(tt);
+      TimeDate.push(vv);
+    }
+    setMeterReadData(Read);
+    setMeterUsageData(Usage);
+    setDateData(TimeDate);
+
     setLoading(false);
   };
 
@@ -199,7 +427,7 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.device?.manufacturer?.name +
+              unitMeter?.device?.manufacturer +
               ' (' +
               unitMeter?.device?.name +
               ')',
@@ -688,7 +916,8 @@ const App = ({navigation}) => {
                       fontSize: width * 0.08,
                       color: typeColor(unitMeter?.meter_name),
                     }}>
-                    3,782 Gallons
+                    {dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0}{' '}
+                    Gallons
                   </Text>
                   <RightArrow
                     name="chevron-thin-right"
@@ -886,7 +1115,139 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={styles.centerIcon}>
-                <Chart
+                <Svg style={styled.parent}>
+                  <G transform={'translate(0, -10)'}>
+                    {/* <VictoryChart> */}
+
+                    <VictoryBar
+                      // data={dataSetTwo}
+                      data={
+                        meterUsageData.length > 0 ? meterUsageData : dataSetTwo
+                      }
+                      barWidth={width * 0.1}
+                      standalone={false}
+                      domainPadding={{x: width * 0.05}}
+                      labels={({datum, index}) =>
+                        `${datum.y} ${'\n'}${
+                          readDate.length > 0
+                            ? readDate[index]?.slice(7)
+                            : '12 AM'
+                        }`
+                      }
+                      style={{
+                        data: {fill: '#DFDFDF'},
+                        labels: {
+                          fontSize: width * 0.02,
+                        },
+                      }}
+                      labelComponent={<VictoryLabel dy={15} />}
+                    />
+
+                    {/* Dependent axis for data set one. */}
+                    <VictoryAxis
+                      dependentAxis
+                      domain={[
+                        dataSet?.length > 0 ? dataSet[0] : 0,
+                        // 16,
+                        dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0,
+                      ]}
+                      offsetX={50}
+                      orientation="left"
+                      standalone={false}
+                      style={styled.axisOne}
+                    />
+
+                    {/* Dataset one */}
+                    <VictoryLine
+                      data={
+                        meterReadData.length > 0 ? meterReadData : dataSetOne
+                      }
+                      // data={dataSetOne}
+                      domainPadding={{x: width * 0.05}}
+                      domain={
+                        readDate.length > 0
+                          ? {
+                              x: [
+                                new Date(
+                                  2021,
+                                  months.indexOf(readDate[0]?.slice(0, 3)),
+                                  readDate[0]?.slice(4, 6),
+                                ),
+                                new Date(
+                                  2021,
+                                  months.indexOf(
+                                    readDate[readDate?.length - 1]?.slice(0, 3),
+                                  ),
+                                  readDate[readDate?.length - 1]?.slice(4, 6),
+                                ),
+                              ],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
+                          : {
+                              x: [new Date(2021, 0, 0), new Date(2021, 0, 0)],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
+                      }
+                      interpolation="monotoneX"
+                      scale={{x: 'time', y: 'linear'}}
+                      standalone={false}
+                      style={styled.lineOne}
+                    />
+
+                    {/* Dependent axis for data set two. */}
+                    <VictoryAxis
+                      dependentAxis
+                      domain={[
+                        0,
+                        meterUsage.length > 0
+                          ? Math.max(...meterUsage) < 1
+                            ? 1
+                            : Math.max(...meterUsage)
+                          : 1,
+                      ]}
+                      orientation="right"
+                      standalone={false}
+                      style={styled.axisTwo}
+                      // tickFormat={(x) => `${x / 1000000}`}
+                    />
+
+                    <VictoryAxis
+                      scale="time"
+                      standalone={false}
+                      style={styled.axisYears}
+                      // tickValues={tickValues}
+                      tickValues={dateData.length > 0 ? dateData : tickValues}
+                      tickFormat={
+                        (date) =>
+                          // console.log('Date', date.toString())
+                          months[date.getMonth()] +
+                          ' ' +
+                          (date.getDate() > 9
+                            ? `${date.getDate()}`
+                            : `0${date.getDate()}`)
+                        //   +
+                        // ' '
+                        // +
+                        // `${date.getHours()} AM`
+                      }
+                      domainPadding={{x: width * 0.05, y: height * 0.5}}
+                    />
+                    {/* </VictoryChart> */}
+                  </G>
+                </Svg>
+                {/* <Chart
                   style={styles.chartStyle}
                   data={testChartData}
                   padding={styles.chartPadding}
@@ -911,7 +1272,7 @@ const App = ({navigation}) => {
                       scatter: {default: {width: 4, height: 4, rx: 2}},
                     }}
                   />
-                </Chart>
+                </Chart> */}
                 <View style={styles.legendContainer}>
                   <View style={styles.flexRow}>
                     <View style={styles.meterUsageBox} />
