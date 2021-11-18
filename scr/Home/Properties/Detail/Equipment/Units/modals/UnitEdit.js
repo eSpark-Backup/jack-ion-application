@@ -100,7 +100,6 @@ export default function UnitEdit({
   useEffect(() => {
     if (flag) {
       console.log('un in mod-->>', unitDetails);
-
       setState((oldState) => ({
         ...oldState,
         lastUnitData: unitDetails?.unit?.name,
