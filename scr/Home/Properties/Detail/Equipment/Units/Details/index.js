@@ -91,9 +91,18 @@ const App = ({navigation}) => {
   const [meterReadData, setMeterReadData] = useState([]);
   const [meterUsageData, setMeterUsageData] = useState([]);
   const [dateData, setDateData] = useState([]);
+  const [selectDate, setSelectDate] = useState(new Date());
+
+  let mergeDates = [
+    {x: 'Nov 13 10 AM', y: 6},
+    {x: 'Nov 12 8 AM', y: 5},
+    {x: 'Nov 15 11 AM', y: 9},
+    {x: 'Nov 17 9 AM', y: 5},
+  ];
+
   let DataDates = [
-    'Nov 09 10 AM',
-    'Nov 09 11 AM',
+    'Nov 09 09 PM',
+    'Nov 09 10 PM',
     // 'Nov 10 03 PM',
     // 'Nov 11 05 PM',
     // 'Nov 12 09 AM',
@@ -118,7 +127,41 @@ const App = ({navigation}) => {
     'Nov',
     'Dec',
   ];
+
   const [flag, setFlag] = useState(true);
+
+  // const days = function (month, year) {
+  //   return new Date(year, month, 0).getDate();
+  // };
+
+  const addDays = (val) => {
+    const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    let datesCollection = [];
+    let newDate = date;
+
+    // for (var i = 1; i <= days(date.getMonth() + 2, date.getFullYear()); i++) {
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      datesCollection.push({
+        x: `${months[newDate.getMonth()]} ${newDate.getDate()} 00 AM`,
+        y: 0,
+      });
+    }
+
+    console.log('Dates Array', datesCollection);
+
+    // let array3 = mergeDates.concat(datesCollection);
+    var ids = new Set(mergeDates.map((d) => d.x.slice(0, 6)));
+    var merged = [
+      ...mergeDates,
+      ...datesCollection.filter((d) => !ids.has(d.x.slice(0, 6))),
+    ];
+
+    console.log(
+      'Array After Merge',
+      merged.sort((a, b) => (a.x > b.x ? 1 : -1)),
+    );
+  };
 
   const getDataSetOne = () => {
     return [
@@ -332,6 +375,7 @@ const App = ({navigation}) => {
       },
     };
   };
+
   const styled = getStyles();
   const dataSetOne = getDataSetOne();
   const dataSetTwo = getDataSetTwo();
@@ -352,11 +396,20 @@ const App = ({navigation}) => {
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
+    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    let data = {
+      start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
+      end_date: `2021-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+    };
+
+    console.log('Body Object', data);
+
     const chartRes = await api.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
+      data,
     );
 
-    console.log('Chart Data', chartRes.data?.data);
+    console.log('Chart Data', chartRes?.data?.data);
     setDataSet(chartRes.data?.data?.dataset);
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
@@ -365,13 +418,84 @@ const App = ({navigation}) => {
     let ReadData = chartRes.data?.data?.label;
     let DataSet = chartRes.data?.data?.dataset;
 
-    let Read = [];
     let Usage = [];
+    let Read = [];
     let TimeDate = [];
+    let Usage7Days = [];
+    let Read7Days = [];
 
-    console.log('Check Data', ReadData[0]?.slice(7, 9));
+    console.log(
+      'Check Data',
+      new Date().getFullYear(),
+      months.indexOf(ReadData[0]?.slice(0, 3)),
+      ReadData[0]?.slice(4, 6),
+    );
 
-    for (let i = 0; i < chartRes.data?.data?.dataset.length; i++) {
+    for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
+      let aa = {};
+      let bb = {};
+      aa.x = new Date(
+        new Date().getFullYear(),
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      );
+      aa.y = MeterUsage[i];
+      bb.x = new Date(
+        new Date().getFullYear(),
+        months.indexOf(ReadData[i]?.slice(0, 3)),
+        ReadData[i]?.slice(4, 6),
+      );
+      bb.y = DataSet[i];
+      Usage7Days.push(aa);
+      Read7Days.push(bb);
+    }
+
+    console.log('Simple Array', Usage7Days, Read7Days);
+
+    const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    let datesCollection = [];
+    let newDate = date;
+
+    // for (var i = 1; i <= days(date.getMonth() + 2, date.getFullYear()); i++) {
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      datesCollection.push({
+        x: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          newDate.getDate(),
+        ),
+        y: 0,
+      });
+    }
+
+    console.log(
+      'datesCollection Items',
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        newDate.getDate(),
+      ),
+    );
+    console.log('datesCollection Array', datesCollection);
+
+    var dates = new Set(Usage7Days.map((d) => d.x));
+    var Usage7DaysData = [
+      ...Usage7Days,
+      ...datesCollection.filter((d) => !dates.has(d.x)),
+    ];
+    var Read7DaysData = [
+      ...Read7Days,
+      ...datesCollection.filter((d) => !dates.has(d.x)),
+    ];
+
+    console.log(
+      'Array After Merge',
+      Usage7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
+      Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
+    );
+
+    for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
       console.log('Contition Chali..|||||||');
       let tt = {};
       let uu = {};
@@ -389,20 +513,22 @@ const App = ({navigation}) => {
         ReadData[i]?.slice(4, 6),
       );
       uu.y = DataSet[i];
-      (vv = new Date(
+      vv = new Date(
         2021,
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
-      )),
-        Read.push(uu);
+      );
       Usage.push(tt);
+      Read.push(uu);
       TimeDate.push(vv);
     }
+
     setMeterReadData(Read);
     setMeterUsageData(Usage);
     setDateData(TimeDate);
 
     setLoading(false);
+    console.log('Intial Chart Data Received', Read, Usage, TimeDate);
   };
 
   // console.log('Meter Read Data', getDataSetOne());
@@ -1433,7 +1559,7 @@ const App = ({navigation}) => {
                         meterReadData.length > 0 ? meterReadData : dataSetOne
                       }
                       // data={dataSetOne}
-                      domainPadding={{x: width * 0.05}}
+                      domainPadding={{x: [width * 0.05, 0]}}
                       domain={
                         readDate.length > 0
                           ? {
