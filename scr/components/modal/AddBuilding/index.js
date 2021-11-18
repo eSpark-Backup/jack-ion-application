@@ -151,6 +151,7 @@ export default function AddbuildingModal({
       onChangeText={(text) => {
         addInput(text, index);
       }}
+      onSubmitEditing={() => {Keyboard.dismiss()}}
       style={[styles.input, {alignSelf: 'center', fontSize: width * 0.03}]}
       scrollEnabled={false}
       underlineColor="transparent"
