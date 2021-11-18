@@ -23,13 +23,6 @@ import Base_Url from '../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  Chart,
-  Line,
-  Area,
-  HorizontalAxis,
-  VerticalAxis,
-} from 'react-native-responsive-linechart';
 
 import {Svg, G} from 'react-native-svg';
 import {
@@ -1247,32 +1240,6 @@ const App = ({navigation}) => {
                     {/* </VictoryChart> */}
                   </G>
                 </Svg>
-                {/* <Chart
-                  style={styles.chartStyle}
-                  data={testChartData}
-                  padding={styles.chartPadding}
-                  xDomain={{min: -2, max: 10}}
-                  yDomain={{min: 0, max: 20}}>
-                  <VerticalAxis
-                    tickCount={11}
-                    theme={{labels: {formatter: (v) => v.toFixed(2)}}}
-                  />
-                  <HorizontalAxis tickCount={5} />
-                  <Area
-                    theme={{
-                      gradient: {
-                        from: {color: '#5D84B6'},
-                        to: {color: '#DFDFDF', opacity: 0.4},
-                      },
-                    }}
-                  />
-                  <Line
-                    theme={{
-                      stroke: {color: '#5D84B6', width: 5},
-                      scatter: {default: {width: 4, height: 4, rx: 2}},
-                    }}
-                  />
-                </Chart> */}
                 <View style={styles.legendContainer}>
                   <View style={styles.flexRow}>
                     <View style={styles.meterUsageBox} />
