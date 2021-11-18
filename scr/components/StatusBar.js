@@ -26,7 +26,7 @@ const CustumStatusBar = ({backColor, transparent}) => {
     </View>
   );
 };
-const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 4 : 0;
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 4 : 56;
 
 const styles = StyleSheet.create({
