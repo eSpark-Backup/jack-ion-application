@@ -411,6 +411,8 @@ export default function AddbuildingModal({
                           autoIncrement: !state.autoIncrement,
                         }))
                       }
+                      onCheckColor="#25AAE1ec"
+                      onTintColor="#25AAE1ec"
                     />
                     <Text style={{fontSize: width * 0.035}}>
                       Auto Increment

@@ -14,6 +14,7 @@ const MyStatusBar = ({backgroundColor, ...props}) => (
     </SafeAreaView>
   </View>
 );
+
 const CustumStatusBar = ({backColor, transparent}) => {
   return (
     <View style={styles.container}>
@@ -26,18 +27,14 @@ const CustumStatusBar = ({backColor, transparent}) => {
     </View>
   );
 };
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 4 : 0;
-const APPBAR_HEIGHT = Platform.OS === 'ios' ? 4 : 56;
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+const APPBAR_HEIGHT = Platform.OS === 'ios' ? STATUSBAR_HEIGHT : 0;
 
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
   },
   statusBar: {
-    height: STATUSBAR_HEIGHT,
-  },
-  appBar: {
-    backgroundColor: '#79B45D',
     height: APPBAR_HEIGHT,
   },
   content: {
