@@ -91,27 +91,8 @@ const App = ({navigation}) => {
   const [meterReadData, setMeterReadData] = useState([]);
   const [meterUsageData, setMeterUsageData] = useState([]);
   const [dateData, setDateData] = useState([]);
-  const [selectDate, setSelectDate] = useState(new Date());
 
-  let mergeDates = [
-    {x: 'Nov 13 10 AM', y: 6},
-    {x: 'Nov 12 8 AM', y: 5},
-    {x: 'Nov 15 11 AM', y: 9},
-    {x: 'Nov 17 9 AM', y: 5},
-  ];
-
-  let DataDates = [
-    'Nov 09 09 PM',
-    'Nov 09 10 PM',
-    // 'Nov 10 03 PM',
-    // 'Nov 11 05 PM',
-    // 'Nov 12 09 AM',
-    // 'Nov 13 10 AM',
-    // 'Nov 13 11 AM',
-    // 'Nov 14 10 AM',
-    // 'Nov 15 07 PM',
-    // 'Nov 15 08 PM',
-  ];
+  let DataDates = ['Nov 09 09 PM', 'Nov 09 10 PM'];
 
   const months = [
     'Jan',
@@ -130,141 +111,81 @@ const App = ({navigation}) => {
 
   const [flag, setFlag] = useState(true);
 
-  // const days = function (month, year) {
-  //   return new Date(year, month, 0).getDate();
-  // };
-
-  const addDays = (val) => {
-    const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    let datesCollection = [];
-    let newDate = date;
-
-    // for (var i = 1; i <= days(date.getMonth() + 2, date.getFullYear()); i++) {
-    for (var i = 1; i <= 7; i++) {
-      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
-      datesCollection.push({
-        x: `${months[newDate.getMonth()]} ${newDate.getDate()} 00 AM`,
-        y: 0,
-      });
-    }
-
-    console.log('Dates Array', datesCollection);
-
-    // let array3 = mergeDates.concat(datesCollection);
-    var ids = new Set(mergeDates.map((d) => d.x.slice(0, 6)));
-    var merged = [
-      ...mergeDates,
-      ...datesCollection.filter((d) => !ids.has(d.x.slice(0, 6))),
-    ];
-
-    console.log(
-      'Array After Merge',
-      merged.sort((a, b) => (a.x > b.x ? 1 : -1)),
-    );
-  };
-
   const getDataSetOne = () => {
     return [
       {
-        x: new Date(2021, months.indexOf(DataDates[0]?.slice(0, 3)), 9),
-        y: 5,
-      },
-      {
-        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 9),
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 13),
         y: 11,
       },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[2].slice(0, 3)), 10),
-      //   y: 14,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[3].slice(0, 3)), 11),
-      //   y: 22,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[4].slice(0, 3)), 12),
-      //   y: 29,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[5].slice(0, 3)), 13),
-      //   y: 33,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[6].slice(0, 3)), 13),
-      //   y: 36,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[7].slice(0, 3)), 14),
-      //   y: 42,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[8].slice(0, 3)), 15),
-      //   y: 46,
-      // },
-      // {
-      //   x: new Date(2021, months.indexOf(DataDates[9].slice(0, 3)), 15),
-      //   y: 51,
-      // },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 14),
+        y: 11,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 15),
+        y: 15,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 16),
+        y: 15,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 17),
+        y: 15,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 18),
+        y: 15,
+      },
+      {
+        x: new Date(2021, months.indexOf(DataDates[1]?.slice(0, 3)), 19),
+        y: 15,
+      },
     ];
   };
 
   const getDataSetTwo = () => {
     return [
       {
-        x: new Date(2021, 10, 9),
-        y: 5,
+        x: new Date(2021, 10, 13),
+        y: 0,
       },
       {
-        x: new Date(2021, 10, 9),
-        y: 6,
+        x: new Date(2021, 10, 14),
+        y: 0,
       },
-      // {
-      //   x: new Date(2021, 10, 10),
-      //   y: 3,
-      // },
-      // {
-      //   x: new Date(2021, 10, 11),
-      //   y: 8,
-      // },
-      // {
-      //   x: new Date(2021, 10, 12),
-      //   y: 7,
-      // },
-      // {
-      //   x: new Date(2021, 10, 13),
-      //   y: 4,
-      // },
-      // {
-      //   x: new Date(2021, 10, 13),
-      //   y: 3,
-      // },
-      // {
-      //   x: new Date(2021, 10, 14),
-      //   y: 6,
-      // },
-      // {
-      //   x: new Date(2021, 10, 15),
-      //   y: 4,
-      // },
-      // {
-      //   x: new Date(2021, 10, 15),
-      //   y: 5,
-      // },
+      {
+        x: new Date(2021, 10, 15),
+        y: 4,
+      },
+      {
+        x: new Date(2021, 10, 16),
+        y: 0,
+      },
+      {
+        x: new Date(2021, 10, 17),
+        y: 0,
+      },
+      {
+        x: new Date(2021, 10, 18),
+        y: 0,
+      },
+      {
+        x: new Date(2021, 10, 19),
+        y: 0,
+      },
     ];
   };
 
   const getTickValues = () => {
     return [
-      new Date(2021, 10, 9),
-      new Date(2021, 10, 9),
-      // new Date(2021, 10, 10),
-      // new Date(2021, 10, 11),
-      // new Date(2021, 10, 12),
-      // new Date(2021, 10, 13),
-      // new Date(2021, 10, 13),
-      // new Date(2021, 10, 14),
-      // new Date(2021, 10, 15),
-      // new Date(2021, 10, 15),
+      new Date(2021, 10, 13),
+      new Date(2021, 10, 14),
+      new Date(2021, 10, 15),
+      new Date(2021, 10, 16),
+      new Date(2021, 10, 17),
+      new Date(2021, 10, 18),
+      new Date(2021, 10, 19),
     ];
   };
 
@@ -314,10 +235,6 @@ const App = ({navigation}) => {
 
       // DATA SET ONE
       axisOne: {
-        // grid: {
-        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#5D84B6'),
-        //   strokeWidth: 1,
-        // },
         axis: {stroke: BLUE_COLOR, strokeWidth: 1},
         ticks: {
           strokeWidth: 0,
@@ -346,10 +263,6 @@ const App = ({navigation}) => {
 
       // DATA SET TWO
       axisTwo: {
-        // grid: {
-        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
-        //   strokeWidth: 1,
-        // },
         axis: {stroke: RED_COLOR, strokeWidth: 1},
         ticks: {strokeWidth: 0},
         tickLabels: {
@@ -453,13 +366,15 @@ const App = ({navigation}) => {
     console.log('Simple Array', Usage7Days, Read7Days);
 
     const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    let datesCollection = [];
+    let readDates = [];
+    let usageDates = [];
+    let Datadates = [];
     let newDate = date;
 
     // for (var i = 1; i <= days(date.getMonth() + 2, date.getFullYear()); i++) {
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
-      datesCollection.push({
+      usageDates.push({
         x: new Date(
           new Date().getFullYear(),
           new Date().getMonth(),
@@ -467,6 +382,29 @@ const App = ({navigation}) => {
         ),
         y: 0,
       });
+    }
+
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      readDates.push({
+        x: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          newDate.getDate(),
+        ),
+        y: Math.max(...DataSet),
+      });
+    }
+
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      Datadates.push(
+        new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          newDate.getDate(),
+        ),
+      );
     }
 
     console.log(
@@ -477,23 +415,34 @@ const App = ({navigation}) => {
         newDate.getDate(),
       ),
     );
-    console.log('datesCollection Array', datesCollection);
+    // console.log('datesCollection Array', datesCollection);
 
-    var dates = new Set(Usage7Days.map((d) => d.x));
+    var dates = new Set(Usage7Days.map((d) => d.x.toString()));
     var Usage7DaysData = [
       ...Usage7Days,
-      ...datesCollection.filter((d) => !dates.has(d.x)),
+      ...usageDates.filter((d) => !dates.has(d.x.toString())),
     ];
     var Read7DaysData = [
       ...Read7Days,
-      ...datesCollection.filter((d) => !dates.has(d.x)),
+      ...readDates.filter((d) => !dates.has(d.x.toString())),
     ];
 
     console.log(
-      'Array After Merge',
-      Usage7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
+      'Array After Merge Usage',
+      Usage7DaysData.sort(function (a, b) {
+        return a.x - b.x;
+      }),
+      'Array After Merge Read',
       Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
     );
+
+    console.log('Dates Fetched', Datadates);
+
+    setMeterReadData(Read7DaysData);
+    setMeterUsageData(Usage7DaysData);
+    setDateData(Datadates);
+
+    console.log('Intial Chart Data Received', Read, Usage, TimeDate);
 
     for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
       console.log('Contition Chali..|||||||');
@@ -523,9 +472,9 @@ const App = ({navigation}) => {
       TimeDate.push(vv);
     }
 
-    setMeterReadData(Read);
-    setMeterUsageData(Usage);
-    setDateData(TimeDate);
+    // setMeterReadData(Read);
+    // setMeterUsageData(Usage);
+    // setDateData(TimeDate);
 
     setLoading(false);
     console.log('Intial Chart Data Received', Read, Usage, TimeDate);
@@ -1522,14 +1471,10 @@ const App = ({navigation}) => {
                       }
                       barWidth={width * 0.1}
                       standalone={false}
-                      domainPadding={{x: width * 0.05}}
-                      labels={({datum, index}) =>
-                        `${datum.y} ${'\n'}${
-                          readDate.length > 0
-                            ? readDate[index]?.slice(7)
-                            : '12 AM'
-                        }`
-                      }
+                      domainPadding={{
+                        x: width * 0.05,
+                      }}
+                      labels={({datum, index}) => `${datum.y}`}
                       style={{
                         data: {fill: '#DFDFDF'},
                         labels: {
@@ -1543,8 +1488,12 @@ const App = ({navigation}) => {
                     <VictoryAxis
                       dependentAxis
                       domain={[
-                        dataSet?.length > 0 ? dataSet[0] : 0,
-                        // 16,
+                        dataSet?.length > 0 && meterUsage.length > 0
+                          ? Math.max(...meterUsage) > 0
+                            ? dataSet[0] - Math.max(...meterUsage)
+                            : 0
+                          : 0,
+                        // 11,
                         dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0,
                       ]}
                       offsetX={50}
@@ -1559,26 +1508,20 @@ const App = ({navigation}) => {
                         meterReadData.length > 0 ? meterReadData : dataSetOne
                       }
                       // data={dataSetOne}
-                      domainPadding={{x: [width * 0.05, 0]}}
+                      domainPadding={{x: [width * 0.05, 0], y: [1, 1]}}
                       domain={
-                        readDate.length > 0
+                        readDate.length > 0 && meterReadData.length > 0
                           ? {
                               x: [
-                                new Date(
-                                  2021,
-                                  months.indexOf(readDate[0]?.slice(0, 3)),
-                                  readDate[0]?.slice(4, 6),
-                                ),
-                                new Date(
-                                  2021,
-                                  months.indexOf(
-                                    readDate[readDate?.length - 1]?.slice(0, 3),
-                                  ),
-                                  readDate[readDate?.length - 1]?.slice(4, 6),
-                                ),
+                                meterReadData[0]?.x,
+                                meterReadData[meterReadData.length - 1]?.x,
                               ],
                               y: [
-                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                meterUsage.length > 0
+                                  ? Math.max(...meterUsage) > 0
+                                    ? dataSet[0] - Math.max(...meterUsage)
+                                    : 0
+                                  : 0,
                                 // 16,
                                 dataSet?.length > 0
                                   ? dataSet[dataSet?.length - 1]
@@ -1586,10 +1529,14 @@ const App = ({navigation}) => {
                               ],
                             }
                           : {
-                              x: [new Date(2021, 0, 0), new Date(2021, 0, 0)],
+                              x: [
+                                new Date(2021, 10, 13),
+                                new Date(2021, 10, 19),
+                              ],
                               y: [
                                 dataSet?.length > 0 ? dataSet[0] : 0,
-                                // 16,
+                                // 11,
+
                                 dataSet?.length > 0
                                   ? dataSet[dataSet?.length - 1]
                                   : 0,
@@ -1607,6 +1554,7 @@ const App = ({navigation}) => {
                       dependentAxis
                       domain={[
                         0,
+                        // 6,
                         meterUsage.length > 0
                           ? Math.max(...meterUsage) < 1
                             ? 1
@@ -1623,8 +1571,8 @@ const App = ({navigation}) => {
                       scale="time"
                       standalone={false}
                       style={styled.axisYears}
-                      // tickValues={tickValues}
-                      tickValues={dateData.length > 0 ? dateData : tickValues}
+                      tickValues={tickValues}
+                      // tickValues={dateData.length > 0 ? dateData : tickValues}
                       tickFormat={
                         (date) =>
                           // console.log('Date', date.toString())
