@@ -129,14 +129,14 @@ const App = ({navigation}) => {
         textAnchor: 'start',
         verticalAnchor: 'end',
         fill: '#000000',
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: '18px',
         fontWeight: 'bold',
       },
       labelNumber: {
         textAnchor: 'middle',
         fill: '#ffffff',
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: '14px',
       },
 
@@ -153,7 +153,7 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: 'black',
-          fontFamily: 'inherit',
+          // fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
@@ -170,13 +170,13 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: '#5D84B6',
-          fontFamily: 'inherit',
+          // fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
       labelOne: {
         fill: BLUE_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: width * 0.025,
         fontStyle: 'italic',
       },
@@ -185,7 +185,7 @@ const App = ({navigation}) => {
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontWeight: 300,
         fontSize: width * 0.025,
       },
@@ -200,14 +200,14 @@ const App = ({navigation}) => {
         ticks: {strokeWidth: 0},
         tickLabels: {
           fill: 'gray',
-          fontFamily: 'inherit',
+          // fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
       labelTwo: {
         textAnchor: 'end',
         fill: RED_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: width * 0.025,
         fontStyle: 'italic',
       },
