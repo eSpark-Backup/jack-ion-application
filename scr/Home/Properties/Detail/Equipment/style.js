@@ -50,6 +50,14 @@ export default styles = StyleSheet.create({
     height: width * 0.1,
     width: width * 0.6,
   },
+  filterButton: {
+    backgroundColor: 'white',
+    borderRadius: width * 0.06,
+    height: width * 0.08,
+    width: width * 0.08,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   search: {
     width: width * 0.8,
     maxHeight: width * 0.1,
@@ -275,12 +283,5 @@ export default styles = StyleSheet.create({
   dropDownListText: {
     fontSize: 14,
   },
-  filterButton: {
-    backgroundColor: 'white',
-    borderRadius: width * 0.06,
-    height: width * 0.08,
-    width: width * 0.08,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  
 });

@@ -198,14 +198,14 @@ const App = ({navigation}) => {
         textAnchor: 'start',
         verticalAnchor: 'end',
         fill: '#000000',
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: '18px',
         fontWeight: 'bold',
       },
       labelNumber: {
         textAnchor: 'middle',
         fill: '#ffffff',
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: '14px',
       },
 
@@ -222,7 +222,7 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: 'black',
-          fontFamily: 'inherit',
+          // fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
@@ -235,13 +235,13 @@ const App = ({navigation}) => {
         },
         tickLabels: {
           fill: '#5D84B6',
-          fontFamily: 'inherit',
+          // fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
       labelOne: {
         fill: BLUE_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: width * 0.025,
         fontStyle: 'italic',
       },
@@ -250,7 +250,7 @@ const App = ({navigation}) => {
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontWeight: 300,
         fontSize: width * 0.025,
       },
@@ -261,14 +261,14 @@ const App = ({navigation}) => {
         ticks: {strokeWidth: 0},
         tickLabels: {
           fill: 'gray',
-          fontFamily: 'inherit',
+          // fontFamily: 'inherit',
           fontSize: width * 0.025,
         },
       },
       labelTwo: {
         textAnchor: 'end',
         fill: RED_COLOR,
-        fontFamily: 'inherit',
+        // fontFamily: 'inherit',
         fontSize: width * 0.025,
         fontStyle: 'italic',
       },
@@ -304,7 +304,7 @@ const App = ({navigation}) => {
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
     let data = {
       start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
@@ -406,6 +406,8 @@ const App = ({navigation}) => {
     );
 
     const index = stringDates.indexOf(stringDate.toString());
+
+    console.log('String Date', stringDate);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);

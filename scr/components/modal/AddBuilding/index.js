@@ -151,6 +151,7 @@ export default function AddbuildingModal({
       onChangeText={(text) => {
         addInput(text, index);
       }}
+      onSubmitEditing={() => {Keyboard.dismiss()}}
       style={[styles.input, {alignSelf: 'center', fontSize: width * 0.03}]}
       scrollEnabled={false}
       underlineColor="transparent"
@@ -410,6 +411,8 @@ export default function AddbuildingModal({
                           autoIncrement: !state.autoIncrement,
                         }))
                       }
+                      onCheckColor="#25AAE1ec"
+                      onTintColor="#25AAE1ec"
                     />
                     <Text style={{fontSize: width * 0.035}}>
                       Auto Increment
