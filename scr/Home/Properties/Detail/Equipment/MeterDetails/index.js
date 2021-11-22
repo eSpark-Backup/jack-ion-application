@@ -73,6 +73,7 @@ const App = ({navigation}) => {
   const [meterReadData, setMeterReadData] = useState([]);
   const [meterUsageData, setMeterUsageData] = useState([]);
   const [dateData, setDateData] = useState([]);
+  const [loadChartData, setLoadChartData] = useState(false);
 
   let DataDates = ['Nov 09 10 AM', 'Nov 09 11 AM'];
 
@@ -167,10 +168,6 @@ const App = ({navigation}) => {
 
       // DATA SET ONE
       axisOne: {
-        // grid: {
-        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#5D84B6'),
-        //   strokeWidth: 1,
-        // },
         axis: {stroke: BLUE_COLOR, strokeWidth: 1},
         ticks: {
           strokeWidth: 0,
@@ -199,10 +196,6 @@ const App = ({navigation}) => {
 
       // DATA SET TWO
       axisTwo: {
-        // grid: {
-        //   stroke: ({tick}) => (tick === 0 ? 'transparent' : '#aaa'),
-        //   strokeWidth: 1,
-        // },
         axis: {stroke: RED_COLOR, strokeWidth: 1},
         ticks: {strokeWidth: 0},
         tickLabels: {
@@ -262,57 +255,151 @@ const App = ({navigation}) => {
     setData(res.data);
     setUnitMeter(meterInfo);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
+    let unitMeterArr = res.data?.data?.unit?.unit_meter;
+    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const todayDate = new Date();
+    let data = {
+      start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
+      end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
+    };
+
+    setLoadChartData(true);
+
     const chartRes = await api.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
+      data,
     );
-
     console.log('Chart Data', chartRes.data?.data);
+
+    if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
+      console.log('Chala Function');
+
+      getChartData(chartRes);
+    }
+    setLoadChartData(false);
+
+    setLoading(false);
+  };
+
+  const getChartData = (chartRes) => {
+    console.log('CHECK Chala.....');
+    let MeterUsage = [];
+    let ReadData = [];
+    let DataSet = [];
     setDataSet(chartRes.data?.data?.dataset);
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
-    // let ReadData = ['Nov 09 10 AM', 'Nov 09 11 AM', 'Nov 15 08 AM'];
-    let MeterUsage = chartRes.data?.data?.meterUsage;
-    let ReadData = chartRes.data?.data?.label;
-    let DataSet = chartRes.data?.data?.dataset;
+    MeterUsage = chartRes.data?.data?.meterUsage;
+    ReadData = chartRes.data?.data?.label;
+    DataSet = chartRes.data?.data?.dataset;
 
-    let Read = [];
-    let Usage = [];
-    let TimeDate = [];
+    let Usage7Days = [];
+    let Read7Days = [];
+    let TotalUsage = MeterUsage.reduce((a, b) => a + b, 0);
 
-    console.log('Check Data', ReadData[0]?.slice(7, 9));
-
-    for (let i = 0; i < chartRes.data?.data?.dataset.length; i++) {
-      console.log('Contition Chali..|||||||');
-      let tt = {};
-      let uu = {};
-      let vv = {};
-
-      tt.x = new Date(
-        2021,
+    for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
+      let aa = {};
+      let bb = {};
+      aa.x = new Date(
+        new Date().getFullYear(),
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      tt.y = MeterUsage[i];
-      uu.x = new Date(
-        2021,
+      aa.y = MeterUsage[i];
+      bb.x = new Date(
+        new Date().getFullYear(),
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      uu.y = DataSet[i];
-      (vv = new Date(
-        2021,
-        months.indexOf(ReadData[i]?.slice(0, 3)),
-        ReadData[i]?.slice(4, 6),
-      )),
-        Read.push(uu);
-      Usage.push(tt);
-      TimeDate.push(vv);
+      bb.y = DataSet[i];
+      Usage7Days.push(aa);
+      Read7Days.push(bb);
     }
-    setMeterReadData(Read);
-    setMeterUsageData(Usage);
-    setDateData(TimeDate);
 
-    setLoading(false);
+    console.log('Simple Array', Usage7Days, Read7Days);
+
+    const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    let readDates = [];
+    let usageDates = [];
+    let Datadates = [];
+    let stringDates = [];
+    let newDate = date;
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      const stringDate = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        newDate.getDate(),
+      );
+      stringDates.push(stringDate.toString());
+    }
+
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      Datadates.push(
+        new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          newDate.getDate(),
+        ),
+      );
+    }
+
+    const stringDate = new Date(
+      new Date().getFullYear(),
+      months.indexOf(ReadData[0]?.slice(0, 3)),
+      ReadData[0]?.slice(4, 6),
+    );
+
+    const index = stringDates.indexOf(stringDate.toString());
+
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      usageDates.push({
+        x: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          newDate.getDate(),
+        ),
+        y: 0,
+      });
+    }
+
+    for (var i = 1; i <= 7; i++) {
+      newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
+      readDates.push({
+        x: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          newDate.getDate(),
+        ),
+        y: i > index ? Math.max(...DataSet) : Math.max(...DataSet) - TotalUsage,
+      });
+    }
+
+    var dates = new Set(Usage7Days.map((d) => d.x.toString()));
+    var Usage7DaysData = [
+      ...Usage7Days,
+      ...usageDates.filter((d) => !dates.has(d.x.toString())),
+    ];
+    var Read7DaysData = [
+      ...Read7Days,
+      ...readDates.filter((d) => !dates.has(d.x.toString())),
+    ];
+
+    console.log(
+      'Array After Merge Usage',
+      Usage7DaysData.sort(function (a, b) {
+        return a.x - b.x;
+      }),
+      'Array After Merge Read',
+      Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
+    );
+
+    setMeterReadData(Read7DaysData);
+    setMeterUsageData(Usage7DaysData);
+    setDateData(Datadates);
+    // setLoadChartData(false);
   };
 
   const getMeterTypes = async () => {
@@ -916,7 +1003,9 @@ const App = ({navigation}) => {
                       fontSize: width * 0.08,
                       color: typeColor(unitMeter?.meter_name),
                     }}>
-                    {dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0}{' '}
+                    {unitMeter?.meter_read?.meter_reading
+                      ? unitMeter?.meter_read?.meter_reading
+                      : 0}{' '}
                     Gallons
                   </Text>
                   <RightArrow
@@ -1115,138 +1204,140 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={styles.centerIcon}>
-                <Svg style={styled.parent}>
-                  <G transform={'translate(0, -10)'}>
-                    {/* <VictoryChart> */}
+                {meterReadData.length > 0 ? (
+                  <Svg style={styled.parent}>
+                    <G transform={'translate(0, -10)'}>
+                      {/* <VictoryChart> */}
 
-                    <VictoryBar
-                      // data={dataSetTwo}
-                      data={
-                        meterUsageData.length > 0 ? meterUsageData : dataSetTwo
-                      }
-                      barWidth={width * 0.1}
-                      standalone={false}
-                      domainPadding={{x: width * 0.05}}
-                      labels={({datum, index}) =>
-                        `${datum.y} ${'\n'}${
-                          readDate.length > 0
-                            ? readDate[index]?.slice(7)
-                            : '12 AM'
-                        }`
-                      }
-                      style={{
-                        data: {fill: '#DFDFDF'},
-                        labels: {
-                          fontSize: width * 0.02,
-                        },
-                      }}
-                      labelComponent={<VictoryLabel dy={15} />}
-                    />
+                      <VictoryBar
+                        // data={dataSetTwo}
+                        data={
+                          meterUsageData.length > 0
+                            ? meterUsageData
+                            : dataSetTwo
+                        }
+                        barWidth={width * 0.1}
+                        standalone={false}
+                        domainPadding={{
+                          x: width * 0.05,
+                        }}
+                        labels={({datum, index}) => `${datum.y}`}
+                        style={{
+                          data: {fill: '#DFDFDF'},
+                          labels: {
+                            fontSize: width * 0.02,
+                          },
+                        }}
+                        labelComponent={<VictoryLabel dy={15} />}
+                      />
 
-                    {/* Dependent axis for data set one. */}
-                    <VictoryAxis
-                      dependentAxis
-                      domain={[
-                        dataSet?.length > 0 ? dataSet[0] : 0,
-                        // 16,
-                        dataSet?.length > 0 ? dataSet[dataSet?.length - 1] : 0,
-                      ]}
-                      offsetX={50}
-                      orientation="left"
-                      standalone={false}
-                      style={styled.axisOne}
-                    />
+                      {/* Dependent axis for data set one. */}
+                      <VictoryAxis
+                        dependentAxis
+                        domain={[
+                          dataSet?.length > 0 && meterUsage.length > 0
+                            ? Math.max(...meterUsage) > 0
+                              ? dataSet[0] - Math.max(...meterUsage)
+                              : 0
+                            : 0,
+                          // 11,
+                          dataSet?.length > 0
+                            ? dataSet[dataSet?.length - 1]
+                            : 0,
+                        ]}
+                        offsetX={50}
+                        orientation="left"
+                        standalone={false}
+                        style={styled.axisOne}
+                      />
 
-                    {/* Dataset one */}
-                    <VictoryLine
-                      data={
-                        meterReadData.length > 0 ? meterReadData : dataSetOne
-                      }
-                      // data={dataSetOne}
-                      domainPadding={{x: width * 0.05}}
-                      domain={
-                        readDate.length > 0
-                          ? {
-                              x: [
-                                new Date(
-                                  2021,
-                                  months.indexOf(readDate[0]?.slice(0, 3)),
-                                  readDate[0]?.slice(4, 6),
-                                ),
-                                new Date(
-                                  2021,
-                                  months.indexOf(
-                                    readDate[readDate?.length - 1]?.slice(0, 3),
-                                  ),
-                                  readDate[readDate?.length - 1]?.slice(4, 6),
-                                ),
-                              ],
-                              y: [
-                                dataSet?.length > 0 ? dataSet[0] : 0,
-                                // 16,
-                                dataSet?.length > 0
-                                  ? dataSet[dataSet?.length - 1]
-                                  : 0,
-                              ],
-                            }
-                          : {
-                              x: [new Date(2021, 0, 0), new Date(2021, 0, 0)],
-                              y: [
-                                dataSet?.length > 0 ? dataSet[0] : 0,
-                                // 16,
-                                dataSet?.length > 0
-                                  ? dataSet[dataSet?.length - 1]
-                                  : 0,
-                              ],
-                            }
-                      }
-                      interpolation="monotoneX"
-                      scale={{x: 'time', y: 'linear'}}
-                      standalone={false}
-                      style={styled.lineOne}
-                    />
+                      {/* Dataset one */}
+                      <VictoryLine
+                        data={
+                          meterReadData.length > 0 ? meterReadData : dataSetOne
+                        }
+                        // data={dataSetOne}
+                        domainPadding={{x: [width * 0.05, 0], y: [1, 1]}}
+                        domain={
+                          readDate.length > 0 && meterReadData.length > 0
+                            ? {
+                                x: [
+                                  meterReadData[0]?.x,
+                                  meterReadData[meterReadData.length - 1]?.x,
+                                ],
+                                y: [
+                                  meterUsage.length > 0
+                                    ? Math.max(...meterUsage) > 0
+                                      ? dataSet[0] - Math.max(...meterUsage)
+                                      : 0
+                                    : 0,
+                                  // 16,
+                                  dataSet?.length > 0
+                                    ? dataSet[dataSet?.length - 1]
+                                    : 0,
+                                ],
+                              }
+                            : {
+                                x: [
+                                  new Date(2021, 10, 13),
+                                  new Date(2021, 10, 19),
+                                ],
+                                y: [
+                                  dataSet?.length > 0 ? dataSet[0] : 0,
+                                  // 11,
 
-                    {/* Dependent axis for data set two. */}
-                    <VictoryAxis
-                      dependentAxis
-                      domain={[
-                        0,
-                        meterUsage.length > 0
-                          ? Math.max(...meterUsage) < 1
-                            ? 1
-                            : Math.max(...meterUsage)
-                          : 1,
-                      ]}
-                      orientation="right"
-                      standalone={false}
-                      style={styled.axisTwo}
-                      // tickFormat={(x) => `${x / 1000000}`}
-                    />
+                                  dataSet?.length > 0
+                                    ? dataSet[dataSet?.length - 1]
+                                    : 0,
+                                ],
+                              }
+                        }
+                        interpolation="monotoneX"
+                        scale={{x: 'time', y: 'linear'}}
+                        standalone={false}
+                        style={styled.lineOne}
+                      />
 
-                    <VictoryAxis
-                      scale="time"
-                      standalone={false}
-                      style={styled.axisYears}
-                      // tickValues={tickValues}
-                      tickValues={dateData.length > 0 ? dateData : tickValues}
-                      tickFormat={
-                        (date) =>
-                          // console.log('Date', date.toString())
+                      {/* Dependent axis for data set two. */}
+                      <VictoryAxis
+                        dependentAxis
+                        domain={[
+                          Math.max(...meterUsage) < 1 ? -1 : 0,
+                          // 6,
+                          meterUsage.length > 0 ? Math.max(...meterUsage) : 0,
+                        ]}
+                        orientation="right"
+                        standalone={false}
+                        style={styled.axisTwo}
+                        // tickFormat={(x) => `${x / 1000000}`}
+                      />
+
+                      <VictoryAxis
+                        scale="time"
+                        standalone={false}
+                        style={styled.axisYears}
+                        // tickValues={tickValues}
+                        tickValues={dateData.length > 0 ? dateData : tickValues}
+                        tickFormat={(date) =>
                           months[date.getMonth()] +
                           ' ' +
                           (date.getDate() > 9
                             ? `${date.getDate()}`
                             : `0${date.getDate()}`)
-                        //   +
-                        // ' '
-                        // +
-                        // `${date.getHours()} AM`
-                      }
-                      domainPadding={{x: width * 0.05, y: height * 0.5}}
-                    />
-                    {/* </VictoryChart> */}
-                  </G>
-                </Svg>
+                        }
+                        domainPadding={{x: width * 0.05, y: height * 0.5}}
+                      />
+                      {/* </VictoryChart> */}
+                    </G>
+                  </Svg>
+                ) : (
+                  <View
+                    style={{height: height * 0.3, justifyContent: 'center'}}>
+                    <Text style={{fontSize: width * 0.06}}>
+                      {loadChartData ? 'Loading Data...' : 'No Read Data'}
+                    </Text>
+                  </View>
+                )}
                 {/* <Chart
                   style={styles.chartStyle}
                   data={testChartData}
