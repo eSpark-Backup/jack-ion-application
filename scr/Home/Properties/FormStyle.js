@@ -16,21 +16,21 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
   },
   addBotton: {
-    height: height * 0.06,
-    width: height * 0.06,
+    height: width * 0.09,
+    width: width * 0.09,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: height * 0.2,
+    borderRadius: width * 0.2,
     elevation: width * 0.04,
     left: width * 0.02,
     position: 'absolute',
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.04,
+    fontSize: width * 0.06,
     color: 'white',
-    marginLeft: 10,
+    marginLeft: width * 0.01,
   },
 
   // Modal

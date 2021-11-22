@@ -23,13 +23,6 @@ import Base_Url from '../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  Chart,
-  Line,
-  Area,
-  HorizontalAxis,
-  VerticalAxis,
-} from 'react-native-responsive-linechart';
 
 import {Svg, G} from 'react-native-svg';
 import {
@@ -256,7 +249,7 @@ const App = ({navigation}) => {
     setUnitMeter(meterInfo);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
     let data = {
       start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,

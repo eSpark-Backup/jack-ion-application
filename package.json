@@ -29,6 +29,7 @@
     "react": "16.13.1",
     "react-native": "0.64.0",
     "react-native-a-beep": "^1.1.0",
+    "react-native-app-intro-slider": "^4.0.4",
     "react-native-autocomplete-input": "^4.2.0",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-camera": "^4.2.1",
