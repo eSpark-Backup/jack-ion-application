@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -16,26 +16,50 @@ import {
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
-import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
+import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import { Fonts } from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import Base_URL from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
+import AppIntroSlider from 'react-native-app-intro-slider';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
-import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
-const {width, height} = Dimensions.get('window');
-const api = create({baseURL: Base_URL});
-
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import Iconi from 'react-native-vector-icons/Ionicons';
+const { width, height } = Dimensions.get('window');
+const api = create({ baseURL: Base_URL });
+const slides = [
+  {
+    key: '1',
+    title: 'Select device',
+    text: 'You will know how much you spent and where your money was spent during the month',
+    // image: require('../../assets/Images/slider/wel1.jpeg'),
+    backgroundColor: '#59b2ab',
+  },
+  {
+    key: '2',
+    title: 'Expenses',
+    text: 'Easy way to manage your expenses and calculate your savings',
+    // image: require('../../assets/Images/slider/wel2.jpeg'),
+    backgroundColor: '#febe29',
+  },
+  {
+    key: '3',
+    title: 'Dreams',
+    text: 'Save your money and fullfill your dreams happy journey',
+    // image: require('../../assets/Images/slider/wel3.jpg'),
+    backgroundColor: '#22bcb5',
+  }
+];
 export default function UnitEdit({
   modalVisible,
   closeModal,
@@ -53,6 +77,7 @@ export default function UnitEdit({
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [meterMenuVisible, setMeterMenuVisible] = useState(false);
+  const [showAddMeterSlider, setShowAddMeterSlider] = useState(false);
   const [state, setState] = useState({
     isScannerVisible: false,
     hasAccess: false,
@@ -64,7 +89,34 @@ export default function UnitEdit({
     devicesData: [],
     lastUnitData: '',
     meterList: [],
+    checkIndex: 0,
   });
+  const [newMeter, setNewMeter] = useState({
+    id: 0,
+    deviceSerialNum:
+      type == 'meterDirect' || type == 'addMeterDirect'
+        ? unitDetails?.unit?.meterSerial
+        : '',
+    deviceSerialError: '',
+    meterType: '',
+    meterTypeName: '',
+    meterTypeError: '',
+    meterAttachedTo: '',
+    manufacturersId: '',
+    initialMeterReadingError: '',
+    initialMeterReading: '',
+    manufacturersName: '',
+    manufacturersError: '',
+    deviceId: '',
+    deviceName: '',
+    deviceError: '',
+    meterAttachedError: '',
+    meterSerialNum: '',
+    customMeterId: '',
+    name: '',
+    icon: '',
+    meterTypeMenu: false,
+  })
   const [error, setError] = useState({
     errorUnits: '',
   });
@@ -95,6 +147,8 @@ export default function UnitEdit({
     if (flag) {
       getToken();
     }
+    callApi();
+
   }, [modalVisible]);
 
   useEffect(() => {
@@ -105,6 +159,7 @@ export default function UnitEdit({
         lastUnitData: unitDetails?.unit?.name,
       }));
     }
+    callApi();
   }, [meterTypes, unitDetails]);
 
   const addMeterInNewArray = async (value) => {
@@ -338,7 +393,6 @@ export default function UnitEdit({
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
-
     setState((oldState) => ({
       ...oldState,
       manufacturersData: ManufacturersResponse?.data?.data,
@@ -349,13 +403,13 @@ export default function UnitEdit({
     const deviceResponse = await api.get(
       `/property/equipment/device/all/${some?.id}`,
     );
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].manufacturersName = some?.name; // replace e.target.value with whatever you want to change it to
-    newArr[index].manufacturersId = some?.id; // replace e.target.value with whatever you want to change it to
-    newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].meterType = ''; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
+    // let newArr = [...meterListData]; // copying the old datas array
+    // newArr[index].manufacturersName = some?.name; // replace e.target.value with whatever you want to change it to
+    // newArr[index].manufacturersId = some?.id; // replace e.target.value with whatever you want to change it to
+    // newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
+    // newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
+    // newArr[index].meterType = ''; // replace e.target.value with whatever you want to change it to
+    // setMeterListData(newArr);
     setState((oldState) => ({
       ...oldState,
       devicesData: deviceResponse?.data?.data,
@@ -561,6 +615,166 @@ export default function UnitEdit({
     setMeterMenuVisible(true);
     callApi();
   };
+
+  const _renderItem = ({ item, index }) => {
+    return (
+      // console.log('slider-- index---->',index),
+      <View style={{
+        alignItems: 'center',
+        height: height * .57,
+        backgroundColor: 'white',
+        padding: width * .02,
+        borderRadius: width * .05,
+      }} >
+        <Text style={styles.title}>{item.title}</Text>
+        {/* <Text style={styles.discription}>{item.text}</Text> */}
+        <View
+          style={{
+            width: width * 0.75,
+          }}>
+          <View style={styles.meterDesciptionContainer}>
+            <Text style={styles.meterDesciptionHeading}>
+              Manufacturers
+            </Text>
+          </View>
+          <SearchableDropdown
+            onItemSelect={(item) => {
+              getDevice(item);
+            }}
+            containerStyle={{
+              paddingVertical: width * 0.02,
+            }}
+            itemStyle={{
+              padding: width * 0.027,
+              backgroundColor: 'rgb(247, 247, 247)',
+              borderColor: '#bbb',
+              borderWidth: width * 0.0015,
+              borderRadius: width * 0.015,
+            }}
+            itemTextStyle={{ color: '#222' }}
+            itemsContainerStyle={{
+              maxHeight: height * 0.14,
+            }}
+            items={state.manufacturersData}
+            resetValue={false}
+            textInputProps={{
+              placeholder: 'Manufacturer*',
+              underlineColorAndroid: 'transparent',
+              style: {
+                padding: width * 0.027,
+                margin: 0,
+                borderColor: newMeter.manufacturersError
+                  ? '#A3001B'
+                  : 'black',
+                borderWidth: width * 0.0019,
+                borderRadius: width * 0.015,
+                backgroundColor: '#F6F6F6',
+              },
+              onTextChange: (text) => {
+                onChangeManufacturer(text);
+              },
+              value: setTimeout(
+                () => newMeter.manufacturersName,
+                200,
+              ),
+              defaultValue: newMeter.manufacturersName,
+            }}
+            listProps={{
+              nestedScrollEnabled: true,
+            }}
+          />
+          {newMeter.manufacturersError ? (
+            <HelperText
+              type="error"
+              visible={newMeter.manufacturersError}>
+              {newMeter.manufacturersError}
+            </HelperText>
+          ) : null}
+          <View style={styles.meterDesciptionContainer}>
+            <Text style={styles.meterDesciptionHeading}>
+              Devices
+            </Text>
+          </View>
+          <SearchableDropdown
+            onItemSelect={(item) => {
+              getDeviceData(item, meterIndex);
+            }}
+            containerStyle={{
+              paddingVertical: width * 0.02,
+            }}
+            itemStyle={{
+              padding: width * 0.027,
+              backgroundColor: 'rgb(247, 247, 247)',
+              borderColor: '#bbb',
+              borderWidth: width * 0.0015,
+              borderRadius: width * 0.015,
+            }}
+            itemTextStyle={{ color: '#222' }}
+            itemsContainerStyle={{
+              maxHeight: height * 0.1,
+            }}
+            items={state.devicesData}
+            resetValue={false}
+            textInputProps={{
+              placeholder: 'Devices',
+              underlineColorAndroid: 'transparent',
+              style: {
+                padding: width * 0.027,
+                margin: 0,
+                borderColor: newMeter.deviceError
+                  ? '#A3001B'
+                  : 'black',
+                borderWidth: width * 0.0019,
+                borderRadius: width * 0.015,
+                backgroundColor: '#F6F6F6',
+              },
+              onTextChange: (text) => {
+                onChangeDevice(text);
+              },
+              value: setTimeout(() => newMeter.deviceName, 200),
+              defaultValue: newMeter.deviceName,
+            }}
+            listProps={{
+              nestedScrollEnabled: true,
+            }}
+          />
+          {newMeter.deviceError ? (
+            <HelperText
+              type="error"
+              visible={newMeter.deviceError}>
+              {newMeter.deviceError}
+            </HelperText>
+          ) : null}
+        </View>
+      </View>
+    );
+  }
+  const _onDone = () => {
+    // navigation.navigate('Signin')
+    console.log('done')
+    closeModal();
+
+  }
+  const _renderNextButton = (e, index) => {
+    console.log('next-- data---->', e)
+    console.log('next-- index---->', index)
+    return (
+      <View style={[styles.buttonCircle, { elevation: height * 0 }]}>
+        <Icon size={height * .035} color='#fff' name="navigate-next" style={styles.buttonIcon} />
+      </View>
+
+    );
+  };
+  const _renderDoneButton = () => {
+    return (
+      <View>
+        <TouchableOpacity style={styles.buttonCircle} onPress={_onDone}>
+          <Iconi size={height * .035} color='#fff' name="md-checkmark" style={styles.buttonIcon} />
+        </TouchableOpacity>
+      </View>
+
+    );
+  };
   return (
     <View>
       <Modal
@@ -569,370 +783,249 @@ export default function UnitEdit({
         hasBackdrop={true}
         backdropColor="black"
         statusBarTranslucent
+        style={{top:width * -.1}}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
-          <View style={styles.modalInner}>
-            <View
-              style={[
-                styles.boxConatainer,
-                {
-                  height:
-                    meterListData.length == 0 ? height * 0.46 : height * 0.55,
-                },
-              ]}>
-              <View style={styles.boxInner}>
-                {/* Box Header */}
-                <View style={styles.boxHeader}>
-                  <View style={styles.boxHeaderInner}>
-                    <Icon
-                      name={'business'}
-                      size={height * 0.05}
-                      color="#5e5e5e"
-                    />
-                    <Text style={styles.modalHeading}>{modalName}</Text>
-                    <Pressable
-                      onPress={changeUtilityAndToggle}
-                      android_ripple={{
-                        color: 'black',
-                        borderless: true,
-                        radius: width * 0.03,
-                      }}>
-                      <Icon
-                        name="cancel"
-                        size={height * 0.035}
-                        color="black"
-                        maxOpacity={0.5}
-                      />
-                    </Pressable>
-                  </View>
-                </View>
-                {/* Box Body */}
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled">
-                  <View style={{flex: 1}}>
-                    <View style={styles.desciptionContainer}>
-                      <Build
-                        name={'office-building'}
-                        size={height * 0.02}
-                        color="#5e5e5e"
-                      />
-                      <Text style={styles.desciptionHeading}>BUILDING*</Text>
-                    </View>
-                    <View style={styles.inputContainer}>
-                      {/* //todo: This is Drop down picker */}
-                      <TextInput
-                        placeholder="Building Name"
-                        value={buildingName}
-                        dense={true}
-                        editable={false}
-                        showSoftInputOnFocus={false}
-                        style={styles.input}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
-                        }}
-                      />
-                    </View>
-                    <View style={styles.desciptionContainer}>
-                      <Text style={styles.desciptionHeading}>UNIT*</Text>
-                    </View>
-                    <View style={[styles.inputContainer]}>
-                      <TextInput
-                        placeholder="Unit Name"
-                        value={state.lastUnitData}
-                        dense={true}
-                        onChangeText={(text) => {
-                          setError((oldState) => ({
-                            ...oldState,
-                            errorUnits: '',
-                          }));
-                          type == 'meterDirect'
-                            ? null
-                            : (setState((oldState) => ({
-                                ...oldState,
-                                lastUnitData: text,
-                              })),
-                              console.log('unit Name', state.lastUnitData));
-                        }}
-                        disabled={type == 'meterDirect' ? true : false}
-                        style={styles.input}
-                        error={error.errorUnits}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
-                        }}
-                      />
-                    </View>
-                    {error.errorUnits ? (
-                      <HelperText type="error" visible={error.errorUnits}>
-                        {error.errorUnits}
-                      </HelperText>
-                    ) : null}
-                  </View>
-                  {meterListData &&
-                    meterListData.map((item, meterIndex) => (
-                      <View
-                        style={{
-                          alignItems: 'center',
-                          overflow: 'hidden',
-                          marginBottom: height * 0.02,
-                        }}>
-                        <View
-                          style={{
-                            // top: height * 0.005,
-                            width: width * 0.75,
+          {
+            !showAddMeterSlider ?
+              <View style={{
+                height: height * .57
+              }}>
+                <AppIntroSlider
+                  renderItem={_renderItem}
+                  data={slides}
+                  dotClickEnabled={false}
+                  onDone={_onDone}
+                  keyExtractor={item => item.key}
+                  activeDotStyle={{
+                    backgroundColor: '#ffffff00',
+                  }}
+                  dotStyle={{
+                    backgroundColor: '#ffffff00',
+
+                  }}
+                  onSlideChange={(index, lastIndex) => {
+                    console.log('index--->', index),
+                      console.log('lastIndex--->', lastIndex)
+
+                  }}
+                  renderNextButton={_renderNextButton}
+                  renderDoneButton={_renderDoneButton}
+                />
+              </View>
+              :
+              <View style={styles.modalInner}>
+
+                <View
+                  style={[styles.boxConatainer, { height: height * 0.55 }]}>
+                  <View style={styles.boxInner}>
+                    {/* Box Header */}
+                    <View style={styles.boxHeader}>
+                      <View style={styles.boxHeaderInner}>
+                        <Icon
+                          name={'business'}
+                          size={height * 0.05}
+                          color="#5e5e5e"
+                        />
+                        <Text style={styles.modalHeading}>{modalName}</Text>
+                        <Pressable
+                          onPress={changeUtilityAndToggle}
+                          android_ripple={{
+                            color: 'black',
+                            borderless: true,
+                            radius: width * 0.03,
                           }}>
-                          <View>
-                            <View style={styles.utilityInScrHeadView}>
-                              <Drop
-                                name={item.icon}
-                                size={width * 0.06}
-                                color="#3E89BF"
-                              />
-                              <Text
-                                style={[
-                                  styles.utilityInScrHead,
-                                  {
-                                    color: '#000',
-                                    textTransform: 'capitalize',
-                                  },
-                                ]}>
-                                {item.name}
-                              </Text>
-                              <TouchableOpacity
-                                style={{
-                                  position: 'absolute',
-                                  right: 0,
-                                }}
-                                onPress={() => deleteMeterInNewArray(item)}>
-                                <Delete
-                                  name={'delete-forever'}
-                                  size={height * 0.04}
-                                  color="#25AAE1ec"
-                                />
-                              </TouchableOpacity>
-                            </View>
-                            <View style={styles.meterDesciptionContainer}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                Device serial number
-                              </Text>
-                            </View>
-                            <View style={styles.meterInputContainer}>
-                              <TextInput
-                                placeholder="Serial Number"
-                                value={item.deviceSerialNum}
-                                dense={true}
-                                error={item.deviceSerialError}
-                                right={
-                                  type == 'meterDirect' ||
-                                  type == 'addMeterDirect' ? null : (
-                                    <TextInput.Icon
-                                      name={() => (
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            toggleScanner(meterIndex)
-                                          }
-                                          style={{zIndex: 1}}>
-                                          <Scanner name="scan" size={20} />
-                                        </TouchableOpacity>
-                                      )}
-                                    />
-                                  )
-                                }
-                                onChangeText={(text) =>
-                                  type == 'meterDirect' ||
-                                  type == 'addMeterDirect'
-                                    ? null
-                                    : onChangeMultipleField(text, meterIndex)
-                                }
-                                disabled={
-                                  type == 'meterDirect' ||
-                                  type == 'addMeterDirect'
-                                    ? true
-                                    : false
-                                }
-                                style={styles.meterInput}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}></TextInput>
-                            </View>
-                            <View style={styles.meterDesciptionContainer}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                Initial Meter Reading
-                              </Text>
-                            </View>
-                            <View style={styles.meterInputContainer}>
-                              <TextInput
-                                keyboardType="numeric"
-                                placeholder="Initial Meter Reading"
-                                value={item.initialMeterReading}
-                                dense={true}
-                                error={item.initialMeterReadingError}
-                                onChangeText={(text) =>
-                                  onChangeInitialReading(text, meterIndex)
-                                }
-                                style={styles.meterInput}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            </View>
-                            {item.initialMeterReadingError ? (
-                              <HelperText
-                                type="error"
-                                visible={item.initialMeterReadingError}>
-                                {item.initialMeterReadingError}
-                              </HelperText>
-                            ) : null}
-                            {/*//todoK */}
-                            <View style={styles.meterDesciptionContainer}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                Manufacturers
-                              </Text>
-                            </View>
-                            <SearchableDropdown
-                              onItemSelect={(item) => {
-                                getDevice(item, meterIndex);
-                              }}
-                              containerStyle={{
-                                paddingVertical: width * 0.02,
-                              }}
-                              itemStyle={{
-                                padding: width * 0.027,
-                                backgroundColor: 'rgb(247, 247, 247)',
-                                borderColor: '#bbb',
-                                borderWidth: width * 0.0015,
-                                borderRadius: width * 0.015,
-                              }}
-                              itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={{
-                                maxHeight: height * 0.1,
-                              }}
-                              items={state.manufacturersData}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Manufacturer*',
-                                underlineColorAndroid: 'transparent',
-                                style: {
-                                  padding: width * 0.027,
-                                  margin: 0,
-                                  borderColor: item.manufacturersError
-                                    ? '#A3001B'
-                                    : 'black',
-                                  borderWidth: width * 0.0019,
-                                  borderRadius: width * 0.015,
-                                  backgroundColor: '#F6F6F6',
-                                },
-                                onTextChange: (text) => {
-                                  onChangeManufacturer(text, meterIndex);
-                                },
-                                value: setTimeout(
-                                  () => item.manufacturersName,
-                                  200,
-                                ),
-                                defaultValue: item.manufacturersName,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                            {item.manufacturersError ? (
-                              <HelperText
-                                type="error"
-                                visible={item.manufacturersError}>
-                                {item.manufacturersError}
-                              </HelperText>
-                            ) : null}
-                            <View style={styles.meterDesciptionContainer}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                Devices
-                              </Text>
-                            </View>
-                            <SearchableDropdown
-                              onItemSelect={(item) => {
-                                getDeviceData(item, meterIndex);
-                              }}
-                              containerStyle={{
-                                paddingVertical: width * 0.02,
-                              }}
-                              itemStyle={{
-                                padding: width * 0.027,
-                                backgroundColor: 'rgb(247, 247, 247)',
-                                borderColor: '#bbb',
-                                borderWidth: width * 0.0015,
-                                borderRadius: width * 0.015,
-                              }}
-                              itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={{
-                                maxHeight: height * 0.1,
-                              }}
-                              items={state.devicesData}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Devices',
-                                underlineColorAndroid: 'transparent',
-                                style: {
-                                  padding: width * 0.027,
-                                  margin: 0,
-                                  borderColor: item.deviceError
-                                    ? '#A3001B'
-                                    : 'black',
-                                  borderWidth: width * 0.0019,
-                                  borderRadius: width * 0.015,
-                                  backgroundColor: '#F6F6F6',
-                                },
-                                onTextChange: (text) => {
-                                  onChangeDevice(text, meterIndex);
-                                },
-                                value: setTimeout(() => item.deviceName, 200),
-                                defaultValue: item.deviceName,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                            {item.deviceError ? (
-                              <HelperText
-                                type="error"
-                                visible={item.deviceError}>
-                                {item.deviceError}
-                              </HelperText>
-                            ) : null}
-                            {item.showOtherInputs == true ? (
+                          <Icon
+                            name="cancel"
+                            size={height * 0.035}
+                            color="black"
+                            maxOpacity={0.5}
+                          />
+                        </Pressable>
+                      </View>
+                    </View>
+                    {/* Box Body */}
+                    <ScrollView
+                      showsVerticalScrollIndicator={false}
+                      keyboardShouldPersistTaps="handled">
+
+                      <View style={{ flex: 1 }}>
+                        <View style={styles.desciptionContainer}>
+                          <Build
+                            name={'office-building'}
+                            size={height * 0.02}
+                            color="#5e5e5e"
+                          />
+                          <Text style={styles.desciptionHeading}>BUILDING*</Text>
+                        </View>
+                        <View style={styles.inputContainer}>
+                          {/* //todo: This is Drop down picker */}
+                          <TextInput
+                            placeholder="Building Name"
+                            value={buildingName}
+                            dense={true}
+                            editable={false}
+                            showSoftInputOnFocus={false}
+                            style={styles.input}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>UNIT*</Text>
+                        </View>
+                        <View style={[styles.inputContainer]}>
+                          <TextInput
+                            placeholder="Unit Name"
+                            value={state.lastUnitData}
+                            dense={true}
+                            onChangeText={(text) => {
+                              setError((oldState) => ({
+                                ...oldState,
+                                errorUnits: '',
+                              }));
+                              type == 'meterDirect'
+                                ? null
+                                : (setState((oldState) => ({
+                                  ...oldState,
+                                  lastUnitData: text,
+                                })),
+                                  console.log('unit Name', state.lastUnitData));
+                            }}
+                            disabled={type == 'meterDirect' ? true : false}
+                            style={styles.input}
+                            error={error.errorUnits}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        {error.errorUnits ? (
+                          <HelperText type="error" visible={error.errorUnits}>
+                            {error.errorUnits}
+                          </HelperText>
+                        ) : null}
+                      </View>
+                      {meterListData &&
+                        meterListData.map((item, meterIndex) => (
+                          <View
+                            style={{
+                              alignItems: 'center',
+                              overflow: 'hidden',
+                              marginBottom: height * 0.02,
+                            }}>
+                            <View
+                              style={{
+                                // top: height * 0.005,
+                                width: width * 0.75,
+                              }}>
                               <View>
+                                <View style={styles.utilityInScrHeadView}>
+                                  <Drop
+                                    name={item.icon}
+                                    size={width * 0.06}
+                                    color="#3E89BF"
+                                  />
+                                  <Text
+                                    style={[
+                                      styles.utilityInScrHead,
+                                      {
+                                        color: '#000',
+                                        textTransform: 'capitalize',
+                                      },
+                                    ]}>
+                                    {item.name}
+                                  </Text>
+                                  <TouchableOpacity
+                                    style={{
+                                      position: 'absolute',
+                                      right: 0,
+                                    }}
+                                    onPress={() => deleteMeterInNewArray(item)}>
+                                    <Delete
+                                      name={'delete-forever'}
+                                      size={height * 0.04}
+                                      color="#25AAE1ec"
+                                    />
+                                  </TouchableOpacity>
+                                </View>
                                 <View style={styles.meterDesciptionContainer}>
                                   <Text style={styles.meterDesciptionHeading}>
-                                    Meter Serial Number
+                                    Device serial number
                                   </Text>
                                 </View>
                                 <View style={styles.meterInputContainer}>
                                   <TextInput
-                                    placeholder="Meter Serial"
+                                    placeholder="Serial Number"
+                                    value={item.deviceSerialNum}
                                     dense={true}
+                                    error={item.deviceSerialError}
+                                    right={
+                                      type == 'meterDirect' ||
+                                        type == 'addMeterDirect' ? null : (
+                                        <TextInput.Icon
+                                          name={() => (
+                                            <TouchableOpacity
+                                              onPress={() =>
+                                                toggleScanner(meterIndex)
+                                              }
+                                              style={{ zIndex: 1 }}>
+                                              <Scanner name="scan" size={20} />
+                                            </TouchableOpacity>
+                                          )}
+                                        />
+                                      )
+                                    }
+                                    onChangeText={(text) =>
+                                      type == 'meterDirect' ||
+                                        type == 'addMeterDirect'
+                                        ? null
+                                        : onChangeMultipleField(text, meterIndex)
+                                    }
+                                    disabled={
+                                      type == 'meterDirect' ||
+                                        type == 'addMeterDirect'
+                                        ? true
+                                        : false
+                                    }
                                     style={styles.meterInput}
                                     mode={'outlined'}
+                                    theme={{
+                                      colors: {
+                                        text: '#25AAE1ec',
+                                        primary: '#25AAE1ec',
+                                        selectionColor: 'red',
+                                      },
+                                    }}></TextInput>
+                                </View>
+                                <View style={styles.meterDesciptionContainer}>
+                                  <Text style={styles.meterDesciptionHeading}>
+                                    Initial Meter Reading
+                                  </Text>
+                                </View>
+                                <View style={styles.meterInputContainer}>
+                                  <TextInput
+                                    keyboardType="numeric"
+                                    placeholder="Initial Meter Reading"
+                                    value={item.initialMeterReading}
+                                    dense={true}
+                                    error={item.initialMeterReadingError}
                                     onChangeText={(text) =>
-                                      onChangeMeterSerial(text, meterIndex)
+                                      onChangeInitialReading(text, meterIndex)
                                     }
+                                    style={styles.meterInput}
+                                    mode={'outlined'}
                                     theme={{
                                       colors: {
                                         text: '#25AAE1ec',
@@ -942,163 +1035,313 @@ export default function UnitEdit({
                                     }}
                                   />
                                 </View>
+                                {item.initialMeterReadingError ? (
+                                  <HelperText
+                                    type="error"
+                                    visible={item.initialMeterReadingError}>
+                                    {item.initialMeterReadingError}
+                                  </HelperText>
+                                ) : null}
+                                {/*//todoK */}
+                                <View style={styles.meterDesciptionContainer}>
+                                  <Text style={styles.meterDesciptionHeading}>
+                                    Manufacturers
+                                  </Text>
+                                </View>
+                                <SearchableDropdown
+                                  onItemSelect={(item) => {
+                                    getDevice(item, meterIndex);
+                                  }}
+                                  containerStyle={{
+                                    paddingVertical: width * 0.02,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{ color: '#222' }}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.1,
+                                  }}
+                                  items={state.manufacturersData}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Manufacturer*',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderColor: item.manufacturersError
+                                        ? '#A3001B'
+                                        : 'black',
+                                      borderWidth: width * 0.0019,
+                                      borderRadius: width * 0.015,
+                                      backgroundColor: '#F6F6F6',
+                                    },
+                                    onTextChange: (text) => {
+                                      onChangeManufacturer(text, meterIndex);
+                                    },
+                                    value: setTimeout(
+                                      () => item.manufacturersName,
+                                      200,
+                                    ),
+                                    defaultValue: item.manufacturersName,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                {item.manufacturersError ? (
+                                  <HelperText
+                                    type="error"
+                                    visible={item.manufacturersError}>
+                                    {item.manufacturersError}
+                                  </HelperText>
+                                ) : null}
+                                <View style={styles.meterDesciptionContainer}>
+                                  <Text style={styles.meterDesciptionHeading}>
+                                    Devices
+                                  </Text>
+                                </View>
+                                <SearchableDropdown
+                                  onItemSelect={(item) => {
+                                    getDeviceData(item, meterIndex);
+                                  }}
+                                  containerStyle={{
+                                    paddingVertical: width * 0.02,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{ color: '#222' }}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.1,
+                                  }}
+                                  items={state.devicesData}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Devices',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderColor: item.deviceError
+                                        ? '#A3001B'
+                                        : 'black',
+                                      borderWidth: width * 0.0019,
+                                      borderRadius: width * 0.015,
+                                      backgroundColor: '#F6F6F6',
+                                    },
+                                    onTextChange: (text) => {
+                                      onChangeDevice(text, meterIndex);
+                                    },
+                                    value: setTimeout(() => item.deviceName, 200),
+                                    defaultValue: item.deviceName,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                {item.deviceError ? (
+                                  <HelperText
+                                    type="error"
+                                    visible={item.deviceError}>
+                                    {item.deviceError}
+                                  </HelperText>
+                                ) : null}
+                                {item.showOtherInputs == true ? (
+                                  <View>
+                                    <View style={styles.meterDesciptionContainer}>
+                                      <Text style={styles.meterDesciptionHeading}>
+                                        Meter Serial Number
+                                      </Text>
+                                    </View>
+                                    <View style={styles.meterInputContainer}>
+                                      <TextInput
+                                        placeholder="Meter Serial"
+                                        dense={true}
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        onChangeText={(text) =>
+                                          onChangeMeterSerial(text, meterIndex)
+                                        }
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                          },
+                                        }}
+                                      />
+                                    </View>
+                                  </View>
+                                ) : // console.log('Check Item', item)
+                                  null}
+                                <TouchableOpacity
+                                  onPress={() => showMoreInputs(item, meterIndex)}
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginTop: 10,
+                                  }}>
+                                  {/*//todo: Button for meter */}
+                                  <Text
+                                    style={{
+                                      fontSize: height * 0.018,
+                                      color: '#25AAE1ec',
+                                    }}>
+                                    {item.showOtherInputs
+                                      ? 'Show Less'
+                                      : 'Show More'}
+                                  </Text>
+                                </TouchableOpacity>
                               </View>
-                            ) : // console.log('Check Item', item)
-                            null}
-                            <TouchableOpacity
-                              onPress={() => showMoreInputs(item, meterIndex)}
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginTop: 10,
-                              }}>
-                              {/*//todo: Button for meter */}
-                              <Text
-                                style={{
-                                  fontSize: height * 0.018,
-                                  color: '#25AAE1ec',
-                                }}>
-                                {item.showOtherInputs
-                                  ? 'Show Less'
-                                  : 'Show More'}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </View>
-                    ))}
-                </ScrollView>
-                {/* Box Footer */}
-                <View style={styles.footerBtn}>
-                  <View
-                    style={{
-                      height: '100%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <MenuT
-                      visible={meterMenuVisible}
-                      anchor={
-                        type == 'addMeterDirect' || type == 'meterDirect' ? (
-                          meterListData.length == 1 ? (
-                            <View style={{marginLeft: width * 0.02}}>
-                              <Text
-                                style={{
-                                  fontSize: height * 0.018,
-                                  color: '#25AAE1ec',
-                                }}>
-                                No Meters
-                              </Text>
                             </View>
-                          ) : (
-                            <TouchableOpacity
-                              onPress={handleOpenMeterSelection}
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                zIndex: 1,
-                              }}>
-                              {/*//todo: Button for meter */}
-                              <Plus name="plus" size={25} color="#25AAE1ec" />
-                              <Text
-                                style={{
-                                  fontSize: height * 0.018,
-                                  color: '#25AAE1ec',
-                                }}>
-                                Meter
-                              </Text>
-                            </TouchableOpacity>
-                          )
-                        ) : state.meterList.length ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              setMeterMenuVisible(true);
-                              callApi();
-                            }}
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              zIndex: 1,
-                            }}>
-                            {/*//todo: Button for meter */}
-                            <Plus name="plus" size={25} color="#25AAE1ec" />
-                            <Text
-                              style={{
-                                fontSize: height * 0.018,
-                                color: '#25AAE1ec',
-                              }}>
-                              Meter
-                            </Text>
-                          </TouchableOpacity>
-                        ) : (
-                          <View style={{marginLeft: width * 0.02}}>
-                            <Text
-                              style={{
-                                fontSize: height * 0.018,
-                                color: '#25AAE1ec',
-                              }}>
-                              No Meters
-                            </Text>
-                          </View>
-                        )
-                      }
-                      onRequestClose={() => setMeterMenuVisible(false)}>
-                      <ScrollView>
-                        {state.meterList.map((item, index) => (
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Drop name={item.icon} size={15} color="#3E89BF" />
-                            <MenuItem
-                              textStyle={styles.textCapitalize}
-                              onPress={() => addMeterInNewArray(item)}>
-                              {item.name}
-                            </MenuItem>
                           </View>
                         ))}
-                      </ScrollView>
-                    </MenuT>
-                  </View>
-                  <View style={styles.addUnitBtnContainer}>
-                    <TouchableOpacity onPress={changeUtilityAndToggle}>
-                      <View style={styles.cancelBotton}>
-                        <Plus name="close" color="black" size={18} />
-                        <Text style={{color: 'black'}}>Cancel</Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleAddNewUnit}>
-                      <View style={styles.submitBotton}>
-                        <Plus
-                          name={
-                            type == 'meterDirect' ||
-                            type == 'addMeterDirect' ||
-                            type == 'add'
-                              ? 'plus'
-                              : 'pencil-plus'
+                    </ScrollView>
+                    {/* Box Footer */}
+                    <View style={styles.footerBtn}>
+                      <View
+                        style={{
+                          height: '100%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <MenuT
+                          visible={meterMenuVisible}
+                          anchor={
+                            type == 'addMeterDirect' || type == 'meterDirect' ? (
+                              meterListData.length == 1 ? (
+                                <View style={{ marginLeft: width * 0.02 }}>
+                                  <Text
+                                    style={{
+                                      fontSize: height * 0.018,
+                                      color: '#25AAE1ec',
+                                    }}>
+                                    No Meters
+                                  </Text>
+                                </View>
+                              ) : (
+                                <TouchableOpacity
+                                  onPress={handleOpenMeterSelection}
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    zIndex: 1,
+                                  }}>
+                                  {/*//todo: Button for meter */}
+                                  <Plus name="plus" size={25} color="#25AAE1ec" />
+                                  <Text
+                                    style={{
+                                      fontSize: height * 0.018,
+                                      color: '#25AAE1ec',
+                                    }}>
+                                    Meter
+                                  </Text>
+                                </TouchableOpacity>
+                              )
+                            ) : state.meterList.length ? (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  setMeterMenuVisible(true);
+                                  callApi();
+                                }}
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'flex-start',
+                                  alignItems: 'center',
+                                  zIndex: 1,
+                                }}>
+                                {/*//todo: Button for meter */}
+                                <Plus name="plus" size={25} color="#25AAE1ec" />
+                                <Text
+                                  style={{
+                                    fontSize: height * 0.018,
+                                    color: '#25AAE1ec',
+                                  }}>
+                                  Meter
+                                </Text>
+                              </TouchableOpacity>
+                            ) : (
+                              <View style={{ marginLeft: width * 0.02 }}>
+                                <Text
+                                  style={{
+                                    fontSize: height * 0.018,
+                                    color: '#25AAE1ec',
+                                  }}>
+                                  No Meters
+                                </Text>
+                              </View>
+                            )
                           }
-                          color="white"
-                          size={18}
-                        />
-                        <Text style={{color: 'white'}}>
-                          {type == 'meterDirect' ||
-                          type == 'addMeterDirect' ||
-                          type == 'add'
-                            ? 'Add Unit'
-                            : 'Edit Unit'}
-                        </Text>
+                          onRequestClose={() => setMeterMenuVisible(false)}>
+                          <ScrollView>
+                            {state.meterList.map((item, index) => (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                <Drop name={item.icon} size={15} color="#3E89BF" />
+                                <MenuItem
+                                  textStyle={styles.textCapitalize}
+                                  onPress={() => addMeterInNewArray(item)}>
+                                  {item.name}
+                                </MenuItem>
+                              </View>
+                            ))}
+                          </ScrollView>
+                        </MenuT>
                       </View>
-                    </TouchableOpacity>
+                      <View style={styles.addUnitBtnContainer}>
+                        <TouchableOpacity onPress={changeUtilityAndToggle}>
+                          <View style={styles.cancelBotton}>
+                            <Plus name="close" color="black" size={18} />
+                            <Text style={{ color: 'black' }}>Cancel</Text>
+                          </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleAddNewUnit}>
+                          <View style={styles.submitBotton}>
+                            <Plus
+                              name={
+                                type == 'meterDirect' ||
+                                  type == 'addMeterDirect' ||
+                                  type == 'add'
+                                  ? 'plus'
+                                  : 'pencil-plus'
+                              }
+                              color="white"
+                              size={18}
+                            />
+                            <Text style={{ color: 'white' }}>
+                              {type == 'meterDirect' ||
+                                type == 'addMeterDirect' ||
+                                type == 'add'
+                                ? 'Add Unit'
+                                : 'Edit Unit'}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </View>
+          }
+
+
+
         </KeyboardAvoidingView>
       </Modal>
       <Modal
@@ -1142,7 +1385,7 @@ export default function UnitEdit({
               ref={(ref) => {
                 this.camera = ref;
               }}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               type={RNCamera.Constants.Type.back}
               autoFocus="on"
               onBarCodeRead={onScanned}
@@ -1151,8 +1394,9 @@ export default function UnitEdit({
             </RNCamera>
           </View>
         )}
+
       </Modal>
-    </View>
+    </View >
   );
 }
 
@@ -1286,5 +1530,33 @@ const styles = StyleSheet.create({
   input: {
     width: width * 0.75,
     fontSize: height * 0.018,
+  },
+  slide: {
+    width: width * 1,
+    backgroundColor: '#25AAE1',
+    height: height * .5,
+  },
+  title: {
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * .05,
+    color: '#151515',
+    // marginTop: height * .05
+  },
+  discription: {
+    // fontFamily: Fonts.MavenProMedium,
+    fontSize: height * .025,
+    textAlign: 'center',
+    color: '#A1A1A1',
+    // marginTop: height * .05
+
+  },
+  buttonCircle: {
+    width: height * .06,
+    height: height * .06,
+    borderRadius: height * .2,
+    elevation: height * .005,
+    backgroundColor: '#25AAE1ec',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
