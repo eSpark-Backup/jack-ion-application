@@ -6610,6 +6610,11 @@ react-native-google-places-autocomplete@^2.4.1:
     prop-types "^15.7.2"
     qs "~6.9.1"
 
+react-native-image-picker@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.3.0.tgz#d68640061d3c5e6bef1d417c8085828318162874"
+  integrity sha512-YJtpuNHK7PS4ujbsSVAL6rKW4QQEDTf80MxuPmwByYgMi01VbfkXZ/8+pf61ctOED3Z0ZZKbk7/3pJ0dQHVAbg==
+
 react-native-indicator@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/react-native-indicator/-/react-native-indicator-1.2.2.tgz#cfb090e57b30d0d845e58a1f136aa1c95789bc6d"
