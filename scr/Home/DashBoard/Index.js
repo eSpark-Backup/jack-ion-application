@@ -35,7 +35,12 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import DropDownItem from 'react-native-drop-down-item';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import LinearGradient from 'react-native-linear-gradient';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, {
+  PROVIDER_GOOGLE,
+  AnimatedRegion,
+  Marker,
+  MarkerAnimated,
+} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
 // Components
@@ -62,6 +67,9 @@ export default class Splash extends Component {
       points: 80,
       expanded: false,
       asdf: false,
+      lat: 0,
+      long: 0,
+      markers: [],
       initialPosition: {
         latitude: 37.78825,
         longitude: -122.4324,
@@ -73,11 +81,28 @@ export default class Splash extends Component {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
+
+  getLocation = (e) => {
+    console.log('Get Mark Location', e.nativeEvent.coordinate);
+    this.setState({
+      markers: [
+        {
+          coordinate: e.nativeEvent.coordinate,
+        },
+      ],
+    });
+  };
+
+  moveMarker = (region) => {
+    // console.log('Region Ata>>>>>>>>>>>', region);
+  };
+
   _renderMap = () => {
     Geolocation.getCurrentPosition(
       (position) => {
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
+        this.setState({lat: lat, long: long});
 
         var initialRegion = {
           latitude: lat,
@@ -87,13 +112,26 @@ export default class Splash extends Component {
         };
 
         this.setState({initialPosition: initialRegion});
+        console.log('What we Get', this.state.initialPosition);
+        this.setState({
+          markers: [
+            {
+              coordinate: {
+                latitude: this.state.initialPosition.latitude,
+                longitude: this.state.initialPosition.longitude,
+              },
+            },
+          ],
+        });
       },
-      (error) => console.log(error),
-      {enableHighAccuracy: false, timeout: 20000},
+      (error) => console.log('geo location', error),
+      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
     );
   };
   componentDidMount() {
     console.log('What we Get', this.props.navigation);
+
+    this._renderMap();
   }
   // _renderMyList = ({ item }) => (
   //   <View style={{ flex: 1, }}>
@@ -120,7 +158,7 @@ export default class Splash extends Component {
     this.setState({nearby: !this.state.nearby, nearDown: !this.state.nearDown});
   };
   render() {
-    // this._renderMap()
+    // this._renderMap();
     let upDownMeter;
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
     let upDownNearby;
@@ -174,30 +212,42 @@ export default class Splash extends Component {
                 height: height * 0.5,
                 backgroundColor: 'white',
                 elevation: width * 0.02,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: 39.0902,
-                  longitude: -102.0,
-                  latitudeDelta: 10,
-                  longitudeDelta: 30,
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  width: 20,
+                  height: 20,
+                  zIndex: 1,
+                  position: 'absolute',
                 }}
-                zoomEnabled={true}
-                provider={PROVIDER_GOOGLE}
-                showsUserLocation={true}
-                showsMyLocationButton={true}
-                // showsUserLocation={this.state.showsUserLocation}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: this.state.initialPosition.latitude,
-                    longitude: this.state.initialPosition.longitude,
+              />
+              {this.state.markers.length > 0 ? (
+                <MapView
+                  style={styles.map}
+                  // scrollEnabled={false}
+                  initialRegion={{
+                    latitude: this.state.lat,
+                    longitude: this.state.long,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
                   }}
-                  title={'Your Location'}
-                  draggable
-                />
-              </MapView>
+                  zoomEnabled={true}
+                  provider={PROVIDER_GOOGLE}
+                  showsUserLocation={true}
+                  showsMyLocationButton={true}
+                  // showsUserLocation={this.state.showsUserLocation}
+                  onRegionChange={(e) => this.moveMarker(e)}
+                  onPress={(e) => this.getLocation(e)}>
+                  <Marker
+                    coordinate={this.state.markers[0].coordinate}
+                    title={'Your Location'}
+                    draggable
+                  />
+                </MapView>
+              ) : null}
             </View>
             <View style={styles.barView}>
               <AnimatedCircularProgress
