@@ -12,6 +12,7 @@ import {
   PermissionsAndroid,
   Alert,
   Platform,
+  FlatList
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -35,31 +36,10 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import Iconi from 'react-native-vector-icons/Ionicons';
+import * as Progress from 'react-native-progress';
 const { width, height } = Dimensions.get('window');
 const api = create({ baseURL: Base_URL });
-const slides = [
-  {
-    key: '1',
-    title: 'Select device',
-    text: 'You will know how much you spent and where your money was spent during the month',
-    // image: require('../../assets/Images/slider/wel1.jpeg'),
-    backgroundColor: '#59b2ab',
-  },
-  {
-    key: '2',
-    title: 'Expenses',
-    text: 'Easy way to manage your expenses and calculate your savings',
-    // image: require('../../assets/Images/slider/wel2.jpeg'),
-    backgroundColor: '#febe29',
-  },
-  {
-    key: '3',
-    title: 'Dreams',
-    text: 'Save your money and fullfill your dreams happy journey',
-    // image: require('../../assets/Images/slider/wel3.jpg'),
-    backgroundColor: '#22bcb5',
-  }
-];
+
 export default function UnitEdit({
   modalVisible,
   closeModal,
@@ -76,7 +56,28 @@ export default function UnitEdit({
   disableFlag,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [slide1, setSlide1] = useState([
+    {
+      id: 0,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'Manufacturer',
+      data: [],
+    },
+    {
+      id: 1,
+      selectId: '',
+      select: '',
+      error: '',
+      name: 'Device',
+      data: []
+    },
+  ]);
   const [meterMenuVisible, setMeterMenuVisible] = useState(false);
+  const [sliderNumber, setSliderNumber] = useState(1);
+  const [sliderProgress, setSliderProgress] = useState(0);
+  const [sliderName, setSliderName] = useState('Device Selection');
   const [showAddMeterSlider, setShowAddMeterSlider] = useState(false);
   const [state, setState] = useState({
     isScannerVisible: false,
@@ -162,6 +163,10 @@ export default function UnitEdit({
     callApi();
   }, [meterTypes, unitDetails]);
 
+  useEffect(() => {
+    console.log('slide1-->>', slide1);
+
+  }, [slide1]);
   const addMeterInNewArray = async (value) => {
     setMeterMenuVisible(false);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -359,12 +364,25 @@ export default function UnitEdit({
     setMeterListData(newArr);
   };
   const onChangeManufacturer = (e, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].manufacturersName = e; // replace e.target.value with whatever you want to change it to
-    newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].meterType = '';
-    setMeterListData(newArr);
+    // let newArr = [...meterListData]; // copying the old datas array
+    // newArr[index].manufacturersName = e; // replace e.target.value with whatever you want to change it to
+    // newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
+    // newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
+    // newArr[index].meterType = '';
+    // setMeterListData(newArr);
+
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
+    listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
+    if (index == 0) {
+      listSlide[1].select = '';
+    } else {
+      listSlide[0].select = '';
+    }
+    setSlide1(listSlide);
   };
   const onChangeDevice = (e, index) => {
     let newArr = [...meterListData]; // copying the old datas array
@@ -397,23 +415,29 @@ export default function UnitEdit({
       ...oldState,
       manufacturersData: ManufacturersResponse?.data?.data,
     }));
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[0].data = ManufacturersResponse?.data?.data;
+    setSlide1(listSlide);
   };
 
   const getDevice = async (some, index) => {
+    console.log('get devices--->');
     const deviceResponse = await api.get(
       `/property/equipment/device/all/${some?.id}`,
     );
-    // let newArr = [...meterListData]; // copying the old datas array
-    // newArr[index].manufacturersName = some?.name; // replace e.target.value with whatever you want to change it to
-    // newArr[index].manufacturersId = some?.id; // replace e.target.value with whatever you want to change it to
-    // newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
-    // newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
-    // newArr[index].meterType = ''; // replace e.target.value with whatever you want to change it to
-    // setMeterListData(newArr);
     setState((oldState) => ({
       ...oldState,
       devicesData: deviceResponse?.data?.data,
     }));
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
+    if (index == 0) {
+      listSlide[1].data = deviceResponse?.data?.data;
+      listSlide[1].selectId = '';
+      listSlide[1].select = '';
+    }
+    setSlide1(listSlide);
   };
   const getDeviceData = (some, index) => {
     let newArr = [...meterListData]; // copying the old datas array
@@ -611,168 +635,47 @@ export default function UnitEdit({
   };
 
   const handleOpenMeterSelection = () => {
-    console.log('e-ss--->');
+    // console.log('e-ss--->');
     setMeterMenuVisible(true);
     callApi();
   };
+  const changeSlider = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setSliderNumber(sliderNumber + 1);
+    setSliderProgress(sliderProgress + .25);
+    // console.log('e-ss--->');
 
-  const _renderItem = ({ item, index }) => {
+  };
+  // const renderSlide1 = ({ item }) => {
+  //   return (
+
+  //   );
+  // };
+  const renderSlide2 = ({ item }) => {
     return (
-      // console.log('slider-- index---->',index),
-      <View style={{
-        alignItems: 'center',
-        height: height * .57,
-        backgroundColor: 'white',
-        padding: width * .02,
-        borderRadius: width * .05,
-      }} >
-        <Text style={styles.title}>{item.title}</Text>
-        {/* <Text style={styles.discription}>{item.text}</Text> */}
-        <View
-          style={{
-            width: width * 0.75,
-          }}>
-          <View style={styles.meterDesciptionContainer}>
-            <Text style={styles.meterDesciptionHeading}>
-              Manufacturers
-            </Text>
-          </View>
-          <SearchableDropdown
-            onItemSelect={(item) => {
-              getDevice(item);
-            }}
-            containerStyle={{
-              paddingVertical: width * 0.02,
-            }}
-            itemStyle={{
-              padding: width * 0.027,
-              backgroundColor: 'rgb(247, 247, 247)',
-              borderColor: '#bbb',
-              borderWidth: width * 0.0015,
-              borderRadius: width * 0.015,
-            }}
-            itemTextStyle={{ color: '#222' }}
-            itemsContainerStyle={{
-              maxHeight: height * 0.14,
-            }}
-            items={state.manufacturersData}
-            resetValue={false}
-            textInputProps={{
-              placeholder: 'Manufacturer*',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: width * 0.027,
-                margin: 0,
-                borderColor: newMeter.manufacturersError
-                  ? '#A3001B'
-                  : 'black',
-                borderWidth: width * 0.0019,
-                borderRadius: width * 0.015,
-                backgroundColor: '#F6F6F6',
-              },
-              onTextChange: (text) => {
-                onChangeManufacturer(text);
-              },
-              value: setTimeout(
-                () => newMeter.manufacturersName,
-                200,
-              ),
-              defaultValue: newMeter.manufacturersName,
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          {newMeter.manufacturersError ? (
-            <HelperText
-              type="error"
-              visible={newMeter.manufacturersError}>
-              {newMeter.manufacturersError}
-            </HelperText>
-          ) : null}
-          <View style={styles.meterDesciptionContainer}>
-            <Text style={styles.meterDesciptionHeading}>
-              Devices
-            </Text>
-          </View>
-          <SearchableDropdown
-            onItemSelect={(item) => {
-              getDeviceData(item, meterIndex);
-            }}
-            containerStyle={{
-              paddingVertical: width * 0.02,
-            }}
-            itemStyle={{
-              padding: width * 0.027,
-              backgroundColor: 'rgb(247, 247, 247)',
-              borderColor: '#bbb',
-              borderWidth: width * 0.0015,
-              borderRadius: width * 0.015,
-            }}
-            itemTextStyle={{ color: '#222' }}
-            itemsContainerStyle={{
-              maxHeight: height * 0.1,
-            }}
-            items={state.devicesData}
-            resetValue={false}
-            textInputProps={{
-              placeholder: 'Devices',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: width * 0.027,
-                margin: 0,
-                borderColor: newMeter.deviceError
-                  ? '#A3001B'
-                  : 'black',
-                borderWidth: width * 0.0019,
-                borderRadius: width * 0.015,
-                backgroundColor: '#F6F6F6',
-              },
-              onTextChange: (text) => {
-                onChangeDevice(text);
-              },
-              value: setTimeout(() => newMeter.deviceName, 200),
-              defaultValue: newMeter.deviceName,
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          {newMeter.deviceError ? (
-            <HelperText
-              type="error"
-              visible={newMeter.deviceError}>
-              {newMeter.deviceError}
-            </HelperText>
-          ) : null}
-        </View>
+      <View style={{ flex: 1, width: width * .8, }}>
+        <Text style={[styles.meterDesciptionHeading, {
+          fontSize: width * .06, marginBottom: width * .02
+        }]}>slider2</Text>
       </View>
-    );
-  }
-  const _onDone = () => {
-    // navigation.navigate('Signin')
-    console.log('done')
-    closeModal();
-
-  }
-  const _renderNextButton = (e, index) => {
-    console.log('next-- data---->', e)
-    console.log('next-- index---->', index)
-    return (
-      <View style={[styles.buttonCircle, { elevation: height * 0 }]}>
-        <Icon size={height * .035} color='#fff' name="navigate-next" style={styles.buttonIcon} />
-      </View>
-
     );
   };
-  const _renderDoneButton = () => {
+  const renderSlide3 = ({ item }) => {
     return (
-      <View>
-        <TouchableOpacity style={styles.buttonCircle} onPress={_onDone}>
-          <Iconi size={height * .035} color='#fff' name="md-checkmark" style={styles.buttonIcon} />
-        </TouchableOpacity>
+      <View style={{ flex: 1, width: width * .8, }}>
+        <Text style={[styles.meterDesciptionHeading, {
+          fontSize: width * .06, marginBottom: width * .02
+        }]}>slider3</Text>
       </View>
-
+    );
+  };
+  const renderSlide4 = ({ item }) => {
+    return (
+      <View style={{ flex: 1, width: width * .8, }}>
+        <Text style={[styles.meterDesciptionHeading, {
+          fontSize: width * .06, marginBottom: width * .02
+        }]}>slider4</Text>
+      </View>
     );
   };
   return (
@@ -783,35 +686,150 @@ export default function UnitEdit({
         hasBackdrop={true}
         backdropColor="black"
         statusBarTranslucent
-        style={{top:width * -.1}}
+        style={{ top: width * -.1 }}
+        onBackdropPress={() => closeModal()}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           {
             !showAddMeterSlider ?
               <View style={{
-                height: height * .57
+                height: width * 1,
+                backgroundColor: 'white',
+                alignItems: 'center'
               }}>
-                <AppIntroSlider
-                  renderItem={_renderItem}
-                  data={slides}
-                  dotClickEnabled={false}
-                  onDone={_onDone}
-                  keyExtractor={item => item.key}
-                  activeDotStyle={{
-                    backgroundColor: '#ffffff00',
-                  }}
-                  dotStyle={{
-                    backgroundColor: '#ffffff00',
+                <View style={{
+                  height: width * .18,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <Text style={[styles.meterDesciptionHeading, {
+                    fontSize: width * .06, marginBottom: width * .02, textTransform: 'capitalize'
+                  }]}>{
+                      sliderNumber == 1 && slide1[0].selectId && slide1[1].selectId ? 'Device Selection' :
+                        sliderNumber == 2 && slide1[0].selectId && slide1[1].selectId ? 'Meter Type Selection' :
+                          sliderNumber == 3 && slide1[0].selectId && slide1[1].selectId ? 'Device Information' :
+                            sliderNumber == 4 && slide1[0].selectId && slide1[1].selectId ? 'Thumbnail' :
+                              'Device Selection'
+                    }</Text>
+                  <Progress.Bar progress={sliderProgress} width={width * .8} color={'#25AAE1ec'} />
+                </View>
+                {sliderNumber == 2 ?
+                  <FlatList
+                    style={{
+                    }}
+                    data={slide1}
+                    renderItem={renderSlide2}
+                  />
+                  : sliderNumber == 3 ?
+                    <FlatList
+                      style={{
+                      }}
+                      data={slide1}
+                      renderItem={renderSlide3}
+                    />
+                    : sliderNumber == 4 ?
+                      <FlatList
+                        style={{
+                        }}
+                        data={slide1}
+                        renderItem={renderSlide4}
+                      />
+                      :
+                      slide1.map((item, index) =>
+                        <View style={{ flex: 1, width: width * .8, }}>
+                          <View style={styles.meterDesciptionContainer}>
+                            <Text style={styles.meterDesciptionHeading}>
+                              {item.name}
+                            </Text>
+                          </View>
+                          <SearchableDropdown
+                            onItemSelect={(item) => {
+                              getDevice(item, index)
+                            }}
+                            containerStyle={{
+                              paddingVertical: width * 0.02,
+                            }}
+                            itemStyle={{
+                              padding: width * 0.027,
+                              backgroundColor: 'rgb(247, 247, 247)',
+                              borderColor: '#bbb',
+                              borderWidth: width * 0.0015,
+                              borderRadius: width * 0.015,
+                            }}
+                            itemTextStyle={{ color: '#222' }}
+                            itemsContainerStyle={{
+                              maxHeight: height * 0.05,
+                            }}
+                            items={item.data}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: item.name,
+                              underlineColorAndroid: 'transparent',
+                              style: {
+                                padding: width * 0.027,
+                                margin: 0,
+                                borderColor: item.error
+                                  ? '#A3001B'
+                                  : 'black',
+                                borderWidth: width * 0.0019,
+                                borderRadius: width * 0.015,
+                                backgroundColor: '#F6F6F6',
+                              },
+                              onTextChange: (text) => {
+                                onChangeManufacturer(text, index);
+                              },
+                              value: setTimeout(
+                                () => item.select,
+                                200,
+                              ),
+                              defaultValue: item.select,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          />
+                          {item.error ? (
+                            <HelperText
+                              type="error"
+                              visible={item.error}>
+                              {item.error}
+                            </HelperText>
+                          ) : null}
+                        </View>
+                      )
+                }
 
-                  }}
-                  onSlideChange={(index, lastIndex) => {
-                    console.log('index--->', index),
-                      console.log('lastIndex--->', lastIndex)
-
-                  }}
-                  renderNextButton={_renderNextButton}
-                  renderDoneButton={_renderDoneButton}
-                />
+                <View style={{
+                  height: width * .2,
+                  width: width * .85,
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                }}>
+                  <TouchableOpacity style={{
+                    height: width * .12,
+                    width: width * .12,
+                    borderRadius: width * .3,
+                    backgroundColor:
+                      sliderNumber == 1 && slide1[0].selectId && slide1[1].selectId ? '#25AAE1ec' :
+                        sliderNumber == 2 && slide1[0].selectId && slide1[1].selectId ? '#25AAE1ec' :
+                          sliderNumber == 3 && slide1[0].selectId && slide1[1].selectId ? '#25AAE1ec' :
+                            sliderNumber == 4 && slide1[0].selectId && slide1[1].selectId ? '#25AAE1ec' :
+                              '#D0D0D0',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: width * .005
+                  }} onPress={changeSlider}
+                    disabled={
+                      sliderNumber == 1 && slide1[0].selectId && slide1[1].selectId ? false :
+                        sliderNumber == 2 && slide1[0].selectId && slide1[1].selectId ? false :
+                          sliderNumber == 3 && slide1[0].selectId && slide1[1].selectId ? false :
+                            sliderNumber == 4 && slide1[0].selectId && slide1[1].selectId ? false :
+                              true
+                    }
+                  >
+                    <Icon size={width * .07} color='#fff' name="navigate-next" />
+                  </TouchableOpacity>
+                </View>
               </View>
               :
               <View style={styles.modalInner}>
@@ -1465,13 +1483,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   meterDesciptionContainer: {
-    height: height * 0.042,
-    width: width * 0.7,
-    alignSelf: 'center',
+    // height: height * 0.042,
+    // width: width * 0.7,
+    // alignSelf: 'center',
     justifyContent: 'flex-end',
   },
   meterDesciptionHeading: {
-    fontSize: height * 0.015,
+    fontSize: width * 0.03,
     color: 'black',
     textTransform: 'uppercase',
     fontFamily: Fonts.ComfortaaRegular,
