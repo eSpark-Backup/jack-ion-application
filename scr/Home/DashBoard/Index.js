@@ -111,14 +111,14 @@ export default class Splash extends Component {
           longitudeDelta: LONGITUDE_DELTA,
         };
 
-        this.setState({initialPosition: initialRegion});
-        console.log('What we Get', this.state.initialPosition);
+        // this.setState({initialPosition: initialRegion});
+        // console.log('What we Get', this.state.initialPosition);
         this.setState({
           markers: [
             {
               coordinate: {
-                latitude: this.state.initialPosition.latitude,
-                longitude: this.state.initialPosition.longitude,
+                latitude: lat,
+                longitude: long,
               },
             },
           ],
