@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
+  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
@@ -12,6 +13,8 @@ import {
   PermissionsAndroid,
   Alert,
   Platform,
+  FlatList,
+  Image
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -35,31 +38,13 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import Iconi from 'react-native-vector-icons/Ionicons';
+import * as Progress from 'react-native-progress';
+import { withOrientation } from 'react-navigation';
+import * as ImagePicker from 'react-native-image-picker';
+
 const { width, height } = Dimensions.get('window');
 const api = create({ baseURL: Base_URL });
-const slides = [
-  {
-    key: '1',
-    title: 'Select device',
-    text: 'You will know how much you spent and where your money was spent during the month',
-    // image: require('../../assets/Images/slider/wel1.jpeg'),
-    backgroundColor: '#59b2ab',
-  },
-  {
-    key: '2',
-    title: 'Expenses',
-    text: 'Easy way to manage your expenses and calculate your savings',
-    // image: require('../../assets/Images/slider/wel2.jpeg'),
-    backgroundColor: '#febe29',
-  },
-  {
-    key: '3',
-    title: 'Dreams',
-    text: 'Save your money and fullfill your dreams happy journey',
-    // image: require('../../assets/Images/slider/wel3.jpg'),
-    backgroundColor: '#22bcb5',
-  }
-];
+
 export default function UnitEdit({
   modalVisible,
   closeModal,
@@ -76,7 +61,49 @@ export default function UnitEdit({
   disableFlag,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [filePath, setFilePath] = useState({});
+  const [slide1, setSlide1] = useState([
+    {
+      id: 0,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'Manufacturer',
+      data: [],
+    },
+    {
+      id: 1,
+      selectId: '',
+      select: '',
+      error: '',
+      name: 'Device',
+      data: []
+    },
+  ]);
+  const [slide2, setSlide2] = useState([
+    {
+      id: 0,
+      error: '',
+      name: 'Device Serial Number',
+      value: ''
+    },
+    {
+      id: 1,
+      error: '',
+      name: 'Initial Meter Reading',
+      value: ''
+    },
+    {
+      id: 2,
+      error: '',
+      name: 'Note',
+      value: ''
+    },
+  ]);
   const [meterMenuVisible, setMeterMenuVisible] = useState(false);
+  const [sliderNumber, setSliderNumber] = useState(1);
+  const [sliderProgress, setSliderProgress] = useState(0);
+  const [doneAnimation, setDoneAnimation] = useState(false);
   const [showAddMeterSlider, setShowAddMeterSlider] = useState(false);
   const [state, setState] = useState({
     isScannerVisible: false,
@@ -162,44 +189,59 @@ export default function UnitEdit({
     callApi();
   }, [meterTypes, unitDetails]);
 
-  const addMeterInNewArray = async (value) => {
-    setMeterMenuVisible(false);
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    const data = {
-      id: value.id,
-      deviceSerialNum:
-        type == 'meterDirect' || type == 'addMeterDirect'
-          ? unitDetails?.unit?.meterSerial
-          : '',
-      deviceSerialError: '',
-      meterType: '',
-      meterTypeName: '',
-      meterTypeError: '',
-      meterAttachedTo: '',
-      manufacturersId: '',
-      initialMeterReadingError: '',
-      initialMeterReading: '',
-      manufacturersName: '',
-      manufacturersError: '',
-      deviceId: '',
-      deviceName: '',
-      deviceError: '',
-      meterAttachedError: '',
-      meterSerialNum: '',
-      customMeterId: '',
-      name: value.name,
-      icon: value.icon,
-      meterTypeMenu: false,
-    };
-    const newArray = [...meterListData];
-    newArray.push(data);
-    setMeterListData(newArray);
-
-    const newList = state.meterList.filter((item) => item.id !== value.id);
-    setState((oldState) => ({
+  useEffect(() => {
+    console.log('sliderProgress-->>', sliderProgress);
+    if (sliderNumber == 5) {
+      // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+      setDoneAnimation(true)
+      setTimeout(() => {
+        setDoneAnimation(false)
+      }, 5000);
+    }
+  }, [sliderNumber]);
+  const addMeterInNewArray = (value) => {
+    // setMeterMenuVisible(false);
+    // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setNewMeter((oldState) => ({
       ...oldState,
-      meterList: newList,
+      id: value.id,
+      name: value.name,
     }));
+    // const data = {
+    //   id: value.id,
+    //   deviceSerialNum:
+    //     type == 'meterDirect' || type == 'addMeterDirect'
+    //       ? unitDetails?.unit?.meterSerial
+    //       : '',
+    //   deviceSerialError: '',
+    //   meterType: '',
+    //   meterTypeName: '',
+    //   meterTypeError: '',
+    //   meterAttachedTo: '',
+    //   manufacturersId: '',
+    //   initialMeterReadingError: '',
+    //   initialMeterReading: '',
+    //   manufacturersName: '',
+    //   manufacturersError: '',
+    //   deviceId: '',
+    //   deviceName: '',
+    //   deviceError: '',
+    //   meterAttachedError: '',
+    //   meterSerialNum: '',
+    //   customMeterId: '',
+    //   name: value.name,
+    //   icon: value.icon,
+    //   meterTypeMenu: false,
+    // };
+    // const newArray = [...meterListData];
+    // newArray.push(data);
+    // setMeterListData(newArray);
+
+    // const newList = state.meterList.filter((item) => item.id !== value.id);
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   meterList: newList,
+    // }));
   };
 
   const deleteMeterInNewArray = (value) => {
@@ -307,10 +349,10 @@ export default function UnitEdit({
         console.error('An error occured', err),
       );
     } else {
-      let newArr = [...meterListData]; // copying the old datas array
-      newArr[state.scanIndex].deviceSerialNum = e.data; // replace e.target.value with whatever you want to change it to
-      newArr[state.scanIndex].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
-      setMeterListData(newArr);
+      let newArr = [...slide2]; // copying the old datas array
+      newArr[state.scanIndex].value = e.data; // replace e.target.value with whatever you want to change it to
+      // newArr[state.scanIndex].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
+      setSlide2(newArr);
       setState((oldState) => ({
         ...oldState,
         result: e,
@@ -342,10 +384,10 @@ export default function UnitEdit({
   };
   //!-------->
   const onChangeMultipleField = (e, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].deviceSerialNum = e; // replace e.target.value with whatever you want to change it to
-    newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
+    let newArr = [...slide2]; // copying the old datas array
+    newArr[index].value = e; // replace e.target.value with whatever you want to change it to
+    // newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
+    setSlide2(newArr);
   };
   const onChangeInitialReading = (e, index) => {
     let newArr = [...meterListData]; // copying the old datas array
@@ -359,12 +401,25 @@ export default function UnitEdit({
     setMeterListData(newArr);
   };
   const onChangeManufacturer = (e, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].manufacturersName = e; // replace e.target.value with whatever you want to change it to
-    newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].meterType = '';
-    setMeterListData(newArr);
+    // let newArr = [...meterListData]; // copying the old datas array
+    // newArr[index].manufacturersName = e; // replace e.target.value with whatever you want to change it to
+    // newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
+    // newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
+    // newArr[index].meterType = '';
+    // setMeterListData(newArr);
+
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
+    listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
+    if (index == 0) {
+      listSlide[1].select = '';
+    } else {
+      listSlide[0].select = '';
+    }
+    setSlide1(listSlide);
   };
   const onChangeDevice = (e, index) => {
     let newArr = [...meterListData]; // copying the old datas array
@@ -397,23 +452,29 @@ export default function UnitEdit({
       ...oldState,
       manufacturersData: ManufacturersResponse?.data?.data,
     }));
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[0].data = ManufacturersResponse?.data?.data;
+    setSlide1(listSlide);
   };
 
   const getDevice = async (some, index) => {
+    console.log('get devices--->');
     const deviceResponse = await api.get(
       `/property/equipment/device/all/${some?.id}`,
     );
-    // let newArr = [...meterListData]; // copying the old datas array
-    // newArr[index].manufacturersName = some?.name; // replace e.target.value with whatever you want to change it to
-    // newArr[index].manufacturersId = some?.id; // replace e.target.value with whatever you want to change it to
-    // newArr[index].manufacturersError = ''; // replace e.target.value with whatever you want to change it to
-    // newArr[index].deviceName = ''; // replace e.target.value with whatever you want to change it to
-    // newArr[index].meterType = ''; // replace e.target.value with whatever you want to change it to
-    // setMeterListData(newArr);
     setState((oldState) => ({
       ...oldState,
       devicesData: deviceResponse?.data?.data,
     }));
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
+    if (index == 0) {
+      listSlide[1].data = deviceResponse?.data?.data;
+      listSlide[1].selectId = '';
+      listSlide[1].select = '';
+    }
+    setSlide1(listSlide);
   };
   const getDeviceData = (some, index) => {
     let newArr = [...meterListData]; // copying the old datas array
@@ -611,170 +672,255 @@ export default function UnitEdit({
   };
 
   const handleOpenMeterSelection = () => {
-    console.log('e-ss--->');
+    // console.log('e-ss--->');
     setMeterMenuVisible(true);
     callApi();
   };
+  const changeSlider = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setSliderNumber(sliderNumber + 1);
+    setSliderProgress(sliderProgress + .2);
 
-  const _renderItem = ({ item, index }) => {
-    return (
-      // console.log('slider-- index---->',index),
-      <View style={{
-        alignItems: 'center',
-        height: height * .57,
-        backgroundColor: 'white',
-        padding: width * .02,
-        borderRadius: width * .05,
-      }} >
-        <Text style={styles.title}>{item.title}</Text>
-        {/* <Text style={styles.discription}>{item.text}</Text> */}
-        <View
-          style={{
-            width: width * 0.75,
-          }}>
-          <View style={styles.meterDesciptionContainer}>
-            <Text style={styles.meterDesciptionHeading}>
-              Manufacturers
-            </Text>
-          </View>
-          <SearchableDropdown
-            onItemSelect={(item) => {
-              getDevice(item);
-            }}
-            containerStyle={{
-              paddingVertical: width * 0.02,
-            }}
-            itemStyle={{
-              padding: width * 0.027,
-              backgroundColor: 'rgb(247, 247, 247)',
-              borderColor: '#bbb',
-              borderWidth: width * 0.0015,
-              borderRadius: width * 0.015,
-            }}
-            itemTextStyle={{ color: '#222' }}
-            itemsContainerStyle={{
-              maxHeight: height * 0.14,
-            }}
-            items={state.manufacturersData}
-            resetValue={false}
-            textInputProps={{
-              placeholder: 'Manufacturer*',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: width * 0.027,
-                margin: 0,
-                borderColor: newMeter.manufacturersError
-                  ? '#A3001B'
-                  : 'black',
-                borderWidth: width * 0.0019,
-                borderRadius: width * 0.015,
-                backgroundColor: '#F6F6F6',
-              },
-              onTextChange: (text) => {
-                onChangeManufacturer(text);
-              },
-              value: setTimeout(
-                () => newMeter.manufacturersName,
-                200,
-              ),
-              defaultValue: newMeter.manufacturersName,
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          {newMeter.manufacturersError ? (
-            <HelperText
-              type="error"
-              visible={newMeter.manufacturersError}>
-              {newMeter.manufacturersError}
-            </HelperText>
-          ) : null}
-          <View style={styles.meterDesciptionContainer}>
-            <Text style={styles.meterDesciptionHeading}>
-              Devices
-            </Text>
-          </View>
-          <SearchableDropdown
-            onItemSelect={(item) => {
-              getDeviceData(item, meterIndex);
-            }}
-            containerStyle={{
-              paddingVertical: width * 0.02,
-            }}
-            itemStyle={{
-              padding: width * 0.027,
-              backgroundColor: 'rgb(247, 247, 247)',
-              borderColor: '#bbb',
-              borderWidth: width * 0.0015,
-              borderRadius: width * 0.015,
-            }}
-            itemTextStyle={{ color: '#222' }}
-            itemsContainerStyle={{
-              maxHeight: height * 0.1,
-            }}
-            items={state.devicesData}
-            resetValue={false}
-            textInputProps={{
-              placeholder: 'Devices',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: width * 0.027,
-                margin: 0,
-                borderColor: newMeter.deviceError
-                  ? '#A3001B'
-                  : 'black',
-                borderWidth: width * 0.0019,
-                borderRadius: width * 0.015,
-                backgroundColor: '#F6F6F6',
-              },
-              onTextChange: (text) => {
-                onChangeDevice(text);
-              },
-              value: setTimeout(() => newMeter.deviceName, 200),
-              defaultValue: newMeter.deviceName,
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          {newMeter.deviceError ? (
-            <HelperText
-              type="error"
-              visible={newMeter.deviceError}>
-              {newMeter.deviceError}
-            </HelperText>
-          ) : null}
-        </View>
-      </View>
-    );
-  }
-  const _onDone = () => {
-    // navigation.navigate('Signin')
-    console.log('done')
-    closeModal();
-
-  }
-  const _renderNextButton = (e, index) => {
-    console.log('next-- data---->', e)
-    console.log('next-- index---->', index)
-    return (
-      <View style={[styles.buttonCircle, { elevation: height * 0 }]}>
-        <Icon size={height * .035} color='#fff' name="navigate-next" style={styles.buttonIcon} />
-      </View>
-
-    );
   };
-  const _renderDoneButton = () => {
+  // const renderSlide1 = ({ item }) => {
+  //   return (
+
+  //   );
+  // };
+  const typeSwitcher = (arg) => {
+    switch (arg) {
+      case 'hot water':
+        return require('../../../../../../../Images/hot-water.png');
+      case 'cold water':
+        return require('../../../../../../../Images/cold-water.png');
+      case 'electricity':
+        return require('../../../../../../../Images/electric.png');
+      case 'gas':
+        return require('../../../../../../../Images/gass.png');
+      case 'water':
+        return require('../../../../../../../Images/all-waters.png');
+      default:
+        break;
+    }
+  };
+  const renderSlide2 = ({ item }) => {
     return (
-      <View>
-        <TouchableOpacity style={styles.buttonCircle} onPress={_onDone}>
-          <Iconi size={height * .035} color='#fff' name="md-checkmark" style={styles.buttonIcon} />
+      <View style={{
+        width: width * .9,
+        alignItems: 'center',
+      }}>
+        <TouchableOpacity style={{
+          height: width * .12,
+          width: width * .8,
+          elevation: width * .005,
+          backgroundColor: 'white',
+          paddingHorizontal: width * .01,
+          borderRadius: width * .007,
+          marginVertical: width * .01,
+          justifyContent: 'center'
+        }}
+          onPress={() => addMeterInNewArray(item)}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            {/* <Drop name={item.icon} size={15} color="#3E89BF" /> */}
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+              <Image
+                source={typeSwitcher(item.name)}
+                style={styles.untiDetailImage}
+              />
+              <Text style={{ fontSize: width * .05, fontFamily: Fonts.Montserrat, textTransform: 'capitalize' }}>
+                {item.name}
+              </Text>
+            </View>
+            {item.id == newMeter.id ? (
+              <Iconi name='radio-button-on' size={width * .05} color='#25AAE1ec' />
+            ) : (
+              <Iconi name='radio-button-off' size={width * .05} color='black' />
+            )}
+          </View>
         </TouchableOpacity>
       </View>
-
     );
   };
+  const renderSlide3 = ({ item, index }) => {
+    // console.log('index check slider 3 ---> ',index)
+    return (
+      <View style={{ width: width * .8, }}>
+        <Text style={[styles.meterDesciptionHeading, { top: width * .01 }]}>
+          {item.name}
+        </Text>
+        <TextInput
+          placeholder={item.name}
+          value={item.value}
+          dense={true}
+          keyboardType={index == 1 ? "numeric" : 'default'}
+          error={item.error}
+          right={index == 0 && (
+            type == 'meterDirect' ||
+              type == 'addMeterDirect' ? null : (
+              <TextInput.Icon
+                name={() => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      toggleScanner(index)
+                    }
+                    style={{ zIndex: 1 }}>
+                    <Scanner name="scan" size={width * .06} />
+                  </TouchableOpacity>
+                )}
+              />
+            )
+          )}
+          onChangeText={(text) => index == 0 ? (
+            type == 'meterDirect' ||
+              type == 'addMeterDirect'
+              ? null
+              : onChangeMultipleField(text, index)
+          ) : (
+            onChangeMultipleField(text, index)
+          )
+          }
+          disabled={
+            type == 'meterDirect' ||
+              type == 'addMeterDirect'
+              ? true
+              : false
+          }
+          style={styles.meterInput}
+          mode={'outlined'}
+          numberOfLines={index == 2 ? 3 : 1}
+          multiline={index == 2 ? true : false}
+          theme={{
+            colors: {
+              text: '#25AAE1ec',
+              primary: '#25AAE1ec',
+              selectionColor: 'red',
+            },
+          }} />
+        {/* {item.error ? (
+          <HelperText
+            type="error"
+            visible={item.error}>
+            {item.error}
+          </HelperText>
+        ) : null} */}
+      </View>
+    );
+  };
+  const renderSlide4 = ({ item }) => {
+    return (
+      <View style={{ flex: 1, width: width * .8, }}>
+        <Text style={[styles.meterDesciptionHeading, {
+          fontSize: width * .06, marginBottom: width * .02
+        }]}>slider4</Text>
+      </View>
+    );
+  };
+
+  const selectFile = () => {
+    var options = {
+      title: 'Select Image',
+      customButtons: [
+        {
+          name: 'customOptionKey',
+          title: 'Choose file from Custom Option'
+        },
+      ],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, res => {
+      console.log('Response = ', res);
+
+      if (res.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (res.error) {
+        console.log('ImagePicker Error: ', res.error);
+      } else if (res.customButton) {
+        console.log('User tapped custom button: ', res.customButton);
+        alert(res.customButton);
+      } else {
+        let source = res;
+        // this.setState({
+        //   resourcePath: source,
+        // });
+      }
+    });
+  };
+
+  const cameraLaunch = () => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchCamera(options, (res) => {
+      // console.log('Response = ', res);
+
+      if (res.didCancel) {
+        // console.log('User cancelled image picker');
+      } else if (res.error) {
+        // console.log('ImagePicker Error: ', res.error);
+      } else if (res.customButton) {
+        // console.log('User tapped custom button: ', res.customButton);
+        alert(res.customButton);
+      } else {
+        const source = { uri: res.uri };
+        // console.log('response', JSON.stringify(res));
+        // this.setState({
+        //   filePath: res,
+        //   fileData: res.data,
+        //   fileUri: res.uri
+        // });
+        setFilePath(res)
+      }
+    });
+  }
+
+  const imageGalleryLaunch = () => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.launchImageLibrary(options, (res) => {
+      // console.log('Response = ', res);
+
+      if (res.didCancel) {
+        // console.log('User cancelled image picker');
+      } else if (res.error) {
+        // console.log('ImagePicker Error: ', res.error);
+      } else if (res.customButton) {
+        // console.log('User tapped custom button: ', res.customButton);
+        alert(res.customButton);
+      } else {
+        const source = { uri: res.uri };
+        // console.log('response', JSON.stringify(res));
+        // this.setState({
+        //   filePath: res,
+        //   fileData: res.data,
+        //   fileUri: res.uri
+        // });
+        setFilePath(res)
+      }
+    });
+  }
+
   return (
     <View>
       <Modal
@@ -783,41 +929,215 @@ export default function UnitEdit({
         hasBackdrop={true}
         backdropColor="black"
         statusBarTranslucent
-        style={{top:width * -.1}}
+        style={{ top: width * -.1 }}
+        onBackdropPress={() => closeModal()}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           {
-            !showAddMeterSlider ?
+            showAddMeterSlider ? (
               <View style={{
-                height: height * .57
+                height: width * 1,
+                backgroundColor: 'white',
+                alignItems: 'center',
+                borderRadius: width * .03
               }}>
-                <AppIntroSlider
-                  renderItem={_renderItem}
-                  data={slides}
-                  dotClickEnabled={false}
-                  onDone={_onDone}
-                  keyExtractor={item => item.key}
-                  activeDotStyle={{
-                    backgroundColor: '#ffffff00',
-                  }}
-                  dotStyle={{
-                    backgroundColor: '#ffffff00',
+                <View style={{
+                  height: width * .18,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <Text style={[styles.meterDesciptionHeading, {
+                    fontSize: width * .06, marginBottom: width * .02, textTransform: 'capitalize'
+                  }]}>{
+                      sliderNumber == 1 ? 'Device Selection' :
+                        sliderNumber == 2 ? 'Meter Type Selection' :
+                          sliderNumber == 3 ? 'Device Information' :
+                            sliderNumber == 4 ? 'Thumbnail & Location' :
+                              sliderNumber == 5 ? 'Installation Status' :
+                                'Device Selection'
+                    }</Text>
+                  <Progress.Bar progress={sliderProgress} width={width * .8} color={'#25AAE1ec'} />
+                </View>
+                {sliderNumber == 2 ?
+                  <FlatList
+                    contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+                    data={state.meterList}
+                    renderItem={renderSlide2}
+                  />
+                  : sliderNumber == 3 ?
+                    <View style={{
+                      height: width * .62,
+                      width: width * .9,
+                      alignItems: 'center',
+                    }}>
+                      <FlatList
+                        contentContainerStyle={{ flex: 1, }}
+                        data={slide2}
+                        renderItem={renderSlide3}
+                      />
+                    </View>
+                    : sliderNumber == 4 ?
+                      <View style={styles.container}>
+                        {filePath?.assets &&
+                          filePath?.assets.map(({ uri }) => (
+                            <Image
+                              resizeMode="cover"
+                              resizeMethod="scale"
+                              style={{ width: width * .3, height: width * .3 }}
+                              source={{ uri: uri }}
+                            />
+                          ))}
+                        <TouchableOpacity onPress={cameraLaunch} style={styles.button}  >
+                          <Text style={styles.buttonText}>Launch Camera Directly</Text>
+                          <Iconi name='camera' size={width * .05} color='#3E4A4F' />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={imageGalleryLaunch} style={styles.button}  >
+                          <Text style={styles.buttonText}>Launch Image Gallery Directly</Text>
+                          <Iconi name='images' size={width * .05} color='#3E4A4F' />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={selectFile} style={styles.button}  >
+                          <Text style={styles.buttonText}>Change Location</Text>
+                          <Iconi name='location' size={width * .05} color='#3E4A4F' />
+                        </TouchableOpacity>
+                      </View>
+                      : sliderNumber == 5 ? (
+                        doneAnimation ?
+                          <View style={styles.container}>
+                            {/* <View style={{position: 'absolute',}}>
 
-                  }}
-                  onSlideChange={(index, lastIndex) => {
-                    console.log('index--->', index),
-                      console.log('lastIndex--->', lastIndex)
+                            </View> */}
+                            <Image
+                              resizeMode="cover"
+                              resizeMethod="scale"
+                              style={{ width: width * .9, height: width * .62 }}
+                              source={require('../../../../../../../Images/animated-check.gif')}
+                            />
+                          </View>
+                          :
+                          <View style={styles.container}>
+                            <Text>
+                              Check Meter Status
+                            </Text>
+                          </View>
+                      )
+                        :
+                        <View style={{ height: width * .62, justifyContent: 'center', }}>
+                          {
+                            slide1.map((item, index) =>
+                              <View style={{ width: width * .8, }}>
+                                <View style={styles.meterDesciptionContainer}>
+                                  <Text style={styles.meterDesciptionHeading}>
+                                    {item.name}
+                                  </Text>
+                                </View>
+                                <SearchableDropdown
+                                  onItemSelect={(item) => {
+                                    getDevice(item, index)
+                                  }}
+                                  containerStyle={{
+                                    paddingVertical: width * 0.02,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{ color: '#222' }}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  items={item.data}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: item.name,
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderColor: item.error
+                                        ? '#A3001B'
+                                        : 'black',
+                                      borderWidth: width * 0.0019,
+                                      borderRadius: width * 0.015,
+                                      backgroundColor: '#F6F6F6',
+                                    },
+                                    onTextChange: (text) => {
+                                      onChangeManufacturer(text, index);
+                                    },
+                                    value: setTimeout(
+                                      () => item.select,
+                                      200,
+                                    ),
+                                    defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                {item.error ? (
+                                  <HelperText
+                                    type="error"
+                                    visible={item.error}>
+                                    {item.error}
+                                  </HelperText>
+                                ) : null}
+                              </View>
+                            )
+                          }
+                        </View>
+                }
 
-                  }}
-                  renderNextButton={_renderNextButton}
-                  renderDoneButton={_renderDoneButton}
-                />
+                <View style={{
+                  height: width * .2,
+                  width: width * .85,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  {
+                    doneAnimation ?
+                      <Text style={[styles.buttonText, { width: width * .7,}]}>
+                        {newMeter.name.charAt(0).toUpperCase() + newMeter.name.slice(1).toLowerCase()} Meter added succesfully please checking installation status...
+                      </Text>
+                      :
+                      <TouchableOpacity style={{
+                        height: width * .12,
+                        width: width * .12,
+                        position:'absolute',
+                        right:width *.0,
+                        borderRadius: width * .3,
+                        backgroundColor:
+                          sliderNumber == 1 && slide1[0].selectId && slide1[1].selectId ? '#25AAE1ec' :
+                            sliderNumber == 2 && newMeter.id != 0 && newMeter.name ? '#25AAE1ec' :
+                              sliderNumber == 3 && slide2[0].value && slide2[1].value ? '#25AAE1ec' :
+                                sliderNumber == 4 && filePath?.assets != undefined ? '#25AAE1ec' :
+                                  sliderNumber == 5 && filePath?.assets != undefined ? '#25AAE1ec' :
+                                    '#D0D0D0',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        elevation: width * .005
+                      }} onPress={changeSlider}
+                        disabled={
+                          sliderNumber == 1 && slide1[0].selectId && slide1[1].selectId ? false :
+                            sliderNumber == 2 && newMeter.id != 0 && newMeter.name ? false :
+                              sliderNumber == 3 && slide2[0].value && slide2[1].value ? false :
+                                sliderNumber == 4 && filePath?.assets != undefined ? false :
+                                  sliderNumber == 5 && filePath?.assets != undefined ? false :
+                                    true
+                        }
+                      >
+                        <Icon size={width * .07} color='#fff' name={sliderNumber == 5 ? "check" : "navigate-next"} />
+                      </TouchableOpacity>
+                  }
+                </View>
               </View>
+
+            )
               :
               <View style={styles.modalInner}>
-
                 <View
-                  style={[styles.boxConatainer, { height: height * 0.55 }]}>
+                  style={[styles.boxConatainer, { height: width * 1 }]}>
                   <View style={styles.boxInner}>
                     {/* Box Header */}
                     <View style={styles.boxHeader}>
@@ -927,7 +1247,6 @@ export default function UnitEdit({
                             }}>
                             <View
                               style={{
-                                // top: height * 0.005,
                                 width: width * 0.75,
                               }}>
                               <View>
@@ -1232,7 +1551,7 @@ export default function UnitEdit({
                                 </View>
                               ) : (
                                 <TouchableOpacity
-                                  onPress={handleOpenMeterSelection}
+                                  onPress={() => setShowAddMeterSlider(true)}
                                   style={{
                                     flexDirection: 'row',
                                     justifyContent: 'flex-start',
@@ -1253,7 +1572,8 @@ export default function UnitEdit({
                             ) : state.meterList.length ? (
                               <TouchableOpacity
                                 onPress={() => {
-                                  setMeterMenuVisible(true);
+                                  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                  setShowAddMeterSlider(true);
                                   callApi();
                                 }}
                                 style={{
@@ -1465,14 +1785,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   meterDesciptionContainer: {
-    height: height * 0.042,
-    width: width * 0.7,
-    alignSelf: 'center',
-    justifyContent: 'flex-end',
+    // width: width * 0.7,
+    // backgroundColor: 'red'
   },
   meterDesciptionHeading: {
-    fontSize: height * 0.015,
-    color: 'black',
+    fontSize: width * 0.03,
+    color: '#3E4A4F',
     textTransform: 'uppercase',
     fontFamily: Fonts.ComfortaaRegular,
   },
@@ -1481,9 +1799,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   meterInput: {
-    width: width * 0.75,
+    width: width * 0.8,
     justifyContent: 'flex-end',
-    fontSize: height * 0.018,
+    fontSize: width * 0.036,
   },
   textCapitalize: {
     textTransform: 'capitalize',
@@ -1539,7 +1857,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: Fonts.Montserrat,
     fontSize: height * .05,
-    color: '#151515',
+    color: '#3E4A4F',
     // marginTop: height * .05
   },
   discription: {
@@ -1559,4 +1877,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  untiDetailImage: {
+    height: width * 0.05,
+    width: width * 0.05,
+    marginRight: width * 0.01,
+  },
+  container: {
+    height: width * .62,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff'
+  },
+  button: {
+    width: width * .7,
+    height: width * .1,
+    borderColor: '#25AAE1ec',
+    borderWidth: width * .003,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: width * .005,
+    paddingHorizontal: width * .02,
+    flexDirection: "row",
+    marginVertical: width * .005,
+    elevation: width * .003
+  },
+  buttonText: {
+    // textAlign: 'center',
+    fontSize: width * .03,
+    fontFamily: Fonts.Montserrat,
+    color: '#3E4A4F',
+    marginRight: width * .01
+  }
 });
