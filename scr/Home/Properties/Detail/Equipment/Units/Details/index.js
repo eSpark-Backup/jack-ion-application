@@ -59,6 +59,7 @@ export const MyToolTip = (value, position) => {
 
 const App = ({navigation}) => {
   const scrollViewRef = useRef();
+  const gettingChartdata = useRef(false);
 
   const [dangerView, setDangerView] = useState(false);
   const [headView, setHeadView] = useState(false);
@@ -83,6 +84,7 @@ const App = ({navigation}) => {
   const [meterReadData, setMeterReadData] = useState([]);
   const [meterUsageData, setMeterUsageData] = useState([]);
   const [dateData, setDateData] = useState([]);
+  const [loadChartData, setLoadChartData] = useState(false);
 
   let DataDates = ['Nov 09 09 PM', 'Nov 09 10 PM'];
 
@@ -287,7 +289,7 @@ const App = ({navigation}) => {
   const tickValues = getTickValues();
 
   const {unitId, buildingName, buildingId} = navigation.state.params; //? Dynamic Ids
-  console.log('aya kuch ++', navigation.state.params.unitId);
+  // console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
 
@@ -297,16 +299,19 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
+    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
+    const todayDate = new Date();
     let data = {
       start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
-      end_date: `2021-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+      end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
     };
+
+    setLoadChartData(true);
 
     console.log('Body Object', data);
 
@@ -320,19 +325,27 @@ const App = ({navigation}) => {
     if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
       console.log('Chala Function');
 
+      // gettingChartdata.current = true;
       getChartData(chartRes);
     }
+    setLoadChartData(false);
 
     setLoading(false);
   };
 
+  // console.log('Getting Data', gettingData);
+
   const getChartData = (chartRes) => {
+    console.log('Check Chala.....');
+    let MeterUsage = [];
+    let ReadData = [];
+    let DataSet = [];
     setDataSet(chartRes.data?.data?.dataset);
     setMeterUsage(chartRes.data?.data?.meterUsage);
     setReadDate(chartRes.data?.data?.label);
-    let MeterUsage = chartRes.data?.data?.meterUsage;
-    let ReadData = chartRes.data?.data?.label;
-    let DataSet = chartRes.data?.data?.dataset;
+    MeterUsage = chartRes.data?.data?.meterUsage;
+    ReadData = chartRes.data?.data?.label;
+    DataSet = chartRes.data?.data?.dataset;
 
     let Usage7Days = [];
     let Read7Days = [];
@@ -394,6 +407,8 @@ const App = ({navigation}) => {
 
     const index = stringDates.indexOf(stringDate.toString());
 
+    console.log('String Date', stringDate);
+
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       usageDates.push({
@@ -440,6 +455,13 @@ const App = ({navigation}) => {
     setMeterReadData(Read7DaysData);
     setMeterUsageData(Usage7DaysData);
     setDateData(Datadates);
+    // setLoadChartData(false);
+    console.log(
+      'Chart Data Received',
+      Read7DaysData,
+      Usage7DaysData,
+      Datadates,
+    );
   };
 
   // console.log('Meter Read Data', getDataSetOne());
@@ -488,7 +510,7 @@ const App = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('Kia ha unitMeter', data);
+    // console.log('Kia ha unitMeter', data);
 
     setMeterInfoData([
       {
@@ -680,7 +702,7 @@ const App = ({navigation}) => {
   };
 
   const handleMeterSelect = async (data) => {
-    // console.log('Kia ha unitMeter', data);
+    console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setLoading(true);
       setDataSet([]);
@@ -690,14 +712,26 @@ const App = ({navigation}) => {
       setMeterUsageData([]);
       setDateData([]);
       setUnitMeter(data);
-      const chartRes = await api.post(
-        `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
-      );
-      console.log('Chart Data', chartRes.data?.data?.dataset[0]);
-      setDataSet(chartRes.data?.data?.dataset);
-      if (data?.unit_meter?.length > 0) {
+      setLoadChartData(true);
+
+      if (data?.meter_read?.meter_reading > 0) {
+        console.log('Function Chala Kia');
+        const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const todayDate = new Date();
+        let date = {
+          start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
+          end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
+        };
+        console.log('Date', date);
+        const chartRes = await api.post(
+          `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
+          date,
+        );
+        console.log('Chart Data', chartRes.data?.data?.dataset[0]);
+        setDataSet(chartRes.data?.data?.dataset);
         getChartData(chartRes);
       }
+      setLoadChartData(false);
     }
   };
   const typeColor = (arg) => {
@@ -1546,8 +1580,8 @@ const App = ({navigation}) => {
                         scale="time"
                         standalone={false}
                         style={styled.axisYears}
-                        tickValues={tickValues}
-                        // tickValues={dateData.length > 0 ? dateData : tickValues}
+                        // tickValues={tickValues}
+                        tickValues={dateData.length > 0 ? dateData : tickValues}
                         tickFormat={(date) =>
                           months[date.getMonth()] +
                           ' ' +
@@ -1563,7 +1597,9 @@ const App = ({navigation}) => {
                 ) : (
                   <View
                     style={{height: height * 0.3, justifyContent: 'center'}}>
-                    <Text>No Read Data</Text>
+                    <Text style={{fontSize: width * 0.06}}>
+                      {loadChartData ? 'Loading Data...' : 'No Read Data'}
+                    </Text>
                   </View>
                 )}
 
