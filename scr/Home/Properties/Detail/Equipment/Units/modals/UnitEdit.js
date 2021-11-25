@@ -168,25 +168,139 @@ export default function UnitEdit({
   });
 
   const enableLocation = async () => {
+    if (Platform.OS == 'ios') {
+      request(
+        PERMISSIONS.IOS.LOCATION_ALWAYS || PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      )
+        .then((result) => {
+          console.log('kia hai result camera ka', result);
+          if (result == RESULTS.GRANTED) {
+            checkLocation(true);
+          } else {
+            // console.log('Denied',)
+            checkLocation(false);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          checkLocation(true);
+          console.log('Access');
+          // alert("You've access for the Location");
+        } else {
+          checkLocation(false);
+
+          console.log('Denied');
+        }
+      } catch (err) {
+        alert(err);
+      }
+    }
+  };
+
+  const checkLocation = async (locationAccess) => {
     const location = await SystemSetting.isLocationEnabled();
 
-    !location
-      ? Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
+    if (locationAccess) {
+      !location
+        ? Alert.alert(
+            'Enable Loaction',
+            'Kindly TurnOn Location to Add Meter',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: () =>
+                  SystemSetting.switchLocation(() => {
+                    console.log('switch location successfully');
+                  }),
+              },
+            ],
+          )
+        : setShowAddMeterSlider(true);
+      _renderMap();
+    } else {
+      Alert.alert(
+        'Access Location',
+        `You don't have access for the Location To Change the permission Open Settings`,
+        [
           {
             text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
           {
-            text: 'OK',
-            onPress: () =>
-              SystemSetting.switchLocation(() => {
-                console.log('switch location successfully');
-              }),
+            text: 'Open Settings',
+            onPress: async () => await SystemSetting.openAppSystemSettings(),
           },
-        ])
-      : setShowAddMeterSlider(true);
-    _renderMap();
+        ],
+      );
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS == 'ios') {
+      request(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          console.log('kia hai result camera ka', result);
+          if (result == RESULTS.GRANTED) {
+            cameraLaunch();
+          } else {
+            // console.log('Denied',)
+            Alert.alert(
+              "You don't have access for the Camera",
+              'To Change the Permission Open Settings',
+              [
+                {text: 'Cancel', style: 'cancel'},
+                {
+                  text: 'Open Settings',
+                  onPress: () =>
+                    openSettings().catch(() =>
+                      console.warn('cannot open settings!'),
+                    ),
+                },
+              ],
+            );
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          cameraLaunch();
+        } else {
+          Alert.alert(
+            "You don't have access for the Camera",
+            'To Change the Permission Open Settings',
+            [
+              {text: 'Cancel', style: 'cancel'},
+              {
+                text: 'Open Settings',
+                onPress: async () =>
+                  await SystemSetting.openAppSystemSettings(),
+              },
+            ],
+          );
+        }
+      } catch (err) {
+        alert(err);
+      }
+    }
   };
 
   const getToken = async () => {
@@ -218,9 +332,9 @@ export default function UnitEdit({
     callApi();
   }, [modalVisible]);
 
-  useEffect(() => {
-    _renderMap();
-  }, []);
+  // useEffect(() => {
+  //   _renderMap();
+  // }, []);
   useEffect(() => {
     console.log('lat Batao', lat);
     console.log('long Batao', long);
@@ -1120,14 +1234,7 @@ export default function UnitEdit({
                       // onPress={(e) => this.getLocation(e)}
                     ></MapView>
                   </View>
-                ) : (
-                  <View>
-                    <Text>Enable Location to use Map</Text>
-                    <TouchableOpacity onPress={enableLocation}>
-                      <Text>ENABLE</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+                ) : null}
               </View>
             ) : (
               <View
@@ -1202,7 +1309,7 @@ export default function UnitEdit({
                         />
                       ))}
                     <TouchableOpacity
-                      onPress={cameraLaunch}
+                      onPress={requestCameraPermission}
                       style={styles.button}>
                       <Text style={styles.buttonText}>
                         Launch Camera Directly
