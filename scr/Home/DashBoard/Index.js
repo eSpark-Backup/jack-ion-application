@@ -104,15 +104,6 @@ export default class Splash extends Component {
         var long = parseFloat(position.coords.longitude);
         this.setState({lat: lat, long: long});
 
-        var initialRegion = {
-          latitude: lat,
-          longitude: long,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        };
-
-        // this.setState({initialPosition: initialRegion});
-        // console.log('What we Get', this.state.initialPosition);
         this.setState({
           markers: [
             {
@@ -133,21 +124,6 @@ export default class Splash extends Component {
 
     this._renderMap();
   }
-  // _renderMyList = ({ item }) => (
-  //   <View style={{ flex: 1, }}>
-  //     <View style={style.renderListContainer}>
-  //       <Text style={style.renderListHeading1}>
-  //         {this.state.date}/{this.state.month}/{this.state.year}
-  //       </Text>
-  //       <Text style={style.renderListHeading2}>
-  //         {this.state.hour}:{this.state.minutes}
-  //       </Text>
-  //       <Text style={style.renderListHeading1}>
-  //         {item}
-  //       </Text>
-  //     </View>
-  //   </View>
-  // )
 
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -215,30 +191,20 @@ export default class Splash extends Component {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <View
-                style={{
-                  backgroundColor: 'red',
-                  width: 20,
-                  height: 20,
-                  zIndex: 1,
-                  position: 'absolute',
-                }}
-              />
               {this.state.markers.length > 0 ? (
                 <MapView
                   style={styles.map}
                   // scrollEnabled={false}
                   initialRegion={{
-                    latitude: this.state.lat,
-                    longitude: this.state.long,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA,
+                    latitude: 39.0902,
+                    longitude: -102.0,
+                    latitudeDelta: 10,
+                    longitudeDelta: 30,
                   }}
                   zoomEnabled={true}
                   provider={PROVIDER_GOOGLE}
                   showsUserLocation={true}
                   showsMyLocationButton={true}
-                  // showsUserLocation={this.state.showsUserLocation}
                   onRegionChange={(e) => this.moveMarker(e)}
                   onPress={(e) => this.getLocation(e)}>
                   <Marker
