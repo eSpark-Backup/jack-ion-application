@@ -80,6 +80,7 @@ export default function UnitEdit({
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [markers, setMarkers] = useState([]);
+  const [checkSerial, setCheckSerial] = useState(false);
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -851,11 +852,38 @@ export default function UnitEdit({
   //   setMeterMenuVisible(true);
   //   callApi();
   // };
-  const changeSlider = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setSliderNumber(sliderNumber + 1);
-    setSliderProgress(sliderProgress + 0.25);
+  const checkingSerial = async () => {
+    let data = {
+      device_serial_number: slide2[0].value,
+    };
+    const SerialResponse = await api.post(
+      '/property/equipment/unit/get-meter-info',
+      data,
+    );
+    setCheckSerial(false);
+    if (!SerialResponse?.data?.bool) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setSliderNumber(sliderNumber + 1);
+      setSliderProgress(sliderProgress + 0.25);
+    } else {
+      Alert.alert(
+        'Device Serial Already Exists',
+        'Please type or scan another Device Serial Number',
+      );
+    }
   };
+
+  const changeSlider = () => {
+    if (sliderNumber == 3) {
+      setCheckSerial(true);
+      checkingSerial();
+    } else {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setSliderNumber(sliderNumber + 1);
+      setSliderProgress(sliderProgress + 0.25);
+    }
+  };
+
   const finishSlider = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShowAddMeterSlider(false);
@@ -1478,13 +1506,20 @@ export default function UnitEdit({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  {doneAnimation ? (
-                    <Text style={[styles.buttonText, {width: width * 0.7}]}>
-                      {newMeter.name.charAt(0).toUpperCase() +
-                        newMeter.name.slice(1).toLowerCase()}{' '}
-                      Meter added succesfully please checking installation
-                      status...
-                    </Text>
+                  {doneAnimation || checkSerial ? (
+                    (doneAnimation && (
+                      <Text style={[styles.buttonText, {width: width * 0.7}]}>
+                        {newMeter.name.charAt(0).toUpperCase() +
+                          newMeter.name.slice(1).toLowerCase()}{' '}
+                        Meter added succesfully please checking installation
+                        status...
+                      </Text>
+                    ),
+                    checkSerial && (
+                      <Text style={[styles.buttonText, {width: width * 0.7}]}>
+                        Please wait while checking Device Serial Number...
+                      </Text>
+                    ))
                   ) : (
                     <TouchableOpacity
                       style={{
