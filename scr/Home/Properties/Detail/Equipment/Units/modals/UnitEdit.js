@@ -114,7 +114,7 @@ export default function UnitEdit({
     {
       id: 2,
       error: '',
-      name: 'Note',
+      name: 'Meter Serial Number',
       value: '',
     },
   ]);
@@ -227,7 +227,8 @@ export default function UnitEdit({
               },
             ],
           )
-        : setShowAddMeterSlider(true);
+        : LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setShowAddMeterSlider(true);
       _renderMap();
     } else {
       Alert.alert(
@@ -406,30 +407,30 @@ export default function UnitEdit({
     // }));
   };
 
-  const deleteMeterInNewArray = (value) => {
-    disableFlag();
-    const newList = meterListData.filter((item) => item.id !== value.id);
-    setMeterListData(newList);
-    const data = {
-      id: value.id,
-      name: value.name,
-      icon: value.icon,
-    };
-    const newArray = [...state.meterList];
-    newArray.push(data);
-    setState((oldState) => ({
-      ...oldState,
-      meterList: newArray.sort((a, b) => (a.name > b.name ? 1 : -1)),
-    }));
-  };
+  // const deleteMeterInNewArray = (value) => {
+  //   disableFlag();
+  //   const newList = meterListData.filter((item) => item.id !== value.id);
+  //   setMeterListData(newList);
+  //   const data = {
+  //     id: value.id,
+  //     name: value.name,
+  //     icon: value.icon,
+  //   };
+  //   const newArray = [...state.meterList];
+  //   newArray.push(data);
+  //   setState((oldState) => ({
+  //     ...oldState,
+  //     meterList: newArray.sort((a, b) => (a.name > b.name ? 1 : -1)),
+  //   }));
+  // };
   //!----------->
 
-  const showMoreInputs = (value, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  };
+  // const showMoreInputs = (value, index) => {
+  //   let newArr = [...meterListData]; // copying the old datas array
+  //   newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
+  //   setMeterListData(newArr);
+  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  // };
 
   const toggleScanner = async (value) => {
     disableFlag();
@@ -551,17 +552,17 @@ export default function UnitEdit({
     // newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
     setSlide2(newArr);
   };
-  const onChangeInitialReading = (e, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].initialMeterReading = e; // replace e.target.value with whatever you want to change it to
-    newArr[index].initialMeterReadingError = ''; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
-  };
-  const onChangeMeterSerial = (e, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].meterSerialNum = e; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
-  };
+  // const onChangeInitialReading = (e, index) => {
+  //   let newArr = [...meterListData]; // copying the old datas array
+  //   newArr[index].initialMeterReading = e; // replace e.target.value with whatever you want to change it to
+  //   newArr[index].initialMeterReadingError = ''; // replace e.target.value with whatever you want to change it to
+  //   setMeterListData(newArr);
+  // };
+  // const onChangeMeterSerial = (e, index) => {
+  //   let newArr = [...meterListData]; // copying the old datas array
+  //   newArr[index].meterSerialNum = e; // replace e.target.value with whatever you want to change it to
+  //   setMeterListData(newArr);
+  // };
   const onChangeManufacturer = (e, index) => {
     // let newArr = [...meterListData]; // copying the old datas array
     // newArr[index].manufacturersName = e; // replace e.target.value with whatever you want to change it to
@@ -583,20 +584,21 @@ export default function UnitEdit({
     }
     setSlide1(listSlide);
   };
-  const onChangeDevice = (e, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].deviceName = e; // replace e.target.value with whatever you want to change it to
-    newArr[index].deviceError = ''; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
-  };
+  // const onChangeDevice = (e, index) => {
+  //   let newArr = [...meterListData]; // copying the old datas array
+  //   newArr[index].deviceName = e; // replace e.target.value with whatever you want to change it to
+  //   newArr[index].deviceError = ''; // replace e.target.value with whatever you want to change it to
+  //   setMeterListData(newArr);
+  // };
 
   const changeUtilityAndToggle = () => {
-    setNewMeter((oldState) => ({
-      ...oldState,
-      id: 0,
-      name: '',
-    }));
+    // setNewMeter((oldState) => ({
+    //   ...oldState,
+    //   id: 0,
+    //   name: '',
+    // }));
     enableFlag();
+    setMeterData([]);
     setMeterListData([]);
     setError((oldState) => ({
       ...oldState,
@@ -644,29 +646,30 @@ export default function UnitEdit({
     setSlide1(listSlide);
   };
 
-  const getDeviceData = (some, index) => {
-    let newArr = [...meterListData]; // copying the old datas array
-    newArr[index].deviceName = some?.name; // replace e.target.value with whatever you want to change it to
-    newArr[index].deviceError = ''; // replace e.target.value with whatever you want to change it to
-    newArr[index].meterType = some?.id; // replace e.target.value with whatever you want to change it to
-    setMeterListData(newArr);
-  };
+  // const getDeviceData = (some, index) => {
+  //   let newArr = [...meterListData]; // copying the old datas array
+  //   newArr[index].deviceName = some?.name; // replace e.target.value with whatever you want to change it to
+  //   newArr[index].deviceError = ''; // replace e.target.value with whatever you want to change it to
+  //   newArr[index].meterType = some?.id; // replace e.target.value with whatever you want to change it to
+  //   setMeterListData(newArr);
+  // };
 
   const handleAddNewUnit = async () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     let matchUnit;
     if (type == 'add') {
       matchUnit = unitsArray?.filter((e) => e.name == state.lastUnitData);
     }
-    const checkSerial = meterListData.filter(
-      (item) => item.deviceSerialNum === '',
-    );
-    const checkInitial = meterListData.filter(
-      (item) => item.initialMeterReading === '',
-    );
-    const checkManufacturer = meterListData.filter(
-      (item) => item.manufacturersId == '',
-    );
-    const checkDevice = meterListData.filter((item) => item.meterType == '');
+    // const checkSerial = meterListData.filter(
+    //   (item) => item.deviceSerialNum === '',
+    // );
+    // const checkInitial = meterListData.filter(
+    //   (item) => item.initialMeterReading === '',
+    // );
+    // const checkManufacturer = meterListData.filter(
+    //   (item) => item.manufacturersId == '',
+    // );
+    // const checkDevice = meterListData.filter((item) => item.meterType == '');
     setNewMeter((oldState) => ({
       ...oldState,
       id: 0,
@@ -843,11 +846,11 @@ export default function UnitEdit({
     }
   };
 
-  const handleOpenMeterSelection = () => {
-    // console.log('e-ss--->');
-    setMeterMenuVisible(true);
-    callApi();
-  };
+  // const handleOpenMeterSelection = () => {
+  //   // console.log('e-ss--->');
+  //   setMeterMenuVisible(true);
+  //   callApi();
+  // };
   const changeSlider = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSliderNumber(sliderNumber + 1);
@@ -860,7 +863,7 @@ export default function UnitEdit({
     loopData.push({
       meter_id: newMeter.id,
       device_serial_number: slide2[0].value,
-      meter_serial_number: '',
+      meter_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
       initial_meter_reading: slide2[1].value,
       latitude: lat,
@@ -886,6 +889,11 @@ export default function UnitEdit({
       let newArr = [...slide2];
       newArr[index].value = '';
     });
+    const addMeter = state.meterList.filter((item) => item.id === newMeter.id);
+    let meterArray = [...meterListData]; // copying the old datas array
+    meterArray.push(addMeter[0]);
+    setMeterListData(meterArray);
+
     const newList = state.meterList.filter((item) => item.id !== newMeter.id);
     setState((oldState) => ({
       ...oldState,
@@ -1010,8 +1018,8 @@ export default function UnitEdit({
           }
           style={styles.meterInput}
           mode={'outlined'}
-          numberOfLines={index == 2 ? 3 : 1}
-          multiline={index == 2 ? true : false}
+          // numberOfLines={index == 2 ? 3 : 1}
+          // multiline={index == 2 ? true : false}
           theme={{
             colors: {
               text: '#25AAE1ec',
@@ -1030,6 +1038,7 @@ export default function UnitEdit({
       </View>
     );
   };
+
   const renderSlide4 = ({item}) => {
     return (
       <View style={{flex: 1, width: width * 0.8}}>
@@ -1049,7 +1058,6 @@ export default function UnitEdit({
 
   const selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
-
     setSelectLocation(true);
   };
 
@@ -1061,17 +1069,14 @@ export default function UnitEdit({
         var long = parseFloat(position.coords.longitude);
         setLat(lat);
         setLong(long);
-
         var initialRegion = {
           latitude: lat,
           longitude: long,
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
         };
-
         // this.setState({initialPosition: initialRegion});
         // console.log('What we Get', this.state.initialPosition);
-
         setMarkers([
           {
             coordinate: {
@@ -1186,7 +1191,7 @@ export default function UnitEdit({
         backdropColor="black"
         statusBarTranslucent
         style={{top: width * -0.1}}
-        onBackdropPress={() => setShowAddMeterSlider(false)}
+        // onBackdropPress={() => setShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           {showAddMeterSlider ? (
@@ -1289,20 +1294,6 @@ export default function UnitEdit({
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 0,
-                      }}
-                      onPress={cancelMeter}>
-                      <Icon
-                        name="cancel"
-                        size={width * 0.07}
-                        color="black"
-                        maxOpacity={0.5}
-                      />
-                    </TouchableOpacity>
                     <Text
                       style={[
                         styles.meterDesciptionHeading,
@@ -1324,6 +1315,20 @@ export default function UnitEdit({
                         ? 'Installation Status'
                         : 'Device Selection'}
                     </Text>
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                      }}
+                      onPress={cancelMeter}>
+                      <Icon
+                        name="cancel"
+                        size={width * 0.07}
+                        color="black"
+                        maxOpacity={0.5}
+                      />
+                    </TouchableOpacity>
                   </View>
                   <Progress.Bar
                     progress={sliderProgress}
@@ -1344,11 +1349,7 @@ export default function UnitEdit({
                       width: width * 0.9,
                       alignItems: 'center',
                     }}>
-                    <FlatList
-                      contentContainerStyle={{flex: 1}}
-                      data={slide2}
-                      renderItem={renderSlide3}
-                    />
+                    <FlatList data={slide2} renderItem={renderSlide3} />
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
@@ -1398,14 +1399,12 @@ export default function UnitEdit({
                   </View>
                 ) : sliderNumber == 5 ? (
                   doneAnimation ? (
-                    <View style={styles.container}>
-                      <Image
-                        resizeMode="cover"
-                        resizeMethod="scale"
-                        style={{width: width * 0.9, height: width * 0.62}}
-                        source={require('../../../../../../../Images/animated-check.gif')}
-                      />
-                    </View>
+                    <Image
+                      resizeMode="cover"
+                      resizeMethod="scale"
+                      style={{width: width * 0.9, height: width * 0.62}}
+                      source={require('../../../../../../../Images/animated-check.gif')}
+                    />
                   ) : (
                     <View style={styles.container}>
                       <Text>Check Meter Status</Text>
@@ -1580,9 +1579,7 @@ export default function UnitEdit({
                 </View>
               </View>
               {/* Box Body */}
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled">
+              <View style={{height: width * 0.62, justifyContent: 'center'}}>
                 {/* <View style={{ flex: 1 }}> */}
                 <View style={styles.desciptionContainer}>
                   <Build
@@ -1620,6 +1617,9 @@ export default function UnitEdit({
                     value={state.lastUnitData}
                     dense={true}
                     onChangeText={(text) => {
+                      LayoutAnimation.configureNext(
+                        LayoutAnimation.Presets.easeInEaseOut,
+                      );
                       setError((oldState) => ({
                         ...oldState,
                         errorUnits: '',
@@ -1651,292 +1651,34 @@ export default function UnitEdit({
                   </HelperText>
                 ) : null}
                 {/* </View> */}
-                {meterListData &&
-                  meterListData.map((item, meterIndex) => (
-                    <View
-                      style={{
-                        alignItems: 'center',
-                        overflow: 'hidden',
-                        marginBottom: height * 0.02,
-                      }}>
-                      <View
-                        style={{
-                          width: width * 0.75,
-                        }}>
-                        <View>
-                          <View style={styles.utilityInScrHeadView}>
-                            <Drop
-                              name={item.icon}
-                              size={width * 0.06}
-                              color="#3E89BF"
-                            />
-                            <Text
-                              style={[
-                                styles.utilityInScrHead,
-                                {
-                                  color: '#000',
-                                  textTransform: 'capitalize',
-                                },
-                              ]}>
-                              {item.name}
-                            </Text>
-                            <TouchableOpacity
-                              style={{
-                                position: 'absolute',
-                                right: 0,
-                              }}
-                              onPress={() => deleteMeterInNewArray(item)}>
-                              <Delete
-                                name={'delete-forever'}
-                                size={height * 0.04}
-                                color="#25AAE1ec"
-                              />
-                            </TouchableOpacity>
-                          </View>
-                          <View style={styles.meterDesciptionContainer}>
-                            <Text style={styles.meterDesciptionHeading}>
-                              Device serial number
-                            </Text>
-                          </View>
-                          <View style={styles.meterInputContainer}>
-                            <TextInput
-                              placeholder="Serial Number"
-                              value={item.deviceSerialNum}
-                              dense={true}
-                              error={item.deviceSerialError}
-                              right={
-                                type == 'meterDirect' ||
-                                type == 'addMeterDirect' ? null : (
-                                  <TextInput.Icon
-                                    name={() => (
-                                      <TouchableOpacity
-                                        onPress={() =>
-                                          toggleScanner(meterIndex)
-                                        }
-                                        style={{zIndex: 1}}>
-                                        <Scanner name="scan" size={20} />
-                                      </TouchableOpacity>
-                                    )}
-                                  />
-                                )
-                              }
-                              onChangeText={(text) =>
-                                type == 'meterDirect' ||
-                                type == 'addMeterDirect'
-                                  ? null
-                                  : onChangeMultipleField(text, meterIndex)
-                              }
-                              disabled={
-                                type == 'meterDirect' ||
-                                type == 'addMeterDirect'
-                                  ? true
-                                  : false
-                              }
-                              style={styles.meterInput}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}></TextInput>
-                          </View>
-                          <View style={styles.meterDesciptionContainer}>
-                            <Text style={styles.meterDesciptionHeading}>
-                              Initial Meter Reading
-                            </Text>
-                          </View>
-                          <View style={styles.meterInputContainer}>
-                            <TextInput
-                              keyboardType="numeric"
-                              placeholder="Initial Meter Reading"
-                              value={item.initialMeterReading}
-                              dense={true}
-                              error={item.initialMeterReadingError}
-                              onChangeText={(text) =>
-                                onChangeInitialReading(text, meterIndex)
-                              }
-                              style={styles.meterInput}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          {item.initialMeterReadingError ? (
-                            <HelperText
-                              type="error"
-                              visible={item.initialMeterReadingError}>
-                              {item.initialMeterReadingError}
-                            </HelperText>
-                          ) : null}
-                          {/*//todoK */}
-                          <View style={styles.meterDesciptionContainer}>
-                            <Text style={styles.meterDesciptionHeading}>
-                              Manufacturers
-                            </Text>
-                          </View>
-                          <SearchableDropdown
-                            onItemSelect={(item) => {
-                              getDevice(item, meterIndex);
-                            }}
-                            containerStyle={{
-                              paddingVertical: width * 0.02,
-                            }}
-                            itemStyle={{
-                              padding: width * 0.027,
-                              backgroundColor: 'rgb(247, 247, 247)',
-                              borderColor: '#bbb',
-                              borderWidth: width * 0.0015,
-                              borderRadius: width * 0.015,
-                            }}
-                            itemTextStyle={{color: '#222'}}
-                            itemsContainerStyle={{
-                              maxHeight: height * 0.1,
-                            }}
-                            items={state.manufacturersData}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder: 'Manufacturer*',
-                              underlineColorAndroid: 'transparent',
-                              style: {
-                                padding: width * 0.027,
-                                margin: 0,
-                                borderColor: item.manufacturersError
-                                  ? '#A3001B'
-                                  : 'black',
-                                borderWidth: width * 0.0019,
-                                borderRadius: width * 0.015,
-                                backgroundColor: '#F6F6F6',
-                              },
-                              onTextChange: (text) => {
-                                onChangeManufacturer(text, meterIndex);
-                              },
-                              value: setTimeout(
-                                () => item.manufacturersName,
-                                200,
-                              ),
-                              defaultValue: item.manufacturersName,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          />
-                          {item.manufacturersError ? (
-                            <HelperText
-                              type="error"
-                              visible={item.manufacturersError}>
-                              {item.manufacturersError}
-                            </HelperText>
-                          ) : null}
-                          <View style={styles.meterDesciptionContainer}>
-                            <Text style={styles.meterDesciptionHeading}>
-                              Devices
-                            </Text>
-                          </View>
-                          <SearchableDropdown
-                            onItemSelect={(item) => {
-                              getDeviceData(item, meterIndex);
-                            }}
-                            containerStyle={{
-                              paddingVertical: width * 0.02,
-                            }}
-                            itemStyle={{
-                              padding: width * 0.027,
-                              backgroundColor: 'rgb(247, 247, 247)',
-                              borderColor: '#bbb',
-                              borderWidth: width * 0.0015,
-                              borderRadius: width * 0.015,
-                            }}
-                            itemTextStyle={{color: '#222'}}
-                            itemsContainerStyle={{
-                              maxHeight: height * 0.1,
-                            }}
-                            items={state.devicesData}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder: 'Devices',
-                              underlineColorAndroid: 'transparent',
-                              style: {
-                                padding: width * 0.027,
-                                margin: 0,
-                                borderColor: item.deviceError
-                                  ? '#A3001B'
-                                  : 'black',
-                                borderWidth: width * 0.0019,
-                                borderRadius: width * 0.015,
-                                backgroundColor: '#F6F6F6',
-                              },
-                              onTextChange: (text) => {
-                                onChangeDevice(text, meterIndex);
-                              },
-                              value: setTimeout(() => item.deviceName, 200),
-                              defaultValue: item.deviceName,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          />
-                          {item.deviceError ? (
-                            <HelperText type="error" visible={item.deviceError}>
-                              {item.deviceError}
-                            </HelperText>
-                          ) : null}
-                          {item.showOtherInputs == true ? (
-                            <View>
-                              <View style={styles.meterDesciptionContainer}>
-                                <Text style={styles.meterDesciptionHeading}>
-                                  Meter Serial Number
-                                </Text>
-                              </View>
-                              <View style={styles.meterInputContainer}>
-                                <TextInput
-                                  placeholder="Meter Serial"
-                                  dense={true}
-                                  style={styles.meterInput}
-                                  mode={'outlined'}
-                                  onChangeText={(text) =>
-                                    onChangeMeterSerial(text, meterIndex)
-                                  }
-                                  theme={{
-                                    colors: {
-                                      text: '#25AAE1ec',
-                                      primary: '#25AAE1ec',
-                                      selectionColor: 'red',
-                                    },
-                                  }}
-                                />
-                              </View>
-                            </View>
-                          ) : // console.log('Check Item', item)
-                          null}
-                          <TouchableOpacity
-                            onPress={() => showMoreInputs(item, meterIndex)}
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              marginTop: 10,
-                            }}>
-                            {/*//todo: Button for meter */}
-                            <Text
-                              style={{
-                                fontSize: height * 0.018,
-                                color: '#25AAE1ec',
-                              }}>
-                              {item.showOtherInputs ? 'Show Less' : 'Show More'}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
+                <View
+                  style={[
+                    styles.inputContainer,
+                    {
+                      flexDirection: 'row',
+                      height: width * 0.15,
+                      justifyContent: 'space-around',
+                      alignItems: 'center',
+                    },
+                  ]}>
+                  {meterListData &&
+                    meterListData.map((item) => (
+                      <View style={{flexDirection: 'row'}}>
+                        <Image
+                          source={typeSwitcher(item.name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <Text
+                          style={[
+                            styles.meterDesciptionHeading,
+                            {textTransform: 'capitalize'},
+                          ]}>
+                          {item.name}
+                        </Text>
                       </View>
-                    </View>
-                  ))}
-              </ScrollView>
+                    ))}
+                </View>
+              </View>
               {/* Box Footer */}
               <View style={styles.footerBtn}>
                 <View
@@ -1946,7 +1688,7 @@ export default function UnitEdit({
                     justifyContent: 'center',
                   }}>
                   {type == 'addMeterDirect' || type == 'meterDirect' ? (
-                    meterListData.length == 1 ? (
+                    meterData.length == 1 ? (
                       <View style={{marginLeft: width * 0.02}}>
                         <Text
                           style={{
@@ -1958,7 +1700,13 @@ export default function UnitEdit({
                       </View>
                     ) : (
                       <TouchableOpacity
-                        onPress={() => setShowAddMeterSlider(true)}
+                        onPress={
+                          (() =>
+                            LayoutAnimation.configureNext(
+                              LayoutAnimation.Presets.easeInEaseOut,
+                            ),
+                          setShowAddMeterSlider(true))
+                        }
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'flex-start',
@@ -1980,11 +1728,7 @@ export default function UnitEdit({
                     state.meterList.length ? (
                       <TouchableOpacity
                         onPress={() => {
-                          LayoutAnimation.configureNext(
-                            LayoutAnimation.Presets.easeInEaseOut,
-                          );
                           enableLocation();
-
                           callApi();
                         }}
                         style={{
@@ -2019,34 +1763,6 @@ export default function UnitEdit({
                       <DotsLoader color="#25AAE1ec" />
                     </View>
                   )}
-                  {/* <MenuT
-                      visible={meterMenuVisible}
-                      anchor={
-                        
-                      }
-                      onRequestClose={() => setMeterMenuVisible(false)}>
-                      <ScrollView>
-                        {state.meterList.map((item, index) => (
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Drop
-                              name={item.icon}
-                              size={15}
-                              color="#3E89BF"
-                            />
-                            <MenuItem
-                              textStyle={styles.textCapitalize}
-                              onPress={() => addMeterInNewArray(item)}>
-                              {item.name}
-                            </MenuItem>
-                          </View>
-                        ))}
-                      </ScrollView>
-                    </MenuT> */}
                 </View>
                 <View style={styles.addUnitBtnContainer}>
                   <TouchableOpacity onPress={changeUtilityAndToggle}>
@@ -2139,20 +1855,6 @@ export default function UnitEdit({
 }
 
 const styles = StyleSheet.create({
-  // modalInner: {
-  //   elevation: width * 0.005,
-  //   borderRadius: width * 0.02,
-  //   // backgroundColor: 'white',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
-  boxConatainer: {
-    // height: width * 1,
-    // backgroundColor: 'white',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // borderRadius: width * 0.03,
-  },
   boxInner: {
     backgroundColor: 'white',
     alignItems: 'center',
@@ -2161,12 +1863,12 @@ const styles = StyleSheet.create({
     height: width * 1,
   },
   boxHeader: {
-    width: width * 0.75,
-    height: height * 0.1,
+    width: width * 0.8,
+    height: width * 0.18,
   },
   boxHeaderInner: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     borderBottomWidth: width * 0.001,
@@ -2178,7 +1880,7 @@ const styles = StyleSheet.create({
     right: width * 0.02,
   },
   desciptionContainer: {
-    height: height * 0.05,
+    height: width * 0.05,
     width: width * 0.7,
     alignSelf: 'center',
     alignItems: 'flex-end',
@@ -2260,7 +1962,7 @@ const styles = StyleSheet.create({
   },
   footerBtn: {
     width: width * 0.8,
-    height: height * 0.1,
+    height: width * 0.2,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: width * 0.02,
