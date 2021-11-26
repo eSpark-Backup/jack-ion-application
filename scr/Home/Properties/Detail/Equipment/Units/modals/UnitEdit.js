@@ -843,7 +843,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    console.log('data--->', data);
+    // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -862,7 +862,7 @@ export default function UnitEdit({
         const unitResponse = await api.patch(
           `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
           data,
-          console.log('datachecckk-->>', unitResponse),
+          console.log('datachecckk-->>', unitResponse?.data?.data),
         );
         if (unitResponse?.data?.bool) {
           changeUtilityAndToggle();
@@ -979,7 +979,7 @@ export default function UnitEdit({
         style={{
           width: width * 0.9,
           alignItems: 'center',
-        }}>
+        }} key={item?.id}>
         <TouchableOpacity
           style={{
             height: width * 0.12,
@@ -1039,7 +1039,7 @@ export default function UnitEdit({
   const renderSlide3 = ({ item, index }) => {
     // console.log('index check slider 3 ---> ',index)
     return (
-      <View style={{ width: width * 0.8 }}>
+      <View style={{ width: width * 0.8 }} key={item.id}>
         <Text style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}>
           {item.name + (index < 2 ? "*" : '')}
         </Text>
@@ -1085,23 +1085,6 @@ export default function UnitEdit({
             },
           }}
         />
-      </View>
-    );
-  };
-
-  const renderSlide4 = ({ item }) => {
-    return (
-      <View style={{ flex: 1, width: width * 0.8 }}>
-        <Text
-          style={[
-            styles.meterDesciptionHeading,
-            {
-              fontSize: width * 0.06,
-              marginBottom: width * 0.02,
-            },
-          ]}>
-          slider4
-        </Text>
       </View>
     );
   };
@@ -1211,6 +1194,7 @@ export default function UnitEdit({
   };
 
   const cancelMeter = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSliderNumber(1);
     setSliderProgress(0);
     setFilePath({});
@@ -1229,7 +1213,6 @@ export default function UnitEdit({
       id: 0,
       name: '',
     }));
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShowAddMeterSlider(false)
   }
   const showAddNewType = (value) => {
@@ -1386,12 +1369,7 @@ export default function UnitEdit({
                   }}>
                   <Text
                     style={[
-                      styles.meterDesciptionHeading,
-                      {
-                        fontSize: width * 0.06,
-                        marginBottom: width * 0.02,
-                        textTransform: 'capitalize',
-                      },
+                      styles.meterDesciptionHeading, { fontSize: width * .06 }
                     ]}>
                     Add {showAddType}
                   </Text>
@@ -1401,7 +1379,18 @@ export default function UnitEdit({
                       right: width * 0,
                       top: width * .025
                     }}
-                    onPress={cancelAddNewType}>
+                    onPress={() =>
+                      Alert.alert(
+                        "Alert",
+                        'Are you sure you want to clear current selected data',
+                        [
+                          { text: 'No', style: 'cancel' },
+                          {
+                            text: 'Yes',
+                            onPress: cancelAddNewType,
+                          }
+                        ])
+                    }>
                     <Icon
                       name="cancel"
                       size={width * 0.06}
@@ -1417,9 +1406,9 @@ export default function UnitEdit({
                     justifyContent: 'center'
                   }}>
                   {showAddType == "Manufacturer" ?
-                    <>
-                      <View style={styles.meterDesciptionContainer}>
-                        <Text style={[styles.meterDesciptionHeading, { textTransform: "capitalize" }]}>
+                    <View>
+                      <View>
+                        <Text style={[styles.meterDesciptionHeading,]}>
                           New {showAddType}
                         </Text>
                       </View>
@@ -1437,14 +1426,14 @@ export default function UnitEdit({
                         }}
                         onChangeText={(text) => { setAddManufacturer(text) }}
                       />
-                    </>
+                    </View>
                     :
                     <View>
                       {
                         addDevice &&
                         addDevice.map((item, index) =>
                           <View style={{ width: width * 0.8 }} key={item.id}>
-                            <View style={styles.meterDesciptionContainer}>
+                            <View>
                               <Text style={styles.meterDesciptionHeading}>
                                 {item.name}
                               </Text>
@@ -1455,7 +1444,7 @@ export default function UnitEdit({
                                   getNewDeviceData(items, index);
                                 }}
                                 containerStyle={{
-                                  paddingVertical: width * 0.02,
+                                  paddingBottom: width * 0.02,
                                 }}
                                 itemStyle={{
                                   padding: width * 0.027,
@@ -1563,12 +1552,7 @@ export default function UnitEdit({
                     }}>
                     <Text
                       style={[
-                        styles.meterDesciptionHeading,
-                        {
-                          fontSize: width * 0.06,
-                          marginBottom: width * 0.02,
-                          textTransform: 'capitalize',
-                        },
+                        styles.meterDesciptionHeading, { fontSize: width * 0.06 },
                       ]}>
                       {sliderNumber == 1
                         ? 'Device Selection'
@@ -1582,20 +1566,32 @@ export default function UnitEdit({
                                 ? 'Installation Status'
                                 : 'Device Selection'}
                     </Text>
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 0,
-                      }}
-                      onPress={cancelMeter}>
-                      <Icon
-                        name="cancel"
-                        size={width * 0.06}
-                        color="black"
-                        maxOpacity={0.5}
-                      />
-                    </TouchableOpacity>
+                    {sliderNumber < 5 ?
+                      <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          right: 0,
+                          top: 0,
+                        }}
+                        onPress={() =>
+                          Alert.alert(
+                            "Alert",
+                            'Are you sure you want to clear current selected data',
+                            [
+                              { text: 'No', style: 'cancel' },
+                              {
+                                text: 'Yes',
+                                onPress: cancelMeter,
+                              }
+                            ])}>
+                        <Icon
+                          name="cancel"
+                          size={width * 0.06}
+                          color="black"
+                          maxOpacity={0.5}
+                        />
+                      </TouchableOpacity>
+                      : null}
                   </View>
                   <Progress.Bar
                     progress={sliderProgress}
@@ -1621,12 +1617,13 @@ export default function UnitEdit({
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
                     {filePath?.assets &&
-                      filePath?.assets.map(({ uri }) => (
+                      filePath?.assets.map(({ uri,index }) => (
                         <Image
                           resizeMode="cover"
                           resizeMethod="scale"
                           style={{ width: width * 0.28, height: width * 0.28 }}
                           source={{ uri: uri }}
+                          key={index}
                         />
                       ))}
                     <TouchableOpacity
@@ -1684,12 +1681,10 @@ export default function UnitEdit({
                   <View
                     style={{ height: width * 0.62, justifyContent: 'center' }}>
                     {slide1.map((item, index) => (
-                      <View style={{ width: width * 0.8 }}>
-                        <View style={styles.meterDesciptionContainer}>
-                          <Text style={styles.meterDesciptionHeading}>
-                            {item.name}*
-                          </Text>
-                        </View>
+                      <View style={{ width: width * 0.8 }} key={item.id}>
+                        <Text style={styles.meterDesciptionHeading}>
+                          {item.name}*
+                        </Text>
                         <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                           <SearchableDropdown
                             onItemSelect={(item) => {
@@ -1784,12 +1779,8 @@ export default function UnitEdit({
                       ))
                   ) : (
                     <TouchableOpacity
-                      style={{
-                        height: width * 0.12,
-                        width: width * 0.12,
-                        position: 'absolute',
-                        right: width * 0.0,
-                        borderRadius: width * 0.3,
+                      style={[styles.doneButton, {
+                        right: 0,
                         backgroundColor:
                           sliderNumber == 1 &&
                             slide1[0].selectId &&
@@ -1811,10 +1802,7 @@ export default function UnitEdit({
                                   : sliderNumber == 5 && filePath?.assets != undefined
                                     ? '#25AAE1ec'
                                     : '#D0D0D0',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        elevation: width * 0.005,
-                      }}
+                      }]}
                       onPress={sliderNumber == 5 ? finishSlider : changeSlider}
                       disabled={
                         sliderNumber == 1 &&
@@ -1860,7 +1848,17 @@ export default function UnitEdit({
                   />
                   <Text style={styles.modalHeading}>{modalName}</Text>
                   <Pressable
-                    onPress={changeUtilityAndToggle}
+                    onPress={() =>
+                      Alert.alert(
+                        "Alert",
+                        'Are you sure you want to clear current selected data',
+                        [
+                          { text: 'No', style: 'cancel' },
+                          {
+                            text: 'Yes',
+                            onPress: changeUtilityAndToggle,
+                          }
+                        ])}
                     android_ripple={{
                       color: 'black',
                       borderless: true,
@@ -1967,8 +1965,7 @@ export default function UnitEdit({
                         />
                         <Text
                           style={[
-                            styles.meterDesciptionHeading,
-                            { textTransform: 'capitalize' },
+                            styles.meterDesciptionHeading
                           ]}>
                           {item.name}
                         </Text>
@@ -2062,7 +2059,17 @@ export default function UnitEdit({
                   )}
                 </View>
                 <View style={styles.addUnitBtnContainer}>
-                  <TouchableOpacity onPress={changeUtilityAndToggle}>
+                  <TouchableOpacity onPress={() =>
+                    Alert.alert(
+                      "Alert",
+                      'Are you sure you want to clear current selected data',
+                      [
+                        { text: 'No', style: 'cancel' },
+                        {
+                          text: 'Yes',
+                          onPress: changeUtilityAndToggle,
+                        }
+                      ])}>
                     <View style={styles.cancelBotton}>
                       <Plus name="close" color="black" size={18} />
                       <Text style={{ color: 'black' }}>Cancel</Text>
@@ -2147,7 +2154,7 @@ export default function UnitEdit({
           </View>
         )}
       </Modal>
-    </View>
+    </View >
   );
 }
 
@@ -2204,15 +2211,12 @@ const styles = StyleSheet.create({
     fontSize: height * 0.034,
     textAlign: 'center',
   },
-  meterDesciptionContainer: {
-    // width: width * 0.7,
-    // backgroundColor: 'red'
-  },
   meterDesciptionHeading: {
     fontSize: width * 0.03,
     color: '#3E4A4F',
     textTransform: 'capitalize',
     fontFamily: Fonts.ComfortaaRegular,
+    marginBottom: width * .01,
   },
   meterInputContainer: {
     width: width * 0.8,
