@@ -22,7 +22,7 @@ import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import SystemSetting from 'react-native-system-setting';
 import { Icon, IconToggle } from 'react-native-material-ui';
 import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
-import { DotsLoader } from 'react-native-indicator';
+import { DotsLoader, OpacityDotsLoader } from 'react-native-indicator';
 import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
 import { Fonts } from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
@@ -80,7 +80,7 @@ export default function UnitEdit({
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [markers, setMarkers] = useState([]);
-  const [region, setRegion] = useState({});
+  const [checkSerial, setCheckSerial] = useState(false);
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -96,6 +96,29 @@ export default function UnitEdit({
       select: '',
       error: '',
       name: 'Device',
+      data: [],
+    },
+  ]);
+  const [addDevice, setAddDevice] = useState([
+    {
+      id: 0,
+      select: '',
+      selectId: '',
+      name: 'Manufacturer',
+      data: [],
+    },
+    {
+      id: 1,
+      selectId: '',
+      select: '',
+      name: 'Device Type',
+      data: [],
+    },
+    {
+      id: 2,
+      selectId: '',
+      select: '',
+      name: 'New Device',
       data: [],
     },
   ]);
@@ -115,15 +138,17 @@ export default function UnitEdit({
     {
       id: 2,
       error: '',
-      name: 'Note',
+      name: 'Meter Serial Number',
       value: '',
     },
   ]);
-  const [meterMenuVisible, setMeterMenuVisible] = useState(false);
+  const [addManufacturer, setAddManufacturer] = useState('');
+  const [showAddType, setShowAddType] = useState(false);
   const [meterListLoader, setMeterListLoader] = useState(true);
   const [sliderNumber, setSliderNumber] = useState(1);
   const [sliderProgress, setSliderProgress] = useState(0);
   const [doneAnimation, setDoneAnimation] = useState(false);
+  const [addNewType, setAddNewType] = useState(false);
   const [showAddMeterSlider, setShowAddMeterSlider] = useState(false);
   const [state, setState] = useState({
     isScannerVisible: false,
@@ -228,16 +253,13 @@ export default function UnitEdit({
             },
           ],
         )
-        :
-        LayoutAnimation.configureNext(
-          LayoutAnimation.Presets.easeInEaseOut,
-        );
+        : LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setShowAddMeterSlider(true);
       _renderMap();
     } else {
       Alert.alert(
-        'Access Location',
-        `You don't have access for the Location To Change the permission Open Settings`,
+        `You don't have access for the Location`,
+        `To Change the permission Open Settings`,
         [
           {
             text: 'Cancel',
@@ -309,7 +331,7 @@ export default function UnitEdit({
   };
 
   const getToken = async () => {
-    setMeterListLoader(true)
+    setMeterListLoader(true);
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
@@ -329,7 +351,7 @@ export default function UnitEdit({
       ...oldState,
       meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
     }));
-    setMeterListLoader(false)
+    setMeterListLoader(false);
   };
 
   useUpdateEffect(() => {
@@ -344,7 +366,6 @@ export default function UnitEdit({
   // }, []);
   useEffect(() => {
     console.log('meterData--->', meterData.length);
-
   }, [meterData]);
   useEffect(() => {
     if (flag) {
@@ -430,12 +451,7 @@ export default function UnitEdit({
   // };
   //!----------->
 
-  // const showMoreInputs = (value, index) => {
-  //   let newArr = [...meterListData]; // copying the old datas array
-  //   newArr[index].showOtherInputs = !value.showOtherInputs; // replace e.target.value with whatever you want to change it to
-  //   setMeterListData(newArr);
-  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  // };
+
 
   const toggleScanner = async (value) => {
     disableFlag();
@@ -629,6 +645,15 @@ export default function UnitEdit({
     let listSlide = [...slide1]; // copying the old datas array
     listSlide[0].data = ManufacturersResponse?.data?.data;
     setSlide1(listSlide);
+    let deviceDataManufacturer = [...addDevice]; // copying the old datas array
+    deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+    setAddDevice(deviceDataManufacturer);
+    const DeviceTypesResponse = await api.get(
+      '/property/equipment/device-type/all',
+    );
+    let deviceData = [...addDevice]; // copying the old datas array
+    deviceData[1].data = DeviceTypesResponse?.data?.data;
+    setAddDevice(deviceData);
   };
 
   const getDevice = async (some, index) => {
@@ -818,7 +843,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    console.log('data--->', data);
+    // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -837,7 +862,7 @@ export default function UnitEdit({
         const unitResponse = await api.patch(
           `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
           data,
-          console.log('datachecckk-->>', unitResponse),
+          console.log('datachecckk-->>', unitResponse?.data?.data),
         );
         if (unitResponse?.data?.bool) {
           changeUtilityAndToggle();
@@ -856,11 +881,38 @@ export default function UnitEdit({
   //   setMeterMenuVisible(true);
   //   callApi();
   // };
-  const changeSlider = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setSliderNumber(sliderNumber + 1);
-    setSliderProgress(sliderProgress + 0.25);
+  const checkingSerial = async () => {
+    let data = {
+      device_serial_number: slide2[0].value,
+    };
+    const SerialResponse = await api.post(
+      '/property/equipment/unit/get-meter-info',
+      data,
+    );
+    setCheckSerial(false);
+    if (!SerialResponse?.data?.bool) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setSliderNumber(sliderNumber + 1);
+      setSliderProgress(sliderProgress + 0.25);
+    } else {
+      Alert.alert(
+        'Device Serial Already Exists',
+        'Please type or scan another Device Serial Number',
+      );
+    }
   };
+
+  const changeSlider = () => {
+    if (sliderNumber == 3) {
+      setCheckSerial(true);
+      checkingSerial();
+    } else {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setSliderNumber(sliderNumber + 1);
+      setSliderProgress(sliderProgress + 0.25);
+    }
+  };
+
   const finishSlider = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShowAddMeterSlider(false);
@@ -868,7 +920,7 @@ export default function UnitEdit({
     loopData.push({
       meter_id: newMeter.id,
       device_serial_number: slide2[0].value,
-      meter_serial_number: '',
+      meter_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
       initial_meter_reading: slide2[1].value,
       latitude: lat,
@@ -896,7 +948,7 @@ export default function UnitEdit({
     });
     const addMeter = state.meterList.filter((item) => item.id === newMeter.id);
     let meterArray = [...meterListData]; // copying the old datas array
-    meterArray.push(addMeter[0])
+    meterArray.push(addMeter[0]);
     setMeterListData(meterArray);
 
     const newList = state.meterList.filter((item) => item.id !== newMeter.id);
@@ -904,7 +956,6 @@ export default function UnitEdit({
       ...oldState,
       meterList: newList,
     }));
-
   };
   const typeSwitcher = (arg) => {
     switch (arg) {
@@ -928,7 +979,7 @@ export default function UnitEdit({
         style={{
           width: width * 0.9,
           alignItems: 'center',
-        }}>
+        }} key={item?.id}>
         <TouchableOpacity
           style={{
             height: width * 0.12,
@@ -988,9 +1039,9 @@ export default function UnitEdit({
   const renderSlide3 = ({ item, index }) => {
     // console.log('index check slider 3 ---> ',index)
     return (
-      <View style={{ width: width * 0.8 }}>
+      <View style={{ width: width * 0.8 }} key={item.id}>
         <Text style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}>
-          {item.name}
+          {item.name + (index < 2 ? "*" : '')}
         </Text>
         <TextInput
           placeholder={item.name}
@@ -1024,8 +1075,8 @@ export default function UnitEdit({
           }
           style={styles.meterInput}
           mode={'outlined'}
-          numberOfLines={index == 2 ? 3 : 1}
-          multiline={index == 2 ? true : false}
+          // numberOfLines={index == 2 ? 3 : 1}
+          // multiline={index == 2 ? true : false}
           theme={{
             colors: {
               text: '#25AAE1ec',
@@ -1034,29 +1085,6 @@ export default function UnitEdit({
             },
           }}
         />
-        {/* {item.error ? (
-          <HelperText
-            type="error"
-            visible={item.error}>
-            {item.error}
-          </HelperText>
-        ) : null} */}
-      </View>
-    );
-  };
-  const renderSlide4 = ({ item }) => {
-    return (
-      <View style={{ flex: 1, width: width * 0.8 }}>
-        <Text
-          style={[
-            styles.meterDesciptionHeading,
-            {
-              fontSize: width * 0.06,
-              marginBottom: width * 0.02,
-            },
-          ]}>
-          slider4
-        </Text>
       </View>
     );
   };
@@ -1130,7 +1158,6 @@ export default function UnitEdit({
 
   const moveMarker = (region) => {
     // console.log('Region Ata>>>>>>>>>>>', region);
-    setRegion(region);
     setLat(region?.latitude);
     setLong(region?.longitude);
   };
@@ -1167,6 +1194,7 @@ export default function UnitEdit({
   };
 
   const cancelMeter = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSliderNumber(1);
     setSliderProgress(0);
     setFilePath({});
@@ -1185,8 +1213,71 @@ export default function UnitEdit({
       id: 0,
       name: '',
     }));
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShowAddMeterSlider(false)
+  }
+  const showAddNewType = (value) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setAddNewType(true)
+    setShowAddType(value)
+  };
+  const getNewDeviceData = (value, index) => {
+    let listSlide = [...addDevice]; // copying the old datas array
+    listSlide[index].select = value?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[index].selectId = value?.id; // replace e.target.value with whatever you want to change it to
+    setAddDevice(listSlide);
+  }
+
+  const onChangeNewDevice = (e, index) => {
+    let listSlide = [...addDevice]; // copying the old datas array
+    listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
+    setAddDevice(listSlide);
+  };
+  const doneAddType = async () => {
+    if (showAddType == 'Manufacturer') {
+      let data = {
+        name: addManufacturer,
+      };
+      const ManufacturersResponse = await api.post(
+        '/property/equipment/manufacturer/add', data
+      );
+      if (ManufacturersResponse?.data?.bool) {
+        console.log('datachecckk-->>', ManufacturersResponse?.data?.data)
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        callApi()
+        cancelAddNewType()
+      } else {
+        alert(ManufacturersResponse?.data?.message);
+      }
+
+    } else {
+      let data = {
+        name: addDevice[2].select,
+        manufacturer_id: addDevice[0].selectId,
+        device_type_id: addDevice[1].selectId
+      };
+      const DeviceTypesResponse = await api.post('/property/equipment/device/add', data);
+      if (DeviceTypesResponse?.data?.bool) {
+        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data)
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        callApi()
+        cancelAddNewType()
+      } else {
+        alert(DeviceTypesResponse?.data?.message);
+      }
+    }
+  };
+  const cancelAddNewType = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setAddNewType(false);
+    let deviceData = [...addDevice]; // copying the old datas array
+    deviceData[0].select = '';
+    deviceData[0].selectId = '';
+    deviceData[1].select = '';
+    deviceData[1].selectId = '';
+    deviceData[2].select = '';
+    deviceData[2].selectId = '';
+    setAddDevice(deviceData);
+    setAddManufacturer('')
   }
   return (
     <View>
@@ -1212,19 +1303,7 @@ export default function UnitEdit({
                 }}>
                 <TouchableOpacity
                   onPress={() => setSelectLocation(false)}
-                  style={{
-                    backgroundColor: '#25AAE1ec',
-                    zIndex: 1,
-                    position: 'absolute',
-                    height: width * 0.12,
-                    width: width * 0.12,
-                    borderRadius: width * 0.3,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    elevation: width * 0.005,
-                    top: '84%',
-                    left: '84%',
-                  }}>
+                  style={styles.doneButton}>
                   <Icon
                     size={width * 0.07}
                     color="#fff"
@@ -1278,6 +1357,177 @@ export default function UnitEdit({
                   </View>
                 ) : null}
               </View>
+            ) : addNewType ? (
+              <View style={styles.boxInner}>
+                <View
+                  style={{
+                    height: width * 0.18,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: "row",
+                    width: width * .85
+                  }}>
+                  <Text
+                    style={[
+                      styles.meterDesciptionHeading, { fontSize: width * .06 }
+                    ]}>
+                    Add {showAddType}
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: width * 0,
+                      top: width * .025
+                    }}
+                    onPress={() =>
+                      Alert.alert(
+                        "Alert",
+                        'Are you sure you want to clear current selected data',
+                        [
+                          { text: 'No', style: 'cancel' },
+                          {
+                            text: 'Yes',
+                            onPress: cancelAddNewType,
+                          }
+                        ])
+                    }>
+                    <Icon
+                      name="cancel"
+                      size={width * 0.06}
+                      color="black"
+                      maxOpacity={0.5}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    height: width * 0.62,
+                    width: width * 0.8,
+                    justifyContent: 'center'
+                  }}>
+                  {showAddType == "Manufacturer" ?
+                    <View>
+                      <View>
+                        <Text style={[styles.meterDesciptionHeading,]}>
+                          New {showAddType}
+                        </Text>
+                      </View>
+                      <TextInput
+                        placeholder={"Type new manufacturer"}
+                        value={addManufacturer}
+                        style={styles.meterInput}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
+                          },
+                        }}
+                        onChangeText={(text) => { setAddManufacturer(text) }}
+                      />
+                    </View>
+                    :
+                    <View>
+                      {
+                        addDevice &&
+                        addDevice.map((item, index) =>
+                          <View style={{ width: width * 0.8 }} key={item.id}>
+                            <View>
+                              <Text style={styles.meterDesciptionHeading}>
+                                {item.name}
+                              </Text>
+                            </View>
+                            {index < 2 ?
+                              <SearchableDropdown
+                                onItemSelect={(items) => {
+                                  getNewDeviceData(items, index);
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                }}
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: '#fff',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                  margin: width * .005,
+                                }}
+                                itemTextStyle={{ color: '#222' }}
+                                itemsContainerStyle={{
+                                  maxHeight: width * 0.15,
+                                  position: 'absolute',
+                                  width: width * .8,
+                                  top: width * .15,
+                                  zIndex: 1,
+                                  backgroundColor: 'white',
+                                  elevation: width * .01,
+                                }}
+                                items={item.data}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder: item.name,
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderRadius: width * 0.015,
+                                    height: width * .13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    onChangeNewDevice(text, index);
+                                  },
+                                  value: setTimeout(() => item.select, 200),
+                                  defaultValue: item.select,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              :
+                              <TextInput
+                                placeholder={"Type new Device"}
+                                value={item.select}
+                                style={styles.meterInput}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                    zIndex: 10
+                                  },
+                                }}
+                                onChangeText={(text) => { onChangeNewDevice(text, index) }}
+                              />
+                            }
+                          </View>
+                        )
+                      }
+                    </View>
+                  }
+                </View>
+                <TouchableOpacity
+                  onPress={doneAddType}
+                  style={[styles.doneButton, {
+                    backgroundColor: showAddType == "Manufacturer" && addManufacturer ? '#25AAE1ec' :
+                      showAddType != "Manufacturer" && addDevice[0].selectId && addDevice[1].selectId && addDevice[2].select ? "#25AAE1ec" : "#D0D0D0"
+                  }]}
+                  disabled={
+                    showAddType == "Manufacturer" && addManufacturer ? false :
+                      showAddType != "Manufacturer" && addDevice[0].selectId && addDevice[1].selectId && addDevice[2].select ? false : true
+                  }
+                >
+                  <Icon
+                    size={width * 0.07}
+                    color="#fff"
+                    name={'add'}
+                  />
+                </TouchableOpacity>
+              </View>
             ) : (
               <View
                 style={{
@@ -1293,15 +1543,16 @@ export default function UnitEdit({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <View style={{ flexDirection: "row", width: width * .85, justifyContent: 'center', alignItems: 'center' }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      width: width * 0.85,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
                     <Text
                       style={[
-                        styles.meterDesciptionHeading,
-                        {
-                          fontSize: width * 0.06,
-                          marginBottom: width * 0.02,
-                          textTransform: 'capitalize',
-                        },
+                        styles.meterDesciptionHeading, { fontSize: width * 0.06 },
                       ]}>
                       {sliderNumber == 1
                         ? 'Device Selection'
@@ -1315,20 +1566,32 @@ export default function UnitEdit({
                                 ? 'Installation Status'
                                 : 'Device Selection'}
                     </Text>
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 0
-                      }}
-                      onPress={cancelMeter}>
-                      <Icon
-                        name="cancel"
-                        size={width * 0.07}
-                        color="black"
-                        maxOpacity={0.5}
-                      />
-                    </TouchableOpacity>
+                    {sliderNumber < 5 ?
+                      <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          right: 0,
+                          top: 0,
+                        }}
+                        onPress={() =>
+                          Alert.alert(
+                            "Alert",
+                            'Are you sure you want to clear current selected data',
+                            [
+                              { text: 'No', style: 'cancel' },
+                              {
+                                text: 'Yes',
+                                onPress: cancelMeter,
+                              }
+                            ])}>
+                        <Icon
+                          name="cancel"
+                          size={width * 0.06}
+                          color="black"
+                          maxOpacity={0.5}
+                        />
+                      </TouchableOpacity>
+                      : null}
                   </View>
                   <Progress.Bar
                     progress={sliderProgress}
@@ -1349,21 +1612,18 @@ export default function UnitEdit({
                       width: width * 0.9,
                       alignItems: 'center',
                     }}>
-                    <FlatList
-                      contentContainerStyle={{ flex: 1 }}
-                      data={slide2}
-                      renderItem={renderSlide3}
-                    />
+                    <FlatList data={slide2} renderItem={renderSlide3} />
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
                     {filePath?.assets &&
-                      filePath?.assets.map(({ uri }) => (
+                      filePath?.assets.map(({ uri,index }) => (
                         <Image
                           resizeMode="cover"
                           resizeMethod="scale"
-                          style={{ width: width * 0.3, height: width * 0.3 }}
+                          style={{ width: width * 0.28, height: width * 0.28 }}
                           source={{ uri: uri }}
+                          key={index}
                         />
                       ))}
                     <TouchableOpacity
@@ -1378,6 +1638,9 @@ export default function UnitEdit({
                         color="#3E4A4F"
                       />
                     </TouchableOpacity>
+                    <Text style={[styles.buttonText, { opacity: .5 }]}>
+                      ------------- OR --------------
+                    </Text>
                     <TouchableOpacity
                       onPress={imageGalleryLaunch}
                       style={styles.button}>
@@ -1418,63 +1681,82 @@ export default function UnitEdit({
                   <View
                     style={{ height: width * 0.62, justifyContent: 'center' }}>
                     {slide1.map((item, index) => (
-                      <View style={{ width: width * 0.8 }}>
-                        <View style={styles.meterDesciptionContainer}>
-                          <Text style={styles.meterDesciptionHeading}>
-                            {item.name}
-                          </Text>
-                        </View>
-                        <SearchableDropdown
-                          onItemSelect={(item) => {
-                            getDevice(item, index);
-                          }}
-                          containerStyle={{
-                            paddingVertical: width * 0.02,
-                          }}
-                          itemStyle={{
-                            padding: width * 0.027,
-                            backgroundColor: 'rgb(247, 247, 247)',
-                            borderColor: '#bbb',
-                            borderWidth: width * 0.0015,
-                            borderRadius: width * 0.015,
-                          }}
-                          itemTextStyle={{ color: '#222' }}
-                          itemsContainerStyle={{
-                            maxHeight: height * 0.08,
-                          }}
-                          items={item.data}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: item.name,
-                            underlineColorAndroid: 'transparent',
-                            style: {
+                      <View style={{ width: width * 0.8 }} key={item.id}>
+                        <Text style={styles.meterDesciptionHeading}>
+                          {item.name}*
+                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+                          <SearchableDropdown
+                            onItemSelect={(item) => {
+                              getDevice(item, index);
+                            }}
+                            containerStyle={{
+                              paddingBottom: width * 0.02,
+                              width: width * .7,
+                            }}
+                            itemStyle={{
                               padding: width * 0.027,
-                              margin: 0,
-                              borderColor: item.error ? '#A3001B' : 'black',
-                              borderWidth: width * 0.0019,
+                              backgroundColor: 'rgb(247, 247, 247)',
+                              borderColor: '#bbb',
+                              borderWidth: width * 0.0015,
                               borderRadius: width * 0.015,
-                              backgroundColor: '#F6F6F6',
-                            },
-                            onTextChange: (text) => {
-                              onChangeManufacturer(text, index);
-                            },
-                            value: setTimeout(() => item.select, 200),
-                            defaultValue: item.select,
+                            }}
+                            itemTextStyle={{ color: '#222' }}
+                            itemsContainerStyle={{
+                              maxHeight: height * 0.08,
+                            }}
+                            items={item.data}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: item.name,
+                              underlineColorAndroid: 'transparent',
+                              style: {
+                                padding: width * 0.027,
+                                margin: 0,
+                                borderTopLeftRadius: width * 0.015,
+                                borderBottomLeftRadius: width * 0.015,
+                                borderColor: item.error ? '#A3001B' : 'black',
+                                height: width * .13,
+                                backgroundColor: '#F6F6F6',
+                                borderTopWidth: width * 0.0019,
+                                borderLeftWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                              },
+                              onTextChange: (text) => {
+                                onChangeManufacturer(text, index);
+                              },
+                              value: setTimeout(() => item.select, 200),
+                              defaultValue: item.select,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          />
+                          <TouchableOpacity style={{
+                            width: width * .1,
+                            backgroundColor: "#25AAE199",
+                            borderTopRightRadius: width * 0.015,
+                            borderBottomRightRadius: width * 0.015,
+                            borderTopWidth: width * 0.0019,
+                            borderRightWidth: width * 0.0019,
+                            borderBottomWidth: width * 0.0019,
+                            height: width * .13,
+                            justifyContent: 'center',
+                            alignItems: 'center'
                           }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        />
-                        {item.error ? (
-                          <HelperText type="error" visible={item.error}>
-                            {item.error}
-                          </HelperText>
-                        ) : null}
+                            onPress={() => showAddNewType(item.name)}
+                          >
+                            <Icon
+                              size={width * 0.06}
+                              color="#fff"
+                              name={'add'}
+                            />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     ))}
                   </View>
                 )}
-
                 <View
                   style={{
                     height: width * 0.2,
@@ -1482,21 +1764,23 @@ export default function UnitEdit({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  {doneAnimation ? (
-                    <Text style={[styles.buttonText, { width: width * 0.7 }]}>
-                      {newMeter.name.charAt(0).toUpperCase() +
-                        newMeter.name.slice(1).toLowerCase()}{' '}
-                      Meter added succesfully please checking installation
-                      status...
-                    </Text>
+                  {doneAnimation || checkSerial ? (
+                    (doneAnimation ?
+                      <Text style={[styles.buttonText, { width: width * 0.7 }]}>
+                        {newMeter.name.charAt(0).toUpperCase() +
+                          newMeter.name.slice(1).toLowerCase()}{' '}
+                        Meter added succesfully please checking installation
+                        status...
+                      </Text>
+                      : (
+                        <Text style={[styles.buttonText, { width: width * 0.7 }]}>
+                          Please wait while checking Device Serial Number...
+                        </Text>
+                      ))
                   ) : (
                     <TouchableOpacity
-                      style={{
-                        height: width * 0.12,
-                        width: width * 0.12,
-                        position: 'absolute',
-                        right: width * 0.0,
-                        borderRadius: width * 0.3,
+                      style={[styles.doneButton, {
+                        right: 0,
                         backgroundColor:
                           sliderNumber == 1 &&
                             slide1[0].selectId &&
@@ -1518,10 +1802,7 @@ export default function UnitEdit({
                                   : sliderNumber == 5 && filePath?.assets != undefined
                                     ? '#25AAE1ec'
                                     : '#D0D0D0',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        elevation: width * 0.005,
-                      }}
+                      }]}
                       onPress={sliderNumber == 5 ? finishSlider : changeSlider}
                       disabled={
                         sliderNumber == 1 &&
@@ -1567,7 +1848,17 @@ export default function UnitEdit({
                   />
                   <Text style={styles.modalHeading}>{modalName}</Text>
                   <Pressable
-                    onPress={changeUtilityAndToggle}
+                    onPress={() =>
+                      Alert.alert(
+                        "Alert",
+                        'Are you sure you want to clear current selected data',
+                        [
+                          { text: 'No', style: 'cancel' },
+                          {
+                            text: 'Yes',
+                            onPress: changeUtilityAndToggle,
+                          }
+                        ])}
                     android_ripple={{
                       color: 'black',
                       borderless: true,
@@ -1621,7 +1912,9 @@ export default function UnitEdit({
                     value={state.lastUnitData}
                     dense={true}
                     onChangeText={(text) => {
-                      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+                      LayoutAnimation.configureNext(
+                        LayoutAnimation.Presets.easeInEaseOut,
+                      );
                       setError((oldState) => ({
                         ...oldState,
                         errorUnits: '',
@@ -1653,17 +1946,31 @@ export default function UnitEdit({
                   </HelperText>
                 ) : null}
                 {/* </View> */}
-                <View style={[styles.inputContainer, { flexDirection: 'row', height: width * .15, justifyContent: 'space-around', alignItems: 'center' }]}>
+                <View
+                  style={[
+                    styles.inputContainer,
+                    {
+                      flexDirection: 'row',
+                      height: width * 0.15,
+                      justifyContent: 'space-around',
+                      alignItems: 'center',
+                    },
+                  ]}>
                   {meterListData &&
-                    meterListData.map((item) =>
+                    meterListData.map((item) => (
                       <View style={{ flexDirection: 'row' }}>
                         <Image
                           source={typeSwitcher(item.name)}
                           style={styles.untiDetailImage}
                         />
-                        <Text style={[styles.meterDesciptionHeading, { textTransform: "capitalize", }]}>{item.name}</Text>
+                        <Text
+                          style={[
+                            styles.meterDesciptionHeading
+                          ]}>
+                          {item.name}
+                        </Text>
                       </View>
-                    )}
+                    ))}
                 </View>
               </View>
               {/* Box Footer */}
@@ -1687,9 +1994,13 @@ export default function UnitEdit({
                       </View>
                     ) : (
                       <TouchableOpacity
-                        onPress={() =>
-                          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut),
-                          setShowAddMeterSlider(true)}
+                        onPress={
+                          (() =>
+                            LayoutAnimation.configureNext(
+                              LayoutAnimation.Presets.easeInEaseOut,
+                            ),
+                            setShowAddMeterSlider(true))
+                        }
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'flex-start',
@@ -1730,7 +2041,7 @@ export default function UnitEdit({
                           Meter
                         </Text>
                       </TouchableOpacity>
-                    ) :
+                    ) : (
                       <View style={{ marginLeft: width * 0.02 }}>
                         <Text
                           style={{
@@ -1740,7 +2051,7 @@ export default function UnitEdit({
                           No Meters
                         </Text>
                       </View>
-
+                    )
                   ) : (
                     <View style={{ marginLeft: width * 0.02 }}>
                       <DotsLoader color="#25AAE1ec" />
@@ -1748,7 +2059,17 @@ export default function UnitEdit({
                   )}
                 </View>
                 <View style={styles.addUnitBtnContainer}>
-                  <TouchableOpacity onPress={changeUtilityAndToggle}>
+                  <TouchableOpacity onPress={() =>
+                    Alert.alert(
+                      "Alert",
+                      'Are you sure you want to clear current selected data',
+                      [
+                        { text: 'No', style: 'cancel' },
+                        {
+                          text: 'Yes',
+                          onPress: changeUtilityAndToggle,
+                        }
+                      ])}>
                     <View style={styles.cancelBotton}>
                       <Plus name="close" color="black" size={18} />
                       <Text style={{ color: 'black' }}>Cancel</Text>
@@ -1841,7 +2162,6 @@ const styles = StyleSheet.create({
   boxInner: {
     backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: width * 0.03,
     height: width * 1,
   },
@@ -1891,15 +2211,12 @@ const styles = StyleSheet.create({
     fontSize: height * 0.034,
     textAlign: 'center',
   },
-  meterDesciptionContainer: {
-    // width: width * 0.7,
-    // backgroundColor: 'red'
-  },
   meterDesciptionHeading: {
     fontSize: width * 0.03,
     color: '#3E4A4F',
-    textTransform: 'uppercase',
+    textTransform: 'capitalize',
     fontFamily: Fonts.ComfortaaRegular,
+    marginBottom: width * .01,
   },
   meterInputContainer: {
     width: width * 0.8,
@@ -1953,7 +2270,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    width: width * 0.75,
+    width: width * 0.8,
     fontSize: height * 0.018,
   },
   slide: {
@@ -2015,4 +2332,17 @@ const styles = StyleSheet.create({
     color: '#3E4A4F',
     marginRight: width * 0.01,
   },
+  doneButton: {
+    backgroundColor: '#25AAE1ec',
+    zIndex: 1,
+    position: 'absolute',
+    height: width * 0.12,
+    width: width * 0.12,
+    borderRadius: width * 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: width * 0.005,
+    bottom: width * .04,
+    right: width * .03,
+  }
 });
