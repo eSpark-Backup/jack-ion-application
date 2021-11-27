@@ -81,11 +81,14 @@ export default function UnitEdit({
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [filePath, setFilePath] = useState({});
+  const [reasonPath, setReasonPath] = useState({});
   const [imageBase64, setImageBase64] = useState('');
+  const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
   const [selectLocation, setSelectLocation] = useState(false);
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
+  const [installationStatus, setInstallationStatus] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [checkSerial, setCheckSerial] = useState(false);
   const [slide1, setSlide1] = useState([
@@ -149,6 +152,10 @@ export default function UnitEdit({
       value: '',
     },
   ]);
+  const [reasons, setReasons] = useState([]);
+  const [reasonId, setReasonId] = useState();
+  const [reasonDes, setReasonDes] = useState('');
+  const [reasonText, setReasonText] = useState('');
   const [addManufacturer, setAddManufacturer] = useState('');
   const [showAddType, setShowAddType] = useState(false);
   const [meterListLoader, setMeterListLoader] = useState(true);
@@ -252,7 +259,7 @@ export default function UnitEdit({
     }
   };
 
-  const checkLocation = async (locationAccess, platform) => {
+  const checkLocation = async (locationAccess) => {
     if (locationAccess) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setShowAddMeterSlider(true);
@@ -634,6 +641,7 @@ export default function UnitEdit({
   };
 
   const callApi = async () => {
+    setReasons([]);
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
@@ -653,6 +661,22 @@ export default function UnitEdit({
     let deviceData = [...addDevice]; // copying the old datas array
     deviceData[1].data = DeviceTypesResponse?.data?.data;
     setAddDevice(deviceData);
+    const reasoneResponce = await api.get(
+      '/property/equipment/unit/reasons/all',
+    );
+    // console.log('reasons_________', reasoneResponce?.data);
+    if (reasoneResponce?.data?.bool) {
+      let reasoneData = [...reasons];
+      reasoneResponce?.data?.data?.map((item, index) => {
+        let resoneObj = {
+          id: item.id,
+          name: item.option_reason,
+        };
+        reasoneData.push(resoneObj);
+      });
+      setReasons(reasoneData);
+      console.log('reasons_________', reasoneData);
+    }
   };
 
   const getDevice = async (some, index) => {
@@ -914,7 +938,6 @@ export default function UnitEdit({
 
   const finishSlider = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setShowAddMeterSlider(false);
     var loopData = [...meterData];
     loopData.push({
       meter_id: newMeter.id,
@@ -925,26 +948,15 @@ export default function UnitEdit({
       latitude: lat,
       longitude: long,
       thumbnail: `data:image/jpeg;base64,${imageBase64}`,
+      installation_status: installationStatus,
+      reason: {
+        options_reason_id: reasonId,
+        text_reason: reasonDes,
+        picture: reasonBase64,
+      },
     });
     setMeterData(loopData);
-    setSliderNumber(1);
-    setSliderProgress(0);
-    setFilePath({});
-    slide1.map((item, index) => {
-      let newArr = [...slide1];
-      newArr[index].data = [];
-      newArr[index].select = '';
-      newArr[index].selectId = '';
-    });
-    setNewMeter((oldState) => ({
-      ...oldState,
-      id: 0,
-      name: '',
-    }));
-    slide2.map((item, index) => {
-      let newArr = [...slide2];
-      newArr[index].value = '';
-    });
+    cancelMeter();
     const addMeter = state.meterList.filter((item) => item.id === newMeter.id);
     let meterArray = [...meterListData]; // copying the old datas array
     meterArray.push(addMeter[0]);
@@ -1088,6 +1100,44 @@ export default function UnitEdit({
       </View>
     );
   };
+  const renderSlide5 = ({item, index}) => {
+    // console.log('index check slider 3 ---> ',index)
+    return (
+      <View style={{width: width * 0.8}} key={item.id}>
+        <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
+          {item.name}
+        </Text>
+        <TextInput
+          placeholder={item.name}
+          value={item.value}
+          dense={true}
+          keyboardType={index == 1 ? 'numeric' : 'default'}
+          error={item.error}
+          onChangeText={(text) =>
+            index == 0
+              ? type == 'meterDirect' || type == 'addMeterDirect'
+                ? null
+                : onChangeMultipleField(text, index)
+              : onChangeMultipleField(text, index)
+          }
+          disabled={
+            type == 'meterDirect' || type == 'addMeterDirect' ? true : false
+          }
+          style={styles.meterInput}
+          mode={'outlined'}
+          // numberOfLines={index == 2 ? 3 : 1}
+          // multiline={index == 2 ? true : false}
+          theme={{
+            colors: {
+              text: '#25AAE1ec',
+              primary: '#25AAE1ec',
+              selectionColor: 'red',
+            },
+          }}
+        />
+      </View>
+    );
+  };
 
   const selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
@@ -1162,7 +1212,7 @@ export default function UnitEdit({
     setLong(region?.longitude);
   };
 
-  const imageGalleryLaunch = () => {
+  const imageGalleryLaunch = (type) => {
     let options = {
       storageOptions: {
         skipBackup: true,
@@ -1181,14 +1231,19 @@ export default function UnitEdit({
         alert(res.customButton);
       } else {
         const source = {uri: res.uri};
-        console.log('response', res.assets[0]);
-        setImageBase64(res.assets[0].base64);
+        console.log('response', res);
+        if (type == 'reason') {
+          setReasonBase64(res.assets[0].base64);
+          setReasonPath(res);
+        } else {
+          setImageBase64(res.assets[0].base64);
+          setFilePath(res);
+        }
         // this.setState({
         //   filePath: res,
         //   fileData: res.data,
         //   fileUri: res.uri
         // });
-        setFilePath(res);
       }
     });
   };
@@ -1197,7 +1252,12 @@ export default function UnitEdit({
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSliderNumber(1);
     setSliderProgress(0);
+    setReasonText('');
+    setReasonId('');
+    setReasonDes('');
+    setInstallationStatus(0);
     setFilePath({});
+    setReasonPath({});
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1694,8 +1754,140 @@ export default function UnitEdit({
                       source={require('../../../../../../../Images/animated-check.gif')}
                     />
                   ) : (
-                    <View style={styles.container}>
-                      <Text>Check Meter Status</Text>
+                    <View style={styles.reasonFileContainer}>
+                      {installationStatus == 2 ? (
+                        <>
+                          <View style={{width: width * 0.8}}>
+                            <Text style={[styles.meterDesciptionHeading]}>
+                              Reason*
+                            </Text>
+                            <SearchableDropdown
+                              onItemSelect={(item) => {
+                                setReasonText(item.name);
+                                setReasonId(item.id);
+                              }}
+                              containerStyle={{
+                                paddingBottom: width * 0.02,
+                              }}
+                              itemStyle={{
+                                padding: width * 0.027,
+                                backgroundColor: '#fff',
+                                borderColor: '#bbb',
+                                borderWidth: width * 0.0015,
+                                borderRadius: width * 0.015,
+                                margin: width * 0.005,
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: width * 0.15,
+                                position: 'absolute',
+                                width: width * 0.8,
+                                top: width * 0.15,
+                                zIndex: 1,
+                                backgroundColor: 'white',
+                                elevation: width * 0.01,
+                              }}
+                              items={reasons}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Select Reasons',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  margin: 0,
+                                  borderRadius: width * 0.015,
+                                  height: width * 0.13,
+                                  backgroundColor: '#F6F6F6',
+                                  borderWidth: width * 0.0019,
+                                },
+                                onTextChange: (text) => {
+                                  setReasonText(text);
+                                },
+                                value: reasonText,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                            <Text style={styles.meterDesciptionHeading}>
+                              Reason Description*
+                            </Text>
+                            <TextInput
+                              placeholder="Describe Your Reason"
+                              value={reasonDes}
+                              style={styles.meterInput}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                  zIndex: 10,
+                                },
+                              }}
+                              onChangeText={(text) => {
+                                setReasonDes(text);
+                              }}
+                            />
+                          </View>
+
+                          <TouchableOpacity
+                            onPress={() => imageGalleryLaunch('reason')}
+                            style={styles.button1}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                backgroundColor: '#25AAE1ec',
+                                height: width * 0.12,
+                                paddingHorizontal: width * 0.03,
+                              }}>
+                              <Iconi
+                                name="images"
+                                size={width * 0.05}
+                                color="#fff"
+                                style={{marginRight: width * 0.01}}
+                              />
+                              <Text style={styles.buttonText}>Upload File</Text>
+                            </View>
+                            {reasonPath?.assets &&
+                              reasonPath?.assets.map((item) => (
+                                <Text
+                                  style={{
+                                    // width: width * 0.45,
+                                    flex: 1,
+                                    height: width * 0.09,
+                                    paddingHorizontal: width * 0.01,
+                                  }}>
+                                  File: {item.fileName.slice(10)}
+                                </Text>
+                              ))}
+                          </TouchableOpacity>
+                        </>
+                      ) : (
+                        <>
+                          <TouchableOpacity
+                            onPress={() => setInstallationStatus(1)}
+                            style={[
+                              styles.attemptBtn,
+                              {backgroundColor: 'green'},
+                            ]}>
+                            <Text style={styles.attemptText}>
+                              Attempted and installed
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => setInstallationStatus(2)}
+                            style={[
+                              styles.attemptBtn,
+                              {backgroundColor: '#f00'},
+                            ]}>
+                            <Text style={styles.attemptText}>
+                              Attempted and incomplete
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
                     </View>
                   )
                 ) : (
@@ -1826,8 +2018,11 @@ export default function UnitEdit({
                                 lat != undefined &&
                                 long != undefined
                               ? '#25AAE1ec'
-                              : sliderNumber == 5 &&
-                                filePath?.assets != undefined
+                              : (sliderNumber == 5 &&
+                                  installationStatus == 1) ||
+                                (sliderNumber == 5 &&
+                                  installationStatus == 2 &&
+                                  reasonId)
                               ? '#25AAE1ec'
                               : '#D0D0D0',
                         },
@@ -1851,7 +2046,10 @@ export default function UnitEdit({
                             lat != undefined &&
                             long != undefined
                           ? false
-                          : sliderNumber == 5 && filePath?.assets != undefined
+                          : (sliderNumber == 5 && installationStatus == 1) ||
+                            (sliderNumber == 5 &&
+                              installationStatus == 2 &&
+                              reasonId)
                           ? false
                           : true
                       }>
@@ -2342,6 +2540,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
+  reasonFileContainer: {
+    height: width * 0.6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
   button: {
     width: width * 0.7,
     height: width * 0.1,
@@ -2355,6 +2559,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: width * 0.005,
     elevation: width * 0.003,
+  },
+  button1: {
+    width: width * 0.8,
+    height: width * 0.12,
+    borderColor: '#25AAE1ec',
+    borderWidth: width * 0.003,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: width * 0.005,
+    flexDirection: 'row',
+    marginTop: width * 0.04,
+    elevation: width * 0.003,
+  },
+  attemptBtn: {
+    width: width * 0.5,
+    height: width * 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: width * 0.01,
+    marginVertical: width * 0.03,
+    elevation: width * 0.003,
+  },
+  attemptText: {
+    color: '#f5f5f5',
+    fontSize: width * 0.035,
+    fontWeight: 'bold',
   },
   buttonText: {
     // textAlign: 'center',
