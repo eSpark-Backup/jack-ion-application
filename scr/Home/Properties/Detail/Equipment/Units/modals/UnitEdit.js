@@ -1662,7 +1662,7 @@ export default function UnitEdit({
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        paddingHorizontal: width * 0.25,
+                        paddingHorizontal: width * 0.1,
                       }}>
                       <View
                         style={{
