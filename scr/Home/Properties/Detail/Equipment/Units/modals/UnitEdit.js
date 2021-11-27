@@ -243,7 +243,7 @@ export default function UnitEdit({
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             checkLocation(true);
           } else {
-            checkLocation(false, 'android');
+            checkLocation(false);
           }
         } catch (err) {
           alert(err);
@@ -268,10 +268,7 @@ export default function UnitEdit({
           },
           {
             text: 'Open Settings',
-            onPress:
-              platform == 'android'
-                ? SystemSetting.openAppSystemSettings
-                : openSettings(),
+            onPress: openSettings,
           },
         ],
       );
