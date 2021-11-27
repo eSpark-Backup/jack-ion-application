@@ -260,24 +260,20 @@ export default class Splash extends React.Component {
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
-        <Pressable
+        <TouchableOpacity
           onPress={() => this.setState({isModalAddPropVisible: true})}
           style={styles.addBotton}
-          android_ripple={{
-            color: 'black',
-            borderless: true,
-            radius: width * 0.05,
-          }}>
+          >
           <Icon
             name="add"
-            size={height * 0.035}
+            size={width * 0.06}
             color="black"
             maxOpacity={0.5}
           />
-        </Pressable>
+        </TouchableOpacity>
         <Properties
           name="home-city-outline"
-          size={height * 0.035}
+          size={width * 0.08}
           color="white"
         />
         <Text style={styles.mainHeadiing}>Properties</Text>
