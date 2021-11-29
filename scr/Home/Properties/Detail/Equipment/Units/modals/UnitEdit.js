@@ -21,7 +21,6 @@ import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Video from 'react-native-video';
-import LottieView from 'lottie-react-native';
 import SystemSetting from 'react-native-system-setting';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
