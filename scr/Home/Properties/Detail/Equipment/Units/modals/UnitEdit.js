@@ -699,7 +699,7 @@ export default function UnitEdit({
     //   });
     // }
     setReasons(reasoneResponce?.data?.data);
-    console.log('reasons_________', reasoneResponce?.data?.data);
+    // console.log('reasons_________', reasoneResponce?.data?.data);
   };
 
   const getDevice = async (some, index) => {
@@ -898,7 +898,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    console.log('data--->', data);
+    // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -1012,7 +1012,7 @@ export default function UnitEdit({
       reason: {
         options_reason_id: reasonId,
         text_reason: reasonDes,
-        picture: reasonBase64,
+        picture: `data:image/jpeg;base64,${reasonBase64}`,
       },
     });
     setMeterData(loopData);
@@ -1897,7 +1897,7 @@ export default function UnitEdit({
                               fontWeight: 'bold',
                               color: '',
                             }}>
-                            Installation not Successful
+                            Installation not Succeed
                           </Text>
                           <Text>Meter is not installed</Text>
                         </View>
