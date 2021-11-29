@@ -1599,10 +1599,16 @@ export default function UnitEdit({
                       />
                     </View>
                   ) : (
-                    <View>
+                    <View style={{zIndex: 10}}>
                       {addDevice &&
                         addDevice.map((item, index) => (
-                          <View style={{width: width * 0.8}} key={item.id}>
+                          <View
+                            style={{
+                              width: width * 0.8,
+                              // backgroundColor: 'pink',
+                              // zIndex: 9,
+                            }}
+                            key={item.id}>
                             <View>
                               <Text style={styles.meterDesciptionHeading}>
                                 {item.name}
@@ -1625,15 +1631,28 @@ export default function UnitEdit({
                                   margin: width * 0.005,
                                 }}
                                 itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: width * 0.15,
-                                  position: 'absolute',
-                                  width: width * 0.8,
-                                  top: width * 0.15,
-                                  zIndex: 1,
-                                  backgroundColor: 'white',
-                                  elevation: width * 0.01,
-                                }}
+                                itemsContainerStyle={
+                                  Platform.OS == 'android'
+                                    ? {
+                                        height: width * 0.2,
+                                        zIndex: 1,
+                                        position: 'absolute',
+                                        width: width * 0.8,
+                                        top: width * 0.1,
+                                        flex: 1,
+                                        zIndex: 20,
+                                        backgroundColor: 'white',
+                                        elevation: width * 0.01,
+                                        shadowColor: '#000',
+                                        shadowOffset: {
+                                          width: 0,
+                                          height: 2,
+                                        },
+                                        shadowOpacity: 0.25,
+                                        shadowRadius: 3.84,
+                                      }
+                                    : {height: width * 0.2, zIndex: 1}
+                                }
                                 items={item.data}
                                 resetValue={false}
                                 textInputProps={{
@@ -1924,15 +1943,19 @@ export default function UnitEdit({
                                 margin: width * 0.005,
                               }}
                               itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={{
-                                maxHeight: width * 0.15,
-                                position: 'absolute',
-                                width: width * 0.8,
-                                top: width * 0.15,
-                                zIndex: 1,
-                                backgroundColor: 'white',
-                                elevation: width * 0.01,
-                              }}
+                              itemsContainerStyle={
+                                Platform.OS == 'android'
+                                  ? {
+                                      maxHeight: width * 0.15,
+                                      position: 'absolute',
+                                      width: width * 0.8,
+                                      top: width * 0.15,
+                                      zIndex: 1,
+                                      backgroundColor: 'white',
+                                      elevation: width * 0.01,
+                                    }
+                                  : {maxHeight: width * 0.15}
+                              }
                               items={reasons}
                               resetValue={false}
                               textInputProps={{
