@@ -1910,7 +1910,7 @@ export default function UnitEdit({
                             <SearchableDropdown
                               onItemSelect={(item) => {
                                 setReasonText(item.name);
-                                console.log('ID batao reason______', item.id);
+                                setReasonId(item.id);
                               }}
                               containerStyle={{
                                 paddingBottom: width * 0.02,
