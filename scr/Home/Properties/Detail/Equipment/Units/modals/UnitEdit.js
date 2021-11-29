@@ -1110,44 +1110,44 @@ export default function UnitEdit({
       </View>
     );
   };
-  const renderSlide5 = ({item, index}) => {
-    // console.log('index check slider 3 ---> ',index)
-    return (
-      <View style={{width: width * 0.8}} key={item.id}>
-        <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
-          {item.name}
-        </Text>
-        <TextInput
-          placeholder={item.name}
-          value={item.value}
-          dense={true}
-          keyboardType={index == 1 ? 'numeric' : 'default'}
-          error={item.error}
-          onChangeText={(text) =>
-            index == 0
-              ? type == 'meterDirect' || type == 'addMeterDirect'
-                ? null
-                : onChangeMultipleField(text, index)
-              : onChangeMultipleField(text, index)
-          }
-          disabled={
-            type == 'meterDirect' || type == 'addMeterDirect' ? true : false
-          }
-          style={styles.meterInput}
-          mode={'outlined'}
-          // numberOfLines={index == 2 ? 3 : 1}
-          // multiline={index == 2 ? true : false}
-          theme={{
-            colors: {
-              text: '#25AAE1ec',
-              primary: '#25AAE1ec',
-              selectionColor: 'red',
-            },
-          }}
-        />
-      </View>
-    );
-  };
+  // const renderSlide5 = ({item, index}) => {
+  //   // console.log('index check slider 3 ---> ',index)
+  //   return (
+  //     <View style={{width: width * 0.8}} key={item.id}>
+  //       <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
+  //         {item.name}
+  //       </Text>
+  //       <TextInput
+  //         placeholder={item.name}
+  //         value={item.value}
+  //         dense={true}
+  //         keyboardType={index == 1 ? 'numeric' : 'default'}
+  //         error={item.error}
+  //         onChangeText={(text) =>
+  //           index == 0
+  //             ? type == 'meterDirect' || type == 'addMeterDirect'
+  //               ? null
+  //               : onChangeMultipleField(text, index)
+  //             : onChangeMultipleField(text, index)
+  //         }
+  //         disabled={
+  //           type == 'meterDirect' || type == 'addMeterDirect' ? true : false
+  //         }
+  //         style={styles.meterInput}
+  //         mode={'outlined'}
+  //         // numberOfLines={index == 2 ? 3 : 1}
+  //         // multiline={index == 2 ? true : false}
+  //         theme={{
+  //           colors: {
+  //             text: '#25AAE1ec',
+  //             primary: '#25AAE1ec',
+  //             selectionColor: 'red',
+  //           },
+  //         }}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   const selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
