@@ -17,6 +17,7 @@ import {
 //Packages
 import Menu from 'react-native-vector-icons/Entypo';
 import Search from 'react-native-vector-icons/EvilIcons';
+import DropdownAlert from 'react-native-dropdownalert';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
@@ -100,6 +101,14 @@ export default class Splash extends Component {
     });
     // this.getToken();
   }
+
+  successAlert = () => {
+    this.dropDownAlertRef.alertWithType(
+      'success',
+      'Installion Successfull',
+      'Meter is installed Successfully..!',
+    );
+  };
 
   onFocusFunction = () => {
     // this.setState({ loader: true, loaderBuildings: true });
@@ -647,383 +656,403 @@ export default class Splash extends Component {
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
     return (
-      <View style={styles.container}>
-        {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
-        <CustumStatusBar />
-        {/* Building Edit Modal */}
-        <UpdateModal
-          isVisible={this.state.editModal}
-          title="Edit Building"
-          doneBtnTitle="Update Building"
-          style={{height: height * 0.55}}
-          reRun={this.handleUpdateBuilding}
-          buildingData={{
-            buildingId: this.state.editBuildId,
-            buildingName: this.state.editBuilding,
-            buildingDes: this.state.editBuildDes,
-          }}></UpdateModal>
-        {/* Drawer Modal */}
-        <Drawer
-          isVisible={this.state.isModalVisible}
-          onCancel={this.toggleModal}
-          naviagateToDetail={this.naviagateToDetail}
-          naviagateToEquip={this.naviagateToEquip}
-          naviagateToChart={this.naviagateToChart}
-          naviagateToSupport={this.naviagateToSupport}
-        />
-        <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={styles.menuView}>
-              <MaterialIcons
-                size={width * 0.08}
-                color="white"
-                name="keyboard-backspace"
-              />
-            </TouchableOpacity>
-            <View style={styles.searchView}>
-              <View style={styles.searchBtnContainer}>
+      <>
+        <DropdownAlert ref={(ref) => (this.dropDownAlertRef = ref)} />
+        <View style={styles.container}>
+          {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
+          <CustumStatusBar />
+          {/* Building Edit Modal */}
+          <UpdateModal
+            isVisible={this.state.editModal}
+            title="Edit Building"
+            doneBtnTitle="Update Building"
+            style={{height: height * 0.55}}
+            reRun={this.handleUpdateBuilding}
+            buildingData={{
+              buildingId: this.state.editBuildId,
+              buildingName: this.state.editBuilding,
+              buildingDes: this.state.editBuildDes,
+            }}></UpdateModal>
+          {/* Drawer Modal */}
+          <Drawer
+            isVisible={this.state.isModalVisible}
+            onCancel={this.toggleModal}
+            naviagateToDetail={this.naviagateToDetail}
+            naviagateToEquip={this.naviagateToEquip}
+            naviagateToChart={this.naviagateToChart}
+            naviagateToSupport={this.naviagateToSupport}
+          />
+          <View style={styles.headerContainer}>
+            <View style={styles.headerInner}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+                style={styles.menuView}>
+                <MaterialIcons
+                  size={width * 0.08}
+                  color="white"
+                  name="keyboard-backspace"
+                />
+              </TouchableOpacity>
+              <View style={styles.searchView}>
+                <View style={styles.searchBtnContainer}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.searchBtn}
+                    onPress={
+                      this.state.dataBuild == 0
+                        ? () =>
+                            Alert.alert(
+                              'Alert',
+                              'No building found add building',
+                            )
+                        : this.openAndClear
+                    }>
+                    <Search name="search" size={height * 0.04} color="white" />
+                    <Text style={{color: 'white'}}>Search</Text>
+                  </TouchableOpacity>
+                </View>
                 <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.searchBtn}
                   onPress={
                     this.state.dataBuild == 0
                       ? () =>
                           Alert.alert('Alert', 'No building found add building')
-                      : this.openAndClear
-                  }>
-                  <Search name="search" size={height * 0.04} color="white" />
-                  <Text style={{color: 'white'}}>Search</Text>
+                      : this.openFilter
+                  }
+                  style={styles.filterButton}>
+                  <MaterialCommunityIcons
+                    name="filter-outline"
+                    color={this.state.filterWork ? '#25AAE1ec' : 'black'}
+                    size={width * 0.05}
+                  />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={
-                  this.state.dataBuild == 0
-                    ? () =>
-                        Alert.alert('Alert', 'No building found add building')
-                    : this.openFilter
-                }
-                style={styles.filterButton}>
-                <MaterialCommunityIcons
-                  name="filter-outline"
-                  color={this.state.filterWork ? '#25AAE1ec' : 'black'}
-                  size={width * 0.05}
-                />
-              </TouchableOpacity>
             </View>
           </View>
-        </View>
-        <View style={styles.headingContainer}>
-          <View style={styles.headingInner}>
-            <Menu
-              name="menu"
-              size={width * 0.08}
-              color="white"
-              style={{position: 'absolute', left: width * 0.02}}
-              onPress={this.toggleModal}
-            />
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Ionic
-                name="md-business-outline"
-                size={width * 0.06}
+          <View style={styles.headingContainer}>
+            <View style={styles.headingInner}>
+              <Menu
+                name="menu"
+                size={width * 0.08}
                 color="white"
+                style={{position: 'absolute', left: width * 0.02}}
+                onPress={this.toggleModal}
               />
-              <Text style={styles.mainHeadiing}>Equiments</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Ionic
+                  name="md-business-outline"
+                  size={width * 0.06}
+                  color="white"
+                />
+                <Text style={styles.mainHeadiing}>Equiments</Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.bodyContainer}>
-          <View style={styles.mainDataContainer}>
-            <View style={styles.mainData}>
-              <View style={styles.dropDownContainer}>
-                <MenuT
-                  visible={this.state.fileMenuVisible}
-                  anchor={
-                    <TouchableOpacity
-                      style={styles.dropDown}
-                      onPress={() => this.setState({fileMenuVisible: true})}>
-                      <Feather
-                        name="file"
-                        size={height * 0.025}
-                        color="#3E4A4F"
-                      />
-                      <Text style={styles.dropDownText}>File</Text>
-                      <Feather
-                        name="chevron-down"
-                        size={height * 0.02}
-                        color="#3E4A4F"
-                        style={{marginLeft: width * 0.02}}
-                      />
-                    </TouchableOpacity>
-                  }
-                  onRequestClose={() =>
-                    this.setState({fileMenuVisible: false})
-                  }>
-                  {this.state.FileArray.map((item) => (
-                    <View>
-                      <MenuItem
-                        style={styles.dropDownListText}
-                        onPress={() => this.setState({fileMenuVisible: false})}>
-                        {item.name}
-                      </MenuItem>
-                    </View>
-                  ))}
-                </MenuT>
+          <View style={styles.bodyContainer}>
+            <View style={styles.mainDataContainer}>
+              <View style={styles.mainData}>
+                <View style={styles.dropDownContainer}>
+                  <MenuT
+                    visible={this.state.fileMenuVisible}
+                    anchor={
+                      <TouchableOpacity
+                        style={styles.dropDown}
+                        onPress={() => this.setState({fileMenuVisible: true})}>
+                        <Feather
+                          name="file"
+                          size={height * 0.025}
+                          color="#3E4A4F"
+                        />
+                        <Text style={styles.dropDownText}>File</Text>
+                        <Feather
+                          name="chevron-down"
+                          size={height * 0.02}
+                          color="#3E4A4F"
+                          style={{marginLeft: width * 0.02}}
+                        />
+                      </TouchableOpacity>
+                    }
+                    onRequestClose={() =>
+                      this.setState({fileMenuVisible: false})
+                    }>
+                    {this.state.FileArray.map((item) => (
+                      <View>
+                        <MenuItem
+                          style={styles.dropDownListText}
+                          onPress={() =>
+                            this.setState({fileMenuVisible: false})
+                          }>
+                          {item.name}
+                        </MenuItem>
+                      </View>
+                    ))}
+                  </MenuT>
 
-                <MenuT
-                  visible={this.state.addMenuVisible}
-                  anchor={
-                    <TouchableOpacity
-                      style={styles.dropDown}
-                      onPress={() => this.setState({addMenuVisible: true})}>
-                      <Feather
-                        name="plus"
-                        size={height * 0.025}
-                        color="#3E4A4F"
-                      />
-                      <Text style={styles.dropDownText}>Add</Text>
-                      <Feather
-                        name="chevron-down"
-                        size={height * 0.02}
-                        color="#3E4A4F"
-                        style={{marginLeft: width * 0.02}}
-                      />
-                    </TouchableOpacity>
-                  }
-                  onRequestClose={() => this.setState({addMenuVisible: false})}>
-                  {this.state.AddArray.map((item, index) => (
-                    <MenuItem
-                      disabled={
-                        this.state.dataBuild.length == 0 && index !== 2
-                          ? true
-                          : false
-                      }
-                      onPress={item.func}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          padding: width * 0.02,
-                        }}>
-                        {index < 2 ? (
-                          <FontAwesome5
-                            color={
-                              this.state.dataBuild.length == 0 && index !== 2
-                                ? '#817e7e80'
-                                : '#000'
-                            }
-                            name="house-user"
-                            size={width * 0.04}
-                            color="#3E4A4F"
-                            style={{
-                              paddingHorizontal:
-                                Platform.OS == 'ios' ? width * 0.025 : null,
-                              paddingRight:
-                                Platform.OS == 'android' ? width * 0.025 : null,
-                            }}
-                          />
-                        ) : (
-                          <FontAwesome5
-                            name="building"
-                            size={width * 0.04}
-                            color="#3E4A4F"
-                            style={{
-                              paddingHorizontal:
-                                Platform.OS == 'ios' ? width * 0.028 : null,
-                              paddingRight:
-                                Platform.OS == 'android' ? width * 0.035 : null,
-                              left: Platform.OS == 'android' ? 3 : null,
-                            }}
-                          />
-                        )}
-                        <Text
-                          style={[
-                            styles.dropDownListText,
-                            {
-                              color:
+                  <MenuT
+                    visible={this.state.addMenuVisible}
+                    anchor={
+                      <TouchableOpacity
+                        style={styles.dropDown}
+                        onPress={() => this.setState({addMenuVisible: true})}>
+                        <Feather
+                          name="plus"
+                          size={height * 0.025}
+                          color="#3E4A4F"
+                        />
+                        <Text style={styles.dropDownText}>Add</Text>
+                        <Feather
+                          name="chevron-down"
+                          size={height * 0.02}
+                          color="#3E4A4F"
+                          style={{marginLeft: width * 0.02}}
+                        />
+                      </TouchableOpacity>
+                    }
+                    onRequestClose={() =>
+                      this.setState({addMenuVisible: false})
+                    }>
+                    {this.state.AddArray.map((item, index) => (
+                      <MenuItem
+                        disabled={
+                          this.state.dataBuild.length == 0 && index !== 2
+                            ? true
+                            : false
+                        }
+                        onPress={item.func}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            padding: width * 0.02,
+                          }}>
+                          {index < 2 ? (
+                            <FontAwesome5
+                              color={
                                 this.state.dataBuild.length == 0 && index !== 2
                                   ? '#817e7e80'
-                                  : '#000',
-                            },
-                          ]}>
-                          {item.name}
-                        </Text>
-                      </View>
-                    </MenuItem>
-                  ))}
-                </MenuT>
-              </View>
+                                  : '#000'
+                              }
+                              name="house-user"
+                              size={width * 0.04}
+                              color="#3E4A4F"
+                              style={{
+                                paddingHorizontal:
+                                  Platform.OS == 'ios' ? width * 0.025 : null,
+                                paddingRight:
+                                  Platform.OS == 'android'
+                                    ? width * 0.025
+                                    : null,
+                              }}
+                            />
+                          ) : (
+                            <FontAwesome5
+                              name="building"
+                              size={width * 0.04}
+                              color="#3E4A4F"
+                              style={{
+                                paddingHorizontal:
+                                  Platform.OS == 'ios' ? width * 0.028 : null,
+                                paddingRight:
+                                  Platform.OS == 'android'
+                                    ? width * 0.035
+                                    : null,
+                                left: Platform.OS == 'android' ? 3 : null,
+                              }}
+                            />
+                          )}
+                          <Text
+                            style={[
+                              styles.dropDownListText,
+                              {
+                                color:
+                                  this.state.dataBuild.length == 0 &&
+                                  index !== 2
+                                    ? '#817e7e80'
+                                    : '#000',
+                              },
+                            ]}>
+                            {item.name}
+                          </Text>
+                        </View>
+                      </MenuItem>
+                    ))}
+                  </MenuT>
+                </View>
 
-              {/* Top Lists */}
-              {loaderBuildings ? (
+                {/* Top Lists */}
+                {loaderBuildings ? (
+                  <View style={{width: width * 0.55, justifyContent: 'center'}}>
+                    <ActivityIndicator size="large" color="black" />
+                  </View>
+                ) : this.state.dataBuild.length == 0 ? (
+                  <View style={{width: width * 0.55, justifyContent: 'center'}}>
+                    <Text style={styles.noDataStyling}>
+                      No data add Building
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    ref={(ref) => {
+                      buildListViewRef = ref;
+                    }}
+                    style={{height: width * 0.22}}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal={true}
+                    data={this.state.dataBuild}
+                    renderItem={this._renderBuildingList}
+                    keyExtractor={(item) => item.id.toString()}
+                  />
+                )}
+              </View>
+              <EditUnit
+                flag={this.state.flag}
+                enableFlag={() => this.setState({flag: true})}
+                disableFlag={() => this.setState({flag: false})}
+                modalVisible={this.state.isModalUnitVisible}
+                closeModal={() =>
+                  this.setState({
+                    isModalUnitVisible: !this.state.isModalUnitVisible,
+                  })
+                }
+                reRun={() => this.checkData()}
+                successAlert={this.successAlert}
+                meterTypes={[]}
+                modalName="Add Unit"
+                type={'add'}
+                buildingName={this.state.buildingData.name}
+                buildingId={this.state.editBuildId}
+                unitDetails={this.state.unitData}
+                doneBtnTitle="Add Unit"
+                doneIcon={
+                  <Iconx name="plus" type="feather" size={18} color="#fff" />
+                }
+                handleEditUnit={() => {
+                  this.setState({isModalUnitVisible: false});
+                }}
+                unitsArray={this.state.realData}
+              />
+              <AddBuilding
+                modalVisible={this.state.isModalBuildVisible}
+                type={this.state.buildingModalType}
+                modalName="New Building"
+                closeModal={() => this.setState({isModalBuildVisible: false})}
+                reRun={this.handleAddBuilding}
+                propertyId={this.props.navigation.state.params.item.item.id}
+                lastUnitName={this.state.newUnit}
+                buildData={{
+                  buildingName: this.state.buildingData.name,
+                  buildDes: this.state.editBuildDes,
+                  buildId: this.state.editBuildId,
+                }}
+              />
+              <Filter
+                type="Units"
+                onReset={this.get_filterVal}
+                utilityTypes={this.state.getUtilities}
+                get_filterVal={this.get_filterVal}
+                changeChanged={this.changedFalse}
+                isVisible={this.state.showFilter}
+                close={() =>
+                  this.setState({showFilter: !this.state.showFilter})
+                }
+                buildingName={this.state.buildingData.name}
+                buildiingId={this.state.editBuildId}
+                changed={this.state.changed}
+                filterWork={(e) =>
+                  this.setState(
+                    {filterWork: e},
+                    console.log(e, 'filterWork:false'),
+                  )
+                }
+              />
+              {this.state.showSearch ? (
+                <Modal
+                  isVisible={this.state.showSearch}
+                  style={styles.searchModalContainer}>
+                  {Platform.OS == 'ios' && (
+                    <CustumStatusBar backColor transparent />
+                  )}
+                  <KeyboardAvoidingView behavior="padding">
+                    <View style={styles.searchModalInner}>
+                      <Search name="search" size={width * 0.07} color="white" />
+                      <TextInput
+                        underlineColor="transparent"
+                        dense={true}
+                        autoFocus={true}
+                        placeholderTextColor="white"
+                        placeholder="Search"
+                        style={styles.search}
+                        onChangeText={(e) => this.searchUnits(e)}
+                        theme={{
+                          colors: {
+                            text: 'white',
+                            primary: '#25dAE1',
+                            selectionColor: 'transparent',
+                            background: 'transparent',
+                          },
+                        }}
+                      />
+                      <View style={{position: 'absolute', right: width * 0.1}}>
+                        {this.state.searchLoading ? (
+                          <ActivityIndicator color="white" size="small" />
+                        ) : null}
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => this.setState({showSearch: false})}>
+                        <MaterialCommunityIcons
+                          name="close"
+                          color="white"
+                          size={width * 0.055}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.searchDataListContainer}>
+                      <FlatList
+                        style={{marginBottom: width * 0.2}}
+                        data={this.state.searchList}
+                        renderItem={this._renderUnitList}
+                        removeClippedSubviews={false}
+                        maxToRenderPerBatch={150}
+                        windowSize={100}
+                        keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
+                      />
+                    </View>
+                  </KeyboardAvoidingView>
+                </Modal>
+              ) : null}
+              {loader ? (
                 <View style={{width: width * 0.55, justifyContent: 'center'}}>
                   <ActivityIndicator size="large" color="black" />
                 </View>
-              ) : this.state.dataBuild.length == 0 ? (
+              ) : this.state.realData.length == 0 ? (
                 <View style={{width: width * 0.55, justifyContent: 'center'}}>
-                  <Text style={styles.noDataStyling}>No data add Building</Text>
+                  <Text style={styles.noDataStyling}>No data add Unit</Text>
                 </View>
               ) : (
-                <FlatList
-                  ref={(ref) => {
-                    buildListViewRef = ref;
-                  }}
-                  style={{height: width * 0.22}}
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                  data={this.state.dataBuild}
-                  renderItem={this._renderBuildingList}
-                  keyExtractor={(item) => item.id.toString()}
-                />
+                <View style={{width: width * 1, backgroundColor: '#F5F5F5'}}>
+                  <FlatList
+                    ref={(ref) => {
+                      listViewRef = ref;
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    style={{marginBottom: width * 0.29}}
+                    contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+                    numColumns={1}
+                    initialNumToRender={realData.length}
+                    data={this._customSort(realData)}
+                    renderItem={this._renderUnitList}
+                    keyExtractor={(item) => item.id.toString()}
+                  />
+                </View>
               )}
             </View>
-            <EditUnit
-              flag={this.state.flag}
-              enableFlag={() => this.setState({flag: true})}
-              disableFlag={() => this.setState({flag: false})}
-              modalVisible={this.state.isModalUnitVisible}
-              closeModal={() =>
-                this.setState({
-                  isModalUnitVisible: !this.state.isModalUnitVisible,
-                })
-              }
-              reRun={() => this.checkData()}
-              meterTypes={[]}
-              modalName="Add Unit"
-              type={'add'}
-              buildingName={this.state.buildingData.name}
-              buildingId={this.state.editBuildId}
-              unitDetails={this.state.unitData}
-              doneBtnTitle="Add Unit"
-              doneIcon={
-                <Iconx name="plus" type="feather" size={18} color="#fff" />
-              }
-              handleEditUnit={() => {
-                this.setState({isModalUnitVisible: false});
-              }}
-              unitsArray={this.state.realData}
-            />
-            <AddBuilding
-              modalVisible={this.state.isModalBuildVisible}
-              type={this.state.buildingModalType}
-              modalName="New Building"
-              closeModal={() => this.setState({isModalBuildVisible: false})}
-              reRun={this.handleAddBuilding}
-              propertyId={this.props.navigation.state.params.item.item.id}
-              lastUnitName={this.state.newUnit}
-              buildData={{
-                buildingName: this.state.buildingData.name,
-                buildDes: this.state.editBuildDes,
-                buildId: this.state.editBuildId,
-              }}
-            />
-            <Filter
-              type="Units"
-              onReset={this.get_filterVal}
-              utilityTypes={this.state.getUtilities}
-              get_filterVal={this.get_filterVal}
-              changeChanged={this.changedFalse}
-              isVisible={this.state.showFilter}
-              close={() => this.setState({showFilter: !this.state.showFilter})}
-              buildingName={this.state.buildingData.name}
-              buildiingId={this.state.editBuildId}
-              changed={this.state.changed}
-              filterWork={(e) =>
-                this.setState(
-                  {filterWork: e},
-                  console.log(e, 'filterWork:false'),
-                )
-              }
-            />
-            {this.state.showSearch ? (
-              <Modal
-                isVisible={this.state.showSearch}
-                style={styles.searchModalContainer}>
-                {Platform.OS == 'ios' && (
-                  <CustumStatusBar backColor transparent />
-                )}
-                <KeyboardAvoidingView behavior="padding">
-                  <View style={styles.searchModalInner}>
-                    <Search name="search" size={width * 0.07} color="white" />
-                    <TextInput
-                      underlineColor="transparent"
-                      dense={true}
-                      autoFocus={true}
-                      placeholderTextColor="white"
-                      placeholder="Search"
-                      style={styles.search}
-                      onChangeText={(e) => this.searchUnits(e)}
-                      theme={{
-                        colors: {
-                          text: 'white',
-                          primary: '#25dAE1',
-                          selectionColor: 'transparent',
-                          background: 'transparent',
-                        },
-                      }}
-                    />
-                    <View style={{position: 'absolute', right: width * 0.1}}>
-                      {this.state.searchLoading ? (
-                        <ActivityIndicator color="white" size="small" />
-                      ) : null}
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => this.setState({showSearch: false})}>
-                      <MaterialCommunityIcons
-                        name="close"
-                        color="white"
-                        size={width * 0.055}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.searchDataListContainer}>
-                    <FlatList
-                      style={{marginBottom: width * 0.2}}
-                      data={this.state.searchList}
-                      renderItem={this._renderUnitList}
-                      removeClippedSubviews={false}
-                      maxToRenderPerBatch={150}
-                      windowSize={100}
-                      keyExtractor={(item, index) => index.toString()}
-                      showsVerticalScrollIndicator={false}
-                    />
-                  </View>
-                </KeyboardAvoidingView>
-              </Modal>
-            ) : null}
-            {loader ? (
-              <View style={{width: width * 0.55, justifyContent: 'center'}}>
-                <ActivityIndicator size="large" color="black" />
-              </View>
-            ) : this.state.realData.length == 0 ? (
-              <View style={{width: width * 0.55, justifyContent: 'center'}}>
-                <Text style={styles.noDataStyling}>No data add Unit</Text>
-              </View>
-            ) : (
-              <View style={{width: width * 1, backgroundColor: '#F5F5F5'}}>
-                <FlatList
-                  ref={(ref) => {
-                    listViewRef = ref;
-                  }}
-                  showsVerticalScrollIndicator={false}
-                  style={{marginBottom: width * 0.29}}
-                  contentContainerStyle={{backgroundColor: '#F5F5F5'}}
-                  numColumns={1}
-                  initialNumToRender={realData.length}
-                  data={this._customSort(realData)}
-                  renderItem={this._renderUnitList}
-                  keyExtractor={(item) => item.id.toString()}
-                />
-              </View>
-            )}
           </View>
         </View>
-      </View>
+      </>
     );
   }
 }
