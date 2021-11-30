@@ -519,7 +519,7 @@ const App = ({navigation}) => {
     ]);
     setRemoteReaderData([
       {
-        title: 'Transciever',
+        title: unitMeter?.device?.device_type,
         img: require('../../../../../../Images/remote-reader.png'),
         data: [
           {

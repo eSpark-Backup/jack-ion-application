@@ -262,14 +262,8 @@ export default class Splash extends React.Component {
         {this.state.loadScreen ? <Loader /> : null}
         <TouchableOpacity
           onPress={() => this.setState({isModalAddPropVisible: true})}
-          style={styles.addBotton}
-          >
-          <Icon
-            name="add"
-            size={width * 0.06}
-            color="black"
-            maxOpacity={0.5}
-          />
+          style={styles.addBotton}>
+          <Icon name="add" size={width * 0.06} color="black" maxOpacity={0.5} />
         </TouchableOpacity>
         <Properties
           name="home-city-outline"
