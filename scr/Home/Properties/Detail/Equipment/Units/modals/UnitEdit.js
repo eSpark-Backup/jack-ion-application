@@ -1880,8 +1880,8 @@ export default function UnitEdit({
                     <Image
                       resizeMode="contain"
                       resizeMethod="auto"
-                      style={{ width: width * 0.3, height: width * 0.62 }}
-                      source={require('../../../../../../../Images/dotload.gif')}
+                      style={{width: width * 0.3, height: width * 0.62}}
+                      source={require('../../../../../../../Images/aniLoad.gif')}
                     />
                   ) : (
                     <View style={styles.reasonFileContainer}>
@@ -1936,7 +1936,7 @@ export default function UnitEdit({
                             <SearchableDropdown
                               onItemSelect={(item) => {
                                 setReasonText(item.name);
-                                setReasonId(item.id);
+                                setReasonId(item.options_reason_id);
                               }}
                               containerStyle={{
                                 paddingBottom: width * 0.02,
