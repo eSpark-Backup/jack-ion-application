@@ -17,7 +17,6 @@ import {
 //Packages
 import Menu from 'react-native-vector-icons/Entypo';
 import Search from 'react-native-vector-icons/EvilIcons';
-import DropdownAlert from 'react-native-dropdownalert';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
@@ -101,14 +100,6 @@ export default class Splash extends Component {
     });
     // this.getToken();
   }
-
-  successAlert = () => {
-    this.dropDownAlertRef.alertWithType(
-      'success',
-      'Installion Successfull',
-      'Meter is installed Successfully..!',
-    );
-  };
 
   onFocusFunction = () => {
     // this.setState({ loader: true, loaderBuildings: true });
@@ -657,7 +648,6 @@ export default class Splash extends Component {
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
     return (
       <>
-        <DropdownAlert ref={(ref) => (this.dropDownAlertRef = ref)} />
         <View style={styles.container}>
           {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
           <CustumStatusBar />
@@ -918,7 +908,6 @@ export default class Splash extends Component {
                   })
                 }
                 reRun={() => this.checkData()}
-                successAlert={this.successAlert}
                 meterTypes={[]}
                 modalName="Add Unit"
                 type={'add'}
