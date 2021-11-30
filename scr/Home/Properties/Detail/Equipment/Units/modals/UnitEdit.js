@@ -1874,7 +1874,7 @@ export default function UnitEdit({
                       resizeMode="contain"
                       resizeMethod="auto"
                       style={{width: width * 0.3, height: width * 0.62}}
-                      source={require('../../../../../../../Images/dotload.gif')}
+                      source={require('../../../../../../../Images/aniLoad.gif')}
                     />
                   ) : (
                     <View style={styles.reasonFileContainer}>
