@@ -167,6 +167,7 @@ export default function UnitEdit({
   const [sliderNumber, setSliderNumber] = useState(1);
   const [sliderProgress, setSliderProgress] = useState(0);
   const [doneAnimation, setDoneAnimation] = useState(false);
+  const [hideBtn, setHideBtn] = useState(false);
   const [addNewType, setAddNewType] = useState(false);
   const [showAddMeterSlider, setShowAddMeterSlider] = useState(false);
   const [state, setState] = useState({
@@ -221,11 +222,12 @@ export default function UnitEdit({
   };
 
   const sendInstallationStatus = (status) => {
+    setHideBtn(true);
     setInstallationStatus(status);
     setStatusAnimation(true);
-    // setTimeout(() => {
-    //   setStatusAnimation(false);
-    // }, 5000);
+    setTimeout(() => {
+      setHideBtn(false);
+    }, 4000);
   };
 
   const enableLocation = async () => {
@@ -2071,7 +2073,9 @@ export default function UnitEdit({
                             onPress={() => {
                               setInstallationStatus(2);
                               setStatusAnimation(true);
+                              setHideBtn(true);
                               setTimeout(() => {
+                                setHideBtn(false);
                                 setStatusAnimation(false);
                               }, 5000);
                             }}
@@ -2178,19 +2182,21 @@ export default function UnitEdit({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  {doneAnimation || checkSerial ? (
-                    doneAnimation ? (
-                      <Text style={[styles.buttonText, {width: width * 0.7}]}>
-                        {newMeter.name.charAt(0).toUpperCase() +
-                          newMeter.name.slice(1).toLowerCase()}{' '}
-                        Meter added succesfully please checking installation
-                        status...
-                      </Text>
-                    ) : (
-                      <Text style={[styles.buttonText, {width: width * 0.7}]}>
-                        Please wait while checking Device Serial Number...
-                      </Text>
-                    )
+                  {doneAnimation || checkSerial || hideBtn ? (
+                    !hideBtn ? (
+                      doneAnimation ? (
+                        <Text style={[styles.buttonText, {width: width * 0.7}]}>
+                          {newMeter.name.charAt(0).toUpperCase() +
+                            newMeter.name.slice(1).toLowerCase()}{' '}
+                          Meter added succesfully please checking installation
+                          status...
+                        </Text>
+                      ) : (
+                        <Text style={[styles.buttonText, {width: width * 0.7}]}>
+                          Please wait while checking Device Serial Number...
+                        </Text>
+                      )
+                    ) : null
                   ) : (
                     <TouchableOpacity
                       style={[
