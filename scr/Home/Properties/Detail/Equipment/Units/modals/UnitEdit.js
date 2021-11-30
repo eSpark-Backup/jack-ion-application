@@ -1880,7 +1880,7 @@ export default function UnitEdit({
                     <Image
                       resizeMode="contain"
                       resizeMethod="auto"
-                      style={{width: width * 0.3, height: width * 0.62}}
+                      style={{ width: width * 0.3, height: width * 0.62 }}
                       source={require('../../../../../../../Images/aniLoad.gif')}
                     />
                   ) : (
@@ -2414,18 +2414,8 @@ export default function UnitEdit({
                       <TouchableOpacity
                         onPress={
                           () => {
-                            LayoutAnimation.configureNext({
-                              duration: 300,
-                              create: {
-                                type: LayoutAnimation.Types.easeInEaseOut,
-                                property: LayoutAnimation.Properties.opacity,
-                              },
-                              update: {
-                                type: LayoutAnimation.Types.easeInEaseOut,
-                              },
-                            }),
-                              setShowAddMeterSlider(true),
-                              callApi();
+                            enableLocation();
+                            callApi();
                           }
                         }
                         style={{
