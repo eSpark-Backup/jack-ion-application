@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   FlatList,
+  Keyboard
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 //Packages

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -22,18 +22,18 @@ import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import Video from 'react-native-video';
 import SystemSetting from 'react-native-system-setting';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
-import {DotsLoader, OpacityDotsLoader} from 'react-native-indicator';
-import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
+import { DotsLoader, OpacityDotsLoader } from 'react-native-indicator';
+import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import { Fonts } from '../../../../../../utils/fonts';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import Base_URL from '../../../../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
@@ -49,7 +49,7 @@ import {
 } from 'react-native-permissions';
 import Iconi from 'react-native-vector-icons/Ionicons';
 import * as Progress from 'react-native-progress';
-import {withOrientation} from 'react-navigation';
+import { withOrientation } from 'react-navigation';
 import * as ImagePicker from 'react-native-image-picker';
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {
@@ -59,8 +59,8 @@ import MapView, {
   MarkerAnimated,
 } from 'react-native-maps';
 
-const {width, height} = Dimensions.get('window');
-const api = create({baseURL: Base_URL});
+const { width, height } = Dimensions.get('window');
+const api = create({ baseURL: Base_URL });
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -139,7 +139,9 @@ export default function UnitEdit({
       id: 0,
       error: '',
       name: 'Device Serial Number',
-      value: '',
+      value: type == 'meterDirect' || type == 'addMeterDirect'
+        ? unitDetails?.unit?.meterSerial
+        : '',
     },
     {
       id: 1,
@@ -314,7 +316,7 @@ export default function UnitEdit({
               "You don't have access for the Camera",
               'To Change the Permission Open Settings',
               [
-                {text: 'Cancel', style: 'cancel'},
+                { text: 'Cancel', style: 'cancel' },
                 {
                   text: 'Open Settings',
                   onPress: () =>
@@ -342,7 +344,7 @@ export default function UnitEdit({
             "You don't have access for the Camera",
             'To Change the Permission Open Settings',
             [
-              {text: 'Cancel', style: 'cancel'},
+              { text: 'Cancel', style: 'cancel' },
               {
                 text: 'Open Settings',
                 onPress: async () =>
@@ -392,8 +394,14 @@ export default function UnitEdit({
   //   _renderMap();
   // }, []);
   useEffect(() => {
-    console.log('meterData--->', meterData.length);
-  }, [meterData]);
+    if (type == 'meterDirect' || type == 'addMeterDirect') {
+      let newArr = [...slide2]; // copying the old datas array
+      newArr[0].value = unitDetails?.unit?.meterSerial; // replace e.target.value with whatever you want to change it to
+      // newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
+      setSlide2(newArr);
+    }
+    // console.log('showAddMeterSlider------->', showAddMeterSlider);
+  }, [showAddMeterSlider]);
   useEffect(() => {
     if (flag) {
       console.log('un in mod-->>', unitDetails);
@@ -1018,7 +1026,7 @@ export default function UnitEdit({
     let meterArray = [...meterListData]; // copying the old datas array
     meterArray.push(addMeter[0]);
     setMeterListData(meterArray);
-
+    setStatusAnimation(false);
     const newList = state.meterList.filter((item) => item.id !== newMeter.id);
     setState((oldState) => ({
       ...oldState,
@@ -1041,7 +1049,7 @@ export default function UnitEdit({
         break;
     }
   };
-  const renderSlide2 = ({item}) => {
+  const renderSlide2 = ({ item }) => {
     return (
       <View
         style={{
@@ -1105,11 +1113,11 @@ export default function UnitEdit({
       </View>
     );
   };
-  const renderSlide3 = ({item, index}) => {
+  const renderSlide3 = ({ item, index }) => {
     // console.log('index check slider 3 ---> ',index)
     return (
-      <View style={{width: width * 0.8}} key={item.id}>
-        <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
+      <View style={{ width: width * 0.8 }} key={item.id}>
+        <Text style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}>
           {item.name + (index < 2 ? '*' : '')}
         </Text>
         <TextInput
@@ -1125,7 +1133,7 @@ export default function UnitEdit({
                 name={() => (
                   <TouchableOpacity
                     onPress={() => toggleScanner(index)}
-                    style={{zIndex: 1}}>
+                    style={{ zIndex: 1 }}>
                     <Scanner name="scan" size={width * 0.06} />
                   </TouchableOpacity>
                 )}
@@ -1140,7 +1148,8 @@ export default function UnitEdit({
               : onChangeMultipleField(text, index)
           }
           disabled={
-            type == 'meterDirect' || type == 'addMeterDirect' ? true : false
+            index == 0 &&
+              type == 'meterDirect' || type == 'addMeterDirect' ? true : false
           }
           style={styles.meterInput}
           mode={'outlined'}
@@ -1157,11 +1166,11 @@ export default function UnitEdit({
       </View>
     );
   };
-  const renderSlide5 = ({item, index}) => {
+  const renderSlide5 = ({ item, index }) => {
     // console.log('index check slider 3 ---> ',index)
     return (
-      <View style={{width: width * 0.8}} key={item.id}>
-        <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
+      <View style={{ width: width * 0.8 }} key={item.id}>
+        <Text style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}>
           {item.name}
         </Text>
         <TextInput
@@ -1227,7 +1236,7 @@ export default function UnitEdit({
         ]);
       },
       (error) => console.log('geo location', error),
-      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
     );
   };
 
@@ -1250,7 +1259,7 @@ export default function UnitEdit({
         // console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
+        const source = { uri: res.uri };
         console.log('response', res);
         setImageBase64(res.assets[0].base64);
         // this.setState({
@@ -1287,7 +1296,7 @@ export default function UnitEdit({
         // console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
+        const source = { uri: res.uri };
         // console.log('response', res);
         if (type == 'reason') {
           setReasonBase64(res.assets[0].base64);
@@ -1452,7 +1461,7 @@ export default function UnitEdit({
         hasBackdrop={true}
         backdropColor="black"
         statusBarTranslucent
-        style={{top: width * -0.1}}
+        style={{ top: width * -0.1 }}
         // onBackdropPress={() => setShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
@@ -1517,7 +1526,7 @@ export default function UnitEdit({
                       showsUserLocation={true}
                       showsMyLocationButton={true}
                       onRegionChange={(e) => moveMarker(e)}
-                      // onPress={(e) => this.getLocation(e)}
+                    // onPress={(e) => this.getLocation(e)}
                     ></MapView>
                   </View>
                 ) : null}
@@ -1535,7 +1544,7 @@ export default function UnitEdit({
                   <Text
                     style={[
                       styles.meterDesciptionHeading,
-                      {fontSize: width * 0.06},
+                      { fontSize: width * 0.06 },
                     ]}>
                     Add {showAddType}
                   </Text>
@@ -1550,7 +1559,7 @@ export default function UnitEdit({
                         'Alert',
                         'Are you sure you want to clear current selected data',
                         [
-                          {text: 'No', style: 'cancel'},
+                          { text: 'No', style: 'cancel' },
                           {
                             text: 'Yes',
                             onPress: cancelAddNewType,
@@ -1597,7 +1606,7 @@ export default function UnitEdit({
                       />
                     </View>
                   ) : (
-                    <View style={{zIndex: 10}}>
+                    <View style={{ zIndex: 10 }}>
                       {addDevice &&
                         addDevice.map((item, index) => (
                           <View
@@ -1628,28 +1637,28 @@ export default function UnitEdit({
                                   borderRadius: width * 0.015,
                                   margin: width * 0.005,
                                 }}
-                                itemTextStyle={{color: '#222'}}
+                                itemTextStyle={{ color: '#222' }}
                                 itemsContainerStyle={
                                   Platform.OS == 'android'
                                     ? {
-                                        height: width * 0.2,
-                                        zIndex: 1,
-                                        position: 'absolute',
-                                        width: width * 0.8,
-                                        top: width * 0.1,
-                                        flex: 1,
-                                        zIndex: 20,
-                                        backgroundColor: 'white',
-                                        elevation: width * 0.01,
-                                        shadowColor: '#000',
-                                        shadowOffset: {
-                                          width: 0,
-                                          height: 2,
-                                        },
-                                        shadowOpacity: 0.25,
-                                        shadowRadius: 3.84,
-                                      }
-                                    : {height: width * 0.2, zIndex: 1}
+                                      height: width * 0.2,
+                                      zIndex: 1,
+                                      position: 'absolute',
+                                      width: width * 0.8,
+                                      top: width * 0.1,
+                                      flex: 1,
+                                      zIndex: 20,
+                                      backgroundColor: 'white',
+                                      elevation: width * 0.01,
+                                      shadowColor: '#000',
+                                      shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                      },
+                                      shadowOpacity: 0.25,
+                                      shadowRadius: 3.84,
+                                    }
+                                    : { height: width * 0.2, zIndex: 1 }
                                 }
                                 items={item.data}
                                 resetValue={false}
@@ -1710,8 +1719,8 @@ export default function UnitEdit({
                             addDevice[0].selectId &&
                             addDevice[1].selectId &&
                             addDevice[2].select
-                          ? '#25AAE1ec'
-                          : '#D0D0D0',
+                            ? '#25AAE1ec'
+                            : '#D0D0D0',
                     },
                   ]}
                   disabled={
@@ -1721,8 +1730,8 @@ export default function UnitEdit({
                         addDevice[0].selectId &&
                         addDevice[1].selectId &&
                         addDevice[2].select
-                      ? false
-                      : true
+                        ? false
+                        : true
                   }>
                   <Icon size={width * 0.07} color="#fff" name={'add'} />
                 </TouchableOpacity>
@@ -1752,19 +1761,19 @@ export default function UnitEdit({
                     <Text
                       style={[
                         styles.meterDesciptionHeading,
-                        {fontSize: width * 0.06},
+                        { fontSize: width * 0.06 },
                       ]}>
                       {sliderNumber == 1
                         ? 'Device Selection'
                         : sliderNumber == 2
-                        ? 'Meter Type Selection'
-                        : sliderNumber == 3
-                        ? 'Device Information'
-                        : sliderNumber == 4
-                        ? 'Thumbnail & Location'
-                        : sliderNumber == 5
-                        ? 'Installation Status'
-                        : 'Device Selection'}
+                          ? 'Meter Type Selection'
+                          : sliderNumber == 3
+                            ? 'Device Information'
+                            : sliderNumber == 4
+                              ? 'Thumbnail & Location'
+                              : sliderNumber == 5
+                                ? 'Installation Status'
+                                : 'Device Selection'}
                     </Text>
                     {sliderNumber < 5 ? (
                       <TouchableOpacity
@@ -1778,7 +1787,7 @@ export default function UnitEdit({
                             'Alert',
                             'Are you sure you want to clear current selected data',
                             [
-                              {text: 'No', style: 'cancel'},
+                              { text: 'No', style: 'cancel' },
                               {
                                 text: 'Yes',
                                 onPress: cancelMeter,
@@ -1803,7 +1812,7 @@ export default function UnitEdit({
                 </View>
                 {sliderNumber == 2 ? (
                   <FlatList
-                    contentContainerStyle={{flex: 1, justifyContent: 'center'}}
+                    contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
                     data={state.meterList}
                     renderItem={renderSlide2}
                   />
@@ -1819,12 +1828,12 @@ export default function UnitEdit({
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
                     {filePath?.assets &&
-                      filePath?.assets.map(({uri, index}) => (
+                      filePath?.assets.map(({ uri, index }) => (
                         <Image
                           resizeMode="cover"
                           resizeMethod="scale"
-                          style={{width: width * 0.28, height: width * 0.28}}
-                          source={{uri: uri}}
+                          style={{ width: width * 0.28, height: width * 0.28 }}
+                          source={{ uri: uri }}
                           key={index}
                         />
                       ))}
@@ -1840,7 +1849,7 @@ export default function UnitEdit({
                         color="#3E4A4F"
                       />
                     </TouchableOpacity>
-                    <Text style={[styles.buttonText, {opacity: 0.5}]}>
+                    <Text style={[styles.buttonText, { opacity: 0.5 }]}>
                       ------------- OR --------------
                     </Text>
                     <TouchableOpacity
@@ -1871,13 +1880,13 @@ export default function UnitEdit({
                     <Image
                       resizeMode="contain"
                       resizeMethod="auto"
-                      style={{width: width * 0.3, height: width * 0.62}}
+                      style={{ width: width * 0.3, height: width * 0.62 }}
                       source={require('../../../../../../../Images/dotload.gif')}
                     />
                   ) : (
                     <View style={styles.reasonFileContainer}>
                       {installationStatus == 1 && statusAnimation == true && (
-                        <View style={{alignItems: 'center'}}>
+                        <View style={{ alignItems: 'center' }}>
                           <Video
                             source={require('../../../../../../../Images/checkmarkv.mp4')}
                             repeat
@@ -1900,11 +1909,11 @@ export default function UnitEdit({
                         </View>
                       )}
                       {installationStatus == 2 && statusAnimation == true && (
-                        <View style={{alignItems: 'center'}}>
+                        <View style={{ alignItems: 'center' }}>
                           <Image
                             resizeMode="contain"
                             resizeMethod="auto"
-                            style={{width: width * 0.3, height: width * 0.3}}
+                            style={{ width: width * 0.3, height: width * 0.3 }}
                             source={require('../../../../../../../Images/cross.gif')}
                           />
                           <Text
@@ -1920,7 +1929,7 @@ export default function UnitEdit({
                       )}
                       {installationStatus == 2 && statusAnimation == false && (
                         <>
-                          <View style={{width: width * 0.8}}>
+                          <View style={{ width: width * 0.8 }}>
                             <Text style={[styles.meterDesciptionHeading]}>
                               Reason*
                             </Text>
@@ -1940,19 +1949,19 @@ export default function UnitEdit({
                                 borderRadius: width * 0.015,
                                 margin: width * 0.005,
                               }}
-                              itemTextStyle={{color: '#222'}}
+                              itemTextStyle={{ color: '#222' }}
                               itemsContainerStyle={
                                 Platform.OS == 'android'
                                   ? {
-                                      maxHeight: width * 0.15,
-                                      position: 'absolute',
-                                      width: width * 0.8,
-                                      top: width * 0.15,
-                                      zIndex: 1,
-                                      backgroundColor: 'white',
-                                      elevation: width * 0.01,
-                                    }
-                                  : {maxHeight: width * 0.15}
+                                    maxHeight: width * 0.15,
+                                    position: 'absolute',
+                                    width: width * 0.8,
+                                    top: width * 0.15,
+                                    zIndex: 1,
+                                    backgroundColor: 'white',
+                                    elevation: width * 0.01,
+                                  }
+                                  : { maxHeight: width * 0.15 }
                               }
                               items={reasons}
                               resetValue={false}
@@ -2013,7 +2022,7 @@ export default function UnitEdit({
                                 name="images"
                                 size={width * 0.05}
                                 color="#fff"
-                                style={{marginRight: width * 0.01}}
+                                style={{ marginRight: width * 0.01 }}
                               />
                               <Text style={styles.buttonText}>Upload File</Text>
                             </View>
@@ -2038,7 +2047,7 @@ export default function UnitEdit({
                             onPress={() => sendInstallationStatus(1)}
                             style={[
                               styles.attemptBtn,
-                              {backgroundColor: 'green'},
+                              { backgroundColor: 'green' },
                             ]}>
                             <Text style={styles.attemptText}>
                               Attempted and installed
@@ -2054,7 +2063,7 @@ export default function UnitEdit({
                             }}
                             style={[
                               styles.attemptBtn,
-                              {backgroundColor: '#f00'},
+                              { backgroundColor: '#f00' },
                             ]}>
                             <Text style={styles.attemptText}>
                               Attempted and incomplete
@@ -2066,9 +2075,9 @@ export default function UnitEdit({
                   )
                 ) : (
                   <View
-                    style={{height: width * 0.62, justifyContent: 'center'}}>
+                    style={{ height: width * 0.62, justifyContent: 'center' }}>
                     {slide1.map((item, index) => (
-                      <View style={{width: width * 0.8}} key={item.id}>
+                      <View style={{ width: width * 0.8 }} key={item.id}>
                         <Text style={styles.meterDesciptionHeading}>
                           {item.name}*
                         </Text>
@@ -2092,7 +2101,7 @@ export default function UnitEdit({
                               borderWidth: width * 0.0015,
                               borderRadius: width * 0.015,
                             }}
-                            itemTextStyle={{color: '#222'}}
+                            itemTextStyle={{ color: '#222' }}
                             itemsContainerStyle={{
                               maxHeight: height * 0.08,
                             }}
@@ -2157,14 +2166,14 @@ export default function UnitEdit({
                   }}>
                   {doneAnimation || checkSerial ? (
                     doneAnimation ? (
-                      <Text style={[styles.buttonText, {width: width * 0.7}]}>
+                      <Text style={[styles.buttonText, { width: width * 0.7 }]}>
                         {newMeter.name.charAt(0).toUpperCase() +
                           newMeter.name.slice(1).toLowerCase()}{' '}
                         Meter added succesfully please checking installation
                         status...
                       </Text>
                     ) : (
-                      <Text style={[styles.buttonText, {width: width * 0.7}]}>
+                      <Text style={[styles.buttonText, { width: width * 0.7 }]}>
                         Please wait while checking Device Serial Number...
                       </Text>
                     )
@@ -2176,58 +2185,58 @@ export default function UnitEdit({
                           right: 0,
                           backgroundColor:
                             sliderNumber == 1 &&
-                            slide1[0].selectId &&
-                            slide1[1].selectId
+                              slide1[0].selectId &&
+                              slide1[1].selectId
                               ? '#25AAE1ec'
                               : sliderNumber == 2 &&
                                 newMeter.id != 0 &&
                                 newMeter.name
-                              ? '#25AAE1ec'
-                              : sliderNumber == 3 &&
-                                slide2[0].value &&
-                                slide2[1].value
-                              ? '#25AAE1ec'
-                              : sliderNumber == 4 &&
-                                filePath?.assets != undefined &&
-                                lat != undefined &&
-                                long != undefined
-                              ? '#25AAE1ec'
-                              : (sliderNumber == 5 &&
-                                  installationStatus == 1) ||
-                                (sliderNumber == 5 &&
-                                  installationStatus == 2 &&
-                                  reasonId &&
-                                  reasonDes)
-                              ? '#25AAE1ec'
-                              : '#D0D0D0',
+                                ? '#25AAE1ec'
+                                : sliderNumber == 3 &&
+                                  slide2[0].value &&
+                                  slide2[1].value
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 4 &&
+                                    filePath?.assets != undefined &&
+                                    lat != undefined &&
+                                    long != undefined
+                                    ? '#25AAE1ec'
+                                    : (sliderNumber == 5 &&
+                                      installationStatus == 1) ||
+                                      (sliderNumber == 5 &&
+                                        installationStatus == 2 &&
+                                        reasonId &&
+                                        reasonDes)
+                                      ? '#25AAE1ec'
+                                      : '#D0D0D0',
                         },
                       ]}
                       onPress={sliderNumber == 5 ? finishSlider : changeSlider}
                       disabled={
                         sliderNumber == 1 &&
-                        slide1[0].selectId &&
-                        slide1[1].selectId
+                          slide1[0].selectId &&
+                          slide1[1].selectId
                           ? false
                           : sliderNumber == 2 &&
                             newMeter.id != 0 &&
                             newMeter.name
-                          ? false
-                          : sliderNumber == 3 &&
-                            slide2[0].value &&
-                            slide2[1].value
-                          ? false
-                          : sliderNumber == 4 &&
-                            filePath?.assets != undefined &&
-                            lat != undefined &&
-                            long != undefined
-                          ? false
-                          : (sliderNumber == 5 && installationStatus == 1) ||
-                            (sliderNumber == 5 &&
-                              installationStatus == 2 &&
-                              reasonId &&
-                              reasonDes)
-                          ? false
-                          : true
+                            ? false
+                            : sliderNumber == 3 &&
+                              slide2[0].value &&
+                              slide2[1].value
+                              ? false
+                              : sliderNumber == 4 &&
+                                filePath?.assets != undefined &&
+                                lat != undefined &&
+                                long != undefined
+                                ? false
+                                : (sliderNumber == 5 && installationStatus == 1) ||
+                                  (sliderNumber == 5 &&
+                                    installationStatus == 2 &&
+                                    reasonId &&
+                                    reasonDes)
+                                  ? false
+                                  : true
                       }>
                       <Icon
                         size={width * 0.07}
@@ -2256,7 +2265,7 @@ export default function UnitEdit({
                         'Alert',
                         'Are you sure you want to clear current selected data',
                         [
-                          {text: 'No', style: 'cancel'},
+                          { text: 'No', style: 'cancel' },
                           {
                             text: 'Yes',
                             onPress: changeUtilityAndToggle,
@@ -2279,7 +2288,7 @@ export default function UnitEdit({
                 </View>
               </View>
               {/* Box Body */}
-              <View style={{height: width * 0.62, justifyContent: 'center'}}>
+              <View style={{ height: width * 0.62, justifyContent: 'center' }}>
                 {/* <View style={{ flex: 1 }}> */}
                 <View style={styles.desciptionContainer}>
                   <Build
@@ -2334,9 +2343,9 @@ export default function UnitEdit({
                       type == 'meterDirect'
                         ? null
                         : (setState((oldState) => ({
-                            ...oldState,
-                            lastUnitData: text,
-                          })),
+                          ...oldState,
+                          lastUnitData: text,
+                        })),
                           console.log('unit Name', state.lastUnitData));
                     }}
                     disabled={type == 'meterDirect' ? true : false}
@@ -2370,7 +2379,7 @@ export default function UnitEdit({
                   ]}>
                   {meterListData &&
                     meterListData.map((item) => (
-                      <View style={{flexDirection: 'row'}}>
+                      <View style={{ flexDirection: 'row' }}>
                         <Image
                           source={typeSwitcher(item.name)}
                           style={styles.untiDetailImage}
@@ -2392,7 +2401,7 @@ export default function UnitEdit({
                   }}>
                   {type == 'addMeterDirect' || type == 'meterDirect' ? (
                     meterData.length == 1 ? (
-                      <View style={{marginLeft: width * 0.02}}>
+                      <View style={{ marginLeft: width * 0.02 }}>
                         <Text
                           style={{
                             fontSize: height * 0.018,
@@ -2404,7 +2413,7 @@ export default function UnitEdit({
                     ) : (
                       <TouchableOpacity
                         onPress={
-                          (() =>
+                          () => {
                             LayoutAnimation.configureNext({
                               duration: 300,
                               create: {
@@ -2415,7 +2424,9 @@ export default function UnitEdit({
                                 type: LayoutAnimation.Types.easeInEaseOut,
                               },
                             }),
-                          setShowAddMeterSlider(true))
+                              setShowAddMeterSlider(true),
+                              callApi();
+                          }
                         }
                         style={{
                           flexDirection: 'row',
@@ -2458,7 +2469,7 @@ export default function UnitEdit({
                         </Text>
                       </TouchableOpacity>
                     ) : (
-                      <View style={{marginLeft: width * 0.02}}>
+                      <View style={{ marginLeft: width * 0.02 }}>
                         <Text
                           style={{
                             fontSize: height * 0.018,
@@ -2469,7 +2480,7 @@ export default function UnitEdit({
                       </View>
                     )
                   ) : (
-                    <View style={{marginLeft: width * 0.02}}>
+                    <View style={{ marginLeft: width * 0.02 }}>
                       <DotsLoader color="#25AAE1ec" />
                     </View>
                   )}
@@ -2481,7 +2492,7 @@ export default function UnitEdit({
                         'Alert',
                         'Are you sure you want to clear current selected data',
                         [
-                          {text: 'No', style: 'cancel'},
+                          { text: 'No', style: 'cancel' },
                           {
                             text: 'Yes',
                             onPress: changeUtilityAndToggle,
@@ -2491,7 +2502,7 @@ export default function UnitEdit({
                     }>
                     <View style={styles.cancelBotton}>
                       <Plus name="close" color="black" size={18} />
-                      <Text style={{color: 'black'}}>Cancel</Text>
+                      <Text style={{ color: 'black' }}>Cancel</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={handleAddNewUnit}>
@@ -2499,18 +2510,18 @@ export default function UnitEdit({
                       <Plus
                         name={
                           type == 'meterDirect' ||
-                          type == 'addMeterDirect' ||
-                          type == 'add'
+                            type == 'addMeterDirect' ||
+                            type == 'add'
                             ? 'plus'
                             : 'pencil-plus'
                         }
                         color="white"
                         size={18}
                       />
-                      <Text style={{color: 'white'}}>
+                      <Text style={{ color: 'white' }}>
                         {type == 'meterDirect' ||
-                        type == 'addMeterDirect' ||
-                        type == 'add'
+                          type == 'addMeterDirect' ||
+                          type == 'add'
                           ? 'Add Unit'
                           : 'Edit Unit'}
                       </Text>
@@ -2563,7 +2574,7 @@ export default function UnitEdit({
               ref={(ref) => {
                 this.camera = ref;
               }}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               type={RNCamera.Constants.Type.back}
               autoFocus="on"
               onBarCodeRead={onScanned}
