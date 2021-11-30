@@ -79,7 +79,6 @@ export default function UnitEdit({
   flag,
   enableFlag,
   disableFlag,
-  successAlert,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [filePath, setFilePath] = useState({});
@@ -220,7 +219,6 @@ export default function UnitEdit({
 
   const sendInstallationStatus = (status) => {
     setInstallationStatus(status);
-    // successAlert();
     setStatusAnimation(true);
     // setTimeout(() => {
     //   setStatusAnimation(false);
@@ -1894,7 +1892,7 @@ export default function UnitEdit({
                             style={{
                               fontSize: width * 0.06,
                               fontWeight: 'bold',
-                              color: '',
+                              color: '#00B1DC',
                             }}>
                             Installation Successful
                           </Text>
@@ -1913,7 +1911,7 @@ export default function UnitEdit({
                             style={{
                               fontSize: width * 0.06,
                               fontWeight: 'bold',
-                              color: '',
+                              color: '#FF0000',
                             }}>
                             Installation not Succeed
                           </Text>
