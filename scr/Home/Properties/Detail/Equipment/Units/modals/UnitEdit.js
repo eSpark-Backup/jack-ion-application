@@ -904,7 +904,7 @@ export default function UnitEdit({
           alert(unitResponse?.data?.message);
         }
       } catch (e) {
-        console.log('e---->', e);
+        // console.log('e---->', e);
       }
     }
   };
