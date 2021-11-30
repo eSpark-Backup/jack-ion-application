@@ -20,6 +20,7 @@ import {
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
+import Video from 'react-native-video';
 import SystemSetting from 'react-native-system-setting';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
@@ -86,6 +87,7 @@ export default function UnitEdit({
   const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
   const [selectLocation, setSelectLocation] = useState(false);
+  const [statusAnimation, setStatusAnimation] = useState(false);
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [installationStatus, setInstallationStatus] = useState(0);
@@ -153,7 +155,7 @@ export default function UnitEdit({
     },
   ]);
   const [reasons, setReasons] = useState([]);
-  const [reasonId, setReasonId] = useState();
+  const [reasonId, setReasonId] = useState(null);
   const [reasonDes, setReasonDes] = useState('');
   const [reasonText, setReasonText] = useState('');
   const [addManufacturer, setAddManufacturer] = useState('');
@@ -215,6 +217,14 @@ export default function UnitEdit({
     }
   };
 
+  const sendInstallationStatus = (status) => {
+    setInstallationStatus(status);
+    setStatusAnimation(true);
+    // setTimeout(() => {
+    //   setStatusAnimation(false);
+    // }, 5000);
+  };
+
   const enableLocation = async () => {
     const location = await SystemSetting.isLocationEnabled();
     if (!location) {
@@ -261,7 +271,16 @@ export default function UnitEdit({
 
   const checkLocation = async (locationAccess) => {
     if (locationAccess) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
       setShowAddMeterSlider(true);
       _renderMap();
     } else {
@@ -369,17 +388,12 @@ export default function UnitEdit({
     callApi();
   }, [modalVisible]);
 
+  // useEffect(() => {
+  //   _renderMap();
+  // }, []);
   useEffect(() => {
-    // console.log('slide2--->', slide2);
-    let newArr = [...slide2]; // copying the old datas array
-    newArr[0].value = type == 'meterDirect' || type == 'addMeterDirect'
-      ? unitDetails?.unit?.meterSerial
-      : '';
-    setSlide2(newArr);
-  }, [unitDetails?.unit?.meterSerial]);
-  useEffect(() => {
-    console.log('slide2--->', slide2);
-  }, [slide2]);
+    console.log('meterData--->', meterData.length);
+  }, [meterData]);
   useEffect(() => {
     if (flag) {
       console.log('un in mod-->>', unitDetails);
@@ -401,6 +415,7 @@ export default function UnitEdit({
       }, 5000);
     }
   }, [sliderNumber]);
+
   const addMeterInNewArray = (value) => {
     // setMeterMenuVisible(false);
     // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -666,27 +681,22 @@ export default function UnitEdit({
     let deviceData = [...addDevice]; // copying the old datas array
     deviceData[1].data = DeviceTypesResponse?.data?.data;
     setAddDevice(deviceData);
-    let newArr = [...slide2]; // copying the old datas array
-    newArr[0].value = type == 'meterDirect' || type == 'addMeterDirect'
-      ? unitDetails?.unit?.meterSerial
-      : '';
-    setSlide2(newArr);
     const reasoneResponce = await api.get(
       '/property/equipment/unit/reasons/all',
     );
     // console.log('reasons_________', reasoneResponce?.data);
-    if (reasoneResponce?.data?.bool) {
-      let reasoneData = [...reasons];
-      reasoneResponce?.data?.data?.map((item, index) => {
-        let resoneObj = {
-          id: item.id,
-          name: item.option_reason,
-        };
-        reasoneData.push(resoneObj);
-      });
-      setReasons(reasoneData);
-      console.log('reasons_________', reasoneData);
-    }
+    // if (reasoneResponce?.data?.bool) {
+    //   let reasoneData = [...reasons];
+    //   reasoneResponce?.data?.data?.map((item, index) => {
+    //     let resoneObj = {
+    //       id: item.id,
+    //       name: item.option_reason,
+    //     };
+    //     reasoneData.push(resoneObj);
+    //   });
+    // }
+    setReasons(reasoneResponce?.data?.data);
+    // console.log('reasons_________', reasoneResponce?.data?.data);
   };
 
   const getDevice = async (some, index) => {
@@ -718,7 +728,16 @@ export default function UnitEdit({
   // };
 
   const handleAddNewUnit = async () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     let matchUnit;
     if (type == 'add') {
       matchUnit = unitsArray?.filter((e) => e.name == state.lastUnitData);
@@ -890,6 +909,7 @@ export default function UnitEdit({
       } else {
         alert(unitResponse?.data?.message);
       }
+      console.log('Add unit response', unitResponse?.data);
     } else {
       try {
         const unitResponse = await api.patch(
@@ -904,7 +924,7 @@ export default function UnitEdit({
           alert(unitResponse?.data?.message);
         }
       } catch (e) {
-        console.log('e---->', e);
+        // console.log('e---->', e);
       }
     }
   };
@@ -924,7 +944,16 @@ export default function UnitEdit({
     );
     setCheckSerial(false);
     if (!SerialResponse?.data?.bool) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
       setSliderNumber(sliderNumber + 1);
       setSliderProgress(sliderProgress + 0.25);
     } else {
@@ -940,14 +969,32 @@ export default function UnitEdit({
       setCheckSerial(true);
       checkingSerial();
     } else {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
       setSliderNumber(sliderNumber + 1);
       setSliderProgress(sliderProgress + 0.25);
     }
   };
 
   const finishSlider = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     var loopData = [...meterData];
     loopData.push({
       meter_id: newMeter.id,
@@ -962,7 +1009,7 @@ export default function UnitEdit({
       reason: {
         options_reason_id: reasonId,
         text_reason: reasonDes,
-        picture: reasonBase64,
+        picture: `data:image/jpeg;base64,${reasonBase64}`,
       },
     });
     setMeterData(loopData);
@@ -1086,14 +1133,14 @@ export default function UnitEdit({
             ))
           }
           onChangeText={(text) =>
-            index == 0 ? type == 'meterDirect' || type == 'addMeterDirect'
-              ? null
-              : onChangeMultipleField(text, index)
+            index == 0
+              ? type == 'meterDirect' || type == 'addMeterDirect'
+                ? null
+                : onChangeMultipleField(text, index)
               : onChangeMultipleField(text, index)
           }
           disabled={
-            index == 0 &&
-              type == 'meterDirect' || type == 'addMeterDirect' ? true : false
+            type == 'meterDirect' || type == 'addMeterDirect' ? true : false
           }
           style={styles.meterInput}
           mode={'outlined'}
@@ -1110,44 +1157,44 @@ export default function UnitEdit({
       </View>
     );
   };
-  // const renderSlide5 = ({item, index}) => {
-  //   // console.log('index check slider 3 ---> ',index)
-  //   return (
-  //     <View style={{width: width * 0.8}} key={item.id}>
-  //       <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
-  //         {item.name}
-  //       </Text>
-  //       <TextInput
-  //         placeholder={item.name}
-  //         value={item.value}
-  //         dense={true}
-  //         keyboardType={index == 1 ? 'numeric' : 'default'}
-  //         error={item.error}
-  //         onChangeText={(text) =>
-  //           index == 0
-  //             ? type == 'meterDirect' || type == 'addMeterDirect'
-  //               ? null
-  //               : onChangeMultipleField(text, index)
-  //             : onChangeMultipleField(text, index)
-  //         }
-  //         disabled={
-  //           type == 'meterDirect' || type == 'addMeterDirect' ? true : false
-  //         }
-  //         style={styles.meterInput}
-  //         mode={'outlined'}
-  //         // numberOfLines={index == 2 ? 3 : 1}
-  //         // multiline={index == 2 ? true : false}
-  //         theme={{
-  //           colors: {
-  //             text: '#25AAE1ec',
-  //             primary: '#25AAE1ec',
-  //             selectionColor: 'red',
-  //           },
-  //         }}
-  //       />
-  //     </View>
-  //   );
-  // };
+  const renderSlide5 = ({item, index}) => {
+    // console.log('index check slider 3 ---> ',index)
+    return (
+      <View style={{width: width * 0.8}} key={item.id}>
+        <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
+          {item.name}
+        </Text>
+        <TextInput
+          placeholder={item.name}
+          value={item.value}
+          dense={true}
+          keyboardType={index == 1 ? 'numeric' : 'default'}
+          error={item.error}
+          onChangeText={(text) =>
+            index == 0
+              ? type == 'meterDirect' || type == 'addMeterDirect'
+                ? null
+                : onChangeMultipleField(text, index)
+              : onChangeMultipleField(text, index)
+          }
+          disabled={
+            type == 'meterDirect' || type == 'addMeterDirect' ? true : false
+          }
+          style={styles.meterInput}
+          mode={'outlined'}
+          // numberOfLines={index == 2 ? 3 : 1}
+          // multiline={index == 2 ? true : false}
+          theme={{
+            colors: {
+              text: '#25AAE1ec',
+              primary: '#25AAE1ec',
+              selectionColor: 'red',
+            },
+          }}
+        />
+      </View>
+    );
+  };
 
   const selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
@@ -1157,7 +1204,7 @@ export default function UnitEdit({
   const _renderMap = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        // console.log('Positon Batao', position);
+        console.log('Positon Batao', position);
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
         setLat(lat);
@@ -1241,7 +1288,7 @@ export default function UnitEdit({
         alert(res.customButton);
       } else {
         const source = {uri: res.uri};
-        console.log('response', res);
+        // console.log('response', res);
         if (type == 'reason') {
           setReasonBase64(res.assets[0].base64);
           setReasonPath(res);
@@ -1259,11 +1306,20 @@ export default function UnitEdit({
   };
 
   const cancelMeter = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     setSliderNumber(1);
     setSliderProgress(0);
     setReasonText('');
-    setReasonId('');
+    setReasonId(null);
     setReasonDes('');
     setInstallationStatus(0);
     setFilePath({});
@@ -1286,7 +1342,16 @@ export default function UnitEdit({
     setShowAddMeterSlider(false);
   };
   const showAddNewType = (value) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     setAddNewType(true);
     setShowAddType(value);
   };
@@ -1313,7 +1378,16 @@ export default function UnitEdit({
       );
       if (ManufacturersResponse?.data?.bool) {
         console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
         callApi();
         cancelAddNewType();
       } else {
@@ -1331,7 +1405,16 @@ export default function UnitEdit({
       );
       if (DeviceTypesResponse?.data?.bool) {
         console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
         callApi();
         cancelAddNewType();
       } else {
@@ -1340,7 +1423,16 @@ export default function UnitEdit({
     }
   };
   const cancelAddNewType = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     setAddNewType(false);
     let deviceData = [...addDevice]; // copying the old datas array
     deviceData[0].select = '';
@@ -1505,10 +1597,16 @@ export default function UnitEdit({
                       />
                     </View>
                   ) : (
-                    <View>
+                    <View style={{zIndex: 10}}>
                       {addDevice &&
                         addDevice.map((item, index) => (
-                          <View style={{width: width * 0.8}} key={item.id}>
+                          <View
+                            style={{
+                              width: width * 0.8,
+                              // backgroundColor: 'pink',
+                              // zIndex: 9,
+                            }}
+                            key={item.id}>
                             <View>
                               <Text style={styles.meterDesciptionHeading}>
                                 {item.name}
@@ -1531,15 +1629,28 @@ export default function UnitEdit({
                                   margin: width * 0.005,
                                 }}
                                 itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: width * 0.15,
-                                  position: 'absolute',
-                                  width: width * 0.8,
-                                  top: width * 0.15,
-                                  zIndex: 1,
-                                  backgroundColor: 'white',
-                                  elevation: width * 0.01,
-                                }}
+                                itemsContainerStyle={
+                                  Platform.OS == 'android'
+                                    ? {
+                                        height: width * 0.2,
+                                        zIndex: 1,
+                                        position: 'absolute',
+                                        width: width * 0.8,
+                                        top: width * 0.1,
+                                        flex: 1,
+                                        zIndex: 20,
+                                        backgroundColor: 'white',
+                                        elevation: width * 0.01,
+                                        shadowColor: '#000',
+                                        shadowOffset: {
+                                          width: 0,
+                                          height: 2,
+                                        },
+                                        shadowOpacity: 0.25,
+                                        shadowRadius: 3.84,
+                                      }
+                                    : {height: width * 0.2, zIndex: 1}
+                                }
                                 items={item.data}
                                 resetValue={false}
                                 textInputProps={{
@@ -1729,43 +1840,9 @@ export default function UnitEdit({
                         color="#3E4A4F"
                       />
                     </TouchableOpacity>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: width * 0.1,
-                      }}>
-                      <View
-                        style={{
-                          flex: 1,
-                          height: 1,
-                          backgroundColor: 'black',
-                          opacity: 0.25,
-                        }}
-                      />
-                      <View>
-                        <Text
-                          style={[
-                            styles.buttonText,
-                            {
-                              width: width * 0.1,
-                              textAlign: 'center',
-                              opacity: 0.5,
-                              marginRight: 0,
-                            },
-                          ]}>
-                          OR
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flex: 1,
-                          height: 1,
-                          backgroundColor: 'black',
-                          opacity: 0.25,
-                        }}
-                      />
-                    </View>
+                    <Text style={[styles.buttonText, {opacity: 0.5}]}>
+                      ------------- OR --------------
+                    </Text>
                     <TouchableOpacity
                       onPress={imageGalleryLaunch}
                       style={styles.button}>
@@ -1792,14 +1869,56 @@ export default function UnitEdit({
                 ) : sliderNumber == 5 ? (
                   doneAnimation ? (
                     <Image
-                      resizeMode="cover"
-                      resizeMethod="scale"
-                      style={{width: width * 0.9, height: width * 0.62}}
-                      source={require('../../../../../../../Images/animated-check.gif')}
+                      resizeMode="contain"
+                      resizeMethod="auto"
+                      style={{width: width * 0.3, height: width * 0.62}}
+                      source={require('../../../../../../../Images/dotload.gif')}
                     />
                   ) : (
                     <View style={styles.reasonFileContainer}>
-                      {installationStatus == 2 ? (
+                      {installationStatus == 1 && statusAnimation == true && (
+                        <View style={{alignItems: 'center'}}>
+                          <Video
+                            source={require('../../../../../../../Images/checkmarkv.mp4')}
+                            repeat
+                            style={{
+                              width: width * 0.3,
+                              height: width * 0.3,
+                            }}
+                            resizeMode="contain"
+                            controls={false}
+                          />
+                          <Text
+                            style={{
+                              fontSize: width * 0.06,
+                              fontWeight: 'bold',
+                              color: '#00B1DC',
+                            }}>
+                            Installation Successful
+                          </Text>
+                          <Text>Meter is installed Successfully</Text>
+                        </View>
+                      )}
+                      {installationStatus == 2 && statusAnimation == true && (
+                        <View style={{alignItems: 'center'}}>
+                          <Image
+                            resizeMode="contain"
+                            resizeMethod="auto"
+                            style={{width: width * 0.3, height: width * 0.3}}
+                            source={require('../../../../../../../Images/cross.gif')}
+                          />
+                          <Text
+                            style={{
+                              fontSize: width * 0.06,
+                              fontWeight: 'bold',
+                              color: '#FF0000',
+                            }}>
+                            Installation not Succeed
+                          </Text>
+                          <Text>Meter is not installed</Text>
+                        </View>
+                      )}
+                      {installationStatus == 2 && statusAnimation == false && (
                         <>
                           <View style={{width: width * 0.8}}>
                             <Text style={[styles.meterDesciptionHeading]}>
@@ -1822,15 +1941,19 @@ export default function UnitEdit({
                                 margin: width * 0.005,
                               }}
                               itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={{
-                                maxHeight: width * 0.15,
-                                position: 'absolute',
-                                width: width * 0.8,
-                                top: width * 0.15,
-                                zIndex: 1,
-                                backgroundColor: 'white',
-                                elevation: width * 0.01,
-                              }}
+                              itemsContainerStyle={
+                                Platform.OS == 'android'
+                                  ? {
+                                      maxHeight: width * 0.15,
+                                      position: 'absolute',
+                                      width: width * 0.8,
+                                      top: width * 0.15,
+                                      zIndex: 1,
+                                      backgroundColor: 'white',
+                                      elevation: width * 0.01,
+                                    }
+                                  : {maxHeight: width * 0.15}
+                              }
                               items={reasons}
                               resetValue={false}
                               textInputProps={{
@@ -1908,10 +2031,11 @@ export default function UnitEdit({
                               ))}
                           </TouchableOpacity>
                         </>
-                      ) : (
+                      )}
+                      {installationStatus == 0 && statusAnimation == false && (
                         <>
                           <TouchableOpacity
-                            onPress={() => setInstallationStatus(1)}
+                            onPress={() => sendInstallationStatus(1)}
                             style={[
                               styles.attemptBtn,
                               {backgroundColor: 'green'},
@@ -1921,7 +2045,13 @@ export default function UnitEdit({
                             </Text>
                           </TouchableOpacity>
                           <TouchableOpacity
-                            onPress={() => setInstallationStatus(2)}
+                            onPress={() => {
+                              setInstallationStatus(2);
+                              setStatusAnimation(true);
+                              setTimeout(() => {
+                                setStatusAnimation(false);
+                              }, 5000);
+                            }}
                             style={[
                               styles.attemptBtn,
                               {backgroundColor: '#f00'},
@@ -2066,7 +2196,8 @@ export default function UnitEdit({
                                   installationStatus == 1) ||
                                 (sliderNumber == 5 &&
                                   installationStatus == 2 &&
-                                  reasonId)
+                                  reasonId &&
+                                  reasonDes)
                               ? '#25AAE1ec'
                               : '#D0D0D0',
                         },
@@ -2093,7 +2224,8 @@ export default function UnitEdit({
                           : (sliderNumber == 5 && installationStatus == 1) ||
                             (sliderNumber == 5 &&
                               installationStatus == 2 &&
-                              reasonId)
+                              reasonId &&
+                              reasonDes)
                           ? false
                           : true
                       }>
@@ -2185,9 +2317,16 @@ export default function UnitEdit({
                     value={state.lastUnitData}
                     dense={true}
                     onChangeText={(text) => {
-                      LayoutAnimation.configureNext(
-                        LayoutAnimation.Presets.easeInEaseOut,
-                      );
+                      LayoutAnimation.configureNext({
+                        duration: 300,
+                        create: {
+                          type: LayoutAnimation.Types.easeInEaseOut,
+                          property: LayoutAnimation.Properties.opacity,
+                        },
+                        update: {
+                          type: LayoutAnimation.Types.easeInEaseOut,
+                        },
+                      });
                       setError((oldState) => ({
                         ...oldState,
                         errorUnits: '',
@@ -2264,12 +2403,19 @@ export default function UnitEdit({
                       </View>
                     ) : (
                       <TouchableOpacity
-                        onPress={() => {
-                          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut),
-                            setShowAddMeterSlider(true),
-                            callApi()
-
-                        }
+                        onPress={
+                          (() =>
+                            LayoutAnimation.configureNext({
+                              duration: 300,
+                              create: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                                property: LayoutAnimation.Properties.opacity,
+                              },
+                              update: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                              },
+                            }),
+                          setShowAddMeterSlider(true))
                         }
                         style={{
                           flexDirection: 'row',
