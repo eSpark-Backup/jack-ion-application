@@ -16,6 +16,7 @@ import {
   FlatList,
   Image,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -93,6 +94,7 @@ export default function UnitEdit({
   const [installationStatus, setInstallationStatus] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [checkSerial, setCheckSerial] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -906,6 +908,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
+    setLoading(true);
     // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
@@ -917,8 +920,10 @@ export default function UnitEdit({
         changeUtilityAndToggle();
         reRun(unitResponse?.data?.data);
         console.log('datachecckk-->>', unitResponse?.data?.data);
+        setLoading(false);
       } else {
         alert(unitResponse?.data?.message);
+        setLoading(false);
       }
       console.log('Add unit response', unitResponse?.data);
     } else {
@@ -931,8 +936,10 @@ export default function UnitEdit({
         if (unitResponse?.data?.bool) {
           changeUtilityAndToggle();
           reRun(unitResponse?.data?.data);
+          setLoading(false);
         } else {
           alert(unitResponse?.data?.message);
+          setLoading(false);
         }
       } catch (e) {
         // console.log('e---->', e);
@@ -1064,6 +1071,13 @@ export default function UnitEdit({
           style={{
             height: width * 0.12,
             width: width * 0.8,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: width * 0.003,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
             elevation: width * 0.005,
             backgroundColor: 'white',
             paddingHorizontal: width * 0.01,
@@ -1469,7 +1483,9 @@ export default function UnitEdit({
         // onBackdropPress={() => setShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
-          {showAddMeterSlider ? (
+          {loading ? (
+            <ActivityIndicator size="large" color="#25AAE1" />
+          ) : showAddMeterSlider ? (
             selectLocation ? (
               <View
                 style={{
@@ -1528,7 +1544,7 @@ export default function UnitEdit({
                       zoomEnabled={true}
                       provider={PROVIDER_GOOGLE}
                       showsUserLocation={true}
-                      showsMyLocationButton={true}
+                      // showsMyLocationButton={true}
                       onRegionChange={(e) => moveMarker(e)}
                       // onPress={(e) => this.getLocation(e)}
                     ></MapView>
@@ -1662,7 +1678,7 @@ export default function UnitEdit({
                                         shadowOpacity: 0.25,
                                         shadowRadius: 3.84,
                                       }
-                                    : {height: width * 0.2, zIndex: 1}
+                                    : {height: width * 0.1, zIndex: 1}
                                 }
                                 items={item.data}
                                 resetValue={false}
@@ -1818,6 +1834,7 @@ export default function UnitEdit({
                   <FlatList
                     contentContainerStyle={{flex: 1, justifyContent: 'center'}}
                     data={state.meterList}
+                    scrollEnabled={false}
                     renderItem={renderSlide2}
                   />
                 ) : sliderNumber == 3 ? (
@@ -1827,7 +1844,11 @@ export default function UnitEdit({
                       width: width * 0.9,
                       alignItems: 'center',
                     }}>
-                    <FlatList data={slide2} renderItem={renderSlide3} />
+                    <FlatList
+                      data={slide2}
+                      renderItem={renderSlide3}
+                      scrollEnabled={false}
+                    />
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
@@ -2061,7 +2082,9 @@ export default function UnitEdit({
                             onPress={() => {
                               setInstallationStatus(2);
                               setStatusAnimation(true);
+                              setHideBtn(true);
                               setTimeout(() => {
+                                setHideBtn(false);
                                 setStatusAnimation(false);
                               }, 5000);
                             }}
@@ -2419,18 +2442,7 @@ export default function UnitEdit({
                     ) : (
                       <TouchableOpacity
                         onPress={() => {
-                          LayoutAnimation.configureNext({
-                            duration: 300,
-                            create: {
-                              type: LayoutAnimation.Types.easeInEaseOut,
-                              property: LayoutAnimation.Properties.opacity,
-                            },
-                            update: {
-                              type: LayoutAnimation.Types.easeInEaseOut,
-                            },
-                          }),
-                            setShowAddMeterSlider(true),
-                            enableLocation();
+                          enableLocation();
                           callApi();
                         }}
                         style={{
