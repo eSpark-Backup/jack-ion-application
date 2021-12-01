@@ -14,7 +14,9 @@ import {
 import TabIcon from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
 import {withNavigation} from 'react-navigation';
-
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+let fcmToken = '';
 // Components
 import styles from './style';
 
@@ -61,7 +63,14 @@ class Splash extends Component {
       this.backAction,
     );
     SplashScreen.hide();
+    this.onAppBootstrap();
+    this.createChannels();
     this.requestLocationPermission();
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      this.showNotifications(remoteMessage);
+    });
+    return unsubscribe;
   }
 
   backAction = () => {
@@ -79,6 +88,34 @@ class Splash extends Component {
   componentWillUnmount() {
     this.backHandler.remove();
   }
+
+  async onAppBootstrap() {
+    // Register the device with FCM
+    await messaging().registerDeviceForRemoteMessages();
+
+    // Get the token
+    fcmToken = await messaging().getToken();
+
+    console.log('TOKEN_______sss', fcmToken);
+    // Save the token
+    // await postToApi('/users/1234/tokens', {token});
+  }
+
+  createChannels = () => {
+    PushNotification.createChannel({
+      channelId: 'test-id',
+      channelName: 'Test-channel',
+    });
+  };
+
+  showNotifications = (item) => {
+    console.log('kia mila items', item.notification);
+    PushNotification.localNotification({
+      channelId: 'test-id',
+      title: item.notification.title,
+      message: item.notification.body,
+    });
+  };
 
   render() {
     return (
