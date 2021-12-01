@@ -607,7 +607,9 @@ const App = ({navigation}) => {
     setStatusInfo([
       {
         leftText: 'Pulses',
-        rightText: '3,761',
+        rightText: unitMeter?.meter_read?.meter_reading
+          ? unitMeter?.meter_read?.meter_reading
+          : 0,
         icon: null,
         bold: false,
       },
@@ -1282,7 +1284,11 @@ const App = ({navigation}) => {
                 </View>
                 <View style={styles.flexRow}>
                   <Check name="check" size={width * 0.05} color="#0fc908" />
-                  <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
+                  <Text style={{color: '#5c5c5ccf'}}>
+                    {unitMeter?.time_diff
+                      ? 'As of ' + unitMeter?.time_diff
+                      : 'As of 5 hours ago'}
+                  </Text>
                 </View>
               </MotiView>
             )}
@@ -1313,7 +1319,11 @@ const App = ({navigation}) => {
                   />
                   <View>
                     <Text style={styles.greyText}>PULSES</Text>
-                    <Text style={styles.text}>3,786</Text>
+                    <Text style={styles.text}>
+                      {unitMeter?.meter_read?.meter_reading
+                        ? unitMeter?.meter_read?.meter_reading
+                        : 0}
+                    </Text>
                   </View>
                   <Text style={styles.symbolStyle}>x</Text>
                   <View>
@@ -1323,12 +1333,21 @@ const App = ({navigation}) => {
                   <Text style={styles.symbolStyle}>+</Text>
                   <View>
                     <Text style={styles.greyText}>IMR</Text>
-                    <Text style={styles.text}>21</Text>
+                    <Text style={styles.text}>
+                      {unitMeter?.initial_meter_reading
+                        ? unitMeter?.initial_meter_reading
+                        : 0}
+                    </Text>
                   </View>
                   <Text style={styles.symbolStyle}>=</Text>
                   <View>
                     <Text style={styles.greyText}>CURRENT READ</Text>
-                    <Text style={styles.text}>3,807</Text>
+                    <Text style={styles.text}>
+                      {unitMeter?.meter_read?.meter_reading
+                        ? unitMeter?.meter_read?.meter_reading +
+                          unitMeter?.initial_meter_reading
+                        : 0}
+                    </Text>
                   </View>
                 </View>
               </MotiView>
@@ -1386,7 +1405,13 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text style={styles.sectionText}>{title}</Text>
+                    <Text
+                      style={[
+                        styles.sectionText,
+                        {textTransform: 'capitalize'},
+                      ]}>
+                      {title}
+                    </Text>
                     <Image source={img} style={styles.sectionImgStyle} />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
