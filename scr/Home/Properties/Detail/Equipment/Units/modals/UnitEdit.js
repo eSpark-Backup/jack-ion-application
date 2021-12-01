@@ -16,7 +16,6 @@ import {
   FlatList,
   Image,
   Linking,
-  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -94,7 +93,6 @@ export default function UnitEdit({
   const [installationStatus, setInstallationStatus] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [checkSerial, setCheckSerial] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -234,6 +232,7 @@ export default function UnitEdit({
 
   const enableLocation = async () => {
     const location = await SystemSetting.isLocationEnabled();
+    console.log('GPS', location);
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -308,13 +307,13 @@ export default function UnitEdit({
     }
   };
 
-  const requestCameraPermission = async () => {
+  const requestCameraPermission = async (type) => {
     if (Platform.OS == 'ios') {
       request(PERMISSIONS.IOS.CAMERA)
         .then((result) => {
           console.log('kia hai result camera ka', result);
           if (result == RESULTS.GRANTED) {
-            cameraLaunch();
+            cameraLaunch(type);
           } else {
             // console.log('Denied',)
             Alert.alert(
@@ -343,7 +342,7 @@ export default function UnitEdit({
           PermissionsAndroid.PERMISSIONS.CAMERA,
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          cameraLaunch();
+          cameraLaunch(type);
         } else {
           Alert.alert(
             "You don't have access for the Camera",
@@ -908,7 +907,6 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    setLoading(true);
     // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
@@ -920,10 +918,8 @@ export default function UnitEdit({
         changeUtilityAndToggle();
         reRun(unitResponse?.data?.data);
         console.log('datachecckk-->>', unitResponse?.data?.data);
-        setLoading(false);
       } else {
         alert(unitResponse?.data?.message);
-        setLoading(false);
       }
       console.log('Add unit response', unitResponse?.data);
     } else {
@@ -936,10 +932,8 @@ export default function UnitEdit({
         if (unitResponse?.data?.bool) {
           changeUtilityAndToggle();
           reRun(unitResponse?.data?.data);
-          setLoading(false);
         } else {
           alert(unitResponse?.data?.message);
-          setLoading(false);
         }
       } catch (e) {
         // console.log('e---->', e);
@@ -1071,13 +1065,6 @@ export default function UnitEdit({
           style={{
             height: width * 0.12,
             width: width * 0.8,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: width * 0.003,
-            },
-            shadowOpacity: 0.22,
-            shadowRadius: 2.22,
             elevation: width * 0.005,
             backgroundColor: 'white',
             paddingHorizontal: width * 0.01,
@@ -1258,7 +1245,7 @@ export default function UnitEdit({
     );
   };
 
-  const cameraLaunch = () => {
+  const cameraLaunch = (type) => {
     let options = {
       storageOptions: {
         skipBackup: true,
@@ -1279,13 +1266,18 @@ export default function UnitEdit({
       } else {
         const source = {uri: res.uri};
         console.log('response', res);
-        setImageBase64(res.assets[0].base64);
+        if (type == 'reason') {
+          setReasonBase64(res.assets[0].base64);
+          setReasonPath(res);
+        } else {
+          setImageBase64(res.assets[0].base64);
+          setFilePath(res);
+        }
         // this.setState({
         //   filePath: res,
         //   fileData: res.data,
         //   fileUri: res.uri
         // });
-        setFilePath(res);
       }
     });
   };
@@ -1483,9 +1475,7 @@ export default function UnitEdit({
         // onBackdropPress={() => setShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
-          {loading ? (
-            <ActivityIndicator size="large" color="#25AAE1" />
-          ) : showAddMeterSlider ? (
+          {showAddMeterSlider ? (
             selectLocation ? (
               <View
                 style={{
@@ -1544,7 +1534,7 @@ export default function UnitEdit({
                       zoomEnabled={true}
                       provider={PROVIDER_GOOGLE}
                       showsUserLocation={true}
-                      // showsMyLocationButton={true}
+                      showsMyLocationButton={true}
                       onRegionChange={(e) => moveMarker(e)}
                       // onPress={(e) => this.getLocation(e)}
                     ></MapView>
@@ -1678,7 +1668,7 @@ export default function UnitEdit({
                                         shadowOpacity: 0.25,
                                         shadowRadius: 3.84,
                                       }
-                                    : {height: width * 0.1, zIndex: 1}
+                                    : {height: width * 0.2, zIndex: 1}
                                 }
                                 items={item.data}
                                 resetValue={false}
@@ -1834,7 +1824,6 @@ export default function UnitEdit({
                   <FlatList
                     contentContainerStyle={{flex: 1, justifyContent: 'center'}}
                     data={state.meterList}
-                    scrollEnabled={false}
                     renderItem={renderSlide2}
                   />
                 ) : sliderNumber == 3 ? (
@@ -1844,11 +1833,7 @@ export default function UnitEdit({
                       width: width * 0.9,
                       alignItems: 'center',
                     }}>
-                    <FlatList
-                      data={slide2}
-                      renderItem={renderSlide3}
-                      scrollEnabled={false}
-                    />
+                    <FlatList data={slide2} renderItem={renderSlide3} />
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
@@ -1955,7 +1940,11 @@ export default function UnitEdit({
                       {installationStatus == 2 && statusAnimation == false && (
                         <>
                           <View style={{width: width * 0.8}}>
-                            <Text style={[styles.meterDesciptionHeading]}>
+                            <Text
+                              style={[
+                                styles.meterDesciptionHeading,
+                                {marginBottom: 0},
+                              ]}>
                               Reason*
                             </Text>
                             <SearchableDropdown
@@ -2010,7 +1999,11 @@ export default function UnitEdit({
                                 nestedScrollEnabled: true,
                               }}
                             />
-                            <Text style={styles.meterDesciptionHeading}>
+                            <Text
+                              style={[
+                                styles.meterDesciptionHeading,
+                                {marginBottom: 0},
+                              ]}>
                               Reason Description*
                             </Text>
                             <TextInput
@@ -2031,6 +2024,18 @@ export default function UnitEdit({
                               }}
                             />
                           </View>
+                          <TouchableOpacity
+                            onPress={() => requestCameraPermission('reason')}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>
+                              Launch Camera Directly
+                            </Text>
+                            <Iconi
+                              name="camera"
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
 
                           <TouchableOpacity
                             onPress={() => imageGalleryLaunch('reason')}
@@ -2082,9 +2087,7 @@ export default function UnitEdit({
                             onPress={() => {
                               setInstallationStatus(2);
                               setStatusAnimation(true);
-                              setHideBtn(true);
                               setTimeout(() => {
-                                setHideBtn(false);
                                 setStatusAnimation(false);
                               }, 5000);
                             }}
@@ -2109,6 +2112,13 @@ export default function UnitEdit({
                           {item.name}*
                         </Text>
                         <View
+                          pointerEvents={
+                            index > 0
+                              ? slide1[0].selectId
+                                ? 'auto'
+                                : 'none'
+                              : 'auto'
+                          }
                           style={{
                             flexDirection: 'row',
                             alignItems: 'flex-start',
@@ -2442,7 +2452,18 @@ export default function UnitEdit({
                     ) : (
                       <TouchableOpacity
                         onPress={() => {
-                          enableLocation();
+                          LayoutAnimation.configureNext({
+                            duration: 300,
+                            create: {
+                              type: LayoutAnimation.Types.easeInEaseOut,
+                              property: LayoutAnimation.Properties.opacity,
+                            },
+                            update: {
+                              type: LayoutAnimation.Types.easeInEaseOut,
+                            },
+                          }),
+                            setShowAddMeterSlider(true),
+                            enableLocation();
                           callApi();
                         }}
                         style={{
@@ -2787,7 +2808,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: width * 0.005,
     flexDirection: 'row',
-    marginTop: width * 0.04,
+    // marginTop: width * 0.04,
     elevation: width * 0.003,
   },
   attemptBtn: {
