@@ -16,6 +16,7 @@ import {
   FlatList,
   Image,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -93,6 +94,7 @@ export default function UnitEdit({
   const [installationStatus, setInstallationStatus] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [checkSerial, setCheckSerial] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -906,6 +908,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
+    setLoading(true);
     // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
@@ -917,8 +920,10 @@ export default function UnitEdit({
         changeUtilityAndToggle();
         reRun(unitResponse?.data?.data);
         console.log('datachecckk-->>', unitResponse?.data?.data);
+        setLoading(false);
       } else {
         alert(unitResponse?.data?.message);
+        setLoading(false);
       }
       console.log('Add unit response', unitResponse?.data);
     } else {
@@ -931,8 +936,10 @@ export default function UnitEdit({
         if (unitResponse?.data?.bool) {
           changeUtilityAndToggle();
           reRun(unitResponse?.data?.data);
+          setLoading(false);
         } else {
           alert(unitResponse?.data?.message);
+          setLoading(false);
         }
       } catch (e) {
         // console.log('e---->', e);
@@ -1476,7 +1483,9 @@ export default function UnitEdit({
         // onBackdropPress={() => setShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
-          {showAddMeterSlider ? (
+          {loading ? (
+            <ActivityIndicator size="large" color="#25AAE1" />
+          ) : showAddMeterSlider ? (
             selectLocation ? (
               <View
                 style={{
@@ -1669,7 +1678,7 @@ export default function UnitEdit({
                                         shadowOpacity: 0.25,
                                         shadowRadius: 3.84,
                                       }
-                                    : {height: width * 0.2, zIndex: 1}
+                                    : {height: width * 0.1, zIndex: 1}
                                 }
                                 items={item.data}
                                 resetValue={false}
