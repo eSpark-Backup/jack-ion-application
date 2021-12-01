@@ -478,7 +478,6 @@ const App = ({navigation}) => {
   };
 
   const getToken = async () => {
-    setLoading(true);
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       // console.log('token aya', token);
@@ -1082,6 +1081,8 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
+          runLoading={() => setLoading(true)}
+          runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
