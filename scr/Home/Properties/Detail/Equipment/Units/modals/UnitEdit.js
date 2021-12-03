@@ -81,7 +81,7 @@ export default function UnitEdit({
   disableFlag,
 }) {
   const [meterListData, setMeterListData] = useState([]);
-  const [filePath, setFilePath] = useState({});
+  const [filePath, setFilePath] = useState([]);
   const [reasonPath, setReasonPath] = useState({});
   const [imageBase64, setImageBase64] = useState('');
   const [reasonBase64, setReasonBase64] = useState('');
@@ -1265,13 +1265,19 @@ export default function UnitEdit({
         alert(res.customButton);
       } else {
         const source = {uri: res.uri};
-        console.log('response', res);
+        // console.log('response', res);
         if (type == 'reason') {
           setReasonBase64(res.assets[0].base64);
           setReasonPath(res);
         } else {
           setImageBase64(res.assets[0].base64);
-          setFilePath(res);
+          if (filePath.length < 5) {
+            const imageArr = [...filePath];
+            imageArr.push(res.assets[0]);
+            setFilePath(imageArr);
+          } else {
+            alert("Can't upload more than 5 photos");
+          }
         }
         // this.setState({
         //   filePath: res,
@@ -1294,7 +1300,7 @@ export default function UnitEdit({
         skipBackup: true,
         path: 'images',
       },
-      includeBase64: true,
+      // includeBase64: true,
     };
 
     ImagePicker.launchImageLibrary(options, (res) => {
@@ -1313,7 +1319,14 @@ export default function UnitEdit({
           setReasonPath(res);
         } else {
           setImageBase64(res.assets[0].base64);
-          setFilePath(res);
+          if (filePath.length < 5) {
+            const imageArr = [...filePath];
+            imageArr.push(res.assets[0]);
+            setFilePath(imageArr);
+          } else {
+            alert("Can't upload more than 5 photos");
+          }
+          console.log('FIle PAth Array', filePath.length);
         }
         // this.setState({
         //   filePath: res,
@@ -1341,7 +1354,7 @@ export default function UnitEdit({
     setReasonId(null);
     setReasonDes('');
     setInstallationStatus(0);
-    setFilePath({});
+    setFilePath([]);
     setReasonPath({});
     slide1.map((item, index) => {
       let newArr = [...slide1];
@@ -1837,7 +1850,7 @@ export default function UnitEdit({
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
-                    {filePath?.assets &&
+                    {/* {filePath?.assets &&
                       filePath?.assets.map(({uri, index}) => (
                         <Image
                           resizeMode="cover"
@@ -1846,7 +1859,26 @@ export default function UnitEdit({
                           source={{uri: uri}}
                           key={index}
                         />
-                      ))}
+                      ))} */}
+                    {filePath.length > 0 && (
+                      <ScrollView>
+                        {filePath.map(({uri, index}) => (
+                          <View style={{borderWidth: 2, marginVertical: 2}}>
+                            <Image
+                              // resizeMode="contain"
+                              resizeMethod="scale"
+                              style={{
+                                width: width * 0.78,
+                                height: width * 0.25,
+                              }}
+                              source={{uri: uri}}
+                              key={index}
+                            />
+                          </View>
+                        ))}
+                      </ScrollView>
+                    )}
+
                     <TouchableOpacity
                       onPress={requestCameraPermission}
                       style={styles.button}>
@@ -2236,7 +2268,7 @@ export default function UnitEdit({
                                 slide2[1].value
                               ? '#25AAE1ec'
                               : sliderNumber == 4 &&
-                                filePath?.assets != undefined &&
+                                filePath?.length > 0 &&
                                 lat != undefined &&
                                 long != undefined
                               ? '#25AAE1ec'
@@ -2265,7 +2297,7 @@ export default function UnitEdit({
                             slide2[1].value
                           ? false
                           : sliderNumber == 4 &&
-                            filePath?.assets != undefined &&
+                            filePath?.length > 0 &&
                             lat != undefined &&
                             long != undefined
                           ? false
