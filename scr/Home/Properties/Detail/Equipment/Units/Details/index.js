@@ -382,7 +382,7 @@ const App = ({navigation}) => {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       const stringDate = new Date(
         new Date().getFullYear(),
-        new Date().getMonth(),
+        newDate.getMonth(),
         newDate.getDate(),
       );
       stringDates.push(stringDate.toString());
@@ -393,7 +393,7 @@ const App = ({navigation}) => {
       Datadates.push(
         new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
       );
@@ -414,19 +414,20 @@ const App = ({navigation}) => {
       usageDates.push({
         x: new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
         y: 0,
       });
     }
+    console.log('Dates__________', usageDates);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       readDates.push({
         x: new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
         y: i > index ? Math.max(...DataSet) : Math.max(...DataSet) - TotalUsage,
