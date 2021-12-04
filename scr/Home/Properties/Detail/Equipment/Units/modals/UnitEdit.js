@@ -82,7 +82,7 @@ export default function UnitEdit({
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [filePath, setFilePath] = useState([]);
-  const [reasonPath, setReasonPath] = useState({});
+  const [reasonPath, setReasonPath] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
   const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
@@ -1268,7 +1268,13 @@ export default function UnitEdit({
         // console.log('response', res);
         if (type == 'reason') {
           setReasonBase64(res.assets[0].base64);
-          setReasonPath(res);
+          if (reasonPath.length < 5) {
+            const imageArr = [...reasonPath];
+            imageArr.push(res.assets[0]);
+            setReasonPath(imageArr);
+          } else {
+            alert("Can't upload more than 5 photos");
+          }
         } else {
           setImageBase64(res.assets[0].base64);
           if (filePath.length < 5) {
@@ -1316,7 +1322,13 @@ export default function UnitEdit({
         // console.log('response', res);
         if (type == 'reason') {
           setReasonBase64(res.assets[0].base64);
-          setReasonPath(res);
+          if (reasonPath.length < 5) {
+            const imageArr = [...reasonPath];
+            imageArr.push(res.assets[0]);
+            setReasonPath(imageArr);
+          } else {
+            alert("Can't upload more than 5 photos");
+          }
         } else {
           setImageBase64(res.assets[0].base64);
           if (filePath.length < 5) {
@@ -1325,6 +1337,11 @@ export default function UnitEdit({
             setFilePath(imageArr);
           } else {
             alert("Can't upload more than 5 photos");
+          }
+          const element = [];
+          for (let i = 0; i < filePath?.length; i++) {
+            element.push(filePath[0]?.uri);
+            console.log('element', element);
           }
           console.log('FIle PAth Array', filePath.length);
         }
@@ -1335,6 +1352,24 @@ export default function UnitEdit({
         // });
       }
     });
+  };
+
+  const removeImage = (index, type) => {
+    if (type == 'reason') {
+      const imageArr = [...reasonPath];
+      imageArr.splice(
+        filePath.findIndex((i) => i.uri === index),
+        1,
+      );
+      setReasonPath(imageArr);
+    } else {
+      const imageArr = [...filePath];
+      imageArr.splice(
+        filePath.findIndex((i) => i.uri === index),
+        1,
+      );
+      setFilePath(imageArr);
+    }
   };
 
   const cancelMeter = () => {
@@ -1355,7 +1390,7 @@ export default function UnitEdit({
     setReasonDes('');
     setInstallationStatus(0);
     setFilePath([]);
-    setReasonPath({});
+    setReasonPath([]);
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1864,12 +1899,22 @@ export default function UnitEdit({
                       <ScrollView>
                         {filePath.map(({uri, index}) => (
                           <View style={{borderWidth: 2, marginVertical: 2}}>
+                            <TouchableOpacity
+                              onPress={() => removeImage(uri)}
+                              style={{
+                                position: 'absolute',
+                                zIndex: 1,
+                                right: -1,
+                                top: -1,
+                              }}>
+                              <Iconi name="close-circle" size={width * 0.07} />
+                            </TouchableOpacity>
                             <Image
                               // resizeMode="contain"
                               resizeMethod="scale"
                               style={{
                                 width: width * 0.78,
-                                height: width * 0.25,
+                                height: width * 0.2,
                               }}
                               source={{uri: uri}}
                               key={index}
@@ -2056,20 +2101,103 @@ export default function UnitEdit({
                               }}
                             />
                           </View>
-                          <TouchableOpacity
-                            onPress={() => requestCameraPermission('reason')}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>
-                              Launch Camera Directly
-                            </Text>
-                            <Iconi
-                              name="camera"
-                              size={width * 0.05}
-                              color="#3E4A4F"
-                            />
-                          </TouchableOpacity>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                            }}>
+                            <View>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  requestCameraPermission('reason')
+                                }
+                                style={{
+                                  width: width * 0.1,
+                                  height: width * 0.1,
+                                  borderColor: '#25AAE1ec',
+                                  borderWidth: width * 0.003,
+                                  backgroundColor: 'white',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  borderRadius: width * 0.005,
+                                  paddingHorizontal: width * 0.02,
+                                  flexDirection: 'row',
+                                  marginVertical: width * 0.005,
+                                  elevation: width * 0.003,
+                                }}>
+                                {/* <Text style={styles.buttonText}>
+                                  Launch Camera Directly
+                                </Text> */}
+                                <Iconi
+                                  name="camera"
+                                  size={width * 0.05}
+                                  color="#3E4A4F"
+                                />
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => imageGalleryLaunch('reason')}
+                                style={[styles.button, {width: width * 0.1}]}>
+                                {/* <Text style={styles.buttonText}>
+                                  Launch Image Gallery Directly
+                                </Text> */}
+                                <Iconi
+                                  name="images"
+                                  size={width * 0.05}
+                                  color="#3E4A4F"
+                                />
+                              </TouchableOpacity>
+                            </View>
+                            <View
+                              style={{
+                                width: width * 0.7,
+                                height: width * 0.2,
+                                marginVertical: 2,
+                                marginHorizontal: 2,
+                                justifyContent: 'center',
+                              }}>
+                              {reasonPath.length > 0 ? (
+                                <ScrollView>
+                                  {reasonPath.map(({uri, index}) => (
+                                    <View
+                                      style={{
+                                        borderWidth: 2,
+                                        marginVertical: 2,
+                                      }}>
+                                      <TouchableOpacity
+                                        onPress={() =>
+                                          removeImage(uri, 'reason')
+                                        }
+                                        style={{
+                                          position: 'absolute',
+                                          zIndex: 1,
+                                          right: -1,
+                                          top: -1,
+                                        }}>
+                                        <Iconi
+                                          name="close-circle"
+                                          size={width * 0.07}
+                                        />
+                                      </TouchableOpacity>
+                                      <Image
+                                        // resizeMode="contain"
+                                        resizeMethod="scale"
+                                        style={{
+                                          height: width * 0.18,
+                                        }}
+                                        source={{uri: uri}}
+                                        key={index}
+                                      />
+                                    </View>
+                                  ))}
+                                </ScrollView>
+                              ) : (
+                                <Text style={{textAlign: 'center'}}>
+                                  No Image Uploaded
+                                </Text>
+                              )}
+                            </View>
+                          </View>
 
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                             onPress={() => imageGalleryLaunch('reason')}
                             style={styles.button1}>
                             <View
@@ -2100,7 +2228,7 @@ export default function UnitEdit({
                                   File: {item.fileName.slice(10)}
                                 </Text>
                               ))}
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </>
                       )}
                       {installationStatus == 0 && statusAnimation == false && (
