@@ -16,6 +16,7 @@ import {
   FlatList,
   Image,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -86,6 +87,9 @@ export default function UnitEdit({
   const [imageBase64, setImageBase64] = useState('');
   const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
+  const [addTypeInput, setAddTypeInput] = useState(false);
+  const [newMeterType, setNewMeterType] = useState(false);
+  const [typeLoader, setTypeLoader] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [statusAnimation, setStatusAnimation] = useState(false);
   const [lat, setLat] = useState(0);
@@ -1007,6 +1011,11 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+    const element = [];
+    for (let i = 0; i < filePath?.length; i++) {
+      element.push(`data:image/jpeg;base64,${filePath[0]?.uri}`);
+    }
+    console.log('element', element);
     var loopData = [...meterData];
     loopData.push({
       meter_id: newMeter.id,
@@ -1338,11 +1347,7 @@ export default function UnitEdit({
           } else {
             alert("Can't upload more than 5 photos");
           }
-          const element = [];
-          for (let i = 0; i < filePath?.length; i++) {
-            element.push(filePath[0]?.uri);
-            console.log('element', element);
-          }
+
           console.log('FIle PAth Array', filePath.length);
         }
         // this.setState({
@@ -1383,6 +1388,7 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+    setAddTypeInput(false);
     setSliderNumber(1);
     setSliderProgress(0);
     setReasonText('');
@@ -1510,6 +1516,14 @@ export default function UnitEdit({
     deviceData[2].selectId = '';
     setAddDevice(deviceData);
     setAddManufacturer('');
+  };
+
+  const AddNewMeterType = () => {
+    setTypeLoader(true);
+    setAddTypeInput(false);
+    setTimeout(() => {
+      setTypeLoader(false);
+    }, 1500);
   };
   return (
     <View>
@@ -1869,11 +1883,94 @@ export default function UnitEdit({
                   />
                 </View>
                 {sliderNumber == 2 ? (
-                  <FlatList
-                    contentContainerStyle={{flex: 1, justifyContent: 'center'}}
-                    data={state.meterList}
-                    renderItem={renderSlide2}
-                  />
+                  <View
+                    style={{
+                      height: width * 0.62,
+                      width: width * 0.9,
+                      alignItems: 'center',
+                    }}>
+                    {typeLoader ? (
+                      <FlatList
+                        contentContainerStyle={{
+                          flex: 1,
+                          justifyContent: 'center',
+                        }}
+                        data={state.meterList}
+                        renderItem={renderSlide2}
+                      />
+                    ) : (
+                      <View style={{flex: 1, justifyContent: 'center'}}>
+                        <ActivityIndicator size={'large'} color="#25AAE1ec" />
+                      </View>
+                    )}
+                    {!addTypeInput ? (
+                      <TouchableOpacity
+                        style={[
+                          styles.button,
+                          {width: width * 0.8, justifyContent: 'center'},
+                        ]}
+                        onPress={() => setAddTypeInput(true)}>
+                        <Text style={styles.buttonText}>
+                          Add New Meter Type
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <View
+                        style={{
+                          width: '100%',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-evenly',
+                        }}>
+                        <TextInput
+                          placeholder="Type New Meter Type Name"
+                          // value={}
+                          dense
+                          style={[styles.meterInput, {width: width * 0.6}]}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                              zIndex: 10,
+                            },
+                          }}
+                          onChangeText={(text) => {
+                            setNewMeterType(text);
+                          }}
+                        />
+                        {newMeterType ? (
+                          <TouchableOpacity onPress={AddNewMeterType}>
+                            <Text
+                              style={{
+                                fontWeight: 'bold',
+                                fontSize: height * 0.022,
+                                color: '#25AAE1ec',
+                                width: width * 0.15,
+                                textAlign: 'center',
+                              }}>
+                              Add
+                            </Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => setAddTypeInput(false)}>
+                            <Text
+                              style={{
+                                fontWeight: 'bold',
+                                fontSize: height * 0.022,
+                                color: '#25AAE1ec',
+                                width: width * 0.15,
+                                textAlign: 'center',
+                              }}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    )}
+                  </View>
                 ) : sliderNumber == 3 ? (
                   <View
                     style={{
@@ -1898,15 +1995,10 @@ export default function UnitEdit({
                     {filePath.length > 0 && (
                       <ScrollView>
                         {filePath.map(({uri, index}) => (
-                          <View style={{borderWidth: 2, marginVertical: 2}}>
+                          <View style={styles.imageContainer}>
                             <TouchableOpacity
                               onPress={() => removeImage(uri)}
-                              style={{
-                                position: 'absolute',
-                                zIndex: 1,
-                                right: -1,
-                                top: -1,
-                              }}>
+                              style={styles.imageRemovebtn}>
                               <Iconi name="close-circle" size={width * 0.07} />
                             </TouchableOpacity>
                             <Image
@@ -2110,23 +2202,7 @@ export default function UnitEdit({
                                 onPress={() =>
                                   requestCameraPermission('reason')
                                 }
-                                style={{
-                                  width: width * 0.1,
-                                  height: width * 0.1,
-                                  borderColor: '#25AAE1ec',
-                                  borderWidth: width * 0.003,
-                                  backgroundColor: 'white',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  borderRadius: width * 0.005,
-                                  paddingHorizontal: width * 0.02,
-                                  flexDirection: 'row',
-                                  marginVertical: width * 0.005,
-                                  elevation: width * 0.003,
-                                }}>
-                                {/* <Text style={styles.buttonText}>
-                                  Launch Camera Directly
-                                </Text> */}
+                                style={[styles.button, {width: width * 0.1}]}>
                                 <Iconi
                                   name="camera"
                                   size={width * 0.05}
@@ -2136,9 +2212,6 @@ export default function UnitEdit({
                               <TouchableOpacity
                                 onPress={() => imageGalleryLaunch('reason')}
                                 style={[styles.button, {width: width * 0.1}]}>
-                                {/* <Text style={styles.buttonText}>
-                                  Launch Image Gallery Directly
-                                </Text> */}
                                 <Iconi
                                   name="images"
                                   size={width * 0.05}
@@ -2146,32 +2219,16 @@ export default function UnitEdit({
                                 />
                               </TouchableOpacity>
                             </View>
-                            <View
-                              style={{
-                                width: width * 0.7,
-                                height: width * 0.2,
-                                marginVertical: 2,
-                                marginHorizontal: 2,
-                                justifyContent: 'center',
-                              }}>
+                            <View style={styles.imageListContainer}>
                               {reasonPath.length > 0 ? (
                                 <ScrollView>
                                   {reasonPath.map(({uri, index}) => (
-                                    <View
-                                      style={{
-                                        borderWidth: 2,
-                                        marginVertical: 2,
-                                      }}>
+                                    <View style={styles.imageContainer}>
                                       <TouchableOpacity
                                         onPress={() =>
                                           removeImage(uri, 'reason')
                                         }
-                                        style={{
-                                          position: 'absolute',
-                                          zIndex: 1,
-                                          right: -1,
-                                          top: -1,
-                                        }}>
+                                        style={styles.imageRemovebtn}>
                                         <Iconi
                                           name="close-circle"
                                           size={width * 0.07}
@@ -2181,7 +2238,7 @@ export default function UnitEdit({
                                         // resizeMode="contain"
                                         resizeMethod="scale"
                                         style={{
-                                          height: width * 0.18,
+                                          height: width * 0.15,
                                         }}
                                         source={{uri: uri}}
                                         key={index}
@@ -3004,5 +3061,25 @@ const styles = StyleSheet.create({
     elevation: width * 0.005,
     bottom: width * 0.04,
     right: width * 0.03,
+  },
+  imageListContainer: {
+    width: width * 0.7,
+    height: width * 0.2,
+    marginVertical: 2,
+    paddingVertical: 2,
+    marginHorizontal: 2,
+    justifyContent: 'center',
+    borderWidth: 0,
+    elevation: 5,
+  },
+  imageContainer: {
+    borderWidth: 2,
+    marginVertical: 2,
+  },
+  imageRemovebtn: {
+    position: 'absolute',
+    zIndex: 1,
+    right: -1,
+    top: -1,
   },
 });
