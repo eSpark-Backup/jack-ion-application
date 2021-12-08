@@ -313,14 +313,14 @@ const App = ({navigation}) => {
 
     setLoadChartData(true);
 
-    console.log('Body Object', data);
+    // console.log('Body Object', data);
 
     const chartRes = await api.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
 
-    console.log('Chart Data', chartRes?.data?.data);
+    // console.log('Chart Data', chartRes?.data?.data);
 
     if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
       console.log('Chala Function');
@@ -330,7 +330,7 @@ const App = ({navigation}) => {
     }
     setLoadChartData(false);
 
-    setLoading(false);
+    // setLoading(false);
   };
 
   // console.log('Getting Data', gettingData);
@@ -370,7 +370,7 @@ const App = ({navigation}) => {
       Read7Days.push(bb);
     }
 
-    console.log('Simple Array', Usage7Days, Read7Days);
+    // console.log('Simple Array', Usage7Days, Read7Days);
 
     const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let readDates = [];
@@ -407,7 +407,7 @@ const App = ({navigation}) => {
 
     const index = stringDates.indexOf(stringDate.toString());
 
-    console.log('String Date', stringDate);
+    // console.log('String Date', stringDate);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
@@ -420,7 +420,7 @@ const App = ({navigation}) => {
         y: 0,
       });
     }
-    console.log('Dates__________', usageDates);
+    // console.log('Dates__________', usageDates);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
@@ -444,25 +444,25 @@ const App = ({navigation}) => {
       ...readDates.filter((d) => !dates.has(d.x.toString())),
     ];
 
-    console.log(
-      'Array After Merge Usage',
-      Usage7DaysData.sort(function (a, b) {
-        return a.x - b.x;
-      }),
-      'Array After Merge Read',
-      Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
-    );
+    // console.log(
+    //   'Array After Merge Usage',
+    //   Usage7DaysData.sort(function (a, b) {
+    //     return a.x - b.x;
+    //   }),
+    //   'Array After Merge Read',
+    //   Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
+    // );
 
     setMeterReadData(Read7DaysData);
     setMeterUsageData(Usage7DaysData);
     setDateData(Datadates);
     // setLoadChartData(false);
-    console.log(
-      'Chart Data Received',
-      Read7DaysData,
-      Usage7DaysData,
-      Datadates,
-    );
+    // console.log(
+    //   'Chart Data Received',
+    //   Read7DaysData,
+    //   Usage7DaysData,
+    //   Datadates,
+    // );
   };
 
   // console.log('Meter Read Data', getDataSetOne());
@@ -475,7 +475,7 @@ const App = ({navigation}) => {
   const getMeterTypes = async () => {
     const res = await api.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
-    console.log('All Meters', res.data?.data);
+    // console.log('All Meters', res.data?.data);
   };
 
   const getToken = async () => {
@@ -704,7 +704,7 @@ const App = ({navigation}) => {
   };
 
   const handleMeterSelect = async (data) => {
-    console.log('Kia ha unitMeter', data);
+    // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setLoading(true);
       setDataSet([]);
@@ -717,19 +717,19 @@ const App = ({navigation}) => {
       setLoadChartData(true);
 
       if (data?.meter_read?.meter_reading > 0) {
-        console.log('Function Chala Kia');
+        // console.log('Function Chala Kia');
         const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const todayDate = new Date();
         let date = {
           start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
           end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
         };
-        console.log('Date', date);
+        // console.log('Date', date);
         const chartRes = await api.post(
           `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
           date,
         );
-        console.log('Chart Data', chartRes.data?.data?.dataset[0]);
+        // console.log('Chart Data', chartRes.data?.data?.dataset[0]);
         setDataSet(chartRes.data?.data?.dataset);
         getChartData(chartRes);
       }
@@ -766,7 +766,7 @@ const App = ({navigation}) => {
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
 
-    console.log('please', antiIntersection);
+    // console.log('please', antiIntersection);
     setEditMeterTypes(antiIntersection);
   };
   const confirmUnitDelete = () => {
@@ -799,7 +799,7 @@ const App = ({navigation}) => {
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     getToken();
-    console.log('Check response', response?.data);
+    // console.log('Check response', response?.data);
     alert(response?.data?.message);
   };
 
@@ -1084,7 +1084,7 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
-          runLoading={() => setLoading(true)}
+          runLoading={() => console.log('chala edit')}
           runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
