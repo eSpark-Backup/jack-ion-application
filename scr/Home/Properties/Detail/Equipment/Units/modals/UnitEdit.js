@@ -80,15 +80,16 @@ export default function UnitEdit({
   flag,
   enableFlag,
   disableFlag,
+  runLoading,
 }) {
   const [meterListData, setMeterListData] = useState([]);
-  const [filePath, setFilePath] = useState([]);
+  const [filePath, setFilePath] = useState({});
   const [reasonPath, setReasonPath] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
   const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
   const [addTypeInput, setAddTypeInput] = useState(false);
-  const [newMeterType, setNewMeterType] = useState(false);
+  const [newMeterType, setNewMeterType] = useState('');
   const [typeLoader, setTypeLoader] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [statusAnimation, setStatusAnimation] = useState(false);
@@ -927,20 +928,18 @@ export default function UnitEdit({
       }
       console.log('Add unit response', unitResponse?.data);
     } else {
-      try {
-        const unitResponse = await api.patch(
-          `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
-          data,
-          console.log('datachecckk-->>', unitResponse?.data?.data),
-        );
-        if (unitResponse?.data?.bool) {
-          changeUtilityAndToggle();
-          reRun(unitResponse?.data?.data);
-        } else {
-          alert(unitResponse?.data?.message);
-        }
-      } catch (e) {
-        // console.log('e---->', e);
+      runLoading();
+      const unitResponse = await api.patch(
+        `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
+        data,
+      );
+      console.log('datachecckk-->>', unitResponse?.data?.data);
+      console.log('update data check-->>', unitResponse?.data);
+      if (unitResponse?.data?.bool) {
+        changeUtilityAndToggle();
+        reRun(unitResponse?.data?.data);
+      } else {
+        alert(unitResponse?.data?.message);
       }
     }
   };
@@ -1011,11 +1010,10 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-    const element = [];
-    for (let i = 0; i < filePath?.length; i++) {
-      element.push(`data:image/jpeg;base64,${filePath[0]?.uri}`);
+    const reasonBase64s = [];
+    for (let i = 0; i < reasonPath?.length; i++) {
+      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
     }
-    console.log('element', element);
     var loopData = [...meterData];
     loopData.push({
       meter_id: newMeter.id,
@@ -1030,7 +1028,7 @@ export default function UnitEdit({
       reason: {
         options_reason_id: reasonId,
         text_reason: reasonDes,
-        picture: `data:image/jpeg;base64,${reasonBase64}`,
+        picture: reasonBase64s,
       },
     });
     setMeterData(loopData);
@@ -1273,10 +1271,8 @@ export default function UnitEdit({
         // console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
         // console.log('response', res);
         if (type == 'reason') {
-          setReasonBase64(res.assets[0].base64);
           if (reasonPath.length < 5) {
             const imageArr = [...reasonPath];
             imageArr.push(res.assets[0]);
@@ -1286,13 +1282,7 @@ export default function UnitEdit({
           }
         } else {
           setImageBase64(res.assets[0].base64);
-          if (filePath.length < 5) {
-            const imageArr = [...filePath];
-            imageArr.push(res.assets[0]);
-            setFilePath(imageArr);
-          } else {
-            alert("Can't upload more than 5 photos");
-          }
+          setFilePath(res);
         }
         // this.setState({
         //   filePath: res,
@@ -1304,7 +1294,6 @@ export default function UnitEdit({
   };
 
   const moveMarker = (region) => {
-    // console.log('Region Ata>>>>>>>>>>>', region);
     setLat(region?.latitude);
     setLong(region?.longitude);
   };
@@ -1315,7 +1304,7 @@ export default function UnitEdit({
         skipBackup: true,
         path: 'images',
       },
-      // includeBase64: true,
+      includeBase64: true,
     };
 
     ImagePicker.launchImageLibrary(options, (res) => {
@@ -1327,10 +1316,8 @@ export default function UnitEdit({
         // console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
         // console.log('response', res);
         if (type == 'reason') {
-          setReasonBase64(res.assets[0].base64);
           if (reasonPath.length < 5) {
             const imageArr = [...reasonPath];
             imageArr.push(res.assets[0]);
@@ -1340,15 +1327,10 @@ export default function UnitEdit({
           }
         } else {
           setImageBase64(res.assets[0].base64);
-          if (filePath.length < 5) {
-            const imageArr = [...filePath];
-            imageArr.push(res.assets[0]);
-            setFilePath(imageArr);
-          } else {
-            alert("Can't upload more than 5 photos");
-          }
 
-          console.log('FIle PAth Array', filePath.length);
+          setFilePath(res);
+
+          console.log('FIle PAth Array');
         }
         // this.setState({
         //   filePath: res,
@@ -1363,17 +1345,10 @@ export default function UnitEdit({
     if (type == 'reason') {
       const imageArr = [...reasonPath];
       imageArr.splice(
-        filePath.findIndex((i) => i.uri === index),
+        reasonPath.findIndex((i) => i.uri === index),
         1,
       );
       setReasonPath(imageArr);
-    } else {
-      const imageArr = [...filePath];
-      imageArr.splice(
-        filePath.findIndex((i) => i.uri === index),
-        1,
-      );
-      setFilePath(imageArr);
     }
   };
 
@@ -1395,7 +1370,7 @@ export default function UnitEdit({
     setReasonId(null);
     setReasonDes('');
     setInstallationStatus(0);
-    setFilePath([]);
+    setFilePath({});
     setReasonPath([]);
     slide1.map((item, index) => {
       let newArr = [...slide1];
@@ -1518,12 +1493,35 @@ export default function UnitEdit({
     setAddManufacturer('');
   };
 
-  const AddNewMeterType = () => {
+  const AddNewMeterType = async () => {
     setTypeLoader(true);
     setAddTypeInput(false);
-    setTimeout(() => {
+    setNewMeterType('');
+    let data = {
+      name: newMeterType,
+    };
+    console.log('New Meter Type', data);
+    const addres = await api.post('/property/equipment/meter/add-meter', data);
+    if (addres?.data?.bool) {
+      const res = await api.get('/property/equipment/meter/all-meters');
+      let arr1 = res.data?.data;
+      let arr2 = meterTypes;
+      // console.log('arr1--->', arr1);
+      // console.log('arr2--->', arr2);
+
+      const antiIntersection = arr1.filter(
+        (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
+      );
+      console.log('antiIntersection--->', antiIntersection);
+      setState((oldState) => ({
+        ...oldState,
+        meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      }));
       setTypeLoader(false);
-    }, 1500);
+    } else {
+      alert('Add Meter Failed');
+      setTypeLoader(false);
+    }
   };
   return (
     <View>
@@ -1534,7 +1532,7 @@ export default function UnitEdit({
         backdropColor="black"
         statusBarTranslucent
         style={{top: width * -0.1}}
-        // onBackdropPress={() => setShowAddMeterSlider(false)}
+        // onBackdropPress={() => se7tShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           {showAddMeterSlider ? (
@@ -1889,15 +1887,20 @@ export default function UnitEdit({
                       width: width * 0.9,
                       alignItems: 'center',
                     }}>
-                    {typeLoader ? (
-                      <FlatList
-                        contentContainerStyle={{
-                          flex: 1,
-                          justifyContent: 'center',
-                        }}
-                        data={state.meterList}
-                        renderItem={renderSlide2}
-                      />
+                    {!typeLoader ? (
+                      <View
+                        style={{
+                          height: height * 0.2,
+                          marginVertical: height * 0.025,
+                        }}>
+                        <FlatList
+                          contentContainerStyle={{
+                            justifyContent: 'center',
+                          }}
+                          data={state.meterList}
+                          renderItem={renderSlide2}
+                        />
+                      </View>
                     ) : (
                       <View style={{flex: 1, justifyContent: 'center'}}>
                         <ActivityIndicator size={'large'} color="#25AAE1ec" />
@@ -1982,7 +1985,7 @@ export default function UnitEdit({
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
-                    {/* {filePath?.assets &&
+                    {filePath?.assets &&
                       filePath?.assets.map(({uri, index}) => (
                         <Image
                           resizeMode="cover"
@@ -1991,8 +1994,8 @@ export default function UnitEdit({
                           source={{uri: uri}}
                           key={index}
                         />
-                      ))} */}
-                    {filePath.length > 0 && (
+                      ))}
+                    {/* {filePath.length > 0 && (
                       <ScrollView>
                         {filePath.map(({uri, index}) => (
                           <View style={styles.imageContainer}>
@@ -2014,7 +2017,7 @@ export default function UnitEdit({
                           </View>
                         ))}
                       </ScrollView>
-                    )}
+                    )} */}
 
                     <TouchableOpacity
                       onPress={requestCameraPermission}
@@ -2453,7 +2456,7 @@ export default function UnitEdit({
                                 slide2[1].value
                               ? '#25AAE1ec'
                               : sliderNumber == 4 &&
-                                filePath?.length > 0 &&
+                                filePath?.assets != undefined &&
                                 lat != undefined &&
                                 long != undefined
                               ? '#25AAE1ec'
@@ -2482,7 +2485,7 @@ export default function UnitEdit({
                             slide2[1].value
                           ? false
                           : sliderNumber == 4 &&
-                            filePath?.length > 0 &&
+                            filePath?.assets != undefined &&
                             lat != undefined &&
                             long != undefined
                           ? false
@@ -3070,7 +3073,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     justifyContent: 'center',
     borderWidth: 0,
-    elevation: 5,
+    elevation: 2,
   },
   imageContainer: {
     borderWidth: 2,
