@@ -330,7 +330,7 @@ const App = ({navigation}) => {
     }
     setLoadChartData(false);
 
-    // setLoading(false);
+    setLoading(false);
   };
 
   // console.log('Getting Data', gettingData);
@@ -1084,7 +1084,7 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
-          runLoading={() => console.log('chala edit')}
+          runLoading={() => setLoading(true)}
           runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
@@ -1206,6 +1206,8 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
+          runLoading={() => setLoading(true)}
+          runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}

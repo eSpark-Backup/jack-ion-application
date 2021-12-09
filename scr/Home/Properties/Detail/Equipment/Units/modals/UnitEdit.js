@@ -928,7 +928,6 @@ export default function UnitEdit({
       }
       console.log('Add unit response', unitResponse?.data);
     } else {
-      runLoading();
       const unitResponse = await api.patch(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
@@ -937,6 +936,7 @@ export default function UnitEdit({
       console.log('update data check-->>', unitResponse?.data);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
+        runLoading();
         reRun(unitResponse?.data?.data);
       } else {
         alert(unitResponse?.data?.message);
