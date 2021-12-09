@@ -28,6 +28,7 @@ import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
 import CustumStatusBar from '../../components/StatusBar';
+import NetInfo from '@react-native-community/netinfo';
 
 // Components
 import Add from './Form';
@@ -67,9 +68,18 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
+    // let netConnected;
+    // NetInfo.fetch().then((state) => {
+    //   console.log('Connection type', state.type);
+    //   console.log('Is connected?', state.isConnected);
+    //   netConnected = state.isConnected;
+    // });
+    // if (netConnected) {
     this.setState({loadScreen: true});
     this.context.checkData();
     this.setState({propertyList: this.context.propList});
+    // }
+    // this.setState({loadScreen: true});
   };
 
   openFilter = () => {
