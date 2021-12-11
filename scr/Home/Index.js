@@ -16,6 +16,9 @@ import SplashScreen from 'react-native-splash-screen';
 import {withNavigation} from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
+import {create} from 'apisauce';
+import Base_URL from '../api/WebServices';
+import EncryptedStorage from 'react-native-encrypted-storage';
 let fcmToken = '';
 // Components
 import styles from './style';
@@ -97,8 +100,19 @@ class Splash extends Component {
     fcmToken = await messaging().getToken();
 
     console.log('TOKEN_______sss', fcmToken);
-    // Save the token
-    // await postToApi('/users/1234/tokens', {token});
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      this.setState({token: token});
+      this.api = create({
+        baseURL: Base_URL,
+        headers: {Authorization: 'Bearer ' + token},
+      });
+    }
+    let tokenfcm = {
+      fcm_token: fcmToken,
+    };
+    let res = await this.api.post('/user/set-fcm-token', tokenfcm);
+    // console.log('FCM TOKEN RES>>>>>>', res?.data);
   }
 
   createChannels = () => {

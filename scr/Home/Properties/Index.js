@@ -68,18 +68,19 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
-    // let netConnected;
-    // NetInfo.fetch().then((state) => {
-    //   console.log('Connection type', state.type);
-    //   console.log('Is connected?', state.isConnected);
-    //   netConnected = state.isConnected;
-    // });
-    // if (netConnected) {
-    this.setState({loadScreen: true});
-    this.context.checkData();
-    this.setState({propertyList: this.context.propList});
-    // }
-    // this.setState({loadScreen: true});
+    let netConnected;
+    NetInfo.fetch().then((state) => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      netConnected = state.isConnected;
+    });
+    if (netConnected) {
+      this.setState({loadScreen: true});
+      this.context.checkData();
+      this.setState({propertyList: this.context.propList});
+    } else {
+      this.setState({loadScreen: true});
+    }
   };
 
   openFilter = () => {
