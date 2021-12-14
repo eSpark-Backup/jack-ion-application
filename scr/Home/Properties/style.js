@@ -122,6 +122,8 @@ export default styles = StyleSheet.create({
   propertyList: {
     flex: 1,
     width: width * 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   // Modal

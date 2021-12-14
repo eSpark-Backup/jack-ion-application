@@ -288,7 +288,7 @@ const App = ({navigation}) => {
 
     let Usage7Days = [];
     let Read7Days = [];
-    let TotalUsage = MeterUsage.reduce((a, b) => a + b, 0);
+    let TotalUsage = MeterUsage.reduce((a, b) => Number(a) + Number(b), 0);
 
     for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
       let aa = {};
@@ -298,13 +298,13 @@ const App = ({navigation}) => {
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      aa.y = MeterUsage[i];
+      aa.y = Number(MeterUsage[i]);
       bb.x = new Date(
         new Date().getFullYear(),
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      bb.y = DataSet[i];
+      bb.y = Number(DataSet[i]);
       Usage7Days.push(aa);
       Read7Days.push(bb);
     }
@@ -321,7 +321,7 @@ const App = ({navigation}) => {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       const stringDate = new Date(
         new Date().getFullYear(),
-        new Date().getMonth(),
+        newDate.getMonth(),
         newDate.getDate(),
       );
       stringDates.push(stringDate.toString());
@@ -332,7 +332,7 @@ const App = ({navigation}) => {
       Datadates.push(
         new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
       );
@@ -351,7 +351,7 @@ const App = ({navigation}) => {
       usageDates.push({
         x: new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
         y: 0,
@@ -363,7 +363,7 @@ const App = ({navigation}) => {
       readDates.push({
         x: new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
         y: i > index ? Math.max(...DataSet) : Math.max(...DataSet) - TotalUsage,
