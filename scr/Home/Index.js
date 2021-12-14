@@ -10,6 +10,7 @@ import {
   Alert,
   PermissionsAndroid,
   BackHandler,
+  Platform,
 } from 'react-native';
 import TabIcon from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
@@ -66,14 +67,16 @@ class Splash extends Component {
       this.backAction,
     );
     SplashScreen.hide();
-    this.onAppBootstrap();
-    this.createChannels();
     this.requestLocationPermission();
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      this.showNotifications(remoteMessage);
-    });
-    return unsubscribe;
+    if (Platform.OS === 'android') {
+      this.onAppBootstrap();
+      this.createChannels();
+      const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+        // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        this.showNotifications(remoteMessage);
+      });
+      return unsubscribe;
+    }
   }
 
   backAction = () => {

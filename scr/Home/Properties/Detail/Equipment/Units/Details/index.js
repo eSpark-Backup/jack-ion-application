@@ -1631,7 +1631,9 @@ const App = ({navigation}) => {
                   <View
                     style={{height: height * 0.3, justifyContent: 'center'}}>
                     <Text style={{fontSize: width * 0.06}}>
-                      {loadChartData ? 'Loading Data...' : 'No Read Data'}
+                      {loadChartData
+                        ? 'Loading Data...'
+                        : 'No Data for this Week'}
                     </Text>
                   </View>
                 )}
