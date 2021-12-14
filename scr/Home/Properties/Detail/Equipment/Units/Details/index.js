@@ -320,7 +320,7 @@ const App = ({navigation}) => {
       data,
     );
 
-    // console.log('Chart Data', chartRes?.data?.data);
+    console.log('Chart Data', chartRes?.data?.data);
 
     if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
       console.log('Chala Function');
@@ -349,7 +349,7 @@ const App = ({navigation}) => {
 
     let Usage7Days = [];
     let Read7Days = [];
-    let TotalUsage = MeterUsage.reduce((a, b) => a + b, 0);
+    let TotalUsage = MeterUsage.reduce((a, b) => Number(a) + Number(b), 0);
 
     for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
       let aa = {};
@@ -359,18 +359,21 @@ const App = ({navigation}) => {
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      aa.y = MeterUsage[i];
+      aa.y = Number(MeterUsage[i]);
       bb.x = new Date(
         new Date().getFullYear(),
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      bb.y = DataSet[i];
+      bb.y = Number(DataSet[i]);
       Usage7Days.push(aa);
       Read7Days.push(bb);
     }
 
-    // console.log('Simple Array', Usage7Days, Read7Days);
+    console.log('Simple Array', Usage7Days, Read7Days);
+    // console.log('Dataset Array', Math.max(...DataSet));
+    // console.log('Total Usage', TotalUsage);
+    // console.log('Merge Result', Math.max(...DataSet) - TotalUsage);
 
     const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let readDates = [];
@@ -407,7 +410,7 @@ const App = ({navigation}) => {
 
     const index = stringDates.indexOf(stringDate.toString());
 
-    // console.log('String Date', stringDate);
+    console.log('String Date', index);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
@@ -443,7 +446,8 @@ const App = ({navigation}) => {
       ...Read7Days,
       ...readDates.filter((d) => !dates.has(d.x.toString())),
     ];
-
+    Usage7DaysData.sort((a, b) => a.x - b.x);
+    Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1));
     // console.log(
     //   'Array After Merge Usage',
     //   Usage7DaysData.sort(function (a, b) {
@@ -457,12 +461,12 @@ const App = ({navigation}) => {
     setMeterUsageData(Usage7DaysData);
     setDateData(Datadates);
     // setLoadChartData(false);
-    // console.log(
-    //   'Chart Data Received',
-    //   Read7DaysData,
-    //   Usage7DaysData,
-    //   Datadates,
-    // );
+    console.log(
+      'Chart Data Received',
+      Read7DaysData,
+      Usage7DaysData,
+      Datadates,
+    );
   };
 
   // console.log('Meter Read Data', getDataSetOne());

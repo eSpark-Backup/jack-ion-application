@@ -2365,7 +2365,12 @@ export default function UnitEdit({
                             items={item.data}
                             resetValue={false}
                             textInputProps={{
-                              placeholder: item.name,
+                              placeholder:
+                                index == 1
+                                  ? slide1[0].selectId
+                                    ? item.name
+                                    : 'First Select Manufacture'
+                                  : item.name,
                               underlineColorAndroid: 'transparent',
                               style: {
                                 padding: width * 0.027,

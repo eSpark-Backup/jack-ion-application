@@ -68,19 +68,19 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
-    let netConnected;
     NetInfo.fetch().then((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
-      netConnected = state.isConnected;
+      if (state.isConnected) {
+        console.log('True chala');
+        this.setState({loadScreen: true});
+        this.context.checkData();
+        this.setState({propertyList: this.context.propList});
+      } else {
+        console.log('False chala');
+        this.setState({loadScreen: true});
+      }
     });
-    if (netConnected) {
-      this.setState({loadScreen: true});
-      this.context.checkData();
-      this.setState({propertyList: this.context.propList});
-    } else {
-      this.setState({loadScreen: true});
-    }
   };
 
   openFilter = () => {
@@ -271,7 +271,7 @@ export default class Splash extends Component {
       <>
         <CustumStatusBar />
         <View style={styles.container}>
-          {this.context.isLoading ? <Loader /> : null}
+          {this.context.isLoading && <Loader />}
           {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
           {/* <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
@@ -424,22 +424,26 @@ export default class Splash extends Component {
             ) : null}
           </View>
           <View style={styles.propertyList}>
-            <FlatList
-              data={this.context.propList}
-              renderItem={this._renderPropList}
-              removeClippedSubviews={false}
-              maxToRenderPerBatch={150}
-              windowSize={100}
-              keyExtractor={(item, index) => index.toString()}
-              showsVerticalScrollIndicator={false}
-              ListFooterComponent={() =>
-                this.context.listLoader ? (
-                  <ActivityIndicator color="#25dAE1" size="large" />
-                ) : null
-              }
-              onEndReachedThreshold={width * 0.0001}
-              onEndReached={() => this.LoadData()}
-            />
+            {this.context.propList.length < 1 && !this.context.isLoading ? (
+              <Text>Check Your Internet Connection</Text>
+            ) : (
+              <FlatList
+                data={this.context.propList}
+                renderItem={this._renderPropList}
+                removeClippedSubviews={false}
+                maxToRenderPerBatch={150}
+                windowSize={100}
+                keyExtractor={(item, index) => index.toString()}
+                showsVerticalScrollIndicator={false}
+                ListFooterComponent={() =>
+                  this.context.listLoader ? (
+                    <ActivityIndicator color="#25dAE1" size="large" />
+                  ) : null
+                }
+                onEndReachedThreshold={width * 0.0001}
+                onEndReached={() => this.LoadData()}
+              />
+            )}
           </View>
         </View>
       </>
