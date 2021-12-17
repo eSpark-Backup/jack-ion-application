@@ -242,23 +242,6 @@ class GlobalState extends React.Component {
     this.setState({filterPropName: e});
   };
 
-  updateBuilding = async (edit, id, params) => {
-    console.log('updateBuilding');
-    if (edit) {
-      const response = await this.api.patch(
-        `/property/equipment/building/update-building/${id}`,
-        params,
-      );
-      console.log('Check Update', response?.data);
-      alert(response?.data?.message);
-    } else {
-      const response = await this.api.delete(
-        `/property/equipment/building/${id}`,
-      );
-      console.log('Check response', response?.data);
-      alert(response?.data?.message);
-    }
-  };
   render() {
     return (
       <>

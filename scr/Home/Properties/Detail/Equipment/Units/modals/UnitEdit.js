@@ -912,7 +912,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    // console.log('data--->', data);
+    console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -1072,7 +1072,15 @@ export default function UnitEdit({
           style={{
             height: width * 0.12,
             width: width * 0.8,
-            elevation: width * 0.005,
+            // elevation: width * 0.005,
+            elevation: 2,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
             backgroundColor: 'white',
             paddingHorizontal: width * 0.01,
             borderRadius: width * 0.007,
@@ -1327,7 +1335,6 @@ export default function UnitEdit({
           }
         } else {
           setImageBase64(res.assets[0].base64);
-
           setFilePath(res);
 
           console.log('FIle PAth Array');
@@ -1948,7 +1955,7 @@ export default function UnitEdit({
                             <Text
                               style={{
                                 fontWeight: 'bold',
-                                fontSize: height * 0.022,
+                                fontSize: width * 0.045,
                                 color: '#25AAE1ec',
                                 width: width * 0.15,
                                 textAlign: 'center',
@@ -1962,7 +1969,7 @@ export default function UnitEdit({
                             <Text
                               style={{
                                 fontWeight: 'bold',
-                                fontSize: height * 0.022,
+                                fontSize: width * 0.045,
                                 color: '#25AAE1ec',
                                 width: width * 0.15,
                                 textAlign: 'center',
@@ -2643,12 +2650,20 @@ export default function UnitEdit({
                   ]}>
                   {meterListData &&
                     meterListData.map((item) => (
-                      <View style={{flexDirection: 'row'}}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
                         <Image
                           source={typeSwitcher(item.name)}
                           style={styles.untiDetailImage}
                         />
-                        <Text style={[styles.meterDesciptionHeading]}>
+                        <Text
+                          style={[
+                            styles.meterDesciptionHeading,
+                            {marginBottom: 0},
+                          ]}>
                           {item.name}
                         </Text>
                       </View>
