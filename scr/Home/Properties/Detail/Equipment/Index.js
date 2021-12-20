@@ -637,6 +637,7 @@ export default class Splash extends Component {
   handleUpdateBuilding = (cond, data) => {
     if (cond != null) {
       this.updateBuilding(cond, this.state.editBuildId, data);
+      this.setState({editModal: false});
     }
   };
 
@@ -651,7 +652,6 @@ export default class Splash extends Component {
       console.log('Check Update', response?.data);
 
       if (response?.data?.bool) {
-        this.setState({editModal: false});
         this.onFocusFunction();
         alert(response?.data?.message);
       }
@@ -662,7 +662,6 @@ export default class Splash extends Component {
       console.log('Check response', response?.data);
 
       if (response?.data?.bool) {
-        this.setState({editModal: false});
         this.onFocusFunction();
         alert(response?.data?.message);
       }
