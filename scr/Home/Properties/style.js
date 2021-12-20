@@ -21,7 +21,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
   },
   menuView: {
-    width: width * 0.15,
+    width: width * 0.14,
     height: width * 0.1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -31,9 +31,10 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
   },
   searchView: {
-    marginLeft: width * 0.03,
-    paddingHorizontal: width * 0.02,
-    width: width * 0.8,
+    marginLeft: width * 0.01,
+    marginRight: width * 0.01,
+    paddingHorizontal: width * 0.01,
+    width: width * 0.7,
     height: width * 0.1,
     justifyContent: 'space-between',
     alignItems: 'center',

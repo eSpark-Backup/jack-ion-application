@@ -721,7 +721,7 @@ export default class Splash extends React.Component {
                       } \n ${
                         this.state.listData.city == null
                           ? ''
-                          : this.state.listData.city + ' ,'
+                          : this.state.listData.city + ','
                       } ${
                         this.state.listData.st == null
                           ? ''
