@@ -25,7 +25,7 @@ export default styles = StyleSheet.create({
   },
   menuView: {
     width: width * 0.15,
-    height: height * 0.06,
+    height: width * 0.12,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
@@ -35,13 +35,14 @@ export default styles = StyleSheet.create({
   },
   searchView: {
     marginLeft: width * 0.03,
-    width: width * 0.8,
-    height: height * 0.06,
-    justifyContent: 'center',
+    paddingHorizontal: width * 0.04,
+    width: width * 0.82,
+    height: width * 0.12,
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
-    borderRadius: width * 0.1,
-    elevation: width * 0.01,
+    borderBottomLeftRadius: width * 0.1,
+    borderTopLeftRadius: width * 0.1,
+    elevation: 5,
     flexDirection: 'row',
   },
   search: {
@@ -66,7 +67,7 @@ export default styles = StyleSheet.create({
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
-    fontSize: width * 0.07,
+    fontSize: width * 0.062,
     color: 'white',
   },
   barView: {

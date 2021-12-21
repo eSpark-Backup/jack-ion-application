@@ -283,5 +283,4 @@ export default styles = StyleSheet.create({
   dropDownListText: {
     fontSize: 14,
   },
-  
 });
