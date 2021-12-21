@@ -313,7 +313,7 @@ const App = ({navigation}) => {
 
     setLoadChartData(true);
 
-    console.log('Body Object', data);
+    // console.log('Body Object', data);
 
     const chartRes = await api.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
@@ -349,7 +349,7 @@ const App = ({navigation}) => {
 
     let Usage7Days = [];
     let Read7Days = [];
-    let TotalUsage = MeterUsage.reduce((a, b) => a + b, 0);
+    let TotalUsage = MeterUsage.reduce((a, b) => Number(a) + Number(b), 0);
 
     for (let i = 0; i < chartRes.data?.data?.dataset?.length; i++) {
       let aa = {};
@@ -359,18 +359,21 @@ const App = ({navigation}) => {
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      aa.y = MeterUsage[i];
+      aa.y = Number(MeterUsage[i]);
       bb.x = new Date(
         new Date().getFullYear(),
         months.indexOf(ReadData[i]?.slice(0, 3)),
         ReadData[i]?.slice(4, 6),
       );
-      bb.y = DataSet[i];
+      bb.y = Number(DataSet[i]);
       Usage7Days.push(aa);
       Read7Days.push(bb);
     }
 
     console.log('Simple Array', Usage7Days, Read7Days);
+    // console.log('Dataset Array', Math.max(...DataSet));
+    // console.log('Total Usage', TotalUsage);
+    // console.log('Merge Result', Math.max(...DataSet) - TotalUsage);
 
     const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let readDates = [];
@@ -382,7 +385,7 @@ const App = ({navigation}) => {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       const stringDate = new Date(
         new Date().getFullYear(),
-        new Date().getMonth(),
+        newDate.getMonth(),
         newDate.getDate(),
       );
       stringDates.push(stringDate.toString());
@@ -393,7 +396,7 @@ const App = ({navigation}) => {
       Datadates.push(
         new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
       );
@@ -407,26 +410,27 @@ const App = ({navigation}) => {
 
     const index = stringDates.indexOf(stringDate.toString());
 
-    console.log('String Date', stringDate);
+    console.log('String Date', index);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       usageDates.push({
         x: new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
         y: 0,
       });
     }
+    // console.log('Dates__________', usageDates);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       readDates.push({
         x: new Date(
           new Date().getFullYear(),
-          new Date().getMonth(),
+          newDate.getMonth(),
           newDate.getDate(),
         ),
         y: i > index ? Math.max(...DataSet) : Math.max(...DataSet) - TotalUsage,
@@ -442,15 +446,16 @@ const App = ({navigation}) => {
       ...Read7Days,
       ...readDates.filter((d) => !dates.has(d.x.toString())),
     ];
-
-    console.log(
-      'Array After Merge Usage',
-      Usage7DaysData.sort(function (a, b) {
-        return a.x - b.x;
-      }),
-      'Array After Merge Read',
-      Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
-    );
+    Usage7DaysData.sort((a, b) => a.x - b.x);
+    Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1));
+    // console.log(
+    //   'Array After Merge Usage',
+    //   Usage7DaysData.sort(function (a, b) {
+    //     return a.x - b.x;
+    //   }),
+    //   'Array After Merge Read',
+    //   Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
+    // );
 
     setMeterReadData(Read7DaysData);
     setMeterUsageData(Usage7DaysData);
@@ -474,11 +479,10 @@ const App = ({navigation}) => {
   const getMeterTypes = async () => {
     const res = await api.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
-    console.log('All Meters', res.data?.data);
+    // console.log('All Meters', res.data?.data);
   };
 
   const getToken = async () => {
-    setLoading(true);
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       // console.log('token aya', token);
@@ -607,7 +611,9 @@ const App = ({navigation}) => {
     setStatusInfo([
       {
         leftText: 'Pulses',
-        rightText: '3,761',
+        rightText: unitMeter?.meter_read?.meter_reading
+          ? unitMeter?.meter_read?.meter_reading
+          : 0,
         icon: null,
         bold: false,
       },
@@ -702,7 +708,7 @@ const App = ({navigation}) => {
   };
 
   const handleMeterSelect = async (data) => {
-    console.log('Kia ha unitMeter', data);
+    // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setLoading(true);
       setDataSet([]);
@@ -715,19 +721,19 @@ const App = ({navigation}) => {
       setLoadChartData(true);
 
       if (data?.meter_read?.meter_reading > 0) {
-        console.log('Function Chala Kia');
+        // console.log('Function Chala Kia');
         const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const todayDate = new Date();
         let date = {
           start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
           end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
         };
-        console.log('Date', date);
+        // console.log('Date', date);
         const chartRes = await api.post(
           `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
           date,
         );
-        console.log('Chart Data', chartRes.data?.data?.dataset[0]);
+        // console.log('Chart Data', chartRes.data?.data?.dataset[0]);
         setDataSet(chartRes.data?.data?.dataset);
         getChartData(chartRes);
       }
@@ -764,7 +770,7 @@ const App = ({navigation}) => {
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
 
-    console.log('please', antiIntersection);
+    // console.log('please', antiIntersection);
     setEditMeterTypes(antiIntersection);
   };
   const confirmUnitDelete = () => {
@@ -797,7 +803,7 @@ const App = ({navigation}) => {
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     getToken();
-    console.log('Check response', response?.data);
+    // console.log('Check response', response?.data);
     alert(response?.data?.message);
   };
 
@@ -1082,6 +1088,8 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
+          runLoading={() => setLoading(true)}
+          runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -1202,6 +1210,8 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
+          runLoading={() => setLoading(true)}
+          runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -1282,7 +1292,11 @@ const App = ({navigation}) => {
                 </View>
                 <View style={styles.flexRow}>
                   <Check name="check" size={width * 0.05} color="#0fc908" />
-                  <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
+                  <Text style={{color: '#5c5c5ccf'}}>
+                    {unitMeter?.time_diff
+                      ? 'As of ' + unitMeter?.time_diff
+                      : 'As of 5 hours ago'}
+                  </Text>
                 </View>
               </MotiView>
             )}
@@ -1313,7 +1327,11 @@ const App = ({navigation}) => {
                   />
                   <View>
                     <Text style={styles.greyText}>PULSES</Text>
-                    <Text style={styles.text}>3,786</Text>
+                    <Text style={styles.text}>
+                      {unitMeter?.meter_read?.meter_reading
+                        ? unitMeter?.meter_read?.meter_reading
+                        : 0}
+                    </Text>
                   </View>
                   <Text style={styles.symbolStyle}>x</Text>
                   <View>
@@ -1323,12 +1341,21 @@ const App = ({navigation}) => {
                   <Text style={styles.symbolStyle}>+</Text>
                   <View>
                     <Text style={styles.greyText}>IMR</Text>
-                    <Text style={styles.text}>21</Text>
+                    <Text style={styles.text}>
+                      {unitMeter?.initial_meter_reading
+                        ? unitMeter?.initial_meter_reading
+                        : 0}
+                    </Text>
                   </View>
                   <Text style={styles.symbolStyle}>=</Text>
                   <View>
                     <Text style={styles.greyText}>CURRENT READ</Text>
-                    <Text style={styles.text}>3,807</Text>
+                    <Text style={styles.text}>
+                      {unitMeter?.meter_read?.meter_reading
+                        ? unitMeter?.meter_read?.meter_reading +
+                          unitMeter?.initial_meter_reading
+                        : 0}
+                    </Text>
                   </View>
                 </View>
               </MotiView>
@@ -1386,7 +1413,13 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text style={styles.sectionText}>{title}</Text>
+                    <Text
+                      style={[
+                        styles.sectionText,
+                        {textTransform: 'capitalize'},
+                      ]}>
+                      {title}
+                    </Text>
                     <Image source={img} style={styles.sectionImgStyle} />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
@@ -1598,7 +1631,9 @@ const App = ({navigation}) => {
                   <View
                     style={{height: height * 0.3, justifyContent: 'center'}}>
                     <Text style={{fontSize: width * 0.06}}>
-                      {loadChartData ? 'Loading Data...' : 'No Read Data'}
+                      {loadChartData
+                        ? 'Loading Data...'
+                        : 'No Data for this Week'}
                     </Text>
                   </View>
                 )}

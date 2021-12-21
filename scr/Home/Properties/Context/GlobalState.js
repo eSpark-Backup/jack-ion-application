@@ -3,11 +3,19 @@ import Context from './propContext';
 import {create} from 'apisauce';
 import Base_URL from '../../../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import NetInfo from '@react-native-community/netinfo';
 import {Alert} from 'react-native';
 
 class GlobalState extends React.Component {
   componentDidMount() {
     this.getToken();
+    NetInfo.fetch().then((state) => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      !state.isConnected
+        ? this.setState({isLoading: false})
+        : this.setState({isLoading: true});
+    });
   }
   getToken = async () => {
     console.log('Get Token');
@@ -28,6 +36,7 @@ class GlobalState extends React.Component {
   checkData = async () => {
     this.setState({biller: ''});
     this.setState({isLoading: true, filterDataName: '', filterWork: false});
+
     let data = {
       offset: 0,
     };
@@ -147,7 +156,10 @@ class GlobalState extends React.Component {
   };
   getBillingCompany = async () => {
     const response = await this.api.get('/property/billing-company/all');
-    console.log('Check response', response?.data?.data?.billingCompany);
+    console.log(
+      'Check billing company response',
+      response?.data?.data?.billingCompany,
+    );
     this.setState({itemList: response?.data?.data?.billingCompany});
   };
 
@@ -230,23 +242,6 @@ class GlobalState extends React.Component {
     this.setState({filterPropName: e});
   };
 
-  updateBuilding = async (edit, id, params) => {
-    console.log('updateBuilding');
-    if (edit) {
-      const response = await this.api.patch(
-        `/property/equipment/building/update-building/${id}`,
-        params,
-      );
-      console.log('Check Update', response?.data);
-      alert(response?.data?.message);
-    } else {
-      const response = await this.api.delete(
-        `/property/equipment/building/${id}`,
-      );
-      console.log('Check response', response?.data);
-      alert(response?.data?.message);
-    }
-  };
   render() {
     return (
       <>
