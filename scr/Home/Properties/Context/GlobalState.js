@@ -143,6 +143,8 @@ class GlobalState extends React.Component {
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
+      latitude: info.propLat,
+      longitude: info.propLong,
     };
     // console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {

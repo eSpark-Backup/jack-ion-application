@@ -146,6 +146,8 @@ export default class Splash extends React.Component {
       BillingCompanyId: '',
       BillingCompany: 'BILLING COMPANY',
       error: '',
+      lat: null,
+      long: null,
       locationSelected: false,
     });
   };
@@ -285,6 +287,8 @@ export default class Splash extends React.Component {
           propContactTitle: this.state.ContactTitle,
           propContactPhone: this.state.ContactPhone,
           propContactEmail: this.state.ContactEmail,
+          propLat: this.state.lat,
+          propLong: this.state.long,
         }),
         () => this.props.loader(true),
       );
