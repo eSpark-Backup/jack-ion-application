@@ -23,6 +23,7 @@ import Base_URL from '../api/WebServices';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 const {width, height} = Dimensions.get('window');
 
@@ -139,9 +140,16 @@ export default class Login extends Component {
             }}
             onSubmit={(values) => {
               console.log(values);
-              this._checkCredentials(values.email, values.password);
-              values.email = '';
-              values.password = '';
+              NetInfo.fetch().then((state) => {
+                console.log('Is connected?', state.isConnected);
+                if (state.isConnected) {
+                  this._checkCredentials(values.email, values.password);
+                  values.email = '';
+                  values.password = '';
+                } else {
+                  alert('Check Your Internet Connection');
+                }
+              });
             }}
             validationSchema={validationSchema}>
             {({
