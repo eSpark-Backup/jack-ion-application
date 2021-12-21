@@ -10,11 +10,17 @@ import {
   Alert,
   PermissionsAndroid,
   BackHandler,
+  Platform,
 } from 'react-native';
 import TabIcon from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
 import {withNavigation} from 'react-navigation';
-
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+import {create} from 'apisauce';
+import Base_URL from '../api/WebServices';
+import EncryptedStorage from 'react-native-encrypted-storage';
+let fcmToken = '';
 // Components
 import styles from './style';
 
@@ -62,6 +68,15 @@ class Splash extends Component {
     );
     SplashScreen.hide();
     this.requestLocationPermission();
+    if (Platform.OS === 'android') {
+      this.onAppBootstrap();
+      this.createChannels();
+      const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+        // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        this.showNotifications(remoteMessage);
+      });
+      return unsubscribe;
+    }
   }
 
   backAction = () => {
@@ -79,6 +94,45 @@ class Splash extends Component {
   componentWillUnmount() {
     this.backHandler.remove();
   }
+
+  async onAppBootstrap() {
+    // Register the device with FCM
+    await messaging().registerDeviceForRemoteMessages();
+
+    // Get the token
+    fcmToken = await messaging().getToken();
+
+    console.log('TOKEN_______sss', fcmToken);
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      this.setState({token: token});
+      this.api = create({
+        baseURL: Base_URL,
+        headers: {Authorization: 'Bearer ' + token},
+      });
+    }
+    let tokenfcm = {
+      fcm_token: fcmToken,
+    };
+    let res = await this.api.post('/user/set-fcm-token', tokenfcm);
+    // console.log('FCM TOKEN RES>>>>>>', res?.data);
+  }
+
+  createChannels = () => {
+    PushNotification.createChannel({
+      channelId: 'test-id',
+      channelName: 'Test-channel',
+    });
+  };
+
+  showNotifications = (item) => {
+    console.log('kia mila items', item.notification);
+    PushNotification.localNotification({
+      channelId: 'test-id',
+      title: item.notification.title,
+      message: item.notification.body,
+    });
+  };
 
   render() {
     return (

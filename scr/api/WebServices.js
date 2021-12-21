@@ -1,3 +1,3 @@
-const Base_Url = 'http://51.79.158.202/ion-meter-bh/public/api';
+const Base_Url = 'https://ion-meter.com/api';
 
 export default Base_Url;

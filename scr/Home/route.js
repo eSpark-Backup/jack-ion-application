@@ -7,6 +7,7 @@ import Properties from './Properties/Properties';
 import Detail from './Properties/Detail/Profile';
 import Equip from './Properties/Detail/Equipment/Units';
 import Charts from './Properties/Detail/Charts/Index';
+import Notifications from './Properties/Detail/Notifications/index';
 import Support from '../ContactUs/Index';
 import Setting from '../settings/Index';
 import Filter from './Properties/Filter';
@@ -49,6 +50,7 @@ const RouteConfigs = {
   Setting,
   Filter,
   U_Details,
+  Notifications,
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import {
-  Dimensions,
-} from 'react-native';
+import {Dimensions} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack';
-import MeterDetails from './../Home/Properties/Detail/Equipment/MeterDetails/index'
-import RedirectMeter from './../Home/Properties/Detail/Equipment/RedirectMeter/index'
+import MeterDetails from './../Home/Properties/Detail/Equipment/MeterDetails/index';
+import RedirectMeter from './../Home/Properties/Detail/Equipment/RedirectMeter/index';
 import Tools from './Index';
 const {width, height} = Dimensions.get('window');
 import TabIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,6 +11,7 @@ const IonNavigatorConfig = {
   initialRouteName: 'Tools',
   defaultNavigationOptions: {
     headerShown: false,
+    gestureEnabled: false,
   },
   tabBarOptions: {
     safeAreaInsets: {
@@ -33,7 +32,7 @@ const IonNavigatorConfig = {
 const RouteConfigs = {
   Tools,
   MeterDetails,
-  RedirectMeter
+  RedirectMeter,
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);
