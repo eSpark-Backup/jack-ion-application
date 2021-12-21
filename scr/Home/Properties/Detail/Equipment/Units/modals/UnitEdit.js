@@ -16,6 +16,7 @@ import {
   FlatList,
   Image,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -79,13 +80,17 @@ export default function UnitEdit({
   flag,
   enableFlag,
   disableFlag,
+  runLoading,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [filePath, setFilePath] = useState({});
-  const [reasonPath, setReasonPath] = useState({});
+  const [reasonPath, setReasonPath] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
   const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
+  const [addTypeInput, setAddTypeInput] = useState(false);
+  const [newMeterType, setNewMeterType] = useState('');
+  const [typeLoader, setTypeLoader] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [statusAnimation, setStatusAnimation] = useState(false);
   const [lat, setLat] = useState(0);
@@ -232,6 +237,7 @@ export default function UnitEdit({
 
   const enableLocation = async () => {
     const location = await SystemSetting.isLocationEnabled();
+    console.log('GPS', location);
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -306,13 +312,13 @@ export default function UnitEdit({
     }
   };
 
-  const requestCameraPermission = async () => {
+  const requestCameraPermission = async (type) => {
     if (Platform.OS == 'ios') {
       request(PERMISSIONS.IOS.CAMERA)
         .then((result) => {
           console.log('kia hai result camera ka', result);
           if (result == RESULTS.GRANTED) {
-            cameraLaunch();
+            cameraLaunch(type);
           } else {
             // console.log('Denied',)
             Alert.alert(
@@ -341,7 +347,7 @@ export default function UnitEdit({
           PermissionsAndroid.PERMISSIONS.CAMERA,
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          cameraLaunch();
+          cameraLaunch(type);
         } else {
           Alert.alert(
             "You don't have access for the Camera",
@@ -906,7 +912,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    // console.log('data--->', data);
+    console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -922,20 +928,18 @@ export default function UnitEdit({
       }
       console.log('Add unit response', unitResponse?.data);
     } else {
-      try {
-        const unitResponse = await api.patch(
-          `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
-          data,
-          console.log('datachecckk-->>', unitResponse?.data?.data),
-        );
-        if (unitResponse?.data?.bool) {
-          changeUtilityAndToggle();
-          reRun(unitResponse?.data?.data);
-        } else {
-          alert(unitResponse?.data?.message);
-        }
-      } catch (e) {
-        // console.log('e---->', e);
+      const unitResponse = await api.patch(
+        `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
+        data,
+      );
+      console.log('datachecckk-->>', unitResponse?.data?.data);
+      console.log('update data check-->>', unitResponse?.data);
+      if (unitResponse?.data?.bool) {
+        changeUtilityAndToggle();
+        runLoading();
+        reRun(unitResponse?.data?.data);
+      } else {
+        alert(unitResponse?.data?.message);
       }
     }
   };
@@ -1006,6 +1010,10 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+    const reasonBase64s = [];
+    for (let i = 0; i < reasonPath?.length; i++) {
+      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
+    }
     var loopData = [...meterData];
     loopData.push({
       meter_id: newMeter.id,
@@ -1020,7 +1028,7 @@ export default function UnitEdit({
       reason: {
         options_reason_id: reasonId,
         text_reason: reasonDes,
-        picture: `data:image/jpeg;base64,${reasonBase64}`,
+        picture: reasonBase64s,
       },
     });
     setMeterData(loopData);
@@ -1064,7 +1072,15 @@ export default function UnitEdit({
           style={{
             height: width * 0.12,
             width: width * 0.8,
-            elevation: width * 0.005,
+            // elevation: width * 0.005,
+            elevation: 2,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
             backgroundColor: 'white',
             paddingHorizontal: width * 0.01,
             borderRadius: width * 0.007,
@@ -1244,7 +1260,7 @@ export default function UnitEdit({
     );
   };
 
-  const cameraLaunch = () => {
+  const cameraLaunch = (type) => {
     let options = {
       storageOptions: {
         skipBackup: true,
@@ -1263,21 +1279,29 @@ export default function UnitEdit({
         // console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
-        console.log('response', res);
-        setImageBase64(res.assets[0].base64);
+        // console.log('response', res);
+        if (type == 'reason') {
+          if (reasonPath.length < 5) {
+            const imageArr = [...reasonPath];
+            imageArr.push(res.assets[0]);
+            setReasonPath(imageArr);
+          } else {
+            alert("Can't upload more than 5 photos");
+          }
+        } else {
+          setImageBase64(res.assets[0].base64);
+          setFilePath(res);
+        }
         // this.setState({
         //   filePath: res,
         //   fileData: res.data,
         //   fileUri: res.uri
         // });
-        setFilePath(res);
       }
     });
   };
 
   const moveMarker = (region) => {
-    // console.log('Region Ata>>>>>>>>>>>', region);
     setLat(region?.latitude);
     setLong(region?.longitude);
   };
@@ -1300,14 +1324,20 @@ export default function UnitEdit({
         // console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
         // console.log('response', res);
         if (type == 'reason') {
-          setReasonBase64(res.assets[0].base64);
-          setReasonPath(res);
+          if (reasonPath.length < 5) {
+            const imageArr = [...reasonPath];
+            imageArr.push(res.assets[0]);
+            setReasonPath(imageArr);
+          } else {
+            alert("Can't upload more than 5 photos");
+          }
         } else {
           setImageBase64(res.assets[0].base64);
           setFilePath(res);
+
+          console.log('FIle PAth Array');
         }
         // this.setState({
         //   filePath: res,
@@ -1316,6 +1346,17 @@ export default function UnitEdit({
         // });
       }
     });
+  };
+
+  const removeImage = (index, type) => {
+    if (type == 'reason') {
+      const imageArr = [...reasonPath];
+      imageArr.splice(
+        reasonPath.findIndex((i) => i.uri === index),
+        1,
+      );
+      setReasonPath(imageArr);
+    }
   };
 
   const cancelMeter = () => {
@@ -1329,6 +1370,7 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+    setAddTypeInput(false);
     setSliderNumber(1);
     setSliderProgress(0);
     setReasonText('');
@@ -1336,7 +1378,7 @@ export default function UnitEdit({
     setReasonDes('');
     setInstallationStatus(0);
     setFilePath({});
-    setReasonPath({});
+    setReasonPath([]);
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1457,6 +1499,37 @@ export default function UnitEdit({
     setAddDevice(deviceData);
     setAddManufacturer('');
   };
+
+  const AddNewMeterType = async () => {
+    setTypeLoader(true);
+    setAddTypeInput(false);
+    setNewMeterType('');
+    let data = {
+      name: newMeterType,
+    };
+    console.log('New Meter Type', data);
+    const addres = await api.post('/property/equipment/meter/add-meter', data);
+    if (addres?.data?.bool) {
+      const res = await api.get('/property/equipment/meter/all-meters');
+      let arr1 = res.data?.data;
+      let arr2 = meterTypes;
+      // console.log('arr1--->', arr1);
+      // console.log('arr2--->', arr2);
+
+      const antiIntersection = arr1.filter(
+        (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
+      );
+      console.log('antiIntersection--->', antiIntersection);
+      setState((oldState) => ({
+        ...oldState,
+        meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      }));
+      setTypeLoader(false);
+    } else {
+      alert('Add Meter Failed');
+      setTypeLoader(false);
+    }
+  };
   return (
     <View>
       <Modal
@@ -1466,7 +1539,7 @@ export default function UnitEdit({
         backdropColor="black"
         statusBarTranslucent
         style={{top: width * -0.1}}
-        // onBackdropPress={() => setShowAddMeterSlider(false)}
+        // onBackdropPress={() => se7tShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         <KeyboardAvoidingView behavior="padding">
           {showAddMeterSlider ? (
@@ -1815,11 +1888,99 @@ export default function UnitEdit({
                   />
                 </View>
                 {sliderNumber == 2 ? (
-                  <FlatList
-                    contentContainerStyle={{flex: 1, justifyContent: 'center'}}
-                    data={state.meterList}
-                    renderItem={renderSlide2}
-                  />
+                  <View
+                    style={{
+                      height: width * 0.62,
+                      width: width * 0.9,
+                      alignItems: 'center',
+                    }}>
+                    {!typeLoader ? (
+                      <View
+                        style={{
+                          height: height * 0.2,
+                          marginVertical: height * 0.025,
+                        }}>
+                        <FlatList
+                          contentContainerStyle={{
+                            justifyContent: 'center',
+                          }}
+                          data={state.meterList}
+                          renderItem={renderSlide2}
+                        />
+                      </View>
+                    ) : (
+                      <View style={{flex: 1, justifyContent: 'center'}}>
+                        <ActivityIndicator size={'large'} color="#25AAE1ec" />
+                      </View>
+                    )}
+                    {!addTypeInput ? (
+                      <TouchableOpacity
+                        style={[
+                          styles.button,
+                          {width: width * 0.8, justifyContent: 'center'},
+                        ]}
+                        onPress={() => setAddTypeInput(true)}>
+                        <Text style={styles.buttonText}>
+                          Add New Meter Type
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <View
+                        style={{
+                          width: '100%',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-evenly',
+                        }}>
+                        <TextInput
+                          placeholder="Type New Meter Type Name"
+                          // value={}
+                          dense
+                          style={[styles.meterInput, {width: width * 0.6}]}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                              zIndex: 10,
+                            },
+                          }}
+                          onChangeText={(text) => {
+                            setNewMeterType(text);
+                          }}
+                        />
+                        {newMeterType ? (
+                          <TouchableOpacity onPress={AddNewMeterType}>
+                            <Text
+                              style={{
+                                fontWeight: 'bold',
+                                fontSize: width * 0.045,
+                                color: '#25AAE1ec',
+                                width: width * 0.15,
+                                textAlign: 'center',
+                              }}>
+                              Add
+                            </Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => setAddTypeInput(false)}>
+                            <Text
+                              style={{
+                                fontWeight: 'bold',
+                                fontSize: width * 0.045,
+                                color: '#25AAE1ec',
+                                width: width * 0.15,
+                                textAlign: 'center',
+                              }}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    )}
+                  </View>
                 ) : sliderNumber == 3 ? (
                   <View
                     style={{
@@ -1841,6 +2002,30 @@ export default function UnitEdit({
                           key={index}
                         />
                       ))}
+                    {/* {filePath.length > 0 && (
+                      <ScrollView>
+                        {filePath.map(({uri, index}) => (
+                          <View style={styles.imageContainer}>
+                            <TouchableOpacity
+                              onPress={() => removeImage(uri)}
+                              style={styles.imageRemovebtn}>
+                              <Iconi name="close-circle" size={width * 0.07} />
+                            </TouchableOpacity>
+                            <Image
+                              // resizeMode="contain"
+                              resizeMethod="scale"
+                              style={{
+                                width: width * 0.78,
+                                height: width * 0.2,
+                              }}
+                              source={{uri: uri}}
+                              key={index}
+                            />
+                          </View>
+                        ))}
+                      </ScrollView>
+                    )} */}
+
                     <TouchableOpacity
                       onPress={requestCameraPermission}
                       style={styles.button}>
@@ -1884,7 +2069,7 @@ export default function UnitEdit({
                     <Image
                       resizeMode="contain"
                       resizeMethod="auto"
-                      style={{ width: width * 0.3, height: width * 0.62 }}
+                      style={{width: width * 0.3, height: width * 0.62}}
                       source={require('../../../../../../../Images/aniLoad.gif')}
                     />
                   ) : (
@@ -1934,7 +2119,11 @@ export default function UnitEdit({
                       {installationStatus == 2 && statusAnimation == false && (
                         <>
                           <View style={{width: width * 0.8}}>
-                            <Text style={[styles.meterDesciptionHeading]}>
+                            <Text
+                              style={[
+                                styles.meterDesciptionHeading,
+                                {marginBottom: 0},
+                              ]}>
                               Reason*
                             </Text>
                             <SearchableDropdown
@@ -1989,7 +2178,11 @@ export default function UnitEdit({
                                 nestedScrollEnabled: true,
                               }}
                             />
-                            <Text style={styles.meterDesciptionHeading}>
+                            <Text
+                              style={[
+                                styles.meterDesciptionHeading,
+                                {marginBottom: 0},
+                              ]}>
                               Reason Description*
                             </Text>
                             <TextInput
@@ -2010,8 +2203,68 @@ export default function UnitEdit({
                               }}
                             />
                           </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                            }}>
+                            <View>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  requestCameraPermission('reason')
+                                }
+                                style={[styles.button, {width: width * 0.1}]}>
+                                <Iconi
+                                  name="camera"
+                                  size={width * 0.05}
+                                  color="#3E4A4F"
+                                />
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => imageGalleryLaunch('reason')}
+                                style={[styles.button, {width: width * 0.1}]}>
+                                <Iconi
+                                  name="images"
+                                  size={width * 0.05}
+                                  color="#3E4A4F"
+                                />
+                              </TouchableOpacity>
+                            </View>
+                            <View style={styles.imageListContainer}>
+                              {reasonPath.length > 0 ? (
+                                <ScrollView>
+                                  {reasonPath.map(({uri, index}) => (
+                                    <View style={styles.imageContainer}>
+                                      <TouchableOpacity
+                                        onPress={() =>
+                                          removeImage(uri, 'reason')
+                                        }
+                                        style={styles.imageRemovebtn}>
+                                        <Iconi
+                                          name="close-circle"
+                                          size={width * 0.07}
+                                        />
+                                      </TouchableOpacity>
+                                      <Image
+                                        // resizeMode="contain"
+                                        resizeMethod="scale"
+                                        style={{
+                                          height: width * 0.15,
+                                        }}
+                                        source={{uri: uri}}
+                                        key={index}
+                                      />
+                                    </View>
+                                  ))}
+                                </ScrollView>
+                              ) : (
+                                <Text style={{textAlign: 'center'}}>
+                                  No Image Uploaded
+                                </Text>
+                              )}
+                            </View>
+                          </View>
 
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                             onPress={() => imageGalleryLaunch('reason')}
                             style={styles.button1}>
                             <View
@@ -2042,7 +2295,7 @@ export default function UnitEdit({
                                   File: {item.fileName.slice(10)}
                                 </Text>
                               ))}
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </>
                       )}
                       {installationStatus == 0 && statusAnimation == false && (
@@ -2086,6 +2339,13 @@ export default function UnitEdit({
                           {item.name}*
                         </Text>
                         <View
+                          pointerEvents={
+                            index > 0
+                              ? slide1[0].selectId
+                                ? 'auto'
+                                : 'none'
+                              : 'auto'
+                          }
                           style={{
                             flexDirection: 'row',
                             alignItems: 'flex-start',
@@ -2112,7 +2372,12 @@ export default function UnitEdit({
                             items={item.data}
                             resetValue={false}
                             textInputProps={{
-                              placeholder: item.name,
+                              placeholder:
+                                index == 1
+                                  ? slide1[0].selectId
+                                    ? item.name
+                                    : 'First Select Manufacture'
+                                  : item.name,
                               underlineColorAndroid: 'transparent',
                               style: {
                                 padding: width * 0.027,
@@ -2385,12 +2650,20 @@ export default function UnitEdit({
                   ]}>
                   {meterListData &&
                     meterListData.map((item) => (
-                      <View style={{flexDirection: 'row'}}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
                         <Image
                           source={typeSwitcher(item.name)}
                           style={styles.untiDetailImage}
                         />
-                        <Text style={[styles.meterDesciptionHeading]}>
+                        <Text
+                          style={[
+                            styles.meterDesciptionHeading,
+                            {marginBottom: 0},
+                          ]}>
                           {item.name}
                         </Text>
                       </View>
@@ -2766,7 +3039,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: width * 0.005,
     flexDirection: 'row',
-    marginTop: width * 0.04,
+    // marginTop: width * 0.04,
     elevation: width * 0.003,
   },
   attemptBtn: {
@@ -2802,5 +3075,25 @@ const styles = StyleSheet.create({
     elevation: width * 0.005,
     bottom: width * 0.04,
     right: width * 0.03,
+  },
+  imageListContainer: {
+    width: width * 0.7,
+    height: width * 0.2,
+    marginVertical: 2,
+    paddingVertical: 2,
+    marginHorizontal: 2,
+    justifyContent: 'center',
+    borderWidth: 0,
+    elevation: 2,
+  },
+  imageContainer: {
+    borderWidth: 2,
+    marginVertical: 2,
+  },
+  imageRemovebtn: {
+    position: 'absolute',
+    zIndex: 1,
+    right: -1,
+    top: -1,
   },
 });

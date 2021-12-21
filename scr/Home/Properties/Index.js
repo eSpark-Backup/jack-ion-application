@@ -15,19 +15,16 @@ import {
 
 //Packages
 import LinearGradient from 'react-native-linear-gradient';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
-import FilterIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
-import Close from 'react-native-vector-icons/MaterialCommunityIcons';
-import Search from 'react-native-vector-icons/EvilIcons';
-import Back from 'react-native-vector-icons/MaterialIcons';
-import Build from 'react-native-vector-icons/FontAwesome5';
-import Home from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import EvilIcon from 'react-native-vector-icons/EvilIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {TextInput, Button} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import clc from 'cli-color';
 import CustumStatusBar from '../../components/StatusBar';
+import NetInfo from '@react-native-community/netinfo';
 
 // Components
 import Add from './Form';
@@ -67,9 +64,19 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
-    this.setState({loadScreen: true});
-    this.context.checkData();
-    this.setState({propertyList: this.context.propList});
+    NetInfo.fetch().then((state) => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      if (state.isConnected) {
+        console.log('True chala');
+        this.setState({loadScreen: true});
+        this.context.checkData();
+        this.setState({propertyList: this.context.propList});
+      } else {
+        console.log('False chala');
+        this.setState({loadScreen: true});
+      }
+    });
   };
 
   openFilter = () => {
@@ -124,7 +131,7 @@ export default class Splash extends Component {
     <TouchableOpacity
       style={styles.propButton}
       onPress={() => this.jumpFromSearch({prop, item: prop})}>
-      <Properties
+      <MaterialCommunityIcon
         name="home-city-outline"
         size={width * 0.09}
         color="#115b72"
@@ -154,7 +161,7 @@ export default class Splash extends Component {
         </View>
       </View>
 
-      <Signal
+      <MaterialCommunityIcon
         name="signal-cellular-outline"
         size={height * 0.04}
         color="#115b72"
@@ -179,7 +186,7 @@ export default class Splash extends Component {
         <TouchableOpacity
           style={styles.propButton}
           onPress={() => this.selectedProp(prop)}>
-          <Properties
+          <MaterialCommunityIcon
             name="home-city-outline"
             size={width * 0.09}
             color="#115b72"
@@ -209,13 +216,21 @@ export default class Splash extends Component {
           </View>
           <View style={{flexDirection: 'row'}}>
             <View style={styles.buildUnitCountContainer}>
-              <Build name="building" size={width * 0.04} color="#115b72" />
+              <FontAwesome5Icon
+                name="building"
+                size={width * 0.04}
+                color="#115b72"
+              />
               <Text style={styles.buildUnitCount}>
                 {prop.item.building_count}
               </Text>
             </View>
             <View style={styles.buildUnitCountContainer}>
-              <Home name="house-user" size={width * 0.04} color="#115b72" />
+              <FontAwesome5Icon
+                name="house-user"
+                size={width * 0.04}
+                color="#115b72"
+              />
               <Text style={styles.buildUnitCount}>{prop.item.unit_count}</Text>
             </View>
           </View>
@@ -260,14 +275,14 @@ export default class Splash extends Component {
       <>
         <CustumStatusBar />
         <View style={styles.container}>
-          {this.context.isLoading ? <Loader /> : null}
+          {this.context.isLoading && <Loader />}
           {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
           {/* <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
               <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
                 style={styles.menuView}>
-                <Back
+                <MaterialIcon
                   size={width * 0.08}
                   color="white"
                   name="keyboard-backspace"
@@ -278,7 +293,7 @@ export default class Splash extends Component {
                   activeOpacity={1}
                   style={styles.searchButton}
                   onPress={this.openAndClear}>
-                  <Search
+                  <EvilIcon
                     name="search"
                     size={height * 0.04}
                     style={{ marginLeft: width * 0.05 }}
@@ -305,7 +320,7 @@ export default class Splash extends Component {
                 <TouchableOpacity
                   onPress={this.openFilter}
                   style={styles.filterButton}>
-                  <FilterIcon
+                  <MaterialCommunityIcon
                     name="filter-outline"
                     color={this.state.filterWork ? '#25AAE1ec' : 'black'}
                     size={20}
@@ -320,7 +335,7 @@ export default class Splash extends Component {
               <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
                 style={styles.menuView}>
-                <Back
+                <MaterialIcon
                   size={width * 0.08}
                   color="white"
                   name="keyboard-backspace"
@@ -332,20 +347,42 @@ export default class Splash extends Component {
                     activeOpacity={1}
                     style={styles.searchBtn}
                     onPress={this.openAndClear}>
-                    <Search name="search" size={height * 0.04} color="white" />
+                    <EvilIcon
+                      name="search"
+                      size={height * 0.04}
+                      color="white"
+                    />
                     <Text style={{color: 'white'}}>Search</Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
                   onPress={this.openFilter}
                   style={styles.filterButton}>
-                  <FilterIcon
+                  <MaterialCommunityIcon
                     name="filter-outline"
                     color={this.state.filterWork ? '#25AAE1ec' : 'black'}
                     size={width * 0.05}
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Notifications')}
+                style={{
+                  width: width * 0.15,
+                  height: width * 0.1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#25AAE1ec',
+                  borderBottomLeftRadius: width * 0.1,
+                  borderTopLeftRadius: width * 0.1,
+                  elevation: width * 0.01,
+                }}>
+                <MaterialIcon
+                  size={width * 0.07}
+                  color="white"
+                  name="notifications"
+                />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.headingContainer}>
@@ -366,7 +403,7 @@ export default class Splash extends Component {
                 <KeyboardAvoidingView behavior="padding">
                   <View style={styles.searchModalInner}>
                     {/* <View style={styles.searchModalInput}> */}
-                    <Search name="search" size={width * 0.07} color="white" />
+                    <EvilIcon name="search" size={width * 0.07} color="white" />
                     <TextInput
                       underlineColor="transparent"
                       autoFocus={true}
@@ -391,7 +428,11 @@ export default class Splash extends Component {
                       ) : null}
                     </View>
                     <TouchableOpacity onPress={this.closeAndClear}>
-                      <Close name="close" color="white" size={width * 0.055} />
+                      <MaterialCommunityIcon
+                        name="close"
+                        color="white"
+                        size={width * 0.055}
+                      />
                     </TouchableOpacity>
                   </View>
                   <View style={styles.searchList}>
@@ -413,22 +454,26 @@ export default class Splash extends Component {
             ) : null}
           </View>
           <View style={styles.propertyList}>
-            <FlatList
-              data={this.context.propList}
-              renderItem={this._renderPropList}
-              removeClippedSubviews={false}
-              maxToRenderPerBatch={150}
-              windowSize={100}
-              keyExtractor={(item, index) => index.toString()}
-              showsVerticalScrollIndicator={false}
-              ListFooterComponent={() =>
-                this.context.listLoader ? (
-                  <ActivityIndicator color="#25dAE1" size="large" />
-                ) : null
-              }
-              onEndReachedThreshold={width * 0.0001}
-              onEndReached={() => this.LoadData()}
-            />
+            {this.context.propList.length < 1 && !this.context.isLoading ? (
+              <Text>Check Your Internet Connection</Text>
+            ) : (
+              <FlatList
+                data={this.context.propList}
+                renderItem={this._renderPropList}
+                removeClippedSubviews={false}
+                maxToRenderPerBatch={150}
+                windowSize={100}
+                keyExtractor={(item, index) => index.toString()}
+                showsVerticalScrollIndicator={false}
+                ListFooterComponent={() =>
+                  this.context.listLoader ? (
+                    <ActivityIndicator color="#25dAE1" size="large" />
+                  ) : null
+                }
+                onEndReachedThreshold={width * 0.0001}
+                onEndReached={() => this.LoadData()}
+              />
+            )}
           </View>
         </View>
       </>
