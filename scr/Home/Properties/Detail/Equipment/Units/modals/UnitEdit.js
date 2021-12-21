@@ -1530,6 +1530,7 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
+  console.log('Meterlist data', meterListData);
   return (
     <View>
       <Modal
@@ -2650,10 +2651,36 @@ export default function UnitEdit({
                   ]}>
                   {meterListData &&
                     meterListData.map((item) => (
-                      <View
+                      <TouchableOpacity
+                        onPress={() => {
+                          LayoutAnimation.configureNext({
+                            duration: 300,
+                            create: {
+                              type: LayoutAnimation.Types.easeInEaseOut,
+                              property: LayoutAnimation.Properties.opacity,
+                            },
+                            update: {
+                              type: LayoutAnimation.Types.easeInEaseOut,
+                            },
+                          }),
+                            setShowAddMeterSlider(true),
+                            enableLocation();
+                          callApi();
+                        }}
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: width * 0.02,
+                          elevation: 2,
+                          backgroundColor: 'white',
+                          shadowColor: '#000',
+                          shadowOffset: {
+                            width: 0,
+                            height: 1,
+                          },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 1.41,
                         }}>
                         <Image
                           source={typeSwitcher(item.name)}
@@ -2666,7 +2693,7 @@ export default function UnitEdit({
                           ]}>
                           {item.name}
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     ))}
                 </View>
               </View>
