@@ -59,6 +59,7 @@ import MapView, {
   Marker,
   MarkerAnimated,
 } from 'react-native-maps';
+import {add} from 'react-native-reanimated';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -83,6 +84,7 @@ export default function UnitEdit({
   runLoading,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [oldMeterListData, setOldMeterListData] = useState([]);
   const [filePath, setFilePath] = useState({});
   const [reasonPath, setReasonPath] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
@@ -163,6 +165,7 @@ export default function UnitEdit({
     },
   ]);
   const [reasons, setReasons] = useState([]);
+  const [meterAddingId, setMeterAddingId] = useState('');
   const [reasonId, setReasonId] = useState(null);
   const [reasonDes, setReasonDes] = useState('');
   const [reasonText, setReasonText] = useState('');
@@ -380,9 +383,11 @@ export default function UnitEdit({
     let arr2 = meterTypes;
     // console.log('arr1--->', arr1);
     // console.log('arr2--->', arr2);
+    // console.log('antiIntersection arr1--->', arr1);
+    // console.log('antiIntersection arr2--->', arr2);
 
     const antiIntersection = arr1.filter(
-      (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
+      (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
     );
     console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
@@ -411,13 +416,51 @@ export default function UnitEdit({
     }
     // console.log('showAddMeterSlider------->', showAddMeterSlider);
   }, [showAddMeterSlider]);
-  useEffect(() => {
+  useEffect(async () => {
     if (flag) {
       console.log('un in mod-->>', unitDetails);
       setState((oldState) => ({
         ...oldState,
         lastUnitData: unitDetails?.unit?.name,
       }));
+      const token = await EncryptedStorage.getItem('user_token');
+      if (token != null) {
+        api.setHeader('Authorization', 'Bearer ' + token);
+      }
+      const res = await api.get('/property/equipment/meter/all-meters');
+
+      let arr1 = res.data?.data;
+      let arr2 = meterTypes;
+      // console.log('arr1--->', arr1);
+      // console.log('arr2--->', arr2);
+      console.log('antiIntersection USEEFFECT arr1--->', arr1);
+      console.log('antiIntersection USEEFFECT arr2--->', arr2);
+
+      if (arr2.length > 0) {
+        const Intersection = arr2.filter((item1) =>
+          arr1.some((item2) => item1.meter_id == item2.id),
+        );
+        console.log('Intersection--->>>>', Intersection);
+        // const antiIntersection = arr1.filter(
+        //   (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
+        // );
+        // console.log('antiIntersection USEEFFECT--->', antiIntersection);
+        // console.log(
+        //   'Get Unit Information---->>',
+        //   unitDetails?.unit?.unit_meter[0]?.meter_id,
+        // );
+        let arr3 = unitDetails?.unit?.unit_meter;
+
+        const getMeter = Intersection.filter((item1) =>
+          arr3.some((item2) => item1.meter_id == item2.meter_id),
+        );
+        console.log('Get Meter Information---->>', getMeter);
+        let meterArray = [...oldMeterListData]; // copying the old datas array
+        // meterArray.push(getMeter);
+        setOldMeterListData(getMeter);
+        // console.log('Get Meter Information---->>', getMeter);
+        // setMeterListData(meterArray);
+      }
     }
     callApi();
   }, [meterTypes, unitDetails]);
@@ -912,7 +955,7 @@ export default function UnitEdit({
       building_id: buildingId,
       meters: meterData,
     };
-    console.log('data--->', data);
+    // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -980,7 +1023,7 @@ export default function UnitEdit({
   };
 
   const changeSlider = () => {
-    if (sliderNumber == 3) {
+    if (sliderNumber == 3 && meterAddingId == '') {
       setCheckSerial(true);
       checkingSerial();
     } else {
@@ -1025,17 +1068,42 @@ export default function UnitEdit({
       longitude: long,
       thumbnail: `data:image/jpeg;base64,${imageBase64}`,
       installation_status: installationStatus,
-      reason: {
+      reasons: {
         options_reason_id: reasonId,
         text_reason: reasonDes,
         picture: reasonBase64s,
       },
     });
     setMeterData(loopData);
-    cancelMeter();
-    const addMeter = state.meterList.filter((item) => item.id === newMeter.id);
-    let meterArray = [...meterListData]; // copying the old datas array
-    meterArray.push(addMeter[0]);
+    const addMeter = oldMeterListData.filter(
+      (item) => item.meter_id != newMeter.id,
+    );
+
+    setMeterListData(addMeter);
+    console.log('addMeter finishSlider----->>>>>', addMeter);
+    let meterArray = [...oldMeterListData]; // copying the old datas array
+    meterArray.push({
+      device: {
+        manufacturer: slide1[0].select,
+        manufacturer_id: slide1[0].selectId,
+        name: slide1[1].select,
+      },
+      meter_id: newMeter.id,
+      meter_name: newMeter.name,
+      device_serial_number: slide2[0].value,
+      meter_serial_number: slide2[2].value,
+      device_id: slide1[1].selectId,
+      initial_meter_reading: slide2[1].value,
+      latitude: lat,
+      longitude: long,
+      thumbnail: filePath,
+      installation_status: installationStatus,
+      reasons: {
+        options_reason_id: reasonId,
+        text_reason: reasonDes,
+        picture: reasonBase64s,
+      },
+    });
     setMeterListData(meterArray);
     setStatusAnimation(false);
     const newList = state.meterList.filter((item) => item.id !== newMeter.id);
@@ -1043,12 +1111,13 @@ export default function UnitEdit({
       ...oldState,
       meterList: newList,
     }));
+    cancelMeter();
   };
   const typeSwitcher = (arg) => {
     switch (arg) {
       case 'hot water':
         return require('../../../../../../../Images/hot-water.png');
-      case 'cold water':
+      case 'Cold Water':
         return require('../../../../../../../Images/cold-water.png');
       case 'electricity':
         return require('../../../../../../../Images/electric.png');
@@ -1167,7 +1236,10 @@ export default function UnitEdit({
               : onChangeMultipleField(text, index)
           }
           disabled={
-            (index == 0 && type == 'meterDirect') || type == 'addMeterDirect'
+            meterAddingId && index != 2
+              ? true
+              : (index == 0 && type == 'meterDirect') ||
+                type == 'addMeterDirect'
               ? true
               : false
           }
@@ -1290,7 +1362,7 @@ export default function UnitEdit({
           }
         } else {
           setImageBase64(res.assets[0].base64);
-          setFilePath(res);
+          setFilePath(res.assets[0].uri);
         }
         // this.setState({
         //   filePath: res,
@@ -1335,7 +1407,7 @@ export default function UnitEdit({
           }
         } else {
           setImageBase64(res.assets[0].base64);
-          setFilePath(res);
+          setFilePath(res.assets[0].uri);
 
           console.log('FIle PAth Array');
         }
@@ -1395,6 +1467,16 @@ export default function UnitEdit({
       name: '',
     }));
     setShowAddMeterSlider(false);
+    if (meterAddingId) {
+      let removeMeterLIst = state.meterList.filter(
+        (item) => item.id != meterAddingId,
+      );
+      setState((oldState) => ({
+        ...oldState,
+        meterList: removeMeterLIst,
+      }));
+    }
+    setMeterAddingId('');
   };
   const showAddNewType = (value) => {
     LayoutAnimation.configureNext({
@@ -1500,6 +1582,61 @@ export default function UnitEdit({
     setAddManufacturer('');
   };
 
+  const getMeterData = (data) => {
+    // setAddTypeInput(false);
+    // setSliderNumber(1);
+    // setSliderProgress(0);
+    if (data.reasons.length > 0) {
+      setReasonText(data.reasons.name);
+      setReasonId(data.reasons.options_reason_id);
+      setReasonDes(data.reasons.text_reason);
+    }
+    setMeterAddingId(data.meter_id);
+    let arr1 = {
+      id: data.meter_id,
+      name: data.meter_name,
+    };
+    let arr2 = [...state.meterList];
+    arr2.push(arr1);
+    // console.log('arr1--->', arr1);
+    // console.log('arr2--->', arr2);
+    // console.log('antiIntersection arr1--->', arr1);
+    // console.log('antiIntersection arr2--->', arr2);
+
+    // const antiIntersection = arr1.filter(
+    //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
+    // );
+    // console.log('antiIntersection--->', antiIntersection);
+    setState((oldState) => ({
+      ...oldState,
+      meterList: arr2,
+    }));
+
+    setInstallationStatus(data.installation_status);
+    setFilePath(data.thumbnail);
+    setReasonPath([]);
+    slide1.map((item, index) => {
+      let newArr = [...slide1];
+      newArr[index].data = [];
+      newArr[0].select = data.device.manufacturer;
+      newArr[1].select = data.device.name;
+      newArr[0].selectId = data.device.manufacturer_id;
+      newArr[1].selectId = data.device_id;
+    });
+    slide2.map((item, index) => {
+      let newArr = [...slide2];
+      newArr[0].value = data.device_serial_number;
+      newArr[1].value = data.initial_meter_reading;
+      newArr[2].value = data.meter_serial_number;
+    });
+    setNewMeter((oldState) => ({
+      ...oldState,
+      id: 0,
+      name: '',
+    }));
+    setShowAddMeterSlider(false);
+  };
+
   const AddNewMeterType = async () => {
     setTypeLoader(true);
     setAddTypeInput(false);
@@ -1530,7 +1667,7 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('Meterlist data', meterListData);
+  // console.log('Meterlist data', meterListData);
   return (
     <View>
       <Modal
@@ -1993,16 +2130,12 @@ export default function UnitEdit({
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
-                    {filePath?.assets &&
-                      filePath?.assets.map(({uri, index}) => (
-                        <Image
-                          resizeMode="cover"
-                          resizeMethod="scale"
-                          style={{width: width * 0.28, height: width * 0.28}}
-                          source={{uri: uri}}
-                          key={index}
-                        />
-                      ))}
+                    <Image
+                      resizeMode="cover"
+                      resizeMethod="scale"
+                      style={{width: width * 0.28, height: width * 0.28}}
+                      source={{uri: filePath}}
+                    />
                     {/* {filePath.length > 0 && (
                       <ScrollView>
                         {filePath.map(({uri, index}) => (
@@ -2469,7 +2602,7 @@ export default function UnitEdit({
                                 slide2[1].value
                               ? '#25AAE1ec'
                               : sliderNumber == 4 &&
-                                filePath?.assets != undefined &&
+                                filePath != {} &&
                                 lat != undefined &&
                                 long != undefined
                               ? '#25AAE1ec'
@@ -2498,7 +2631,7 @@ export default function UnitEdit({
                             slide2[1].value
                           ? false
                           : sliderNumber == 4 &&
-                            filePath?.assets != undefined &&
+                            filePath != {} &&
                             lat != undefined &&
                             long != undefined
                           ? false
@@ -2649,52 +2782,101 @@ export default function UnitEdit({
                       alignItems: 'center',
                     },
                   ]}>
-                  {meterListData &&
-                    meterListData.map((item) => (
-                      <TouchableOpacity
-                        onPress={() => {
-                          LayoutAnimation.configureNext({
-                            duration: 300,
-                            create: {
-                              type: LayoutAnimation.Types.easeInEaseOut,
-                              property: LayoutAnimation.Properties.opacity,
+                  {meterListData.length > 0
+                    ? meterListData.map((item) => (
+                        <TouchableOpacity
+                          onPress={() => {
+                            LayoutAnimation.configureNext({
+                              duration: 300,
+                              create: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                                property: LayoutAnimation.Properties.opacity,
+                              },
+                              update: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                              },
+                            }),
+                              setShowAddMeterSlider(true),
+                              enableLocation();
+                            getMeterData(item);
+                            callApi();
+                          }}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: width * 0.02,
+                            elevation: 2,
+                            backgroundColor: 'white',
+                            shadowColor: '#000',
+                            shadowOffset: {
+                              width: 0,
+                              height: 1,
                             },
-                            update: {
-                              type: LayoutAnimation.Types.easeInEaseOut,
+                            shadowOpacity: 0.2,
+                            shadowRadius: 1.41,
+                          }}>
+                          <Image
+                            source={typeSwitcher(item.meter_name)}
+                            style={styles.untiDetailImage}
+                          />
+                          <Text
+                            style={[
+                              styles.meterDesciptionHeading,
+                              {marginBottom: 0},
+                            ]}>
+                            {item.meter_name}
+                          </Text>
+                        </TouchableOpacity>
+                      ))
+                    : oldMeterListData.length > 0
+                    ? oldMeterListData.map((item) => (
+                        <TouchableOpacity
+                          onPress={() => {
+                            LayoutAnimation.configureNext({
+                              duration: 300,
+                              create: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                                property: LayoutAnimation.Properties.opacity,
+                              },
+                              update: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                              },
+                            }),
+                              setShowAddMeterSlider(true),
+                              enableLocation();
+                            getMeterData(item);
+                            callApi();
+                          }}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: width * 0.02,
+                            elevation: 2,
+                            backgroundColor: 'white',
+                            shadowColor: '#000',
+                            shadowOffset: {
+                              width: 0,
+                              height: 1,
                             },
-                          }),
-                            setShowAddMeterSlider(true),
-                            enableLocation();
-                          callApi();
-                        }}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: width * 0.02,
-                          elevation: 2,
-                          backgroundColor: 'white',
-                          shadowColor: '#000',
-                          shadowOffset: {
-                            width: 0,
-                            height: 1,
-                          },
-                          shadowOpacity: 0.2,
-                          shadowRadius: 1.41,
-                        }}>
-                        <Image
-                          source={typeSwitcher(item.name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <Text
-                          style={[
-                            styles.meterDesciptionHeading,
-                            {marginBottom: 0},
-                          ]}>
-                          {item.name}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                            shadowOpacity: 0.2,
+                            shadowRadius: 1.41,
+                          }}>
+                          <Image
+                            source={typeSwitcher(item.meter_name)}
+                            style={styles.untiDetailImage}
+                          />
+                          <Text
+                            style={[
+                              styles.meterDesciptionHeading,
+                              {marginBottom: 0},
+                            ]}>
+                            {item.meter_name}
+                          </Text>
+                        </TouchableOpacity>
+                      ))
+                    : null}
                 </View>
               </View>
               {/* Box Footer */}

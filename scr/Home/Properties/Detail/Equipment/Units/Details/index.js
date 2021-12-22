@@ -299,7 +299,7 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
+    console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
