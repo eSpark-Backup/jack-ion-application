@@ -1098,14 +1098,21 @@ export default function UnitEdit({
       longitude: long,
       thumbnail: filePath,
       installation_status: installationStatus,
-      reasons: {
-        options_reason_id: reasonId,
-        text_reason: reasonDes,
-        picture: reasonBase64s,
-      },
+      reasons: [
+        {
+          options_reason_id: reasonId,
+          text_reason: reasonDes,
+          picture: reasonBase64s,
+        },
+      ],
     });
     setMeterListData(meterArray);
+    console.log('meterArray------>', meterArray);
     setStatusAnimation(false);
+    const antiIntersection = meterArray.filter((item1) =>
+      meterArray.some((item2) => item1.meter_id == item2.meter_id),
+    );
+    console.log('antiIntersection finishSLider--->', antiIntersection);
     const newList = state.meterList.filter((item) => item.id !== newMeter.id);
     setState((oldState) => ({
       ...oldState,
@@ -1612,7 +1619,7 @@ export default function UnitEdit({
       meterList: arr2,
     }));
 
-    setInstallationStatus(data.installation_status);
+    setInstallationStatus(0);
     setFilePath(data.thumbnail);
     setReasonPath([]);
     slide1.map((item, index) => {
@@ -2130,12 +2137,14 @@ export default function UnitEdit({
                   </View>
                 ) : sliderNumber == 4 ? (
                   <View style={styles.container}>
-                    <Image
-                      resizeMode="cover"
-                      resizeMethod="scale"
-                      style={{width: width * 0.28, height: width * 0.28}}
-                      source={{uri: filePath}}
-                    />
+                    {Object.keys(filePath).length > 0 && (
+                      <Image
+                        resizeMode="cover"
+                        resizeMethod="scale"
+                        style={{width: width * 0.28, height: width * 0.28}}
+                        source={{uri: filePath}}
+                      />
+                    )}
                     {/* {filePath.length > 0 && (
                       <ScrollView>
                         {filePath.map(({uri, index}) => (
@@ -2602,7 +2611,7 @@ export default function UnitEdit({
                                 slide2[1].value
                               ? '#25AAE1ec'
                               : sliderNumber == 4 &&
-                                filePath != {} &&
+                                Object.keys(filePath).length > 0 &&
                                 lat != undefined &&
                                 long != undefined
                               ? '#25AAE1ec'
@@ -2631,7 +2640,7 @@ export default function UnitEdit({
                             slide2[1].value
                           ? false
                           : sliderNumber == 4 &&
-                            filePath != {} &&
+                            Object.keys(filePath).length > 0 &&
                             lat != undefined &&
                             long != undefined
                           ? false
