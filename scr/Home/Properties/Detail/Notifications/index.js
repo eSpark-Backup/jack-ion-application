@@ -18,6 +18,7 @@ import {Fonts} from '../../../../utils/fonts';
 import Base_URL from '../../../../api/WebServices';
 import styles from './style';
 import CustumStatusBar from '../../../../components/StatusBar';
+import Loader from '../../../../components/Loader';
 
 const api = create({baseURL: Base_URL});
 const {width, height} = Dimensions.get('window');
@@ -30,6 +31,7 @@ export default class Splash extends Component {
       points: 80,
       expanded: false,
       asdf: false,
+      LoaderState: true,
       notificationData: [
         // {
         //   title: 'New Property Added',
@@ -63,8 +65,10 @@ export default class Splash extends Component {
     const notificationsRes = await api.get(
       '/property/equipment/meter/notification-show',
     );
-    console.log('Notifications Response', notificationsRes?.data);
+
+    console.log('Notifications Response', notificationsRes?.data?.data?.notify);
     this.setState({notificationData: notificationsRes?.data?.data?.notify});
+    this.setState({LoaderState: false});
   }
 
   render() {
@@ -72,6 +76,7 @@ export default class Splash extends Component {
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
     let upDownNearby;
     !this.state.nearDown ? (upDownNearby = 'down') : (upDownNearby = 'up');
+    console.log('LoaderState');
 
     return (
       <View style={styles.container}>
@@ -102,7 +107,9 @@ export default class Splash extends Component {
         </View>
 
         <View style={{flex: 1}}>
-          {this.state.notificationData.length < 1 ? (
+          {this.state.LoaderState ? (
+            <Loader />
+          ) : this.state.notificationData.length < 1 ? (
             <Text
               style={{
                 textAlign: 'center',
@@ -136,9 +143,9 @@ export default class Splash extends Component {
                   <View>
                     <Text
                       style={{fontWeight: 'bold', textTransform: 'capitalize'}}>
-                      {item.title}
+                      {item.sender_name}
                     </Text>
-                    <Text>{item.content}</Text>
+                    <Text>{item.message}</Text>
                   </View>
                 </TouchableOpacity>
               )}
