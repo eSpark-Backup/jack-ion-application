@@ -67,6 +67,7 @@ export default class Splash extends Component {
     NetInfo.fetch().then((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
+      console.log('isInternetReachable?', state.isInternetReachable);
       if (state.isConnected) {
         console.log('True chala');
         this.setState({loadScreen: true});
