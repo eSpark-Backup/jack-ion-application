@@ -357,7 +357,7 @@ export default class Splash extends Component {
     this.setState({showSearch: false, loader: true, loaderBuildings: true});
   };
   typeSwitcher = (arg) => {
-    switch (arg) {
+    switch (arg.toLowerCase()) {
       case 'hot water':
         return require('../../../../../Images/hot-water.png');
       case 'cold water':
