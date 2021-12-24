@@ -1003,10 +1003,10 @@ export default function UnitEdit({
     cancelMeter();
   };
   const typeSwitcher = (arg) => {
-    switch (arg) {
+    switch (arg.toLowerCase()) {
       case 'hot water':
         return require('../../../../../../../Images/hot-water.png');
-      case 'Cold Water':
+      case 'cold water':
         return require('../../../../../../../Images/cold-water.png');
       case 'electricity':
         return require('../../../../../../../Images/electric.png');
