@@ -497,10 +497,11 @@ const App = ({navigation}) => {
   const arrayOfUnits = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
-    switch (arg.toLowerCase()) {
+    console.log('METER NAME', arg);
+    switch (arg) {
       case 'hot water':
         return require('../../../../../../../Images/hot-water.png');
-      case 'cold water':
+      case 'Cold Water':
         return require('../../../../../../../Images/cold-water.png');
       case 'electricity':
         return require('../../../../../../../Images/electric.png');
@@ -1085,11 +1086,10 @@ const App = ({navigation}) => {
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
+          openModal={() => setEditUnitModalVisible(true)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
-          runLoading={() => setLoading(true)}
-          runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -1211,7 +1211,7 @@ const App = ({navigation}) => {
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
           runLoading={() => setLoading(true)}
-          runLoadingFailed={() => setLoading(true)}
+          runLoadingFailed={() => setLoading(false)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}

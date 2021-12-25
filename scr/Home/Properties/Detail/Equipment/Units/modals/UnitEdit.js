@@ -59,7 +59,7 @@ import MapView, {
   Marker,
   MarkerAnimated,
 } from 'react-native-maps';
-import {add} from 'react-native-reanimated';
+import {add, color} from 'react-native-reanimated';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -70,6 +70,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default function UnitEdit({
   modalVisible,
   closeModal,
+  openModal,
   unitsArray,
   buildingName,
   unitDetails,
@@ -81,10 +82,11 @@ export default function UnitEdit({
   flag,
   enableFlag,
   disableFlag,
-  runLoading,
 }) {
   const [meterListData, setMeterListData] = useState([]);
-  const [oldMeterListData, setOldMeterListData] = useState([]);
+  const [isActivityLoader, setIsActivityLoader] = useState(false);
+  const [loadMeters, setLoadMeters] = useState(false);
+  const [loadManufacturers, setLoadManufacturers] = useState(false);
   const [filePath, setFilePath] = useState('');
   const [reasonPath, setReasonPath] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
@@ -157,7 +159,7 @@ export default function UnitEdit({
       id: 1,
       error: '',
       name: 'Initial Meter Reading',
-      value: '',
+      value: '0',
     },
     {
       id: 2,
@@ -633,9 +635,11 @@ export default function UnitEdit({
 
   const callApi = async () => {
     setReasons([]);
+    setLoadManufacturers(true);
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
+    setLoadManufacturers(false);
     setState((oldState) => ({
       ...oldState,
       manufacturersData: ManufacturersResponse?.data?.data,
@@ -751,12 +755,15 @@ export default function UnitEdit({
       alert('Select meter and continue');
       return;
     }
+    setIsActivityLoader(true);
     let data = {
       name: state.lastUnitData,
       building_id: buildingId,
       meters: meterData,
     };
-    // console.log('Meter Data', meterData);
+
+    // console.log('Meter Data 1', meterData[0].reasons);
+    // console.log('Meter Data 2', meterData[1].reasons);
     // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
@@ -765,9 +772,13 @@ export default function UnitEdit({
       );
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
+        setIsActivityLoader(false);
+        alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
         console.log('datachecckk-->>', unitResponse?.data?.data);
       } else {
+        setIsActivityLoader(false);
+        console.log('ADD RESPONSE FALSE MILA');
         alert(unitResponse?.data?.message);
       }
       console.log('Add unit response', unitResponse?.data);
@@ -777,12 +788,19 @@ export default function UnitEdit({
         data,
       );
       console.log('datachecckk-->>', unitResponse?.data?.data);
+      console.log(
+        'Unitmeterchecckk-->>',
+        unitResponse?.data?.data?.unit?.unit_meter,
+      );
       console.log('update data check-->>', unitResponse?.data);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
-        runLoading();
+        setIsActivityLoader(false);
+        alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
       } else {
+        setIsActivityLoader(false);
+        console.log('ADD RESPONSE FALSE MILA');
         alert(unitResponse?.data?.message);
       }
     }
@@ -844,6 +862,7 @@ export default function UnitEdit({
   };
 
   const finishSlider = () => {
+    setLoadMeters(true);
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -872,6 +891,7 @@ export default function UnitEdit({
       ...oldState,
       meterList: newList,
     }));
+    setShowAddMeterSlider(false);
   };
   useUpdateEffect(() => {
     if (letsFinish) {
@@ -912,28 +932,8 @@ export default function UnitEdit({
       ],
     });
     setMeterListData(meterArray);
-    // meterListData.map((item) => {
-    //   var loopData = [...meterData];
-    //   loopData.push({
-    //     meter_id: item.meter_id,
-    //     device_serial_number: item.device_serial_number,
-    //     meter_serial_number: item.meter_serial_number,
-    //     device_id: item.device_id,
-    //     initial_meter_reading: item.initial_meter_reading,
-    //     latitude: item.latitude,
-    //     longitude: item.longitude,
-    //     // thumbnail: `data:image/jpeg;base64,${imageBase64}`,
-    //     installation_status: item.installation_status,
-    //     reasons: {
-    //       options_reason_id: item.reasons[0].options_reason_id,
-    //       text_reason: item.reasons[0].text_reason,
-    //       // picture: reasonBase64s,
-    //     },
-    //   });
-    //   setMeterData(loopData);
-    // });
+
     setLetsFinish(false);
-    // console.log('oldMeterListData finishSlider----->>>>>', meterArray);
     setLetsUpdateMeterData(true);
   };
   useUpdateEffect(() => {
@@ -947,6 +947,7 @@ export default function UnitEdit({
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
     }
     var loopData = [...meterData];
+
     meterListData.map((item) => {
       // console.log('Get meterData Information---->>', item.reasons);
       loopData.push({
@@ -958,7 +959,7 @@ export default function UnitEdit({
         latitude: item.latitude,
         longitude: item.longitude,
         thumbnail: `data:image/jpeg;base64,${imageBase64}`,
-        installation_status: item.installation_status,
+        installation_status: Number(item.installation_status),
         ...(item.installation_status == 2 &&
           (type == 'add' || type == 'addMeterDirect'
             ? {
@@ -974,7 +975,7 @@ export default function UnitEdit({
                           item?.reasons[0]?.text_reason == null
                             ? 0
                             : item?.reasons[0]?.text_reason,
-                        picture: `data:image/jpeg;base64,${reasonBase64s}`,
+                        picture: [`data:image/jpeg;base64,${reasonBase64s}`],
                       },
               }
             : {
@@ -991,7 +992,7 @@ export default function UnitEdit({
                             item?.reasons[0]?.text_reason == null
                               ? 0
                               : item?.reasons[0]?.text_reason,
-                          picture: `data:image/jpeg;base64,${reasonBase64s}`,
+                          picture: [`data:image/jpeg;base64,${reasonBase64s}`],
                         },
                       ],
               })),
@@ -1355,6 +1356,7 @@ export default function UnitEdit({
       id: 0,
       name: '',
     }));
+    setLoadMeters(false);
     setShowAddMeterSlider(false);
     if (meterAddingId) {
       let removeMeterLIst = state.meterList.filter(
@@ -1489,7 +1491,13 @@ export default function UnitEdit({
       ...oldState,
       meterList: arr2,
     }));
-    setInstallationStatus(0);
+    console.log('GET METER DATA', data.installation_status);
+    if (data.installation_status == 1) {
+      setInstallationStatus(data.installation_status);
+      setStatusAnimation(true);
+    } else {
+      setInstallationStatus(0);
+    }
     setFilePath(data.thumbnail);
     setReasonPath([]);
     slide1.map((item, index) => {
@@ -1556,466 +1564,473 @@ export default function UnitEdit({
         style={{top: width * -0.1}}
         // onBackdropPress={() => se7tShowAddMeterSlider(false)}
         isVisible={modalVisible}>
-        <KeyboardAvoidingView behavior="padding">
-          {showAddMeterSlider ? (
-            selectLocation ? (
-              <View
-                style={{
-                  height: width * 1,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: width * 0.03,
-                }}>
-                <TouchableOpacity
-                  onPress={() => setSelectLocation(false)}
-                  style={styles.doneButton}>
-                  <Icon
-                    size={width * 0.07}
-                    color="#fff"
-                    name={sliderNumber == 5 ? 'check' : 'navigate-next'}
-                  />
-                </TouchableOpacity>
-                {markers.length > 0 && (
-                  <View
-                    style={{
-                      // backgroundColor: 'blue',
-                      width: width * 0.12,
-                      height: height * 0.11,
-                      zIndex: 1,
-                      position: 'absolute',
-                      alignItems: 'center',
-                    }}>
+        {isActivityLoader ? (
+          <View styles={styles.boxInner}>
+            <View styles={styles.boxHeader}>
+              <ActivityIndicator color="#25AAE1ec" size="large" />
+            </View>
+          </View>
+        ) : (
+          <KeyboardAvoidingView behavior="padding">
+            {showAddMeterSlider ? (
+              selectLocation ? (
+                <View
+                  style={{
+                    height: width * 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: width * 0.03,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => setSelectLocation(false)}
+                    style={styles.doneButton}>
                     <Icon
-                      size={width * 0.12}
-                      color="#f00"
-                      name={'location-pin'}
+                      size={width * 0.07}
+                      color="#fff"
+                      name={sliderNumber == 5 ? 'check' : 'navigate-next'}
                     />
-                  </View>
-                )}
-                {markers.length > 0 ? (
-                  <View
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: width * 0.3,
-                    }}>
-                    <MapView
+                  </TouchableOpacity>
+                  {markers.length > 0 && (
+                    <View
+                      style={{
+                        // backgroundColor: 'blue',
+                        width: width * 0.12,
+                        height: height * 0.11,
+                        zIndex: 1,
+                        position: 'absolute',
+                        alignItems: 'center',
+                      }}>
+                      <Icon
+                        size={width * 0.12}
+                        color="#f00"
+                        name={'location-pin'}
+                      />
+                    </View>
+                  )}
+                  {markers.length > 0 ? (
+                    <View
                       style={{
                         width: '100%',
                         height: '100%',
-                        borderRadius: width * 0.03,
-                      }}
-                      // scrollEnabled={false}
-                      initialRegion={{
-                        latitude: lat,
-                        longitude: long,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA,
-                      }}
-                      zoomEnabled={true}
-                      provider={PROVIDER_GOOGLE}
-                      showsUserLocation={true}
-                      showsMyLocationButton={true}
-                      onRegionChange={(e) => moveMarker(e)}
-                      // onPress={(e) => this.getLocation(e)}
-                    ></MapView>
-                  </View>
-                ) : null}
-              </View>
-            ) : addNewType ? (
-              <View style={styles.boxInner}>
-                <View
-                  style={{
-                    height: width * 0.18,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    width: width * 0.85,
-                  }}>
-                  <Text
-                    style={[
-                      styles.meterDesciptionHeading,
-                      {fontSize: width * 0.06},
-                    ]}>
-                    Add {showAddType}
-                  </Text>
-                  <TouchableOpacity
-                    style={{
-                      position: 'absolute',
-                      right: width * 0,
-                      top: width * 0.025,
-                    }}
-                    onPress={() =>
-                      Alert.alert(
-                        'Alert',
-                        'Are you sure you want to clear current selected data',
-                        [
-                          {text: 'No', style: 'cancel'},
-                          {
-                            text: 'Yes',
-                            onPress: cancelAddNewType,
-                          },
-                        ],
-                      )
-                    }>
-                    <Icon
-                      name="cancel"
-                      size={width * 0.06}
-                      color="black"
-                      maxOpacity={0.5}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    height: width * 0.62,
-                    width: width * 0.8,
-                    justifyContent: 'center',
-                  }}>
-                  {showAddType == 'Manufacturer' ? (
-                    <View>
-                      <View>
-                        <Text style={[styles.meterDesciptionHeading]}>
-                          New {showAddType}
-                        </Text>
-                      </View>
-                      <TextInput
-                        placeholder={'Type new manufacturer'}
-                        value={addManufacturer}
-                        style={styles.meterInput}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
+                        borderRadius: width * 0.3,
+                      }}>
+                      <MapView
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: width * 0.03,
                         }}
-                        onChangeText={(text) => {
-                          setAddManufacturer(text);
+                        // scrollEnabled={false}
+                        initialRegion={{
+                          latitude: lat,
+                          longitude: long,
+                          latitudeDelta: LATITUDE_DELTA,
+                          longitudeDelta: LONGITUDE_DELTA,
                         }}
-                      />
+                        zoomEnabled={true}
+                        provider={PROVIDER_GOOGLE}
+                        showsUserLocation={true}
+                        showsMyLocationButton={true}
+                        onRegionChange={(e) => moveMarker(e)}
+                        // onPress={(e) => this.getLocation(e)}
+                      ></MapView>
                     </View>
-                  ) : (
-                    <View style={{zIndex: 10}}>
-                      {addDevice &&
-                        addDevice.map((item, index) => (
-                          <View
-                            style={{
-                              width: width * 0.8,
-                              // backgroundColor: 'pink',
-                              // zIndex: 9,
-                            }}
-                            key={item.id}>
-                            <View>
-                              <Text style={styles.meterDesciptionHeading}>
-                                {item.name}
-                              </Text>
-                            </View>
-                            {index < 2 ? (
-                              <SearchableDropdown
-                                onItemSelect={(items) => {
-                                  getNewDeviceData(items, index);
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: '#fff',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                  margin: width * 0.005,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={
-                                  Platform.OS == 'android'
-                                    ? {
-                                        height: width * 0.2,
-                                        zIndex: 1,
-                                        position: 'absolute',
-                                        width: width * 0.8,
-                                        top: width * 0.1,
-                                        flex: 1,
-                                        zIndex: 20,
-                                        backgroundColor: 'white',
-                                        elevation: width * 0.01,
-                                        shadowColor: '#000',
-                                        shadowOffset: {
-                                          width: 0,
-                                          height: 2,
-                                        },
-                                        shadowOpacity: 0.25,
-                                        shadowRadius: 3.84,
-                                      }
-                                    : {height: width * 0.2, zIndex: 1}
-                                }
-                                items={item.data}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: item.name,
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderRadius: width * 0.015,
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderWidth: width * 0.0019,
-                                  },
-                                  onTextChange: (text) => {
-                                    onChangeNewDevice(text, index);
-                                  },
-                                  value: setTimeout(() => item.select, 200),
-                                  defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                placeholder={'Type new Device'}
-                                value={item.select}
-                                style={styles.meterInput}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                    zIndex: 10,
-                                  },
-                                }}
-                                onChangeText={(text) => {
-                                  onChangeNewDevice(text, index);
-                                }}
-                              />
-                            )}
-                          </View>
-                        ))}
-                    </View>
-                  )}
+                  ) : null}
                 </View>
-                <TouchableOpacity
-                  onPress={doneAddType}
-                  style={[
-                    styles.doneButton,
-                    {
-                      backgroundColor:
-                        showAddType == 'Manufacturer' && addManufacturer
-                          ? '#25AAE1ec'
-                          : showAddType != 'Manufacturer' &&
-                            addDevice[0].selectId &&
-                            addDevice[1].selectId &&
-                            addDevice[2].select
-                          ? '#25AAE1ec'
-                          : '#D0D0D0',
-                    },
-                  ]}
-                  disabled={
-                    showAddType == 'Manufacturer' && addManufacturer
-                      ? false
-                      : showAddType != 'Manufacturer' &&
-                        addDevice[0].selectId &&
-                        addDevice[1].selectId &&
-                        addDevice[2].select
-                      ? false
-                      : true
-                  }>
-                  <Icon size={width * 0.07} color="#fff" name={'add'} />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View
-                style={{
-                  height: width * 1,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  borderRadius: width * 0.03,
-                  overflow: 'hidden',
-                }}>
-                <View
-                  style={{
-                    height: width * 0.18,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
+              ) : addNewType ? (
+                <View style={styles.boxInner}>
                   <View
                     style={{
+                      height: width * 0.18,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       flexDirection: 'row',
                       width: width * 0.85,
-                      justifyContent: 'center',
-                      alignItems: 'center',
                     }}>
                     <Text
                       style={[
                         styles.meterDesciptionHeading,
                         {fontSize: width * 0.06},
                       ]}>
-                      {sliderNumber == 1
-                        ? 'Device Selection'
-                        : sliderNumber == 2
-                        ? 'Meter Type Selection'
-                        : sliderNumber == 3
-                        ? 'Device Information'
-                        : sliderNumber == 4
-                        ? 'Thumbnail & Location'
-                        : sliderNumber == 5
-                        ? 'Installation Status'
-                        : 'Device Selection'}
+                      Add {showAddType}
                     </Text>
-                    {sliderNumber < 5 ? (
-                      <TouchableOpacity
-                        style={{
-                          position: 'absolute',
-                          right: 0,
-                          top: 0,
-                        }}
-                        onPress={() =>
-                          Alert.alert(
-                            'Alert',
-                            'Are you sure you want to clear current selected data',
-                            [
-                              {text: 'No', style: 'cancel'},
-                              {
-                                text: 'Yes',
-                                onPress: cancelMeter,
-                              },
-                            ],
-                          )
-                        }>
-                        <Icon
-                          name="cancel"
-                          size={width * 0.06}
-                          color="black"
-                          maxOpacity={0.5}
-                        />
-                      </TouchableOpacity>
-                    ) : null}
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        right: width * 0,
+                        top: width * 0.025,
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: cancelAddNewType,
+                            },
+                          ],
+                        )
+                      }>
+                      <Icon
+                        name="cancel"
+                        size={width * 0.06}
+                        color="black"
+                        maxOpacity={0.5}
+                      />
+                    </TouchableOpacity>
                   </View>
-                  <Progress.Bar
-                    progress={sliderProgress}
-                    width={width * 0.8}
-                    color={'#25AAE1ec'}
-                  />
-                </View>
-                {sliderNumber == 2 ? (
                   <View
                     style={{
                       height: width * 0.62,
-                      width: width * 0.9,
-                      alignItems: 'center',
+                      width: width * 0.8,
+                      justifyContent: 'center',
                     }}>
-                    {!typeLoader ? (
-                      <View
-                        style={{
-                          height: height * 0.2,
-                          marginVertical: height * 0.025,
-                        }}>
-                        <FlatList
-                          contentContainerStyle={{
-                            justifyContent: 'center',
-                          }}
-                          data={state.meterList}
-                          renderItem={renderSlide2}
-                        />
-                      </View>
-                    ) : (
-                      <View style={{flex: 1, justifyContent: 'center'}}>
-                        <ActivityIndicator size={'large'} color="#25AAE1ec" />
-                      </View>
-                    )}
-                    {!addTypeInput ? (
-                      <TouchableOpacity
-                        style={[
-                          styles.button,
-                          {width: width * 0.8, justifyContent: 'center'},
-                        ]}
-                        onPress={() => setAddTypeInput(true)}>
-                        <Text style={styles.buttonText}>
-                          Add New Meter Type
-                        </Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <View
-                        style={{
-                          width: '100%',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-evenly',
-                        }}>
+                    {showAddType == 'Manufacturer' ? (
+                      <View>
+                        <View>
+                          <Text style={[styles.meterDesciptionHeading]}>
+                            New {showAddType}
+                          </Text>
+                        </View>
                         <TextInput
-                          placeholder="Type New Meter Type Name"
-                          // value={}
-                          dense
-                          style={[styles.meterInput, {width: width * 0.6}]}
+                          placeholder={'Type new manufacturer'}
+                          value={addManufacturer}
+                          style={styles.meterInput}
                           mode={'outlined'}
                           theme={{
                             colors: {
                               text: '#25AAE1ec',
                               primary: '#25AAE1ec',
                               selectionColor: 'red',
-                              zIndex: 10,
                             },
                           }}
                           onChangeText={(text) => {
-                            setNewMeterType(text);
+                            setAddManufacturer(text);
                           }}
                         />
-                        {newMeterType ? (
-                          <TouchableOpacity onPress={AddNewMeterType}>
-                            <Text
+                      </View>
+                    ) : (
+                      <View style={{zIndex: 10}}>
+                        {addDevice &&
+                          addDevice.map((item, index) => (
+                            <View
                               style={{
-                                fontWeight: 'bold',
-                                fontSize: width * 0.045,
-                                color: '#25AAE1ec',
-                                width: width * 0.15,
-                                textAlign: 'center',
-                              }}>
-                              Add
-                            </Text>
-                          </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity
-                            onPress={() => setAddTypeInput(false)}>
-                            <Text
-                              style={{
-                                fontWeight: 'bold',
-                                fontSize: width * 0.045,
-                                color: '#25AAE1ec',
-                                width: width * 0.15,
-                                textAlign: 'center',
-                              }}>
-                              Cancel
-                            </Text>
-                          </TouchableOpacity>
-                        )}
+                                width: width * 0.8,
+                                // backgroundColor: 'pink',
+                                // zIndex: 9,
+                              }}
+                              key={item.id}>
+                              <View>
+                                <Text style={styles.meterDesciptionHeading}>
+                                  {item.name}
+                                </Text>
+                              </View>
+                              {index < 2 ? (
+                                <SearchableDropdown
+                                  onItemSelect={(items) => {
+                                    getNewDeviceData(items, index);
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: '#fff',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                    margin: width * 0.005,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={
+                                    Platform.OS == 'android'
+                                      ? {
+                                          height: width * 0.2,
+                                          zIndex: 1,
+                                          position: 'absolute',
+                                          width: width * 0.8,
+                                          top: width * 0.1,
+                                          flex: 1,
+                                          zIndex: 20,
+                                          backgroundColor: 'white',
+                                          elevation: width * 0.01,
+                                          shadowColor: '#000',
+                                          shadowOffset: {
+                                            width: 0,
+                                            height: 2,
+                                          },
+                                          shadowOpacity: 0.25,
+                                          shadowRadius: 3.84,
+                                        }
+                                      : {height: width * 0.2, zIndex: 1}
+                                  }
+                                  items={item.data}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: item.name,
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderRadius: width * 0.015,
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderWidth: width * 0.0019,
+                                    },
+                                    onTextChange: (text) => {
+                                      onChangeNewDevice(text, index);
+                                    },
+                                    value: setTimeout(() => item.select, 200),
+                                    defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                              ) : (
+                                <TextInput
+                                  placeholder={'Type new Device'}
+                                  value={item.select}
+                                  style={styles.meterInput}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                      zIndex: 10,
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    onChangeNewDevice(text, index);
+                                  }}
+                                />
+                              )}
+                            </View>
+                          ))}
                       </View>
                     )}
                   </View>
-                ) : sliderNumber == 3 ? (
+                  <TouchableOpacity
+                    onPress={doneAddType}
+                    style={[
+                      styles.doneButton,
+                      {
+                        backgroundColor:
+                          showAddType == 'Manufacturer' && addManufacturer
+                            ? '#25AAE1ec'
+                            : showAddType != 'Manufacturer' &&
+                              addDevice[0].selectId &&
+                              addDevice[1].selectId &&
+                              addDevice[2].select
+                            ? '#25AAE1ec'
+                            : '#D0D0D0',
+                      },
+                    ]}
+                    disabled={
+                      showAddType == 'Manufacturer' && addManufacturer
+                        ? false
+                        : showAddType != 'Manufacturer' &&
+                          addDevice[0].selectId &&
+                          addDevice[1].selectId &&
+                          addDevice[2].select
+                        ? false
+                        : true
+                    }>
+                    <Icon size={width * 0.07} color="#fff" name={'add'} />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    height: width * 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    borderRadius: width * 0.03,
+                    overflow: 'hidden',
+                  }}>
                   <View
                     style={{
-                      height: width * 0.62,
-                      width: width * 0.9,
+                      height: width * 0.18,
                       alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    <FlatList data={slide2} renderItem={renderSlide3} />
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        width: width * 0.85,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={[
+                          styles.meterDesciptionHeading,
+                          {fontSize: width * 0.06},
+                        ]}>
+                        {sliderNumber == 1
+                          ? 'Device Selection'
+                          : sliderNumber == 2
+                          ? 'Meter Type Selection'
+                          : sliderNumber == 3
+                          ? 'Device Information'
+                          : sliderNumber == 4
+                          ? 'Thumbnail & Location'
+                          : sliderNumber == 5
+                          ? 'Installation Status'
+                          : 'Device Selection'}
+                      </Text>
+                      {sliderNumber < 5 ? (
+                        <TouchableOpacity
+                          style={{
+                            position: 'absolute',
+                            right: 0,
+                            top: 0,
+                          }}
+                          onPress={() =>
+                            Alert.alert(
+                              'Alert',
+                              'Are you sure you want to clear current selected data',
+                              [
+                                {text: 'No', style: 'cancel'},
+                                {
+                                  text: 'Yes',
+                                  onPress: cancelMeter,
+                                },
+                              ],
+                            )
+                          }>
+                          <Icon
+                            name="cancel"
+                            size={width * 0.06}
+                            color="black"
+                            maxOpacity={0.5}
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                    <Progress.Bar
+                      progress={sliderProgress}
+                      width={width * 0.8}
+                      color={'#25AAE1ec'}
+                    />
                   </View>
-                ) : sliderNumber == 4 ? (
-                  <View style={styles.container}>
-                    {filePath != '' && filePath != null && (
-                      <Image
-                        resizeMode="cover"
-                        resizeMethod="scale"
-                        style={{width: width * 0.28, height: width * 0.28}}
-                        source={{uri: filePath}}
-                      />
-                    )}
-                    {/* {filePath.length > 0 && (
+                  {sliderNumber == 2 ? (
+                    <View
+                      style={{
+                        height: width * 0.62,
+                        width: width * 0.9,
+                        alignItems: 'center',
+                      }}>
+                      {!typeLoader ? (
+                        <View
+                          style={{
+                            height: height * 0.2,
+                            marginVertical: height * 0.025,
+                          }}>
+                          <FlatList
+                            contentContainerStyle={{
+                              justifyContent: 'center',
+                            }}
+                            data={state.meterList}
+                            renderItem={renderSlide2}
+                          />
+                        </View>
+                      ) : (
+                        <View style={{flex: 1, justifyContent: 'center'}}>
+                          <ActivityIndicator size={'large'} color="#25AAE1ec" />
+                        </View>
+                      )}
+                      {!addTypeInput ? (
+                        <TouchableOpacity
+                          style={[
+                            styles.button,
+                            {width: width * 0.8, justifyContent: 'center'},
+                          ]}
+                          onPress={() => setAddTypeInput(true)}>
+                          <Text style={styles.buttonText}>
+                            Add New Meter Type
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <View
+                          style={{
+                            width: '100%',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                          }}>
+                          <TextInput
+                            placeholder="Type New Meter Type Name"
+                            // value={}
+                            dense
+                            style={[styles.meterInput, {width: width * 0.6}]}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                                zIndex: 10,
+                              },
+                            }}
+                            onChangeText={(text) => {
+                              setNewMeterType(text);
+                            }}
+                          />
+                          {newMeterType ? (
+                            <TouchableOpacity onPress={AddNewMeterType}>
+                              <Text
+                                style={{
+                                  fontWeight: 'bold',
+                                  fontSize: width * 0.045,
+                                  color: '#25AAE1ec',
+                                  width: width * 0.15,
+                                  textAlign: 'center',
+                                }}>
+                                Add
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() => setAddTypeInput(false)}>
+                              <Text
+                                style={{
+                                  fontWeight: 'bold',
+                                  fontSize: width * 0.045,
+                                  color: '#25AAE1ec',
+                                  width: width * 0.15,
+                                  textAlign: 'center',
+                                }}>
+                                Cancel
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+                        </View>
+                      )}
+                    </View>
+                  ) : sliderNumber == 3 ? (
+                    <View
+                      style={{
+                        height: width * 0.62,
+                        width: width * 0.9,
+                        alignItems: 'center',
+                      }}>
+                      <FlatList data={slide2} renderItem={renderSlide3} />
+                    </View>
+                  ) : sliderNumber == 4 ? (
+                    <View style={styles.container}>
+                      {filePath != '' && filePath != null && (
+                        <Image
+                          resizeMode="cover"
+                          resizeMethod="scale"
+                          style={{width: width * 0.28, height: width * 0.28}}
+                          source={{uri: filePath}}
+                        />
+                      )}
+                      {/* {filePath.length > 0 && (
                       <ScrollView>
                         {filePath.map(({uri, index}) => (
                           <View style={styles.imageContainer}>
@@ -2039,245 +2054,245 @@ export default function UnitEdit({
                       </ScrollView>
                     )} */}
 
-                    <TouchableOpacity
-                      onPress={requestCameraPermission}
-                      style={styles.button}>
-                      <Text style={styles.buttonText}>
-                        Launch Camera Directly
+                      <TouchableOpacity
+                        onPress={requestCameraPermission}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>
+                          Launch Camera Directly
+                        </Text>
+                        <Iconi
+                          name="camera"
+                          size={width * 0.05}
+                          color="#3E4A4F"
+                        />
+                      </TouchableOpacity>
+                      <Text style={[styles.buttonText, {opacity: 0.5}]}>
+                        ------------- OR --------------
                       </Text>
-                      <Iconi
-                        name="camera"
-                        size={width * 0.05}
-                        color="#3E4A4F"
+                      <TouchableOpacity
+                        onPress={imageGalleryLaunch}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>
+                          Launch Image Gallery Directly
+                        </Text>
+                        <Iconi
+                          name="images"
+                          size={width * 0.05}
+                          color="#3E4A4F"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={selectMeterLocation}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>Change Location</Text>
+                        <Iconi
+                          name="location"
+                          size={width * 0.05}
+                          color="#3E4A4F"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  ) : sliderNumber == 5 ? (
+                    doneAnimation ? (
+                      <Image
+                        resizeMode="contain"
+                        resizeMethod="auto"
+                        style={{width: width * 0.3, height: width * 0.62}}
+                        source={require('../../../../../../../Images/aniLoad.gif')}
                       />
-                    </TouchableOpacity>
-                    <Text style={[styles.buttonText, {opacity: 0.5}]}>
-                      ------------- OR --------------
-                    </Text>
-                    <TouchableOpacity
-                      onPress={imageGalleryLaunch}
-                      style={styles.button}>
-                      <Text style={styles.buttonText}>
-                        Launch Image Gallery Directly
-                      </Text>
-                      <Iconi
-                        name="images"
-                        size={width * 0.05}
-                        color="#3E4A4F"
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={selectMeterLocation}
-                      style={styles.button}>
-                      <Text style={styles.buttonText}>Change Location</Text>
-                      <Iconi
-                        name="location"
-                        size={width * 0.05}
-                        color="#3E4A4F"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ) : sliderNumber == 5 ? (
-                  doneAnimation ? (
-                    <Image
-                      resizeMode="contain"
-                      resizeMethod="auto"
-                      style={{width: width * 0.3, height: width * 0.62}}
-                      source={require('../../../../../../../Images/aniLoad.gif')}
-                    />
-                  ) : (
-                    <View style={styles.reasonFileContainer}>
-                      {installationStatus == 1 && statusAnimation == true && (
-                        <View style={{alignItems: 'center'}}>
-                          <Video
-                            source={require('../../../../../../../Images/checkmarkv.mp4')}
-                            repeat
-                            style={{
-                              width: width * 0.3,
-                              height: width * 0.3,
-                            }}
-                            resizeMode="contain"
-                            controls={false}
-                          />
-                          <Text
-                            style={{
-                              fontSize: width * 0.06,
-                              fontWeight: 'bold',
-                              color: '#00B1DC',
-                            }}>
-                            Installation Successful
-                          </Text>
-                          <Text>Meter is installed Successfully</Text>
-                        </View>
-                      )}
-                      {installationStatus == 2 && statusAnimation == true && (
-                        <View style={{alignItems: 'center'}}>
-                          <Image
-                            resizeMode="contain"
-                            resizeMethod="auto"
-                            style={{width: width * 0.3, height: width * 0.3}}
-                            source={require('../../../../../../../Images/cross.gif')}
-                          />
-                          <Text
-                            style={{
-                              fontSize: width * 0.06,
-                              fontWeight: 'bold',
-                              color: '#FF0000',
-                            }}>
-                            Installation not Succeed
-                          </Text>
-                          <Text>Meter is not installed</Text>
-                        </View>
-                      )}
-                      {installationStatus == 2 && statusAnimation == false && (
-                        <>
-                          <View style={{width: width * 0.8}}>
+                    ) : (
+                      <View style={styles.reasonFileContainer}>
+                        {installationStatus == 1 && statusAnimation == true && (
+                          <View style={{alignItems: 'center'}}>
+                            <Video
+                              source={require('../../../../../../../Images/checkmarkv.mp4')}
+                              repeat
+                              style={{
+                                width: width * 0.3,
+                                height: width * 0.3,
+                              }}
+                              resizeMode="contain"
+                              controls={false}
+                            />
                             <Text
-                              style={[
-                                styles.meterDesciptionHeading,
-                                {marginBottom: 0},
-                              ]}>
-                              Reason*
+                              style={{
+                                fontSize: width * 0.06,
+                                fontWeight: 'bold',
+                                color: '#00B1DC',
+                              }}>
+                              Installation Successful
                             </Text>
-                            <SearchableDropdown
-                              onItemSelect={(item) => {
-                                setReasonText(item.name);
-                                setReasonId(item.options_reason_id);
-                              }}
-                              containerStyle={{
-                                paddingBottom: width * 0.02,
-                              }}
-                              itemStyle={{
-                                padding: width * 0.027,
-                                backgroundColor: '#fff',
-                                borderColor: '#bbb',
-                                borderWidth: width * 0.0015,
-                                borderRadius: width * 0.015,
-                                margin: width * 0.005,
-                              }}
-                              itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={
-                                Platform.OS == 'android'
-                                  ? {
-                                      maxHeight: width * 0.15,
-                                      position: 'absolute',
-                                      width: width * 0.8,
-                                      top: width * 0.15,
-                                      zIndex: 1,
-                                      backgroundColor: 'white',
-                                      elevation: width * 0.01,
-                                    }
-                                  : {maxHeight: width * 0.15}
-                              }
-                              items={reasons}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Select Reasons',
-                                underlineColorAndroid: 'transparent',
-                                style: {
+                            <Text>Meter is installed Successfully</Text>
+                          </View>
+                        )}
+                        {installationStatus == 2 && statusAnimation == true && (
+                          <View style={{alignItems: 'center'}}>
+                            <Image
+                              resizeMode="contain"
+                              resizeMethod="auto"
+                              style={{width: width * 0.3, height: width * 0.3}}
+                              source={require('../../../../../../../Images/cross.gif')}
+                            />
+                            <Text
+                              style={{
+                                fontSize: width * 0.06,
+                                fontWeight: 'bold',
+                                color: '#FF0000',
+                              }}>
+                              Installation not Succeed
+                            </Text>
+                            <Text>Meter is not installed</Text>
+                          </View>
+                        )}
+                        {installationStatus == 2 && statusAnimation == false && (
+                          <>
+                            <View style={{width: width * 0.8}}>
+                              <Text
+                                style={[
+                                  styles.meterDesciptionHeading,
+                                  {marginBottom: 0},
+                                ]}>
+                                Reason*
+                              </Text>
+                              <SearchableDropdown
+                                onItemSelect={(item) => {
+                                  setReasonText(item.name);
+                                  setReasonId(item.options_reason_id);
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                }}
+                                itemStyle={{
                                   padding: width * 0.027,
-                                  margin: 0,
+                                  backgroundColor: '#fff',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
                                   borderRadius: width * 0.015,
-                                  height: width * 0.13,
-                                  backgroundColor: '#F6F6F6',
-                                  borderWidth: width * 0.0019,
-                                },
-                                onTextChange: (text) => {
-                                  setReasonText(text);
-                                },
-                                value: reasonText,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                            <Text
-                              style={[
-                                styles.meterDesciptionHeading,
-                                {marginBottom: 0},
-                              ]}>
-                              Reason Description*
-                            </Text>
-                            <TextInput
-                              placeholder="Describe Your Reason"
-                              value={reasonDes}
-                              style={styles.meterInput}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                  zIndex: 10,
-                                },
-                              }}
-                              onChangeText={(text) => {
-                                setReasonDes(text);
-                              }}
-                            />
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                            }}>
-                            <View>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  requestCameraPermission('reason')
+                                  margin: width * 0.005,
+                                }}
+                                itemTextStyle={{color: '#222'}}
+                                itemsContainerStyle={
+                                  Platform.OS == 'android'
+                                    ? {
+                                        maxHeight: width * 0.15,
+                                        position: 'absolute',
+                                        width: width * 0.8,
+                                        top: width * 0.15,
+                                        zIndex: 1,
+                                        backgroundColor: 'white',
+                                        elevation: width * 0.01,
+                                      }
+                                    : {maxHeight: width * 0.15}
                                 }
-                                style={[styles.button, {width: width * 0.1}]}>
-                                <Iconi
-                                  name="camera"
-                                  size={width * 0.05}
-                                  color="#3E4A4F"
-                                />
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => imageGalleryLaunch('reason')}
-                                style={[styles.button, {width: width * 0.1}]}>
-                                <Iconi
-                                  name="images"
-                                  size={width * 0.05}
-                                  color="#3E4A4F"
-                                />
-                              </TouchableOpacity>
+                                items={reasons}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder: 'Select Reasons',
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderRadius: width * 0.015,
+                                    height: width * 0.13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    setReasonText(text);
+                                  },
+                                  value: reasonText,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <Text
+                                style={[
+                                  styles.meterDesciptionHeading,
+                                  {marginBottom: 0},
+                                ]}>
+                                Reason Description*
+                              </Text>
+                              <TextInput
+                                placeholder="Describe Your Reason"
+                                value={reasonDes}
+                                style={styles.meterInput}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                    zIndex: 10,
+                                  },
+                                }}
+                                onChangeText={(text) => {
+                                  setReasonDes(text);
+                                }}
+                              />
                             </View>
-                            <View style={styles.imageListContainer}>
-                              {reasonPath.length > 0 ? (
-                                <ScrollView>
-                                  {reasonPath.map(({uri, index}) => (
-                                    <View style={styles.imageContainer}>
-                                      <TouchableOpacity
-                                        onPress={() =>
-                                          removeImage(uri, 'reason')
-                                        }
-                                        style={styles.imageRemovebtn}>
-                                        <Iconi
-                                          name="close-circle"
-                                          size={width * 0.07}
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                              }}>
+                              <View>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    requestCameraPermission('reason')
+                                  }
+                                  style={[styles.button, {width: width * 0.1}]}>
+                                  <Iconi
+                                    name="camera"
+                                    size={width * 0.05}
+                                    color="#3E4A4F"
+                                  />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => imageGalleryLaunch('reason')}
+                                  style={[styles.button, {width: width * 0.1}]}>
+                                  <Iconi
+                                    name="images"
+                                    size={width * 0.05}
+                                    color="#3E4A4F"
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                              <View style={styles.imageListContainer}>
+                                {reasonPath.length > 0 ? (
+                                  <ScrollView>
+                                    {reasonPath.map(({uri, index}) => (
+                                      <View style={styles.imageContainer}>
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            removeImage(uri, 'reason')
+                                          }
+                                          style={styles.imageRemovebtn}>
+                                          <Iconi
+                                            name="close-circle"
+                                            size={width * 0.07}
+                                          />
+                                        </TouchableOpacity>
+                                        <Image
+                                          // resizeMode="contain"
+                                          resizeMethod="scale"
+                                          style={{
+                                            height: width * 0.15,
+                                          }}
+                                          source={{uri: uri}}
+                                          key={index}
                                         />
-                                      </TouchableOpacity>
-                                      <Image
-                                        // resizeMode="contain"
-                                        resizeMethod="scale"
-                                        style={{
-                                          height: width * 0.15,
-                                        }}
-                                        source={{uri: uri}}
-                                        key={index}
-                                      />
-                                    </View>
-                                  ))}
-                                </ScrollView>
-                              ) : (
-                                <Text style={{textAlign: 'center'}}>
-                                  No Image Uploaded
-                                </Text>
-                              )}
+                                      </View>
+                                    ))}
+                                  </ScrollView>
+                                ) : (
+                                  <Text style={{textAlign: 'center'}}>
+                                    No Image Uploaded
+                                  </Text>
+                                )}
+                              </View>
                             </View>
-                          </View>
 
-                          {/* <TouchableOpacity
+                            {/* <TouchableOpacity
                             onPress={() => imageGalleryLaunch('reason')}
                             style={styles.button1}>
                             <View
@@ -2309,609 +2324,568 @@ export default function UnitEdit({
                                 </Text>
                               ))}
                           </TouchableOpacity> */}
-                        </>
-                      )}
-                      {installationStatus == 0 && statusAnimation == false && (
-                        <>
-                          <TouchableOpacity
-                            onPress={() => sendInstallationStatus(1)}
-                            style={[
-                              styles.attemptBtn,
-                              {backgroundColor: 'green'},
-                            ]}>
-                            <Text style={styles.attemptText}>
-                              Attempted and installed
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => {
-                              setInstallationStatus(2);
-                              setStatusAnimation(true);
-                              setTimeout(() => {
-                                setStatusAnimation(false);
-                              }, 5000);
-                            }}
-                            style={[
-                              styles.attemptBtn,
-                              {backgroundColor: '#f00'},
-                            ]}>
-                            <Text style={styles.attemptText}>
-                              Attempted and incomplete
-                            </Text>
-                          </TouchableOpacity>
-                        </>
-                      )}
-                    </View>
-                  )
-                ) : (
-                  <View
-                    style={{height: width * 0.62, justifyContent: 'center'}}>
-                    {slide1.map((item, index) => (
-                      <View style={{width: width * 0.8}} key={item.id}>
-                        <Text style={styles.meterDesciptionHeading}>
-                          {item.name}*
-                        </Text>
-                        <View
-                          pointerEvents={
-                            index > 0
-                              ? slide1[0].selectId
-                                ? 'auto'
-                                : 'none'
-                              : 'auto'
-                          }
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
-                          }}>
-                          <SearchableDropdown
-                            onItemSelect={(item) => {
-                              getDevice(item, index);
-                            }}
-                            containerStyle={{
-                              paddingBottom: width * 0.02,
-                              width: width * 0.7,
-                            }}
-                            itemStyle={{
-                              padding: width * 0.027,
-                              backgroundColor: 'rgb(247, 247, 247)',
-                              borderColor: '#bbb',
-                              borderWidth: width * 0.0015,
-                              borderRadius: width * 0.015,
-                            }}
-                            itemTextStyle={{color: '#222'}}
-                            itemsContainerStyle={{
-                              maxHeight: height * 0.08,
-                            }}
-                            items={item.data}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder:
-                                index == 1
-                                  ? slide1[0].selectId
-                                    ? item.name
-                                    : 'First Select Manufacture'
-                                  : item.name,
-                              underlineColorAndroid: 'transparent',
-                              style: {
-                                padding: width * 0.027,
-                                margin: 0,
-                                borderTopLeftRadius: width * 0.015,
-                                borderBottomLeftRadius: width * 0.015,
-                                borderColor: item.error ? '#A3001B' : 'black',
-                                height: width * 0.13,
-                                backgroundColor: '#F6F6F6',
-                                borderTopWidth: width * 0.0019,
-                                borderLeftWidth: width * 0.0019,
-                                borderBottomWidth: width * 0.0019,
-                              },
-                              onTextChange: (text) => {
-                                onChangeManufacturer(text, index);
-                              },
-                              value: setTimeout(() => item.select, 200),
-                              defaultValue: item.select,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              width: width * 0.1,
-                              backgroundColor: '#25AAE199',
-                              borderTopRightRadius: width * 0.015,
-                              borderBottomRightRadius: width * 0.015,
-                              borderTopWidth: width * 0.0019,
-                              borderRightWidth: width * 0.0019,
-                              borderBottomWidth: width * 0.0019,
-                              height: width * 0.13,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            onPress={() => showAddNewType(item.name)}>
-                            <Icon
-                              size={width * 0.06}
-                              color="#fff"
-                              name={'add'}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    ))}
-                  </View>
-                )}
-                <View
-                  style={{
-                    height: width * 0.2,
-                    width: width * 0.85,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {doneAnimation || checkSerial || hideBtn ? (
-                    !hideBtn ? (
-                      doneAnimation ? (
-                        <Text style={[styles.buttonText, {width: width * 0.7}]}>
-                          {newMeter.name.charAt(0).toUpperCase() +
-                            newMeter.name.slice(1).toLowerCase()}{' '}
-                          Meter added succesfully please checking installation
-                          status...
-                        </Text>
-                      ) : (
-                        <Text style={[styles.buttonText, {width: width * 0.7}]}>
-                          Please wait while checking Device Serial Number...
-                        </Text>
-                      )
-                    ) : null
-                  ) : (
-                    <TouchableOpacity
-                      style={[
-                        styles.doneButton,
-                        {
-                          right: 0,
-                          backgroundColor:
-                            sliderNumber == 1 &&
-                            slide1[0].selectId &&
-                            slide1[1].selectId
-                              ? '#25AAE1ec'
-                              : sliderNumber == 2 &&
-                                newMeter.id != 0 &&
-                                newMeter.name
-                              ? '#25AAE1ec'
-                              : sliderNumber == 3 &&
-                                slide2[0].value &&
-                                slide2[1].value
-                              ? '#25AAE1ec'
-                              : sliderNumber == 4 &&
-                                filePath != '' &&
-                                filePath != null &&
-                                lat != undefined &&
-                                long != undefined
-                              ? '#25AAE1ec'
-                              : (sliderNumber == 5 &&
-                                  installationStatus == 1) ||
-                                (sliderNumber == 5 &&
-                                  installationStatus == 2 &&
-                                  reasonId &&
-                                  reasonDes)
-                              ? '#25AAE1ec'
-                              : '#D0D0D0',
-                        },
-                      ]}
-                      onPress={sliderNumber == 5 ? finishSlider : changeSlider}
-                      disabled={
-                        sliderNumber == 1 &&
-                        slide1[0].selectId &&
-                        slide1[1].selectId
-                          ? false
-                          : sliderNumber == 2 &&
-                            newMeter.id != 0 &&
-                            newMeter.name
-                          ? false
-                          : sliderNumber == 3 &&
-                            slide2[0].value &&
-                            slide2[1].value
-                          ? false
-                          : sliderNumber == 4 &&
-                            filePath != '' &&
-                            filePath != null &&
-                            lat != undefined &&
-                            long != undefined
-                          ? false
-                          : (sliderNumber == 5 && installationStatus == 1) ||
-                            (sliderNumber == 5 &&
-                              installationStatus == 2 &&
-                              reasonId &&
-                              reasonDes)
-                          ? false
-                          : true
-                      }>
-                      <Icon
-                        size={width * 0.07}
-                        color="#fff"
-                        name={sliderNumber == 5 ? 'check' : 'navigate-next'}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            )
-          ) : (
-            <View style={styles.boxInner}>
-              {/* Box Header */}
-              <View style={styles.boxHeader}>
-                <View style={styles.boxHeaderInner}>
-                  <Icon
-                    name={'business'}
-                    size={height * 0.05}
-                    color="#5e5e5e"
-                  />
-                  <Text style={styles.modalHeading}>{modalName}</Text>
-                  <Pressable
-                    onPress={() =>
-                      Alert.alert(
-                        'Alert',
-                        'Are you sure you want to clear current selected data',
-                        [
-                          {text: 'No', style: 'cancel'},
-                          {
-                            text: 'Yes',
-                            onPress: changeUtilityAndToggle,
-                          },
-                        ],
-                      )
-                    }
-                    android_ripple={{
-                      color: 'black',
-                      borderless: true,
-                      radius: width * 0.03,
-                    }}>
-                    <Icon
-                      name="cancel"
-                      size={height * 0.035}
-                      color="black"
-                      maxOpacity={0.5}
-                    />
-                  </Pressable>
-                </View>
-              </View>
-              {/* Box Body */}
-              <View style={{height: width * 0.62, justifyContent: 'center'}}>
-                {/* <View style={{ flex: 1 }}> */}
-                <View style={styles.desciptionContainer}>
-                  <Build
-                    name={'office-building'}
-                    size={height * 0.02}
-                    color="#5e5e5e"
-                  />
-                  <Text style={styles.desciptionHeading}>BUILDING*</Text>
-                </View>
-                <View style={styles.inputContainer}>
-                  {/* //todo: This is Drop down picker */}
-                  <TextInput
-                    placeholder="Building Name"
-                    value={buildingName}
-                    dense={true}
-                    editable={false}
-                    showSoftInputOnFocus={false}
-                    style={styles.input}
-                    mode={'outlined'}
-                    theme={{
-                      colors: {
-                        text: '#25AAE1ec',
-                        primary: '#25AAE1ec',
-                        selectionColor: 'red',
-                      },
-                    }}
-                  />
-                </View>
-                <View style={styles.desciptionContainer}>
-                  <Text style={styles.desciptionHeading}>UNIT*</Text>
-                </View>
-                <View style={[styles.inputContainer]}>
-                  <TextInput
-                    placeholder="Unit Name"
-                    value={state.lastUnitData}
-                    dense={true}
-                    onChangeText={(text) => {
-                      LayoutAnimation.configureNext({
-                        duration: 300,
-                        create: {
-                          type: LayoutAnimation.Types.easeInEaseOut,
-                          property: LayoutAnimation.Properties.opacity,
-                        },
-                        update: {
-                          type: LayoutAnimation.Types.easeInEaseOut,
-                        },
-                      });
-                      setError((oldState) => ({
-                        ...oldState,
-                        errorUnits: '',
-                      }));
-                      type == 'meterDirect'
-                        ? null
-                        : (setState((oldState) => ({
-                            ...oldState,
-                            lastUnitData: text,
-                          })),
-                          console.log('unit Name', state.lastUnitData));
-                    }}
-                    disabled={type == 'meterDirect' ? true : false}
-                    style={styles.input}
-                    error={error.errorUnits}
-                    mode={'outlined'}
-                    theme={{
-                      colors: {
-                        text: '#25AAE1ec',
-                        primary: '#25AAE1ec',
-                        selectionColor: 'red',
-                      },
-                    }}
-                  />
-                </View>
-                {error.errorUnits ? (
-                  <HelperText type="error" visible={error.errorUnits}>
-                    {error.errorUnits}
-                  </HelperText>
-                ) : null}
-                {/* </View> */}
-                <View
-                  style={[
-                    styles.inputContainer,
-                    {
-                      flexDirection: 'row',
-                      height: width * 0.15,
-                      justifyContent: 'space-around',
-                      alignItems: 'center',
-                    },
-                  ]}>
-                  {meterListData.length > 0
-                    ? meterListData.map(
-                        (item) => (
-                          console.log('meterListData'),
-                          (
+                          </>
+                        )}
+                        {installationStatus == 0 && statusAnimation == false && (
+                          <>
                             <TouchableOpacity
-                              onPress={() => {
-                                LayoutAnimation.configureNext({
-                                  duration: 300,
-                                  create: {
-                                    type: LayoutAnimation.Types.easeInEaseOut,
-                                    property:
-                                      LayoutAnimation.Properties.opacity,
-                                  },
-                                  update: {
-                                    type: LayoutAnimation.Types.easeInEaseOut,
-                                  },
-                                }),
-                                  setShowAddMeterSlider(true),
-                                  enableLocation();
-                                getMeterData(item);
-                                callApi();
-                              }}
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: width * 0.02,
-                                elevation: 2,
-                                backgroundColor: 'white',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                  width: 0,
-                                  height: 1,
-                                },
-                                shadowOpacity: 0.2,
-                                shadowRadius: 1.41,
-                              }}>
-                              <Image
-                                source={typeSwitcher(item.meter_name)}
-                                style={styles.untiDetailImage}
-                              />
-                              <Text
-                                style={[
-                                  styles.meterDesciptionHeading,
-                                  {marginBottom: 0},
-                                ]}>
-                                {item.meter_name}
+                              onPress={() => sendInstallationStatus(1)}
+                              style={[
+                                styles.attemptBtn,
+                                {backgroundColor: 'green'},
+                              ]}>
+                              <Text style={styles.attemptText}>
+                                Attempted and installed
                               </Text>
                             </TouchableOpacity>
-                          )
-                        ),
-                      )
-                    : // : oldMeterListData.length > 0
-                      // ? oldMeterListData.map(
-                      //     (item) => (
-                      //       console.log('oldmeterlist'),
-                      //       (
-                      //         <TouchableOpacity
-                      //           onPress={() => {
-                      //             LayoutAnimation.configureNext({
-                      //               duration: 300,
-                      //               create: {
-                      //                 type: LayoutAnimation.Types.easeInEaseOut,
-                      //                 property:
-                      //                   LayoutAnimation.Properties.opacity,
-                      //               },
-                      //               update: {
-                      //                 type: LayoutAnimation.Types.easeInEaseOut,
-                      //               },
-                      //             }),
-                      //               setShowAddMeterSlider(true),
-                      //               enableLocation();
-                      //             getMeterData(item);
-                      //             callApi();
-                      //           }}
-                      //           style={{
-                      //             flexDirection: 'row',
-                      //             alignItems: 'center',
-                      //             justifyContent: 'center',
-                      //             padding: width * 0.02,
-                      //             elevation: 2,
-                      //             backgroundColor: 'white',
-                      //             shadowColor: '#000',
-                      //             shadowOffset: {
-                      //               width: 0,
-                      //               height: 1,
-                      //             },
-                      //             shadowOpacity: 0.2,
-                      //             shadowRadius: 1.41,
-                      //           }}>
-                      //           <Image
-                      //             source={typeSwitcher(item.meter_name)}
-                      //             style={styles.untiDetailImage}
-                      //           />
-                      //           <Text
-                      //             style={[
-                      //               styles.meterDesciptionHeading,
-                      //               {marginBottom: 0},
-                      //             ]}>
-                      //             {item.meter_name}
-                      //           </Text>
-                      //         </TouchableOpacity>
-                      //       )
-                      //     ),
-                      //   )
-                      null}
-                </View>
-              </View>
-              {/* Box Footer */}
-              <View style={styles.footerBtn}>
-                <View
-                  style={{
-                    height: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {type == 'addMeterDirect' || type == 'meterDirect' ? (
-                    meterData.length == 1 ? (
-                      <View style={{marginLeft: width * 0.02}}>
-                        <Text
-                          style={{
-                            fontSize: height * 0.018,
-                            color: '#25AAE1ec',
-                          }}>
-                          No Meters
-                        </Text>
-                      </View>
-                    ) : (
-                      <TouchableOpacity
-                        onPress={() => {
-                          LayoutAnimation.configureNext({
-                            duration: 300,
-                            create: {
-                              type: LayoutAnimation.Types.easeInEaseOut,
-                              property: LayoutAnimation.Properties.opacity,
-                            },
-                            update: {
-                              type: LayoutAnimation.Types.easeInEaseOut,
-                            },
-                          }),
-                            setShowAddMeterSlider(true),
-                            enableLocation();
-                          callApi();
-                        }}
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'flex-start',
-                          alignItems: 'center',
-                          zIndex: 1,
-                        }}>
-                        {/*//todo: Button for meter */}
-                        <Plus name="plus" size={25} color="#25AAE1ec" />
-                        <Text
-                          style={{
-                            fontSize: height * 0.018,
-                            color: '#25AAE1ec',
-                          }}>
-                          Meter
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  ) : !meterListLoader ? (
-                    state.meterList.length ? (
-                      <TouchableOpacity
-                        onPress={() => {
-                          enableLocation();
-                          callApi();
-                        }}
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'flex-start',
-                          alignItems: 'center',
-                          zIndex: 1,
-                        }}>
-                        {/*//todo: Button for meter */}
-                        <Plus name="plus" size={25} color="#25AAE1ec" />
-                        <Text
-                          style={{
-                            fontSize: height * 0.018,
-                            color: '#25AAE1ec',
-                          }}>
-                          Meter
-                        </Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <View style={{marginLeft: width * 0.02}}>
-                        <Text
-                          style={{
-                            fontSize: height * 0.018,
-                            color: '#25AAE1ec',
-                          }}>
-                          No Meters
-                        </Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setInstallationStatus(2);
+                                setStatusAnimation(true);
+                                setTimeout(() => {
+                                  setStatusAnimation(false);
+                                }, 5000);
+                              }}
+                              style={[
+                                styles.attemptBtn,
+                                {backgroundColor: '#f00'},
+                              ]}>
+                              <Text style={styles.attemptText}>
+                                Attempted and incomplete
+                              </Text>
+                            </TouchableOpacity>
+                          </>
+                        )}
                       </View>
                     )
                   ) : (
-                    <View style={{marginLeft: width * 0.02}}>
-                      <DotsLoader color="#25AAE1ec" />
+                    <View
+                      style={{height: width * 0.62, justifyContent: 'center'}}>
+                      {loadManufacturers ? (
+                        <ActivityIndicator size="large" color="#25AAE1ec" />
+                      ) : (
+                        slide1.map((item, index) => (
+                          <View style={{width: width * 0.8}} key={item.id}>
+                            <Text style={styles.meterDesciptionHeading}>
+                              {item.name}*
+                            </Text>
+                            <View
+                              pointerEvents={
+                                index > 0
+                                  ? slide1[0].selectId
+                                    ? 'auto'
+                                    : 'none'
+                                  : 'auto'
+                              }
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'flex-start',
+                              }}>
+                              <SearchableDropdown
+                                onItemSelect={(item) => {
+                                  getDevice(item, index);
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                  width: width * 0.7,
+                                }}
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                }}
+                                itemTextStyle={{color: '#222'}}
+                                itemsContainerStyle={{
+                                  maxHeight: height * 0.08,
+                                }}
+                                items={item.data}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder:
+                                    index == 1
+                                      ? slide1[0].selectId
+                                        ? item.name
+                                        : 'First Select Manufacture'
+                                      : item.name,
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderTopLeftRadius: width * 0.015,
+                                    borderBottomLeftRadius: width * 0.015,
+                                    borderColor: item.error
+                                      ? '#A3001B'
+                                      : 'black',
+                                    height: width * 0.13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderTopWidth: width * 0.0019,
+                                    borderLeftWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    onChangeManufacturer(text, index);
+                                  },
+                                  value: setTimeout(() => item.select, 200),
+                                  defaultValue: item.select,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <TouchableOpacity
+                                style={{
+                                  width: width * 0.1,
+                                  backgroundColor: '#25AAE199',
+                                  borderTopRightRadius: width * 0.015,
+                                  borderBottomRightRadius: width * 0.015,
+                                  borderTopWidth: width * 0.0019,
+                                  borderRightWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  height: width * 0.13,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                onPress={() => showAddNewType(item.name)}>
+                                <Icon
+                                  size={width * 0.06}
+                                  color="#fff"
+                                  name={'add'}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ))
+                      )}
                     </View>
                   )}
-                </View>
-                <View style={styles.addUnitBtnContainer}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      Alert.alert(
-                        'Alert',
-                        'Are you sure you want to clear current selected data',
-                        [
-                          {text: 'No', style: 'cancel'},
+                  <View
+                    style={{
+                      height: width * 0.2,
+                      width: width * 0.85,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    {doneAnimation || checkSerial || hideBtn ? (
+                      !hideBtn ? (
+                        doneAnimation ? (
+                          <Text
+                            style={[styles.buttonText, {width: width * 0.7}]}>
+                            {newMeter.name.charAt(0).toUpperCase() +
+                              newMeter.name.slice(1).toLowerCase()}{' '}
+                            Meter added succesfully please checking installation
+                            status...
+                          </Text>
+                        ) : (
+                          <Text
+                            style={[styles.buttonText, {width: width * 0.7}]}>
+                            Please wait while checking Device Serial Number...
+                          </Text>
+                        )
+                      ) : null
+                    ) : (
+                      <TouchableOpacity
+                        style={[
+                          styles.doneButton,
                           {
-                            text: 'Yes',
-                            onPress: changeUtilityAndToggle,
+                            right: 0,
+                            backgroundColor:
+                              sliderNumber == 1 &&
+                              slide1[0].selectId &&
+                              slide1[1].selectId
+                                ? '#25AAE1ec'
+                                : sliderNumber == 2 &&
+                                  newMeter.id != 0 &&
+                                  newMeter.name
+                                ? '#25AAE1ec'
+                                : sliderNumber == 3 &&
+                                  slide2[0].value &&
+                                  slide2[1].value
+                                ? '#25AAE1ec'
+                                : sliderNumber == 4 &&
+                                  filePath != '' &&
+                                  filePath != null &&
+                                  lat != undefined &&
+                                  long != undefined
+                                ? '#25AAE1ec'
+                                : (sliderNumber == 5 &&
+                                    installationStatus == 1) ||
+                                  (sliderNumber == 5 &&
+                                    installationStatus == 2 &&
+                                    reasonId &&
+                                    reasonDes)
+                                ? '#25AAE1ec'
+                                : '#D0D0D0',
                           },
-                        ],
+                        ]}
+                        onPress={
+                          sliderNumber == 5 ? finishSlider : changeSlider
+                        }
+                        disabled={
+                          sliderNumber == 1 &&
+                          slide1[0].selectId &&
+                          slide1[1].selectId
+                            ? false
+                            : sliderNumber == 2 &&
+                              newMeter.id != 0 &&
+                              newMeter.name
+                            ? false
+                            : sliderNumber == 3 &&
+                              slide2[0].value &&
+                              slide2[1].value
+                            ? false
+                            : sliderNumber == 4 &&
+                              filePath != '' &&
+                              filePath != null &&
+                              lat != undefined &&
+                              long != undefined
+                            ? false
+                            : (sliderNumber == 5 && installationStatus == 1) ||
+                              (sliderNumber == 5 &&
+                                installationStatus == 2 &&
+                                reasonId &&
+                                reasonDes)
+                            ? false
+                            : true
+                        }>
+                        <Icon
+                          size={width * 0.07}
+                          color="#fff"
+                          name={sliderNumber == 5 ? 'check' : 'navigate-next'}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+              )
+            ) : (
+              <View style={styles.boxInner}>
+                {/* Box Header */}
+                <View style={styles.boxHeader}>
+                  <View style={styles.boxHeaderInner}>
+                    <Icon
+                      name={'business'}
+                      size={height * 0.05}
+                      color="#5e5e5e"
+                    />
+                    <Text style={styles.modalHeading}>{modalName}</Text>
+                    <Pressable
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: changeUtilityAndToggle,
+                            },
+                          ],
+                        )
+                      }
+                      android_ripple={{
+                        color: 'black',
+                        borderless: true,
+                        radius: width * 0.03,
+                      }}>
+                      <Icon
+                        name="cancel"
+                        size={height * 0.035}
+                        color="black"
+                        maxOpacity={0.5}
+                      />
+                    </Pressable>
+                  </View>
+                </View>
+                {/* Box Body */}
+                <View style={{height: width * 0.62, justifyContent: 'center'}}>
+                  {/* <View style={{ flex: 1 }}> */}
+                  <View style={styles.desciptionContainer}>
+                    <Build
+                      name={'office-building'}
+                      size={height * 0.02}
+                      color="#5e5e5e"
+                    />
+                    <Text style={styles.desciptionHeading}>BUILDING*</Text>
+                  </View>
+                  <View style={styles.inputContainer}>
+                    {/* //todo: This is Drop down picker */}
+                    <TextInput
+                      placeholder="Building Name"
+                      value={buildingName}
+                      dense={true}
+                      editable={false}
+                      showSoftInputOnFocus={false}
+                      style={styles.input}
+                      mode={'outlined'}
+                      theme={{
+                        colors: {
+                          text: '#25AAE1ec',
+                          primary: '#25AAE1ec',
+                          selectionColor: 'red',
+                        },
+                      }}
+                    />
+                  </View>
+                  <View style={styles.desciptionContainer}>
+                    <Text style={styles.desciptionHeading}>UNIT*</Text>
+                  </View>
+                  <View style={[styles.inputContainer]}>
+                    <TextInput
+                      placeholder="Unit Name"
+                      value={state.lastUnitData}
+                      dense={true}
+                      onChangeText={(text) => {
+                        LayoutAnimation.configureNext({
+                          duration: 300,
+                          create: {
+                            type: LayoutAnimation.Types.easeInEaseOut,
+                            property: LayoutAnimation.Properties.opacity,
+                          },
+                          update: {
+                            type: LayoutAnimation.Types.easeInEaseOut,
+                          },
+                        });
+                        setError((oldState) => ({
+                          ...oldState,
+                          errorUnits: '',
+                        }));
+                        type == 'meterDirect'
+                          ? null
+                          : (setState((oldState) => ({
+                              ...oldState,
+                              lastUnitData: text,
+                            })),
+                            console.log('unit Name', state.lastUnitData));
+                      }}
+                      disabled={type == 'meterDirect' ? true : false}
+                      style={styles.input}
+                      error={error.errorUnits}
+                      mode={'outlined'}
+                      theme={{
+                        colors: {
+                          text: '#25AAE1ec',
+                          primary: '#25AAE1ec',
+                          selectionColor: 'red',
+                        },
+                      }}
+                    />
+                  </View>
+                  {error.errorUnits ? (
+                    <HelperText type="error" visible={error.errorUnits}>
+                      {error.errorUnits}
+                    </HelperText>
+                  ) : null}
+                  {/* </View> */}
+                  <View
+                    style={[
+                      styles.inputContainer,
+                      {
+                        flexDirection: 'row',
+                        height: width * 0.15,
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
+                      },
+                    ]}>
+                    {loadMeters ? (
+                      <DotsLoader
+                        color="#25AAE1ec"
+                        size={15}
+                        betweenSpace={10}
+                      />
+                    ) : meterListData.length > 0 ? (
+                      meterListData.map((item) => (
+                        // console.log('meterListData'),
+                        <TouchableOpacity
+                          onPress={() => {
+                            LayoutAnimation.configureNext({
+                              duration: 300,
+                              create: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                                property: LayoutAnimation.Properties.opacity,
+                              },
+                              update: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                              },
+                            }),
+                              setShowAddMeterSlider(true),
+                              enableLocation();
+                            getMeterData(item);
+                            callApi();
+                          }}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: width * 0.02,
+                            elevation: 2,
+                            backgroundColor: 'white',
+                            shadowColor: '#000',
+                            shadowOffset: {
+                              width: 0,
+                              height: 1,
+                            },
+                            shadowOpacity: 0.2,
+                            shadowRadius: 1.41,
+                          }}>
+                          <Image
+                            source={typeSwitcher(item.meter_name)}
+                            style={styles.untiDetailImage}
+                          />
+                          <Text
+                            style={[
+                              styles.meterDesciptionHeading,
+                              {marginBottom: 0},
+                            ]}>
+                            {item.meter_name}
+                          </Text>
+                        </TouchableOpacity>
+                      ))
+                    ) : null}
+                  </View>
+                </View>
+                {/* Box Footer */}
+                <View style={styles.footerBtn}>
+                  <View
+                    style={{
+                      height: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    {type == 'addMeterDirect' || type == 'meterDirect' ? (
+                      meterData.length == 1 ? (
+                        <View style={{marginLeft: width * 0.02}}>
+                          <Text
+                            style={{
+                              fontSize: height * 0.018,
+                              color: '#25AAE1ec',
+                            }}>
+                            No Meters
+                          </Text>
+                        </View>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => {
+                            LayoutAnimation.configureNext({
+                              duration: 300,
+                              create: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                                property: LayoutAnimation.Properties.opacity,
+                              },
+                              update: {
+                                type: LayoutAnimation.Types.easeInEaseOut,
+                              },
+                            }),
+                              setShowAddMeterSlider(true),
+                              enableLocation();
+                            callApi();
+                          }}
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            zIndex: 1,
+                          }}>
+                          {/*//todo: Button for meter */}
+                          <Plus name="plus" size={25} color="#25AAE1ec" />
+                          <Text
+                            style={{
+                              fontSize: height * 0.018,
+                              color: '#25AAE1ec',
+                            }}>
+                            Meter
+                          </Text>
+                        </TouchableOpacity>
                       )
-                    }>
-                    <View style={styles.cancelBotton}>
-                      <Plus name="close" color="black" size={18} />
-                      <Text style={{color: 'black'}}>Cancel</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleAddNewUnit}>
-                    <View style={styles.submitBotton}>
-                      <Plus
-                        name={
-                          type == 'meterDirect' ||
+                    ) : !meterListLoader ? (
+                      state.meterList.length ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            enableLocation();
+                            callApi();
+                          }}
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            zIndex: 1,
+                          }}>
+                          {/*//todo: Button for meter */}
+                          <Plus name="plus" size={25} color="#25AAE1ec" />
+                          <Text
+                            style={{
+                              fontSize: height * 0.018,
+                              color: '#25AAE1ec',
+                            }}>
+                            Meter
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <View style={{marginLeft: width * 0.02}}>
+                          <Text
+                            style={{
+                              fontSize: height * 0.018,
+                              color: '#25AAE1ec',
+                            }}>
+                            No Meters
+                          </Text>
+                        </View>
+                      )
+                    ) : (
+                      <View style={{marginLeft: width * 0.02}}>
+                        <DotsLoader color="#25AAE1ec" />
+                      </View>
+                    )}
+                  </View>
+                  <View style={styles.addUnitBtnContainer}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: changeUtilityAndToggle,
+                            },
+                          ],
+                        )
+                      }>
+                      <View style={styles.cancelBotton}>
+                        <Plus name="close" color="black" size={18} />
+                        <Text style={{color: 'black'}}>Cancel</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleAddNewUnit}>
+                      <View style={styles.submitBotton}>
+                        <Plus
+                          name={
+                            type == 'meterDirect' ||
+                            type == 'addMeterDirect' ||
+                            type == 'add'
+                              ? 'plus'
+                              : 'pencil-plus'
+                          }
+                          color="white"
+                          size={18}
+                        />
+                        <Text style={{color: 'white'}}>
+                          {type == 'meterDirect' ||
                           type == 'addMeterDirect' ||
                           type == 'add'
-                            ? 'plus'
-                            : 'pencil-plus'
-                        }
-                        color="white"
-                        size={18}
-                      />
-                      <Text style={{color: 'white'}}>
-                        {type == 'meterDirect' ||
-                        type == 'addMeterDirect' ||
-                        type == 'add'
-                          ? 'Add Unit'
-                          : 'Edit Unit'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                            ? 'Add Unit'
+                            : 'Edit Unit'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
-        </KeyboardAvoidingView>
+            )}
+          </KeyboardAvoidingView>
+        )}
       </Modal>
       <Modal
         animationIn="bounceInUp"
