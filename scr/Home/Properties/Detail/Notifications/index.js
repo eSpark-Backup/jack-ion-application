@@ -106,7 +106,7 @@ export default class Splash extends Component {
           </View>
         </View>
 
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, alignItems: 'center'}}>
           {this.state.LoaderState ? (
             <Loader />
           ) : this.state.notificationData.length < 1 ? (
@@ -126,6 +126,7 @@ export default class Splash extends Component {
                 <TouchableOpacity
                   style={{
                     borderWidth: 1,
+                    width: width * 0.95,
                     borderRadius: 10,
                     padding: width * 0.02,
                     margin: width * 0.02,

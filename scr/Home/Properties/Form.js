@@ -30,6 +30,7 @@ import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 import Modal from 'react-native-modal';
 import SystemSetting from 'react-native-system-setting';
 import Geolocation from '@react-native-community/geolocation';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import MapView, {
   PROVIDER_GOOGLE,
   AnimatedRegion,
@@ -329,13 +330,29 @@ export default class Splash extends React.Component {
   };
 
   moveMarker = (region) => {
-    this.setState({lat: region?.latitude});
-    this.setState({long: region?.longitude});
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.setState({lat: region?.latitude});
+      this.setState({long: region?.longitude});
+    }, 200);
+  };
+
+  catchLocation = (region) => {
+    this.setState({lat: region?.lat});
+    this.setState({long: region?.lng});
   };
 
   selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
     this.setState({selectLocation: true});
+  };
+
+  getCurrentLocation = () => {
+    Geolocation.getCurrentPosition((position) => {
+      var lat = parseFloat(position.coords.latitude);
+      var long = parseFloat(position.coords.longitude);
+      this.setState({lat: lat, long: long});
+    });
   };
 
   _renderMap = () => {
@@ -450,6 +467,47 @@ export default class Splash extends React.Component {
                 justifyContent: 'center',
                 borderRadius: width * 0.03,
               }}>
+              <View
+                style={{
+                  flex: 1,
+                  zIndex: 2,
+                  position: 'absolute',
+                  // padding: 10,
+                  top: width * 0.04,
+                  width: width * 0.72,
+                  // paddingTop: Constants.statusBarHeight + 10,
+                  // backgroundColor: '#ecf0f1',
+                }}>
+                <GooglePlacesAutocomplete
+                  placeholder="Address"
+                  query={{
+                    key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                    language: 'en', // language of the results
+                  }}
+                  fetchDetails={true}
+                  onPress={(data, details) =>
+                    this.catchLocation(details.geometry.location)
+                  }
+                  onFail={(error) => console.error(error)}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => this.getCurrentLocation()}
+                style={{
+                  backgroundColor: '#25AAE1ec',
+                  zIndex: 1,
+                  position: 'absolute',
+                  height: width * 0.12,
+                  width: width * 0.12,
+                  borderRadius: width * 0.3,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  elevation: width * 0.005,
+                  bottom: width * 0.2,
+                  right: width * 0.03,
+                }}>
+                <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
                   this.setState({selectLocation: false, locationSelected: true})
@@ -469,6 +527,7 @@ export default class Splash extends React.Component {
                 }}>
                 <Icon size={width * 0.07} color="#fff" name={'navigate-next'} />
               </TouchableOpacity>
+
               {this.state.markers.length > 0 && (
                 <View
                   style={{
@@ -508,7 +567,13 @@ export default class Splash extends React.Component {
                       borderRadius: width * 0.03,
                     }}
                     // scrollEnabled={false}
-                    initialRegion={{
+                    // initialRegion={{
+                    //   latitude: this.state.lat,
+                    //   longitude: this.state.long,
+                    //   latitudeDelta: LATITUDE_DELTA,
+                    //   longitudeDelta: LONGITUDE_DELTA,
+                    // }}
+                    region={{
                       latitude: this.state.lat,
                       longitude: this.state.long,
                       latitudeDelta: LATITUDE_DELTA,
@@ -517,7 +582,7 @@ export default class Splash extends React.Component {
                     zoomEnabled={true}
                     provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
-                    showsMyLocationButton={true}
+                    showsMyLocationButton={false}
                     onRegionChange={(e) => this.moveMarker(e)}
                     // onPress={(e) => this.getLocation(e)}
                   ></MapView>
@@ -691,6 +756,26 @@ export default class Splash extends React.Component {
                           }}
                         />
                       </View>
+                      {/* <View
+                        style={{
+                          flex: 1,
+                          zIndex: 1,
+                          position: 'absolute',
+                          padding: 10,
+                          width: width * 0.52,
+                          // paddingTop: Constants.statusBarHeight + 10,
+                          backgroundColor: '#ecf0f1',
+                        }}>
+                        <GooglePlacesAutocomplete
+                          placeholder="Address"
+                          query={{
+                            key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                            language: 'en', // language of the results
+                          }}
+                          onPress={(data, details = null) => console.log(data)}
+                          onFail={(error) => console.error(error)}
+                        />
+                      </View> */}
                       <View style={styles.inputContainer}>
                         <TouchableOpacity
                           onPress={this.selectMeterLocation}

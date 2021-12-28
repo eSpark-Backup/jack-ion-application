@@ -21,6 +21,7 @@ import {
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Video from 'react-native-video';
 import SystemSetting from 'react-native-system-setting';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -448,6 +449,7 @@ export default function UnitEdit({
     }
     // console.log('showAddMeterSlider------->', showAddMeterSlider);
   }, [showAddMeterSlider]);
+
   useEffect(async () => {
     if (flag) {
       console.log('un in mod-->>', unitDetails);
@@ -555,6 +557,7 @@ export default function UnitEdit({
         });
     }
   };
+
   const onScanned = (e) => {
     const check = e.data.substring(0, 4);
     if (check == 'http') {
@@ -583,6 +586,7 @@ export default function UnitEdit({
       }, 400);
     }
   };
+
   const scannerModal = () => {
     setState((oldState) => ({
       ...oldState,
@@ -595,12 +599,14 @@ export default function UnitEdit({
       }, 400);
     }
   };
+
   //!-------->
   const onChangeMultipleField = (e, index) => {
     let newArr = [...slide2]; // copying the old datas array
     newArr[index].value = e; // replace e.target.value with whatever you want to change it to
     setSlide2(newArr);
   };
+
   const onChangeManufacturer = (e, index) => {
     let listSlide = [...slide1]; // copying the old datas array
     listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
@@ -670,7 +676,11 @@ export default function UnitEdit({
     //     reasoneData.push(resoneObj);
     //   });
     // }
-    setReasons(reasoneResponce?.data?.data);
+    let reasonArr = reasoneResponce?.data?.data;
+    const uniqueArr = [
+      ...new Map(reasonArr.map((v) => [v.options_reason_id, v])).values(),
+    ];
+    setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
   };
 
@@ -941,6 +951,7 @@ export default function UnitEdit({
       updateMeterData();
     }
   }, [letsUpdateMeterData]);
+
   const updateMeterData = () => {
     const reasonBase64s = [];
     for (let i = 0; i < reasonPath?.length; i++) {
@@ -1003,6 +1014,7 @@ export default function UnitEdit({
     // console.log('oldMeterListData finishSlider----->>>>>', meterArray);
     cancelMeter();
   };
+
   const typeSwitcher = (arg) => {
     switch (arg.toLowerCase()) {
       case 'hot water':
@@ -1019,6 +1031,7 @@ export default function UnitEdit({
         break;
     }
   };
+
   const renderSlide2 = ({item}) => {
     return (
       <View
@@ -1091,6 +1104,7 @@ export default function UnitEdit({
       </View>
     );
   };
+
   const renderSlide3 = ({item, index}) => {
     // console.log('index check slider 3 ---> ',index)
     return (
@@ -1148,6 +1162,7 @@ export default function UnitEdit({
       </View>
     );
   };
+
   const renderSlide5 = ({item, index}) => {
     // console.log('index check slider 3 ---> ',index)
     return (
@@ -1264,8 +1279,25 @@ export default function UnitEdit({
   };
 
   const moveMarker = (region) => {
-    setLat(region?.latitude);
-    setLong(region?.longitude);
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      setLat(region?.latitude);
+      setLong(region?.longitude);
+    }, 200);
+  };
+
+  const catchLocation = (region) => {
+    setLat(region?.lat);
+    setLong(region?.lng);
+  };
+
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition((position) => {
+      var lat = parseFloat(position.coords.latitude);
+      var long = parseFloat(position.coords.longitude);
+      setLat(lat);
+      setLong(long);
+    });
   };
 
   const imageGalleryLaunch = (type) => {
@@ -1349,7 +1381,9 @@ export default function UnitEdit({
     });
     slide2.map((item, index) => {
       let newArr = [...slide2];
-      newArr[index].value = '';
+      newArr[0].value = '';
+      newArr[1].value = '0';
+      newArr[2].value = '';
     });
     setNewMeter((oldState) => ({
       ...oldState,
@@ -1370,6 +1404,7 @@ export default function UnitEdit({
     }
     setMeterAddingId('');
   };
+
   const showAddNewType = (value) => {
     LayoutAnimation.configureNext({
       duration: 300,
@@ -1384,6 +1419,7 @@ export default function UnitEdit({
     setAddNewType(true);
     setShowAddType(value);
   };
+
   const getNewDeviceData = (value, index) => {
     let listSlide = [...addDevice]; // copying the old datas array
     listSlide[index].select = value?.name; // replace e.target.value with whatever you want to change it to
@@ -1396,6 +1432,7 @@ export default function UnitEdit({
     listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
     setAddDevice(listSlide);
   };
+
   const doneAddType = async () => {
     if (showAddType == 'Manufacturer') {
       let data = {
@@ -1451,6 +1488,7 @@ export default function UnitEdit({
       }
     }
   };
+
   const cancelAddNewType = () => {
     LayoutAnimation.configureNext({
       duration: 300,
@@ -1582,6 +1620,35 @@ export default function UnitEdit({
                     justifyContent: 'center',
                     borderRadius: width * 0.03,
                   }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      zIndex: 2,
+                      position: 'absolute',
+                      // padding: 10,
+                      top: width * 0.04,
+                      width: width * 0.72,
+                      // paddingTop: Constants.statusBarHeight + 10,
+                      // backgroundColor: '#ecf0f1',
+                    }}>
+                    <GooglePlacesAutocomplete
+                      placeholder="Address"
+                      query={{
+                        key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                        language: 'en', // language of the results
+                      }}
+                      fetchDetails={true}
+                      onPress={(data, details) =>
+                        catchLocation(details.geometry.location)
+                      }
+                      onFail={(error) => console.error(error)}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => getCurrentLocation()}
+                    style={[styles.doneButton, {bottom: width * 0.2}]}>
+                    <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
+                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setSelectLocation(false)}
                     style={styles.doneButton}>
@@ -1628,10 +1695,16 @@ export default function UnitEdit({
                           latitudeDelta: LATITUDE_DELTA,
                           longitudeDelta: LONGITUDE_DELTA,
                         }}
+                        region={{
+                          latitude: lat,
+                          longitude: long,
+                          latitudeDelta: LATITUDE_DELTA,
+                          longitudeDelta: LONGITUDE_DELTA,
+                        }}
                         zoomEnabled={true}
                         provider={PROVIDER_GOOGLE}
                         showsUserLocation={true}
-                        showsMyLocationButton={true}
+                        showsMyLocationButton={false}
                         onRegionChange={(e) => moveMarker(e)}
                         // onPress={(e) => this.getLocation(e)}
                       ></MapView>
