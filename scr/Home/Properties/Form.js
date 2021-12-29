@@ -485,9 +485,42 @@ export default class Splash extends React.Component {
                     language: 'en', // language of the results
                   }}
                   fetchDetails={true}
-                  onPress={(data, details) =>
-                    this.catchLocation(details.geometry.location)
-                  }
+                  enablePoweredByContainer={false}
+                  disableScroll={false}
+                  onPress={(data, details) => {
+                    this.catchLocation(details.geometry.location);
+                    console.log('DETAILS', details);
+                    const searchdata = details?.formatted_address;
+                    console.log('SEARCH STR', searchdata);
+                    const searchStr = ',';
+                    var searchStrLen = searchStr.length;
+                    var startIndex = 0,
+                      index,
+                      indices = [];
+
+                    while (
+                      (index = searchdata.indexOf(searchStr, startIndex)) > -1
+                    ) {
+                      indices.push(index);
+                      startIndex = index + searchStrLen;
+                    }
+                    const Street = searchdata.slice(0, indices[0]);
+                    const City = searchdata.slice(indices[0] + 2, indices[1]);
+                    const State = searchdata.slice(
+                      indices[1] + 2,
+                      indices[1] + 4,
+                    );
+                    const Zipcode = searchdata.slice(
+                      indices[1] + 5,
+                      indices[2],
+                    );
+
+                    console.log('DATA', indices);
+                    console.log('Street', Street);
+                    console.log('City', City);
+                    console.log('State', State);
+                    console.log('Zipcode', Zipcode);
+                  }}
                   onFail={(error) => console.error(error)}
                 />
               </View>

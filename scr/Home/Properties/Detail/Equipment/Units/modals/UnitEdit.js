@@ -1513,6 +1513,7 @@ export default function UnitEdit({
   };
 
   const getMeterData = (data) => {
+    console.log('REASONS DATA', data.reasons);
     if (data.reasons.length > 0) {
       setReasonText(data.reasons.name);
       setReasonId(data.reasons.options_reason_id);
@@ -2558,76 +2559,124 @@ export default function UnitEdit({
                         )
                       ) : null
                     ) : (
-                      <TouchableOpacity
-                        style={[
-                          styles.doneButton,
-                          {
-                            right: 0,
-                            backgroundColor:
-                              sliderNumber == 1 &&
-                              slide1[0].selectId &&
-                              slide1[1].selectId
-                                ? '#25AAE1ec'
-                                : sliderNumber == 2 &&
-                                  newMeter.id != 0 &&
-                                  newMeter.name
-                                ? '#25AAE1ec'
-                                : sliderNumber == 3 &&
-                                  slide2[0].value &&
-                                  slide2[1].value
-                                ? '#25AAE1ec'
-                                : sliderNumber == 4 &&
-                                  filePath != '' &&
-                                  filePath != null &&
-                                  lat != undefined &&
-                                  long != undefined
-                                ? '#25AAE1ec'
-                                : (sliderNumber == 5 &&
-                                    installationStatus == 1) ||
-                                  (sliderNumber == 5 &&
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          right: 0,
+                          position: 'absolute',
+                          bottom: width * 0.04,
+                          // backgroundColor: 'red',
+                          justifyContent: 'space-evenly',
+                        }}>
+                        {sliderNumber == 5 &&
+                          installationStatus == 2 &&
+                          statusAnimation == false && (
+                            <TouchableOpacity
+                              style={[
+                                styles.doneButton,
+                                {
+                                  right: 0,
+                                  bottom: 0,
+                                  position: 'relative',
+                                  marginRight: 4,
+                                  backgroundColor:
+                                    sliderNumber == 5 &&
                                     installationStatus == 2 &&
                                     reasonId &&
-                                    reasonDes)
-                                ? '#25AAE1ec'
-                                : '#D0D0D0',
-                          },
-                        ]}
-                        onPress={
-                          sliderNumber == 5 ? finishSlider : changeSlider
-                        }
-                        disabled={
-                          sliderNumber == 1 &&
-                          slide1[0].selectId &&
-                          slide1[1].selectId
-                            ? false
-                            : sliderNumber == 2 &&
-                              newMeter.id != 0 &&
-                              newMeter.name
-                            ? false
-                            : sliderNumber == 3 &&
-                              slide2[0].value &&
-                              slide2[1].value
-                            ? false
-                            : sliderNumber == 4 &&
-                              filePath != '' &&
-                              filePath != null &&
-                              lat != undefined &&
-                              long != undefined
-                            ? false
-                            : (sliderNumber == 5 && installationStatus == 1) ||
-                              (sliderNumber == 5 &&
+                                    reasonDes
+                                      ? '#25AAE1ec'
+                                      : '#D0D0D0',
+                                },
+                              ]}
+                              disabled={
+                                sliderNumber == 5 &&
                                 installationStatus == 2 &&
                                 reasonId &&
-                                reasonDes)
-                            ? false
-                            : true
-                        }>
-                        <Icon
-                          size={width * 0.07}
-                          color="#fff"
-                          name={sliderNumber == 5 ? 'check' : 'navigate-next'}
-                        />
-                      </TouchableOpacity>
+                                reasonDes
+                                  ? false
+                                  : true
+                              }>
+                              <Icon
+                                size={width * 0.07}
+                                color="#fff"
+                                name={sliderNumber == 5 && 'add'}
+                              />
+                            </TouchableOpacity>
+                          )}
+                        <TouchableOpacity
+                          style={[
+                            styles.doneButton,
+                            {
+                              right: 0,
+                              bottom: 0,
+                              position: 'relative',
+                              backgroundColor:
+                                sliderNumber == 1 &&
+                                slide1[0].selectId &&
+                                slide1[1].selectId
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 2 &&
+                                    newMeter.id != 0 &&
+                                    newMeter.name
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 3 &&
+                                    slide2[0].value &&
+                                    slide2[1].value
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 4 &&
+                                    filePath != '' &&
+                                    filePath != null &&
+                                    lat != undefined &&
+                                    long != undefined
+                                  ? '#25AAE1ec'
+                                  : (sliderNumber == 5 &&
+                                      installationStatus == 1) ||
+                                    (sliderNumber == 5 &&
+                                      installationStatus == 2 &&
+                                      reasonId &&
+                                      reasonDes)
+                                  ? '#25AAE1ec'
+                                  : '#D0D0D0',
+                            },
+                          ]}
+                          onPress={
+                            sliderNumber == 5 ? finishSlider : changeSlider
+                          }
+                          disabled={
+                            sliderNumber == 1 &&
+                            slide1[0].selectId &&
+                            slide1[1].selectId
+                              ? false
+                              : sliderNumber == 2 &&
+                                newMeter.id != 0 &&
+                                newMeter.name
+                              ? false
+                              : sliderNumber == 3 &&
+                                slide2[0].value &&
+                                slide2[1].value
+                              ? false
+                              : sliderNumber == 4 &&
+                                filePath != '' &&
+                                filePath != null &&
+                                lat != undefined &&
+                                long != undefined
+                              ? false
+                              : (sliderNumber == 5 &&
+                                  installationStatus == 1) ||
+                                (sliderNumber == 5 &&
+                                  installationStatus == 2 &&
+                                  reasonId &&
+                                  reasonDes)
+                              ? false
+                              : true
+                          }>
+                          <Icon
+                            size={width * 0.07}
+                            color="#fff"
+                            name={sliderNumber == 5 ? 'check' : 'navigate-next'}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     )}
                   </View>
                 </View>
