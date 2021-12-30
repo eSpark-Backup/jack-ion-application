@@ -170,6 +170,7 @@ export default function UnitEdit({
     },
   ]);
   const [reasons, setReasons] = useState([]);
+  const [reasonArr, setReasonArr] = useState([]);
   const [meterAddingId, setMeterAddingId] = useState('');
   const [reasonId, setReasonId] = useState(null);
   const [reasonDes, setReasonDes] = useState('');
@@ -1373,6 +1374,7 @@ export default function UnitEdit({
     setInstallationStatus(0);
     setFilePath('');
     setReasonPath([]);
+    setReasonArr([]);
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1514,11 +1516,11 @@ export default function UnitEdit({
 
   const getMeterData = (data) => {
     console.log('REASONS DATA', data.reasons);
-    if (data.reasons.length > 0) {
-      setReasonText(data.reasons.name);
-      setReasonId(data.reasons.options_reason_id);
-      setReasonDes(data.reasons.text_reason);
-    }
+    // if (data.reasons.length > 0) {
+    //   setReasonText(data.reasons.name);
+    //   setReasonId(data.reasons.options_reason_id);
+    //   setReasonDes(data.reasons.text_reason);
+    // }
     setMeterAddingId(data.meter_id);
     let arr1 = {
       id: data.meter_id,

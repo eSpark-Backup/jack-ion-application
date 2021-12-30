@@ -125,6 +125,7 @@ export default class Splash extends React.Component {
     }
     this.setValue = this.setValue.bind(this);
   }
+
   toggleModalAddProp = () => {
     this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
   };
@@ -342,6 +343,34 @@ export default class Splash extends React.Component {
     this.setState({long: region?.lng});
   };
 
+  fetchAddressData = (searchdata) => {
+    console.log('SEARCH STR', searchdata);
+    const searchStr = ',';
+    var searchStrLen = searchStr.length;
+    var startIndex = 0,
+      index,
+      indices = [];
+
+    while ((index = searchdata.indexOf(searchStr, startIndex)) > -1) {
+      indices.push(index);
+      startIndex = index + searchStrLen;
+    }
+    const Street = searchdata.slice(0, indices[0]);
+    const City = searchdata.slice(indices[0] + 2, indices[1]);
+    const State = searchdata.slice(indices[1] + 2, indices[1] + 4);
+    const ZipCode = searchdata.slice(indices[1] + 5, indices[2]);
+
+    console.log('DATA', indices);
+    console.log('Street', Street);
+    console.log('City', City);
+    console.log('State', State);
+    console.log('Zipcode', ZipCode);
+    this.setState({Street: Street});
+    this.setState({City: City});
+    this.setState({State: State});
+    this.setState({ZipCode: ZipCode});
+  };
+
   selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
     this.setState({selectLocation: true});
@@ -490,36 +519,7 @@ export default class Splash extends React.Component {
                   onPress={(data, details) => {
                     this.catchLocation(details.geometry.location);
                     console.log('DETAILS', details);
-                    const searchdata = details?.formatted_address;
-                    console.log('SEARCH STR', searchdata);
-                    const searchStr = ',';
-                    var searchStrLen = searchStr.length;
-                    var startIndex = 0,
-                      index,
-                      indices = [];
-
-                    while (
-                      (index = searchdata.indexOf(searchStr, startIndex)) > -1
-                    ) {
-                      indices.push(index);
-                      startIndex = index + searchStrLen;
-                    }
-                    const Street = searchdata.slice(0, indices[0]);
-                    const City = searchdata.slice(indices[0] + 2, indices[1]);
-                    const State = searchdata.slice(
-                      indices[1] + 2,
-                      indices[1] + 4,
-                    );
-                    const Zipcode = searchdata.slice(
-                      indices[1] + 5,
-                      indices[2],
-                    );
-
-                    console.log('DATA', indices);
-                    console.log('Street', Street);
-                    console.log('City', City);
-                    console.log('State', State);
-                    console.log('Zipcode', Zipcode);
+                    this.fetchAddressData(details?.formatted_address);
                   }}
                   onFail={(error) => console.error(error)}
                 />
@@ -702,6 +702,7 @@ export default class Splash extends React.Component {
                         <TextInput
                           placeholder="Enter Street*"
                           error={this.state.error.street}
+                          value={this.state.Street}
                           style={styles.input}
                           onChangeText={(text) => {
                             this.setState({Street: text});
@@ -734,6 +735,7 @@ export default class Splash extends React.Component {
                         <TextInput
                           error={this.state.error.st}
                           placeholder="Enter State"
+                          value={this.state.State}
                           style={styles.input}
                           onChangeText={(text) => {
                             this.setState({State: text});
@@ -759,6 +761,7 @@ export default class Splash extends React.Component {
                         <TextInput
                           error={this.state.error.city}
                           placeholder="Enter City"
+                          value={this.state.City}
                           style={[styles.input, {width: width * 0.36}]}
                           onChangeText={(text) => {
                             this.setState({City: text});
@@ -775,6 +778,7 @@ export default class Splash extends React.Component {
                         <TextInput
                           error={this.state.error.zipcode}
                           placeholder="Enter Zipcode"
+                          value={this.state.ZipCode}
                           style={[styles.input, {width: width * 0.36}]}
                           onChangeText={(text) => {
                             this.setState({ZipCode: text});
