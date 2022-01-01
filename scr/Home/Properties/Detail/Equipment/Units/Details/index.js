@@ -742,7 +742,7 @@ const App = ({navigation}) => {
     }
   };
   const typeColor = (arg) => {
-    switch (arg.toLowerCase()) {
+    switch (arg) {
       case 'hot water':
         return '#B14E3B';
       case 'cold water':
