@@ -404,6 +404,7 @@ export default function UnitEdit({
   };
 
   useUpdateEffect(async () => {
+    setLoadMeters(true);
     if (flag) {
       getToken();
     }
@@ -435,6 +436,7 @@ export default function UnitEdit({
       // if (getMeter.length) {
 
       // }
+      setLoadMeters(false);
     }
   }, [modalVisible]);
 
@@ -962,6 +964,20 @@ export default function UnitEdit({
 
     meterListData.map((item) => {
       // console.log('Get meterData Information---->>', item.reasons);
+      let newReasonArr = [...reasonArr];
+      if (type != 'add' || type != 'addMeterDirect') {
+        newReasonArr.push({
+          options_reason_id:
+            item?.reasons[0]?.options_reason_id == null
+              ? 0
+              : item?.reasons[0]?.options_reason_id,
+          text_reason:
+            item?.reasons[0]?.text_reason == null
+              ? 0
+              : item?.reasons[0]?.text_reason,
+          picture: [`data:image/jpeg;base64,${reasonBase64s}`],
+        });
+      }
       loopData.push({
         meter_id: item.meter_id,
         device_serial_number: item.device_serial_number,
@@ -991,22 +1007,7 @@ export default function UnitEdit({
                       },
               }
             : {
-                reasons:
-                  item.reasons == undefined
-                    ? []
-                    : [
-                        {
-                          options_reason_id:
-                            item?.reasons[0]?.options_reason_id == null
-                              ? 0
-                              : item?.reasons[0]?.options_reason_id,
-                          text_reason:
-                            item?.reasons[0]?.text_reason == null
-                              ? 0
-                              : item?.reasons[0]?.text_reason,
-                          picture: [`data:image/jpeg;base64,${reasonBase64s}`],
-                        },
-                      ],
+                reasons: item.reasons == undefined ? [] : newReasonArr,
               })),
       });
     });
@@ -1521,6 +1522,7 @@ export default function UnitEdit({
     //   setReasonId(data.reasons.options_reason_id);
     //   setReasonDes(data.reasons.text_reason);
     // }
+    setReasonArr(data.reasons);
     setMeterAddingId(data.meter_id);
     let arr1 = {
       id: data.meter_id,
@@ -1538,6 +1540,7 @@ export default function UnitEdit({
       setStatusAnimation(true);
     } else {
       setInstallationStatus(0);
+      setStatusAnimation(false);
     }
     setFilePath(data.thumbnail);
     setReasonPath([]);
@@ -1593,7 +1596,7 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  // console.log('Meterlist data', meterListData);
+  console.log('LOAD Meters', loadMeters);
   return (
     <View>
       <Modal
@@ -2561,124 +2564,123 @@ export default function UnitEdit({
                         )
                       ) : null
                     ) : (
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          right: 0,
-                          position: 'absolute',
-                          bottom: width * 0.04,
-                          // backgroundColor: 'red',
-                          justifyContent: 'space-evenly',
-                        }}>
-                        {sliderNumber == 5 &&
-                          installationStatus == 2 &&
-                          statusAnimation == false && (
-                            <TouchableOpacity
-                              style={[
-                                styles.doneButton,
-                                {
-                                  right: 0,
-                                  bottom: 0,
-                                  position: 'relative',
-                                  marginRight: 4,
-                                  backgroundColor:
-                                    sliderNumber == 5 &&
+                      // <View
+                      //   style={{
+                      //     flexDirection: 'row',
+                      //     right: 0,
+                      //     position: 'absolute',
+                      //     bottom: width * 0.04,
+                      //     // backgroundColor: 'red',
+                      //     justifyContent: 'space-evenly',
+                      //   }}>
+                      //   {sliderNumber == 5 &&
+                      //     installationStatus == 2 &&
+                      //     statusAnimation == false && (
+                      //       <TouchableOpacity
+                      //         style={[
+                      //           styles.doneButton,
+                      //           {
+                      //             right: 0,
+                      //             bottom: 0,
+                      //             position: 'relative',
+                      //             marginRight: 4,
+                      //             backgroundColor:
+                      //               sliderNumber == 5 &&
+                      //               installationStatus == 2 &&
+                      //               reasonId &&
+                      //               reasonDes
+                      //                 ? '#25AAE1ec'
+                      //                 : '#D0D0D0',
+                      //           },
+                      //         ]}
+                      //         disabled={
+                      //           sliderNumber == 5 &&
+                      //           installationStatus == 2 &&
+                      //           reasonId &&
+                      //           reasonDes
+                      //             ? false
+                      //             : true
+                      //         }>
+                      //         <Icon
+                      //           size={width * 0.07}
+                      //           color="#fff"
+                      //           name={sliderNumber == 5 && 'add'}
+                      //         />
+                      //       </TouchableOpacity>
+                      //     )}
+                      <TouchableOpacity
+                        style={[
+                          styles.doneButton,
+                          {
+                            right: 0,
+                            // bottom: 0,
+                            // position: 'relative',
+                            backgroundColor:
+                              sliderNumber == 1 &&
+                              slide1[0].selectId &&
+                              slide1[1].selectId
+                                ? '#25AAE1ec'
+                                : sliderNumber == 2 &&
+                                  newMeter.id != 0 &&
+                                  newMeter.name
+                                ? '#25AAE1ec'
+                                : sliderNumber == 3 &&
+                                  slide2[0].value &&
+                                  slide2[1].value
+                                ? '#25AAE1ec'
+                                : sliderNumber == 4 &&
+                                  filePath != '' &&
+                                  filePath != null &&
+                                  lat != undefined &&
+                                  long != undefined
+                                ? '#25AAE1ec'
+                                : (sliderNumber == 5 &&
+                                    installationStatus == 1) ||
+                                  (sliderNumber == 5 &&
                                     installationStatus == 2 &&
                                     reasonId &&
-                                    reasonDes
-                                      ? '#25AAE1ec'
-                                      : '#D0D0D0',
-                                },
-                              ]}
-                              disabled={
-                                sliderNumber == 5 &&
+                                    reasonDes)
+                                ? '#25AAE1ec'
+                                : '#D0D0D0',
+                          },
+                        ]}
+                        onPress={
+                          sliderNumber == 5 ? finishSlider : changeSlider
+                        }
+                        disabled={
+                          sliderNumber == 1 &&
+                          slide1[0].selectId &&
+                          slide1[1].selectId
+                            ? false
+                            : sliderNumber == 2 &&
+                              newMeter.id != 0 &&
+                              newMeter.name
+                            ? false
+                            : sliderNumber == 3 &&
+                              slide2[0].value &&
+                              slide2[1].value
+                            ? false
+                            : sliderNumber == 4 &&
+                              filePath != '' &&
+                              filePath != null &&
+                              lat != undefined &&
+                              long != undefined
+                            ? false
+                            : (sliderNumber == 5 && installationStatus == 1) ||
+                              (sliderNumber == 5 &&
                                 installationStatus == 2 &&
                                 reasonId &&
-                                reasonDes
-                                  ? false
-                                  : true
-                              }>
-                              <Icon
-                                size={width * 0.07}
-                                color="#fff"
-                                name={sliderNumber == 5 && 'add'}
-                              />
-                            </TouchableOpacity>
-                          )}
-                        <TouchableOpacity
-                          style={[
-                            styles.doneButton,
-                            {
-                              right: 0,
-                              bottom: 0,
-                              position: 'relative',
-                              backgroundColor:
-                                sliderNumber == 1 &&
-                                slide1[0].selectId &&
-                                slide1[1].selectId
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 2 &&
-                                    newMeter.id != 0 &&
-                                    newMeter.name
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 3 &&
-                                    slide2[0].value &&
-                                    slide2[1].value
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 4 &&
-                                    filePath != '' &&
-                                    filePath != null &&
-                                    lat != undefined &&
-                                    long != undefined
-                                  ? '#25AAE1ec'
-                                  : (sliderNumber == 5 &&
-                                      installationStatus == 1) ||
-                                    (sliderNumber == 5 &&
-                                      installationStatus == 2 &&
-                                      reasonId &&
-                                      reasonDes)
-                                  ? '#25AAE1ec'
-                                  : '#D0D0D0',
-                            },
-                          ]}
-                          onPress={
-                            sliderNumber == 5 ? finishSlider : changeSlider
-                          }
-                          disabled={
-                            sliderNumber == 1 &&
-                            slide1[0].selectId &&
-                            slide1[1].selectId
-                              ? false
-                              : sliderNumber == 2 &&
-                                newMeter.id != 0 &&
-                                newMeter.name
-                              ? false
-                              : sliderNumber == 3 &&
-                                slide2[0].value &&
-                                slide2[1].value
-                              ? false
-                              : sliderNumber == 4 &&
-                                filePath != '' &&
-                                filePath != null &&
-                                lat != undefined &&
-                                long != undefined
-                              ? false
-                              : (sliderNumber == 5 &&
-                                  installationStatus == 1) ||
-                                (sliderNumber == 5 &&
-                                  installationStatus == 2 &&
-                                  reasonId &&
-                                  reasonDes)
-                              ? false
-                              : true
-                          }>
-                          <Icon
-                            size={width * 0.07}
-                            color="#fff"
-                            name={sliderNumber == 5 ? 'check' : 'navigate-next'}
-                          />
-                        </TouchableOpacity>
-                      </View>
+                                reasonDes)
+                            ? false
+                            : true
+                        }>
+                        <Icon
+                          size={width * 0.07}
+                          color="#fff"
+                          name={sliderNumber == 5 ? 'check' : 'navigate-next'}
+                        />
+                      </TouchableOpacity>
+                      // </View>
                     )}
                   </View>
                 </View>
@@ -2813,12 +2815,9 @@ export default function UnitEdit({
                       },
                     ]}>
                     {loadMeters ? (
-                      <DotsLoader
-                        color="#25AAE1ec"
-                        size={15}
-                        betweenSpace={10}
-                      />
-                    ) : meterListData.length > 0 ? (
+                      <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
+                    ) : (
+                      meterListData.length > 0 &&
                       meterListData.map((item) => (
                         // console.log('meterListData'),
                         <TouchableOpacity
@@ -2866,7 +2865,7 @@ export default function UnitEdit({
                           </Text>
                         </TouchableOpacity>
                       ))
-                    ) : null}
+                    )}
                   </View>
                 </View>
                 {/* Box Footer */}
