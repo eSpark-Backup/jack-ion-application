@@ -146,13 +146,13 @@ class GlobalState extends React.Component {
       latitude: info.propLat,
       longitude: info.propLong,
     };
-    // console.log('data--->', data);
+    console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
       console.log(res.data);
       if (res?.data?.bool) {
         this.checkData();
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert('Error', res?.data?.message);
       }
     });
   };

@@ -32,25 +32,7 @@ export default class Splash extends Component {
       expanded: false,
       asdf: false,
       LoaderState: true,
-      notificationData: [
-        // {
-        //   title: 'New Property Added',
-        //   content: 'New Property Added with the name of ABC',
-        // },
-        // {
-        //   title: 'New Unit Added',
-        //   content: 'New Unit Added in the XYZ Building',
-        // },
-        // {title: 'New Meter Added', content: 'New Meter Added in the ABC Unit'},
-        // {
-        //   title: 'XYZ Unit Updated',
-        //   content: 'XYZ Unit Updated in the ABC building',
-        // },
-        // {
-        //   title: 'New Building Added',
-        //   content: 'New Building Added in the XYZ property',
-        // },
-      ],
+      notificationData: [],
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -66,8 +48,11 @@ export default class Splash extends Component {
       '/property/equipment/meter/notification-show',
     );
 
-    console.log('Notifications Response', notificationsRes?.data?.data?.notify);
-    this.setState({notificationData: notificationsRes?.data?.data?.notify});
+    console.log('Notifications Response', notificationsRes?.data);
+    if (notificationsRes?.data?.bool) {
+      this.setState({notificationData: notificationsRes?.data?.data?.notify});
+    }
+
     this.setState({LoaderState: false});
   }
 
