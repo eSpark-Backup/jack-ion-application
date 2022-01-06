@@ -486,6 +486,11 @@ export default class Splash extends React.Component {
         <Modal
           animationIn="slideInDown"
           animationOut="slideOutUp"
+          coverScreen={true}
+          statusBarTranslucent={true}
+          style={{
+            margin: 0,
+          }}
           isVisible={this.state.isModalAddPropVisible}>
           {this.state.selectLocation ? (
             <View
