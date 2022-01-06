@@ -18,15 +18,19 @@ import {
   UIManager,
   Pressable,
   Alert,
+  FlatList,
 } from 'react-native';
 
 //Packages
 
 import Iconi from 'react-native-vector-icons/Ionicons';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../components/Loader';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
+import Base_URL from '../../api/WebServices';
+
 import Modal from 'react-native-modal';
 import SystemSetting from 'react-native-system-setting';
 import Geolocation from '@react-native-community/geolocation';
@@ -53,8 +57,7 @@ import {create} from 'apisauce';
 import {call} from 'react-native-reanimated';
 const {width, height} = Dimensions.get('window');
 
-const baseURL = 'http://localhost:8000';
-const api = create({baseURL});
+const api = create({Base_URL});
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -73,10 +76,15 @@ export default class Splash extends React.Component {
       BillComp: 'ION',
       ManageComp: '',
       CustomId: '',
+      CustomerName: '',
+      customerjobDes: '',
+      customerPhone: '',
+      customerEmail: '',
       ContactName: '',
       ContactTitle: '',
       ContactPhone: '',
       ContactEmail: '',
+      newMeter: '',
       city: '',
       st: '',
       street: '',
@@ -88,6 +96,7 @@ export default class Splash extends React.Component {
       long: 0,
       loadScreen: false,
       open: false,
+      meterList: [],
       BillingCompany: 'BILLING COMPANY*',
       BillingCompanyId: '',
       info: {
@@ -130,6 +139,76 @@ export default class Splash extends React.Component {
     this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
   };
 
+  renderMeterInfo = ({item}) => {
+    return (
+      <View
+        style={{
+          width: width * 0.9,
+          alignItems: 'center',
+        }}
+        key={item?.id}>
+        <TouchableOpacity
+          style={{
+            height: width * 0.12,
+            width: width * 0.8,
+            // elevation: width * 0.005,
+            elevation: 2,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            backgroundColor: 'white',
+            paddingHorizontal: width * 0.01,
+            borderRadius: width * 0.007,
+            marginVertical: width * 0.01,
+            justifyContent: 'center',
+          }}
+          // onPress={() => addMeterInNewArray(item)}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            {/* <Drop name={item.icon} size={15} color="#3E89BF" /> */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Image
+                source={typeSwitcher(item.name)}
+                style={styles.untiDetailImage}
+              />
+              <Text
+                style={{
+                  fontSize: width * 0.05,
+                  fontFamily: Fonts.Montserrat,
+                  textTransform: 'capitalize',
+                }}>
+                {item.name}
+              </Text>
+            </View>
+            {/* {item.id == this.state.newMeter.id ? (
+              <Iconi
+                name="radio-button-on"
+                size={width * 0.05}
+                color="#25AAE1ec"
+              />
+            ) : (
+              )} */}
+            <Iconi name="radio-button-off" size={width * 0.05} color="black" />
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   clearInputs = () => {
     this.toggleModalAddProp();
     this.setState({
@@ -141,6 +220,10 @@ export default class Splash extends React.Component {
       BillComp: '',
       ManageComp: '',
       CustomId: '',
+      CustomerName: '',
+      customerjobDes: '',
+      customerPhone: '',
+      customerEmail: '',
       ContactName: '',
       ContactTitle: '',
       ContactPhone: '',
@@ -423,9 +506,35 @@ export default class Splash extends React.Component {
     }
   };
 
+  getToken = async () => {
+    // setMeterListLoader(true);
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+    const res = await api.get('/property/equipment/meter/all-meters');
+
+    let arr1 = res.data?.data;
+    // let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
+    console.log('arr1--->', res);
+    // console.log('arr2--->', arr2);
+    // console.log('antiIntersection arr1--->', arr1);
+    // console.log('antiIntersection arr2--->', arr2);
+
+    // const antiIntersection = arr1.filter(
+    //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
+    // );
+    // console.log('antiIntersection--->', antiIntersection);
+    // this.setState({meterList: arr2});
+
+    // setMeterListLoader(false);
+  };
+
   enableLocation = async () => {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
+    this.getToken();
+
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -657,13 +766,8 @@ export default class Splash extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{flex: 1}}>
                       <View style={styles.desciptionContainer}>
-                        <Icon
-                          name={'location-on'}
-                          size={height * 0.03}
-                          color="#5e5e5e"
-                        />
                         <Text style={styles.desciptionHeading}>
-                          PROPERTY INFORMATION
+                          information
                         </Text>
                       </View>
                       <View style={styles.inputContainer}>
@@ -847,13 +951,152 @@ export default class Splash extends React.Component {
                         </TouchableOpacity>
                       </View>
                       <View style={styles.desciptionContainer}>
-                        <Icon
-                          name={'folder-open'}
-                          size={height * 0.03}
-                          color="#5e5e5e"
-                        />
                         <Text style={styles.desciptionHeading}>
-                          PORTFOLIO DETAILS
+                          meter Type Info
+                        </Text>
+                      </View>
+                      <View style={styles.inputContainer}>
+                        <View
+                          style={{
+                            height: height * 0.2,
+                            marginVertical: height * 0.025,
+                          }}>
+                          <FlatList
+                            contentContainerStyle={{
+                              justifyContent: 'center',
+                            }}
+                            data={this.state.meterList}
+                            renderItem={this.renderMeterInfo}
+                          />
+                        </View>
+                      </View>
+                      <View style={styles.desciptionContainer}>
+                        <Text style={styles.desciptionHeading}>
+                          device Type Info
+                        </Text>
+                      </View>
+                      <View style={styles.desciptionContainer}>
+                        <Text style={styles.desciptionHeading}>owner</Text>
+                      </View>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          placeholder="Company Specific ID"
+                          error={this.state.error.propertyId}
+                          style={styles.input}
+                          onChangeText={(text) => {
+                            this.setState({CustomId: text});
+                            this.setState((prevState) => ({
+                              error: {
+                                // object that we want to update
+                                ...prevState.error, // keep all other key-value pairs
+                                propertyId: '',
+                              },
+                            }));
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      {this.state.error.propertyId ? (
+                        <HelperText
+                          type="error"
+                          visible={this.state.error.propertyId}>
+                          {this.state.error.propertyId}
+                        </HelperText>
+                      ) : null}
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          placeholder="Customer Name"
+                          style={styles.input}
+                          onChangeText={(text) => {
+                            this.setState({CustomerName: text});
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          placeholder="Title / Job Description"
+                          style={styles.input}
+                          onChangeText={(text) => {
+                            this.setState({customerjobDes: text});
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          placeholder="Phone"
+                          style={styles.input}
+                          onChangeText={(text) => {
+                            this.setState({customerPhone: text});
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          placeholder="Email"
+                          style={styles.input}
+                          onChangeText={(text) => {
+                            this.setState({customerEmail: text});
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View style={styles.desciptionContainer}>
+                        <Text style={styles.desciptionHeading}>
+                          management company
+                        </Text>
+                      </View>
+                      <View style={styles.inputContainer}>
+                        <TouchableOpacity
+                          style={{
+                            ...styles.billingCompanyBtn,
+                            borderColor: this.state.error.billingId
+                              ? '#A3001B'
+                              : 'gray',
+                          }}>
+                          <Text>MANAGEMENT COMPANY</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.desciptionContainer}>
+                        <Text style={styles.desciptionHeading}>
+                          billing company
                         </Text>
                       </View>
                       <View style={styles.inputContainer}>
@@ -908,39 +1151,6 @@ export default class Splash extends React.Component {
                           type="error"
                           visible={this.state.error.billingId}>
                           {this.state.error.billingId}
-                        </HelperText>
-                      ) : null}
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          label="CUSTOM ID*"
-                          placeholder="Company specific Id"
-                          error={this.state.error.propertyId}
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({CustomId: text});
-                            this.setState((prevState) => ({
-                              error: {
-                                // object that we want to update
-                                ...prevState.error, // keep all other key-value pairs
-                                propertyId: '',
-                              },
-                            }));
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      {this.state.error.propertyId ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.propertyId}>
-                          {this.state.error.propertyId}
                         </HelperText>
                       ) : null}
                     </View>

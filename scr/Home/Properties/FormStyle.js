@@ -85,6 +85,7 @@ export default styles = StyleSheet.create({
     fontSize: height * 0.015,
     color: 'black',
     fontFamily: Fonts.ComfortaaRegular,
+    textTransform: 'uppercase',
   },
   inputContainer: {
     height: height * 0.09,
