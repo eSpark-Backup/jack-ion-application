@@ -44,7 +44,7 @@ export default class Splash extends Component {
       // console.log('token aya', token);
       api.setHeader('Authorization', 'Bearer ' + token);
     }
-    const notificationsRes = await api.get(
+    const notificationsRes = await api.post(
       '/property/equipment/meter/notification-show',
     );
 
@@ -131,7 +131,9 @@ export default class Splash extends Component {
                       style={{fontWeight: 'bold', textTransform: 'capitalize'}}>
                       {item.sender_name}
                     </Text>
-                    <Text>{item.message}</Text>
+                    <Text style={{width: width * 0.8, backgroundColor: 'red'}}>
+                      {item.message}
+                    </Text>
                   </View>
                 </TouchableOpacity>
               )}
