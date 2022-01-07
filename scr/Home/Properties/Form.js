@@ -199,7 +199,7 @@ export default class Splash extends React.Component {
         <TouchableOpacity
           style={{
             height: width * 0.12,
-            width: width * 0.7,
+            width: '100%',
             // elevation: width * 0.005,
             elevation: 2,
             shadowColor: '#000',
@@ -843,10 +843,14 @@ export default class Splash extends React.Component {
                   </View>
                   {/* Box Body */}
                   <ScrollView
-                    style={{zIndex: 1}}
+                    style={{zIndex: 1, width: '90%'}}
                     showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
                     nestedScrollEnabled={true}>
-                    <View style={{flex: 1}}>
+                    <View
+                      style={{
+                        flex: 1,
+                      }}>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>
                           information
@@ -941,7 +945,7 @@ export default class Splash extends React.Component {
                           styles.inputContainer,
                           {
                             flexDirection: 'row',
-                            justifyContent: 'space-evenly',
+                            justifyContent: 'space-between',
                           },
                         ]}>
                         <TextInput
@@ -1045,6 +1049,7 @@ export default class Splash extends React.Component {
                           zIndex: 2,
                         }}>
                         <FlatList
+                          scrollEnabled
                           contentContainerStyle={{
                             alignItems: 'center',
                           }}
@@ -1060,7 +1065,11 @@ export default class Splash extends React.Component {
                       <View>
                         {deviceData.map((item, index) => (
                           <View
-                            style={{width: width * 0.8, zIndex: 2}}
+                            style={{
+                              width: '90%',
+                              zIndex: 2,
+                              alignSelf: 'center',
+                            }}
                             key={item.id}>
                             <Text style={styles.meterDesciptionHeading}>
                               {item.name}*
@@ -1080,6 +1089,7 @@ export default class Splash extends React.Component {
                               <SearchableDropDown
                                 onItemSelect={(item) => {
                                   this.getDevice(item, index);
+                                  // console.log('kia mila', item);
                                 }}
                                 containerStyle={{
                                   paddingBottom: width * 0.02,
@@ -1091,6 +1101,7 @@ export default class Splash extends React.Component {
                                   borderColor: '#bbb',
                                   borderWidth: width * 0.0015,
                                   borderRadius: width * 0.015,
+                                  zIndex: 99,
                                 }}
                                 itemTextStyle={{color: '#222'}}
                                 itemsContainerStyle={{
@@ -1115,11 +1126,11 @@ export default class Splash extends React.Component {
                                       ? '#A3001B'
                                       : 'black',
                                     height: width * 0.13,
-                                    zIndex: 1,
                                     backgroundColor: '#F6F6F6',
                                     borderTopWidth: width * 0.0019,
                                     borderLeftWidth: width * 0.0019,
                                     borderBottomWidth: width * 0.0019,
+                                    zIndex: 0,
                                   },
                                   onTextChange: (text) => {
                                     console.log('onChangeManufacturer');
