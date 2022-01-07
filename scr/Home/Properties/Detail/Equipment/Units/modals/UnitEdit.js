@@ -165,9 +165,15 @@ export default function UnitEdit({
     {
       id: 2,
       error: '',
-      name: 'Meter Serial Number',
+      name: 'Attached To',
       value: '',
     },
+    // {
+    //   id: 2,
+    //   error: '',
+    //   name: 'Meter Serial Number',
+    //   value: '',
+    // },
   ]);
   const [reasons, setReasons] = useState([]);
   const [reasonArr, setReasonArr] = useState([]);
@@ -670,20 +676,14 @@ export default function UnitEdit({
     let deviceData = [...addDevice]; // copying the old datas array
     deviceData[1].data = DeviceTypesResponse?.data?.data;
     setAddDevice(deviceData);
+    const AttachedToResponse = await api.get(
+      '/property/equipment/attached_to/attach',
+    );
+    console.log('AttachedToResponse_________', AttachedToResponse?.data);
     const reasoneResponce = await api.get(
       '/property/equipment/unit/reasons/all',
     );
-    // console.log('reasons_________', reasoneResponce?.data);
-    // if (reasoneResponce?.data?.bool) {
-    //   let reasoneData = [...reasons];
-    //   reasoneResponce?.data?.data?.map((item, index) => {
-    //     let resoneObj = {
-    //       id: item.id,
-    //       name: item.option_reason,
-    //     };
-    //     reasoneData.push(resoneObj);
-    //   });
-    // }
+
     let reasonArr = reasoneResponce?.data?.data;
     const uniqueArr = [
       ...new Map(reasonArr.map((v) => [v.options_reason_id, v])).values(),
@@ -1117,7 +1117,7 @@ export default function UnitEdit({
     return (
       <View style={{width: width * 0.8}} key={item.id}>
         <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
-          {item.name + (index < 2 ? '*' : '')}
+          {item.name + (index < 3 ? '*' : '')}
         </Text>
         <TextInput
           placeholder={item.name}
