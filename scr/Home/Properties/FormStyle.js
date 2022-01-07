@@ -65,7 +65,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxHeader: {
-    width: width * 0.75,
+    width: '90%',
     height: height * 0.1,
   },
   boxHeaderInner: {
@@ -82,8 +82,9 @@ export default styles = StyleSheet.create({
     right: width * 0.07,
   },
   desciptionContainer: {
+    flex: 1,
     height: height * 0.05,
-    width: width * 0.7,
+    width: '100%',
     borderBottomWidth: width * 0.002,
     flexDirection: 'row',
     alignSelf: 'center',
@@ -97,13 +98,15 @@ export default styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   inputContainer: {
+    flex: 1,
     height: height * 0.09,
-    width: width * 0.8,
+    width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   input: {
-    width: width * 0.75,
+    width: '100%',
     fontSize: height * 0.018,
   },
   bottonContainer: {
