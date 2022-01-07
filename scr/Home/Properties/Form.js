@@ -55,9 +55,10 @@ import styles from './FormStyle';
 import ContextProp from './Context/propContext';
 import {create} from 'apisauce';
 import {call} from 'react-native-reanimated';
+import SearchableDropDown from 'react-native-searchable-dropdown';
 const {width, height} = Dimensions.get('window');
 
-const api = create({Base_URL});
+const api = create({baseURL: Base_URL});
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -84,7 +85,9 @@ export default class Splash extends React.Component {
       ContactTitle: '',
       ContactPhone: '',
       ContactEmail: '',
-      newMeter: '',
+      selectedMeterId: 0,
+      LoadManufacturers: false,
+      LoadMeters: false,
       city: '',
       st: '',
       street: '',
@@ -124,6 +127,24 @@ export default class Splash extends React.Component {
         st: '',
       },
       value: '',
+      deviceData: [
+        {
+          id: 0,
+          select: '',
+          selectId: '',
+          error: '',
+          name: 'Manufacturer',
+          data: [],
+        },
+        {
+          id: 1,
+          selectId: '',
+          select: '',
+          error: '',
+          name: 'Device',
+          data: [],
+        },
+      ],
       items: [
         {label: 'Apple', value: 'apple'},
         {label: 'Banana', value: 'banana'},
@@ -139,18 +160,46 @@ export default class Splash extends React.Component {
     this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
   };
 
+  typeSwitcher = (arg) => {
+    switch (arg.toLowerCase()) {
+      case 'hot water':
+        return require('../../../Images/hot-water.png');
+      case 'cold water':
+        return require('../../../Images/cold-water.png');
+      case 'electricity':
+        return require('../../../Images/electric.png');
+      case 'gas':
+        return require('../../../Images/gass.png');
+      case 'water':
+        return require('../../../Images/all-waters.png');
+      default:
+        break;
+    }
+  };
+
+  addMeterInNewArray = (value) => {
+    console.log('ITEM VALUE', value);
+    this.setState({selectedMeterId: value.id});
+    // setNewMeter((oldState) => ({
+    //   ...oldState,
+    //   id: value.id,
+    //   name: value.name,
+    // }));
+    console.log('selectedMeterId VALUE', this.state.selectedMeterId);
+  };
+
   renderMeterInfo = ({item}) => {
     return (
       <View
         style={{
-          width: width * 0.9,
+          width: width * 0.8,
           alignItems: 'center',
         }}
         key={item?.id}>
         <TouchableOpacity
           style={{
             height: width * 0.12,
-            width: width * 0.8,
+            width: width * 0.7,
             // elevation: width * 0.005,
             elevation: 2,
             shadowColor: '#000',
@@ -166,8 +215,7 @@ export default class Splash extends React.Component {
             marginVertical: width * 0.01,
             justifyContent: 'center',
           }}
-          // onPress={() => addMeterInNewArray(item)}
-        >
+          onPress={() => this.addMeterInNewArray(item)}>
           <View
             style={{
               flexDirection: 'row',
@@ -182,7 +230,7 @@ export default class Splash extends React.Component {
                 alignItems: 'center',
               }}>
               <Image
-                source={typeSwitcher(item.name)}
+                source={this.typeSwitcher(item.name)}
                 style={styles.untiDetailImage}
               />
               <Text
@@ -194,15 +242,19 @@ export default class Splash extends React.Component {
                 {item.name}
               </Text>
             </View>
-            {/* {item.id == this.state.newMeter.id ? (
+            {item.id == this.state.selectedMeterId ? (
               <Iconi
                 name="radio-button-on"
                 size={width * 0.05}
                 color="#25AAE1ec"
               />
             ) : (
-              )} */}
-            <Iconi name="radio-button-off" size={width * 0.05} color="black" />
+              <Iconi
+                name="radio-button-off"
+                size={width * 0.05}
+                color="black"
+              />
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -506,26 +558,49 @@ export default class Splash extends React.Component {
     }
   };
 
+  getDevice = async (some, index) => {
+    console.log('get devices--->');
+    const deviceResponse = await api.get(
+      `/property/equipment/device/all/${some?.id}`,
+    );
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   devicesData: deviceResponse?.data?.data,
+    // }));
+    let listSlide = [...this.state.deviceData]; // copying the old datas array
+    listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
+    if (index == 0) {
+      listSlide[1].data = deviceResponse?.data?.data;
+      listSlide[1].selectId = '';
+      listSlide[1].select = '';
+    }
+    this.setState({deviceData: listSlide});
+  };
+
   getToken = async () => {
     // setMeterListLoader(true);
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
+    this.setState({LoadMeters: true});
     const res = await api.get('/property/equipment/meter/all-meters');
 
     let arr1 = res.data?.data;
-    // let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
-    console.log('arr1--->', res);
-    // console.log('arr2--->', arr2);
-    // console.log('antiIntersection arr1--->', arr1);
-    // console.log('antiIntersection arr2--->', arr2);
+    let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
+    console.log('arr1--->', arr1);
+    this.setState({meterList: arr2});
+    this.setState({LoadMeters: false});
 
-    // const antiIntersection = arr1.filter(
-    //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
-    // );
-    // console.log('antiIntersection--->', antiIntersection);
-    // this.setState({meterList: arr2});
+    this.setState({LoadManufacturers: true});
+    const ManufacturersResponse = await api.get(
+      '/property/equipment/manufacturer/all',
+    );
+    let listSlide = [...this.state.deviceData]; // copying the old datas array
+    listSlide[0].data = ManufacturersResponse?.data?.data;
+    this.setState({deviceData: listSlide});
+    this.setState({LoadManufacturers: true});
 
     // setMeterListLoader(false);
   };
@@ -578,6 +653,7 @@ export default class Splash extends React.Component {
   };
 
   render() {
+    const {deviceData} = this.state;
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
@@ -767,8 +843,9 @@ export default class Splash extends React.Component {
                   </View>
                   {/* Box Body */}
                   <ScrollView
-                    style={{height: height * 0.6}}
-                    showsVerticalScrollIndicator={false}>
+                    style={{zIndex: 1}}
+                    showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled={true}>
                     <View style={{flex: 1}}>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>
@@ -960,25 +1037,125 @@ export default class Splash extends React.Component {
                           meter Type Info
                         </Text>
                       </View>
-                      <View style={styles.inputContainer}>
-                        <View
-                          style={{
-                            height: height * 0.2,
-                            marginVertical: height * 0.025,
-                          }}>
-                          <FlatList
-                            contentContainerStyle={{
-                              justifyContent: 'center',
-                            }}
-                            data={this.state.meterList}
-                            renderItem={this.renderMeterInfo}
-                          />
-                        </View>
+                      <View
+                        style={{
+                          height: height * 0.2,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 2,
+                        }}>
+                        <FlatList
+                          contentContainerStyle={{
+                            alignItems: 'center',
+                          }}
+                          data={this.state.meterList}
+                          renderItem={this.renderMeterInfo}
+                        />
                       </View>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>
                           device Type Info
                         </Text>
+                      </View>
+                      <View>
+                        {deviceData.map((item, index) => (
+                          <View
+                            style={{width: width * 0.8, zIndex: 2}}
+                            key={item.id}>
+                            <Text style={styles.meterDesciptionHeading}>
+                              {item.name}*
+                            </Text>
+                            <View
+                              pointerEvents={
+                                index > 0
+                                  ? deviceData[0].selectId
+                                    ? 'auto'
+                                    : 'none'
+                                  : 'auto'
+                              }
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'flex-start',
+                              }}>
+                              <SearchableDropDown
+                                onItemSelect={(item) => {
+                                  this.getDevice(item, index);
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                  width: width * 0.7,
+                                }}
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                }}
+                                itemTextStyle={{color: '#222'}}
+                                itemsContainerStyle={{
+                                  maxHeight: height * 0.08,
+                                }}
+                                items={item.data}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder:
+                                    index == 1
+                                      ? deviceData[0].selectId
+                                        ? item.name
+                                        : 'First Select Manufacture'
+                                      : item.name,
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderTopLeftRadius: width * 0.015,
+                                    borderBottomLeftRadius: width * 0.015,
+                                    borderColor: item.error
+                                      ? '#A3001B'
+                                      : 'black',
+                                    height: width * 0.13,
+                                    zIndex: 1,
+                                    backgroundColor: '#F6F6F6',
+                                    borderTopWidth: width * 0.0019,
+                                    borderLeftWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    console.log('onChangeManufacturer');
+                                    // onChangeManufacturer(text, index);
+                                  },
+                                  value: setTimeout(() => item.select, 200),
+                                  defaultValue: item.select,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <TouchableOpacity
+                                style={{
+                                  width: width * 0.1,
+                                  backgroundColor: '#25AAE199',
+                                  borderTopRightRadius: width * 0.015,
+                                  borderBottomRightRadius: width * 0.015,
+                                  borderTopWidth: width * 0.0019,
+                                  borderRightWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  height: width * 0.13,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                // onPress={() => showAddNewType(item.name)}
+                              >
+                                <Icon
+                                  size={width * 0.06}
+                                  color="#fff"
+                                  name={'add'}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ))}
                       </View>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>owner</Text>

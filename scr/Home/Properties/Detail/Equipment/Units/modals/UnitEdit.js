@@ -404,7 +404,12 @@ export default function UnitEdit({
   };
 
   useUpdateEffect(async () => {
-    setLoadMeters(true);
+    if (type == 'add' || type == 'addMeterDirect') {
+      console.log('CONDITION CHALI');
+      setLoadMeters(false);
+    } else {
+      setLoadMeters(true);
+    }
     if (flag) {
       getToken();
     }

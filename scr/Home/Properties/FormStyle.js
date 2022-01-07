@@ -33,6 +33,12 @@ export default styles = StyleSheet.create({
     marginLeft: width * 0.01,
   },
 
+  untiDetailImage: {
+    height: width * 0.05,
+    width: width * 0.05,
+    marginRight: width * 0.01,
+  },
+
   // Modal
   modalInner: {
     // elevation: width * 0.005,
