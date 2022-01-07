@@ -131,9 +131,7 @@ export default class Splash extends Component {
                       style={{fontWeight: 'bold', textTransform: 'capitalize'}}>
                       {item.sender_name}
                     </Text>
-                    <Text style={{width: width * 0.8, backgroundColor: 'red'}}>
-                      {item.message}
-                    </Text>
+                    <Text style={{width: width * 0.8}}>{item.message}</Text>
                   </View>
                 </TouchableOpacity>
               )}
