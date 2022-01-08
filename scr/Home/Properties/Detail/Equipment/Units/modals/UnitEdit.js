@@ -394,13 +394,14 @@ export default function UnitEdit({
     // console.log('antiIntersection arr1--->', arr1);
     // console.log('antiIntersection arr2--->', arr2);
 
-    const antiIntersection = arr1.filter(
-      (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
-    );
-    // console.log('antiIntersection--->', antiIntersection);
+    // const antiIntersection = arr1.filter(
+    //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
+    // );
+    // // console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
       ...oldState,
-      meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      // meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      meterList: arr1,
     }));
     setMeterListLoader(false);
   };
@@ -933,11 +934,11 @@ export default function UnitEdit({
 
     // console.log('meterArray------>', meterArray);
     setStatusAnimation(false);
-    const newList = state.meterList.filter((item) => item.id != newMeter.id);
-    setState((oldState) => ({
-      ...oldState,
-      meterList: newList,
-    }));
+    // const newList = state.meterList.filter((item) => item.id != newMeter.id);
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   meterList: newList,
+    // }));
     setShowAddMeterSlider(false);
   };
 
@@ -1561,16 +1562,16 @@ export default function UnitEdit({
     // }
     setReasonArr(data.reasons);
     setMeterAddingId(data.meter_id);
-    let arr1 = {
-      id: data.meter_id,
-      name: data.meter_name,
-    };
-    let arr2 = [...state.meterList];
-    arr2.push(arr1);
-    setState((oldState) => ({
-      ...oldState,
-      meterList: arr2,
-    }));
+    // let arr1 = {
+    //   id: data.meter_id,
+    //   name: data.meter_name,
+    // };
+    // let arr2 = [...state.meterList];
+    // arr2.push(arr1);
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   meterList: arr2,
+    // }));
     console.log('GET METER DATA', data.installation_status);
     if (data.installation_status == 1) {
       setInstallationStatus(data.installation_status);
