@@ -120,6 +120,7 @@ class GlobalState extends React.Component {
     loadFor: '',
     searchPropName: '',
     itemList: [],
+    manageCompList: [],
     offset: 0,
     searchOffset: 0,
     filterSerial: '',
@@ -163,6 +164,15 @@ class GlobalState extends React.Component {
       response?.data?.data?.billingCompany,
     );
     this.setState({itemList: response?.data?.data?.billingCompany});
+  };
+
+  getManagementCompany = async () => {
+    const response = await this.api.get('/property/management-company/all');
+    console.log(
+      'Check management company response',
+      response?.data?.data?.managementCompany,
+    );
+    this.setState({manageCompList: response?.data?.data?.managementCompany});
   };
 
   searchProperties = async (e) => {
@@ -251,6 +261,7 @@ class GlobalState extends React.Component {
           value={{
             propList: this.state.propList,
             propitemList: this.state.itemList,
+            manageCompList: this.state.manageCompList,
             isLoading: this.state.isLoading,
             searchList: this.state.searchList,
             searchLoading: this.state.searchLoading,
@@ -263,6 +274,7 @@ class GlobalState extends React.Component {
             checkData: this.checkData,
             getToken: this.getToken,
             getBillingCompany: this.getBillingCompany,
+            getManagementCompany: this.getManagementCompany,
             clearData: this.clearData,
             filterData: this.filterData,
             searchProperties: this.searchProperties,
