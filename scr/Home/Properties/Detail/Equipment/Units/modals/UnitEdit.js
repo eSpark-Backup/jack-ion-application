@@ -61,6 +61,7 @@ import MapView, {
   MarkerAnimated,
 } from 'react-native-maps';
 import {add, color} from 'react-native-reanimated';
+import clc from 'cli-color';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -83,6 +84,7 @@ export default function UnitEdit({
   flag,
   enableFlag,
   disableFlag,
+  propertyId,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
@@ -449,6 +451,7 @@ export default function UnitEdit({
   //   _renderMap();
   // }, []);
   useEffect(() => {
+    console.log(clc.xterm(80)('AYA PROPERTY ID', propertyId));
     if (type == 'meterDirect' || type == 'addMeterDirect') {
       let newArr = [...slide2]; // copying the old datas array
       newArr[0].value = unitDetails?.unit?.meterSerial; // replace e.target.value with whatever you want to change it to
@@ -690,6 +693,31 @@ export default function UnitEdit({
     ];
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
+
+    const defaultUnitData = await api.get(
+      `/property/default-meter-device/${propertyId}`,
+    );
+    if (defaultUnitData.ok) {
+      console.log(
+        clc.cyanBright(
+          'WE Got Default Data',
+          JSON.stringify(defaultUnitData?.data?.data),
+        ),
+      );
+      const some = defaultUnitData?.data?.data?.default_meter_device;
+      let listSlide = [...slide1]; // copying the old datas array
+      listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      setSlide1(listSlide);
+
+      setNewMeter((oldState) => ({
+        ...oldState,
+        id: some?.meter_id,
+        name: some?.meter_name,
+      }));
+    }
   };
 
   const getDevice = async (some, index) => {
@@ -829,6 +857,7 @@ export default function UnitEdit({
   //   setMeterMenuVisible(true);
   //   callApi();
   // };
+
   const checkingSerial = async () => {
     let data = {
       device_serial_number: slide2[0].value,
@@ -911,14 +940,17 @@ export default function UnitEdit({
     }));
     setShowAddMeterSlider(false);
   };
+
   useUpdateEffect(() => {
     if (letsFinish) {
       updateData();
     }
   }, [letsFinish]);
+
   useUpdateEffect(() => {
     console.log('Get meterData Information---->>', meterData);
   }, [meterData]);
+
   const updateData = () => {
     const reasonBase64s = [];
     for (let i = 0; i < reasonPath?.length; i++) {
@@ -1601,7 +1633,7 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('LOAD Meters', loadMeters);
+  console.log('LOAD Meters', loadMeters); //! TODO:
   return (
     <View>
       <Modal
