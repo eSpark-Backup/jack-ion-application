@@ -88,6 +88,9 @@ export default function UnitEdit({
   const [isActivityLoader, setIsActivityLoader] = useState(false);
   const [loadMeters, setLoadMeters] = useState(false);
   const [loadManufacturers, setLoadManufacturers] = useState(false);
+  const [attachedToId, setAttachedToId] = useState(null);
+  const [attachedTo, setAttachedTo] = useState('');
+  const [attachedToData, setAttachedToData] = useState([]);
   const [filePath, setFilePath] = useState('');
   const [reasonPath, setReasonPath] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
@@ -165,13 +168,13 @@ export default function UnitEdit({
     {
       id: 2,
       error: '',
-      name: 'Attached To',
+      name: 'Meter Serial Number',
       value: '',
     },
     // {
     //   id: 2,
     //   error: '',
-    //   name: 'Meter Serial Number',
+    //   name: 'Attached To',
     //   value: '',
     // },
   ]);
@@ -680,6 +683,7 @@ export default function UnitEdit({
       '/property/equipment/attached_to/attach',
     );
     console.log('AttachedToResponse_________', AttachedToResponse?.data);
+    setAttachedToData(AttachedToResponse?.data?.data);
     const reasoneResponce = await api.get(
       '/property/equipment/unit/reasons/all',
     );
@@ -939,6 +943,7 @@ export default function UnitEdit({
       initial_meter_reading: slide2[1].value,
       latitude: lat,
       longitude: long,
+      attachedTo_id: attachedToId,
       thumbnail: filePath,
       installation_status: installationStatus,
       reasons: [
@@ -991,6 +996,7 @@ export default function UnitEdit({
         initial_meter_reading: item.initial_meter_reading,
         latitude: item.latitude,
         longitude: item.longitude,
+        attachedTo_id: item.attachedTo_id,
         thumbnail: `data:image/jpeg;base64,${imageBase64}`,
         installation_status: Number(item.installation_status),
         ...(item.installation_status == 2 &&
@@ -1381,6 +1387,7 @@ export default function UnitEdit({
     setFilePath('');
     setReasonPath([]);
     setReasonArr([]);
+    setAttachedToId(null);
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -2103,6 +2110,66 @@ export default function UnitEdit({
                         alignItems: 'center',
                       }}>
                       <FlatList data={slide2} renderItem={renderSlide3} />
+                      <View style={{width: width * 0.8}}>
+                        <Text
+                          style={[
+                            styles.meterDesciptionHeading,
+                            {top: width * 0.01},
+                          ]}>
+                          Attached To*
+                        </Text>
+                        <SearchableDropdown
+                          onItemSelect={(item) => {
+                            setAttachedToId(item.id);
+                          }}
+                          containerStyle={{
+                            paddingBottom: width * 0.02,
+                          }}
+                          itemStyle={{
+                            padding: width * 0.027,
+                            backgroundColor: '#fff',
+                            borderColor: '#bbb',
+                            borderWidth: width * 0.0015,
+                            borderRadius: width * 0.015,
+                            margin: width * 0.005,
+                          }}
+                          itemTextStyle={{color: '#222'}}
+                          itemsContainerStyle={
+                            Platform.OS == 'android'
+                              ? {
+                                  maxHeight: width * 0.15,
+                                  position: 'absolute',
+                                  width: width * 0.8,
+                                  top: width * 0.15,
+                                  zIndex: 1,
+                                  backgroundColor: 'white',
+                                  elevation: width * 0.01,
+                                }
+                              : {maxHeight: width * 0.15}
+                          }
+                          items={attachedToData}
+                          resetValue={false}
+                          textInputProps={{
+                            placeholder: 'Select Attached To',
+                            underlineColorAndroid: 'transparent',
+                            style: {
+                              padding: width * 0.027,
+                              margin: 0,
+                              borderRadius: width * 0.015,
+                              height: width * 0.13,
+                              backgroundColor: '#F6F6F6',
+                              borderWidth: width * 0.0019,
+                            },
+                            onTextChange: (text) => {
+                              setAttachedTo(text);
+                            },
+                            value: attachedTo,
+                          }}
+                          listProps={{
+                            nestedScrollEnabled: true,
+                          }}
+                        />
+                      </View>
                     </View>
                   ) : sliderNumber == 4 ? (
                     <View style={styles.container}>
@@ -2631,7 +2698,8 @@ export default function UnitEdit({
                                 ? '#25AAE1ec'
                                 : sliderNumber == 3 &&
                                   slide2[0].value &&
-                                  slide2[1].value
+                                  slide2[1].value &&
+                                  attachedToId != null
                                 ? '#25AAE1ec'
                                 : sliderNumber == 4 &&
                                   filePath != '' &&
@@ -2663,7 +2731,8 @@ export default function UnitEdit({
                             ? false
                             : sliderNumber == 3 &&
                               slide2[0].value &&
-                              slide2[1].value
+                              slide2[1].value &&
+                              attachedToId != null
                             ? false
                             : sliderNumber == 4 &&
                               filePath != '' &&

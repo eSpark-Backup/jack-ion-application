@@ -86,22 +86,25 @@ export default class Splash extends React.Component {
       ContactPhone: '',
       ContactEmail: '',
       selectedMeterId: 0,
-      LoadManufacturers: false,
-      LoadMeters: false,
+      loadManufacturers: false,
+      loadMeters: false,
       city: '',
       st: '',
       street: '',
       zipCode: '',
       selectLocation: false,
       locationSelected: false,
+      companies: false,
       markers: [],
       lat: 0,
       long: 0,
       loadScreen: false,
       open: false,
       meterList: [],
-      BillingCompany: 'BILLING COMPANY*',
+      BillingCompany: 'BILLING COMPANY',
       BillingCompanyId: '',
+      managementCompany: 'MANAGEMENT COMPANY',
+      managementCompanyId: '',
       info: {
         propName: '',
         propStreet: '',
@@ -443,13 +446,21 @@ export default class Splash extends React.Component {
     }, 1000);
   }
 
-  handleOpenDropDown = () => {
+  handleOpenDropDown = (value) => {
     this.context.getBillingCompany();
-    this.setState({open: !this.state.open});
+    this.context.getManagementCompany();
+    this.setState({open: !this.state.open, companies: value});
   };
 
   handleDropDownData = (value) => {
-    this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
+    if (this.state.companies) {
+      this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
+    } else {
+      this.setState({
+        managementCompany: value.manager_name,
+        managementCompanyId: value.id,
+      });
+    }
     this.setState({open: !this.state.open});
     this.setState((prevState) => ({
       error: {
@@ -578,29 +589,43 @@ export default class Splash extends React.Component {
     this.setState({deviceData: listSlide});
   };
 
+  onChangeManufacturer = (e, index) => {
+    let listSlide = [...this.state.deviceData]; // copying the old datas array
+    listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
+    listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
+    listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
+    if (index == 0) {
+      listSlide[1].select = '';
+    } else {
+      listSlide[0].select = '';
+    }
+    this.setState({deviceData: listSlide});
+  };
+
   getToken = async () => {
     // setMeterListLoader(true);
+    this.setState({loadManufacturers: true, loadMeters: true});
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
-    this.setState({LoadMeters: true});
     const res = await api.get('/property/equipment/meter/all-meters');
 
     let arr1 = res.data?.data;
     let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
     console.log('arr1--->', arr1);
     this.setState({meterList: arr2});
-    this.setState({LoadMeters: false});
+    this.setState({loadMeters: false});
 
-    this.setState({LoadManufacturers: true});
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
     let listSlide = [...this.state.deviceData]; // copying the old datas array
     listSlide[0].data = ManufacturersResponse?.data?.data;
     this.setState({deviceData: listSlide});
-    this.setState({LoadManufacturers: true});
+    this.setState({loadManufacturers: false});
 
     // setMeterListLoader(false);
   };
@@ -653,7 +678,7 @@ export default class Splash extends React.Component {
   };
 
   render() {
-    const {deviceData} = this.state;
+    const {loadManufacturers, loadMeters, deviceData} = this.state;
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
@@ -843,14 +868,11 @@ export default class Splash extends React.Component {
                   </View>
                   {/* Box Body */}
                   <ScrollView
-                    style={{zIndex: 1, width: '90%'}}
+                    style={{width: '90%'}}
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                     nestedScrollEnabled={true}>
-                    <View
-                      style={{
-                        flex: 1,
-                      }}>
+                    <View style={{flex: 1}}>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>
                           information
@@ -1048,14 +1070,18 @@ export default class Splash extends React.Component {
                           justifyContent: 'center',
                           zIndex: 2,
                         }}>
-                        <FlatList
-                          scrollEnabled
-                          contentContainerStyle={{
-                            alignItems: 'center',
-                          }}
-                          data={this.state.meterList}
-                          renderItem={this.renderMeterInfo}
-                        />
+                        {loadMeters ? (
+                          <ActivityIndicator size="large" color="#25AAE1ec" />
+                        ) : (
+                          <FlatList
+                            scrollEnabled
+                            contentContainerStyle={{
+                              alignItems: 'center',
+                            }}
+                            data={this.state.meterList}
+                            renderItem={this.renderMeterInfo}
+                          />
+                        )}
                       </View>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>
@@ -1063,110 +1089,113 @@ export default class Splash extends React.Component {
                         </Text>
                       </View>
                       <View>
-                        {deviceData.map((item, index) => (
-                          <View
-                            style={{
-                              width: '90%',
-                              zIndex: 2,
-                              alignSelf: 'center',
-                            }}
-                            key={item.id}>
-                            <Text style={styles.meterDesciptionHeading}>
-                              {item.name}*
-                            </Text>
+                        {loadManufacturers ? (
+                          <ActivityIndicator size="large" color="#25AAE1ec" />
+                        ) : (
+                          deviceData.map((item, index) => (
                             <View
-                              pointerEvents={
-                                index > 0
-                                  ? deviceData[0].selectId
-                                    ? 'auto'
-                                    : 'none'
-                                  : 'auto'
-                              }
                               style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropDown
-                                onItemSelect={(item) => {
-                                  this.getDevice(item, index);
-                                  // console.log('kia mila', item);
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                  zIndex: 99,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                items={item.data}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder:
-                                    index == 1
-                                      ? deviceData[0].selectId
-                                        ? item.name
-                                        : 'First Select Manufacture'
-                                      : item.name,
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: item.error
-                                      ? '#A3001B'
-                                      : 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    zIndex: 0,
-                                  },
-                                  onTextChange: (text) => {
-                                    console.log('onChangeManufacturer');
-                                    // onChangeManufacturer(text, index);
-                                  },
-                                  value: setTimeout(() => item.select, 200),
-                                  defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TouchableOpacity
+                                width: '90%',
+                                zIndex: 2,
+                                alignSelf: 'center',
+                              }}
+                              key={item.id}>
+                              <Text style={styles.meterDesciptionHeading}>
+                                {item.name}*
+                              </Text>
+                              <View
+                                pointerEvents={
+                                  index > 0
+                                    ? deviceData[0].selectId
+                                      ? 'auto'
+                                      : 'none'
+                                    : 'auto'
+                                }
                                 style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                // onPress={() => showAddNewType(item.name)}
-                              >
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropDown
+                                  onItemSelect={(item) => {
+                                    this.getDevice(item, index);
+                                    // console.log('kia mila', item);
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                    zIndex: 99,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  items={item.data}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder:
+                                      index == 1
+                                        ? deviceData[0].selectId
+                                          ? item.name
+                                          : 'First Select Manufacture'
+                                        : item.name,
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: item.error
+                                        ? '#A3001B'
+                                        : 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                      zIndex: 0,
+                                    },
+                                    onTextChange: (text) => {
+                                      this.onChangeManufacturer(text, index);
+                                    },
+                                    value: setTimeout(() => item.select, 200),
+                                    defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
                                 />
-                              </TouchableOpacity>
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  // onPress={() => showAddNewType(item.name)}
+                                >
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
                             </View>
-                          </View>
-                        ))}
+                          ))
+                        )}
                       </View>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>owner</Text>
@@ -1278,13 +1307,14 @@ export default class Splash extends React.Component {
                       </View>
                       <View style={styles.inputContainer}>
                         <TouchableOpacity
+                          onPress={() => this.handleOpenDropDown(false)}
                           style={{
                             ...styles.billingCompanyBtn,
                             borderColor: this.state.error.billingId
                               ? '#A3001B'
                               : 'gray',
                           }}>
-                          <Text>MANAGEMENT COMPANY</Text>
+                          <Text>{this.state.managementCompany}</Text>
                         </TouchableOpacity>
                       </View>
                       <View style={styles.desciptionContainer}>
@@ -1294,7 +1324,7 @@ export default class Splash extends React.Component {
                       </View>
                       <View style={styles.inputContainer}>
                         <TouchableOpacity
-                          onPress={this.handleOpenDropDown}
+                          onPress={() => this.handleOpenDropDown(true)}
                           style={{
                             ...styles.billingCompanyBtn,
                             borderColor: this.state.error.billingId
@@ -1311,7 +1341,9 @@ export default class Splash extends React.Component {
                           <View style={styles.billingModalInner}>
                             <View style={styles.billingModalHeader}>
                               <Text style={styles.billingModalHeading}>
-                                Billing Companies
+                                {this.state.companies
+                                  ? 'Billing Companies'
+                                  : 'Management Companies'}
                               </Text>
                               <Pressable
                                 onPress={this.handleCloseDropDown}
@@ -1329,11 +1361,21 @@ export default class Splash extends React.Component {
                               </Pressable>
                             </View>
                             {this.context.propitemList &&
+                              this.state.companies &&
                               this.context.propitemList.map((data) => (
                                 <TouchableOpacity
                                   onPress={() => this.handleDropDownData(data)}
                                   style={styles.billingCompanies}>
                                   <Text>{data.name}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            {this.context.manageCompList &&
+                              !this.state.companies &&
+                              this.context.manageCompList.map((data) => (
+                                <TouchableOpacity
+                                  onPress={() => this.handleDropDownData(data)}
+                                  style={styles.billingCompanies}>
+                                  <Text>{data.manager_name}</Text>
                                 </TouchableOpacity>
                               ))}
                           </View>
