@@ -353,6 +353,7 @@ export default class Splash extends Component {
       unitId: unit.item.id,
       buildingName: this.state.buildingData.name,
       buildingId: this.state.editBuildId,
+      propertyId: this.props.navigation.state.params.item.item.id,
     });
     this.setState({showSearch: false, loader: true, loaderBuildings: true});
   };
@@ -373,6 +374,7 @@ export default class Splash extends Component {
     }
   };
   _renderUnitList = (unit) => {
+    console.log('>><<<<<<<<<', this.state.realData.unit_meter);
     return (
       <View style={{alignItems: 'center'}}>
         <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
@@ -925,6 +927,7 @@ export default class Splash extends Component {
               </View>
               <EditUnit
                 flag={this.state.flag}
+                propertyId={this.props.navigation.state.params.item.item.id}
                 enableFlag={() => this.setState({flag: true})}
                 disableFlag={() => this.setState({flag: false})}
                 modalVisible={this.state.isModalUnitVisible}

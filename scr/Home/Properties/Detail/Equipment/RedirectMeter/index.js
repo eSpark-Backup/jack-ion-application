@@ -878,6 +878,7 @@ export default class RedirectMeter extends Component {
             disableFlag={() => this.setState({flag: false})}
             modalVisible={this.state.unitModal}
             type={this.state.unitModalType}
+            propertyId={this.state.propertyId}
             modalName="Add meter"
             meterMenuVisible={this.state.editUnitMenuVisible}
             showMenu={() => this.setState({editUnitMenuVisible: true})}

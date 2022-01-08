@@ -288,7 +288,12 @@ const App = ({navigation}) => {
   const dataSetTwo = getDataSetTwo();
   const tickValues = getTickValues();
 
-  const {unitId, buildingName, buildingId} = navigation.state.params; //? Dynamic Ids
+  const {
+    unitId,
+    buildingName,
+    buildingId,
+    propertyId,
+  } = navigation.state.params; //? Dynamic Ids
   // console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
@@ -333,7 +338,7 @@ const App = ({navigation}) => {
     setLoading(false);
   };
 
-  // console.log('Getting Data', gettingData);
+  console.log('Getting Data..................??????????', propertyId);
 
   const getChartData = (chartRes) => {
     console.log('Check Chala.....');
@@ -1079,6 +1084,7 @@ const App = ({navigation}) => {
       <View style={{flex: 1}}>
         <EditUnit
           flag={flag}
+          propertyId={propertyId}
           enableFlag={() => setFlag(true)}
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
@@ -1200,6 +1206,7 @@ const App = ({navigation}) => {
       <View style={{flex: 1}}>
         <EditUnit
           flag={flag}
+          propertyId={propertyId}
           enableFlag={() => setFlag(true)}
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
