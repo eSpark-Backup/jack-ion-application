@@ -131,6 +131,7 @@ class GlobalState extends React.Component {
 
   addProp = async (info) => {
     // console.log('PROPERTY INFORMATION--------->', info);
+    this.setState({isLoading: true});
     const data = {
       name: info.propName,
       street: info.propStreet,
@@ -139,7 +140,7 @@ class GlobalState extends React.Component {
       zipcode: info.propZipCode,
       property_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
-      management_company: info.propManageComp,
+      management_company_id: info.propManageComp,
       contact_name: info.propContactName,
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,

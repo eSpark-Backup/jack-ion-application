@@ -12,6 +12,7 @@ import {
   Alert,
   Platform,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 
 //Packages
@@ -82,7 +83,7 @@ export default class Splash extends React.Component {
       points: 80,
       listData: {},
       BillingCompany: 'BILLING COMPANY',
-      BillingCompanyId: '',
+      BillingCompanyId: null,
       managementCompany: 'MANAGEMENT COMPANY',
       managementCompanyId: '',
       customId: 0,
@@ -156,6 +157,7 @@ export default class Splash extends React.Component {
         ...prevState.error, // keep all other key-value pairs
         property: '',
         property_id: '',
+        billingId: false,
         street: '', // update the value of specific key
       },
     }));
@@ -171,6 +173,7 @@ export default class Splash extends React.Component {
           property: 'Invalid Property', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -182,15 +185,38 @@ export default class Splash extends React.Component {
         },
       }));
     }
-    if (this.state?.listData?.property_id === '') {
+    // if (this.state?.listData?.property_id === '') {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       property_id: 'Invalid Custom ID', // update the value of specific key
+    //     },
+    //   }));
+    //   ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
+
+    //   return;
+    // } else {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       property_id: false, // update the value of specific key
+    //     },
+    //   }));
+    // }
+    if (this.state.BillingCompanyId == null) {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          property_id: 'Invalid Custom ID', // update the value of specific key
+          billingId: 'Please select Billing ID', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Please Select Billing Company', ToastAndroid.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -198,7 +224,7 @@ export default class Splash extends React.Component {
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          property_id: false, // update the value of specific key
+          billingId: false, // update the value of specific key
         },
       }));
     }
@@ -211,6 +237,8 @@ export default class Splash extends React.Component {
           street: 'Invalid Street Name', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Invalid Street', ToastAndroid.SHORT);
+
       return;
     } else {
       this.setState((prevState) => ({
@@ -222,11 +250,13 @@ export default class Splash extends React.Component {
         },
       }));
       const data = {
-        property_id: this.state.listData.property_id,
+        property_id: this.state.customId,
         zipcode: this.state.listData.zipcode,
         name: this.state.listData.name,
         street: this.state.listData.street,
         city: this.state.listData.city,
+        billing_company_id: this.state.BillingCompanyId,
+        management_company: this.state.managementCompanyId,
       };
 
       const token = await EncryptedStorage.getItem('user_token');
@@ -244,7 +274,7 @@ export default class Splash extends React.Component {
       if (response?.data?.bool) {
         this.toggleModalEditProp();
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert('Error', response?.data?.message);
       }
     }
   };
@@ -457,7 +487,10 @@ export default class Splash extends React.Component {
               </View>
             </View>
           </View>
-          <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={{flex: 1}}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled>
             <View style={styles.bodyContainer}>
               <MapView
                 style={styles.map}
@@ -471,13 +504,14 @@ export default class Splash extends React.Component {
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 }}>
-                {/* <Marker
-                coordinate={{
-                  "latitude": 38.2462342,
-                  "longitude": -85.5375814,
-                }}
-                title={"Your Location"}
-                draggable /> */}
+                <Marker
+                  coordinate={{
+                    latitude: parseFloat(this.state.listData?.latitude),
+                    longitude: parseFloat(this.state.listData?.longitude),
+                  }}
+                  title={'Your Location'}
+                  draggable
+                />
               </MapView>
               <View style={styles.clientName}>
                 <Properties name="home-city-outline" size={width * 0.08} />
@@ -619,9 +653,9 @@ export default class Splash extends React.Component {
                           ) : null}
                           <View style={styles.inputContainer}>
                             <TextInput
-                              value={this.state?.listData?.st}
-                              error={this.state.error.st}
-                              label="St"
+                              value={this.state?.listData?.city}
+                              error={this.state.error.city}
+                              label="City"
                               style={styles.input}
                               onChangeText={(text) => {
                                 this.setState((prevState) => ({
@@ -629,7 +663,7 @@ export default class Splash extends React.Component {
                                   listData: {
                                     // object that we want to update
                                     ...prevState.listData, // keep all other key-value pairs
-                                    st: text, // update the value of specific key
+                                    city: text, // update the value of specific key
                                   },
                                 }));
                               }}
@@ -652,9 +686,9 @@ export default class Splash extends React.Component {
                               },
                             ]}>
                             <TextInput
-                              value={this.state?.listData?.city}
-                              error={this.state.error.city}
-                              label="City"
+                              value={this.state?.listData?.st}
+                              error={this.state.error.st}
+                              label="St"
                               style={[styles.input, {width: width * 0.36}]}
                               onChangeText={(text) => {
                                 this.setState((prevState) => ({
@@ -662,7 +696,7 @@ export default class Splash extends React.Component {
                                   listData: {
                                     // object that we want to update
                                     ...prevState.listData, // keep all other key-value pairs
-                                    city: text, // update the value of specific key
+                                    st: text, // update the value of specific key
                                   },
                                 }));
                               }}
@@ -675,6 +709,7 @@ export default class Splash extends React.Component {
                                 },
                               }}
                             />
+
                             <TextInput
                               value={this.state?.listData?.zipcode}
                               error={this.state.error.zipcode}
@@ -707,6 +742,7 @@ export default class Splash extends React.Component {
                               value={this.state.customId}
                               style={styles.input}
                               onChangeText={(text) => {
+                                this.setState({customId: text});
                                 this.setState((prevState) => ({
                                   ...prevState,
                                   listData: {
@@ -731,13 +767,7 @@ export default class Splash extends React.Component {
                               }}
                             />
                           </View>
-                          {this.state.error.property_id ? (
-                            <HelperText
-                              type="error"
-                              visible={this.state.error.property_id}>
-                              {this.state.error.property_id}
-                            </HelperText>
-                          ) : null}
+
                           <View style={styles.desciptionContainer}>
                             <Text style={styles.desciptionHeading}>
                               management company*
@@ -752,7 +782,11 @@ export default class Splash extends React.Component {
                                   ? '#A3001B'
                                   : 'gray',
                               }}>
-                              <Text>{this.state.managementCompany}</Text>
+                              <Text>
+                                {this.state.managementCompany == null
+                                  ? 'Select Company'
+                                  : this.state.managementCompany}
+                              </Text>
                             </TouchableOpacity>
                           </View>
                           <View style={styles.desciptionContainer}>
@@ -769,7 +803,11 @@ export default class Splash extends React.Component {
                                   ? '#A3001B'
                                   : 'gray',
                               }}>
-                              <Text>{this.state.BillingCompany}</Text>
+                              <Text>
+                                {this.state.BillingCompany == null
+                                  ? 'Select Company'
+                                  : this.state.BillingCompany}
+                              </Text>
                             </TouchableOpacity>
                             <Modal
                               animationIn="fadeIn"
@@ -798,7 +836,7 @@ export default class Splash extends React.Component {
                                     />
                                   </Pressable>
                                 </View>
-                                {this.state.companiesLoader && (
+                                {this.context.propitemList < 0 && (
                                   <ActivityIndicator
                                     color={'#25AAE1ec'}
                                     size={'large'}
@@ -936,7 +974,7 @@ export default class Splash extends React.Component {
                   <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
                   <View style={styles.infoViewInner}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <Text style={styles.dataFieldText}>
+                    <Text style={[styles.dataFieldText, {overflow: 'scroll'}]}>
                       {`${
                         this.state.listData.street == null
                           ? ''
