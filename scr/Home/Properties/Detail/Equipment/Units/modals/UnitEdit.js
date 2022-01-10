@@ -657,7 +657,6 @@ export default function UnitEdit({
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
-    setLoadManufacturers(false);
     setState((oldState) => ({
       ...oldState,
       manufacturersData: ManufacturersResponse?.data?.data,
@@ -718,6 +717,7 @@ export default function UnitEdit({
         id: some?.meter_id,
         name: some?.meter_name,
       }));
+      setLoadManufacturers(false);
     }
   };
 
