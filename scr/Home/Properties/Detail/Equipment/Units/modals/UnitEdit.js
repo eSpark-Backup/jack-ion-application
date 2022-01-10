@@ -60,7 +60,7 @@ import MapView, {
   Marker,
   MarkerAnimated,
 } from 'react-native-maps';
-import {add, color} from 'react-native-reanimated';
+import {add, color, set} from 'react-native-reanimated';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -639,6 +639,11 @@ export default function UnitEdit({
     setSlide1(listSlide);
   };
 
+  const onChangeAttachedTo = (e) => {
+    setAttachedTo(e);
+    setAttachedToId(null);
+  };
+
   const changeUtilityAndToggle = () => {
     enableFlag();
     setMeterData([]);
@@ -944,6 +949,7 @@ export default function UnitEdit({
       latitude: lat,
       longitude: long,
       attachedTo_id: attachedToId,
+      attachedTo_name: attachedTo,
       thumbnail: filePath,
       installation_status: installationStatus,
       reasons: [
@@ -1388,6 +1394,7 @@ export default function UnitEdit({
     setReasonPath([]);
     setReasonArr([]);
     setAttachedToId(null);
+    setAttachedTo('');
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1546,6 +1553,8 @@ export default function UnitEdit({
       ...oldState,
       meterList: arr2,
     }));
+    setAttachedToId(data.attachedTo_id);
+    setAttachedTo(data.attachedTo_name);
     console.log('GET METER DATA', data.installation_status);
     if (data.installation_status == 1) {
       setInstallationStatus(data.installation_status);
@@ -2121,6 +2130,7 @@ export default function UnitEdit({
                         <SearchableDropdown
                           onItemSelect={(item) => {
                             setAttachedToId(item.id);
+                            setAttachedTo(item.name);
                           }}
                           containerStyle={{
                             paddingBottom: width * 0.02,
@@ -2161,7 +2171,7 @@ export default function UnitEdit({
                               borderWidth: width * 0.0019,
                             },
                             onTextChange: (text) => {
-                              setAttachedTo(text);
+                              onChangeAttachedTo(text);
                             },
                             value: attachedTo,
                           }}
