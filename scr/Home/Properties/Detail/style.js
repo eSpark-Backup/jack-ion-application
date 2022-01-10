@@ -12,7 +12,7 @@ export default styles = StyleSheet.create({
   },
   headerContainer: {
     width: width * 1,
-    height: height * 0.09,
+    height: width * 0.15,
   },
   headerInner: {
     flex: 1,
@@ -22,7 +22,7 @@ export default styles = StyleSheet.create({
   },
   menuView: {
     width: width * 0.15,
-    height: height * 0.06,
+    height: width * 0.1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
@@ -31,10 +31,9 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
   },
   searchView: {
-    // marginTop: Platform.OS == 'ios' ? height * 0.1: 0,
     marginLeft: width * 0.03,
     width: width * 0.8,
-    height: height * 0.06,
+    height: width * 0.1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
@@ -48,6 +47,7 @@ export default styles = StyleSheet.create({
     borderBottomColor: '#25AAE1ec',
     fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
+    // backgroundColor: 'black',
   },
   headingContainer: {
     width: width * 1,

@@ -427,6 +427,8 @@ export default class Splash extends React.Component {
           propContactTitle: this.state.ContactTitle,
           propContactPhone: this.state.ContactPhone,
           propContactEmail: this.state.ContactEmail,
+          meter_id: this.state.selectedMeterId,
+          device_id: this.state.deviceData[1].selectId,
           propLat: this.state.lat,
           propLong: this.state.long,
         }),

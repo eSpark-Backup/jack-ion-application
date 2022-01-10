@@ -144,6 +144,8 @@ class GlobalState extends React.Component {
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
+      meter_id: info.meter_id,
+      device_id: info.device_id,
       latitude: info.propLat,
       longitude: info.propLong,
     };

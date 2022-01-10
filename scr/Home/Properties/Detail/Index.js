@@ -415,7 +415,7 @@ export default class Splash extends React.Component {
                 <Search
                   name="search"
                   size={height * 0.04}
-                  style={{marginLeft: width * 0.05}}
+                  style={{marginLeft: width * 0.015}}
                   color="white"
                 />
                 <TextInput
