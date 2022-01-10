@@ -19,6 +19,7 @@ import {
   Pressable,
   Alert,
   FlatList,
+  ToastAndroid,
 } from 'react-native';
 
 //Packages
@@ -74,24 +75,14 @@ export default class Splash extends React.Component {
       State: '',
       City: '',
       ZipCode: '',
-      BillComp: 'ION',
-      ManageComp: '',
       CustomId: '',
       CustomerName: '',
       customerjobDes: '',
       customerPhone: '',
       customerEmail: '',
-      ContactName: '',
-      ContactTitle: '',
-      ContactPhone: '',
-      ContactEmail: '',
-      selectedMeterId: 0,
+      selectedMeterId: null,
       loadManufacturers: false,
       loadMeters: false,
-      city: '',
-      st: '',
-      street: '',
-      zipCode: '',
       selectLocation: false,
       locationSelected: false,
       companies: false,
@@ -122,8 +113,8 @@ export default class Splash extends React.Component {
       },
       error: {
         property: '',
-        billingId: '',
-        propertyId: '',
+        meterId: '',
+        deviceId: '',
         street: '',
         city: '',
         zipcode: '',
@@ -147,10 +138,6 @@ export default class Splash extends React.Component {
           name: 'Device',
           data: [],
         },
-      ],
-      items: [
-        {label: 'Apple', value: 'apple'},
-        {label: 'Banana', value: 'banana'},
       ],
     };
     if (Platform.OS === 'android') {
@@ -183,11 +170,13 @@ export default class Splash extends React.Component {
   addMeterInNewArray = (value) => {
     console.log('ITEM VALUE', value);
     this.setState({selectedMeterId: value.id});
-    // setNewMeter((oldState) => ({
-    //   ...oldState,
-    //   id: value.id,
-    //   name: value.name,
-    // }));
+    this.setState((prevState) => ({
+      ...prevState,
+      error: {
+        ...prevState.error, // keep all other key-value pairs
+        meterId: '', // update the value of specific key
+      },
+    }));
     console.log('selectedMeterId VALUE', this.state.selectedMeterId);
   };
 
@@ -272,23 +261,19 @@ export default class Splash extends React.Component {
       State: '',
       City: '',
       ZipCode: '',
-      BillComp: '',
-      ManageComp: '',
       CustomId: '',
       CustomerName: '',
       customerjobDes: '',
       customerPhone: '',
       customerEmail: '',
-      ContactName: '',
-      ContactTitle: '',
-      ContactPhone: '',
-      ContactEmail: '',
       BillingCompanyId: '',
       BillingCompany: 'BILLING COMPANY',
+      managementCompanyId: '',
+      managementCompany: 'MANAGEMENT COMPANY',
       error: '',
+      locationSelected: false,
       lat: null,
       long: null,
-      locationSelected: false,
     });
   };
 
@@ -335,6 +320,7 @@ export default class Splash extends React.Component {
           property: 'Invalid Property', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -355,6 +341,7 @@ export default class Splash extends React.Component {
           street: 'Invalid Street', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Invalid Street', ToastAndroid.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -366,50 +353,54 @@ export default class Splash extends React.Component {
         },
       }));
     }
+
+    if (this.state.selectedMeterId == null) {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          meterId: 'Please select a meter from above', // update the value of specific key
+        },
+      }));
+      ToastAndroid.show('Please select a meter', ToastAndroid.SHORT);
+      return;
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          meterId: '', // update the value of specific key
+        },
+      }));
+    }
+    if (this.state.deviceData[1].selectId === '') {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          deviceId: 'Please select a device from above', // update the value of specific key
+        },
+      }));
+      ToastAndroid.show('Please select a device', ToastAndroid.SHORT);
+      return;
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          ...prevState.error, // keep all other key-value pairs
+          deviceId: '', // update the value of specific key
+        },
+      }));
+    }
     if (!this.state.locationSelected) {
       Alert.alert('Location Required', 'Please Select Property Location');
       return;
     } else {
       this.setState({locationSelected: false});
-    }
-    if (!this.state.BillingCompanyId) {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          billingId: 'Select Billing Company', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          billingId: '', // update the value of specific key
-        },
-      }));
-    }
-    if (this.state.CustomId === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          propertyId: 'Invalid custom id', // update the value of specific key
-        },
-      }));
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          ...prevState.error, // keep all other key-value pairs
-          propertyId: '', // update the value of specific key
-        },
-      }));
+
       console.log('Before', this.state.info.propName);
       // const info = { ...this.state.info, propName: 'Good HAI' }
       this.setState(
@@ -419,14 +410,15 @@ export default class Splash extends React.Component {
           propState: this.state.State,
           propCity: this.state.City,
           propZipCode: this.state.ZipCode,
-          propBillCompId: this.state.BillingCompanyId,
-          propManageComp: this.state.ManageComp,
-          propCustomId: this.state.CustomId,
           propBillComp: this.state.BillingCompany,
-          propContactName: this.state.ContactName,
-          propContactTitle: this.state.ContactTitle,
-          propContactPhone: this.state.ContactPhone,
-          propContactEmail: this.state.ContactEmail,
+          propBillCompId: this.state.BillingCompanyId,
+          propManageComp: this.state.managementCompany,
+          propManageCompId: this.state.managementCompanyId,
+          propCustomId: this.state.CustomId,
+          propContactName: this.state.CustomerName,
+          propContactTitle: this.state.customerjobDes,
+          propContactPhone: this.state.customerPhone,
+          propContactEmail: this.state.customerEmail,
           meter_id: this.state.selectedMeterId,
           device_id: this.state.deviceData[1].selectId,
           propLat: this.state.lat,
@@ -464,13 +456,6 @@ export default class Splash extends React.Component {
       });
     }
     this.setState({open: !this.state.open});
-    this.setState((prevState) => ({
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        billingId: '',
-      },
-    }));
   };
 
   handleCloseDropDown = () => {
@@ -587,6 +572,13 @@ export default class Splash extends React.Component {
       listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
       listSlide[1].select = '';
+      this.setState((prevState) => ({
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          deviceId: '',
+        },
+      }));
     }
     this.setState({deviceData: listSlide});
   };
@@ -705,103 +697,103 @@ export default class Splash extends React.Component {
           }}
           isVisible={this.state.isModalAddPropVisible}>
           {this.state.selectLocation ? (
-            <View
-              style={{
-                height: width * 1,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: width * 0.03,
-              }}>
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
               <View
                 style={{
-                  flex: 1,
-                  zIndex: 2,
-                  position: 'absolute',
-                  // padding: 10,
-                  top: width * 0.04,
-                  width: width * 0.72,
-                  // paddingTop: Constants.statusBarHeight + 10,
-                  // backgroundColor: '#ecf0f1',
-                }}>
-                <GooglePlacesAutocomplete
-                  placeholder="Address"
-                  query={{
-                    key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
-                    language: 'en', // language of the results
-                  }}
-                  fetchDetails={true}
-                  enablePoweredByContainer={false}
-                  disableScroll={false}
-                  onPress={(data, details) => {
-                    this.catchLocation(details.geometry.location);
-                    console.log('DETAILS', details);
-                    this.fetchAddressData(details?.formatted_address);
-                  }}
-                  onFail={(error) => console.error(error)}
-                />
-              </View>
-              <TouchableOpacity
-                onPress={() => this.getCurrentLocation()}
-                style={{
-                  backgroundColor: '#25AAE1ec',
-                  zIndex: 1,
-                  position: 'absolute',
-                  height: width * 0.12,
-                  width: width * 0.12,
-                  borderRadius: width * 0.3,
+                  width: width * 0.9,
+                  height: width * 1,
+                  backgroundColor: 'white',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  elevation: width * 0.005,
-                  bottom: width * 0.2,
-                  right: width * 0.03,
+                  borderRadius: width * 0.03,
                 }}>
-                <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  this.setState({selectLocation: false, locationSelected: true})
-                }
-                style={{
-                  backgroundColor: '#25AAE1ec',
-                  zIndex: 1,
-                  position: 'absolute',
-                  height: width * 0.12,
-                  width: width * 0.12,
-                  borderRadius: width * 0.3,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  elevation: width * 0.005,
-                  bottom: width * 0.04,
-                  right: width * 0.03,
-                }}>
-                <Icon size={width * 0.07} color="#fff" name={'navigate-next'} />
-              </TouchableOpacity>
-
-              {this.state.markers.length > 0 && (
                 <View
                   style={{
-                    // backgroundColor: 'blue',
-                    width: width * 0.12,
-                    height: height * 0.11,
-                    zIndex: 1,
+                    flex: 1,
+                    zIndex: 2,
                     position: 'absolute',
-                    alignItems: 'center',
+                    top: width * 0.04,
+                    width: width * 0.72,
                   }}>
-                  <Icon
-                    size={width * 0.12}
-                    color="#f00"
-                    name={'location-pin'}
+                  <GooglePlacesAutocomplete
+                    placeholder="Address"
+                    query={{
+                      key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                      language: 'en', // language of the results
+                    }}
+                    fetchDetails={true}
+                    enablePoweredByContainer={false}
+                    disableScroll={false}
+                    onPress={(data, details) => {
+                      this.catchLocation(details.geometry.location);
+                      console.log('DETAILS', details);
+                      this.fetchAddressData(details?.formatted_address);
+                    }}
+                    onFail={(error) => console.error(error)}
                   />
                 </View>
-              )}
-              {this.state.markers.length > 0 ? (
-                <View
+                <TouchableOpacity
+                  onPress={() => this.getCurrentLocation()}
                   style={{
-                    width: '100%',
-                    height: '100%',
+                    backgroundColor: '#25AAE1ec',
+                    zIndex: 1,
+                    position: 'absolute',
+                    height: width * 0.12,
+                    width: width * 0.12,
                     borderRadius: width * 0.3,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: width * 0.005,
+                    bottom: width * 0.2,
+                    right: width * 0.03,
                   }}>
+                  <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      selectLocation: false,
+                      locationSelected: true,
+                    })
+                  }
+                  style={{
+                    backgroundColor: '#25AAE1ec',
+                    zIndex: 1,
+                    position: 'absolute',
+                    height: width * 0.12,
+                    width: width * 0.12,
+                    borderRadius: width * 0.3,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: width * 0.005,
+                    bottom: width * 0.04,
+                    right: width * 0.03,
+                  }}>
+                  <Icon
+                    size={width * 0.07}
+                    color="#fff"
+                    name={'navigate-next'}
+                  />
+                </TouchableOpacity>
+
+                {this.state.markers.length > 0 && (
+                  <View
+                    style={{
+                      // backgroundColor: 'blue',
+                      width: width * 0.12,
+                      height: height * 0.11,
+                      zIndex: 1,
+                      position: 'absolute',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      size={width * 0.12}
+                      color="#f00"
+                      name={'location-pin'}
+                    />
+                  </View>
+                )}
+                {this.state.markers.length > 0 ? (
                   <MapView
                     style={{
                       position: 'absolute',
@@ -836,8 +828,8 @@ export default class Splash extends React.Component {
                     onRegionChange={(e) => this.moveMarker(e)}
                     // onPress={(e) => this.getLocation(e)}
                   ></MapView>
-                </View>
-              ) : null}
+                ) : null}
+              </View>
             </View>
           ) : (
             <View style={styles.modalInner}>
@@ -947,12 +939,12 @@ export default class Splash extends React.Component {
                       ) : null}
                       <View style={styles.inputContainer}>
                         <TextInput
-                          error={this.state.error.st}
-                          placeholder="Enter State"
-                          value={this.state.State}
+                          error={this.state.error.city}
+                          placeholder="Enter City"
+                          value={this.state.City}
                           style={styles.input}
                           onChangeText={(text) => {
-                            this.setState({State: text});
+                            this.setState({City: text});
                           }}
                           mode={'outlined'}
                           theme={{
@@ -973,12 +965,12 @@ export default class Splash extends React.Component {
                           },
                         ]}>
                         <TextInput
-                          error={this.state.error.city}
-                          placeholder="Enter City"
-                          value={this.state.City}
+                          error={this.state.error.st}
+                          placeholder="Enter State"
+                          value={this.state.State}
                           style={[styles.input, {width: width * 0.36}]}
                           onChangeText={(text) => {
-                            this.setState({City: text});
+                            this.setState({State: text});
                           }}
                           mode={'outlined'}
                           theme={{
@@ -989,6 +981,7 @@ export default class Splash extends React.Component {
                             },
                           }}
                         />
+
                         <TextInput
                           error={this.state.error.zipcode}
                           placeholder="Enter Zipcode"
@@ -1080,11 +1073,19 @@ export default class Splash extends React.Component {
                             contentContainerStyle={{
                               alignItems: 'center',
                             }}
+                            nestedScrollEnabled
                             data={this.state.meterList}
                             renderItem={this.renderMeterInfo}
                           />
                         )}
                       </View>
+                      {this.state.error.meterId ? (
+                        <HelperText
+                          type="error"
+                          visible={this.state.error.meterId}>
+                          {this.state.error.meterId}
+                        </HelperText>
+                      ) : null}
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>
                           device Type Info
@@ -1198,6 +1199,13 @@ export default class Splash extends React.Component {
                             </View>
                           ))
                         )}
+                        {this.state.error.deviceId ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.deviceId}>
+                            {this.state.error.deviceId}
+                          </HelperText>
+                        ) : null}
                       </View>
                       <View style={styles.desciptionContainer}>
                         <Text style={styles.desciptionHeading}>owner</Text>
@@ -1205,17 +1213,9 @@ export default class Splash extends React.Component {
                       <View style={styles.inputContainer}>
                         <TextInput
                           placeholder="Company Specific ID"
-                          error={this.state.error.propertyId}
                           style={styles.input}
                           onChangeText={(text) => {
                             this.setState({CustomId: text});
-                            this.setState((prevState) => ({
-                              error: {
-                                // object that we want to update
-                                ...prevState.error, // keep all other key-value pairs
-                                propertyId: '',
-                              },
-                            }));
                           }}
                           mode={'outlined'}
                           theme={{
@@ -1227,13 +1227,7 @@ export default class Splash extends React.Component {
                           }}
                         />
                       </View>
-                      {this.state.error.propertyId ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.propertyId}>
-                          {this.state.error.propertyId}
-                        </HelperText>
-                      ) : null}
+
                       <View style={styles.inputContainer}>
                         <TextInput
                           placeholder="Customer Name"
@@ -1312,9 +1306,6 @@ export default class Splash extends React.Component {
                           onPress={() => this.handleOpenDropDown(false)}
                           style={{
                             ...styles.billingCompanyBtn,
-                            borderColor: this.state.error.billingId
-                              ? '#A3001B'
-                              : 'gray',
                           }}>
                           <Text>{this.state.managementCompany}</Text>
                         </TouchableOpacity>
@@ -1329,9 +1320,6 @@ export default class Splash extends React.Component {
                           onPress={() => this.handleOpenDropDown(true)}
                           style={{
                             ...styles.billingCompanyBtn,
-                            borderColor: this.state.error.billingId
-                              ? '#A3001B'
-                              : 'gray',
                           }}>
                           <Text>{this.state.BillingCompany}</Text>
                         </TouchableOpacity>
@@ -1371,6 +1359,7 @@ export default class Splash extends React.Component {
                                   <Text>{data.name}</Text>
                                 </TouchableOpacity>
                               ))}
+
                             {this.context.manageCompList &&
                               !this.state.companies &&
                               this.context.manageCompList.map((data) => (
@@ -1383,13 +1372,6 @@ export default class Splash extends React.Component {
                           </View>
                         </Modal>
                       </View>
-                      {this.state.error.billingId ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.billingId}>
-                          {this.state.error.billingId}
-                        </HelperText>
-                      ) : null}
                     </View>
                   </ScrollView>
                   {/* Box Header */}
