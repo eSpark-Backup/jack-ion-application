@@ -60,7 +60,8 @@ import MapView, {
   Marker,
   MarkerAnimated,
 } from 'react-native-maps';
-import {add, color, set} from 'react-native-reanimated';
+import {add, color} from 'react-native-reanimated';
+import clc from 'cli-color';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -83,6 +84,7 @@ export default function UnitEdit({
   flag,
   enableFlag,
   disableFlag,
+  propertyId,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
@@ -401,13 +403,14 @@ export default function UnitEdit({
     // console.log('antiIntersection arr1--->', arr1);
     // console.log('antiIntersection arr2--->', arr2);
 
-    const antiIntersection = arr1.filter(
-      (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
-    );
-    // console.log('antiIntersection--->', antiIntersection);
+    // const antiIntersection = arr1.filter(
+    //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
+    // );
+    // // console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
       ...oldState,
-      meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      // meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      meterList: arr1,
     }));
     setMeterListLoader(false);
   };
@@ -431,7 +434,7 @@ export default function UnitEdit({
     let arr1 = res.data?.data;
     let arr2 = meterTypes;
     // console.log('antiIntersection USEEFFECT arr1--->', arr1);
-    // console.log('antiIntersection USEEFFECT arr2--->', arr2);
+    console.log('antiIntersection USEEFFECT arr2--->', arr2);
 
     if (arr2.length > 0) {
       const Intersection = arr2.filter((item1) =>
@@ -450,14 +453,15 @@ export default function UnitEdit({
       // if (getMeter.length) {
 
       // }
-      setLoadMeters(false);
     }
+    setLoadMeters(false);
   }, [modalVisible]);
 
   // useEffect(() => {
   //   _renderMap();
   // }, []);
   useEffect(() => {
+    console.log(clc.xterm(80)('AYA PROPERTY ID', propertyId));
     if (type == 'meterDirect' || type == 'addMeterDirect') {
       let newArr = [...slide2]; // copying the old datas array
       newArr[0].value = unitDetails?.unit?.meterSerial; // replace e.target.value with whatever you want to change it to
@@ -699,6 +703,31 @@ export default function UnitEdit({
     ];
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
+
+    const defaultUnitData = await api.get(
+      `/property/default-meter-device/${propertyId}`,
+    );
+    if (defaultUnitData.ok) {
+      console.log(
+        clc.cyanBright(
+          'WE Got Default Data',
+          JSON.stringify(defaultUnitData?.data?.data),
+        ),
+      );
+      const some = defaultUnitData?.data?.data?.default_meter_device;
+      let listSlide = [...slide1]; // copying the old datas array
+      listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      setSlide1(listSlide);
+
+      setNewMeter((oldState) => ({
+        ...oldState,
+        id: some?.meter_id,
+        name: some?.meter_name,
+      }));
+    }
   };
 
   const getDevice = async (some, index) => {
@@ -838,6 +867,7 @@ export default function UnitEdit({
   //   setMeterMenuVisible(true);
   //   callApi();
   // };
+
   const checkingSerial = async () => {
     let data = {
       device_serial_number: slide2[0].value,
@@ -913,21 +943,24 @@ export default function UnitEdit({
 
     // console.log('meterArray------>', meterArray);
     setStatusAnimation(false);
-    const newList = state.meterList.filter((item) => item.id != newMeter.id);
-    setState((oldState) => ({
-      ...oldState,
-      meterList: newList,
-    }));
+    // const newList = state.meterList.filter((item) => item.id != newMeter.id);
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   meterList: newList,
+    // }));
     setShowAddMeterSlider(false);
   };
+
   useUpdateEffect(() => {
     if (letsFinish) {
       updateData();
     }
   }, [letsFinish]);
+
   useUpdateEffect(() => {
     console.log('Get meterData Information---->>', meterData);
   }, [meterData]);
+
   const updateData = () => {
     const reasonBase64s = [];
     for (let i = 0; i < reasonPath?.length; i++) {
@@ -1543,16 +1576,16 @@ export default function UnitEdit({
     // }
     setReasonArr(data.reasons);
     setMeterAddingId(data.meter_id);
-    let arr1 = {
-      id: data.meter_id,
-      name: data.meter_name,
-    };
-    let arr2 = [...state.meterList];
-    arr2.push(arr1);
-    setState((oldState) => ({
-      ...oldState,
-      meterList: arr2,
-    }));
+    // let arr1 = {
+    //   id: data.meter_id,
+    //   name: data.meter_name,
+    // };
+    // let arr2 = [...state.meterList];
+    // arr2.push(arr1);
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   meterList: arr2,
+    // }));
     setAttachedToId(data.attachedTo_id);
     setAttachedTo(data.attachedTo_name);
     console.log('GET METER DATA', data.installation_status);
@@ -1617,7 +1650,7 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('LOAD Meters', loadMeters);
+  console.log('LOAD Meters', loadMeters); //! TODO:
   return (
     <View>
       <Modal
