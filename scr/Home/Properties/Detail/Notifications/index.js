@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {Menu, Divider} from 'react-native-paper';
 
 // Components
 import {Fonts} from '../../../../utils/fonts';
@@ -32,6 +34,7 @@ export default class Splash extends Component {
       expanded: false,
       asdf: false,
       LoaderState: true,
+      visible: false,
       notificationData: [],
     };
     if (Platform.OS === 'android') {
@@ -55,6 +58,89 @@ export default class Splash extends Component {
 
     this.setState({LoaderState: false});
   }
+
+  notificationFilterApi = async (code) => {
+    this.setState({LoaderState: true});
+    if (code) {
+      const token = await EncryptedStorage.getItem('user_token');
+      if (token != null) {
+        // console.log('token aya', token);
+        api.setHeader('Authorization', 'Bearer ' + token);
+      }
+      const notificationsRes = await api.post(
+        '/property/equipment/meter/notification-show',
+        {code: code},
+      );
+
+      console.log('Notifications Response', notificationsRes?.data);
+      if (notificationsRes?.data?.bool) {
+        this.setState({notificationData: notificationsRes?.data?.data?.notify});
+      }
+
+      this.setState({LoaderState: false});
+    } else {
+      const token = await EncryptedStorage.getItem('user_token');
+      if (token != null) {
+        // console.log('token aya', token);
+        api.setHeader('Authorization', 'Bearer ' + token);
+      }
+      const notificationsRes = await api.post(
+        '/property/equipment/meter/notification-show',
+      );
+
+      console.log('Notifications Response', notificationsRes?.data);
+      if (notificationsRes?.data?.bool) {
+        this.setState({notificationData: notificationsRes?.data?.data?.notify});
+      }
+
+      this.setState({LoaderState: false});
+    }
+  };
+
+  openMenu = () => {
+    this.setState({visible: true});
+  };
+
+  closeMenu = () => {
+    this.setState({visible: false});
+  };
+
+  onPressFilterItem = (value) => {
+    switch (value) {
+      case 'Property':
+        console.log('Property');
+        this.notificationFilterApi(202);
+        break;
+      case 'Building':
+        console.log('Building');
+        this.notificationFilterApi(302);
+        break;
+      case 'Unit':
+        console.log('Unit');
+        this.notificationFilterApi(402);
+        break;
+      case 'Meter_type':
+        console.log('Meter_type');
+        this.notificationFilterApi(201);
+        break;
+      case 'Manufacturer':
+        console.log('Manufacturer');
+        this.notificationFilterApi(602);
+        break;
+      case 'Device':
+        console.log('Device');
+        this.notificationFilterApi(702);
+        break;
+      case 'Reset':
+        console.log('Reset');
+        this.notificationFilterApi();
+        break;
+      default:
+        console.log('Unknown');
+        break;
+    }
+    this.closeMenu();
+  };
 
   render() {
     let upDownMeter;
@@ -87,6 +173,49 @@ export default class Splash extends Component {
                 }}
               />
               <Text style={styles.mainHeadiing}>Notifications</Text>
+              <View style={{flexDirection: 'row-reverse', flex: 1}}>
+                <Menu
+                  visible={this.state.visible}
+                  onDismiss={this.closeMenu}
+                  anchor={
+                    <MaterialIcon
+                      onPress={this.openMenu}
+                      name="filter"
+                      size={width * 0.07}
+                      color="white"
+                    />
+                  }>
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Property')}
+                    title="Property"
+                  />
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Building')}
+                    title="Building"
+                  />
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Unit')}
+                    title="Unit"
+                  />
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Meter_type')}
+                    title="Meter Type"
+                  />
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Manufacturer')}
+                    title="Manufacturer"
+                  />
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Device')}
+                    title="Device"
+                  />
+                  <Divider />
+                  <Menu.Item
+                    onPress={() => this.onPressFilterItem('Reset')}
+                    title="All"
+                  />
+                </Menu>
+              </View>
             </View>
           </View>
         </View>
