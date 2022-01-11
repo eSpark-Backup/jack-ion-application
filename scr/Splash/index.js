@@ -6,6 +6,7 @@ import AuthNav from '../../navigation';
 import RootNav from '../../rootNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../components/Loader';
+import {Provider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 // import Drawer from "../../scr/Navigation/index";
@@ -56,7 +57,9 @@ class Main extends Component {
         </SafeAreaProvider>
       ) : (
         <SafeAreaProvider>
-          <RootNav />
+          <Provider>
+            <RootNav />
+          </Provider>
         </SafeAreaProvider>
       );
     if (this.state.isLoading) {
