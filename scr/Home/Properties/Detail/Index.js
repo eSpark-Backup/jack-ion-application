@@ -256,7 +256,20 @@ export default class Splash extends React.Component {
         street: this.state.listData.street,
         city: this.state.listData.city,
         billing_company_id: this.state.BillingCompanyId,
-        management_company: this.state.managementCompanyId,
+        management_company: this.state.managementCompany,
+        billing_company: this.state.BillingCompany,
+        management_company_id: this.state.managementCompanyId,
+        contact_name: this.state.listData.contact_name,
+        contact_title: this.state.listData.contact_title,
+        contact_phone: this.state.listData.contact_phone,
+        contact_email: this.state.listData.contact_email,
+        // maintainance_email: null,
+        // maintainance_name: null,
+        // maintainance_phone_number: null,
+        // maintainance_superviser_contact: null,
+        // maintainance_superviser_email: null,
+        // maintainance_superviser_name: null,
+        // office_contact_number: null,
       };
 
       const token = await EncryptedStorage.getItem('user_token');
@@ -885,7 +898,14 @@ export default class Splash extends React.Component {
                               style={styles.input}
                               value={this.state.listData?.contact_name}
                               onChangeText={(text) => {
-                                this.setState({CustomerName: text});
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_name: text, // update the value of specific key
+                                  },
+                                }));
                               }}
                               mode={'outlined'}
                               theme={{
@@ -903,7 +923,14 @@ export default class Splash extends React.Component {
                               style={styles.input}
                               value={this.state.listData?.contact_title}
                               onChangeText={(text) => {
-                                this.setState({customerjobDes: text});
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_title: text, // update the value of specific key
+                                  },
+                                }));
                               }}
                               mode={'outlined'}
                               theme={{
@@ -921,7 +948,14 @@ export default class Splash extends React.Component {
                               style={styles.input}
                               value={this.state.listData?.contact_phone}
                               onChangeText={(text) => {
-                                this.setState({customerPhone: text});
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_phone: text, // update the value of specific key
+                                  },
+                                }));
                               }}
                               mode={'outlined'}
                               theme={{
@@ -939,7 +973,14 @@ export default class Splash extends React.Component {
                               style={styles.input}
                               value={this.state.listData?.contact_email}
                               onChangeText={(text) => {
-                                this.setState({customerEmail: text});
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_email: text, // update the value of specific key
+                                  },
+                                }));
                               }}
                               mode={'outlined'}
                               theme={{
