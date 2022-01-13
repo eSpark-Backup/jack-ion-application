@@ -54,13 +54,14 @@ import * as Progress from 'react-native-progress';
 import {withOrientation} from 'react-navigation';
 import * as ImagePicker from 'react-native-image-picker';
 import Geolocation from '@react-native-community/geolocation';
+import {getDistance} from 'geolib';
 import MapView, {
   PROVIDER_GOOGLE,
   AnimatedRegion,
   Marker,
   MarkerAnimated,
 } from 'react-native-maps';
-import {add, color} from 'react-native-reanimated';
+import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
 
 const {width, height} = Dimensions.get('window');
@@ -105,6 +106,8 @@ export default function UnitEdit({
   const [typeLoader, setTypeLoader] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [statusAnimation, setStatusAnimation] = useState(false);
+  const [iniLat, setIniLat] = useState(0);
+  const [iniLong, setIniLong] = useState(0);
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [installationStatus, setInstallationStatus] = useState(0);
@@ -1273,6 +1276,8 @@ export default function UnitEdit({
         console.log('Positon Batao', position);
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
+        setIniLat(lat);
+        setIniLong(long);
         setLat(lat);
         setLong(long);
         var initialRegion = {
@@ -1341,6 +1346,17 @@ export default function UnitEdit({
   const moveMarker = (region) => {
     setLat(region?.latitude);
     setLong(region?.longitude);
+    var dis = getDistance(
+      {
+        latitude: iniLat,
+        longitude: iniLong,
+      },
+      {
+        latitude: region?.latitude,
+        longitude: region?.longitude,
+      },
+    );
+    console.log('DISTANCE BETWEEN', dis);
   };
 
   const catchLocation = (region) => {
