@@ -110,6 +110,8 @@ export default function UnitEdit({
   const [installationStatus, setInstallationStatus] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [checkSerial, setCheckSerial] = useState(false);
+  const [modelNo, setModelNo] = useState('');
+  const [productNo, setProductNo] = useState('');
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -719,6 +721,8 @@ export default function UnitEdit({
       listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      setModelNo(some?.device_name?.model_no);
+      setProductNo(some?.device_name?.product_no);
       setSlide1(listSlide);
 
       setNewMeter((oldState) => ({
@@ -731,7 +735,7 @@ export default function UnitEdit({
   };
 
   const getDevice = async (some, index) => {
-    console.log('get devices--->');
+    console.log('get devices--->', some?.id);
     const deviceResponse = await api.get(
       `/property/equipment/device/all/${some?.id}`,
     );
@@ -746,6 +750,10 @@ export default function UnitEdit({
       listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
       listSlide[1].select = '';
+    } else if (index == 1) {
+      console.log('get model_no--->', some?.model_no);
+      setModelNo(some?.model_no);
+      setProductNo(some?.product_no);
     }
     setSlide1(listSlide);
   };
@@ -1331,11 +1339,8 @@ export default function UnitEdit({
   };
 
   const moveMarker = (region) => {
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      setLat(region?.latitude);
-      setLong(region?.longitude);
-    }, 200);
+    setLat(region?.latitude);
+    setLong(region?.longitude);
   };
 
   const catchLocation = (region) => {
@@ -1428,6 +1433,8 @@ export default function UnitEdit({
     setReasonArr([]);
     setAttachedToId(null);
     setAttachedTo('');
+    setModelNo('');
+    setProductNo('');
     slide1.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1765,7 +1772,7 @@ export default function UnitEdit({
                         provider={PROVIDER_GOOGLE}
                         showsUserLocation={true}
                         showsMyLocationButton={false}
-                        onRegionChange={(e) => moveMarker(e)}
+                        onRegionChangeComplete={(e) => moveMarker(e)}
                         // onPress={(e) => this.getLocation(e)}
                       ></MapView>
                     </View>
@@ -2558,99 +2565,167 @@ export default function UnitEdit({
                       {loadManufacturers ? (
                         <ActivityIndicator size="large" color="#25AAE1ec" />
                       ) : (
-                        slide1.map((item, index) => (
-                          <View style={{width: width * 0.8}} key={item.id}>
-                            <Text style={styles.meterDesciptionHeading}>
-                              {item.name}*
-                            </Text>
-                            <View
-                              pointerEvents={
-                                index > 0
-                                  ? slide1[0].selectId
-                                    ? 'auto'
-                                    : 'none'
-                                  : 'auto'
-                              }
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropdown
-                                onItemSelect={(item) => {
-                                  getDevice(item, index);
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                items={item.data}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder:
-                                    index == 1
-                                      ? slide1[0].selectId
-                                        ? item.name
-                                        : 'First Select Manufacture'
-                                      : item.name,
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
+                        <View>
+                          {slide1.map((item, index) => (
+                            <View style={{width: width * 0.8}} key={item.id}>
+                              <Text style={styles.meterDesciptionHeading}>
+                                {item.name}*
+                              </Text>
+                              <View
+                                pointerEvents={
+                                  index > 0
+                                    ? slide1[0].selectId
+                                      ? 'auto'
+                                      : 'none'
+                                    : 'auto'
+                                }
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropdown
+                                  onItemSelect={(item) => {
+                                    getDevice(item, index);
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
                                     padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: item.error
-                                      ? '#A3001B'
-                                      : 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  items={item.data}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder:
+                                      index == 1
+                                        ? slide1[0].selectId
+                                          ? item.name
+                                          : 'First Select Manufacture'
+                                        : item.name,
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: item.error
+                                        ? '#A3001B'
+                                        : 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                    },
+                                    onTextChange: (text) => {
+                                      onChangeManufacturer(text, index);
+                                    },
+                                    value: setTimeout(() => item.select, 200),
+                                    defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
                                     borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
                                     borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() => showAddNewType(item.name)}>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          ))}
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}>
+                            <View>
+                              <View
+                                style={[
+                                  styles.desciptionContainer,
+                                  {
+                                    alignSelf: 'flex-start',
+                                    width: width * 0.35,
                                   },
-                                  onTextChange: (text) => {
-                                    onChangeManufacturer(text, index);
+                                ]}>
+                                <Text style={styles.desciptionHeading}>
+                                  Model Number*
+                                </Text>
+                              </View>
+                              <TextInput
+                                placeholder="Model Number"
+                                value={modelNo}
+                                dense={true}
+                                editable={false}
+                                showSoftInputOnFocus={false}
+                                style={[styles.input, {width: width * 0.38}]}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
                                   },
-                                  value: setTimeout(() => item.select, 200),
-                                  defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
                                 }}
                               />
-                              <TouchableOpacity
-                                style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
+                            </View>
+                            <View>
+                              <View
+                                style={[
+                                  styles.desciptionContainer,
+                                  {
+                                    alignSelf: 'flex-start',
+                                    width: width * 0.35,
+                                  },
+                                ]}>
+                                <Text style={styles.desciptionHeading}>
+                                  Product Number*
+                                </Text>
+                              </View>
+                              <TextInput
+                                placeholder="Product Number"
+                                value={productNo}
+                                dense={true}
+                                editable={false}
+                                showSoftInputOnFocus={false}
+                                style={[styles.input, {width: width * 0.38}]}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
                                 }}
-                                onPress={() => showAddNewType(item.name)}>
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
-                                />
-                              </TouchableOpacity>
+                              />
                             </View>
                           </View>
-                        ))
+                        </View>
                       )}
                     </View>
                   )}

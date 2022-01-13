@@ -41,6 +41,7 @@ import MapView, {
   AnimatedRegion,
   Marker,
   MarkerAnimated,
+  Circle,
 } from 'react-native-maps';
 import {
   check,
@@ -464,11 +465,8 @@ export default class Splash extends React.Component {
   };
 
   moveMarker = (region) => {
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      this.setState({lat: region?.latitude});
-      this.setState({long: region?.longitude});
-    }, 200);
+    this.setState({lat: region?.latitude});
+    this.setState({long: region?.longitude});
   };
 
   catchLocation = (region) => {
@@ -808,13 +806,6 @@ export default class Splash extends React.Component {
                       height: '100%',
                       borderRadius: width * 0.03,
                     }}
-                    // scrollEnabled={false}
-                    // initialRegion={{
-                    //   latitude: this.state.lat,
-                    //   longitude: this.state.long,
-                    //   latitudeDelta: LATITUDE_DELTA,
-                    //   longitudeDelta: LONGITUDE_DELTA,
-                    // }}
                     region={{
                       latitude: this.state.lat,
                       longitude: this.state.long,
@@ -825,9 +816,19 @@ export default class Splash extends React.Component {
                     provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
                     showsMyLocationButton={false}
-                    onRegionChange={(e) => this.moveMarker(e)}
+                    onRegionChangeComplete={(e) => this.moveMarker(e)}
                     // onPress={(e) => this.getLocation(e)}
-                  ></MapView>
+                  >
+                    <Circle
+                      center={{
+                        latitude: this.state.lat,
+                        longitude: this.state.long,
+                      }}
+                      radius={1500}
+                      fillColor="rgba(12,170,225,0.3)"
+                      strokeColor="rgba(12,170,225,1)"
+                    />
+                  </MapView>
                 ) : null}
               </View>
             </View>

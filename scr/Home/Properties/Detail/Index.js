@@ -47,6 +47,7 @@ import style from './style';
 import Base_URL from '../../../api/WebServices';
 import {create} from 'apisauce';
 import CustumStatusBar from '../../../components/StatusBar';
+import Loader from '../../../components/Loader';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
@@ -81,6 +82,7 @@ export default class Splash extends React.Component {
     this.state = {
       isModalVisible: false,
       points: 80,
+      isLoading: false,
       listData: {},
       BillingCompany: 'BILLING COMPANY',
       BillingCompanyId: null,
@@ -241,6 +243,7 @@ export default class Splash extends React.Component {
 
       return;
     } else {
+      this.setState({isLoading: true});
       this.setState((prevState) => ({
         ...prevState,
         error: {
@@ -284,6 +287,7 @@ export default class Splash extends React.Component {
         data,
       );
       console.log(response?.data);
+      this.setState({isLoading: false});
       if (response?.data?.bool) {
         this.toggleModalEditProp();
       } else {
@@ -355,8 +359,10 @@ export default class Splash extends React.Component {
   render() {
     return (
       <>
-        {Platform.OS == 'ios' && <CustumStatusBar />}
+        {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
+        <CustumStatusBar />
         <View style={styles.container}>
+          {this.state.isLoading && <Loader />}
           <Modal
             animationIn="slideInLeft"
             animationOut="slideOutLeft"
@@ -894,7 +900,8 @@ export default class Splash extends React.Component {
                           </View>
                           <View style={styles.inputContainer}>
                             <TextInput
-                              placeholder="Customer Name"
+                              placeholder="Contact Name"
+                              label="Contact Name"
                               style={styles.input}
                               value={this.state.listData?.contact_name}
                               onChangeText={(text) => {
@@ -920,6 +927,7 @@ export default class Splash extends React.Component {
                           <View style={styles.inputContainer}>
                             <TextInput
                               placeholder="Title / Job Description"
+                              label="Title / Job Description"
                               style={styles.input}
                               value={this.state.listData?.contact_title}
                               onChangeText={(text) => {
@@ -945,6 +953,7 @@ export default class Splash extends React.Component {
                           <View style={styles.inputContainer}>
                             <TextInput
                               placeholder="Phone"
+                              label="Phone"
                               style={styles.input}
                               value={this.state.listData?.contact_phone}
                               onChangeText={(text) => {
@@ -970,6 +979,7 @@ export default class Splash extends React.Component {
                           <View style={styles.inputContainer}>
                             <TextInput
                               placeholder="Email"
+                              label="Email"
                               style={styles.input}
                               value={this.state.listData?.contact_email}
                               onChangeText={(text) => {
