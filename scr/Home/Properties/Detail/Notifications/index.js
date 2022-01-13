@@ -13,7 +13,8 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {Menu, Divider} from 'react-native-paper';
+// import {Menu, Divider} from 'react-native-paper';
+import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 
 // Components
 import {Fonts} from '../../../../utils/fonts';
@@ -185,35 +186,30 @@ export default class Splash extends Component {
                       color="white"
                     />
                   }>
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Property')}
-                    title="Property"
-                  />
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Building')}
-                    title="Building"
-                  />
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Unit')}
-                    title="Unit"
-                  />
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Meter_type')}
-                    title="Meter Type"
-                  />
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Manufacturer')}
-                    title="Manufacturer"
-                  />
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Device')}
-                    title="Device"
-                  />
-                  <Divider />
-                  <Menu.Item
-                    onPress={() => this.onPressFilterItem('Reset')}
-                    title="All"
-                  />
+                  <MenuItem onPress={() => this.onPressFilterItem('Property')}>
+                    {'Property'}
+                  </MenuItem>
+                  <MenuItem onPress={() => this.onPressFilterItem('Building')}>
+                    {'Building'}
+                  </MenuItem>
+                  <MenuItem onPress={() => this.onPressFilterItem('Unit')}>
+                    {'Unit'}
+                  </MenuItem>
+                  <MenuItem
+                    onPress={() => this.onPressFilterItem('Meter_type')}>
+                    {'Meter_type'}
+                  </MenuItem>
+                  <MenuItem
+                    onPress={() => this.onPressFilterItem('Manufacturer')}>
+                    {'Manufacturer'}
+                  </MenuItem>
+                  <MenuItem onPress={() => this.onPressFilterItem('Device')}>
+                    {'Device'}
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem onPress={() => this.onPressFilterItem('Reset')}>
+                    {'All'}
+                  </MenuItem>
                 </Menu>
               </View>
             </View>
