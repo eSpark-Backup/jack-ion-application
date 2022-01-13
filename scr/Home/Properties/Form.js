@@ -1,16 +1,11 @@
 import React, {Component, version} from 'react';
 
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
   Image,
-  ImageBackground,
   ActivityIndicator,
-  StatusBar,
   Dimensions,
-  Animated,
   PermissionsAndroid,
   ScrollView,
   TouchableOpacity,
@@ -36,13 +31,8 @@ import Modal from 'react-native-modal';
 import SystemSetting from 'react-native-system-setting';
 import Geolocation from '@react-native-community/geolocation';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import MapView, {
-  PROVIDER_GOOGLE,
-  AnimatedRegion,
-  Marker,
-  MarkerAnimated,
-  Circle,
-} from 'react-native-maps';
+import {getDistance} from 'geolib';
+import MapView, {PROVIDER_GOOGLE, Circle} from 'react-native-maps';
 import {
   check,
   openSettings,
@@ -88,6 +78,8 @@ export default class Splash extends React.Component {
       locationSelected: false,
       companies: false,
       markers: [],
+      iniLat: 0,
+      iniLong: 0,
       lat: 0,
       long: 0,
       loadScreen: false,
@@ -467,6 +459,17 @@ export default class Splash extends React.Component {
   moveMarker = (region) => {
     this.setState({lat: region?.latitude});
     this.setState({long: region?.longitude});
+    var dis = getDistance(
+      {
+        latitude: this.state.iniLat,
+        longitude: this.state.iniLong,
+      },
+      {
+        latitude: region?.latitude,
+        longitude: region?.longitude,
+      },
+    );
+    console.log('DISTANCE BETWEEN', dis);
   };
 
   catchLocation = (region) => {
@@ -521,7 +524,7 @@ export default class Splash extends React.Component {
         console.log('Positon Batao', position);
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
-        this.setState({lat: lat, long: long});
+        this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
         var initialRegion = {
           latitude: lat,
           longitude: long,
