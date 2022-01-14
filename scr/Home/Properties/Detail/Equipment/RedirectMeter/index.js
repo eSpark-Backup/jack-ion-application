@@ -74,6 +74,8 @@ export default class RedirectMeter extends Component {
       propertyDetails: {},
       propertyId: '',
       propertyName: '',
+      propertyLat: '',
+      propertyLong: '',
       buildingId: '',
       buildginName: '',
       buildingDetails: [],
@@ -173,6 +175,8 @@ export default class RedirectMeter extends Component {
       this.setState({
         propertyList: [],
         propertyId: '',
+        propertyLat: '',
+        propertyLong: '',
         loaderBuildings: false,
         dataBuild: [],
         buildingId: '',
@@ -332,6 +336,8 @@ export default class RedirectMeter extends Component {
     this.setState({
       propertyId: item.id,
       propertyName: item.name,
+      propertyLat: item.latitude,
+      propertyLong: item.longitude,
       propertyDetails: item,
     });
     const response = await this.api.post(
@@ -879,6 +885,8 @@ export default class RedirectMeter extends Component {
             modalVisible={this.state.unitModal}
             type={this.state.unitModalType}
             propertyId={this.state.propertyId}
+            propertyLat={this.state.propertyLat}
+            propertyLong={this.state.propertyLong}
             modalName="Add meter"
             meterMenuVisible={this.state.editUnitMenuVisible}
             showMenu={() => this.setState({editUnitMenuVisible: true})}

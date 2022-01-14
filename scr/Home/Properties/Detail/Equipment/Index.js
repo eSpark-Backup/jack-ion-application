@@ -354,6 +354,8 @@ export default class Splash extends Component {
       buildingName: this.state.buildingData.name,
       buildingId: this.state.editBuildId,
       propertyId: this.props.navigation.state.params.item.item.id,
+      propertyLat: this.props.navigation.state.params.item.item.latitude,
+      propertyLong: this.props.navigation.state.params.item.item.longitude,
     });
     this.setState({showSearch: false, loader: true, loaderBuildings: true});
   };
@@ -928,6 +930,12 @@ export default class Splash extends Component {
               <EditUnit
                 flag={this.state.flag}
                 propertyId={this.props.navigation.state.params.item.item.id}
+                propertyLat={
+                  this.props.navigation.state.params.item.item.latitude
+                }
+                propertyLong={
+                  this.props.navigation.state.params.item.item.longitude
+                }
                 enableFlag={() => this.setState({flag: true})}
                 disableFlag={() => this.setState({flag: false})}
                 modalVisible={this.state.isModalUnitVisible}
