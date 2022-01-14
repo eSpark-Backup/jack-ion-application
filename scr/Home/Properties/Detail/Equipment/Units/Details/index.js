@@ -293,6 +293,8 @@ const App = ({navigation}) => {
     buildingName,
     buildingId,
     propertyId,
+    propertyLat,
+    propertyLong,
   } = navigation.state.params; //? Dynamic Ids
   // console.log('aya kuch ++', navigation.state.params.unitId);
 
@@ -1085,6 +1087,8 @@ const App = ({navigation}) => {
         <EditUnit
           flag={flag}
           propertyId={propertyId}
+          propertyLat={propertyLat}
+          propertyLong={propertyLong}
           enableFlag={() => setFlag(true)}
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
@@ -1207,6 +1211,8 @@ const App = ({navigation}) => {
         <EditUnit
           flag={flag}
           propertyId={propertyId}
+          propertyLat={propertyLat}
+          propertyLong={propertyLong}
           enableFlag={() => setFlag(true)}
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}

@@ -29,6 +29,7 @@ import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
 import {DotsLoader, OpacityDotsLoader} from 'react-native-indicator';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {Fonts} from '../../../../../../utils/fonts';
+import PropIcon from '../../../../../../../Images/proplocation.png';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
@@ -60,6 +61,7 @@ import MapView, {
   AnimatedRegion,
   Marker,
   MarkerAnimated,
+  Circle,
 } from 'react-native-maps';
 import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
@@ -86,6 +88,8 @@ export default function UnitEdit({
   enableFlag,
   disableFlag,
   propertyId,
+  propertyLat,
+  propertyLong,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
@@ -703,7 +707,7 @@ export default function UnitEdit({
 
     let reasonArr = reasoneResponce?.data?.data;
     const uniqueArr = [
-      ...new Map(reasonArr.map((v) => [v.options_reason_id, v])).values(),
+      ...new Map(reasonArr?.map((v) => [v.options_reason_id, v])).values(),
     ];
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
@@ -1022,7 +1026,7 @@ export default function UnitEdit({
     }
     var loopData = [...meterData];
 
-    meterListData.map((item) => {
+    meterListData?.map((item) => {
       // console.log('Get meterData Information---->>', item.reasons);
       let newReasonArr = [...reasonArr];
       if (type != 'add' || type != 'addMeterDirect') {
@@ -1348,8 +1352,8 @@ export default function UnitEdit({
     setLong(region?.longitude);
     var dis = getDistance(
       {
-        latitude: iniLat,
-        longitude: iniLong,
+        latitude: propertyLat,
+        longitude: propertyLong,
       },
       {
         latitude: region?.latitude,
@@ -1371,6 +1375,12 @@ export default function UnitEdit({
       setLat(lat);
       setLong(long);
     });
+  };
+  const getPropertyLocation = () => {
+    var lat = parseFloat(propertyLat);
+    var long = parseFloat(propertyLong);
+    setLat(lat);
+    setLong(long);
   };
 
   const imageGalleryLaunch = (type) => {
@@ -1451,13 +1461,13 @@ export default function UnitEdit({
     setAttachedTo('');
     setModelNo('');
     setProductNo('');
-    slide1.map((item, index) => {
+    slide1?.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
       newArr[index].select = '';
       newArr[index].selectId = '';
     });
-    slide2.map((item, index) => {
+    slide2?.map((item, index) => {
       let newArr = [...slide2];
       newArr[0].value = '';
       newArr[1].value = '0';
@@ -1621,7 +1631,7 @@ export default function UnitEdit({
     }
     setFilePath(data.thumbnail);
     setReasonPath([]);
-    slide1.map((item, index) => {
+    slide1?.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
       newArr[0].select = data.device.manufacturer;
@@ -1629,7 +1639,7 @@ export default function UnitEdit({
       newArr[0].selectId = data.device.manufacturer_id;
       newArr[1].selectId = data.device_id;
     });
-    slide2.map((item, index) => {
+    slide2?.map((item, index) => {
       let newArr = [...slide2];
       newArr[0].value = data.device_serial_number;
       newArr[1].value = data.initial_meter_reading;
@@ -1673,7 +1683,6 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('LOAD Meters', loadMeters); //! TODO:
   return (
     <View>
       <Modal
@@ -1728,8 +1737,17 @@ export default function UnitEdit({
                     />
                   </View>
                   <TouchableOpacity
+                    onPress={() => getPropertyLocation()}
+                    style={[styles.doneButton, {bottom: width * 0.32}]}>
+                    <Icon
+                      size={width * 0.07}
+                      color="#fff"
+                      name={'location-city'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
                     onPress={() => getCurrentLocation()}
-                    style={[styles.doneButton, {bottom: width * 0.2}]}>
+                    style={[styles.doneButton, {bottom: width * 0.18}]}>
                     <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -1790,7 +1808,36 @@ export default function UnitEdit({
                         showsMyLocationButton={false}
                         onRegionChangeComplete={(e) => moveMarker(e)}
                         // onPress={(e) => this.getLocation(e)}
-                      ></MapView>
+                      >
+                        <Marker
+                          coordinate={{
+                            latitude: parseFloat(propertyLat),
+                            longitude: parseFloat(propertyLong),
+                          }}
+                          title={'Property Location'}
+                          // icon={require('../../../../../../../Images/Proplocate.png')}
+                          draggable>
+                          <Image
+                            source={require('../../../../../../../Images/Proplocate.png')}
+                            // resizeMode="center"
+
+                            style={{
+                              width: width * 0.2,
+                              height: height * 0.08,
+                              // backgroundColor: 'red',
+                            }}
+                          />
+                        </Marker>
+                        <Circle
+                          center={{
+                            latitude: parseFloat(propertyLat),
+                            longitude: parseFloat(propertyLong),
+                          }}
+                          radius={1500}
+                          fillColor="rgba(12,170,225,0.3)"
+                          strokeColor="rgba(12,170,225,1)"
+                        />
+                      </MapView>
                     </View>
                   ) : null}
                 </View>
@@ -1871,7 +1918,7 @@ export default function UnitEdit({
                     ) : (
                       <View style={{zIndex: 10}}>
                         {addDevice &&
-                          addDevice.map((item, index) => (
+                          addDevice?.map((item, index) => (
                             <View
                               style={{
                                 width: width * 0.8,
@@ -2354,29 +2401,6 @@ export default function UnitEdit({
                           source={{uri: filePath}}
                         />
                       )}
-                      {/* {filePath.length > 0 && (
-                      <ScrollView>
-                        {filePath.map(({uri, index}) => (
-                          <View style={styles.imageContainer}>
-                            <TouchableOpacity
-                              onPress={() => removeImage(uri)}
-                              style={styles.imageRemovebtn}>
-                              <Iconi name="close-circle" size={width * 0.07} />
-                            </TouchableOpacity>
-                            <Image
-                              // resizeMode="contain"
-                              resizeMethod="scale"
-                              style={{
-                                width: width * 0.78,
-                                height: width * 0.2,
-                              }}
-                              source={{uri: uri}}
-                              key={index}
-                            />
-                          </View>
-                        ))}
-                      </ScrollView>
-                    )} */}
 
                       <TouchableOpacity
                         onPress={requestCameraPermission}
@@ -2438,7 +2462,6 @@ export default function UnitEdit({
                               style={{
                                 width: width * 0.3,
                                 height: width * 0.3,
-                                flex: 1,
                               }}
                               resizeMode="contain"
                               controls={false}
@@ -2462,7 +2485,6 @@ export default function UnitEdit({
                               style={{
                                 width: width * 0.3,
                                 height: width * 0.3,
-                                flex: 1,
                               }}
                               source={require('../../../../../../../Images/cross.gif')}
                             />
@@ -2479,7 +2501,7 @@ export default function UnitEdit({
                         )}
                         {installationStatus == 2 && statusAnimation == false && (
                           <>
-                            <View style={{flex: 1, width: width * 0.8}}>
+                            <View style={{width: width * 0.8}}>
                               <Text
                                 style={[
                                   styles.meterDesciptionHeading,
@@ -2593,7 +2615,7 @@ export default function UnitEdit({
                               <View style={styles.imageListContainer}>
                                 {reasonPath.length > 0 ? (
                                   <ScrollView>
-                                    {reasonPath.map(({uri, index}) => (
+                                    {reasonPath?.map(({uri, index}) => (
                                       <View style={styles.imageContainer}>
                                         <TouchableOpacity
                                           onPress={() =>
@@ -2662,8 +2684,7 @@ export default function UnitEdit({
                         {installationStatus == 0 && statusAnimation == false && (
                           <View
                             style={{
-                              flex: 1,
-                              // backgroundColor: 'pink',
+                              // backgroundColor: 'yellow',
                               justifyContent: 'center',
                               alignItems: 'center',
                             }}>
@@ -2708,7 +2729,7 @@ export default function UnitEdit({
                         <ActivityIndicator size="large" color="#25AAE1ec" />
                       ) : (
                         <View>
-                          {slide1.map((item, index) => (
+                          {slide1?.map((item, index) => (
                             <View style={{width: width * 0.8}} key={item.id}>
                               <Text style={styles.meterDesciptionHeading}>
                                 {item.name}*
@@ -2877,6 +2898,7 @@ export default function UnitEdit({
                       width: width * 0.85,
                       alignItems: 'center',
                       justifyContent: 'center',
+                      // backgroundColor: 'red',
                     }}>
                     {doneAnimation || checkSerial || hideBtn ? (
                       !hideBtn ? (
@@ -3152,7 +3174,7 @@ export default function UnitEdit({
                       <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
                     ) : (
                       meterListData.length > 0 &&
-                      meterListData.map((item) => (
+                      meterListData?.map((item) => (
                         // console.log('meterListData'),
                         <TouchableOpacity
                           onPress={() => {
@@ -3565,6 +3587,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   reasonFileContainer: {
+    flex: 1,
     height: width * 0.8,
     alignItems: 'center',
     justifyContent: 'center',
