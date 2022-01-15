@@ -43,7 +43,7 @@ class GlobalState extends React.Component {
     const response = await this.api.post('/property/all', data);
     // console.log('respone property===>', response.data.data.properties);
     this.setState({
-      offset: response.data.data.offset,
+      offset: response?.data?.data?.offset,
     });
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
@@ -68,16 +68,22 @@ class GlobalState extends React.Component {
     // console.log('respone property===>', response.data.data);
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
-      console.log('response.data.data.offset===>', response.data.data.offset);
+      console.log(
+        'response.data.data.offset===>',
+        response?.data?.data?.offset,
+      );
       if (
-        this.state.offset != response.data.data.offset &&
-        response.data.data.offset > 0
+        this.state.offset != response?.data?.data?.offset &&
+        response?.data?.data?.offset > 0
       ) {
         let data = [...this.state.propList];
         let data2 = response.data.data.properties;
         data.push(...data2);
         this.setState({propList: data});
-        this.setState({listLoader: false, offset: response.data.data.offset});
+        this.setState({
+          listLoader: false,
+          offset: response?.data?.data?.offset,
+        });
         this.setState({limitExceed: false});
       } else {
         this.setState({limitExceed: true});
@@ -97,7 +103,7 @@ class GlobalState extends React.Component {
       this.setState({
         propList: response.data.data.properties,
         filterDataName: sort.billing,
-        offset: response.data.data.offset,
+        offset: response?.data?.data?.offset,
       });
       console.log('FIltered property===>', response.data.data.properties);
       this.setState({limitExceed: false});
@@ -189,9 +195,9 @@ class GlobalState extends React.Component {
       this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', data);
       // console.log('Search property===>', response);
-      this.setState({searchOffset: response.data.data.offset});
+      this.setState({searchOffset: response?.data?.data?.offset});
       if (response?.data?.bool) {
-        this.setState({searchList: response.data.data.properties});
+        this.setState({searchList: response?.data?.data?.properties});
         // console.log('Search property===>', response.data.data.properties);
         this.setState({searchLoading: false});
       } else {
@@ -215,8 +221,8 @@ class GlobalState extends React.Component {
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
         if (
-          this.state.searchOffset != response.data.data.offset &&
-          response.data.data.offset > 0
+          this.state.searchOffset != response?.data?.data?.offset &&
+          response?.data?.data?.offset > 0
         ) {
           let data = [...this.state.searchList];
           let data2 = response.data.data.properties;
@@ -224,7 +230,7 @@ class GlobalState extends React.Component {
           this.setState({searchList: data});
           this.setState({
             searchLoading: false,
-            searchOffset: response.data.data.offset,
+            searchOffset: response?.data?.data?.offset,
           });
         }
         setTimeout(() => {

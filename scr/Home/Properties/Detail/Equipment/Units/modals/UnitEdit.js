@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -27,6 +27,7 @@ import SystemSetting from 'react-native-system-setting';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
 import {DotsLoader, OpacityDotsLoader} from 'react-native-indicator';
+import MultiSelect from 'react-native-multiple-select';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {Fonts} from '../../../../../../utils/fonts';
 import PropIcon from '../../../../../../../Images/proplocation.png';
@@ -189,6 +190,9 @@ export default function UnitEdit({
     //   value: '',
     // },
   ]);
+  const [inputFocus, setInputFocus] = useState(false);
+  const selectedTypes = useRef([]);
+  const [selectUtil, setSelectUtil] = useState([]);
   const [reasons, setReasons] = useState([]);
   const [reasonArr, setReasonArr] = useState([]);
   const [meterAddingId, setMeterAddingId] = useState('');
@@ -307,6 +311,14 @@ export default function UnitEdit({
         }
       }
     }
+  };
+
+  const AddTypes = (item) => {
+    console.log('ADD CHALA', item);
+    const items = selectUtil;
+    items.push(item);
+    // selectedTypes.current = items;
+    setSelectUtil(items);
   };
 
   const checkLocation = async (locationAccess) => {
@@ -971,6 +983,11 @@ export default function UnitEdit({
       updateData();
     }
   }, [letsFinish]);
+
+  useUpdateEffect(() => {
+    // AddTypes();
+    console.log('RUNNING________');
+  }, [selectUtil]);
 
   useUpdateEffect(() => {
     console.log('Get meterData Information---->>', meterData);
@@ -1683,6 +1700,7 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
+  console.log('SELECTED TYPES', selectUtil);
   return (
     <View>
       <Modal
@@ -2146,6 +2164,39 @@ export default function UnitEdit({
                             />
                           </View>
                           <View style={{width: width * 0.8, flex: 1}}>
+                            <View>
+                              <FlatList
+                                data={selectUtil}
+                                // extraData={selectedTypes.current}
+                                horizontal
+                                renderItem={({item}) => (
+                                  <View
+                                    style={{
+                                      borderWidth: 1,
+                                      borderRadius: 8,
+                                      flexDirection: 'row',
+                                      padding: 5,
+                                      margin: 5,
+                                      height: width * 0.1,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}>
+                                    <Text style={{color: 'black'}}>
+                                      {item.name}
+                                    </Text>
+                                    <TouchableOpacity
+                                      onPress={() => {
+                                        const items = selectUtil.filter(
+                                          (sitem) => sitem.id !== item.id,
+                                        );
+                                        setSelectUtil(items);
+                                      }}>
+                                      <Icon name="close" size={width * 0.05} />
+                                    </TouchableOpacity>
+                                  </View>
+                                )}
+                              />
+                            </View>
                             <View
                               pointerEvents={'auto'}
                               style={{
@@ -2153,9 +2204,13 @@ export default function UnitEdit({
                                 alignItems: 'flex-start',
                               }}>
                               <SearchableDropdown
+                                multi={true}
+                                selectedItems={selectUtil}
                                 onItemSelect={(item) => {
                                   // getDevice(item, index);
                                   console.log('Test', item);
+
+                                  AddTypes(item);
                                 }}
                                 containerStyle={{
                                   paddingBottom: width * 0.02,
@@ -2174,12 +2229,20 @@ export default function UnitEdit({
                                 }}
                                 // items={item.data}
                                 items={[
-                                  {name: 'Utility 1', age: 10},
-                                  {name: 'Utility 2', age: 11},
-                                  {name: 'Utility 3', age: 12},
+                                  {id: 1, name: 'Utility 1', age: 10},
+                                  {id: 2, name: 'Utility 2', age: 11},
+                                  {id: 3, name: 'Utility 3', age: 12},
                                 ]}
-                                resetValue={false}
+                                onRemoveItem={(item, index) => {
+                                  const items = selectUtil.filter(
+                                    (sitem) => sitem.id !== item.id,
+                                  );
+                                  // selectedTypes.current = items;
+                                  setSelectUtil(items);
+                                }}
+                                resetValue={true}
                                 textInputProps={{
+                                  focus: {inputFocus},
                                   placeholder: 'Add Utility Type',
                                   underlineColorAndroid: 'transparent',
                                   style: {
@@ -2193,6 +2256,9 @@ export default function UnitEdit({
                                     borderTopWidth: width * 0.0019,
                                     borderLeftWidth: width * 0.0019,
                                     borderBottomWidth: width * 0.0019,
+                                  },
+                                  onBlur: () => {
+                                    setInputFocus(false);
                                   },
                                   // onTextChange: (text) => {
                                   //   onChangeManufacturer(text, index);
