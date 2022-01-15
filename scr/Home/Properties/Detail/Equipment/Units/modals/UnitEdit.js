@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useReducer} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -190,9 +190,11 @@ export default function UnitEdit({
     //   value: '',
     // },
   ]);
+  const [selectUtil, setSelectUtil] = useState([]);
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+
   const [inputFocus, setInputFocus] = useState(false);
   const selectedTypes = useRef([]);
-  const [selectUtil, setSelectUtil] = useState([]);
   const [reasons, setReasons] = useState([]);
   const [reasonArr, setReasonArr] = useState([]);
   const [meterAddingId, setMeterAddingId] = useState('');
@@ -2209,8 +2211,8 @@ export default function UnitEdit({
                                 onItemSelect={(item) => {
                                   // getDevice(item, index);
                                   console.log('Test', item);
-
                                   AddTypes(item);
+                                  forceUpdate();
                                 }}
                                 containerStyle={{
                                   paddingBottom: width * 0.02,
@@ -2240,9 +2242,8 @@ export default function UnitEdit({
                                   // selectedTypes.current = items;
                                   setSelectUtil(items);
                                 }}
-                                resetValue={true}
+                                resetValue={false}
                                 textInputProps={{
-                                  focus: {inputFocus},
                                   placeholder: 'Add Utility Type',
                                   underlineColorAndroid: 'transparent',
                                   style: {
@@ -2256,9 +2257,6 @@ export default function UnitEdit({
                                     borderTopWidth: width * 0.0019,
                                     borderLeftWidth: width * 0.0019,
                                     borderBottomWidth: width * 0.0019,
-                                  },
-                                  onBlur: () => {
-                                    setInputFocus(false);
                                   },
                                   // onTextChange: (text) => {
                                   //   onChangeManufacturer(text, index);
