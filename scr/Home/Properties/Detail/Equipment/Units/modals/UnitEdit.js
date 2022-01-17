@@ -27,7 +27,6 @@ import SystemSetting from 'react-native-system-setting';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
 import {DotsLoader, OpacityDotsLoader} from 'react-native-indicator';
-import MultiSelect from 'react-native-multiple-select';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {Fonts} from '../../../../../../utils/fonts';
 import PropIcon from '../../../../../../../Images/proplocation.png';
@@ -191,6 +190,7 @@ export default function UnitEdit({
     // },
   ]);
   const [selectUtil, setSelectUtil] = useState([]);
+  const [utilTypes, setUtilTypes] = useState([]);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const [inputFocus, setInputFocus] = useState(false);
@@ -429,6 +429,12 @@ export default function UnitEdit({
     // const antiIntersection = arr1.filter(
     //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
     // );
+
+    const utilRes = await api.get('/property/equipment/utility-type/all');
+
+    console.log('arr1--->', utilRes);
+    setUtilTypes(utilRes?.data?.data);
+
     // // console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
       ...oldState,
@@ -743,7 +749,7 @@ export default function UnitEdit({
       listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
       setModelNo(some?.device_name?.model_no);
-      setProductNo(some?.device_name?.product_no);
+      setProductNo(some?.device_name?.product_desc);
       setSlide1(listSlide);
 
       setNewMeter((oldState) => ({
@@ -774,7 +780,7 @@ export default function UnitEdit({
     } else if (index == 1) {
       console.log('get model_no--->', some?.model_no);
       setModelNo(some?.model_no);
-      setProductNo(some?.product_no);
+      setProductNo(some?.product_desc);
     }
     setSlide1(listSlide);
   };
@@ -987,18 +993,13 @@ export default function UnitEdit({
   }, [letsFinish]);
 
   useUpdateEffect(() => {
-    // AddTypes();
-    console.log('RUNNING________');
-  }, [selectUtil]);
-
-  useUpdateEffect(() => {
     console.log('Get meterData Information---->>', meterData);
   }, [meterData]);
 
   const updateData = () => {
     const reasonBase64s = [];
     for (let i = 0; i < reasonPath?.length; i++) {
-      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
+      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
     }
     var meterArray = [...meterListData]; // copying the old datas array
     meterArray.push({
@@ -1041,7 +1042,7 @@ export default function UnitEdit({
   const updateMeterData = () => {
     const reasonBase64s = [];
     for (let i = 0; i < reasonPath?.length; i++) {
-      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
+      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
     }
     var loopData = [...meterData];
 
@@ -1395,6 +1396,7 @@ export default function UnitEdit({
       setLong(long);
     });
   };
+
   const getPropertyLocation = () => {
     var lat = parseFloat(propertyLat);
     var long = parseFloat(propertyLong);
@@ -1480,6 +1482,7 @@ export default function UnitEdit({
     setAttachedTo('');
     setModelNo('');
     setProductNo('');
+    setSelectUtil([]);
     slide1?.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1911,7 +1914,7 @@ export default function UnitEdit({
                       width: width * 0.8,
                       justifyContent: 'center',
                     }}>
-                    {showAddType == 'Manufacturer' ? (
+                    {showAddType == 'Manufacturer' && (
                       <View>
                         <View>
                           <Text style={[styles.meterDesciptionHeading]}>
@@ -1935,7 +1938,8 @@ export default function UnitEdit({
                           }}
                         />
                       </View>
-                    ) : (
+                    )}
+                    {showAddType == 'Device' && (
                       <View style={{zIndex: 10}}>
                         {addDevice &&
                           addDevice?.map((item, index) => (
@@ -2033,6 +2037,31 @@ export default function UnitEdit({
                               )}
                             </View>
                           ))}
+                      </View>
+                    )}
+                    {showAddType == 'Utility' && (
+                      <View>
+                        <View>
+                          <Text style={[styles.meterDesciptionHeading]}>
+                            New {showAddType}
+                          </Text>
+                        </View>
+                        <TextInput
+                          placeholder={'Type new utility'}
+                          value={addManufacturer}
+                          style={styles.meterInput}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                          onChangeText={(text) => {
+                            setAddManufacturer(text);
+                          }}
+                        />
                       </View>
                     )}
                   </View>
@@ -2230,11 +2259,7 @@ export default function UnitEdit({
                                   maxHeight: height * 0.08,
                                 }}
                                 // items={item.data}
-                                items={[
-                                  {id: 1, name: 'Utility 1', age: 10},
-                                  {id: 2, name: 'Utility 2', age: 11},
-                                  {id: 3, name: 'Utility 3', age: 12},
-                                ]}
+                                items={utilTypes}
                                 onRemoveItem={(item, index) => {
                                   const items = selectUtil.filter(
                                     (sitem) => sitem.id !== item.id,
@@ -2281,8 +2306,7 @@ export default function UnitEdit({
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                 }}
-                                // onPress={() => showAddNewType(item.name)}
-                              >
+                                onPress={() => showAddNewType('Utility')}>
                                 <Icon
                                   size={width * 0.06}
                                   color="#fff"
