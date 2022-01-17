@@ -15,6 +15,7 @@ import {
   Alert,
   FlatList,
   ToastAndroid,
+  TouchableHighlightBase,
 } from 'react-native';
 
 //Packages
@@ -26,7 +27,7 @@ import Loader from '../../components/Loader';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 import Base_URL from '../../api/WebServices';
-
+import Slider from '@react-native-community/slider';
 import Modal from 'react-native-modal';
 import SystemSetting from 'react-native-system-setting';
 import Geolocation from '@react-native-community/geolocation';
@@ -82,6 +83,8 @@ export default class Splash extends React.Component {
       iniLong: 0,
       lat: 0,
       long: 0,
+      latDelta: LATITUDE_DELTA,
+      longDelta: LONGITUDE_DELTA,
       loadScreen: false,
       open: false,
       meterList: [],
@@ -89,6 +92,9 @@ export default class Splash extends React.Component {
       BillingCompanyId: '',
       managementCompany: 'MANAGEMENT COMPANY',
       managementCompanyId: '',
+      radialDis: 0.1,
+      utilTypes: [],
+      selectUtil: [],
       info: {
         propName: '',
         propStreet: '',
@@ -107,6 +113,7 @@ export default class Splash extends React.Component {
       error: {
         property: '',
         meterId: '',
+        utilType: '',
         deviceId: '',
         street: '',
         city: '',
@@ -267,6 +274,7 @@ export default class Splash extends React.Component {
       locationSelected: false,
       lat: null,
       long: null,
+      selectUtil: [],
     });
   };
 
@@ -304,6 +312,7 @@ export default class Splash extends React.Component {
 
   addProperty = () => {
     console.log('kiya Mila', this.state.Name);
+    const selectUtilIds = [];
     if (!this.state.Name) {
       this.setState((prevState) => ({
         ...prevState,
@@ -368,6 +377,31 @@ export default class Splash extends React.Component {
         },
       }));
     }
+    if (this.state.selectUtil == null) {
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          utilType: 'Please select a utility type from above', // update the value of specific key
+        },
+      }));
+      ToastAndroid.show('Please select a Utility Type', ToastAndroid.SHORT);
+      return;
+    } else {
+      for (let i = 0; i < this.state.selectUtil?.length; i++) {
+        selectUtilIds.push(this.state.selectUtil[i].id);
+      }
+      console.log('SELECTED UTILITY IDs', selectUtilIds);
+      this.setState((prevState) => ({
+        ...prevState,
+        error: {
+          // object that we want to update
+          ...prevState.error, // keep all other key-value pairs
+          utilType: '', // update the value of specific key
+        },
+      }));
+    }
     if (this.state.deviceData[1].selectId === '') {
       this.setState((prevState) => ({
         ...prevState,
@@ -416,6 +450,7 @@ export default class Splash extends React.Component {
           device_id: this.state.deviceData[1].selectId,
           propLat: this.state.lat,
           propLong: this.state.long,
+          utility_type_id: selectUtilIds,
         }),
         () => this.props.loader(true),
       );
@@ -457,8 +492,8 @@ export default class Splash extends React.Component {
   };
 
   moveMarker = (region) => {
-    this.setState({lat: region?.latitude});
-    this.setState({long: region?.longitude});
+    this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
+    this.setState({long: region?.longitude, longDelta: region?.longitudeDelta});
     var dis = getDistance(
       {
         latitude: this.state.iniLat,
@@ -469,7 +504,7 @@ export default class Splash extends React.Component {
         longitude: region?.longitude,
       },
     );
-    console.log('DISTANCE BETWEEN', dis);
+    console.log('region BETWEEN', region);
   };
 
   catchLocation = (region) => {
@@ -528,8 +563,8 @@ export default class Splash extends React.Component {
         var initialRegion = {
           latitude: lat,
           longitude: long,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
+          latitudeDelta: this.state.latDelta,
+          longitudeDelta: this.state.longDelta,
         };
         // this.setState({initialPosition: initialRegion});
         this.setState({
@@ -614,6 +649,11 @@ export default class Splash extends React.Component {
     this.setState({meterList: arr2});
     this.setState({loadMeters: false});
 
+    const utilRes = await api.get('/property/equipment/utility-type/all');
+
+    console.log('arr1--->', utilRes);
+    this.setState({utilTypes: utilRes?.data?.data});
+
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
@@ -623,6 +663,14 @@ export default class Splash extends React.Component {
     this.setState({loadManufacturers: false});
 
     // setMeterListLoader(false);
+  };
+
+  AddTypes = (item) => {
+    console.log('ADD CHALA', item);
+    const items = this.state.selectUtil;
+    items.push(item);
+    // selectedTypes.current = items;
+    this.setState({selectUtil: items});
   };
 
   enableLocation = async () => {
@@ -674,6 +722,7 @@ export default class Splash extends React.Component {
 
   render() {
     const {loadManufacturers, loadMeters, deviceData} = this.state;
+    console.log('SELECTED UTILITIY', this.state.selectUtil);
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
@@ -708,6 +757,43 @@ export default class Splash extends React.Component {
                   justifyContent: 'center',
                   borderRadius: width * 0.03,
                 }}>
+                <View
+                  style={{
+                    flex: 1,
+                    zIndex: 2,
+                    position: 'absolute',
+                    top: width * 0.16,
+                    width: width * 0.72,
+                    backgroundColor: 'white',
+                  }}>
+                  <Text
+                    style={{
+                      marginTop: width * 0.02,
+                      marginLeft: width * 0.03,
+                    }}>
+                    RADIAL DISTANCE (KM)*
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      margin: width * 0.01,
+                    }}>
+                    <Slider
+                      style={{width: width * 0.55, height: width * 0.08}}
+                      minimumValue={0.1}
+                      maximumValue={1}
+                      thumbTintColor="#25AAE1ec"
+                      minimumTrackTintColor="#25AAE1ec"
+                      maximumTrackTintColor="#000000"
+                      onValueChange={(value) =>
+                        this.setState({radialDis: value.toString().slice(0, 3)})
+                      }
+                      step={0.1}
+                    />
+                    <Text>{this.state.radialDis} KM</Text>
+                  </View>
+                </View>
                 <View
                   style={{
                     flex: 1,
@@ -827,7 +913,7 @@ export default class Splash extends React.Component {
                         latitude: this.state.lat,
                         longitude: this.state.long,
                       }}
-                      radius={1500}
+                      radius={this.state.radialDis * 1000}
                       fillColor="rgba(12,170,225,0.3)"
                       strokeColor="rgba(12,170,225,1)"
                     />
@@ -1088,6 +1174,144 @@ export default class Splash extends React.Component {
                           type="error"
                           visible={this.state.error.meterId}>
                           {this.state.error.meterId}
+                        </HelperText>
+                      ) : null}
+
+                      <View style={styles.desciptionContainer}>
+                        <Text style={styles.desciptionHeading}>
+                          Utility Type Info
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          width: '90%',
+                          zIndex: 2,
+                          alignSelf: 'center',
+                        }}>
+                        <View>
+                          <FlatList
+                            data={this.state.selectUtil}
+                            // extraData={selectedTypes.current}
+                            horizontal
+                            renderItem={({item}) => (
+                              <View
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 8,
+                                  flexDirection: 'row',
+                                  padding: 5,
+                                  margin: 5,
+                                  height: width * 0.1,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}>
+                                <Text style={{color: 'black'}}>
+                                  {item.name}
+                                </Text>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    const items = this.state.selectUtil.filter(
+                                      (sitem) => sitem.id !== item.id,
+                                    );
+                                    this.setState({selectUtil: items});
+                                  }}>
+                                  <Icon name="close" size={width * 0.05} />
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          />
+                        </View>
+                        <View
+                          pointerEvents={'auto'}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'flex-start',
+                          }}>
+                          <SearchableDropDown
+                            multi={true}
+                            selectedItems={this.state.selectUtil}
+                            onItemSelect={(item) => {
+                              console.log('Test', item);
+                              this.AddTypes(item);
+                            }}
+                            containerStyle={{
+                              paddingBottom: width * 0.02,
+                              width: width * 0.7,
+                            }}
+                            itemStyle={{
+                              padding: width * 0.027,
+                              backgroundColor: 'rgb(247, 247, 247)',
+                              borderColor: '#bbb',
+                              borderWidth: width * 0.0015,
+                              borderRadius: width * 0.015,
+                            }}
+                            itemTextStyle={{color: '#222'}}
+                            itemsContainerStyle={{
+                              maxHeight: height * 0.08,
+                            }}
+                            // items={item.data}
+                            items={this.state.utilTypes}
+                            onRemoveItem={(item, index) => {
+                              const items = this.state.selectUtil.filter(
+                                (sitem) => sitem.id !== item.id,
+                              );
+                              // selectedTypes.current = items;
+                              this.setState({selectUtil: items});
+                            }}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: 'Add Utility Type',
+                              underlineColorAndroid: 'transparent',
+                              style: {
+                                padding: width * 0.027,
+                                margin: 0,
+                                borderTopLeftRadius: width * 0.015,
+                                borderBottomLeftRadius: width * 0.015,
+                                borderColor: 'black',
+                                height: width * 0.13,
+                                backgroundColor: '#F6F6F6',
+                                borderTopWidth: width * 0.0019,
+                                borderLeftWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                              },
+                              // onTextChange: (text) => {
+                              //   onChangeManufacturer(text, index);
+                              // },
+                              // value: setTimeout(() => item.select, 200),
+                              // defaultValue: item.select,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              width: width * 0.1,
+                              backgroundColor: '#25AAE199',
+                              borderTopRightRadius: width * 0.015,
+                              borderBottomRightRadius: width * 0.015,
+                              borderTopWidth: width * 0.0019,
+                              borderRightWidth: width * 0.0019,
+                              borderBottomWidth: width * 0.0019,
+                              height: width * 0.13,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            // onPress={() => showAddNewType(item.name)}
+                          >
+                            <Icon
+                              size={width * 0.06}
+                              color="#fff"
+                              name={'add'}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                      {this.state.error.utilType ? (
+                        <HelperText
+                          type="error"
+                          visible={this.state.error.utilType}>
+                          {this.state.error.utilType}
                         </HelperText>
                       ) : null}
                       <View style={styles.desciptionContainer}>
