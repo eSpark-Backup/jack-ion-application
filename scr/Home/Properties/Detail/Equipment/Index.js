@@ -75,6 +75,7 @@ export default class Splash extends Component {
       realData: [],
       fileMenuVisible: false,
       addMenuVisible: false,
+      currUnitIndex: null,
       FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
       AddArray: [
         {name: 'Add a Unit', func: this.selectAndCloseAdd},
@@ -348,16 +349,21 @@ export default class Splash extends Component {
     });
   };
 
-  actionOnPress = (unit) => {
-    this.props.navigation.navigate('U_Details', {
-      unitId: unit.item.id,
-      buildingName: this.state.buildingData.name,
-      buildingId: this.state.editBuildId,
-      propertyId: this.props.navigation.state.params.item.item.id,
-      propertyLat: this.props.navigation.state.params.item.item.latitude,
-      propertyLong: this.props.navigation.state.params.item.item.longitude,
+  actionOnPress = (unit, index) => {
+    // this.props.navigation.navigate('U_Details', {
+    //   unitId: unit.item.id,
+    //   buildingName: this.state.buildingData.name,
+    //   buildingId: this.state.editBuildId,
+    //   propertyId: this.props.navigation.state.params.item.item.id,
+    //   propertyLat: this.props.navigation.state.params.item.item.latitude,
+    //   propertyLong: this.props.navigation.state.params.item.item.longitude,
+    // });
+    this.setState({
+      // showSearch: false,
+      // loader: true,
+      // loaderBuildings: true,
+      currUnitIndex: index === this.state.currUnitIndex ? null : index,
     });
-    this.setState({showSearch: false, loader: true, loaderBuildings: true});
   };
   typeSwitcher = (arg) => {
     switch (arg.toLowerCase()) {
@@ -375,11 +381,16 @@ export default class Splash extends Component {
         break;
     }
   };
-  _renderUnitList = (unit) => {
-    console.log('>><<<<<<<<<', this.state.realData.unit_meter);
+  _renderUnitList = (unit, index) => {
+    console.log('>><<<<<<<<<', unit);
     return (
-      <View style={{alignItems: 'center'}}>
-        <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
+      <View
+        style={{
+          alignItems: 'center',
+          marginVertical: height * 0.01,
+          width: width * 0.9,
+        }}>
+        <TouchableOpacity onPress={() => this.actionOnPress(unit, index)}>
           <View style={[styles.infoViewContainer]}>
             <View style={styles.infoViewInner}>
               <View style={styles.unitNameContainer}>
@@ -474,6 +485,31 @@ export default class Splash extends Component {
             </View>
           </View>
         </TouchableOpacity>
+        {index === this.state.currUnitIndex ? (
+          <View
+            style={{
+              height: height * 0.07,
+              width: '100%',
+              backgroundColor: 'white',
+              borderBottomRightRadius: width * 0.01,
+              borderBottomLeftRadius: width * 0.01,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginHorizontal: width * 0.05,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity style={{margin: width * 0.01}}>
+                <Text>View</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{margin: width * 0.01}}>
+                <Text>Edit</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={{margin: width * 0.01}}>
+              <Text>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
     );
   };
@@ -1066,7 +1102,10 @@ export default class Splash extends Component {
                     }}
                     showsVerticalScrollIndicator={false}
                     style={{marginBottom: width * 0.29}}
-                    contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+                    contentContainerStyle={{
+                      backgroundColor: '#F5F5F5',
+                      alignItems: 'center',
+                    }}
                     numColumns={1}
                     initialNumToRender={realData.length}
                     data={this._customSort(realData)}
