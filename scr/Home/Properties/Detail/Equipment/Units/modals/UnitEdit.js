@@ -202,6 +202,7 @@ export default function UnitEdit({
   const [reasonDes, setReasonDes] = useState('');
   const [reasonText, setReasonText] = useState('');
   const [addManufacturer, setAddManufacturer] = useState('');
+  const [addUtility, setAddUtility] = useState('');
   const [showAddType, setShowAddType] = useState(false);
   const [meterListLoader, setMeterListLoader] = useState(true);
   const [sliderNumber, setSliderNumber] = useState(1);
@@ -1569,6 +1570,31 @@ export default function UnitEdit({
       } else {
         alert(ManufacturersResponse?.data?.message);
       }
+    } else if (showAddType == 'Utility') {
+      let data = {
+        name: addManufacturer,
+      };
+      const UtilityResponse = await api.post(
+        '/property/equipment/utility-type/add',
+        data,
+      );
+      if (UtilityResponse?.data?.bool) {
+        console.log('datachecckk-->>', UtilityResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        callApi();
+        cancelAddNewType();
+      } else {
+        alert(UtilityResponse?.data?.message);
+      }
     } else {
       let data = {
         name: addDevice[2].select,
@@ -1620,6 +1646,7 @@ export default function UnitEdit({
     deviceData[2].selectId = '';
     setAddDevice(deviceData);
     setAddManufacturer('');
+    setAddUtility('');
   };
 
   const getMeterData = (data) => {
@@ -2043,12 +2070,12 @@ export default function UnitEdit({
                       <View>
                         <View>
                           <Text style={[styles.meterDesciptionHeading]}>
-                            New {showAddType}
+                            New {showAddType} Type
                           </Text>
                         </View>
                         <TextInput
                           placeholder={'Type new utility'}
-                          value={addManufacturer}
+                          value={addUtility}
                           style={styles.meterInput}
                           mode={'outlined'}
                           theme={{
@@ -2059,7 +2086,7 @@ export default function UnitEdit({
                             },
                           }}
                           onChangeText={(text) => {
-                            setAddManufacturer(text);
+                            setAddUtility(text);
                           }}
                         />
                       </View>
@@ -2078,6 +2105,8 @@ export default function UnitEdit({
                               addDevice[1].selectId &&
                               addDevice[2].select
                             ? '#25AAE1ec'
+                            : showAddType == 'Utility' && addUtility
+                            ? '#25AAE1ec'
                             : '#D0D0D0',
                       },
                     ]}
@@ -2088,6 +2117,8 @@ export default function UnitEdit({
                           addDevice[0].selectId &&
                           addDevice[1].selectId &&
                           addDevice[2].select
+                        ? false
+                        : showAddType == 'Utility' && addUtility
                         ? false
                         : true
                     }>

@@ -95,6 +95,8 @@ export default class Splash extends React.Component {
       radialDis: 0.1,
       utilTypes: [],
       selectUtil: [],
+      addNewType: false,
+      showAddType: '',
       info: {
         propName: '',
         propStreet: '',
@@ -308,6 +310,21 @@ export default class Splash extends React.Component {
         ],
       );
     }
+  };
+
+  showAddNewType = (value) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    this.setState({addNewType: true});
+    this.setState({showAddType: value});
   };
 
   addProperty = () => {
@@ -1188,124 +1205,162 @@ export default class Splash extends React.Component {
                           zIndex: 2,
                           alignSelf: 'center',
                         }}>
-                        <View>
-                          <FlatList
-                            data={this.state.selectUtil}
-                            // extraData={selectedTypes.current}
-                            horizontal
-                            renderItem={({item}) => (
-                              <View
+                        {this.state.addNewType ? (
+                          <View>
+                            <View>
+                              <Text
                                 style={{
-                                  borderWidth: 1,
-                                  borderRadius: 8,
-                                  flexDirection: 'row',
-                                  padding: 5,
-                                  margin: 5,
-                                  height: width * 0.1,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
+                                  fontSize: width * 0.03,
+                                  color: '#3E4A4F',
+                                  textTransform: 'capitalize',
+                                  fontFamily: Fonts.ComfortaaRegular,
+                                  marginBottom: width * 0.01,
                                 }}>
-                                <Text style={{color: 'black'}}>
-                                  {item.name}
-                                </Text>
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    const items = this.state.selectUtil.filter(
-                                      (sitem) => sitem.id !== item.id,
-                                    );
-                                    this.setState({selectUtil: items});
-                                  }}>
-                                  <Icon name="close" size={width * 0.05} />
-                                </TouchableOpacity>
-                              </View>
-                            )}
-                          />
-                        </View>
-                        <View
-                          pointerEvents={'auto'}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
-                          }}>
-                          <SearchableDropDown
-                            multi={true}
-                            selectedItems={this.state.selectUtil}
-                            onItemSelect={(item) => {
-                              console.log('Test', item);
-                              this.AddTypes(item);
-                            }}
-                            containerStyle={{
-                              paddingBottom: width * 0.02,
-                              width: width * 0.7,
-                            }}
-                            itemStyle={{
-                              padding: width * 0.027,
-                              backgroundColor: 'rgb(247, 247, 247)',
-                              borderColor: '#bbb',
-                              borderWidth: width * 0.0015,
-                              borderRadius: width * 0.015,
-                            }}
-                            itemTextStyle={{color: '#222'}}
-                            itemsContainerStyle={{
-                              maxHeight: height * 0.08,
-                            }}
-                            // items={item.data}
-                            items={this.state.utilTypes}
-                            onRemoveItem={(item, index) => {
-                              const items = this.state.selectUtil.filter(
-                                (sitem) => sitem.id !== item.id,
-                              );
-                              // selectedTypes.current = items;
-                              this.setState({selectUtil: items});
-                            }}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder: 'Add Utility Type',
-                              underlineColorAndroid: 'transparent',
-                              style: {
-                                padding: width * 0.027,
-                                margin: 0,
-                                borderTopLeftRadius: width * 0.015,
-                                borderBottomLeftRadius: width * 0.015,
-                                borderColor: 'black',
-                                height: width * 0.13,
-                                backgroundColor: '#F6F6F6',
-                                borderTopWidth: width * 0.0019,
-                                borderLeftWidth: width * 0.0019,
-                                borderBottomWidth: width * 0.0019,
-                              },
-                              // onTextChange: (text) => {
-                              //   onChangeManufacturer(text, index);
-                              // },
-                              // value: setTimeout(() => item.select, 200),
-                              // defaultValue: item.select,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              width: width * 0.1,
-                              backgroundColor: '#25AAE199',
-                              borderTopRightRadius: width * 0.015,
-                              borderBottomRightRadius: width * 0.015,
-                              borderTopWidth: width * 0.0019,
-                              borderRightWidth: width * 0.0019,
-                              borderBottomWidth: width * 0.0019,
-                              height: width * 0.13,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            // onPress={() => showAddNewType(item.name)}
-                          >
-                            <Icon
-                              size={width * 0.06}
-                              color="#fff"
-                              name={'add'}
+                                New {this.state.showAddType}
+                              </Text>
+                            </View>
+                            <TextInput
+                              placeholder={'Type new Utility'}
+                              // value={addManufacturer}
+                              style={{
+                                width: width * 0.8,
+                                justifyContent: 'flex-end',
+                                fontSize: width * 0.036,
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                              onChangeText={(text) => {
+                                console.log('UTILITY ADD', text);
+                              }}
                             />
-                          </TouchableOpacity>
-                        </View>
+                          </View>
+                        ) : (
+                          <View>
+                            <View>
+                              <FlatList
+                                data={this.state.selectUtil}
+                                // extraData={selectedTypes.current}
+                                horizontal
+                                renderItem={({item}) => (
+                                  <View
+                                    style={{
+                                      borderWidth: 1,
+                                      borderRadius: 8,
+                                      flexDirection: 'row',
+                                      padding: 5,
+                                      margin: 5,
+                                      height: width * 0.1,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}>
+                                    <Text style={{color: 'black'}}>
+                                      {item.name}
+                                    </Text>
+                                    <TouchableOpacity
+                                      onPress={() => {
+                                        const items = this.state.selectUtil.filter(
+                                          (sitem) => sitem.id !== item.id,
+                                        );
+                                        this.setState({selectUtil: items});
+                                      }}>
+                                      <Icon name="close" size={width * 0.05} />
+                                    </TouchableOpacity>
+                                  </View>
+                                )}
+                              />
+                            </View>
+                            <View
+                              pointerEvents={'auto'}
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'flex-start',
+                              }}>
+                              <SearchableDropDown
+                                multi={true}
+                                selectedItems={this.state.selectUtil}
+                                onItemSelect={(item) => {
+                                  console.log('Test', item);
+                                  this.AddTypes(item);
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                  width: width * 0.7,
+                                }}
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                }}
+                                itemTextStyle={{color: '#222'}}
+                                itemsContainerStyle={{
+                                  maxHeight: height * 0.08,
+                                }}
+                                // items={item.data}
+                                items={this.state.utilTypes}
+                                onRemoveItem={(item, index) => {
+                                  const items = this.state.selectUtil.filter(
+                                    (sitem) => sitem.id !== item.id,
+                                  );
+                                  // selectedTypes.current = items;
+                                  this.setState({selectUtil: items});
+                                }}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder: 'Add Utility Type',
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderTopLeftRadius: width * 0.015,
+                                    borderBottomLeftRadius: width * 0.015,
+                                    borderColor: 'black',
+                                    height: width * 0.13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderTopWidth: width * 0.0019,
+                                    borderLeftWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                  },
+                                  // onTextChange: (text) => {
+                                  //   onChangeManufacturer(text, index);
+                                  // },
+                                  // value: setTimeout(() => item.select, 200),
+                                  // defaultValue: item.select,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <TouchableOpacity
+                                style={{
+                                  width: width * 0.1,
+                                  backgroundColor: '#25AAE199',
+                                  borderTopRightRadius: width * 0.015,
+                                  borderBottomRightRadius: width * 0.015,
+                                  borderTopWidth: width * 0.0019,
+                                  borderRightWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  height: width * 0.13,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                onPress={() => this.showAddNewType('Utility')}>
+                                <Icon
+                                  size={width * 0.06}
+                                  color="#fff"
+                                  name={'add'}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        )}
                       </View>
                       {this.state.error.utilType ? (
                         <HelperText
