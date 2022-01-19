@@ -97,6 +97,31 @@ export default class Splash extends React.Component {
       selectUtil: [],
       addNewType: false,
       showAddType: '',
+      addUtility: '',
+      addManufacturer: '',
+      addDevice: [
+        {
+          id: 0,
+          select: '',
+          selectId: '',
+          name: 'Manufacturer',
+          data: [],
+        },
+        {
+          id: 1,
+          selectId: '',
+          select: '',
+          name: 'Device Type',
+          data: [],
+        },
+        {
+          id: 2,
+          selectId: '',
+          select: '',
+          name: 'New Device',
+          data: [],
+        },
+      ],
       info: {
         propName: '',
         propStreet: '',
@@ -167,6 +192,19 @@ export default class Splash extends React.Component {
       default:
         break;
     }
+  };
+
+  getNewDeviceData = (value, index) => {
+    let listSlide = [...this.state.addDevice]; // copying the old datas array
+    listSlide[index].select = value?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[index].selectId = value?.id; // replace e.target.value with whatever you want to change it to
+    this.setState({addDevice: listSlide});
+  };
+
+  onChangeNewDevice = (e, index) => {
+    let listSlide = [...this.state.addDevice]; // copying the old datas array
+    listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
+    this.setState({addDevice: listSlide});
   };
 
   addMeterInNewArray = (value) => {
@@ -277,6 +315,7 @@ export default class Splash extends React.Component {
       lat: null,
       long: null,
       selectUtil: [],
+      addNewType: false,
     });
   };
 
@@ -468,11 +507,121 @@ export default class Splash extends React.Component {
           propLat: this.state.lat,
           propLong: this.state.long,
           utility_type_id: selectUtilIds,
+          radial_dist: Number(this.state.radialDis * 1000),
         }),
         () => this.props.loader(true),
       );
       this.context.addProp(this.state.info);
       this.clearInputs();
+    }
+  };
+
+  cancelAddType = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    let deviceData = [...this.state.addDevice]; // copying the old datas array
+    deviceData[0].select = '';
+    deviceData[0].selectId = '';
+    deviceData[1].select = '';
+    deviceData[1].selectId = '';
+    deviceData[2].select = '';
+    deviceData[2].selectId = '';
+    this.setState({
+      addNewType: false,
+      showAddType: '',
+      addManufacturer: '',
+      addUtility: '',
+      addDevice: deviceData,
+    });
+  };
+
+  doneAddType = async () => {
+    if (this.state.showAddType == 'Manufacturer') {
+      let data = {
+        name: this.state.addManufacturer,
+      };
+      const ManufacturersResponse = await api.post(
+        '/property/equipment/manufacturer/add',
+        data,
+      );
+      if (ManufacturersResponse?.data?.bool) {
+        this.setState({loadManufacturers: true});
+        console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+      } else {
+        alert(ManufacturersResponse?.data?.message);
+      }
+    } else if (this.state.showAddType == 'Utility') {
+      let data = {
+        name: this.state.addUtility,
+      };
+      const UtilityResponse = await api.post(
+        '/property/equipment/utility-type/add',
+        data,
+      );
+      if (UtilityResponse?.data?.bool) {
+        console.log('datachecckk-->>', UtilityResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+      } else {
+        alert(UtilityResponse?.data?.message);
+      }
+    } else {
+      let data = {
+        name: this.state.addDevice[2].select,
+        manufacturer_id: this.state.addDevice[0].selectId,
+        device_type_id: this.state.addDevice[1].selectId,
+      };
+      const DeviceTypesResponse = await api.post(
+        '/property/equipment/device/add',
+        data,
+      );
+      if (DeviceTypesResponse?.data?.bool) {
+        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+      } else {
+        alert(DeviceTypesResponse?.data?.message);
+      }
     }
   };
 
@@ -679,7 +828,15 @@ export default class Splash extends React.Component {
     this.setState({deviceData: listSlide});
     this.setState({loadManufacturers: false});
 
-    // setMeterListLoader(false);
+    let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
+    deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+    this.setState({addDevice: deviceDataManufacturer});
+    const DeviceTypesResponse = await api.get(
+      '/property/equipment/device-type/all',
+    );
+    let deviceData = [...this.state.addDevice]; // copying the old datas array
+    deviceData[1].data = DeviceTypesResponse?.data?.data;
+    this.setState({addDevice: deviceData});
   };
 
   AddTypes = (item) => {
@@ -1205,7 +1362,8 @@ export default class Splash extends React.Component {
                           zIndex: 2,
                           alignSelf: 'center',
                         }}>
-                        {this.state.addNewType ? (
+                        {this.state.addNewType &&
+                        this.state.showAddType == 'Utility' ? (
                           <View>
                             <View>
                               <Text
@@ -1221,7 +1379,7 @@ export default class Splash extends React.Component {
                             </View>
                             <TextInput
                               placeholder={'Type new Utility'}
-                              // value={addManufacturer}
+                              value={this.state.addUtility}
                               style={{
                                 width: width * 0.8,
                                 justifyContent: 'flex-end',
@@ -1236,9 +1394,44 @@ export default class Splash extends React.Component {
                                 },
                               }}
                               onChangeText={(text) => {
-                                console.log('UTILITY ADD', text);
+                                this.setState({addUtility: text});
                               }}
                             />
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                              }}>
+                              <TouchableOpacity
+                                onPress={() => this.cancelAddType()}>
+                                <Text
+                                  style={{
+                                    fontWeight: 'bold',
+                                    fontSize: width * 0.045,
+                                    color: '#25AAE1ec',
+                                    width: width * 0.16,
+                                    textAlign: 'center',
+                                  }}>
+                                  Cancel
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => this.doneAddType()}
+                                disabled={this.state.addUtility ? false : true}>
+                                <Text
+                                  style={{
+                                    fontWeight: 'bold',
+                                    fontSize: width * 0.045,
+                                    color: this.state.addUtility
+                                      ? '#25AAE1ec'
+                                      : '#d0d0d0',
+                                    width: width * 0.16,
+                                    textAlign: 'center',
+                                  }}>
+                                  Add
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         ) : (
                           <View>
@@ -1374,9 +1567,249 @@ export default class Splash extends React.Component {
                           device Type Info
                         </Text>
                       </View>
-                      <View>
+                      <View
+                        style={{
+                          // height: height * 0.25,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 2,
+                        }}>
                         {loadManufacturers ? (
                           <ActivityIndicator size="large" color="#25AAE1ec" />
+                        ) : this.state.addNewType &&
+                          this.state.showAddType == 'Manufacturer' ? (
+                          <View
+                            style={{
+                              width: '90%',
+                              zIndex: 2,
+                              alignSelf: 'center',
+                            }}>
+                            <View>
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: width * 0.03,
+                                    color: '#3E4A4F',
+                                    textTransform: 'capitalize',
+                                    fontFamily: Fonts.ComfortaaRegular,
+                                    marginBottom: width * 0.01,
+                                  }}>
+                                  New {this.state.showAddType}
+                                </Text>
+                              </View>
+                              <TextInput
+                                placeholder={'Type new manufacturer'}
+                                value={this.state.addManufacturer}
+                                style={{
+                                  width: width * 0.8,
+                                  justifyContent: 'flex-end',
+                                  fontSize: width * 0.036,
+                                }}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                                onChangeText={(text) => {
+                                  this.setState({addManufacturer: text});
+                                }}
+                              />
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-around',
+                                  marginVertical: height * 0.01,
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() => this.cancelAddType()}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: '#25AAE1ec',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => this.doneAddType()}
+                                  disabled={
+                                    this.state.addManufacturer ? false : true
+                                  }>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: this.state.addManufacturer
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Add
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          </View>
+                        ) : this.state.addNewType &&
+                          this.state.showAddType == 'Device' ? (
+                          <View
+                            style={{
+                              width: '90%',
+                              zIndex: 2,
+                              alignSelf: 'center',
+                            }}>
+                            {this.state.addDevice &&
+                              this.state.addDevice?.map((item, index) => (
+                                <View
+                                  style={{
+                                    width: width * 0.8,
+                                    // zIndex: 9,
+                                  }}
+                                  key={item.id}>
+                                  <View>
+                                    <Text style={styles.meterDesciptionHeading}>
+                                      {item.name}
+                                    </Text>
+                                  </View>
+                                  {index < 2 ? (
+                                    <SearchableDropDown
+                                      onItemSelect={(items) => {
+                                        this.getNewDeviceData(items, index);
+                                      }}
+                                      containerStyle={{
+                                        paddingBottom: width * 0.02,
+                                      }}
+                                      itemStyle={{
+                                        padding: width * 0.027,
+                                        backgroundColor: '#fff',
+                                        borderColor: '#bbb',
+                                        borderWidth: width * 0.0015,
+                                        borderRadius: width * 0.015,
+                                        margin: width * 0.005,
+                                      }}
+                                      itemTextStyle={{color: '#222'}}
+                                      itemsContainerStyle={
+                                        Platform.OS == 'android'
+                                          ? {
+                                              height: width * 0.2,
+                                              zIndex: 1,
+                                              position: 'absolute',
+                                              width: width * 0.8,
+                                              top: width * 0.1,
+                                              flex: 1,
+                                              zIndex: 20,
+                                              backgroundColor: 'white',
+                                              elevation: width * 0.01,
+                                              shadowColor: '#000',
+                                              shadowOffset: {
+                                                width: 0,
+                                                height: 2,
+                                              },
+                                              shadowOpacity: 0.25,
+                                              shadowRadius: 3.84,
+                                            }
+                                          : {height: width * 0.2, zIndex: 1}
+                                      }
+                                      items={item.data}
+                                      resetValue={false}
+                                      textInputProps={{
+                                        placeholder: item.name,
+                                        underlineColorAndroid: 'transparent',
+                                        style: {
+                                          padding: width * 0.027,
+                                          margin: 0,
+                                          borderRadius: width * 0.015,
+                                          height: width * 0.13,
+                                          backgroundColor: '#F6F6F6',
+                                          borderWidth: width * 0.0019,
+                                        },
+                                        onTextChange: (text) => {
+                                          this.onChangeNewDevice(text, index);
+                                        },
+                                        value: setTimeout(
+                                          () => item.select,
+                                          200,
+                                        ),
+                                        defaultValue: item.select,
+                                      }}
+                                      listProps={{
+                                        nestedScrollEnabled: true,
+                                      }}
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      placeholder={'Type new Device'}
+                                      value={item.select}
+                                      style={styles.meterInput}
+                                      mode={'outlined'}
+                                      theme={{
+                                        colors: {
+                                          text: '#25AAE1ec',
+                                          primary: '#25AAE1ec',
+                                          selectionColor: 'red',
+                                          zIndex: 10,
+                                        },
+                                      }}
+                                      onChangeText={(text) => {
+                                        this.onChangeNewDevice(text, index);
+                                      }}
+                                    />
+                                  )}
+                                </View>
+                              ))}
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                                marginVertical: height * 0.01,
+                              }}>
+                              <TouchableOpacity
+                                onPress={() => this.cancelAddType()}>
+                                <Text
+                                  style={{
+                                    fontWeight: 'bold',
+                                    fontSize: width * 0.045,
+                                    color: '#25AAE1ec',
+                                    width: width * 0.16,
+                                    textAlign: 'center',
+                                  }}>
+                                  Cancel
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => this.doneAddType()}
+                                disabled={
+                                  this.state.addDevice[0].selectId &&
+                                  this.state.addDevice[1].selectId &&
+                                  this.state.addDevice[2].select
+                                    ? false
+                                    : true
+                                }>
+                                <Text
+                                  style={{
+                                    fontWeight: 'bold',
+                                    fontSize: width * 0.045,
+                                    color:
+                                      this.state.addDevice[0].selectId &&
+                                      this.state.addDevice[1].selectId &&
+                                      this.state.addDevice[2].select
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                    width: width * 0.16,
+                                    textAlign: 'center',
+                                  }}>
+                                  Add
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
                         ) : (
                           deviceData.map((item, index) => (
                             <View
@@ -1390,73 +1823,75 @@ export default class Splash extends React.Component {
                                 {item.name}*
                               </Text>
                               <View
-                                pointerEvents={
-                                  index > 0
-                                    ? deviceData[0].selectId
-                                      ? 'auto'
-                                      : 'none'
-                                    : 'auto'
-                                }
                                 style={{
                                   flexDirection: 'row',
                                   alignItems: 'flex-start',
                                 }}>
-                                <SearchableDropDown
-                                  onItemSelect={(item) => {
-                                    this.getDevice(item, index);
-                                    // console.log('kia mila', item);
-                                  }}
-                                  containerStyle={{
-                                    paddingBottom: width * 0.02,
-                                    width: width * 0.7,
-                                  }}
-                                  itemStyle={{
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                    zIndex: 99,
-                                  }}
-                                  itemTextStyle={{color: '#222'}}
-                                  itemsContainerStyle={{
-                                    maxHeight: height * 0.08,
-                                  }}
-                                  items={item.data}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder:
-                                      index == 1
-                                        ? deviceData[0].selectId
-                                          ? item.name
-                                          : 'First Select Manufacture'
-                                        : item.name,
-                                    underlineColorAndroid: 'transparent',
-                                    style: {
+                                <View
+                                  pointerEvents={
+                                    index > 0
+                                      ? deviceData[0].selectId
+                                        ? 'auto'
+                                        : 'none'
+                                      : 'auto'
+                                  }>
+                                  <SearchableDropDown
+                                    onItemSelect={(item) => {
+                                      this.getDevice(item, index);
+                                      // console.log('kia mila', item);
+                                    }}
+                                    containerStyle={{
+                                      paddingBottom: width * 0.02,
+                                      width: width * 0.7,
+                                    }}
+                                    itemStyle={{
                                       padding: width * 0.027,
-                                      margin: 0,
-                                      borderTopLeftRadius: width * 0.015,
-                                      borderBottomLeftRadius: width * 0.015,
-                                      borderColor: item.error
-                                        ? '#A3001B'
-                                        : 'black',
-                                      height: width * 0.13,
-                                      backgroundColor: '#F6F6F6',
-                                      borderTopWidth: width * 0.0019,
-                                      borderLeftWidth: width * 0.0019,
-                                      borderBottomWidth: width * 0.0019,
-                                      zIndex: 0,
-                                    },
-                                    onTextChange: (text) => {
-                                      this.onChangeManufacturer(text, index);
-                                    },
-                                    value: setTimeout(() => item.select, 200),
-                                    defaultValue: item.select,
-                                  }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
-                                  }}
-                                />
+                                      backgroundColor: 'rgb(247, 247, 247)',
+                                      borderColor: '#bbb',
+                                      borderWidth: width * 0.0015,
+                                      borderRadius: width * 0.015,
+                                      zIndex: 99,
+                                    }}
+                                    itemTextStyle={{color: '#222'}}
+                                    itemsContainerStyle={{
+                                      maxHeight: height * 0.08,
+                                    }}
+                                    items={item.data}
+                                    resetValue={false}
+                                    textInputProps={{
+                                      placeholder:
+                                        index == 1
+                                          ? deviceData[0].selectId
+                                            ? item.name
+                                            : 'First Select Manufacture'
+                                          : item.name,
+                                      underlineColorAndroid: 'transparent',
+                                      style: {
+                                        padding: width * 0.027,
+                                        margin: 0,
+                                        borderTopLeftRadius: width * 0.015,
+                                        borderBottomLeftRadius: width * 0.015,
+                                        borderColor: item.error
+                                          ? '#A3001B'
+                                          : 'black',
+                                        height: width * 0.13,
+                                        backgroundColor: '#F6F6F6',
+                                        borderTopWidth: width * 0.0019,
+                                        borderLeftWidth: width * 0.0019,
+                                        borderBottomWidth: width * 0.0019,
+                                        zIndex: 0,
+                                      },
+                                      onTextChange: (text) => {
+                                        this.onChangeManufacturer(text, index);
+                                      },
+                                      value: setTimeout(() => item.select, 200),
+                                      defaultValue: item.select,
+                                    }}
+                                    listProps={{
+                                      nestedScrollEnabled: true,
+                                    }}
+                                  />
+                                </View>
                                 <TouchableOpacity
                                   style={{
                                     width: width * 0.1,
@@ -1470,8 +1905,9 @@ export default class Splash extends React.Component {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                   }}
-                                  // onPress={() => showAddNewType(item.name)}
-                                >
+                                  onPress={() =>
+                                    this.showAddNewType(item.name)
+                                  }>
                                   <Icon
                                     size={width * 0.06}
                                     color="#fff"
