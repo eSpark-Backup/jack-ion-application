@@ -966,10 +966,6 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-    const reasonBase64s = [];
-    for (let i = 0; i < reasonPath?.length; i++) {
-      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
-    }
 
     const addMeter = meterListData.filter(
       (item) => item.meter_id != meterAddingId,
@@ -999,8 +995,12 @@ export default function UnitEdit({
 
   const updateData = () => {
     const reasonBase64s = [];
+    const selectUtilIds = [];
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
+    }
+    for (let i = 0; i < selectUtil?.length; i++) {
+      selectUtilIds.push(selectUtil[i].id);
     }
     var meterArray = [...meterListData]; // copying the old datas array
     meterArray.push({
@@ -1021,6 +1021,7 @@ export default function UnitEdit({
       attachedTo_name: attachedTo,
       thumbnail: filePath,
       installation_status: installationStatus,
+      utility_type_id: selectUtilIds,
       reasons: [
         {
           options_reason_id: reasonId,
@@ -1043,7 +1044,7 @@ export default function UnitEdit({
   const updateMeterData = () => {
     const reasonBase64s = [];
     for (let i = 0; i < reasonPath?.length; i++) {
-      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
+      reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
     }
     var loopData = [...meterData];
 
@@ -1060,7 +1061,7 @@ export default function UnitEdit({
             item?.reasons[0]?.text_reason == null
               ? 0
               : item?.reasons[0]?.text_reason,
-          picture: [`data:image/jpeg;base64,${reasonBase64s}`],
+          picture: reasonBase64s,
         });
       }
       loopData.push({
@@ -1073,6 +1074,7 @@ export default function UnitEdit({
         longitude: item.longitude,
         attachedTo_id: item.attachedTo_id,
         thumbnail: `data:image/jpeg;base64,${imageBase64}`,
+        utility_type_id: item.utility_type_id,
         installation_status: Number(item.installation_status),
         ...(item.installation_status == 2 &&
           (type == 'add' || type == 'addMeterDirect'
@@ -1572,7 +1574,7 @@ export default function UnitEdit({
       }
     } else if (showAddType == 'Utility') {
       let data = {
-        name: addManufacturer,
+        name: addUtility,
       };
       const UtilityResponse = await api.post(
         '/property/equipment/utility-type/add',

@@ -146,7 +146,7 @@ class GlobalState extends React.Component {
       zipcode: info.propZipCode,
       property_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
-      management_company_id: info.propManageComp,
+      management_company_id: info.propManageCompId,
       contact_name: info.propContactName,
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
@@ -155,6 +155,8 @@ class GlobalState extends React.Component {
       device_id: info.device_id,
       latitude: info.propLat,
       longitude: info.propLong,
+      utility_type_id: info.utility_type_id,
+      radial_dist: info.radial_dist,
     };
     console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
