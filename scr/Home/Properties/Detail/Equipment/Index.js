@@ -349,22 +349,44 @@ export default class Splash extends Component {
     });
   };
 
-  actionOnPress = (unit, index) => {
-    // this.props.navigation.navigate('U_Details', {
-    //   unitId: unit.item.id,
-    //   buildingName: this.state.buildingData.name,
-    //   buildingId: this.state.editBuildId,
-    //   propertyId: this.props.navigation.state.params.item.item.id,
-    //   propertyLat: this.props.navigation.state.params.item.item.latitude,
-    //   propertyLong: this.props.navigation.state.params.item.item.longitude,
-    // });
+  actionOnPress = (unit) => {
     this.setState({
-      // showSearch: false,
-      // loader: true,
-      // loaderBuildings: true,
-      currUnitIndex: index === this.state.currUnitIndex ? null : index,
+      currUnitIndex:
+        unit.index === this.state.currUnitIndex ? null : unit.index,
     });
   };
+
+  goToDetails = (unit) => {
+    this.props.navigation.navigate('U_Details', {
+      unitId: unit.item.id,
+      buildingName: this.state.buildingData.name,
+      buildingId: this.state.editBuildId,
+      propertyId: this.props.navigation.state.params.item.item.id,
+      propertyLat: this.props.navigation.state.params.item.item.latitude,
+      propertyLong: this.props.navigation.state.params.item.item.longitude,
+    });
+    this.setState({
+      showSearch: false,
+      loader: true,
+      loaderBuildings: true,
+    });
+  };
+
+  deleteUnit = async (id) => {
+    const response = await api.delete(`/property/equipment/unit/${id}`);
+    alert(response?.data?.message);
+  };
+
+  confirmDelete = (id) => {
+    Alert.alert('Delete Meter', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: () => deleteMeter(id)},
+    ]);
+  };
+
   typeSwitcher = (arg) => {
     switch (arg.toLowerCase()) {
       case 'hot water':
@@ -381,7 +403,8 @@ export default class Splash extends Component {
         break;
     }
   };
-  _renderUnitList = (unit, index) => {
+
+  _renderUnitList = (unit) => {
     console.log('>><<<<<<<<<', unit);
     return (
       <View
@@ -390,7 +413,7 @@ export default class Splash extends Component {
           marginVertical: height * 0.01,
           width: width * 0.9,
         }}>
-        <TouchableOpacity onPress={() => this.actionOnPress(unit, index)}>
+        <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
           <View style={[styles.infoViewContainer]}>
             <View style={styles.infoViewInner}>
               <View style={styles.unitNameContainer}>
@@ -485,28 +508,61 @@ export default class Splash extends Component {
             </View>
           </View>
         </TouchableOpacity>
-        {index === this.state.currUnitIndex ? (
+        {unit.index === this.state.currUnitIndex ? (
           <View
-            style={{
-              height: height * 0.07,
-              width: '100%',
-              backgroundColor: 'white',
-              borderBottomRightRadius: width * 0.01,
-              borderBottomLeftRadius: width * 0.01,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: width * 0.05,
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={{margin: width * 0.01}}>
-                <Text>View</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{margin: width * 0.01}}>
-                <Text>Edit</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={{margin: width * 0.01}}>
-              <Text>Delete</Text>
+            style={[styles.buildingEditBtn, {justifyContent: 'space-between'}]}>
+            <TouchableOpacity
+              style={{
+                margin: width * 0.01,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              onPress={() => this.goToDetails(unit)}>
+              <MaterialCommunityIcons
+                name="view-compact-outline"
+                color="white"
+                size={width * 0.04}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: Fonts.Montserrat,
+                  fontSize: width * 0.03,
+                }}>
+                View
+              </Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity style={{margin: width * 0.01}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Edit
+                </Text>
+              </TouchableOpacity> */}
+
+            <TouchableOpacity
+              onPress={() => this.confirmDelete(unit?.item?.id)}
+              style={{
+                margin: width * 0.01,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <MaterialCommunityIcons
+                name="delete-outline"
+                color="white"
+                size={width * 0.04}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: Fonts.Montserrat,
+                  fontSize: width * 0.03,
+                }}>
+                Delete
+              </Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -678,6 +734,8 @@ export default class Splash extends Component {
     if (cond != null) {
       this.updateBuilding(cond, this.state.editBuildId, data);
       this.setState({editModal: false});
+    } else {
+      this.setState({editModal: false});
     }
   };
 
@@ -712,6 +770,7 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
+    console.log('Currindex', this.state.currUnitIndex);
     return (
       <>
         <View style={styles.container}>

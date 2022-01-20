@@ -1734,7 +1734,6 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('SELECTED TYPES', selectUtil);
   return (
     <View>
       <Modal

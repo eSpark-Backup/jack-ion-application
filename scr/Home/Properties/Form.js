@@ -95,6 +95,8 @@ export default class Splash extends React.Component {
       radialDis: 0.1,
       utilTypes: [],
       selectUtil: [],
+      modelNo: '',
+      productNo: '',
       addNewType: false,
       showAddType: '',
       addUtility: '',
@@ -600,6 +602,8 @@ export default class Splash extends React.Component {
         name: this.state.addDevice[2].select,
         manufacturer_id: this.state.addDevice[0].selectId,
         device_type_id: this.state.addDevice[1].selectId,
+        model_no: this.state.modelNo,
+        product_no: this.state.productNo,
       };
       const DeviceTypesResponse = await api.post(
         '/property/equipment/device/add',
@@ -1744,23 +1748,79 @@ export default class Splash extends React.Component {
                                       }}
                                     />
                                   ) : (
-                                    <TextInput
-                                      placeholder={'Type new Device'}
-                                      value={item.select}
-                                      style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                          zIndex: 10,
-                                        },
-                                      }}
-                                      onChangeText={(text) => {
-                                        this.onChangeNewDevice(text, index);
-                                      }}
-                                    />
+                                    <View>
+                                      <TextInput
+                                        placeholder={'Type New Device Name'}
+                                        value={item.select}
+                                        style={styles.meterInput}
+                                        mode={'outlined'}
+                                        theme={{
+                                          colors: {
+                                            text: '#25AAE1ec',
+                                            primary: '#25AAE1ec',
+                                            selectionColor: 'red',
+                                            zIndex: 10,
+                                          },
+                                        }}
+                                        onChangeText={(text) => {
+                                          this.onChangeNewDevice(text, index);
+                                        }}
+                                      />
+                                      <View>
+                                        <View>
+                                          <Text
+                                            style={
+                                              styles.meterDesciptionHeading
+                                            }>
+                                            Model Number*
+                                          </Text>
+                                        </View>
+                                        <TextInput
+                                          placeholder="Model Number"
+                                          // value={modelNo}
+                                          showSoftInputOnFocus={false}
+                                          style={styles.meterInput}
+                                          mode={'outlined'}
+                                          theme={{
+                                            colors: {
+                                              text: '#25AAE1ec',
+                                              primary: '#25AAE1ec',
+                                              selectionColor: 'red',
+                                            },
+                                          }}
+                                          onChangeText={(text) => {
+                                            this.setState({modelNo: text});
+                                          }}
+                                        />
+                                      </View>
+                                      <View>
+                                        <View>
+                                          <Text
+                                            style={
+                                              styles.meterDesciptionHeading
+                                            }>
+                                            Product Number*
+                                          </Text>
+                                        </View>
+                                        <TextInput
+                                          placeholder="Product Number"
+                                          // value={productNo}
+                                          showSoftInputOnFocus={false}
+                                          style={styles.meterInput}
+                                          mode={'outlined'}
+                                          theme={{
+                                            colors: {
+                                              text: '#25AAE1ec',
+                                              primary: '#25AAE1ec',
+                                              selectionColor: 'red',
+                                            },
+                                          }}
+                                          onChangeText={(text) => {
+                                            this.setState({productNo: text});
+                                          }}
+                                        />
+                                      </View>
+                                    </View>
                                   )}
                                 </View>
                               ))}
@@ -1788,7 +1848,9 @@ export default class Splash extends React.Component {
                                 disabled={
                                   this.state.addDevice[0].selectId &&
                                   this.state.addDevice[1].selectId &&
-                                  this.state.addDevice[2].select
+                                  this.state.addDevice[2].select &&
+                                  this.state.modelNo &&
+                                  this.state.productNo
                                     ? false
                                     : true
                                 }>
@@ -1799,7 +1861,9 @@ export default class Splash extends React.Component {
                                     color:
                                       this.state.addDevice[0].selectId &&
                                       this.state.addDevice[1].selectId &&
-                                      this.state.addDevice[2].select
+                                      this.state.addDevice[2].select &&
+                                      this.state.modelNo &&
+                                      this.state.productNo
                                         ? '#25AAE1ec'
                                         : '#d0d0d0',
                                     width: width * 0.16,
