@@ -95,6 +95,7 @@ export default class UpdateModal extends Component {
   };
 
   clearUpdateBuild = () => {
+    console.log('CHALA KIYA BSDK');
     this.setState((prevState) => ({
       ...prevState,
       error: {
@@ -102,19 +103,13 @@ export default class UpdateModal extends Component {
         ...prevState.error, // keep all other key-value pairs
         editBuilding: '', // update the value of specific key
       },
-      modalVisible: false,
     }));
+    this.setState({modalVisible: false});
     this.props.reRun(null);
   };
 
   render() {
-    const {
-      title,
-      style,
-      isVisible,
-      doneBtnTitle,
-      buildingData,
-    } = this.props;
+    const {title, style, isVisible, doneBtnTitle, buildingData} = this.props;
     if (isVisible && this.state.modalVisible == false) {
       this.setState({
         editBuilding: buildingData.buildingName,

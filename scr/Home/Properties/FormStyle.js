@@ -163,4 +163,16 @@ export default styles = StyleSheet.create({
     paddingHorizontal: width * 0.03,
     marginVertical: height * 0.005,
   },
+  meterInput: {
+    width: width * 0.8,
+    justifyContent: 'flex-end',
+    fontSize: width * 0.036,
+  },
+  meterDesciptionHeading: {
+    fontSize: width * 0.03,
+    color: '#3E4A4F',
+    textTransform: 'capitalize',
+    fontFamily: Fonts.ComfortaaRegular,
+    marginBottom: width * 0.01,
+  },
 });
