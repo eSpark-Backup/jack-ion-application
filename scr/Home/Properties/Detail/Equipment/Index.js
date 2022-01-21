@@ -635,6 +635,7 @@ export default class Splash extends Component {
       `/property/equipment/unit/all-units`,
       data,
     );
+    console.log('UNIT RESPONSE', unitResponse?.data);
     if (unitResponse?.ok == true) {
       this.setState({realData: unitResponse?.data?.data, loader: false});
       let arry = unitResponse?.data?.data;
