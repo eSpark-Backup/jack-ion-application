@@ -17,6 +17,7 @@ import {
   Image,
   Linking,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -92,6 +93,8 @@ export default function UnitEdit({
   propertyLong,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [distanceBtw, setDistanceBtw] = useState(0);
+  const [radialDis, setRadialDis] = useState(100);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
   const [loadMeters, setLoadMeters] = useState(false);
   const [loadManufacturers, setLoadManufacturers] = useState(false);
@@ -759,6 +762,9 @@ export default function UnitEdit({
         name: some?.meter_name,
       }));
       setLoadManufacturers(false);
+      const defaultDis =
+        defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
+      setRadialDis(defaultDis * 1000);
     }
   };
 
@@ -938,6 +944,14 @@ export default function UnitEdit({
     if (sliderNumber == 3 && meterAddingId == '') {
       setCheckSerial(true);
       checkingSerial();
+    } else if (sliderNumber == 4 && distanceBtw > radialDis) {
+      console.log('DIS BTW', distanceBtw);
+      console.log('RADIAL DIS', radialDis);
+
+      ToastAndroid.show(
+        'Add Meter inside the permises of Property',
+        ToastAndroid.SHORT,
+      );
     } else {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -1383,6 +1397,7 @@ export default function UnitEdit({
         longitude: region?.longitude,
       },
     );
+    setDistanceBtw(dis);
     console.log('DISTANCE BETWEEN', dis);
   };
 
@@ -1815,9 +1830,10 @@ export default function UnitEdit({
                       style={{
                         // backgroundColor: 'blue',
                         width: width * 0.12,
-                        height: height * 0.11,
+                        // height: height * 0.11,
                         zIndex: 1,
                         position: 'absolute',
+                        top: width * 0.4,
                         alignItems: 'center',
                       }}>
                       <Icon
@@ -1884,7 +1900,7 @@ export default function UnitEdit({
                             latitude: parseFloat(propertyLat),
                             longitude: parseFloat(propertyLong),
                           }}
-                          radius={1500}
+                          radius={radialDis}
                           fillColor="rgba(12,170,225,0.3)"
                           strokeColor="rgba(12,170,225,1)"
                         />
