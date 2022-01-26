@@ -1,4 +1,4 @@
-import React, {Component, version} from 'react';
+import React, { Component, version } from 'react';
 
 import {
   Text,
@@ -25,16 +25,16 @@ import Iconi from 'react-native-vector-icons/Ionicons';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../components/Loader';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
 import Base_URL from '../../api/WebServices';
 import Slider from '@react-native-community/slider';
 import Modal from 'react-native-modal';
 import SystemSetting from 'react-native-system-setting';
 import Geolocation from '@react-native-community/geolocation';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {getDistance} from 'geolib';
-import MapView, {PROVIDER_GOOGLE, Circle} from 'react-native-maps';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { getDistance } from 'geolib';
+import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import {
   check,
   openSettings,
@@ -44,15 +44,15 @@ import {
 } from 'react-native-permissions';
 
 // Components
-import {Fonts} from '../../utils/fonts';
+import { Fonts } from '../../utils/fonts';
 import styles from './FormStyle';
 import ContextProp from './Context/propContext';
-import {create} from 'apisauce';
-import {call} from 'react-native-reanimated';
+import { create } from 'apisauce';
+import { call } from 'react-native-reanimated';
 import SearchableDropDown from 'react-native-searchable-dropdown';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const api = create({baseURL: Base_URL});
+const api = create({ baseURL: Base_URL });
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -151,6 +151,7 @@ export default class Splash extends React.Component {
         st: '',
       },
       value: '',
+      dropDownShow: [{value:true}, {value:false}, {value:false}, {value:false}, {value:false}, {value:false}, {value:false}],
       deviceData: [
         {
           id: 0,
@@ -177,7 +178,7 @@ export default class Splash extends React.Component {
   }
 
   toggleModalAddProp = () => {
-    this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
+    this.setState({ isModalAddPropVisible: !this.state.isModalAddPropVisible });
   };
 
   typeSwitcher = (arg) => {
@@ -201,19 +202,19 @@ export default class Splash extends React.Component {
     let listSlide = [...this.state.addDevice]; // copying the old datas array
     listSlide[index].select = value?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = value?.id; // replace e.target.value with whatever you want to change it to
-    this.setState({addDevice: listSlide});
+    this.setState({ addDevice: listSlide });
   };
 
   onChangeNewDevice = (e, index) => {
     let listSlide = [...this.state.addDevice]; // copying the old datas array
     listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
-    this.setState({addDevice: listSlide});
+    this.setState({ addDevice: listSlide });
   };
 
   addMeterInNewArray = (value) => {
     console.log('ITEM VALUE', value);
-    this.setState({selectedMeterId: value.id});
-    this.setState({selectMeter: value.name});
+    this.setState({ selectedMeterId: value.id });
+    this.setState({ selectMeter: value.name });
     this.setState((prevState) => ({
       ...prevState,
       error: {
@@ -224,7 +225,7 @@ export default class Splash extends React.Component {
     console.log('selectedMeterId VALUE', this.state.selectedMeterId);
   };
 
-  renderMeterInfo = ({item}) => {
+  renderMeterInfo = ({ item }) => {
     return (
       <View
         style={{
@@ -336,7 +337,7 @@ export default class Splash extends React.Component {
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      this.setState({isModalAddPropVisible: true});
+      this.setState({ isModalAddPropVisible: true });
       this._renderMap();
     } else {
       Alert.alert(
@@ -367,8 +368,8 @@ export default class Splash extends React.Component {
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-    this.setState({addNewType: true});
-    this.setState({showAddType: value});
+    this.setState({ addNewType: true });
+    this.setState({ showAddType: value });
   };
 
   addProperty = () => {
@@ -487,7 +488,7 @@ export default class Splash extends React.Component {
       Alert.alert('Location Required', 'Please Select Property Location');
       return;
     } else {
-      this.setState({locationSelected: false});
+      this.setState({ locationSelected: false });
 
       console.log('Before', this.state.info.propName);
       // const info = { ...this.state.info, propName: 'Good HAI' }
@@ -558,7 +559,7 @@ export default class Splash extends React.Component {
         data,
       );
       if (ManufacturersResponse?.data?.bool) {
-        this.setState({loadManufacturers: true});
+        this.setState({ loadManufacturers: true });
         console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
         LayoutAnimation.configureNext({
           duration: 300,
@@ -642,29 +643,29 @@ export default class Splash extends React.Component {
   }
 
   handleOpenDropDown = (value) => {
-    this.setState({open: !this.state.open, companies: value});
+    this.setState({ open: !this.state.open, companies: value });
   };
 
   handleDropDownData = (value) => {
     if (this.state.companies) {
-      this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
+      this.setState({ BillingCompany: value.name, BillingCompanyId: value.id });
     } else {
       this.setState({
         managementCompany: value.manager_name,
         managementCompanyId: value.id,
       });
     }
-    this.setState({open: !this.state.open});
+    this.setState({ open: !this.state.open });
   };
 
   handleCloseDropDown = () => {
-    this.setState({BillingCompany: 'BILLING COMPANY'});
-    this.setState({open: false});
+    this.setState({ BillingCompany: 'BILLING COMPANY' });
+    this.setState({ open: false });
   };
 
   moveMarker = (region) => {
-    this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
-    this.setState({long: region?.longitude, longDelta: region?.longitudeDelta});
+    this.setState({ lat: region?.latitude, latDelta: region?.latitudeDelta });
+    this.setState({ long: region?.longitude, longDelta: region?.longitudeDelta });
     var dis = getDistance(
       {
         latitude: this.state.iniLat,
@@ -679,8 +680,8 @@ export default class Splash extends React.Component {
   };
 
   catchLocation = (region) => {
-    this.setState({lat: region?.lat});
-    this.setState({long: region?.lng});
+    this.setState({ lat: region?.lat });
+    this.setState({ long: region?.lng });
   };
 
   fetchAddressData = (searchdata) => {
@@ -705,22 +706,22 @@ export default class Splash extends React.Component {
     console.log('City', City);
     console.log('State', State);
     console.log('Zipcode', ZipCode);
-    this.setState({Street: Street});
-    this.setState({City: City});
-    this.setState({State: State});
-    this.setState({ZipCode: ZipCode});
+    this.setState({ Street: Street });
+    this.setState({ City: City });
+    this.setState({ State: State });
+    this.setState({ ZipCode: ZipCode });
   };
 
   selectMeterLocation = async () => {
     console.log('Location ka batao', await SystemSetting.isLocationEnabled());
-    this.setState({selectLocation: true});
+    this.setState({ selectLocation: true });
   };
 
   getCurrentLocation = () => {
     Geolocation.getCurrentPosition((position) => {
       var lat = parseFloat(position.coords.latitude);
       var long = parseFloat(position.coords.longitude);
-      this.setState({lat: lat, long: long});
+      this.setState({ lat: lat, long: long });
     });
   };
 
@@ -730,7 +731,7 @@ export default class Splash extends React.Component {
         console.log('Positon Batao', position);
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
-        this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
+        this.setState({ lat: lat, long: long, iniLat: lat, iniLong: long });
         var initialRegion = {
           latitude: lat,
           longitude: long,
@@ -751,7 +752,7 @@ export default class Splash extends React.Component {
         console.log('What we Get', this.state.markers);
       },
       (error) => console.log('geo location', error),
-      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
     );
   };
 
@@ -787,7 +788,7 @@ export default class Splash extends React.Component {
         },
       }));
     }
-    this.setState({deviceData: listSlide});
+    this.setState({ deviceData: listSlide });
   };
 
   onChangeManufacturer = (e, index) => {
@@ -802,12 +803,12 @@ export default class Splash extends React.Component {
     } else {
       listSlide[0].select = '';
     }
-    this.setState({deviceData: listSlide});
+    this.setState({ deviceData: listSlide });
   };
 
   getToken = async () => {
     // setMeterListLoader(true);
-    this.setState({loadManufacturers: true, loadMeters: true});
+    this.setState({ loadManufacturers: true, loadMeters: true });
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
@@ -817,31 +818,31 @@ export default class Splash extends React.Component {
     let arr1 = res.data?.data;
     let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
     console.log('arr1--->', arr1);
-    this.setState({meterList: arr2});
-    this.setState({loadMeters: false});
+    this.setState({ meterList: arr2 });
+    this.setState({ loadMeters: false });
 
     const utilRes = await api.get('/property/equipment/utility-type/all');
 
     console.log('arr1--->', utilRes);
-    this.setState({utilTypes: utilRes?.data?.data});
+    this.setState({ utilTypes: utilRes?.data?.data });
 
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
     let listSlide = [...this.state.deviceData]; // copying the old datas array
     listSlide[0].data = ManufacturersResponse?.data?.data;
-    this.setState({deviceData: listSlide});
-    this.setState({loadManufacturers: false});
+    this.setState({ deviceData: listSlide });
+    this.setState({ loadManufacturers: false });
 
     let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
     deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
-    this.setState({addDevice: deviceDataManufacturer});
+    this.setState({ addDevice: deviceDataManufacturer });
     const DeviceTypesResponse = await api.get(
       '/property/equipment/device-type/all',
     );
     let deviceData = [...this.state.addDevice]; // copying the old datas array
     deviceData[1].data = DeviceTypesResponse?.data?.data;
-    this.setState({addDevice: deviceData});
+    this.setState({ addDevice: deviceData });
     this.context.getBillingCompany();
     this.context.getManagementCompany();
   };
@@ -854,7 +855,7 @@ export default class Splash extends React.Component {
       const items = this.state.selectUtil;
       items.push(item);
       // selectedTypes.current = items;
-      this.setState({selectUtil: items});
+      this.setState({ selectUtil: items });
     }
   };
 
@@ -905,8 +906,53 @@ export default class Splash extends React.Component {
     }
   };
 
+  showMoreFn = (indexx) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    this.state.dropDownShow.map((item, index) => {
+      if (index == indexx) {
+        let dropDownShow = [...this.state.dropDownShow];
+        console.log('el --->', dropDownShow[index])
+        // let dropDownShow = [...this.state.dropDownShow];
+        // let index = markers.findIndex(el => console.log('el--->',el));
+        // dropDownShow[index] = { ...dropDownShow[index], key: false };
+        dropDownShow[index].value = true;
+        this.setState({ dropDownShow });
+      } else {
+        let dropDownShow = [...this.state.dropDownShow];
+        console.log('el --->', dropDownShow[index])
+        // let dropDownShow = [...this.state.dropDownShow];
+        // let index = markers.findIndex(el => console.log('el--->',el));
+        // dropDownShow[index] = { ...dropDownShow[index], key: false };
+        dropDownShow[index].value = false;
+        this.setState({ dropDownShow });
+      }
+    }
+    )
+
+    // let dropDownShow = [...this.state.dropDownShow];
+    // // console.log('el index--->',index)
+    // // let index = markers.findIndex(el => console.log('el--->',el));
+    // dropDownShow[indexx] = true;
+    // this.setState({ dropDownShow });
+    // let dropDownShow = [...this.state.dropDownShow];
+    // // let index = markers.findIndex(el => console.log('el--->',el));
+    // dropDownShow[indexx] = { ...dropDownShow[indexx], key: true };
+    // this.setState({ dropDownShow });
+    // // const newArray = [...this.state.dropDownShow];
+
+
+  }
   render() {
-    const {loadManufacturers, loadMeters, deviceData} = this.state;
+    const { loadManufacturers, loadMeters, deviceData } = this.state;
     console.log('SELECTED UTILITIY', this.state.selectUtil);
     return (
       <View style={styles.headingInner}>
@@ -933,7 +979,7 @@ export default class Splash extends React.Component {
             }}
             isVisible={this.state.isModalAddPropVisible}>
             {this.state.selectLocation ? (
-              <View style={{alignItems: 'center', justifyContent: 'center'}}>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <View
                   style={{
                     width: width * 0.9,
@@ -966,7 +1012,7 @@ export default class Splash extends React.Component {
                         margin: width * 0.01,
                       }}>
                       <Slider
-                        style={{width: width * 0.55, height: width * 0.08}}
+                        style={{ width: width * 0.55, height: width * 0.08 }}
                         minimumValue={0.1}
                         maximumValue={1}
                         thumbTintColor="#25AAE1ec"
@@ -1094,7 +1140,7 @@ export default class Splash extends React.Component {
                       showsUserLocation={true}
                       showsMyLocationButton={false}
                       onRegionChangeComplete={(e) => this.moveMarker(e)}
-                      // onPress={(e) => this.getLocation(e)}
+                    // onPress={(e) => this.getLocation(e)}
                     >
                       <Circle
                         center={{
@@ -1140,21 +1186,27 @@ export default class Splash extends React.Component {
                     </View>
                     {/* Box Body */}
                     <ScrollView
-                      style={{width: '90%'}}
+                      style={{ width: '90%' }}
                       showsVerticalScrollIndicator={false}
                       keyboardShouldPersistTaps="handled"
                       nestedScrollEnabled={true}>
-                      <View style={{flex: 1}}>
-                        <View style={styles.desciptionContainer}>
+                      <View style={{ flex: 1 }}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(0)}>
                           <Text style={styles.desciptionHeading}>
                             information
                           </Text>
-                        </View>
-                        <View style={styles.inputContainer}>
+                          <Iconi
+                            name={this.state.dropDownShow[0].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
+                        <View style={[styles.inputContainer, { height: this.state.dropDownShow[0].value ? height * 0.09 : height * 0.0, overflow: 'hidden' }]}>
                           <TextInput
                             placeholder="Enter Property Name*"
                             onChangeText={(text) => {
-                              this.setState({Name: text});
+                              this.setState({ Name: text });
                               this.setState((prevState) => ({
                                 error: {
                                   // object that we want to update
@@ -1182,7 +1234,7 @@ export default class Splash extends React.Component {
                             {this.state.error.property}
                           </HelperText>
                         ) : null}
-                        <View style={styles.inputContainer}>
+                        {/* <View style={styles.inputContainer}>
                           <TextInput
                             placeholder="Enter Street*"
                             error={this.state.error.street}
@@ -1214,8 +1266,8 @@ export default class Splash extends React.Component {
                             visible={this.state.error.street}>
                             {this.state.error.street}
                           </HelperText>
-                        ) : null}
-                        <View style={styles.inputContainer}>
+                        ) : null} */}
+                        {/* <View style={styles.inputContainer}>
                           <TextInput
                             error={this.state.error.city}
                             placeholder="Enter City"
@@ -1233,8 +1285,8 @@ export default class Splash extends React.Component {
                               },
                             }}
                           />
-                        </View>
-                        <View
+                        </View> */}
+                        {/* <View
                           style={[
                             styles.inputContainer,
                             {
@@ -1277,7 +1329,7 @@ export default class Splash extends React.Component {
                               },
                             }}
                           />
-                        </View>
+                        </View> */}
                         {/* <View
                         style={{
                           flex: 1,
@@ -1298,11 +1350,11 @@ export default class Splash extends React.Component {
                           onFail={(error) => console.error(error)}
                         />
                       </View> */}
-                        <View style={styles.inputContainer}>
+                        <View style={[styles.inputContainer, { height: this.state.dropDownShow[0].value ? height * 0.09 : height * 0.0, overflow: 'hidden' }]}>
                           <TouchableOpacity
                             onPress={this.selectMeterLocation}
                             style={{
-                              width: width * 0.7,
+                              width: width * 0.8,
                               height: width * 0.1,
                               borderColor: '#25AAE1ec',
                               borderWidth: width * 0.003,
@@ -1312,7 +1364,7 @@ export default class Splash extends React.Component {
                               borderRadius: width * 0.005,
                               paddingHorizontal: width * 0.02,
                               flexDirection: 'row',
-                              marginVertical: width * 0.005,
+                              marginVertical: width * 0.015,
                               elevation: width * 0.003,
                             }}>
                             <Text
@@ -1331,16 +1383,25 @@ export default class Splash extends React.Component {
                             />
                           </TouchableOpacity>
                         </View>
-                        <View style={styles.desciptionContainer}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(1)}>
                           <Text style={styles.desciptionHeading}>
                             meter Type Info
                           </Text>
-                        </View>
+                          <Iconi
+                            name={this.state.dropDownShow[1].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
                         <View
                           style={{
                             width: '90%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            // justifyContent:'center',
+                            marginTop:width * .02,
+                            height: this.state.dropDownShow[1].value ? height * 0.12 : height * 0.0, overflow: 'hidden'
                           }}>
                           {loadMeters ? (
                             <ActivityIndicator size="large" color="#25AAE1ec" />
@@ -1366,7 +1427,7 @@ export default class Splash extends React.Component {
                                   borderWidth: width * 0.0015,
                                   borderRadius: width * 0.015,
                                 }}
-                                itemTextStyle={{color: '#222'}}
+                                itemTextStyle={{ color: '#222' }}
                                 itemsContainerStyle={{
                                   maxHeight: height * 0.08,
                                 }}
@@ -1389,7 +1450,7 @@ export default class Splash extends React.Component {
                                     borderBottomWidth: width * 0.0019,
                                   },
                                   onTextChange: (text) => {
-                                    this.setState({selectMeter: text});
+                                    this.setState({ selectMeter: text });
                                   },
                                   value: this.state.selectMeter,
                                   // defaultValue: item.select,
@@ -1438,19 +1499,28 @@ export default class Splash extends React.Component {
                           </HelperText>
                         ) : null}
 
-                        <View style={styles.desciptionContainer}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(2)}>
+
                           <Text style={styles.desciptionHeading}>
                             Utility Type Info
                           </Text>
-                        </View>
+                          <Iconi
+                            name={this.state.dropDownShow[2].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
                         <View
                           style={{
                             width: '90%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            marginTop:width * .02,
+                            height: this.state.dropDownShow[2].value ? height * 0.12 : height * 0.0, overflow: 'hidden'
                           }}>
                           {this.state.addNewType &&
-                          this.state.showAddType == 'Utility' ? (
+                            this.state.showAddType == 'Utility' ? (
                             <View>
                               <View>
                                 <Text
@@ -1481,7 +1551,7 @@ export default class Splash extends React.Component {
                                   },
                                 }}
                                 onChangeText={(text) => {
-                                  this.setState({addUtility: text});
+                                  this.setState({ addUtility: text });
                                 }}
                               />
                               <View
@@ -1547,7 +1617,7 @@ export default class Splash extends React.Component {
                                     borderWidth: width * 0.0015,
                                     borderRadius: width * 0.015,
                                   }}
-                                  itemTextStyle={{color: '#222'}}
+                                  itemTextStyle={{ color: '#222' }}
                                   itemsContainerStyle={{
                                     maxHeight: height * 0.08,
                                   }}
@@ -1558,7 +1628,7 @@ export default class Splash extends React.Component {
                                       (sitem) => sitem.id !== item.id,
                                     );
                                     // selectedTypes.current = items;
-                                    this.setState({selectUtil: items});
+                                    this.setState({ selectUtil: items });
                                   }}
                                   resetValue={false}
                                   textInputProps={{
@@ -1614,7 +1684,7 @@ export default class Splash extends React.Component {
                                   data={this.state.selectUtil}
                                   // extraData={selectedTypes.current}
                                   horizontal
-                                  renderItem={({item}) => (
+                                  renderItem={({ item }) => (
                                     <View
                                       style={{
                                         borderWidth: 1,
@@ -1626,7 +1696,7 @@ export default class Splash extends React.Component {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                       }}>
-                                      <Text style={{color: 'black'}}>
+                                      <Text style={{ color: 'black' }}>
                                         {item.name}
                                       </Text>
                                       <TouchableOpacity
@@ -1634,7 +1704,7 @@ export default class Splash extends React.Component {
                                           const items = this.state.selectUtil.filter(
                                             (sitem) => sitem.id !== item.id,
                                           );
-                                          this.setState({selectUtil: items});
+                                          this.setState({ selectUtil: items });
                                         }}>
                                         <Icon
                                           name="close"
@@ -1655,17 +1725,26 @@ export default class Splash extends React.Component {
                             {this.state.error.utilType}
                           </HelperText>
                         ) : null}
-                        <View style={styles.desciptionContainer}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(3)}>
+
                           <Text style={styles.desciptionHeading}>
                             device Type Info
                           </Text>
-                        </View>
+                          <Iconi
+                            name={this.state.dropDownShow[3].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
                         <View
                           style={{
                             // height: height * 0.25,
                             alignItems: 'center',
                             justifyContent: 'center',
                             zIndex: 2,
+                            height: this.state.dropDownShow[3].value ? height * 0.25 : height * 0.0, overflow: 'hidden'
+
                           }}>
                           {loadManufacturers ? (
                             <ActivityIndicator size="large" color="#25AAE1ec" />
@@ -1707,7 +1786,7 @@ export default class Splash extends React.Component {
                                     },
                                   }}
                                   onChangeText={(text) => {
-                                    this.setState({addManufacturer: text});
+                                    this.setState({ addManufacturer: text });
                                   }}
                                 />
                                 <View
@@ -1788,28 +1867,28 @@ export default class Splash extends React.Component {
                                           borderRadius: width * 0.015,
                                           margin: width * 0.005,
                                         }}
-                                        itemTextStyle={{color: '#222'}}
+                                        itemTextStyle={{ color: '#222' }}
                                         itemsContainerStyle={
                                           Platform.OS == 'android'
                                             ? {
-                                                height: width * 0.2,
-                                                zIndex: 1,
-                                                position: 'absolute',
-                                                width: width * 0.8,
-                                                top: width * 0.1,
-                                                flex: 1,
-                                                zIndex: 20,
-                                                backgroundColor: 'white',
-                                                elevation: width * 0.01,
-                                                shadowColor: '#000',
-                                                shadowOffset: {
-                                                  width: 0,
-                                                  height: 2,
-                                                },
-                                                shadowOpacity: 0.25,
-                                                shadowRadius: 3.84,
-                                              }
-                                            : {height: width * 0.2, zIndex: 1}
+                                              height: width * 0.2,
+                                              zIndex: 1,
+                                              position: 'absolute',
+                                              width: width * 0.8,
+                                              top: width * 0.1,
+                                              flex: 1,
+                                              zIndex: 20,
+                                              backgroundColor: 'white',
+                                              elevation: width * 0.01,
+                                              shadowColor: '#000',
+                                              shadowOffset: {
+                                                width: 0,
+                                                height: 2,
+                                              },
+                                              shadowOpacity: 0.25,
+                                              shadowRadius: 3.84,
+                                            }
+                                            : { height: width * 0.2, zIndex: 1 }
                                         }
                                         items={item.data}
                                         resetValue={false}
@@ -1879,7 +1958,7 @@ export default class Splash extends React.Component {
                                               },
                                             }}
                                             onChangeText={(text) => {
-                                              this.setState({modelNo: text});
+                                              this.setState({ modelNo: text });
                                             }}
                                           />
                                         </View>
@@ -1906,7 +1985,7 @@ export default class Splash extends React.Component {
                                               },
                                             }}
                                             onChangeText={(text) => {
-                                              this.setState({productNo: text});
+                                              this.setState({ productNo: text });
                                             }}
                                           />
                                         </View>
@@ -1937,10 +2016,10 @@ export default class Splash extends React.Component {
                                   onPress={() => this.doneAddType()}
                                   disabled={
                                     this.state.addDevice[0].selectId &&
-                                    this.state.addDevice[1].selectId &&
-                                    this.state.addDevice[2].select &&
-                                    this.state.modelNo &&
-                                    this.state.productNo
+                                      this.state.addDevice[1].selectId &&
+                                      this.state.addDevice[2].select &&
+                                      this.state.modelNo &&
+                                      this.state.productNo
                                       ? false
                                       : true
                                   }>
@@ -1950,10 +2029,10 @@ export default class Splash extends React.Component {
                                       fontSize: width * 0.045,
                                       color:
                                         this.state.addDevice[0].selectId &&
-                                        this.state.addDevice[1].selectId &&
-                                        this.state.addDevice[2].select &&
-                                        this.state.modelNo &&
-                                        this.state.productNo
+                                          this.state.addDevice[1].selectId &&
+                                          this.state.addDevice[2].select &&
+                                          this.state.modelNo &&
+                                          this.state.productNo
                                           ? '#25AAE1ec'
                                           : '#d0d0d0',
                                       width: width * 0.16,
@@ -2006,7 +2085,7 @@ export default class Splash extends React.Component {
                                         borderRadius: width * 0.015,
                                         zIndex: 99,
                                       }}
-                                      itemTextStyle={{color: '#222'}}
+                                      itemTextStyle={{ color: '#222' }}
                                       itemsContainerStyle={{
                                         maxHeight: height * 0.08,
                                       }}
@@ -2086,15 +2165,24 @@ export default class Splash extends React.Component {
                             </HelperText>
                           ) : null}
                         </View>
-                        <View style={styles.desciptionContainer}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(4)}>
+
                           <Text style={styles.desciptionHeading}>owner</Text>
-                        </View>
-                        <View style={styles.inputContainer}>
+                          <Iconi
+                            name={this.state.dropDownShow[4].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
+                        <View style={[styles.inputContainer, {
+                          height: this.state.dropDownShow[4].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
+                        }]}>
                           <TextInput
                             placeholder="Company Specific ID"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({CustomId: text});
+                              this.setState({ CustomId: text });
                             }}
                             mode={'outlined'}
                             theme={{
@@ -2107,12 +2195,14 @@ export default class Splash extends React.Component {
                           />
                         </View>
 
-                        <View style={styles.inputContainer}>
+                        <View style={[styles.inputContainer, {
+                          height: this.state.dropDownShow[4].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
+                        }]}>
                           <TextInput
                             placeholder="Customer Name"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({CustomerName: text});
+                              this.setState({ CustomerName: text });
                             }}
                             mode={'outlined'}
                             theme={{
@@ -2124,12 +2214,14 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={[styles.inputContainer, {
+                          height: this.state.dropDownShow[4].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
+                        }]}>
                           <TextInput
                             placeholder="Title / Job Description"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({customerjobDes: text});
+                              this.setState({ customerjobDes: text });
                             }}
                             mode={'outlined'}
                             theme={{
@@ -2141,12 +2233,14 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={[styles.inputContainer, {
+                          height: this.state.dropDownShow[4].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
+                        }]}>
                           <TextInput
                             placeholder="Phone"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({customerPhone: text});
+                              this.setState({ customerPhone: text });
                             }}
                             mode={'outlined'}
                             theme={{
@@ -2158,12 +2252,14 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={[styles.inputContainer, {
+                          height: this.state.dropDownShow[4].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
+                        }]}>
                           <TextInput
                             placeholder="Email"
                             style={styles.input}
                             onChangeText={(text) => {
-                              this.setState({customerEmail: text});
+                              this.setState({ customerEmail: text });
                             }}
                             mode={'outlined'}
                             theme={{
@@ -2175,16 +2271,24 @@ export default class Splash extends React.Component {
                             }}
                           />
                         </View>
-                        <View style={styles.desciptionContainer}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(5)}>
+
                           <Text style={styles.desciptionHeading}>
                             management company
                           </Text>
-                        </View>
+                          <Iconi
+                            name={this.state.dropDownShow[5].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
                         <View
                           style={{
                             width: '90%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            height: this.state.dropDownShow[5].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
                           }}>
                           <View
                             style={{
@@ -2215,7 +2319,7 @@ export default class Splash extends React.Component {
                                 borderRadius: width * 0.015,
                                 zIndex: 99,
                               }}
-                              itemTextStyle={{color: '#222'}}
+                              itemTextStyle={{ color: '#222' }}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.08,
                               }}
@@ -2269,16 +2373,24 @@ export default class Splash extends React.Component {
                             </TouchableOpacity>
                           </View>
                         </View>
-                        <View style={styles.desciptionContainer}>
+                        <TouchableOpacity style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(6)}>
+
                           <Text style={styles.desciptionHeading}>
                             billing company
                           </Text>
-                        </View>
+                          <Iconi
+                            name={this.state.dropDownShow[6].value ? "chevron-up" : "chevron-down"}
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
                         <View
                           style={{
                             width: '90%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            height: this.state.dropDownShow[6].value ? height * 0.09 : height * 0.0, overflow: 'hidden'
                           }}>
                           <View
                             style={{
@@ -2309,7 +2421,7 @@ export default class Splash extends React.Component {
                                 borderRadius: width * 0.015,
                                 zIndex: 99,
                               }}
-                              itemTextStyle={{color: '#222'}}
+                              itemTextStyle={{ color: '#222' }}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.08,
                               }}
