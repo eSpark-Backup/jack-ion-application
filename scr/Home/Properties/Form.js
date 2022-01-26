@@ -16,6 +16,7 @@ import {
   FlatList,
   ToastAndroid,
   TouchableHighlightBase,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 //Packages
@@ -93,7 +94,7 @@ export default class Splash extends React.Component {
       managementCompany: 'MANAGEMENT COMPANY',
       managementCompanyId: '',
       radialDis: 0.1,
-      utilTypes: [],
+      selectMeter: '',
       selectUtil: [],
       modelNo: '',
       productNo: '',
@@ -212,6 +213,7 @@ export default class Splash extends React.Component {
   addMeterInNewArray = (value) => {
     console.log('ITEM VALUE', value);
     this.setState({selectedMeterId: value.id});
+    this.setState({selectMeter: value.name});
     this.setState((prevState) => ({
       ...prevState,
       error: {
@@ -316,6 +318,7 @@ export default class Splash extends React.Component {
       locationSelected: false,
       lat: null,
       long: null,
+      selectMeter: '',
       selectUtil: [],
       addNewType: false,
     });
@@ -509,7 +512,7 @@ export default class Splash extends React.Component {
           propLat: this.state.lat,
           propLong: this.state.long,
           utility_type_id: selectUtilIds,
-          radial_dist: Number(this.state.radialDis * 1000),
+          radial_dist: Number(this.state.radialDis),
         }),
         () => this.props.loader(true),
       );
@@ -639,8 +642,6 @@ export default class Splash extends React.Component {
   }
 
   handleOpenDropDown = (value) => {
-    this.context.getBillingCompany();
-    this.context.getManagementCompany();
     this.setState({open: !this.state.open, companies: value});
   };
 
@@ -841,14 +842,20 @@ export default class Splash extends React.Component {
     let deviceData = [...this.state.addDevice]; // copying the old datas array
     deviceData[1].data = DeviceTypesResponse?.data?.data;
     this.setState({addDevice: deviceData});
+    this.context.getBillingCompany();
+    this.context.getManagementCompany();
   };
 
-  AddTypes = (item) => {
-    console.log('ADD CHALA', item);
-    const items = this.state.selectUtil;
-    items.push(item);
-    // selectedTypes.current = items;
-    this.setState({selectUtil: items});
+  AddTypes = (item, type) => {
+    if (type == 'Meter') {
+      this.addMeterInNewArray(item);
+    } else if (type == 'Utility') {
+      console.log('ADD CHALA', item);
+      const items = this.state.selectUtil;
+      items.push(item);
+      // selectedTypes.current = items;
+      this.setState({selectUtil: items});
+    }
   };
 
   enableLocation = async () => {
@@ -915,360 +922,363 @@ export default class Splash extends React.Component {
           color="white"
         />
         <Text style={styles.mainHeadiing}>Properties</Text>
-        <Modal
-          animationIn="slideInDown"
-          animationOut="slideOutUp"
-          coverScreen={true}
-          statusBarTranslucent={true}
-          style={{
-            margin: 0,
-          }}
-          isVisible={this.state.isModalAddPropVisible}>
-          {this.state.selectLocation ? (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <View
-                style={{
-                  width: width * 0.9,
-                  height: width * 1,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: width * 0.03,
-                }}>
+        <KeyboardAvoidingView behavior="height">
+          <Modal
+            animationIn="slideInDown"
+            animationOut="slideOutUp"
+            coverScreen={true}
+            statusBarTranslucent={true}
+            style={{
+              margin: 0,
+            }}
+            isVisible={this.state.isModalAddPropVisible}>
+            {this.state.selectLocation ? (
+              <View style={{alignItems: 'center', justifyContent: 'center'}}>
                 <View
                   style={{
-                    flex: 1,
-                    zIndex: 2,
-                    position: 'absolute',
-                    top: width * 0.16,
-                    width: width * 0.72,
+                    width: width * 0.9,
+                    height: width * 1,
                     backgroundColor: 'white',
-                  }}>
-                  <Text
-                    style={{
-                      marginTop: width * 0.02,
-                      marginLeft: width * 0.03,
-                    }}>
-                    RADIAL DISTANCE (KM)*
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      margin: width * 0.01,
-                    }}>
-                    <Slider
-                      style={{width: width * 0.55, height: width * 0.08}}
-                      minimumValue={0.1}
-                      maximumValue={1}
-                      thumbTintColor="#25AAE1ec"
-                      minimumTrackTintColor="#25AAE1ec"
-                      maximumTrackTintColor="#000000"
-                      onValueChange={(value) =>
-                        this.setState({radialDis: value.toString().slice(0, 3)})
-                      }
-                      step={0.1}
-                    />
-                    <Text>{this.state.radialDis} KM</Text>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    zIndex: 2,
-                    position: 'absolute',
-                    top: width * 0.04,
-                    width: width * 0.72,
-                  }}>
-                  <GooglePlacesAutocomplete
-                    placeholder="Address"
-                    query={{
-                      key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
-                      language: 'en', // language of the results
-                    }}
-                    fetchDetails={true}
-                    enablePoweredByContainer={false}
-                    disableScroll={false}
-                    onPress={(data, details) => {
-                      this.catchLocation(details.geometry.location);
-                      console.log('DETAILS', details);
-                      this.fetchAddressData(details?.formatted_address);
-                    }}
-                    onFail={(error) => console.error(error)}
-                  />
-                </View>
-                <TouchableOpacity
-                  onPress={() => this.getCurrentLocation()}
-                  style={{
-                    backgroundColor: '#25AAE1ec',
-                    zIndex: 1,
-                    position: 'absolute',
-                    height: width * 0.12,
-                    width: width * 0.12,
-                    borderRadius: width * 0.3,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    elevation: width * 0.005,
-                    bottom: width * 0.2,
-                    right: width * 0.03,
+                    borderRadius: width * 0.03,
                   }}>
-                  <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() =>
-                    this.setState({
-                      selectLocation: false,
-                      locationSelected: true,
-                    })
-                  }
-                  style={{
-                    backgroundColor: '#25AAE1ec',
-                    zIndex: 1,
-                    position: 'absolute',
-                    height: width * 0.12,
-                    width: width * 0.12,
-                    borderRadius: width * 0.3,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    elevation: width * 0.005,
-                    bottom: width * 0.04,
-                    right: width * 0.03,
-                  }}>
-                  <Icon
-                    size={width * 0.07}
-                    color="#fff"
-                    name={'navigate-next'}
-                  />
-                </TouchableOpacity>
-
-                {this.state.markers.length > 0 && (
                   <View
                     style={{
-                      // backgroundColor: 'blue',
-                      width: width * 0.12,
-                      height: height * 0.11,
-                      zIndex: 1,
+                      flex: 1,
+                      zIndex: 2,
                       position: 'absolute',
-                      alignItems: 'center',
+                      top: width * 0.16,
+                      width: width * 0.72,
+                      backgroundColor: 'white',
                     }}>
-                    <Icon
-                      size={width * 0.12}
-                      color="#f00"
-                      name={'location-pin'}
-                    />
-                  </View>
-                )}
-                {this.state.markers.length > 0 ? (
-                  <MapView
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      justifyContent: 'flex-end',
-                      alignItems: 'center',
-
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: width * 0.03,
-                    }}
-                    region={{
-                      latitude: this.state.lat,
-                      longitude: this.state.long,
-                      latitudeDelta: LATITUDE_DELTA,
-                      longitudeDelta: LONGITUDE_DELTA,
-                    }}
-                    zoomEnabled={true}
-                    provider={PROVIDER_GOOGLE}
-                    showsUserLocation={true}
-                    showsMyLocationButton={false}
-                    onRegionChangeComplete={(e) => this.moveMarker(e)}
-                    // onPress={(e) => this.getLocation(e)}
-                  >
-                    <Circle
-                      center={{
-                        latitude: this.state.lat,
-                        longitude: this.state.long,
-                      }}
-                      radius={this.state.radialDis * 1000}
-                      fillColor="rgba(12,170,225,0.3)"
-                      strokeColor="rgba(12,170,225,1)"
-                    />
-                  </MapView>
-                ) : null}
-              </View>
-            </View>
-          ) : (
-            <View style={styles.modalInner}>
-              <View style={styles.boxConatainer}>
-                <View style={styles.boxInner}>
-                  {/* Box Header */}
-                  <View style={styles.boxHeader}>
-                    <View style={styles.boxHeaderInner}>
-                      <Icon
-                        name={'business'}
-                        size={height * 0.05}
-                        color="#5e5e5e"
+                    <Text
+                      style={{
+                        marginTop: width * 0.02,
+                        marginLeft: width * 0.03,
+                      }}>
+                      RADIAL DISTANCE (KM)*
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        margin: width * 0.01,
+                      }}>
+                      <Slider
+                        style={{width: width * 0.55, height: width * 0.08}}
+                        minimumValue={0.1}
+                        maximumValue={1}
+                        thumbTintColor="#25AAE1ec"
+                        minimumTrackTintColor="#25AAE1ec"
+                        maximumTrackTintColor="#000000"
+                        onValueChange={(value) =>
+                          this.setState({
+                            radialDis: value.toString().slice(0, 3),
+                          })
+                        }
+                        step={0.1}
                       />
-                      <Text style={styles.modalHeading}>New Property</Text>
-                      <Pressable
-                        onPress={this.clearInputs}
-                        android_ripple={{
-                          color: 'black',
-                          borderless: true,
-                          radius: width * 0.03,
-                        }}>
-                        <Icon
-                          name="cancel"
-                          size={height * 0.035}
-                          color="black"
-                          maxOpacity={0.5}
-                        />
-                      </Pressable>
+                      <Text>{this.state.radialDis} KM</Text>
                     </View>
                   </View>
-                  {/* Box Body */}
-                  <ScrollView
-                    style={{width: '90%'}}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                    nestedScrollEnabled={true}>
-                    <View style={{flex: 1}}>
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>
-                          information
-                        </Text>
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Enter Property Name*"
-                          onChangeText={(text) => {
-                            this.setState({Name: text});
-                            this.setState((prevState) => ({
-                              error: {
-                                // object that we want to update
-                                ...prevState.error, // keep all other key-value pairs
-                                property: '',
-                              },
-                            }));
-                          }}
-                          error={this.state.error.property}
-                          style={styles.input}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      {this.state.error.property ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.property}>
-                          {this.state.error.property}
-                        </HelperText>
-                      ) : null}
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Enter Street*"
-                          error={this.state.error.street}
-                          value={this.state.Street}
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({Street: text});
-                            this.setState((prevState) => ({
-                              error: {
-                                // object that we want to update
-                                ...prevState.error, // keep all other key-value pairs
-                                street: '',
-                              },
-                            }));
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      {this.state.error.street ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.street}>
-                          {this.state.error.street}
-                        </HelperText>
-                      ) : null}
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          error={this.state.error.city}
-                          placeholder="Enter City"
-                          value={this.state.City}
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({City: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={[
-                          styles.inputContainer,
-                          {
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          },
-                        ]}>
-                        <TextInput
-                          error={this.state.error.st}
-                          placeholder="Enter State"
-                          value={this.state.State}
-                          style={[styles.input, {width: width * 0.36}]}
-                          onChangeText={(text) => {
-                            this.setState({State: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
+                  <View
+                    style={{
+                      flex: 1,
+                      zIndex: 2,
+                      position: 'absolute',
+                      top: width * 0.04,
+                      width: width * 0.72,
+                    }}>
+                    <GooglePlacesAutocomplete
+                      placeholder="Address"
+                      query={{
+                        key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                        language: 'en', // language of the results
+                      }}
+                      fetchDetails={true}
+                      enablePoweredByContainer={false}
+                      disableScroll={false}
+                      onPress={(data, details) => {
+                        this.catchLocation(details.geometry.location);
+                        console.log('DETAILS', details);
+                        this.fetchAddressData(details?.formatted_address);
+                      }}
+                      onFail={(error) => console.error(error)}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => this.getCurrentLocation()}
+                    style={{
+                      backgroundColor: '#25AAE1ec',
+                      zIndex: 1,
+                      position: 'absolute',
+                      height: width * 0.12,
+                      width: width * 0.12,
+                      borderRadius: width * 0.3,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      elevation: width * 0.005,
+                      bottom: width * 0.2,
+                      right: width * 0.03,
+                    }}>
+                    <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.setState({
+                        selectLocation: false,
+                        locationSelected: true,
+                      })
+                    }
+                    style={{
+                      backgroundColor: '#25AAE1ec',
+                      zIndex: 1,
+                      position: 'absolute',
+                      height: width * 0.12,
+                      width: width * 0.12,
+                      borderRadius: width * 0.3,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      elevation: width * 0.005,
+                      bottom: width * 0.04,
+                      right: width * 0.03,
+                    }}>
+                    <Icon
+                      size={width * 0.07}
+                      color="#fff"
+                      name={'navigate-next'}
+                    />
+                  </TouchableOpacity>
 
-                        <TextInput
-                          error={this.state.error.zipcode}
-                          placeholder="Enter Zipcode"
-                          value={this.state.ZipCode}
-                          style={[styles.input, {width: width * 0.36}]}
-                          onChangeText={(text) => {
-                            this.setState({ZipCode: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
+                  {this.state.markers.length > 0 && (
+                    <View
+                      style={{
+                        // backgroundColor: 'blue',
+                        width: width * 0.12,
+                        height: height * 0.11,
+                        zIndex: 1,
+                        position: 'absolute',
+                        alignItems: 'center',
+                      }}>
+                      <Icon
+                        size={width * 0.12}
+                        color="#f00"
+                        name={'location-pin'}
+                      />
+                    </View>
+                  )}
+                  {this.state.markers.length > 0 ? (
+                    <MapView
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: width * 0.03,
+                      }}
+                      region={{
+                        latitude: this.state.lat,
+                        longitude: this.state.long,
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta: LONGITUDE_DELTA,
+                      }}
+                      zoomEnabled={true}
+                      provider={PROVIDER_GOOGLE}
+                      showsUserLocation={true}
+                      showsMyLocationButton={false}
+                      onRegionChangeComplete={(e) => this.moveMarker(e)}
+                      // onPress={(e) => this.getLocation(e)}
+                    >
+                      <Circle
+                        center={{
+                          latitude: this.state.lat,
+                          longitude: this.state.long,
+                        }}
+                        radius={this.state.radialDis * 1000}
+                        fillColor="rgba(12,170,225,0.3)"
+                        strokeColor="rgba(12,170,225,1)"
+                      />
+                    </MapView>
+                  ) : null}
+                </View>
+              </View>
+            ) : (
+              <View style={styles.modalInner}>
+                <View style={styles.boxConatainer}>
+                  <View style={styles.boxInner}>
+                    {/* Box Header */}
+                    <View style={styles.boxHeader}>
+                      <View style={styles.boxHeaderInner}>
+                        <Icon
+                          name={'business'}
+                          size={height * 0.05}
+                          color="#5e5e5e"
                         />
+                        <Text style={styles.modalHeading}>New Property</Text>
+                        <Pressable
+                          onPress={this.clearInputs}
+                          android_ripple={{
+                            color: 'black',
+                            borderless: true,
+                            radius: width * 0.03,
+                          }}>
+                          <Icon
+                            name="cancel"
+                            size={height * 0.035}
+                            color="black"
+                            maxOpacity={0.5}
+                          />
+                        </Pressable>
                       </View>
-                      {/* <View
+                    </View>
+                    {/* Box Body */}
+                    <ScrollView
+                      style={{width: '90%'}}
+                      showsVerticalScrollIndicator={false}
+                      keyboardShouldPersistTaps="handled"
+                      nestedScrollEnabled={true}>
+                      <View style={{flex: 1}}>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            information
+                          </Text>
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Enter Property Name*"
+                            onChangeText={(text) => {
+                              this.setState({Name: text});
+                              this.setState((prevState) => ({
+                                error: {
+                                  // object that we want to update
+                                  ...prevState.error, // keep all other key-value pairs
+                                  property: '',
+                                },
+                              }));
+                            }}
+                            error={this.state.error.property}
+                            style={styles.input}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        {this.state.error.property ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.property}>
+                            {this.state.error.property}
+                          </HelperText>
+                        ) : null}
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Enter Street*"
+                            error={this.state.error.street}
+                            value={this.state.Street}
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({Street: text});
+                              this.setState((prevState) => ({
+                                error: {
+                                  // object that we want to update
+                                  ...prevState.error, // keep all other key-value pairs
+                                  street: '',
+                                },
+                              }));
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        {this.state.error.street ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.street}>
+                            {this.state.error.street}
+                          </HelperText>
+                        ) : null}
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            error={this.state.error.city}
+                            placeholder="Enter City"
+                            value={this.state.City}
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({City: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={[
+                            styles.inputContainer,
+                            {
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            },
+                          ]}>
+                          <TextInput
+                            error={this.state.error.st}
+                            placeholder="Enter State"
+                            value={this.state.State}
+                            style={[styles.input, {width: width * 0.36}]}
+                            onChangeText={(text) => {
+                              this.setState({State: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+
+                          <TextInput
+                            error={this.state.error.zipcode}
+                            placeholder="Enter Zipcode"
+                            value={this.state.ZipCode}
+                            style={[styles.input, {width: width * 0.36}]}
+                            onChangeText={(text) => {
+                              this.setState({ZipCode: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        {/* <View
                         style={{
                           flex: 1,
                           zIndex: 1,
@@ -1288,202 +1298,62 @@ export default class Splash extends React.Component {
                           onFail={(error) => console.error(error)}
                         />
                       </View> */}
-                      <View style={styles.inputContainer}>
-                        <TouchableOpacity
-                          onPress={this.selectMeterLocation}
-                          style={{
-                            width: width * 0.7,
-                            height: width * 0.1,
-                            borderColor: '#25AAE1ec',
-                            borderWidth: width * 0.003,
-                            backgroundColor: 'white',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            borderRadius: width * 0.005,
-                            paddingHorizontal: width * 0.02,
-                            flexDirection: 'row',
-                            marginVertical: width * 0.005,
-                            elevation: width * 0.003,
-                          }}>
-                          <Text
+                        <View style={styles.inputContainer}>
+                          <TouchableOpacity
+                            onPress={this.selectMeterLocation}
                             style={{
-                              fontSize: width * 0.03,
-                              fontFamily: Fonts.Montserrat,
-                              color: '#3E4A4F',
-                              marginRight: width * 0.01,
-                            }}>
-                            Select Location
-                          </Text>
-                          <Iconi
-                            name="location"
-                            size={width * 0.05}
-                            color="#3E4A4F"
-                          />
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>
-                          meter Type Info
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          height: height * 0.2,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 2,
-                        }}>
-                        {loadMeters ? (
-                          <ActivityIndicator size="large" color="#25AAE1ec" />
-                        ) : (
-                          <FlatList
-                            scrollEnabled
-                            contentContainerStyle={{
+                              width: width * 0.7,
+                              height: width * 0.1,
+                              borderColor: '#25AAE1ec',
+                              borderWidth: width * 0.003,
+                              backgroundColor: 'white',
                               alignItems: 'center',
-                            }}
-                            nestedScrollEnabled
-                            data={this.state.meterList}
-                            renderItem={this.renderMeterInfo}
-                          />
-                        )}
-                      </View>
-                      {this.state.error.meterId ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.meterId}>
-                          {this.state.error.meterId}
-                        </HelperText>
-                      ) : null}
-
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>
-                          Utility Type Info
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          width: '90%',
-                          zIndex: 2,
-                          alignSelf: 'center',
-                        }}>
-                        {this.state.addNewType &&
-                        this.state.showAddType == 'Utility' ? (
-                          <View>
-                            <View>
-                              <Text
-                                style={{
-                                  fontSize: width * 0.03,
-                                  color: '#3E4A4F',
-                                  textTransform: 'capitalize',
-                                  fontFamily: Fonts.ComfortaaRegular,
-                                  marginBottom: width * 0.01,
-                                }}>
-                                New {this.state.showAddType}
-                              </Text>
-                            </View>
-                            <TextInput
-                              placeholder={'Type new Utility'}
-                              value={this.state.addUtility}
+                              justifyContent: 'space-between',
+                              borderRadius: width * 0.005,
+                              paddingHorizontal: width * 0.02,
+                              flexDirection: 'row',
+                              marginVertical: width * 0.005,
+                              elevation: width * 0.003,
+                            }}>
+                            <Text
                               style={{
-                                width: width * 0.8,
-                                justifyContent: 'flex-end',
-                                fontSize: width * 0.036,
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                              onChangeText={(text) => {
-                                this.setState({addUtility: text});
-                              }}
-                            />
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
+                                fontSize: width * 0.03,
+                                fontFamily: Fonts.Montserrat,
+                                color: '#3E4A4F',
+                                marginRight: width * 0.01,
                               }}>
-                              <TouchableOpacity
-                                onPress={() => this.cancelAddType()}>
-                                <Text
-                                  style={{
-                                    fontWeight: 'bold',
-                                    fontSize: width * 0.045,
-                                    color: '#25AAE1ec',
-                                    width: width * 0.16,
-                                    textAlign: 'center',
-                                  }}>
-                                  Cancel
-                                </Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => this.doneAddType()}
-                                disabled={this.state.addUtility ? false : true}>
-                                <Text
-                                  style={{
-                                    fontWeight: 'bold',
-                                    fontSize: width * 0.045,
-                                    color: this.state.addUtility
-                                      ? '#25AAE1ec'
-                                      : '#d0d0d0',
-                                    width: width * 0.16,
-                                    textAlign: 'center',
-                                  }}>
-                                  Add
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        ) : (
-                          <View>
-                            <View>
-                              <FlatList
-                                data={this.state.selectUtil}
-                                // extraData={selectedTypes.current}
-                                horizontal
-                                renderItem={({item}) => (
-                                  <View
-                                    style={{
-                                      borderWidth: 1,
-                                      borderRadius: 8,
-                                      flexDirection: 'row',
-                                      padding: 5,
-                                      margin: 5,
-                                      height: width * 0.1,
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                    }}>
-                                    <Text style={{color: 'black'}}>
-                                      {item.name}
-                                    </Text>
-                                    <TouchableOpacity
-                                      onPress={() => {
-                                        const items = this.state.selectUtil.filter(
-                                          (sitem) => sitem.id !== item.id,
-                                        );
-                                        this.setState({selectUtil: items});
-                                      }}>
-                                      <Icon name="close" size={width * 0.05} />
-                                    </TouchableOpacity>
-                                  </View>
-                                )}
-                              />
-                            </View>
+                              Select Location
+                            </Text>
+                            <Iconi
+                              name="location"
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            meter Type Info
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            width: '90%',
+                            zIndex: 2,
+                            alignSelf: 'center',
+                          }}>
+                          {loadMeters ? (
+                            <ActivityIndicator size="large" color="#25AAE1ec" />
+                          ) : (
                             <View
-                              pointerEvents={'auto'}
                               style={{
                                 flexDirection: 'row',
                                 alignItems: 'flex-start',
                               }}>
                               <SearchableDropDown
-                                multi={true}
-                                selectedItems={this.state.selectUtil}
                                 onItemSelect={(item) => {
                                   console.log('Test', item);
-                                  this.AddTypes(item);
+                                  this.AddTypes(item, 'Meter');
                                 }}
                                 containerStyle={{
                                   paddingBottom: width * 0.02,
@@ -1501,17 +1371,10 @@ export default class Splash extends React.Component {
                                   maxHeight: height * 0.08,
                                 }}
                                 // items={item.data}
-                                items={this.state.utilTypes}
-                                onRemoveItem={(item, index) => {
-                                  const items = this.state.selectUtil.filter(
-                                    (sitem) => sitem.id !== item.id,
-                                  );
-                                  // selectedTypes.current = items;
-                                  this.setState({selectUtil: items});
-                                }}
+                                items={this.state.meterList}
                                 resetValue={false}
                                 textInputProps={{
-                                  placeholder: 'Add Utility Type',
+                                  placeholder: 'Select Meter Type',
                                   underlineColorAndroid: 'transparent',
                                   style: {
                                     padding: width * 0.027,
@@ -1525,10 +1388,10 @@ export default class Splash extends React.Component {
                                     borderLeftWidth: width * 0.0019,
                                     borderBottomWidth: width * 0.0019,
                                   },
-                                  // onTextChange: (text) => {
-                                  //   onChangeManufacturer(text, index);
-                                  // },
-                                  // value: setTimeout(() => item.select, 200),
+                                  onTextChange: (text) => {
+                                    this.setState({selectMeter: text});
+                                  },
+                                  value: this.state.selectMeter,
                                   // defaultValue: item.select,
                                 }}
                                 listProps={{
@@ -1556,38 +1419,38 @@ export default class Splash extends React.Component {
                                 />
                               </TouchableOpacity>
                             </View>
-                          </View>
-                        )}
-                      </View>
-                      {this.state.error.utilType ? (
-                        <HelperText
-                          type="error"
-                          visible={this.state.error.utilType}>
-                          {this.state.error.utilType}
-                        </HelperText>
-                      ) : null}
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>
-                          device Type Info
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          // height: height * 0.25,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 2,
-                        }}>
-                        {loadManufacturers ? (
-                          <ActivityIndicator size="large" color="#25AAE1ec" />
-                        ) : this.state.addNewType &&
-                          this.state.showAddType == 'Manufacturer' ? (
-                          <View
-                            style={{
-                              width: '90%',
-                              zIndex: 2,
-                              alignSelf: 'center',
-                            }}>
+                            // <FlatList
+                            //   scrollEnabled
+                            //   contentContainerStyle={{
+                            //     alignItems: 'center',
+                            //   }}
+                            //   nestedScrollEnabled
+                            //   data={this.state.meterList}
+                            //   renderItem={this.renderMeterInfo}
+                            // />
+                          )}
+                        </View>
+                        {this.state.error.meterId ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.meterId}>
+                            {this.state.error.meterId}
+                          </HelperText>
+                        ) : null}
+
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            Utility Type Info
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            width: '90%',
+                            zIndex: 2,
+                            alignSelf: 'center',
+                          }}>
+                          {this.state.addNewType &&
+                          this.state.showAddType == 'Utility' ? (
                             <View>
                               <View>
                                 <Text
@@ -1602,8 +1465,8 @@ export default class Splash extends React.Component {
                                 </Text>
                               </View>
                               <TextInput
-                                placeholder={'Type new manufacturer'}
-                                value={this.state.addManufacturer}
+                                placeholder={'Type new Utility'}
+                                value={this.state.addUtility}
                                 style={{
                                   width: width * 0.8,
                                   justifyContent: 'flex-end',
@@ -1618,9 +1481,439 @@ export default class Splash extends React.Component {
                                   },
                                 }}
                                 onChangeText={(text) => {
-                                  this.setState({addManufacturer: text});
+                                  this.setState({addUtility: text});
                                 }}
                               />
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-around',
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() => this.cancelAddType()}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: '#25AAE1ec',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => this.doneAddType()}
+                                  disabled={
+                                    this.state.addUtility ? false : true
+                                  }>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: this.state.addUtility
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Add
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          ) : (
+                            <View>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropDown
+                                  multi={true}
+                                  selectedItems={this.state.selectUtil}
+                                  onItemSelect={(item) => {
+                                    console.log('Test', item);
+                                    this.AddTypes(item, 'Utility');
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  // items={item.data}
+                                  items={this.state.utilTypes}
+                                  onRemoveItem={(item, index) => {
+                                    const items = this.state.selectUtil.filter(
+                                      (sitem) => sitem.id !== item.id,
+                                    );
+                                    // selectedTypes.current = items;
+                                    this.setState({selectUtil: items});
+                                  }}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Add Utility Type',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                    },
+                                    // onTextChange: (text) => {
+                                    //   onChangeManufacturer(text, index);
+                                    // },
+                                    // value: setTimeout(() => item.select, 200),
+                                    // defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    this.showAddNewType('Utility')
+                                  }>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                              <View>
+                                <FlatList
+                                  data={this.state.selectUtil}
+                                  // extraData={selectedTypes.current}
+                                  horizontal
+                                  renderItem={({item}) => (
+                                    <View
+                                      style={{
+                                        borderWidth: 1,
+                                        borderRadius: 8,
+                                        flexDirection: 'row',
+                                        padding: 5,
+                                        margin: 5,
+                                        height: width * 0.1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                      }}>
+                                      <Text style={{color: 'black'}}>
+                                        {item.name}
+                                      </Text>
+                                      <TouchableOpacity
+                                        onPress={() => {
+                                          const items = this.state.selectUtil.filter(
+                                            (sitem) => sitem.id !== item.id,
+                                          );
+                                          this.setState({selectUtil: items});
+                                        }}>
+                                        <Icon
+                                          name="close"
+                                          size={width * 0.05}
+                                        />
+                                      </TouchableOpacity>
+                                    </View>
+                                  )}
+                                />
+                              </View>
+                            </View>
+                          )}
+                        </View>
+                        {this.state.error.utilType ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.utilType}>
+                            {this.state.error.utilType}
+                          </HelperText>
+                        ) : null}
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            device Type Info
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            // height: height * 0.25,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 2,
+                          }}>
+                          {loadManufacturers ? (
+                            <ActivityIndicator size="large" color="#25AAE1ec" />
+                          ) : this.state.addNewType &&
+                            this.state.showAddType == 'Manufacturer' ? (
+                            <View
+                              style={{
+                                width: '90%',
+                                zIndex: 2,
+                                alignSelf: 'center',
+                              }}>
+                              <View>
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: width * 0.03,
+                                      color: '#3E4A4F',
+                                      textTransform: 'capitalize',
+                                      fontFamily: Fonts.ComfortaaRegular,
+                                      marginBottom: width * 0.01,
+                                    }}>
+                                    New {this.state.showAddType}
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder={'Type new manufacturer'}
+                                  value={this.state.addManufacturer}
+                                  style={{
+                                    width: width * 0.8,
+                                    justifyContent: 'flex-end',
+                                    fontSize: width * 0.036,
+                                  }}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    this.setState({addManufacturer: text});
+                                  }}
+                                />
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                    marginVertical: height * 0.01,
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => this.cancelAddType()}>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => this.doneAddType()}
+                                    disabled={
+                                      this.state.addManufacturer ? false : true
+                                    }>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: this.state.addManufacturer
+                                          ? '#25AAE1ec'
+                                          : '#d0d0d0',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            </View>
+                          ) : this.state.addNewType &&
+                            this.state.showAddType == 'Device' ? (
+                            <View
+                              style={{
+                                width: '90%',
+                                zIndex: 2,
+                                alignSelf: 'center',
+                              }}>
+                              {this.state.addDevice &&
+                                this.state.addDevice?.map((item, index) => (
+                                  <View
+                                    style={{
+                                      width: width * 0.8,
+                                      // zIndex: 9,
+                                    }}
+                                    key={item.id}>
+                                    <View>
+                                      <Text
+                                        style={styles.meterDesciptionHeading}>
+                                        {item.name}
+                                      </Text>
+                                    </View>
+                                    {index < 2 ? (
+                                      <SearchableDropDown
+                                        onItemSelect={(items) => {
+                                          this.getNewDeviceData(items, index);
+                                        }}
+                                        containerStyle={{
+                                          paddingBottom: width * 0.02,
+                                        }}
+                                        itemStyle={{
+                                          padding: width * 0.027,
+                                          backgroundColor: '#fff',
+                                          borderColor: '#bbb',
+                                          borderWidth: width * 0.0015,
+                                          borderRadius: width * 0.015,
+                                          margin: width * 0.005,
+                                        }}
+                                        itemTextStyle={{color: '#222'}}
+                                        itemsContainerStyle={
+                                          Platform.OS == 'android'
+                                            ? {
+                                                height: width * 0.2,
+                                                zIndex: 1,
+                                                position: 'absolute',
+                                                width: width * 0.8,
+                                                top: width * 0.1,
+                                                flex: 1,
+                                                zIndex: 20,
+                                                backgroundColor: 'white',
+                                                elevation: width * 0.01,
+                                                shadowColor: '#000',
+                                                shadowOffset: {
+                                                  width: 0,
+                                                  height: 2,
+                                                },
+                                                shadowOpacity: 0.25,
+                                                shadowRadius: 3.84,
+                                              }
+                                            : {height: width * 0.2, zIndex: 1}
+                                        }
+                                        items={item.data}
+                                        resetValue={false}
+                                        textInputProps={{
+                                          placeholder: item.name,
+                                          underlineColorAndroid: 'transparent',
+                                          style: {
+                                            padding: width * 0.027,
+                                            margin: 0,
+                                            borderRadius: width * 0.015,
+                                            height: width * 0.13,
+                                            backgroundColor: '#F6F6F6',
+                                            borderWidth: width * 0.0019,
+                                          },
+                                          onTextChange: (text) => {
+                                            this.onChangeNewDevice(text, index);
+                                          },
+                                          value: setTimeout(
+                                            () => item.select,
+                                            200,
+                                          ),
+                                          defaultValue: item.select,
+                                        }}
+                                        listProps={{
+                                          nestedScrollEnabled: true,
+                                        }}
+                                      />
+                                    ) : (
+                                      <View>
+                                        <TextInput
+                                          placeholder={'Type New Device Name'}
+                                          value={item.select}
+                                          style={styles.meterInput}
+                                          mode={'outlined'}
+                                          theme={{
+                                            colors: {
+                                              text: '#25AAE1ec',
+                                              primary: '#25AAE1ec',
+                                              selectionColor: 'red',
+                                              zIndex: 10,
+                                            },
+                                          }}
+                                          onChangeText={(text) => {
+                                            this.onChangeNewDevice(text, index);
+                                          }}
+                                        />
+                                        <View>
+                                          <View>
+                                            <Text
+                                              style={
+                                                styles.meterDesciptionHeading
+                                              }>
+                                              Model Number*
+                                            </Text>
+                                          </View>
+                                          <TextInput
+                                            placeholder="Model Number"
+                                            // value={modelNo}
+                                            showSoftInputOnFocus={false}
+                                            style={styles.meterInput}
+                                            mode={'outlined'}
+                                            theme={{
+                                              colors: {
+                                                text: '#25AAE1ec',
+                                                primary: '#25AAE1ec',
+                                                selectionColor: 'red',
+                                              },
+                                            }}
+                                            onChangeText={(text) => {
+                                              this.setState({modelNo: text});
+                                            }}
+                                          />
+                                        </View>
+                                        <View>
+                                          <View>
+                                            <Text
+                                              style={
+                                                styles.meterDesciptionHeading
+                                              }>
+                                              Product Number*
+                                            </Text>
+                                          </View>
+                                          <TextInput
+                                            placeholder="Product Number"
+                                            // value={productNo}
+                                            showSoftInputOnFocus={false}
+                                            style={styles.meterInput}
+                                            mode={'outlined'}
+                                            theme={{
+                                              colors: {
+                                                text: '#25AAE1ec',
+                                                primary: '#25AAE1ec',
+                                                selectionColor: 'red',
+                                              },
+                                            }}
+                                            onChangeText={(text) => {
+                                              this.setState({productNo: text});
+                                            }}
+                                          />
+                                        </View>
+                                      </View>
+                                    )}
+                                  </View>
+                                ))}
                               <View
                                 style={{
                                   flexDirection: 'row',
@@ -1643,15 +1936,26 @@ export default class Splash extends React.Component {
                                 <TouchableOpacity
                                   onPress={() => this.doneAddType()}
                                   disabled={
-                                    this.state.addManufacturer ? false : true
+                                    this.state.addDevice[0].selectId &&
+                                    this.state.addDevice[1].selectId &&
+                                    this.state.addDevice[2].select &&
+                                    this.state.modelNo &&
+                                    this.state.productNo
+                                      ? false
+                                      : true
                                   }>
                                   <Text
                                     style={{
                                       fontWeight: 'bold',
                                       fontSize: width * 0.045,
-                                      color: this.state.addManufacturer
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
+                                      color:
+                                        this.state.addDevice[0].selectId &&
+                                        this.state.addDevice[1].selectId &&
+                                        this.state.addDevice[2].select &&
+                                        this.state.modelNo &&
+                                        this.state.productNo
+                                          ? '#25AAE1ec'
+                                          : '#d0d0d0',
                                       width: width * 0.16,
                                       textAlign: 'center',
                                     }}>
@@ -1660,82 +1964,82 @@ export default class Splash extends React.Component {
                                 </TouchableOpacity>
                               </View>
                             </View>
-                          </View>
-                        ) : this.state.addNewType &&
-                          this.state.showAddType == 'Device' ? (
-                          <View
-                            style={{
-                              width: '90%',
-                              zIndex: 2,
-                              alignSelf: 'center',
-                            }}>
-                            {this.state.addDevice &&
-                              this.state.addDevice?.map((item, index) => (
+                          ) : (
+                            deviceData.map((item, index) => (
+                              <View
+                                style={{
+                                  width: '90%',
+                                  zIndex: 2,
+                                  alignSelf: 'center',
+                                }}
+                                key={item.id}>
+                                <Text style={styles.meterDesciptionHeading}>
+                                  {item.name}*
+                                </Text>
                                 <View
                                   style={{
-                                    width: width * 0.8,
-                                    // zIndex: 9,
-                                  }}
-                                  key={item.id}>
-                                  <View>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      {item.name}
-                                    </Text>
-                                  </View>
-                                  {index < 2 ? (
+                                    flexDirection: 'row',
+                                    alignItems: 'flex-start',
+                                  }}>
+                                  <View
+                                    pointerEvents={
+                                      index > 0
+                                        ? deviceData[0].selectId
+                                          ? 'auto'
+                                          : 'none'
+                                        : 'auto'
+                                    }>
                                     <SearchableDropDown
-                                      onItemSelect={(items) => {
-                                        this.getNewDeviceData(items, index);
+                                      onItemSelect={(item) => {
+                                        this.getDevice(item, index);
+                                        // console.log('kia mila', item);
                                       }}
                                       containerStyle={{
                                         paddingBottom: width * 0.02,
+                                        width: width * 0.7,
                                       }}
                                       itemStyle={{
                                         padding: width * 0.027,
-                                        backgroundColor: '#fff',
+                                        backgroundColor: 'rgb(247, 247, 247)',
                                         borderColor: '#bbb',
                                         borderWidth: width * 0.0015,
                                         borderRadius: width * 0.015,
-                                        margin: width * 0.005,
+                                        zIndex: 99,
                                       }}
                                       itemTextStyle={{color: '#222'}}
-                                      itemsContainerStyle={
-                                        Platform.OS == 'android'
-                                          ? {
-                                              height: width * 0.2,
-                                              zIndex: 1,
-                                              position: 'absolute',
-                                              width: width * 0.8,
-                                              top: width * 0.1,
-                                              flex: 1,
-                                              zIndex: 20,
-                                              backgroundColor: 'white',
-                                              elevation: width * 0.01,
-                                              shadowColor: '#000',
-                                              shadowOffset: {
-                                                width: 0,
-                                                height: 2,
-                                              },
-                                              shadowOpacity: 0.25,
-                                              shadowRadius: 3.84,
-                                            }
-                                          : {height: width * 0.2, zIndex: 1}
-                                      }
+                                      itemsContainerStyle={{
+                                        maxHeight: height * 0.08,
+                                      }}
                                       items={item.data}
                                       resetValue={false}
                                       textInputProps={{
-                                        placeholder: item.name,
+                                        placeholder:
+                                          index == 1
+                                            ? deviceData[0].selectId
+                                              ? item.name
+                                              : 'First Select Manufacture'
+                                            : item.name,
                                         underlineColorAndroid: 'transparent',
                                         style: {
                                           padding: width * 0.027,
                                           margin: 0,
-                                          borderRadius: width * 0.015,
+                                          borderTopLeftRadius: width * 0.015,
+                                          borderBottomLeftRadius: width * 0.015,
+                                          borderColor: item.error
+                                            ? '#A3001B'
+                                            : 'black',
                                           height: width * 0.13,
                                           backgroundColor: '#F6F6F6',
-                                          borderWidth: width * 0.0019,
+                                          borderTopWidth: width * 0.0019,
+                                          borderLeftWidth: width * 0.0019,
+                                          borderBottomWidth: width * 0.0019,
+                                          zIndex: 0,
                                         },
                                         onTextChange: (text) => {
-                                          this.onChangeNewDevice(text, index);
+                                          this.onChangeManufacturer(
+                                            text,
+                                            index,
+                                          );
                                         },
                                         value: setTimeout(
                                           () => item.select,
@@ -1747,366 +2051,317 @@ export default class Splash extends React.Component {
                                         nestedScrollEnabled: true,
                                       }}
                                     />
-                                  ) : (
-                                    <View>
-                                      <TextInput
-                                        placeholder={'Type New Device Name'}
-                                        value={item.select}
-                                        style={styles.meterInput}
-                                        mode={'outlined'}
-                                        theme={{
-                                          colors: {
-                                            text: '#25AAE1ec',
-                                            primary: '#25AAE1ec',
-                                            selectionColor: 'red',
-                                            zIndex: 10,
-                                          },
-                                        }}
-                                        onChangeText={(text) => {
-                                          this.onChangeNewDevice(text, index);
-                                        }}
-                                      />
-                                      <View>
-                                        <View>
-                                          <Text
-                                            style={
-                                              styles.meterDesciptionHeading
-                                            }>
-                                            Model Number*
-                                          </Text>
-                                        </View>
-                                        <TextInput
-                                          placeholder="Model Number"
-                                          // value={modelNo}
-                                          showSoftInputOnFocus={false}
-                                          style={styles.meterInput}
-                                          mode={'outlined'}
-                                          theme={{
-                                            colors: {
-                                              text: '#25AAE1ec',
-                                              primary: '#25AAE1ec',
-                                              selectionColor: 'red',
-                                            },
-                                          }}
-                                          onChangeText={(text) => {
-                                            this.setState({modelNo: text});
-                                          }}
-                                        />
-                                      </View>
-                                      <View>
-                                        <View>
-                                          <Text
-                                            style={
-                                              styles.meterDesciptionHeading
-                                            }>
-                                            Product Number*
-                                          </Text>
-                                        </View>
-                                        <TextInput
-                                          placeholder="Product Number"
-                                          // value={productNo}
-                                          showSoftInputOnFocus={false}
-                                          style={styles.meterInput}
-                                          mode={'outlined'}
-                                          theme={{
-                                            colors: {
-                                              text: '#25AAE1ec',
-                                              primary: '#25AAE1ec',
-                                              selectionColor: 'red',
-                                            },
-                                          }}
-                                          onChangeText={(text) => {
-                                            this.setState({productNo: text});
-                                          }}
-                                        />
-                                      </View>
-                                    </View>
-                                  )}
+                                  </View>
+                                  <TouchableOpacity
+                                    style={{
+                                      width: width * 0.1,
+                                      backgroundColor: '#25AAE199',
+                                      borderTopRightRadius: width * 0.015,
+                                      borderBottomRightRadius: width * 0.015,
+                                      borderTopWidth: width * 0.0019,
+                                      borderRightWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                      height: width * 0.13,
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                    onPress={() =>
+                                      this.showAddNewType(item.name)
+                                    }>
+                                    <Icon
+                                      size={width * 0.06}
+                                      color="#fff"
+                                      name={'add'}
+                                    />
+                                  </TouchableOpacity>
                                 </View>
-                              ))}
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                                marginVertical: height * 0.01,
-                              }}>
-                              <TouchableOpacity
-                                onPress={() => this.cancelAddType()}>
-                                <Text
-                                  style={{
-                                    fontWeight: 'bold',
-                                    fontSize: width * 0.045,
-                                    color: '#25AAE1ec',
-                                    width: width * 0.16,
-                                    textAlign: 'center',
-                                  }}>
-                                  Cancel
-                                </Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => this.doneAddType()}
-                                disabled={
-                                  this.state.addDevice[0].selectId &&
-                                  this.state.addDevice[1].selectId &&
-                                  this.state.addDevice[2].select &&
-                                  this.state.modelNo &&
-                                  this.state.productNo
-                                    ? false
-                                    : true
-                                }>
-                                <Text
-                                  style={{
-                                    fontWeight: 'bold',
-                                    fontSize: width * 0.045,
-                                    color:
-                                      this.state.addDevice[0].selectId &&
-                                      this.state.addDevice[1].selectId &&
-                                      this.state.addDevice[2].select &&
-                                      this.state.modelNo &&
-                                      this.state.productNo
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                    width: width * 0.16,
-                                    textAlign: 'center',
-                                  }}>
-                                  Add
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        ) : (
-                          deviceData.map((item, index) => (
-                            <View
-                              style={{
-                                width: '90%',
-                                zIndex: 2,
-                                alignSelf: 'center',
-                              }}
-                              key={item.id}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                {item.name}*
-                              </Text>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'flex-start',
-                                }}>
-                                <View
-                                  pointerEvents={
-                                    index > 0
-                                      ? deviceData[0].selectId
-                                        ? 'auto'
-                                        : 'none'
-                                      : 'auto'
-                                  }>
-                                  <SearchableDropDown
-                                    onItemSelect={(item) => {
-                                      this.getDevice(item, index);
-                                      // console.log('kia mila', item);
-                                    }}
-                                    containerStyle={{
-                                      paddingBottom: width * 0.02,
-                                      width: width * 0.7,
-                                    }}
-                                    itemStyle={{
-                                      padding: width * 0.027,
-                                      backgroundColor: 'rgb(247, 247, 247)',
-                                      borderColor: '#bbb',
-                                      borderWidth: width * 0.0015,
-                                      borderRadius: width * 0.015,
-                                      zIndex: 99,
-                                    }}
-                                    itemTextStyle={{color: '#222'}}
-                                    itemsContainerStyle={{
-                                      maxHeight: height * 0.08,
-                                    }}
-                                    items={item.data}
-                                    resetValue={false}
-                                    textInputProps={{
-                                      placeholder:
-                                        index == 1
-                                          ? deviceData[0].selectId
-                                            ? item.name
-                                            : 'First Select Manufacture'
-                                          : item.name,
-                                      underlineColorAndroid: 'transparent',
-                                      style: {
-                                        padding: width * 0.027,
-                                        margin: 0,
-                                        borderTopLeftRadius: width * 0.015,
-                                        borderBottomLeftRadius: width * 0.015,
-                                        borderColor: item.error
-                                          ? '#A3001B'
-                                          : 'black',
-                                        height: width * 0.13,
-                                        backgroundColor: '#F6F6F6',
-                                        borderTopWidth: width * 0.0019,
-                                        borderLeftWidth: width * 0.0019,
-                                        borderBottomWidth: width * 0.0019,
-                                        zIndex: 0,
-                                      },
-                                      onTextChange: (text) => {
-                                        this.onChangeManufacturer(text, index);
-                                      },
-                                      value: setTimeout(() => item.select, 200),
-                                      defaultValue: item.select,
-                                    }}
-                                    listProps={{
-                                      nestedScrollEnabled: true,
-                                    }}
-                                  />
-                                </View>
-                                <TouchableOpacity
-                                  style={{
-                                    width: width * 0.1,
-                                    backgroundColor: '#25AAE199',
-                                    borderTopRightRadius: width * 0.015,
-                                    borderBottomRightRadius: width * 0.015,
-                                    borderTopWidth: width * 0.0019,
-                                    borderRightWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    height: width * 0.13,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  onPress={() =>
-                                    this.showAddNewType(item.name)
-                                  }>
-                                  <Icon
-                                    size={width * 0.06}
-                                    color="#fff"
-                                    name={'add'}
-                                  />
-                                </TouchableOpacity>
                               </View>
-                            </View>
-                          ))
-                        )}
-                        {this.state.error.deviceId ? (
-                          <HelperText
-                            type="error"
-                            visible={this.state.error.deviceId}>
-                            {this.state.error.deviceId}
-                          </HelperText>
-                        ) : null}
-                      </View>
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>owner</Text>
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Company Specific ID"
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({CustomId: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
+                            ))
+                          )}
+                          {this.state.error.deviceId ? (
+                            <HelperText
+                              type="error"
+                              visible={this.state.error.deviceId}>
+                              {this.state.error.deviceId}
+                            </HelperText>
+                          ) : null}
+                        </View>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>owner</Text>
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Company Specific ID"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({CustomId: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
 
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Customer Name"
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({CustomerName: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Title / Job Description"
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({customerjobDes: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Phone"
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({customerPhone: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          placeholder="Email"
-                          style={styles.input}
-                          onChangeText={(text) => {
-                            this.setState({customerEmail: text});
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>
-                          management company
-                        </Text>
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TouchableOpacity
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Customer Name"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({CustomerName: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Title / Job Description"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({customerjobDes: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Phone"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({customerPhone: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            placeholder="Email"
+                            style={styles.input}
+                            onChangeText={(text) => {
+                              this.setState({customerEmail: text});
+                            }}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                          />
+                        </View>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            management company
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            width: '90%',
+                            zIndex: 2,
+                            alignSelf: 'center',
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'flex-start',
+                            }}>
+                            {/* <TouchableOpacity
                           onPress={() => this.handleOpenDropDown(false)}
                           style={{
                             ...styles.billingCompanyBtn,
                           }}>
                           <Text>{this.state.managementCompany}</Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.desciptionContainer}>
-                        <Text style={styles.desciptionHeading}>
-                          billing company
-                        </Text>
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <TouchableOpacity
+                        </TouchableOpacity> */}
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                this.getDevice(item, index);
+                                // console.log('kia mila', item);
+                              }}
+                              containerStyle={{
+                                paddingBottom: width * 0.02,
+                                width: width * 0.7,
+                              }}
+                              itemStyle={{
+                                padding: width * 0.027,
+                                backgroundColor: 'rgb(247, 247, 247)',
+                                borderColor: '#bbb',
+                                borderWidth: width * 0.0015,
+                                borderRadius: width * 0.015,
+                                zIndex: 99,
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: height * 0.08,
+                              }}
+                              items={this.context.manageCompList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Management Company',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  margin: 0,
+                                  borderTopLeftRadius: width * 0.015,
+                                  borderBottomLeftRadius: width * 0.015,
+                                  borderColor: 'black',
+                                  height: width * 0.13,
+                                  backgroundColor: '#F6F6F6',
+                                  borderTopWidth: width * 0.0019,
+                                  borderLeftWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  zIndex: 0,
+                                },
+                                onTextChange: (text) => {
+                                  this.onChangeManufacturer(text, index);
+                                },
+                                // value: setTimeout(() => item.select, 200),
+                                // defaultValue: item.select,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                width: width * 0.1,
+                                backgroundColor: '#25AAE199',
+                                borderTopRightRadius: width * 0.015,
+                                borderBottomRightRadius: width * 0.015,
+                                borderTopWidth: width * 0.0019,
+                                borderRightWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                                height: width * 0.13,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onPress={() => this.showAddNewType('Utility')}>
+                              <Icon
+                                size={width * 0.06}
+                                color="#fff"
+                                name={'add'}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                        <View style={styles.desciptionContainer}>
+                          <Text style={styles.desciptionHeading}>
+                            billing company
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            width: '90%',
+                            zIndex: 2,
+                            alignSelf: 'center',
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'flex-start',
+                            }}>
+                            {/* <TouchableOpacity
                           onPress={() => this.handleOpenDropDown(true)}
                           style={{
                             ...styles.billingCompanyBtn,
                           }}>
                           <Text>{this.state.BillingCompany}</Text>
-                        </TouchableOpacity>
-                        <Modal
+                        </TouchableOpacity> */}
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                this.getDevice(item, index);
+                                // console.log('kia mila', item);
+                              }}
+                              containerStyle={{
+                                paddingBottom: width * 0.02,
+                                width: width * 0.7,
+                              }}
+                              itemStyle={{
+                                padding: width * 0.027,
+                                backgroundColor: 'rgb(247, 247, 247)',
+                                borderColor: '#bbb',
+                                borderWidth: width * 0.0015,
+                                borderRadius: width * 0.015,
+                                zIndex: 99,
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: height * 0.08,
+                              }}
+                              items={this.context.propitemList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Billing Company',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  margin: 0,
+                                  borderTopLeftRadius: width * 0.015,
+                                  borderBottomLeftRadius: width * 0.015,
+                                  borderColor: 'black',
+                                  height: width * 0.13,
+                                  backgroundColor: '#F6F6F6',
+                                  borderTopWidth: width * 0.0019,
+                                  borderLeftWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  zIndex: 0,
+                                },
+                                onTextChange: (text) => {
+                                  this.onChangeManufacturer(text, index);
+                                },
+                                // value: setTimeout(() => item.select, 200),
+                                // defaultValue: item.select,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                width: width * 0.1,
+                                backgroundColor: '#25AAE199',
+                                borderTopRightRadius: width * 0.015,
+                                borderBottomRightRadius: width * 0.015,
+                                borderTopWidth: width * 0.0019,
+                                borderRightWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                                height: width * 0.13,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onPress={() => this.showAddNewType('Utility')}>
+                              <Icon
+                                size={width * 0.06}
+                                color="#fff"
+                                name={'add'}
+                              />
+                            </TouchableOpacity>
+                            {/* <Modal
                           animationIn="fadeIn"
                           animationOut="fadeOut"
                           isVisible={this.state.open}
@@ -2153,27 +2408,29 @@ export default class Splash extends React.Component {
                                 </TouchableOpacity>
                               ))}
                           </View>
-                        </Modal>
+                        </Modal> */}
+                          </View>
+                        </View>
                       </View>
-                    </View>
-                  </ScrollView>
-                  {/* Box Header */}
-                  <View style={styles.boxHeader}>
-                    <View style={styles.bottonContainer}>
-                      <FAB
-                        onPress={this.addProperty}
-                        style={styles.submitBotton}
-                        color="white"
-                        icon="check"
-                        label="Add property"
-                      />
+                    </ScrollView>
+                    {/* Box Header */}
+                    <View style={styles.boxHeader}>
+                      <View style={styles.bottonContainer}>
+                        <FAB
+                          onPress={this.addProperty}
+                          style={styles.submitBotton}
+                          color="white"
+                          icon="check"
+                          label="Add property"
+                        />
+                      </View>
                     </View>
                   </View>
                 </View>
               </View>
-            </View>
-          )}
-        </Modal>
+            )}
+          </Modal>
+        </KeyboardAvoidingView>
       </View>
     );
   }

@@ -169,7 +169,7 @@ class GlobalState extends React.Component {
     });
   };
   getBillingCompany = async () => {
-    const response = await this.api.get('/property/billing-company/all');
+    const response = await this.api?.get('/property/billing-company/all');
     console.log(
       'Check billing company response',
       response?.data?.data?.billingCompany,
@@ -178,7 +178,7 @@ class GlobalState extends React.Component {
   };
 
   getManagementCompany = async () => {
-    const response = await this.api.get('/property/management-company/all');
+    const response = await this.api?.get('/property/management-company/all');
     console.log(
       'Check management company response',
       response?.data?.data?.managementCompany,

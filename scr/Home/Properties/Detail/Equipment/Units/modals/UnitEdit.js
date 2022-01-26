@@ -206,6 +206,7 @@ export default function UnitEdit({
   const [reasonText, setReasonText] = useState('');
   const [addManufacturer, setAddManufacturer] = useState('');
   const [addUtility, setAddUtility] = useState('');
+  const [addAttached, setAddAttached] = useState('');
   const [showAddType, setShowAddType] = useState(false);
   const [meterListLoader, setMeterListLoader] = useState(true);
   const [sliderNumber, setSliderNumber] = useState(1);
@@ -1612,6 +1613,31 @@ export default function UnitEdit({
       } else {
         alert(UtilityResponse?.data?.message);
       }
+    } else if (showAddType == 'Attached To') {
+      let data = {
+        name: '',
+      };
+      const AttachedToResponse = await api.post(
+        '/property/equipment/attached_to/attach',
+        data,
+      );
+      if (AttachedToResponse?.data?.bool) {
+        console.log('datachecckk-->>', AttachedToResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        callApi();
+        cancelAddNewType();
+      } else {
+        alert(AttachedToResponse?.data?.message);
+      }
     } else {
       let data = {
         name: addDevice[2].select,
@@ -1664,6 +1690,7 @@ export default function UnitEdit({
     setAddDevice(deviceData);
     setAddManufacturer('');
     setAddUtility('');
+    setAddAttached('');
   };
 
   const getMeterData = (data) => {
@@ -2108,6 +2135,31 @@ export default function UnitEdit({
                         />
                       </View>
                     )}
+                    {showAddType == 'Attached To' && (
+                      <View>
+                        <View>
+                          <Text style={[styles.meterDesciptionHeading]}>
+                            New {showAddType}
+                          </Text>
+                        </View>
+                        <TextInput
+                          placeholder={'Type new Attached To'}
+                          value={addAttached}
+                          style={styles.meterInput}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                          onChangeText={(text) => {
+                            setAddAttached(text);
+                          }}
+                        />
+                      </View>
+                    )}
                   </View>
                   <TouchableOpacity
                     onPress={doneAddType}
@@ -2124,6 +2176,8 @@ export default function UnitEdit({
                             ? '#25AAE1ec'
                             : showAddType == 'Utility' && addUtility
                             ? '#25AAE1ec'
+                            : showAddType == 'Attached To' && addAttached
+                            ? '#25AAE1ec'
                             : '#D0D0D0',
                       },
                     ]}
@@ -2136,6 +2190,8 @@ export default function UnitEdit({
                           addDevice[2].select
                         ? false
                         : showAddType == 'Utility' && addUtility
+                        ? false
+                        : showAddType == 'Attached To' && addAttached
                         ? false
                         : true
                     }>
@@ -2473,7 +2529,83 @@ export default function UnitEdit({
                           ]}>
                           Attached To*
                         </Text>
-                        <SearchableDropdown
+                        <View
+                          pointerEvents={'auto'}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'flex-start',
+                          }}>
+                          <SearchableDropdown
+                            onItemSelect={(item) => {
+                              // getDevice(item, index);
+                              setAttachedToId(item.id);
+                              setAttachedTo(item.name);
+                            }}
+                            containerStyle={{
+                              paddingBottom: width * 0.02,
+                              width: width * 0.7,
+                            }}
+                            itemStyle={{
+                              padding: width * 0.027,
+                              backgroundColor: 'rgb(247, 247, 247)',
+                              borderColor: '#bbb',
+                              borderWidth: width * 0.0015,
+                              borderRadius: width * 0.015,
+                            }}
+                            itemTextStyle={{color: '#222'}}
+                            itemsContainerStyle={{
+                              maxHeight: height * 0.08,
+                            }}
+                            // items={item.data}
+                            items={attachedToData}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: 'Select Attached To',
+                              underlineColorAndroid: 'transparent',
+                              style: {
+                                padding: width * 0.027,
+                                margin: 0,
+                                borderTopLeftRadius: width * 0.015,
+                                borderBottomLeftRadius: width * 0.015,
+                                borderColor: 'black',
+                                height: width * 0.13,
+                                backgroundColor: '#F6F6F6',
+                                borderTopWidth: width * 0.0019,
+                                borderLeftWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                              },
+                              onTextChange: (text) => {
+                                onChangeAttachedTo(text);
+                              },
+                              value: attachedTo,
+                              // defaultValue: item.select,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              width: width * 0.1,
+                              backgroundColor: '#25AAE199',
+                              borderTopRightRadius: width * 0.015,
+                              borderBottomRightRadius: width * 0.015,
+                              borderTopWidth: width * 0.0019,
+                              borderRightWidth: width * 0.0019,
+                              borderBottomWidth: width * 0.0019,
+                              height: width * 0.13,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => showAddNewType('Attached To')}>
+                            <Icon
+                              size={width * 0.06}
+                              color="#fff"
+                              name={'add'}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        {/* <SearchableDropdown
                           onItemSelect={(item) => {
                             setAttachedToId(item.id);
                             setAttachedTo(item.name);
@@ -2524,7 +2656,7 @@ export default function UnitEdit({
                           listProps={{
                             nestedScrollEnabled: true,
                           }}
-                        />
+                        /> */}
                       </View>
                     </View>
                   ) : sliderNumber == 4 ? (
