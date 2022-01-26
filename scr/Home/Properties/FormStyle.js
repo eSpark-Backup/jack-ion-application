@@ -90,6 +90,7 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     marginBottom: height * 0.01,
+    justifyContent:'space-between'
   },
   desciptionHeading: {
     fontSize: height * 0.015,
@@ -99,7 +100,7 @@ export default styles = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    height: height * 0.09,
+    // height: height * 0.09,
     width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
