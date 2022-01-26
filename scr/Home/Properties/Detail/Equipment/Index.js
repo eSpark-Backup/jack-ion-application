@@ -75,6 +75,7 @@ export default class Splash extends Component {
       realData: [],
       fileMenuVisible: false,
       addMenuVisible: false,
+      currUnitIndex: null,
       FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
       AddArray: [
         {name: 'Add a Unit', func: this.selectAndCloseAdd},
@@ -349,15 +350,45 @@ export default class Splash extends Component {
   };
 
   actionOnPress = (unit) => {
+    this.setState({
+      currUnitIndex:
+        unit.index === this.state.currUnitIndex ? null : unit.index,
+    });
+  };
+
+  goToDetails = (unit) => {
     this.props.navigation.navigate('U_Details', {
       unitId: unit.item.id,
       buildingName: this.state.buildingData.name,
       buildingId: this.state.editBuildId,
+      propertyId: this.props.navigation.state.params.item.item.id,
+      propertyLat: this.props.navigation.state.params.item.item.latitude,
+      propertyLong: this.props.navigation.state.params.item.item.longitude,
     });
-    this.setState({showSearch: false, loader: true, loaderBuildings: true});
+    this.setState({
+      showSearch: false,
+      loader: true,
+      loaderBuildings: true,
+    });
   };
+
+  deleteUnit = async (id) => {
+    const response = await api.delete(`/property/equipment/unit/${id}`);
+    alert(response?.data?.message);
+  };
+
+  confirmDelete = (id) => {
+    Alert.alert('Delete Meter', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: () => deleteMeter(id)},
+    ]);
+  };
+
   typeSwitcher = (arg) => {
-    switch (arg) {
+    switch (arg.toLowerCase()) {
       case 'hot water':
         return require('../../../../../Images/hot-water.png');
       case 'cold water':
@@ -372,9 +403,16 @@ export default class Splash extends Component {
         break;
     }
   };
+
   _renderUnitList = (unit) => {
+    console.log('>><<<<<<<<<', unit);
     return (
-      <View style={{alignItems: 'center'}}>
+      <View
+        style={{
+          alignItems: 'center',
+          marginVertical: height * 0.01,
+          width: width * 0.9,
+        }}>
         <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
           <View style={[styles.infoViewContainer]}>
             <View style={styles.infoViewInner}>
@@ -470,6 +508,64 @@ export default class Splash extends Component {
             </View>
           </View>
         </TouchableOpacity>
+        {unit.index === this.state.currUnitIndex ? (
+          <View
+            style={[styles.buildingEditBtn, {justifyContent: 'space-between'}]}>
+            <TouchableOpacity
+              style={{
+                margin: width * 0.01,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              onPress={() => this.goToDetails(unit)}>
+              <MaterialCommunityIcons
+                name="view-compact-outline"
+                color="white"
+                size={width * 0.04}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: Fonts.Montserrat,
+                  fontSize: width * 0.03,
+                }}>
+                View
+              </Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity style={{margin: width * 0.01}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Edit
+                </Text>
+              </TouchableOpacity> */}
+
+            <TouchableOpacity
+              onPress={() => this.confirmDelete(unit?.item?.id)}
+              style={{
+                margin: width * 0.01,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <MaterialCommunityIcons
+                name="delete-outline"
+                color="white"
+                size={width * 0.04}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: Fonts.Montserrat,
+                  fontSize: width * 0.03,
+                }}>
+                Delete
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
     );
   };
@@ -539,6 +635,7 @@ export default class Splash extends Component {
       `/property/equipment/unit/all-units`,
       data,
     );
+    console.log('UNIT RESPONSE', unitResponse?.data);
     if (unitResponse?.ok == true) {
       this.setState({realData: unitResponse?.data?.data, loader: false});
       let arry = unitResponse?.data?.data;
@@ -638,6 +735,8 @@ export default class Splash extends Component {
     if (cond != null) {
       this.updateBuilding(cond, this.state.editBuildId, data);
       this.setState({editModal: false});
+    } else {
+      this.setState({editModal: false});
     }
   };
 
@@ -672,6 +771,7 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
+    console.log('Currindex', this.state.currUnitIndex);
     return (
       <>
         <View style={styles.container}>
@@ -925,6 +1025,13 @@ export default class Splash extends Component {
               </View>
               <EditUnit
                 flag={this.state.flag}
+                propertyId={this.props.navigation.state.params.item.item.id}
+                propertyLat={
+                  this.props.navigation.state.params.item.item.latitude
+                }
+                propertyLong={
+                  this.props.navigation.state.params.item.item.longitude
+                }
                 enableFlag={() => this.setState({flag: true})}
                 disableFlag={() => this.setState({flag: false})}
                 modalVisible={this.state.isModalUnitVisible}
@@ -1055,7 +1162,10 @@ export default class Splash extends Component {
                     }}
                     showsVerticalScrollIndicator={false}
                     style={{marginBottom: width * 0.29}}
-                    contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+                    contentContainerStyle={{
+                      backgroundColor: '#F5F5F5',
+                      alignItems: 'center',
+                    }}
                     numColumns={1}
                     initialNumToRender={realData.length}
                     data={this._customSort(realData)}

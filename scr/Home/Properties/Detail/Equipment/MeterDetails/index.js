@@ -429,7 +429,7 @@ const App = ({navigation}) => {
   ];
 
   const typeSwitcher = (arg) => {
-    switch (arg) {
+    switch (arg.toLowerCase()) {
       case 'hot water':
         return require('../../../../../../Images/hot-water.png');
       case 'cold water':
@@ -645,7 +645,7 @@ const App = ({navigation}) => {
   };
 
   const typeColor = (arg) => {
-    switch (arg) {
+    switch (arg.toLowerCase()) {
       case 'hot water':
         return '#B14E3B';
       case 'cold water':
