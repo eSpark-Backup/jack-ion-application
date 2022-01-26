@@ -51,6 +51,7 @@ export default class Splash extends Component {
       showFilter: false,
       showSearch: false,
       filterWork: false,
+      noInternet: false,
     };
 
     if (Platform.OS === 'android') {
@@ -67,6 +68,9 @@ export default class Splash extends Component {
     NetInfo.fetch().then((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
+      console.log('isInternetReachable?', state.isInternetReachable);
+
+      this.setState({noInternet: !state.isInternetReachable});
       if (state.isConnected) {
         console.log('True chala');
         this.setState({loadScreen: true});
@@ -455,7 +459,11 @@ export default class Splash extends Component {
           </View>
           <View style={styles.propertyList}>
             {this.context.propList.length < 1 && !this.context.isLoading ? (
-              <Text>Check Your Internet Connection</Text>
+              this.state.noInternet ? (
+                <Text>Check Your Internet Connection</Text>
+              ) : (
+                <Text>No Properties to Show</Text>
+              )
             ) : (
               <FlatList
                 data={this.context.propList}

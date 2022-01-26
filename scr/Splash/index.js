@@ -7,6 +7,7 @@ import RootNav from '../../rootNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../components/Loader';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Fonts} from '../utils/fonts';
 
 // import Drawer from "../../scr/Navigation/index";
 

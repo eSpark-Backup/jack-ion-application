@@ -288,7 +288,14 @@ const App = ({navigation}) => {
   const dataSetTwo = getDataSetTwo();
   const tickValues = getTickValues();
 
-  const {unitId, buildingName, buildingId} = navigation.state.params; //? Dynamic Ids
+  const {
+    unitId,
+    buildingName,
+    buildingId,
+    propertyId,
+    propertyLat,
+    propertyLong,
+  } = navigation.state.params; //? Dynamic Ids
   // console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
@@ -299,7 +306,7 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
-    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
+    console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     setData(res.data);
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
@@ -333,7 +340,7 @@ const App = ({navigation}) => {
     setLoading(false);
   };
 
-  // console.log('Getting Data', gettingData);
+  console.log('Getting Data..................??????????', propertyId);
 
   const getChartData = (chartRes) => {
     console.log('Check Chala.....');
@@ -497,10 +504,11 @@ const App = ({navigation}) => {
   const arrayOfUnits = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
+    console.log('METER NAME', arg);
     switch (arg) {
       case 'hot water':
         return require('../../../../../../../Images/hot-water.png');
-      case 'cold water':
+      case 'Cold Water':
         return require('../../../../../../../Images/cold-water.png');
       case 'electricity':
         return require('../../../../../../../Images/electric.png');
@@ -1078,6 +1086,9 @@ const App = ({navigation}) => {
       <View style={{flex: 1}}>
         <EditUnit
           flag={flag}
+          propertyId={propertyId}
+          propertyLat={propertyLat}
+          propertyLong={propertyLong}
           enableFlag={() => setFlag(true)}
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
@@ -1085,11 +1096,10 @@ const App = ({navigation}) => {
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
+          openModal={() => setEditUnitModalVisible(true)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
-          runLoading={() => setLoading(true)}
-          runLoadingFailed={() => setLoading(true)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -1200,6 +1210,9 @@ const App = ({navigation}) => {
       <View style={{flex: 1}}>
         <EditUnit
           flag={flag}
+          propertyId={propertyId}
+          propertyLat={propertyLat}
+          propertyLong={propertyLong}
           enableFlag={() => setFlag(true)}
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
@@ -1211,7 +1224,7 @@ const App = ({navigation}) => {
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
           runLoading={() => setLoading(true)}
-          runLoadingFailed={() => setLoading(true)}
+          runLoadingFailed={() => setLoading(false)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}

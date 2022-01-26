@@ -33,30 +33,39 @@ export default styles = StyleSheet.create({
     marginLeft: width * 0.01,
   },
 
+  untiDetailImage: {
+    height: width * 0.05,
+    width: width * 0.05,
+    marginRight: width * 0.01,
+  },
+
   // Modal
   modalInner: {
-    elevation: width * 0.005,
-    borderRadius: width * 0.02,
-    backgroundColor: 'white',
-    padding: height * 0.03,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // elevation: width * 0.005,
+    // borderRadius: width * 0.02,
+    // backgroundColor: 'red',
+    // padding: height * 0.03,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    flex: 1,
+    // width: '100%',
+    // height: '100%',
   },
   boxConatainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: width * 0.85,
-    height: height * 0.6,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   boxInner: {
     flex: 1,
     backgroundColor: 'white',
-    borderRadius: width * 0.02,
+    // borderRadius: width * 0.02,
     elevation: width * 0.02,
     alignItems: 'center',
   },
   boxHeader: {
-    width: width * 0.75,
+    width: '90%',
     height: height * 0.1,
   },
   boxHeaderInner: {
@@ -73,8 +82,9 @@ export default styles = StyleSheet.create({
     right: width * 0.07,
   },
   desciptionContainer: {
+    flex: 1,
     height: height * 0.05,
-    width: width * 0.7,
+    width: '100%',
     borderBottomWidth: width * 0.002,
     flexDirection: 'row',
     alignSelf: 'center',
@@ -85,15 +95,18 @@ export default styles = StyleSheet.create({
     fontSize: height * 0.015,
     color: 'black',
     fontFamily: Fonts.ComfortaaRegular,
+    textTransform: 'uppercase',
   },
   inputContainer: {
+    flex: 1,
     height: height * 0.09,
-    width: width * 0.8,
+    width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   input: {
-    width: width * 0.75,
+    width: '100%',
     fontSize: height * 0.018,
   },
   bottonContainer: {
@@ -149,5 +162,17 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: width * 0.03,
     marginVertical: height * 0.005,
+  },
+  meterInput: {
+    width: width * 0.8,
+    justifyContent: 'flex-end',
+    fontSize: width * 0.036,
+  },
+  meterDesciptionHeading: {
+    fontSize: width * 0.03,
+    color: '#3E4A4F',
+    textTransform: 'capitalize',
+    fontFamily: Fonts.ComfortaaRegular,
+    marginBottom: width * 0.01,
   },
 });

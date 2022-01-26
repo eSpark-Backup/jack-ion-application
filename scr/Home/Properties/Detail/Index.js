@@ -11,6 +11,8 @@ import {
   Pressable,
   Alert,
   Platform,
+  ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 
 //Packages
@@ -45,15 +47,11 @@ import style from './style';
 import Base_URL from '../../../api/WebServices';
 import {create} from 'apisauce';
 import CustumStatusBar from '../../../components/StatusBar';
+import Loader from '../../../components/Loader';
 const {width, height} = Dimensions.get('window');
-const api = create({
-  baseURL: Base_URL,
-  headers: {
-    Authorization:
-      'Bearer ' +
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6IjU1NTAxZjE0MjQ5MWVkYjQ4NGFkYWY2Y2FlMGFlOTY4NjM2OTFkMzhkM2QyY2JhODQ4NjFiODAwM2YzYjY0MzQ4MTUyNGMzMWRmZjkxZjFjIiwiaWF0IjoxNjMzNzk3NzQ5LCJuYmYiOjE2MzM3OTc3NDksImV4cCI6MTY2NTMzMzc0OSwic3ViIjoiMTkiLCJzY29wZXMiOltdfQ.nphSUM-ORtJTpdpl-lGY5dQsuS5r7SggPCTjOXu7B3rtqGyjqCn9FULyE_-oOahmgLXb7JMoh8awNKpGrp6Y_jegWeWe1iOJaoke2FRTEscFzsxTKDbFiFOnIn6rbfHP9UP5O2HHHuh-27Ej0-Vlkx5Z6fAB1x49G_eSr3gcwoNeFVybBElD_aiBZkSziOa7vdjGWfcOejhJgcLIYsC8vO2YJxjisubaeyCHkmRarfIXXHDWXoKDIpx6tERCKiqAHA1P6HFaF7UULUI8YYnxCjBlb29ZGtORn3scwglLeAYgUqQMMORGb9fmcGfp_npWcvLO61SZs-39TepSmNQNcq3TegIJ3J-7lYl1_FoYsI3XlzQe9H9naV5ivjL_7jZsYkr1t9HiEh-Z4qpTDZAl2B5rcbpEMJ_JBkK37QwYf0NIQQSrELj0CWq5QaBoqsxQG7Ys06Oi6N5sk8oQ1skJOGRzd4E7PGGPUHUSA6dQEVx9v7-xBvnOjqd0Z9yqwQsJx40hmXMne01JyIzWwOt6pm3vQEG_0YYBKW2sCnDw-CsVHQUIkIhiVuhcX-pXpaYds7eQmlRU5CE-mdRAhmmHxerFAvST1BzQS-rHBhoAL5Td_mz2TtXa70Gpg5rL98yNzX_0pIWCFMexPlmicZec2narA6OV35pDbRjnv4e0eMw',
-  },
-});
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const dataBar2 = {
   actual: [
     null,
@@ -76,6 +74,7 @@ const dataBar2 = {
     {x: 'SUN', y: 8},
   ],
 };
+const api = create({baseURL: Base_URL});
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -84,7 +83,16 @@ export default class Splash extends React.Component {
     this.state = {
       isModalVisible: false,
       points: 80,
+      isLoading: false,
       listData: {},
+      BillingCompany: 'BILLING COMPANY',
+      BillingCompanyId: null,
+      managementCompany: 'MANAGEMENT COMPANY',
+      managementCompanyId: '',
+      customId: 0,
+      companies: false,
+      companiesLoader: false,
+      markers: [],
       error: {
         property: '',
         property_id: '',
@@ -98,11 +106,45 @@ export default class Splash extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.getToken();
+    const propertyData = this.props.navigation.state.params.item.item;
+    this.getMetersLocation(propertyData?.id);
+
     this.setState({
-      listData: this.props.navigation.state.params.item.item,
+      listData: propertyData,
     });
+    this.setState({
+      BillingCompany: propertyData?.billing_company,
+      BillingCompanyId: propertyData?.billing_company_id,
+      managementCompany: propertyData?.management_company,
+      managementCompanyId: propertyData?.management_company_id,
+      customId: propertyData.property_id.toString(),
+    });
+
+    console.log(
+      'LIST DATA >>>>>',
+      this.props.navigation.state.params.item.item,
+    );
   }
+
+  getToken = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    console.log('Get Token', token);
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+  };
+
+  getMetersLocation = async (propertyId) => {
+    const metersLocation = await api.get(
+      `/property/location-meters/${propertyId}`,
+    );
+    console.log('Meters Location', metersLocation?.data);
+    if (metersLocation?.data?.bool) {
+      this.setState({markers: metersLocation?.data?.data});
+    }
+  };
 
   getBack = () => {
     this.props.navigation.goBack();
@@ -140,6 +182,7 @@ export default class Splash extends React.Component {
         ...prevState.error, // keep all other key-value pairs
         property: '',
         property_id: '',
+        billingId: false,
         street: '', // update the value of specific key
       },
     }));
@@ -155,6 +198,7 @@ export default class Splash extends React.Component {
           property: 'Invalid Property', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -166,15 +210,38 @@ export default class Splash extends React.Component {
         },
       }));
     }
-    if (this.state?.listData?.property_id === '') {
+    // if (this.state?.listData?.property_id === '') {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       property_id: 'Invalid Custom ID', // update the value of specific key
+    //     },
+    //   }));
+    //   ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
+
+    //   return;
+    // } else {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       property_id: false, // update the value of specific key
+    //     },
+    //   }));
+    // }
+    if (this.state.BillingCompanyId == null) {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          property_id: 'Invalid Custom ID', // update the value of specific key
+          billingId: 'Please select Billing ID', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Please Select Billing Company', ToastAndroid.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -182,7 +249,7 @@ export default class Splash extends React.Component {
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          property_id: false, // update the value of specific key
+          billingId: false, // update the value of specific key
         },
       }));
     }
@@ -195,8 +262,11 @@ export default class Splash extends React.Component {
           street: 'Invalid Street Name', // update the value of specific key
         },
       }));
+      ToastAndroid.show('Invalid Street', ToastAndroid.SHORT);
+
       return;
     } else {
+      this.setState({isLoading: true});
       this.setState((prevState) => ({
         ...prevState,
         error: {
@@ -206,29 +276,39 @@ export default class Splash extends React.Component {
         },
       }));
       const data = {
-        property_id: this.state.listData.property_id,
+        property_id: this.state.customId,
         zipcode: this.state.listData.zipcode,
         name: this.state.listData.name,
         street: this.state.listData.street,
         city: this.state.listData.city,
+        billing_company_id: this.state.BillingCompanyId,
+        management_company: this.state.managementCompany,
+        billing_company: this.state.BillingCompany,
+        management_company_id: this.state.managementCompanyId,
+        contact_name: this.state.listData.contact_name,
+        contact_title: this.state.listData.contact_title,
+        contact_phone: this.state.listData.contact_phone,
+        contact_email: this.state.listData.contact_email,
+        // maintainance_email: null,
+        // maintainance_name: null,
+        // maintainance_phone_number: null,
+        // maintainance_superviser_contact: null,
+        // maintainance_superviser_email: null,
+        // maintainance_superviser_name: null,
+        // office_contact_number: null,
       };
 
-      const token = await EncryptedStorage.getItem('user_token');
-
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-
-      const response = await this.api.patch(
+      const response = await api.patch(
         `/property/update/${this.state?.listData?.id}`,
         data,
       );
+
       console.log(response?.data);
+      this.setState({isLoading: false});
       if (response?.data?.bool) {
         this.toggleModalEditProp();
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert('Error', response?.data?.message);
       }
     }
   };
@@ -259,11 +339,47 @@ export default class Splash extends React.Component {
     this.props.navigation.navigate('Support');
   };
 
+  handleOpenDropDown = (value) => {
+    this.setState({companiesLoader: true});
+    this.context.getBillingCompany();
+    this.context.getManagementCompany();
+    this.setState({open: !this.state.open, companies: value});
+    if (this.context.manageCompList.length > 0) {
+      this.setState({companiesLoader: false});
+    }
+  };
+
+  handleDropDownData = (value) => {
+    if (this.state.companies) {
+      this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
+    } else {
+      this.setState({
+        managementCompany: value.manager_name,
+        managementCompanyId: value.id,
+      });
+    }
+    this.setState({open: !this.state.open});
+    this.setState((prevState) => ({
+      error: {
+        // object that we want to update
+        ...prevState.error, // keep all other key-value pairs
+        billingId: '',
+      },
+    }));
+  };
+
+  handleCloseDropDown = () => {
+    this.setState({BillingCompany: 'BILLING COMPANY'});
+    this.setState({open: false});
+  };
+
   render() {
     return (
       <>
-        {Platform.OS == 'ios' && <CustumStatusBar />}
+        {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
+        <CustumStatusBar />
         <View style={styles.container}>
+          {this.state.isLoading && <Loader />}
           <Modal
             animationIn="slideInLeft"
             animationOut="slideOutLeft"
@@ -365,7 +481,7 @@ export default class Splash extends React.Component {
                 <Search
                   name="search"
                   size={height * 0.04}
-                  style={{marginLeft: width * 0.05}}
+                  style={{marginLeft: width * 0.015}}
                   color="white"
                 />
                 <TextInput
@@ -407,27 +523,35 @@ export default class Splash extends React.Component {
               </View>
             </View>
           </View>
-          <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={{flex: 1}}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled>
             <View style={styles.bodyContainer}>
               <MapView
                 style={styles.map}
                 scrollEnabled={false}
-                initialRegion={this.state.initialRegion}
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
-                  latitude: 38.2462342,
-                  longitude: -85.5375814,
-                  latitudeDelta: 0.00034,
-                  longitudeDelta: 0.0004,
+                  latitude: parseFloat(this.state.listData?.latitude),
+                  longitude: parseFloat(this.state.listData?.longitude),
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
                 }}>
-                {/* <Marker
-                coordinate={{
-                  "latitude": 38.2462342,
-                  "longitude": -85.5375814,
-                }}
-                title={"Your Location"}
-                draggable /> */}
+                <Marker
+                  coordinate={{
+                    latitude: parseFloat(this.state.listData?.latitude),
+                    longitude: parseFloat(this.state.listData?.longitude),
+                  }}
+                  title={'Your Location'}
+                  draggable
+                />
+
+                {this.state.markers.length > 0 &&
+                  this.state.markers.map((marker) => (
+                    <Marker coordinate={marker.position} title={'Meter'} />
+                  ))}
               </MapView>
               <View style={styles.clientName}>
                 <Properties name="home-city-outline" size={width * 0.08} />
@@ -449,6 +573,9 @@ export default class Splash extends React.Component {
               <Modal
                 animationIn="slideInDown"
                 animationOut="slideOutUp"
+                style={{
+                  margin: 0,
+                }}
                 isVisible={this.state.isModalAdEditPropVisible}>
                 <View style={styles.modalInner}>
                   <View style={styles.boxConatainer}>
@@ -480,17 +607,12 @@ export default class Splash extends React.Component {
                       </View>
                       {/* Box Body */}
                       <ScrollView
-                        style={{height: height * 0.6}}
+                        style={{width: '90%'}}
                         showsVerticalScrollIndicator={false}>
                         <View style={{flex: 1}}>
                           <View style={styles.desciptionContainer}>
-                            <Icon
-                              name={'location-on'}
-                              size={height * 0.03}
-                              color="#5e5e5e"
-                            />
                             <Text style={styles.desciptionHeading}>
-                              PROPERTY INFORMATION
+                              property information
                             </Text>
                           </View>
                           <View style={styles.inputContainer}>
@@ -571,43 +693,10 @@ export default class Splash extends React.Component {
                           ) : null}
                           <View style={styles.inputContainer}>
                             <TextInput
-                              value={this.state?.listData?.st}
-                              error={this.state.error.st}
-                              label="St"
-                              style={styles.input}
-                              onChangeText={(text) => {
-                                this.setState((prevState) => ({
-                                  ...prevState,
-                                  listData: {
-                                    // object that we want to update
-                                    ...prevState.listData, // keep all other key-value pairs
-                                    st: text, // update the value of specific key
-                                  },
-                                }));
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View
-                            style={[
-                              styles.inputContainer,
-                              {
-                                flexDirection: 'row',
-                                justifyContent: 'space-evenly',
-                              },
-                            ]}>
-                            <TextInput
                               value={this.state?.listData?.city}
                               error={this.state.error.city}
                               label="City"
-                              style={[styles.input, {width: width * 0.36}]}
+                              style={styles.input}
                               onChangeText={(text) => {
                                 this.setState((prevState) => ({
                                   ...prevState,
@@ -627,6 +716,40 @@ export default class Splash extends React.Component {
                                 },
                               }}
                             />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                              },
+                            ]}>
+                            <TextInput
+                              value={this.state?.listData?.st}
+                              error={this.state.error.st}
+                              label="St"
+                              style={[styles.input, {width: width * 0.36}]}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    st: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+
                             <TextInput
                               value={this.state?.listData?.zipcode}
                               error={this.state.error.zipcode}
@@ -656,9 +779,10 @@ export default class Splash extends React.Component {
                             <TextInput
                               label="Custom ID*"
                               error={this.state.error.property_id}
-                              value={this.state?.listData?.property_id}
+                              value={this.state.customId}
                               style={styles.input}
                               onChangeText={(text) => {
+                                this.setState({customId: text});
                                 this.setState((prevState) => ({
                                   ...prevState,
                                   listData: {
@@ -683,13 +807,222 @@ export default class Splash extends React.Component {
                               }}
                             />
                           </View>
-                          {this.state.error.property_id ? (
+
+                          <View style={styles.desciptionContainer}>
+                            <Text style={styles.desciptionHeading}>
+                              management company*
+                            </Text>
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TouchableOpacity
+                              onPress={() => this.handleOpenDropDown(false)}
+                              style={{
+                                ...styles.billingCompanyBtn,
+                                borderColor: this.state.error.billingId
+                                  ? '#A3001B'
+                                  : 'gray',
+                              }}>
+                              <Text>
+                                {this.state.managementCompany == null
+                                  ? 'Select Company'
+                                  : this.state.managementCompany}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                          <View style={styles.desciptionContainer}>
+                            <Text style={styles.desciptionHeading}>
+                              billing company*
+                            </Text>
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TouchableOpacity
+                              onPress={() => this.handleOpenDropDown(true)}
+                              style={{
+                                ...styles.billingCompanyBtn,
+                                borderColor: this.state.error.billingId
+                                  ? '#A3001B'
+                                  : 'gray',
+                              }}>
+                              <Text>
+                                {this.state.BillingCompany == null
+                                  ? 'Select Company'
+                                  : this.state.BillingCompany}
+                              </Text>
+                            </TouchableOpacity>
+                            <Modal
+                              animationIn="fadeIn"
+                              animationOut="fadeOut"
+                              isVisible={this.state.open}
+                              style={styles.billingModalContainer}>
+                              <View style={styles.billingModalInner}>
+                                <View style={styles.billingModalHeader}>
+                                  <Text style={styles.billingModalHeading}>
+                                    {this.state.companies
+                                      ? 'Billing Companies'
+                                      : 'Managemnet Companies'}
+                                  </Text>
+                                  <Pressable
+                                    onPress={this.handleCloseDropDown}
+                                    android_ripple={{
+                                      color: 'black',
+                                      borderless: true,
+                                      radius: width * 0.03,
+                                    }}>
+                                    <Icon
+                                      name="cancel"
+                                      size={height * 0.035}
+                                      color="black"
+                                      maxOpacity={0.5}
+                                    />
+                                  </Pressable>
+                                </View>
+                                {this.context.propitemList < 0 && (
+                                  <ActivityIndicator
+                                    color={'#25AAE1ec'}
+                                    size={'large'}
+                                  />
+                                )}
+                                {this.context.propitemList &&
+                                  this.state.companies &&
+                                  this.context.propitemList.map((data) => (
+                                    <TouchableOpacity
+                                      onPress={() =>
+                                        this.handleDropDownData(data)
+                                      }
+                                      style={styles.billingCompanies}>
+                                      <Text>{data.name}</Text>
+                                    </TouchableOpacity>
+                                  ))}
+                                {this.context.manageCompList &&
+                                  !this.state.companies &&
+                                  this.context.manageCompList.map((data) => (
+                                    <TouchableOpacity
+                                      onPress={() =>
+                                        this.handleDropDownData(data)
+                                      }
+                                      style={styles.billingCompanies}>
+                                      <Text>{data.manager_name}</Text>
+                                    </TouchableOpacity>
+                                  ))}
+                              </View>
+                            </Modal>
+                          </View>
+                          {this.state.error.billingId ? (
                             <HelperText
                               type="error"
-                              visible={this.state.error.property_id}>
-                              {this.state.error.property_id}
+                              visible={this.state.error.billingId}>
+                              {this.state.error.billingId}
                             </HelperText>
                           ) : null}
+                          <View style={styles.desciptionContainer}>
+                            <Text style={styles.desciptionHeading}>
+                              Contact Info
+                            </Text>
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              placeholder="Contact Name"
+                              label="Contact Name"
+                              style={styles.input}
+                              value={this.state.listData?.contact_name}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_name: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              placeholder="Title / Job Description"
+                              label="Title / Job Description"
+                              style={styles.input}
+                              value={this.state.listData?.contact_title}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_title: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              placeholder="Phone"
+                              label="Phone"
+                              style={styles.input}
+                              value={this.state.listData?.contact_phone}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_phone: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <TextInput
+                              placeholder="Email"
+                              label="Email"
+                              style={styles.input}
+                              value={this.state.listData?.contact_email}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_email: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
                         </View>
                       </ScrollView>
                       {/* Box Header */}
@@ -713,7 +1046,7 @@ export default class Splash extends React.Component {
                   <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
                   <View style={styles.infoViewInner}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <Text style={styles.dataFieldText}>
+                    <Text style={[styles.dataFieldText, {overflow: 'scroll'}]}>
                       {`${
                         this.state.listData.street == null
                           ? ''
@@ -743,6 +1076,77 @@ export default class Splash extends React.Component {
                         ? '--'
                         : this.state.listData.property_id}
                     </Text>
+                  </View>
+                </View>
+                <View style={styles.contactViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>Contact Info</Text>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="account-box"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_name}
+                      placeholder="Contact Name"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="local-offer"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_title}
+                      placeholder="Title/Job Description"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="phone"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_phone}
+                      placeholder="Phone"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="mail-outline"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_email}
+                      placeholder="Email"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
                   </View>
                 </View>
                 <View style={style.footerContainer}>
@@ -786,7 +1190,7 @@ export default class Splash extends React.Component {
                       )}
                     </AnimatedCircularProgress>
                   </View>
-                  <View style={styles.barView}>
+                  {/* <View style={styles.barView}>
                     <AnimatedCircularProgress
                       size={height * 0.2}
                       width={height * 0.035}
@@ -803,7 +1207,7 @@ export default class Splash extends React.Component {
                         </Text>
                       )}
                     </AnimatedCircularProgress>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={{height: height * 0.45}}>
                   <VictoryChart

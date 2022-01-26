@@ -43,7 +43,7 @@ class GlobalState extends React.Component {
     const response = await this.api.post('/property/all', data);
     // console.log('respone property===>', response.data.data.properties);
     this.setState({
-      offset: response.data.data.offset,
+      offset: response?.data?.data?.offset,
     });
     if (response?.data?.bool) {
       this.setState({propList: response.data.data.properties});
@@ -68,16 +68,22 @@ class GlobalState extends React.Component {
     // console.log('respone property===>', response.data.data);
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
-      console.log('response.data.data.offset===>', response.data.data.offset);
+      console.log(
+        'response.data.data.offset===>',
+        response?.data?.data?.offset,
+      );
       if (
-        this.state.offset != response.data.data.offset &&
-        response.data.data.offset > 0
+        this.state.offset != response?.data?.data?.offset &&
+        response?.data?.data?.offset > 0
       ) {
         let data = [...this.state.propList];
         let data2 = response.data.data.properties;
         data.push(...data2);
         this.setState({propList: data});
-        this.setState({listLoader: false, offset: response.data.data.offset});
+        this.setState({
+          listLoader: false,
+          offset: response?.data?.data?.offset,
+        });
         this.setState({limitExceed: false});
       } else {
         this.setState({limitExceed: true});
@@ -97,7 +103,7 @@ class GlobalState extends React.Component {
       this.setState({
         propList: response.data.data.properties,
         filterDataName: sort.billing,
-        offset: response.data.data.offset,
+        offset: response?.data?.data?.offset,
       });
       console.log('FIltered property===>', response.data.data.properties);
       this.setState({limitExceed: false});
@@ -120,6 +126,7 @@ class GlobalState extends React.Component {
     loadFor: '',
     searchPropName: '',
     itemList: [],
+    manageCompList: [],
     offset: 0,
     searchOffset: 0,
     filterSerial: '',
@@ -130,6 +137,7 @@ class GlobalState extends React.Component {
 
   addProp = async (info) => {
     // console.log('PROPERTY INFORMATION--------->', info);
+    this.setState({isLoading: true});
     const data = {
       name: info.propName,
       street: info.propStreet,
@@ -138,29 +146,44 @@ class GlobalState extends React.Component {
       zipcode: info.propZipCode,
       property_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
-      management_company: info.propManageComp,
+      management_company_id: info.propManageCompId,
       contact_name: info.propContactName,
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
+      meter_id: info.meter_id,
+      device_id: info.device_id,
+      latitude: info.propLat,
+      longitude: info.propLong,
+      utility_type_id: info.utility_type_id,
+      radial_dist: info.radial_dist,
     };
-    // console.log('data--->', data);
+    console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
       console.log(res.data);
       if (res?.data?.bool) {
         this.checkData();
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert('Error', res?.data?.message);
       }
     });
   };
   getBillingCompany = async () => {
-    const response = await this.api.get('/property/billing-company/all');
+    const response = await this.api?.get('/property/billing-company/all');
     console.log(
       'Check billing company response',
       response?.data?.data?.billingCompany,
     );
     this.setState({itemList: response?.data?.data?.billingCompany});
+  };
+
+  getManagementCompany = async () => {
+    const response = await this.api?.get('/property/management-company/all');
+    console.log(
+      'Check management company response',
+      response?.data?.data?.managementCompany,
+    );
+    this.setState({manageCompList: response?.data?.data?.managementCompany});
   };
 
   searchProperties = async (e) => {
@@ -174,9 +197,9 @@ class GlobalState extends React.Component {
       this.setState({searchLoading: true});
       const response = await this.api.post('/property/all', data);
       // console.log('Search property===>', response);
-      this.setState({searchOffset: response.data.data.offset});
+      this.setState({searchOffset: response?.data?.data?.offset});
       if (response?.data?.bool) {
-        this.setState({searchList: response.data.data.properties});
+        this.setState({searchList: response?.data?.data?.properties});
         // console.log('Search property===>', response.data.data.properties);
         this.setState({searchLoading: false});
       } else {
@@ -200,8 +223,8 @@ class GlobalState extends React.Component {
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
         if (
-          this.state.searchOffset != response.data.data.offset &&
-          response.data.data.offset > 0
+          this.state.searchOffset != response?.data?.data?.offset &&
+          response?.data?.data?.offset > 0
         ) {
           let data = [...this.state.searchList];
           let data2 = response.data.data.properties;
@@ -209,7 +232,7 @@ class GlobalState extends React.Component {
           this.setState({searchList: data});
           this.setState({
             searchLoading: false,
-            searchOffset: response.data.data.offset,
+            searchOffset: response?.data?.data?.offset,
           });
         }
         setTimeout(() => {
@@ -249,6 +272,7 @@ class GlobalState extends React.Component {
           value={{
             propList: this.state.propList,
             propitemList: this.state.itemList,
+            manageCompList: this.state.manageCompList,
             isLoading: this.state.isLoading,
             searchList: this.state.searchList,
             searchLoading: this.state.searchLoading,
@@ -261,6 +285,7 @@ class GlobalState extends React.Component {
             checkData: this.checkData,
             getToken: this.getToken,
             getBillingCompany: this.getBillingCompany,
+            getManagementCompany: this.getManagementCompany,
             clearData: this.clearData,
             filterData: this.filterData,
             searchProperties: this.searchProperties,
