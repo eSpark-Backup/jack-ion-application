@@ -997,6 +997,7 @@ export default class Splash extends React.Component {
   };
 
   showMoreFn = (indexx) => {
+    this.setState({addNewType: false});
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -1726,7 +1727,7 @@ export default class Splash extends React.Component {
                                     fontFamily: Fonts.ComfortaaRegular,
                                     marginBottom: width * 0.01,
                                   }}>
-                                  New {this.state.showAddType}
+                                  Add New {this.state.showAddType} Type
                                 </Text>
                               </View>
                               <TextInput
