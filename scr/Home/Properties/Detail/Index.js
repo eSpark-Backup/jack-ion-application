@@ -74,6 +74,7 @@ const dataBar2 = {
     {x: 'SUN', y: 8},
   ],
 };
+const api = create({baseURL: Base_URL});
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -91,6 +92,7 @@ export default class Splash extends React.Component {
       customId: 0,
       companies: false,
       companiesLoader: false,
+      markers: [],
       error: {
         property: '',
         property_id: '',
@@ -104,8 +106,11 @@ export default class Splash extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.getToken();
     const propertyData = this.props.navigation.state.params.item.item;
+    this.getMetersLocation(propertyData?.id);
+
     this.setState({
       listData: propertyData,
     });
@@ -122,6 +127,24 @@ export default class Splash extends React.Component {
       this.props.navigation.state.params.item.item,
     );
   }
+
+  getToken = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    console.log('Get Token', token);
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+  };
+
+  getMetersLocation = async (propertyId) => {
+    const metersLocation = await api.get(
+      `/property/location-meters/${propertyId}`,
+    );
+    console.log('Meters Location', metersLocation?.data);
+    if (metersLocation?.data?.bool) {
+      this.setState({markers: metersLocation?.data?.data});
+    }
+  };
 
   getBack = () => {
     this.props.navigation.goBack();
@@ -275,17 +298,11 @@ export default class Splash extends React.Component {
         // office_contact_number: null,
       };
 
-      const token = await EncryptedStorage.getItem('user_token');
-
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-
-      const response = await this.api.patch(
+      const response = await api.patch(
         `/property/update/${this.state?.listData?.id}`,
         data,
       );
+
       console.log(response?.data);
       this.setState({isLoading: false});
       if (response?.data?.bool) {
@@ -514,7 +531,6 @@ export default class Splash extends React.Component {
               <MapView
                 style={styles.map}
                 scrollEnabled={false}
-                initialRegion={this.state.initialRegion}
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
@@ -531,6 +547,11 @@ export default class Splash extends React.Component {
                   title={'Your Location'}
                   draggable
                 />
+
+                {this.state.markers.length > 0 &&
+                  this.state.markers.map((marker) => (
+                    <Marker coordinate={marker.position} title={'Meter'} />
+                  ))}
               </MapView>
               <View style={styles.clientName}>
                 <Properties name="home-city-outline" size={width * 0.08} />
@@ -1057,6 +1078,77 @@ export default class Splash extends React.Component {
                     </Text>
                   </View>
                 </View>
+                <View style={styles.contactViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>Contact Info</Text>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="account-box"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_name}
+                      placeholder="Contact Name"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="local-offer"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_title}
+                      placeholder="Title/Job Description"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="phone"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_phone}
+                      placeholder="Phone"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                  <View style={styles.contactInfoContainer}>
+                    <View style={styles.contactInfoInner}>
+                      <Icon
+                        name="mail-outline"
+                        size={height * 0.04}
+                        color="white"
+                        maxOpacity={0.5}
+                      />
+                    </View>
+                    <TextInput
+                      value={this.state.listData?.contact_email}
+                      placeholder="Email"
+                      onChangeText={(text) => console.log(text)}
+                      editable={false}
+                      style={styles.contactInput}
+                    />
+                  </View>
+                </View>
                 <View style={style.footerContainer}>
                   <TouchableOpacity style={style.commentBottonContainer}>
                     <View style={style.commentBottonInner}>
@@ -1098,7 +1190,7 @@ export default class Splash extends React.Component {
                       )}
                     </AnimatedCircularProgress>
                   </View>
-                  <View style={styles.barView}>
+                  {/* <View style={styles.barView}>
                     <AnimatedCircularProgress
                       size={height * 0.2}
                       width={height * 0.035}
@@ -1115,7 +1207,7 @@ export default class Splash extends React.Component {
                         </Text>
                       )}
                     </AnimatedCircularProgress>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={{height: height * 0.45}}>
                   <VictoryChart
