@@ -2139,7 +2139,7 @@ export default function UnitEdit({
                       <View>
                         <View>
                           <Text style={[styles.meterDesciptionHeading]}>
-                            New {showAddType}
+                            Add New {showAddType}
                           </Text>
                         </View>
                         <TextInput
