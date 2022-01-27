@@ -80,6 +80,7 @@ export default class Splash extends React.Component {
       loadManufacturers: false,
       loadMeters: false,
       selectLocation: false,
+      locationBtn: 'Select Location',
       locationSelected: false,
       companies: false,
       markers: [],
@@ -371,6 +372,7 @@ export default class Splash extends React.Component {
       managementCompany: 'MANAGEMENT COMPANY',
       error: '',
       locationSelected: false,
+      locationBtn: 'Select Location',
       lat: null,
       long: null,
       selectMeter: '',
@@ -1158,6 +1160,7 @@ export default class Splash extends React.Component {
                         thumbTintColor="#25AAE1ec"
                         minimumTrackTintColor="#25AAE1ec"
                         maximumTrackTintColor="#000000"
+                        value={Number(this.state.radialDis)}
                         onValueChange={(value) =>
                           this.setState({
                             radialDis: value.toString().slice(0, 3),
@@ -1189,6 +1192,9 @@ export default class Splash extends React.Component {
                         this.catchLocation(details.geometry.location);
                         console.log('DETAILS', details);
                         this.fetchAddressData(details?.formatted_address);
+                        this.setState({
+                          locationBtn: details?.formatted_address,
+                        });
                       }}
                       onFail={(error) => console.error(error)}
                     />
@@ -1538,7 +1544,7 @@ export default class Splash extends React.Component {
                                 color: '#3E4A4F',
                                 marginRight: width * 0.01,
                               }}>
-                              Select Location
+                              {this.state.locationBtn}
                             </Text>
                             <Iconi
                               name="location"
