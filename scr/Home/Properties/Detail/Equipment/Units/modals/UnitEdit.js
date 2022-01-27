@@ -2299,39 +2299,6 @@ export default function UnitEdit({
                             />
                           </View>
                           <View style={{width: width * 0.8, flex: 1}}>
-                            <View>
-                              <FlatList
-                                data={selectUtil}
-                                // extraData={selectedTypes.current}
-                                horizontal
-                                renderItem={({item}) => (
-                                  <View
-                                    style={{
-                                      borderWidth: 1,
-                                      borderRadius: 8,
-                                      flexDirection: 'row',
-                                      padding: 5,
-                                      margin: 5,
-                                      height: width * 0.1,
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                    }}>
-                                    <Text style={{color: 'black'}}>
-                                      {item.name}
-                                    </Text>
-                                    <TouchableOpacity
-                                      onPress={() => {
-                                        const items = selectUtil.filter(
-                                          (sitem) => sitem.id !== item.id,
-                                        );
-                                        setSelectUtil(items);
-                                      }}>
-                                      <Icon name="close" size={width * 0.05} />
-                                    </TouchableOpacity>
-                                  </View>
-                                )}
-                              />
-                            </View>
                             <View
                               pointerEvents={'auto'}
                               style={{
@@ -2417,6 +2384,39 @@ export default function UnitEdit({
                                   name={'add'}
                                 />
                               </TouchableOpacity>
+                            </View>
+                            <View>
+                              <FlatList
+                                data={selectUtil}
+                                // extraData={selectedTypes.current}
+                                horizontal
+                                renderItem={({item}) => (
+                                  <View
+                                    style={{
+                                      borderWidth: 1,
+                                      borderRadius: 8,
+                                      flexDirection: 'row',
+                                      padding: 5,
+                                      margin: 5,
+                                      height: width * 0.1,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}>
+                                    <Text style={{color: 'black'}}>
+                                      {item.name}
+                                    </Text>
+                                    <TouchableOpacity
+                                      onPress={() => {
+                                        const items = selectUtil.filter(
+                                          (sitem) => sitem.id !== item.id,
+                                        );
+                                        setSelectUtil(items);
+                                      }}>
+                                      <Icon name="close" size={width * 0.05} />
+                                    </TouchableOpacity>
+                                  </View>
+                                )}
+                              />
                             </View>
                           </View>
                         </>
