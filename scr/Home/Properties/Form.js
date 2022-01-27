@@ -51,11 +51,12 @@ import ContextProp from './Context/propContext';
 import {create} from 'apisauce';
 import {call} from 'react-native-reanimated';
 import SearchableDropDown from 'react-native-searchable-dropdown';
+import {bold} from 'cli-color';
 const {width, height} = Dimensions.get('window');
 
 const api = create({baseURL: Base_URL});
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.0922;
+const LATITUDE_DELTA = 0.0322;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default class Splash extends React.Component {
@@ -82,6 +83,7 @@ export default class Splash extends React.Component {
       locationSelected: false,
       companies: false,
       markers: [],
+      manageCompList: [],
       iniLat: 0,
       iniLong: 0,
       lat: 0,
@@ -91,9 +93,9 @@ export default class Splash extends React.Component {
       loadScreen: false,
       open: false,
       meterList: [],
-      BillingCompany: 'BILLING COMPANY',
+      BillingCompany: '',
       BillingCompanyId: '',
-      managementCompany: 'MANAGEMENT COMPANY',
+      managementCompany: '',
       managementCompanyId: '',
       radialDis: 0.1,
       selectMeter: '',
@@ -114,21 +116,21 @@ export default class Splash extends React.Component {
           id: 0,
           select: '',
           selectId: '',
-          name: 'Manufacturer',
+          name: 'Select Manufacturer',
           data: [],
         },
         {
           id: 1,
           selectId: '',
           select: '',
-          name: 'Device Type',
+          name: 'Select Device Type',
           data: [],
         },
         {
           id: 2,
           selectId: '',
           select: '',
-          name: 'New Device',
+          name: 'Add New Device',
           data: [],
         },
       ],
@@ -937,6 +939,8 @@ export default class Splash extends React.Component {
   getToken = async () => {
     // setMeterListLoader(true);
     // this.setState({loadManufacturers: true, loadMeters: true});
+    this.context.getBillingCompany();
+    this.context.getManagementCompany();
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
@@ -971,8 +975,17 @@ export default class Splash extends React.Component {
     let deviceData = [...this.state.addDevice]; // copying the old datas array
     deviceData[1].data = DeviceTypesResponse?.data?.data;
     this.setState({addDevice: deviceData});
-    this.context.getBillingCompany();
-    this.context.getManagementCompany();
+
+    let filter = [];
+    for (let i = 0; i < this.context.manageCompList.length; i++) {
+      const data = {
+        name: this.context.manageCompList[i].manager_name,
+        id: this.context.manageCompList[i].id,
+      };
+      filter.push(data);
+    }
+    this.setState({manageCompList: filter});
+    console.log('filtered manage company list', filter);
   };
 
   AddTypes = (item, type) => {
@@ -1346,6 +1359,7 @@ export default class Splash extends React.Component {
                           ]}>
                           <TextInput
                             placeholder="Enter Property Name*"
+                            value={this.state.Name}
                             onChangeText={(text) => {
                               this.setState({Name: text});
                               this.setState((prevState) => ({
@@ -1578,7 +1592,7 @@ export default class Splash extends React.Component {
                                 </Text>
                               </View>
                               <TextInput
-                                placeholder={'Type new meter name'}
+                                placeholder={'Type New Meter Type Name'}
                                 value={this.state.addMeter}
                                 style={{
                                   width: width * 0.8,
@@ -1764,12 +1778,13 @@ export default class Splash extends React.Component {
                                     textTransform: 'capitalize',
                                     fontFamily: Fonts.ComfortaaRegular,
                                     marginBottom: width * 0.01,
+                                    fontWeight: 'bold',
                                   }}>
                                   Add New {this.state.showAddType} Type
                                 </Text>
                               </View>
                               <TextInput
-                                placeholder={'Type new Utility'}
+                                placeholder={'Type New Utility Type Name'}
                                 value={this.state.addUtility}
                                 style={{
                                   width: width * 0.8,
@@ -2003,12 +2018,13 @@ export default class Splash extends React.Component {
                                       textTransform: 'capitalize',
                                       fontFamily: Fonts.ComfortaaRegular,
                                       marginBottom: width * 0.01,
+                                      fontWeight: 'bold',
                                     }}>
-                                    New {this.state.showAddType}
+                                    Add New {this.state.showAddType}
                                   </Text>
                                 </View>
                                 <TextInput
-                                  placeholder={'Type new manufacturer'}
+                                  placeholder={'Type New Manufacturer Name'}
                                   value={this.state.addManufacturer}
                                   style={{
                                     width: width * 0.8,
@@ -2069,12 +2085,13 @@ export default class Splash extends React.Component {
                             </View>
                           ) : this.state.addNewType &&
                             this.state.showAddType == 'Device' ? (
-                            <View
+                            <ScrollView
                               style={{
                                 width: '90%',
                                 zIndex: 2,
                                 alignSelf: 'center',
-                              }}>
+                              }}
+                              showsVerticalScrollIndicator={false}>
                               {this.state.addDevice &&
                                 this.state.addDevice?.map((item, index) => (
                                   <View
@@ -2185,7 +2202,7 @@ export default class Splash extends React.Component {
                                           </View>
                                           <TextInput
                                             placeholder="Model Number"
-                                            // value={modelNo}
+                                            value={this.state.modelNo}
                                             showSoftInputOnFocus={false}
                                             style={styles.meterInput}
                                             mode={'outlined'}
@@ -2211,8 +2228,8 @@ export default class Splash extends React.Component {
                                             </Text>
                                           </View>
                                           <TextInput
-                                            placeholder="Product Number"
-                                            // value={productNo}
+                                            placeholder="Product Description"
+                                            value={this.state.productNo}
                                             showSoftInputOnFocus={false}
                                             style={styles.meterInput}
                                             mode={'outlined'}
@@ -2281,7 +2298,7 @@ export default class Splash extends React.Component {
                                   </Text>
                                 </TouchableOpacity>
                               </View>
-                            </View>
+                            </ScrollView>
                           ) : (
                             deviceData.map((item, index) => (
                               <View
@@ -2431,6 +2448,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             placeholder="Company Specific ID"
                             style={styles.input}
+                            value={this.state.CustomId}
                             onChangeText={(text) => {
                               this.setState({CustomId: text});
                             }}
@@ -2458,6 +2476,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             placeholder="Customer Name"
                             style={styles.input}
+                            value={this.state.CustomerName}
                             onChangeText={(text) => {
                               this.setState({CustomerName: text});
                             }}
@@ -2484,6 +2503,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             placeholder="Title / Job Description"
                             style={styles.input}
+                            value={this.state.customerjobDes}
                             onChangeText={(text) => {
                               this.setState({customerjobDes: text});
                             }}
@@ -2510,6 +2530,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             placeholder="Phone"
                             style={styles.input}
+                            value={this.state.customerPhone}
                             onChangeText={(text) => {
                               this.setState({customerPhone: text});
                             }}
@@ -2536,6 +2557,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             placeholder="Email"
                             style={styles.input}
+                            value={this.state.customerEmail}
                             onChangeText={(text) => {
                               this.setState({customerEmail: text});
                             }}
@@ -2586,12 +2608,13 @@ export default class Splash extends React.Component {
                                     textTransform: 'capitalize',
                                     fontFamily: Fonts.ComfortaaRegular,
                                     marginBottom: width * 0.01,
+                                    fontWeight: 'bold',
                                   }}>
-                                  New {this.state.showAddType} Company
+                                  Add New {this.state.showAddType} Company
                                 </Text>
                               </View>
                               <TextInput
-                                placeholder={'Type new Management Company'}
+                                placeholder={'Type New Management Company Name'}
                                 value={this.state.addManagement}
                                 style={{
                                   width: width * 0.8,
@@ -2663,8 +2686,10 @@ export default class Splash extends React.Component {
                         </TouchableOpacity> */}
                               <SearchableDropDown
                                 onItemSelect={(item) => {
-                                  this.getDevice(item, index);
-                                  // console.log('kia mila', item);
+                                  this.setState({
+                                    managementCompany: item.name,
+                                    managementCompanyId: item.id,
+                                  });
                                 }}
                                 containerStyle={{
                                   paddingBottom: width * 0.02,
@@ -2682,7 +2707,7 @@ export default class Splash extends React.Component {
                                 itemsContainerStyle={{
                                   maxHeight: height * 0.08,
                                 }}
-                                items={this.context.manageCompList}
+                                items={this.state.manageCompList}
                                 resetValue={false}
                                 textInputProps={{
                                   placeholder: 'Management Company',
@@ -2700,7 +2725,7 @@ export default class Splash extends React.Component {
                                 itemsContainerStyle={{
                                   maxHeight: height * 0.08,
                                 }}
-                                items={this.context.manageCompList}
+                                items={this.state.manageCompList}
                                 resetValue={false}
                                 textInputProps={{
                                   placeholder: 'Management Company',
@@ -2802,12 +2827,13 @@ export default class Splash extends React.Component {
                                       textTransform: 'capitalize',
                                       fontFamily: Fonts.ComfortaaRegular,
                                       marginBottom: width * 0.01,
+                                      fontWeight: 'bold',
                                     }}>
-                                    New {this.state.showAddType} Company
+                                    Add New {this.state.showAddType} Company
                                   </Text>
                                 </View>
                                 <TextInput
-                                  placeholder={'Type new Billing Company'}
+                                  placeholder={'Type New Billing Company Name'}
                                   value={this.state.addBilling}
                                   style={{
                                     width: width * 0.8,
