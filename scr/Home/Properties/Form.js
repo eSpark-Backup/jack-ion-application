@@ -17,6 +17,7 @@ import {
   ToastAndroid,
   TouchableHighlightBase,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 
 //Packages
@@ -190,6 +191,43 @@ export default class Splash extends React.Component {
     }
     this.setValue = this.setValue.bind(this);
   }
+
+  componentWillMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = () => {
+    // alert('Keyboard Shown');
+    // if (this.state.dropDownShow[3].value) {
+    //   this.setState({avoidKeyboard: true});
+    // }
+    this.state.dropDownShow[3].value
+      ? this.setState({avoidKeyboard: true})
+      : this.state.dropDownShow[4].value
+      ? this.setState({avoidKeyboard: true})
+      : this.state.dropDownShow[5].value
+      ? this.setState({avoidKeyboard: true})
+      : this.state.dropDownShow[6].value
+      ? this.setState({avoidKeyboard: true})
+      : null;
+  };
+
+  _keyboardDidHide = () => {
+    // alert('Keyboard Hidden');
+    this.setState({avoidKeyboard: false});
+  };
 
   toggleModalAddProp = () => {
     this.setState({isModalAddPropVisible: !this.state.isModalAddPropVisible});
