@@ -2201,7 +2201,7 @@ export default function UnitEdit({
               ) : (
                 <View
                   style={{
-                    height: height * 0.8,
+                    height: width * 1.2,
                     backgroundColor: 'white',
                     // backgroundColor: 'pink',
                     alignItems: 'center',

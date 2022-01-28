@@ -71,15 +71,16 @@ export default styles = StyleSheet.create({
   boxHeaderInner: {
     flex: 1,
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     flexDirection: 'row',
     borderBottomWidth: width * 0.001,
+    paddingBottom: width * 0.01,
   },
   modalHeading: {
     fontSize: height * 0.028,
     color: 'black',
     fontFamily: Fonts.ComfortaaRegular,
-    right: width * 0.07,
+    // right: width * 0.07,
   },
   desciptionContainer: {
     flex: 1,
@@ -90,7 +91,7 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     marginBottom: height * 0.01,
-    justifyContent:'space-between'
+    justifyContent: 'space-between',
   },
   desciptionHeading: {
     fontSize: height * 0.015,
