@@ -2399,8 +2399,8 @@ export default function UnitEdit({
                                       borderBottomWidth: width * 0.0019,
                                     },
                                     onTextChange: (text) => {},
-                                    value: newMeter.name,
-                                    // defaultValue: item.select,
+                                    value: setTimeout(() => newMeter.name, 200),
+                                    defaultValue: newMeter.name,
                                   }}
                                   listProps={{
                                     nestedScrollEnabled: true,
