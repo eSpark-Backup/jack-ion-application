@@ -65,7 +65,7 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
-    NetInfo.fetch().then((state) => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
       console.log('isInternetReachable?', state.isInternetReachable);
@@ -81,6 +81,7 @@ export default class Splash extends Component {
         this.setState({loadScreen: true});
       }
     });
+    unsubscribe();
   };
 
   openFilter = () => {
