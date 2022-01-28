@@ -23,6 +23,7 @@ import {
 //Packages
 
 import Iconi from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-simple-toast';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../components/Loader';
@@ -104,6 +105,7 @@ export default class Splash extends React.Component {
       selectUtil: [],
       modelNo: '',
       productNo: '',
+      btnLoading: false,
       addNewType: false,
       showAddType: '',
       addUtility: '',
@@ -431,6 +433,7 @@ export default class Splash extends React.Component {
   addProperty = () => {
     console.log('kiya Mila', this.state.Name);
     const selectUtilIds = [];
+    this.setState({btnLoading: true});
     if (!this.state.Name) {
       this.setState((prevState) => ({
         ...prevState,
@@ -440,7 +443,7 @@ export default class Splash extends React.Component {
           property: 'Invalid Property', // update the value of specific key
         },
       }));
-      ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
+      Toast.show('Invalid Property', Toast.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -461,7 +464,7 @@ export default class Splash extends React.Component {
           street: 'Invalid Street', // update the value of specific key
         },
       }));
-      ToastAndroid.show('Invalid Street', ToastAndroid.SHORT);
+      Toast.show('Invalid Street', Toast.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -483,7 +486,7 @@ export default class Splash extends React.Component {
           meterId: 'Please select a meter from above', // update the value of specific key
         },
       }));
-      ToastAndroid.show('Please select a meter', ToastAndroid.SHORT);
+      Toast.show('Please select a meter', Toast.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -504,7 +507,7 @@ export default class Splash extends React.Component {
           utilType: 'Please select a utility type from above', // update the value of specific key
         },
       }));
-      ToastAndroid.show('Please select a Utility Type', ToastAndroid.SHORT);
+      Toast.show('Please select a Utility Type', Toast.SHORT);
       return;
     } else {
       for (let i = 0; i < this.state.selectUtil?.length; i++) {
@@ -529,7 +532,7 @@ export default class Splash extends React.Component {
           deviceId: 'Please select a device from above', // update the value of specific key
         },
       }));
-      ToastAndroid.show('Please select a device', ToastAndroid.SHORT);
+      Toast.show('Please select a device', Toast.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
@@ -555,9 +558,13 @@ export default class Splash extends React.Component {
           propState: this.state.State,
           propCity: this.state.City,
           propZipCode: this.state.ZipCode,
-          propBillComp: this.state.BillingCompany,
+          propBillComp: this.state.BillingCompanyId
+            ? this.state.BillingCompany
+            : '',
           propBillCompId: this.state.BillingCompanyId,
-          propManageComp: this.state.managementCompany,
+          propManageComp: this.state.managementCompanyId
+            ? this.state.managementCompany
+            : '',
           propManageCompId: this.state.managementCompanyId,
           propCustomId: this.state.CustomId,
           propContactName: this.state.CustomerName,
@@ -572,6 +579,7 @@ export default class Splash extends React.Component {
           radial_dist: Number(this.state.radialDis),
         }),
         () => this.props.loader(true),
+        {btnLoading: false},
       );
       this.context.addProp(this.state.info);
       this.clearInputs();
@@ -2207,7 +2215,7 @@ export default class Splash extends React.Component {
                                             </Text>
                                           </View>
                                           <TextInput
-                                            placeholder="Model Number"
+                                            placeholder="Type Model Number"
                                             value={this.state.modelNo}
                                             showSoftInputOnFocus={false}
                                             style={styles.meterInput}
@@ -2230,11 +2238,11 @@ export default class Splash extends React.Component {
                                               style={
                                                 styles.meterDesciptionHeading
                                               }>
-                                              Product Number*
+                                              Product Description*
                                             </Text>
                                           </View>
                                           <TextInput
-                                            placeholder="Product Description"
+                                            placeholder="Type Product Description"
                                             value={this.state.productNo}
                                             showSoftInputOnFocus={false}
                                             style={styles.meterInput}
@@ -3038,7 +3046,7 @@ export default class Splash extends React.Component {
                           style={styles.submitBotton}
                           color="white"
                           icon="check"
-                          label="Add property"
+                          label={'Add property'}
                         />
                       </View>
                     </View>
