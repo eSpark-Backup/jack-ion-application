@@ -348,7 +348,6 @@ export default function UnitEdit({
       // setShowAddMeterSlider(true);
       setDefaultScreen(true);
       _renderMap();
-      callApi();
     } else {
       Alert.alert(
         `You don't have access for the Location`,
@@ -1250,7 +1249,7 @@ export default function UnitEdit({
         </Text>
         <TextInput
           placeholder={item.name}
-          value={index == 2 && item.value ? item.value : '0'}
+          value={index == 1 && item.value == null ? '0' : item.value}
           dense={true}
           keyboardType={index == 1 ? 'numeric' : 'default'}
           error={item.error}
@@ -1507,6 +1506,7 @@ export default function UnitEdit({
       },
     });
     setAddTypeInput(false);
+    setDefaultValues(false);
     setSliderNumber(1);
     setSliderProgress(0);
     setReasonText('');
@@ -1728,10 +1728,12 @@ export default function UnitEdit({
       setShowAddMeterSlider(true);
       setDefaultScreen(false);
       setSliderProgress(0.5);
+      callApi();
     } else {
       setSliderNumber(1);
       setShowAddMeterSlider(true);
       setDefaultScreen(false);
+      callApi();
     }
   };
 
