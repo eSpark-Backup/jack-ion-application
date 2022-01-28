@@ -94,7 +94,6 @@ export default function UnitEdit({
   propertyLong,
 }) {
   const [meterListData, setMeterListData] = useState([]);
-  const [distanceBtw, setDistanceBtw] = useState(0);
   const [radialDis, setRadialDis] = useState(100);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
   const [loadMeters, setLoadMeters] = useState(false);
@@ -946,11 +945,36 @@ export default function UnitEdit({
     if (sliderNumber == 3 && meterAddingId == '') {
       setCheckSerial(true);
       checkingSerial();
-    } else if (sliderNumber == 4 && distanceBtw > radialDis) {
-      console.log('DIS BTW', distanceBtw);
-      console.log('RADIAL DIS', radialDis);
+    } else if (sliderNumber == 4) {
+      var dis = getDistance(
+        {
+          latitude: propertyLat,
+          longitude: propertyLong,
+        },
+        {
+          latitude: lat,
+          longitude: long,
+        },
+      );
+      if (dis > radialDis) {
+        console.log('DIS BTW', dis);
+        console.log('RADIAL DIS', radialDis);
 
-      Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
+        Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
+      } else {
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        setSliderNumber(sliderNumber + 1);
+        setSliderProgress(sliderProgress + 0.25);
+      }
     } else {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -1386,17 +1410,7 @@ export default function UnitEdit({
   const moveMarker = (region) => {
     setLat(region?.latitude);
     setLong(region?.longitude);
-    var dis = getDistance(
-      {
-        latitude: propertyLat,
-        longitude: propertyLong,
-      },
-      {
-        latitude: region?.latitude,
-        longitude: region?.longitude,
-      },
-    );
-    setDistanceBtw(dis);
+
     console.log('DISTANCE BETWEEN', dis);
   };
 
