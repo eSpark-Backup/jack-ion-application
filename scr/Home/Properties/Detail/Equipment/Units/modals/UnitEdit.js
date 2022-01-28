@@ -348,6 +348,7 @@ export default function UnitEdit({
       // setShowAddMeterSlider(true);
       setDefaultScreen(true);
       _renderMap();
+      callApi();
     } else {
       Alert.alert(
         `You don't have access for the Location`,
@@ -708,6 +709,38 @@ export default function UnitEdit({
   const callApi = async () => {
     setReasons([]);
     setLoadManufacturers(true);
+    const defaultUnitData = await api.get(
+      `/property/default-meter-device/${propertyId}`,
+    );
+    if (defaultUnitData.ok) {
+      console.log(
+        clc.cyanBright(
+          'WE Got Default Data',
+          JSON.stringify(defaultUnitData?.data?.data),
+        ),
+      );
+      console.log('defaultValues', defaultValues);
+      if (defaultValues) {
+        const some = defaultUnitData?.data?.data?.default_meter_device;
+        let listSlide = [...slide1]; // copying the old datas array
+        listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
+        listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+        listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
+        listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
+        setModelNo(some?.device_name?.model_no);
+        setProductNo(some?.device_name?.product_desc);
+        setSlide1(listSlide);
+
+        setNewMeter((oldState) => ({
+          ...oldState,
+          id: some?.meter_id,
+          name: some?.meter_name,
+        }));
+      }
+      const defaultDis =
+        defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
+      setRadialDis(defaultDis * 1000);
+    }
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
@@ -742,36 +775,7 @@ export default function UnitEdit({
     ];
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
-    const defaultUnitData = await api.get(
-      `/property/default-meter-device/${propertyId}`,
-    );
-    if (defaultUnitData.ok) {
-      console.log(
-        clc.cyanBright(
-          'WE Got Default Data',
-          JSON.stringify(defaultUnitData?.data?.data),
-        ),
-      );
-      const some = defaultUnitData?.data?.data?.default_meter_device;
-      let listSlide = [...slide1]; // copying the old datas array
-      listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
-      listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-      listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
-      listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
-      setModelNo(some?.device_name?.model_no);
-      setProductNo(some?.device_name?.product_desc);
-      setSlide1(listSlide);
-
-      setNewMeter((oldState) => ({
-        ...oldState,
-        id: some?.meter_id,
-        name: some?.meter_name,
-      }));
-      setLoadManufacturers(false);
-      const defaultDis =
-        defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
-      setRadialDis(defaultDis * 1000);
-    }
+    setLoadManufacturers(false);
   };
 
   const getDevice = async (some, index) => {
@@ -1246,7 +1250,7 @@ export default function UnitEdit({
         </Text>
         <TextInput
           placeholder={item.name}
-          value={item.value}
+          value={index == 2 && item.value ? item.value : '0'}
           dense={true}
           keyboardType={index == 1 ? 'numeric' : 'default'}
           error={item.error}
@@ -1415,8 +1419,6 @@ export default function UnitEdit({
   const moveMarker = (region) => {
     setLat(region?.latitude);
     setLong(region?.longitude);
-
-    console.log('DISTANCE BETWEEN', dis);
   };
 
   const catchLocation = (region) => {
@@ -1822,6 +1824,8 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
+  console.log('Slide @ means IMR value', typeof slide2[1].value);
+  console.log('Slide @ means IMR value type', slide2[1].value);
   return (
     <View>
       <Modal
@@ -4323,8 +4327,7 @@ export default function UnitEdit({
                             }),
                               // setShowAddMeterSlider(true),
                               // setDefaultScreen(true),
-                              callApi();
-                            getMeterData(item);
+                              getMeterData(item);
                             enableLocation();
                           }}
                           style={{
@@ -4399,8 +4402,8 @@ export default function UnitEdit({
                               }),
                                 // setShowAddMeterSlider(true),
                                 // setDefauttScreen(true),
-                                callApi();
-                              enableLocation();
+
+                                enableLocation();
                             }}
                             style={{
                               flexDirection: 'row',
@@ -4424,7 +4427,6 @@ export default function UnitEdit({
                           <TouchableOpacity
                             onPress={() => {
                               enableLocation();
-                              callApi();
                             }}
                             style={{
                               flexDirection: 'row',
