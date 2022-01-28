@@ -20,6 +20,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import Toast from 'react-native-simple-toast';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -949,10 +950,7 @@ export default function UnitEdit({
       console.log('DIS BTW', distanceBtw);
       console.log('RADIAL DIS', radialDis);
 
-      ToastAndroid.show(
-        'Add Meter inside the permises of Property',
-        ToastAndroid.SHORT,
-      );
+      Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
     } else {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -2094,23 +2092,75 @@ export default function UnitEdit({
                                   }}
                                 />
                               ) : (
-                                <TextInput
-                                  placeholder={'Type new Device'}
-                                  value={item.select}
-                                  style={styles.meterInput}
-                                  mode={'outlined'}
-                                  theme={{
-                                    colors: {
-                                      text: '#25AAE1ec',
-                                      primary: '#25AAE1ec',
-                                      selectionColor: 'red',
-                                      zIndex: 10,
-                                    },
-                                  }}
-                                  onChangeText={(text) => {
-                                    onChangeNewDevice(text, index);
-                                  }}
-                                />
+                                <View>
+                                  <TextInput
+                                    placeholder={'Type new Device'}
+                                    value={item.select}
+                                    style={styles.meterInput}
+                                    mode={'outlined'}
+                                    theme={{
+                                      colors: {
+                                        text: '#25AAE1ec',
+                                        primary: '#25AAE1ec',
+                                        selectionColor: 'red',
+                                        zIndex: 10,
+                                      },
+                                    }}
+                                    onChangeText={(text) => {
+                                      onChangeNewDevice(text, index);
+                                    }}
+                                  />
+                                  <View>
+                                    <View>
+                                      <Text
+                                        style={styles.meterDesciptionHeading}>
+                                        Model Number*
+                                      </Text>
+                                    </View>
+                                    <TextInput
+                                      placeholder="Type Model Number"
+                                      value={modelNo}
+                                      showSoftInputOnFocus={false}
+                                      style={styles.meterInput}
+                                      mode={'outlined'}
+                                      theme={{
+                                        colors: {
+                                          text: '#25AAE1ec',
+                                          primary: '#25AAE1ec',
+                                          selectionColor: 'red',
+                                        },
+                                      }}
+                                      onChangeText={(text) => {
+                                        setModelNo(text);
+                                      }}
+                                    />
+                                  </View>
+                                  <View>
+                                    <View>
+                                      <Text
+                                        style={styles.meterDesciptionHeading}>
+                                        Product Description*
+                                      </Text>
+                                    </View>
+                                    <TextInput
+                                      placeholder="Type Product Description"
+                                      value={productNo}
+                                      showSoftInputOnFocus={false}
+                                      style={styles.meterInput}
+                                      mode={'outlined'}
+                                      theme={{
+                                        colors: {
+                                          text: '#25AAE1ec',
+                                          primary: '#25AAE1ec',
+                                          selectionColor: 'red',
+                                        },
+                                      }}
+                                      onChangeText={(text) => {
+                                        setProductNo(text);
+                                      }}
+                                    />
+                                  </View>
+                                </View>
                               )}
                             </View>
                           ))}
@@ -3035,15 +3085,16 @@ export default function UnitEdit({
                     </View>
                   ) : sliderNumber == 4 ? (
                     <View style={styles.container}>
-                      {filePath != '' && filePath != null && (
-                        <Image
-                          resizeMode="cover"
-                          resizeMethod="scale"
-                          style={{width: width * 0.28, height: width * 0.28}}
-                          source={{uri: filePath}}
+                      <TouchableOpacity
+                        onPress={selectMeterLocation}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>Change Location</Text>
+                        <Iconi
+                          name="location"
+                          size={width * 0.05}
+                          color="#3E4A4F"
                         />
-                      )}
-
+                      </TouchableOpacity>
                       <TouchableOpacity
                         onPress={requestCameraPermission}
                         style={styles.button}>
@@ -3071,16 +3122,19 @@ export default function UnitEdit({
                           color="#3E4A4F"
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={selectMeterLocation}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>Change Location</Text>
-                        <Iconi
-                          name="location"
-                          size={width * 0.05}
-                          color="#3E4A4F"
+
+                      {filePath != '' && filePath != null && (
+                        <Image
+                          resizeMode="cover"
+                          resizeMethod="scale"
+                          style={{
+                            width: width * 0.7,
+                            height: width * 0.35,
+                            marginVertical: 5,
+                          }}
+                          source={{uri: filePath}}
                         />
-                      </TouchableOpacity>
+                      )}
                     </View>
                   ) : sliderNumber == 5 ? (
                     doneAnimation ? (
@@ -3801,11 +3855,11 @@ export default function UnitEdit({
                                   },
                                 ]}>
                                 <Text style={styles.desciptionHeading}>
-                                  Product Number*
+                                  Product Desc*
                                 </Text>
                               </View>
                               <TextInput
-                                placeholder="Product Number"
+                                placeholder="Type Product Description"
                                 value={productNo}
                                 dense={true}
                                 editable={false}
@@ -3896,80 +3950,108 @@ export default function UnitEdit({
                       //         />
                       //       </TouchableOpacity>
                       //     )}
-                      <TouchableOpacity
-                        style={[
-                          styles.doneButton,
-                          {
-                            right: 0,
-                            // bottom: 0,
-                            // position: 'relative',
-                            backgroundColor:
-                              sliderNumber == 1 &&
-                              slide1[0].selectId &&
-                              slide1[1].selectId
-                                ? '#25AAE1ec'
-                                : sliderNumber == 2 &&
-                                  newMeter.id != 0 &&
-                                  newMeter.name
-                                ? '#25AAE1ec'
-                                : sliderNumber == 3 &&
-                                  slide2[0].value &&
-                                  slide2[1].value &&
-                                  attachedToId != null
-                                ? '#25AAE1ec'
-                                : sliderNumber == 4 &&
-                                  filePath != '' &&
-                                  filePath != null &&
-                                  lat != undefined &&
-                                  long != undefined
-                                ? '#25AAE1ec'
-                                : (sliderNumber == 5 &&
-                                    installationStatus == 1) ||
-                                  (sliderNumber == 5 &&
-                                    installationStatus == 2 &&
-                                    reasonId &&
-                                    reasonDes)
-                                ? '#25AAE1ec'
-                                : '#D0D0D0',
-                          },
-                        ]}
-                        onPress={
-                          sliderNumber == 5 ? finishSlider : changeSlider
-                        }
-                        disabled={
-                          sliderNumber == 1 &&
-                          slide1[0].selectId &&
-                          slide1[1].selectId
-                            ? false
-                            : sliderNumber == 2 &&
-                              newMeter.id != 0 &&
-                              newMeter.name
-                            ? false
-                            : sliderNumber == 3 &&
-                              slide2[0].value &&
-                              slide2[1].value &&
-                              attachedToId != null
-                            ? false
-                            : sliderNumber == 4 &&
-                              filePath != '' &&
-                              filePath != null &&
-                              lat != undefined &&
-                              long != undefined
-                            ? false
-                            : (sliderNumber == 5 && installationStatus == 1) ||
-                              (sliderNumber == 5 &&
-                                installationStatus == 2 &&
-                                reasonId &&
-                                reasonDes)
-                            ? false
-                            : true
-                        }>
-                        <Icon
-                          size={width * 0.07}
-                          color="#fff"
-                          name={sliderNumber == 5 ? 'check' : 'navigate-next'}
-                        />
-                      </TouchableOpacity>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          position: 'absolute',
+                          width: width * 0.85,
+                          height: width * 0.12,
+                          zIndex: 1,
+                        }}>
+                        {sliderNumber > 1 && (
+                          <TouchableOpacity
+                            onPress={() => setSliderNumber(sliderNumber - 1)}
+                            style={[
+                              styles.doneButton,
+                              {
+                                position: 'relative',
+                                right: 0,
+                                bottom: 0,
+                              },
+                            ]}>
+                            <Icon
+                              size={width * 0.07}
+                              color="#fff"
+                              name={'navigate-before'}
+                            />
+                          </TouchableOpacity>
+                        )}
+                        <TouchableOpacity
+                          style={[
+                            styles.doneButton,
+                            {
+                              right: 0,
+                              bottom: 0,
+                              backgroundColor:
+                                sliderNumber == 1 &&
+                                slide1[0].selectId &&
+                                slide1[1].selectId
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 2 &&
+                                    newMeter.id != 0 &&
+                                    newMeter.name
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 3 &&
+                                    slide2[0].value &&
+                                    slide2[1].value &&
+                                    attachedToId != null
+                                  ? '#25AAE1ec'
+                                  : sliderNumber == 4 &&
+                                    filePath != '' &&
+                                    filePath != null &&
+                                    lat != undefined &&
+                                    long != undefined
+                                  ? '#25AAE1ec'
+                                  : (sliderNumber == 5 &&
+                                      installationStatus == 1) ||
+                                    (sliderNumber == 5 &&
+                                      installationStatus == 2 &&
+                                      reasonId &&
+                                      reasonDes)
+                                  ? '#25AAE1ec'
+                                  : '#D0D0D0',
+                            },
+                          ]}
+                          onPress={
+                            sliderNumber == 5 ? finishSlider : changeSlider
+                          }
+                          disabled={
+                            sliderNumber == 1 &&
+                            slide1[0].selectId &&
+                            slide1[1].selectId
+                              ? false
+                              : sliderNumber == 2 &&
+                                newMeter.id != 0 &&
+                                newMeter.name
+                              ? false
+                              : sliderNumber == 3 &&
+                                slide2[0].value &&
+                                slide2[1].value &&
+                                attachedToId != null
+                              ? false
+                              : sliderNumber == 4 &&
+                                filePath != '' &&
+                                filePath != null &&
+                                lat != undefined &&
+                                long != undefined
+                              ? false
+                              : (sliderNumber == 5 &&
+                                  installationStatus == 1) ||
+                                (sliderNumber == 5 &&
+                                  installationStatus == 2 &&
+                                  reasonId &&
+                                  reasonDes)
+                              ? false
+                              : true
+                          }>
+                          <Icon
+                            size={width * 0.07}
+                            color="#fff"
+                            name={sliderNumber == 5 ? 'check' : 'navigate-next'}
+                          />
+                        </TouchableOpacity>
+                      </View>
                       // </View>
                     )}
                   </View>
