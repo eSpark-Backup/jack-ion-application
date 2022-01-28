@@ -1550,7 +1550,8 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-    setAddNewType(true);
+    // setAddNewType(true);
+    console.log('Value', value);
     setShowAddType(value);
   };
 
@@ -1577,6 +1578,7 @@ export default function UnitEdit({
         data,
       );
       if (ManufacturersResponse?.data?.bool) {
+        setShowAddType('');
         console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
         LayoutAnimation.configureNext({
           duration: 300,
@@ -1603,6 +1605,7 @@ export default function UnitEdit({
       );
       if (UtilityResponse?.data?.bool) {
         console.log('datachecckk-->>', UtilityResponse?.data?.data);
+        setShowAddType('');
         LayoutAnimation.configureNext({
           duration: 300,
           create: {
@@ -1628,6 +1631,7 @@ export default function UnitEdit({
       );
       if (AttachedToResponse?.data?.bool) {
         console.log('datachecckk-->>', AttachedToResponse?.data?.data);
+        setShowAddType('');
         LayoutAnimation.configureNext({
           duration: 300,
           create: {
@@ -1698,6 +1702,8 @@ export default function UnitEdit({
     setAddManufacturer('');
     setAddUtility('');
     setAddAttached('');
+    setShowAddType(false);
+    setAddTypeInput(false);
   };
 
   const useDefaultOrNot = () => {
@@ -2358,105 +2364,380 @@ export default function UnitEdit({
                         <>
                           <View
                             style={{
-                              height: height * 0.2,
+                              // height: height * 0.15,
                               marginVertical: height * 0.025,
                               // backgroundColor: 'seagreen',
                             }}>
-                            <FlatList
+                            {/* <FlatList
                               contentContainerStyle={{
                                 justifyContent: 'center',
+                                backgroundColor: 'yellow',
                               }}
                               data={state.meterList}
                               renderItem={renderSlide2}
-                            />
-                          </View>
-                          <View style={{width: width * 0.8, flex: 1}}>
-                            <View
-                              pointerEvents={'auto'}
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropdown
-                                multi={true}
-                                selectedItems={selectUtil}
-                                onItemSelect={(item) => {
-                                  // getDevice(item, index);
-                                  console.log('Test', item);
-                                  AddTypes(item);
-                                  forceUpdate();
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                // items={item.data}
-                                items={utilTypes}
-                                onRemoveItem={(item, index) => {
-                                  const items = selectUtil.filter(
-                                    (sitem) => sitem.id !== item.id,
-                                  );
-                                  // selectedTypes.current = items;
-                                  setSelectUtil(items);
-                                }}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Add Utility Type',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                  },
-                                  // onTextChange: (text) => {
-                                  //   onChangeManufacturer(text, index);
-                                  // },
-                                  // value: setTimeout(() => item.select, 200),
-                                  // defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TouchableOpacity
+                            /> */}
+                            {!addTypeInput ? (
+                              <View
+                                pointerEvents={'auto'}
                                 style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                onPress={() => showAddNewType('Utility')}>
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropdown
+                                  items={state.meterList}
+                                  onItemSelect={(item) => {
+                                    console.log('kiasdad', item);
+                                    addMeterInNewArray(item);
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Add Meter Type',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                    },
+                                    onTextChange: (text) => {},
+                                    value: newMeter.name,
+                                    // defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
                                 />
-                              </TouchableOpacity>
-                            </View>
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() => setAddTypeInput(true)}>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            ) : (
+                              // <View
+                              //   style={{
+                              //     // backgroundColor: 'yellow',
+                              //     justifyContent: 'flex-end',
+                              //     alignItems: 'center',
+                              //   }}>
+                              //   <TouchableOpacity
+                              //     style={[
+                              //       styles.button,
+                              //       {
+                              //         width: width * 0.8,
+                              //         justifyContent: 'center',
+                              //       },
+                              //     ]}
+                              //     onPress={() => setAddTypeInput(true)}>
+                              //     <Text style={styles.buttonText}>
+                              //       Add New Meter Type
+                              //     </Text>
+                              //   </TouchableOpacity>
+                              // </View>
+                              <View
+                                style={{
+                                  width: '100%',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-evenly',
+                                }}>
+                                <Text
+                                  style={{
+                                    alignSelf: 'flex-start',
+                                    fontSize: width * 0.03,
+                                    color: '#3E4A4F',
+                                    textTransform: 'capitalize',
+                                    fontFamily: Fonts.ComfortaaRegular,
+                                    marginBottom: width * 0.01,
+                                    fontWeight: 'bold',
+                                  }}>
+                                  Add new Meter Type
+                                </Text>
+                                <TextInput
+                                  placeholder="Type New Meter Name"
+                                  // value={}
+                                  dense
+                                  style={[
+                                    styles.meterInput,
+                                    {height: width * 0.13},
+                                  ]}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                      zIndex: 10,
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    setNewMeterType(text);
+                                  }}
+                                />
+
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    width: width * 0.8,
+                                    justifyContent: 'space-between',
+                                  }}>
+                                  <TouchableOpacity onPress={cancelAddNewType}>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.15,
+                                        textAlign: 'center',
+                                      }}>
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    disabled={!newMeterType}
+                                    onPress={AddNewMeterType}>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: !newMeterType
+                                          ? '#737373'
+                                          : '#25AAE1ec',
+                                        width: width * 0.15,
+                                        textAlign: 'center',
+                                      }}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            )}
+                          </View>
+                          <View
+                            style={{
+                              width: width * 0.8,
+                              // backgroundColor: 'pink',
+                            }}>
+                            {showAddType !== 'Utility' ? (
+                              <View
+                                pointerEvents={'auto'}
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropdown
+                                  multi={true}
+                                  selectedItems={selectUtil}
+                                  onItemSelect={(item) => {
+                                    // getDevice(item, index);
+                                    console.log('Test', item);
+                                    AddTypes(item);
+                                    forceUpdate();
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  // items={item.data}
+                                  items={utilTypes}
+                                  onRemoveItem={(item, index) => {
+                                    const items = selectUtil.filter(
+                                      (sitem) => sitem.id !== item.id,
+                                    );
+                                    // selectedTypes.current = items;
+                                    setSelectUtil(items);
+                                  }}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Add Utility Type',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                    },
+                                    // onTextChange: (text) => {
+                                    //   onChangeManufacturer(text, index);
+                                    // },
+                                    // value: setTimeout(() => item.select, 200),
+                                    // defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() => showAddNewType('Utility')}>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            ) : (
+                              <View>
+                                {showAddType == 'Utility' && (
+                                  <View>
+                                    <View>
+                                      <Text
+                                        style={[styles.meterDesciptionHeading]}>
+                                        New {showAddType} Type
+                                      </Text>
+                                    </View>
+                                    <TextInput
+                                      placeholder={'Type new utility'}
+                                      value={addUtility}
+                                      style={styles.meterInput}
+                                      mode={'outlined'}
+                                      theme={{
+                                        colors: {
+                                          text: '#25AAE1ec',
+                                          primary: '#25AAE1ec',
+                                          selectionColor: 'red',
+                                        },
+                                      }}
+                                      onChangeText={(text) => {
+                                        setAddUtility(text);
+                                      }}
+                                    />
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                      }}>
+                                      <TouchableOpacity
+                                        onPress={() => setShowAddType(false)}>
+                                        <Text
+                                          style={{
+                                            fontWeight: 'bold',
+                                            fontSize: width * 0.045,
+                                            color: '#25AAE1ec',
+                                            width: width * 0.15,
+                                            textAlign: 'center',
+                                          }}>
+                                          Cancel
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity
+                                        onPress={doneAddType}
+                                        disabled={
+                                          showAddType == 'Manufacturer' &&
+                                          addManufacturer
+                                            ? false
+                                            : showAddType != 'Manufacturer' &&
+                                              addDevice[0].selectId &&
+                                              addDevice[1].selectId &&
+                                              addDevice[2].select
+                                            ? false
+                                            : showAddType == 'Utility' &&
+                                              addUtility
+                                            ? false
+                                            : showAddType == 'Attached To' &&
+                                              addAttached
+                                            ? false
+                                            : true
+                                        }>
+                                        <Text
+                                          style={{
+                                            fontWeight: 'bold',
+                                            fontSize: width * 0.045,
+                                            color:
+                                              showAddType == 'Manufacturer' &&
+                                              addManufacturer
+                                                ? '#25AAE1ec'
+                                                : showAddType !=
+                                                    'Manufacturer' &&
+                                                  addDevice[0].selectId &&
+                                                  addDevice[1].selectId &&
+                                                  addDevice[2].select
+                                                ? '#25AAE1ec'
+                                                : showAddType == 'Utility' &&
+                                                  addUtility
+                                                ? '#25AAE1ec'
+                                                : showAddType ==
+                                                    'Attached To' && addAttached
+                                                ? '#25AAE1ec'
+                                                : '#D0D0D0',
+                                            width: width * 0.15,
+                                            textAlign: 'center',
+                                          }}>
+                                          Add
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                )}
+                              </View>
+                            )}
+
                             <View>
                               <FlatList
                                 data={selectUtil}
@@ -2497,7 +2778,7 @@ export default function UnitEdit({
                           <ActivityIndicator size={'large'} color="#25AAE1ec" />
                         </View>
                       )}
-                      {!addTypeInput ? (
+                      {/* {!addTypeInput ? (
                         <View
                           style={{
                             // backgroundColor: 'yellow',
@@ -2573,7 +2854,7 @@ export default function UnitEdit({
                             </TouchableOpacity>
                           )}
                         </View>
-                      )}
+                      )} */}
                     </View>
                   ) : sliderNumber == 3 ? (
                     <View
@@ -2586,150 +2867,243 @@ export default function UnitEdit({
                         // backgroundColor: 'pink',
                       }}>
                       <FlatList data={slide2} renderItem={renderSlide3} />
-                      <View
-                        style={{
-                          flex: 20,
-                          height: width * 0.25,
-                          width: width * 0.8,
-                          // backgroundColor: 'yellow',
-                          // bottom: '20%',
-                        }}>
-                        <Text
-                          style={[
-                            styles.meterDesciptionHeading,
-                            {top: width * 0.01},
-                          ]}>
-                          Attached To*
-                        </Text>
+                      {showAddType !== 'Attached To' ? (
                         <View
-                          pointerEvents={'auto'}
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
+                            flex: 20,
+                            height: width * 0.25,
+                            width: width * 0.8,
+                            // backgroundColor: 'yellow',
+                            // bottom: '20%',
                           }}>
-                          <SearchableDropdown
-                            onItemSelect={(item) => {
-                              // getDevice(item, index);
-                              setAttachedToId(item.id);
-                              setAttachedTo(item.name);
-                            }}
-                            containerStyle={{
-                              paddingBottom: width * 0.02,
-                              width: width * 0.7,
-                            }}
-                            itemStyle={{
-                              padding: width * 0.027,
-                              backgroundColor: 'rgb(247, 247, 247)',
-                              borderColor: '#bbb',
-                              borderWidth: width * 0.0015,
-                              borderRadius: width * 0.015,
-                            }}
-                            itemTextStyle={{color: '#222'}}
-                            itemsContainerStyle={{
-                              maxHeight: height * 0.08,
-                            }}
-                            // items={item.data}
-                            items={attachedToData}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder: 'Select Attached To',
-                              underlineColorAndroid: 'transparent',
-                              style: {
-                                padding: width * 0.027,
-                                margin: 0,
-                                borderTopLeftRadius: width * 0.015,
-                                borderBottomLeftRadius: width * 0.015,
-                                borderColor: 'black',
-                                height: width * 0.13,
-                                backgroundColor: '#F6F6F6',
-                                borderTopWidth: width * 0.0019,
-                                borderLeftWidth: width * 0.0019,
-                                borderBottomWidth: width * 0.0019,
-                              },
-                              onTextChange: (text) => {
-                                onChangeAttachedTo(text);
-                              },
-                              value: attachedTo,
-                              // defaultValue: item.select,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          />
-                          <TouchableOpacity
+                          <Text
+                            style={[
+                              styles.meterDesciptionHeading,
+                              {top: width * 0.01},
+                            ]}>
+                            Attached To*
+                          </Text>
+                          <View
+                            pointerEvents={'auto'}
                             style={{
-                              width: width * 0.1,
-                              backgroundColor: '#25AAE199',
-                              borderTopRightRadius: width * 0.015,
-                              borderBottomRightRadius: width * 0.015,
-                              borderTopWidth: width * 0.0019,
-                              borderRightWidth: width * 0.0019,
-                              borderBottomWidth: width * 0.0019,
-                              height: width * 0.13,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            onPress={() => showAddNewType('Attached To')}>
-                            <Icon
-                              size={width * 0.06}
-                              color="#fff"
-                              name={'add'}
+                              flexDirection: 'row',
+                              alignItems: 'flex-start',
+                            }}>
+                            <SearchableDropdown
+                              onItemSelect={(item) => {
+                                // getDevice(item, index);
+                                setAttachedToId(item.id);
+                                setAttachedTo(item.name);
+                              }}
+                              containerStyle={{
+                                paddingBottom: width * 0.02,
+                                width: width * 0.7,
+                              }}
+                              itemStyle={{
+                                padding: width * 0.027,
+                                backgroundColor: 'rgb(247, 247, 247)',
+                                borderColor: '#bbb',
+                                borderWidth: width * 0.0015,
+                                borderRadius: width * 0.015,
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: height * 0.08,
+                              }}
+                              // items={item.data}
+                              items={attachedToData}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Select Attached To',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  margin: 0,
+                                  borderTopLeftRadius: width * 0.015,
+                                  borderBottomLeftRadius: width * 0.015,
+                                  borderColor: 'black',
+                                  height: width * 0.13,
+                                  backgroundColor: '#F6F6F6',
+                                  borderTopWidth: width * 0.0019,
+                                  borderLeftWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                },
+                                onTextChange: (text) => {
+                                  onChangeAttachedTo(text);
+                                },
+                                value: attachedTo,
+                                // defaultValue: item.select,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
                             />
-                          </TouchableOpacity>
-                        </View>
-                        {/* <SearchableDropdown
-                          onItemSelect={(item) => {
-                            setAttachedToId(item.id);
-                            setAttachedTo(item.name);
-                          }}
-                          containerStyle={{
-                            paddingBottom: width * 0.02,
-                          }}
-                          itemStyle={{
+                            <TouchableOpacity
+                              style={{
+                                width: width * 0.1,
+                                backgroundColor: '#25AAE199',
+                                borderTopRightRadius: width * 0.015,
+                                borderBottomRightRadius: width * 0.015,
+                                borderTopWidth: width * 0.0019,
+                                borderRightWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                                height: width * 0.13,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onPress={() => showAddNewType('Attached To')}>
+                              <Icon
+                                size={width * 0.06}
+                                color="#fff"
+                                name={'add'}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          {/* <SearchableDropdown
+                        onItemSelect={(item) => {
+                          setAttachedToId(item.id);
+                          setAttachedTo(item.name);
+                        }}
+                        containerStyle={{
+                          paddingBottom: width * 0.02,
+                        }}
+                        itemStyle={{
+                          padding: width * 0.027,
+                          backgroundColor: '#fff',
+                          borderColor: '#bbb',
+                          borderWidth: width * 0.0015,
+                          borderRadius: width * 0.015,
+                          margin: width * 0.005,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={
+                          Platform.OS == 'android'
+                            ? {
+                                maxHeight: width * 0.15,
+                                position: 'absolute',
+                                width: width * 0.8,
+                                top: width * 0.15,
+                                zIndex: 1,
+                                backgroundColor: 'white',
+                                elevation: width * 0.01,
+                              }
+                            : {maxHeight: width * 0.15}
+                        }
+                        items={attachedToData}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Select Attached To',
+                          underlineColorAndroid: 'transparent',
+                          style: {
                             padding: width * 0.027,
-                            backgroundColor: '#fff',
-                            borderColor: '#bbb',
-                            borderWidth: width * 0.0015,
+                            margin: 0,
                             borderRadius: width * 0.015,
-                            margin: width * 0.005,
-                          }}
-                          itemTextStyle={{color: '#222'}}
-                          itemsContainerStyle={
-                            Platform.OS == 'android'
-                              ? {
-                                  maxHeight: width * 0.15,
-                                  position: 'absolute',
-                                  width: width * 0.8,
-                                  top: width * 0.15,
-                                  zIndex: 1,
-                                  backgroundColor: 'white',
-                                  elevation: width * 0.01,
-                                }
-                              : {maxHeight: width * 0.15}
-                          }
-                          items={attachedToData}
-                          resetValue={false}
-                          textInputProps={{
-                            placeholder: 'Select Attached To',
-                            underlineColorAndroid: 'transparent',
-                            style: {
-                              padding: width * 0.027,
-                              margin: 0,
-                              borderRadius: width * 0.015,
-                              height: width * 0.13,
-                              backgroundColor: '#F6F6F6',
-                              borderWidth: width * 0.0019,
-                            },
-                            onTextChange: (text) => {
-                              onChangeAttachedTo(text);
-                            },
-                            value: attachedTo,
-                          }}
-                          listProps={{
-                            nestedScrollEnabled: true,
-                          }}
-                        /> */}
-                      </View>
+                            height: width * 0.13,
+                            backgroundColor: '#F6F6F6',
+                            borderWidth: width * 0.0019,
+                          },
+                          onTextChange: (text) => {
+                            onChangeAttachedTo(text);
+                          },
+                          value: attachedTo,
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      /> */}
+                        </View>
+                      ) : (
+                        <View>
+                          {showAddType == 'Attached To' && (
+                            <View>
+                              <View>
+                                <Text style={[styles.meterDesciptionHeading]}>
+                                  Add New {showAddType}
+                                </Text>
+                              </View>
+                              <TextInput
+                                placeholder={'Type new Attached To'}
+                                value={addAttached}
+                                style={styles.meterInput}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                                onChangeText={(text) => {
+                                  setAddAttached(text);
+                                }}
+                              />
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                }}>
+                                <TouchableOpacity onPress={cancelAddNewType}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: '#25AAE1ec',
+                                      width: width * 0.15,
+                                      textAlign: 'center',
+                                    }}>
+                                    Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={doneAddType}
+                                  disabled={
+                                    showAddType == 'Manufacturer' &&
+                                    addManufacturer
+                                      ? false
+                                      : showAddType != 'Manufacturer' &&
+                                        addDevice[0].selectId &&
+                                        addDevice[1].selectId &&
+                                        addDevice[2].select
+                                      ? false
+                                      : showAddType == 'Utility' && addUtility
+                                      ? false
+                                      : showAddType == 'Attached To' &&
+                                        addAttached
+                                      ? false
+                                      : true
+                                  }>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color:
+                                        showAddType == 'Manufacturer' &&
+                                        addManufacturer
+                                          ? '#25AAE1ec'
+                                          : showAddType != 'Manufacturer' &&
+                                            addDevice[0].selectId &&
+                                            addDevice[1].selectId &&
+                                            addDevice[2].select
+                                          ? '#25AAE1ec'
+                                          : showAddType == 'Utility' &&
+                                            addUtility
+                                          ? '#25AAE1ec'
+                                          : showAddType == 'Attached To' &&
+                                            addAttached
+                                          ? '#25AAE1ec'
+                                          : '#D0D0D0',
+                                      width: width * 0.15,
+                                      textAlign: 'center',
+                                    }}>
+                                    Add
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          )}
+                        </View>
+                      )}
                     </View>
                   ) : sliderNumber == 4 ? (
                     <View style={styles.container}>
@@ -3028,9 +3402,10 @@ export default function UnitEdit({
                         {installationStatus == 0 && statusAnimation == false && (
                           <View
                             style={{
+                              flex: 1,
                               // backgroundColor: 'yellow',
-                              justifyContent: 'center',
-                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              alignItems: 'flex-start',
                             }}>
                             <TouchableOpacity
                               onPress={() => sendInstallationStatus(1)}
@@ -3067,105 +3442,396 @@ export default function UnitEdit({
                       style={{
                         flex: 1,
                         height: width * 0.8,
-                        justifyContent: 'center',
+                        justifyContent: 'flex-start',
                       }}>
+                      {/* sliderNumber == 1 */}
                       {loadManufacturers ? (
-                        <ActivityIndicator size="large" color="#25AAE1ec" />
+                        <ActivityIndicator
+                          size="large"
+                          color="#25AAE1ec"
+                          style={{alignSelf: 'center', flex: 1}}
+                        />
                       ) : (
                         <View>
-                          {slide1?.map((item, index) => (
-                            <View style={{width: width * 0.8}} key={item.id}>
-                              <Text style={styles.meterDesciptionHeading}>
-                                {item.name}*
-                              </Text>
-                              <View
-                                pointerEvents={
-                                  index > 0
-                                    ? slide1[0].selectId
-                                      ? 'auto'
-                                      : 'none'
-                                    : 'auto'
-                                }
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'flex-start',
-                                }}>
-                                <SearchableDropdown
-                                  onItemSelect={(item) => {
-                                    getDevice(item, index);
-                                  }}
-                                  containerStyle={{
-                                    paddingBottom: width * 0.02,
-                                    width: width * 0.7,
-                                  }}
-                                  itemStyle={{
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                  }}
-                                  itemTextStyle={{color: '#222'}}
-                                  itemsContainerStyle={{
-                                    maxHeight: height * 0.08,
-                                  }}
-                                  items={item.data}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder:
-                                      index == 1
+                          {!showAddType ? (
+                            <View>
+                              {slide1?.map((item, index) => (
+                                <View
+                                  style={{width: width * 0.8}}
+                                  key={item.id}>
+                                  <Text style={styles.meterDesciptionHeading}>
+                                    {item.name}*
+                                  </Text>
+                                  <View
+                                    pointerEvents={
+                                      index > 0
                                         ? slide1[0].selectId
-                                          ? item.name
-                                          : 'First Select Manufacture'
-                                        : item.name,
-                                    underlineColorAndroid: 'transparent',
-                                    style: {
-                                      padding: width * 0.027,
-                                      margin: 0,
-                                      borderTopLeftRadius: width * 0.015,
-                                      borderBottomLeftRadius: width * 0.015,
-                                      borderColor: item.error
-                                        ? '#A3001B'
-                                        : 'black',
-                                      height: width * 0.13,
-                                      backgroundColor: '#F6F6F6',
-                                      borderTopWidth: width * 0.0019,
-                                      borderLeftWidth: width * 0.0019,
-                                      borderBottomWidth: width * 0.0019,
-                                    },
-                                    onTextChange: (text) => {
-                                      onChangeManufacturer(text, index);
-                                    },
-                                    value: setTimeout(() => item.select, 200),
-                                    defaultValue: item.select,
-                                  }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
-                                  }}
-                                />
-                                <TouchableOpacity
-                                  style={{
-                                    width: width * 0.1,
-                                    backgroundColor: '#25AAE199',
-                                    borderTopRightRadius: width * 0.015,
-                                    borderBottomRightRadius: width * 0.015,
-                                    borderTopWidth: width * 0.0019,
-                                    borderRightWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    height: width * 0.13,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  onPress={() => showAddNewType(item.name)}>
-                                  <Icon
-                                    size={width * 0.06}
-                                    color="#fff"
-                                    name={'add'}
-                                  />
-                                </TouchableOpacity>
-                              </View>
+                                          ? 'auto'
+                                          : 'none'
+                                        : 'auto'
+                                    }
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'flex-start',
+                                    }}>
+                                    <SearchableDropdown
+                                      onItemSelect={(item) => {
+                                        getDevice(item, index);
+                                      }}
+                                      containerStyle={{
+                                        paddingBottom: width * 0.02,
+                                        width: width * 0.7,
+                                      }}
+                                      itemStyle={{
+                                        padding: width * 0.027,
+                                        backgroundColor: 'rgb(247, 247, 247)',
+                                        borderColor: '#bbb',
+                                        borderWidth: width * 0.0015,
+                                        borderRadius: width * 0.015,
+                                      }}
+                                      itemTextStyle={{color: '#222'}}
+                                      itemsContainerStyle={{
+                                        maxHeight: height * 0.08,
+                                      }}
+                                      items={item.data}
+                                      resetValue={false}
+                                      textInputProps={{
+                                        placeholder:
+                                          index == 1
+                                            ? slide1[0].selectId
+                                              ? item.name
+                                              : 'First Select Manufacture'
+                                            : item.name,
+                                        underlineColorAndroid: 'transparent',
+                                        style: {
+                                          padding: width * 0.027,
+                                          margin: 0,
+                                          borderTopLeftRadius: width * 0.015,
+                                          borderBottomLeftRadius: width * 0.015,
+                                          borderColor: item.error
+                                            ? '#A3001B'
+                                            : 'black',
+                                          height: width * 0.13,
+                                          backgroundColor: '#F6F6F6',
+                                          borderTopWidth: width * 0.0019,
+                                          borderLeftWidth: width * 0.0019,
+                                          borderBottomWidth: width * 0.0019,
+                                        },
+                                        onTextChange: (text) => {
+                                          onChangeManufacturer(text, index);
+                                        },
+                                        value: setTimeout(
+                                          () => item.select,
+                                          200,
+                                        ),
+                                        defaultValue: item.select,
+                                      }}
+                                      listProps={{
+                                        nestedScrollEnabled: true,
+                                      }}
+                                    />
+                                    <TouchableOpacity
+                                      style={{
+                                        width: width * 0.1,
+                                        backgroundColor: '#25AAE199',
+                                        borderTopRightRadius: width * 0.015,
+                                        borderBottomRightRadius: width * 0.015,
+                                        borderTopWidth: width * 0.0019,
+                                        borderRightWidth: width * 0.0019,
+                                        borderBottomWidth: width * 0.0019,
+                                        height: width * 0.13,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                      onPress={() => showAddNewType(item.name)}>
+                                      <Icon
+                                        size={width * 0.06}
+                                        color="#fff"
+                                        name={'add'}
+                                      />
+                                    </TouchableOpacity>
+                                  </View>
+                                </View>
+                              ))}
                             </View>
-                          ))}
+                          ) : (
+                            <>
+                              <View>
+                                {showAddType == 'Manufacturer' && (
+                                  <View>
+                                    <View>
+                                      <Text
+                                        style={[styles.meterDesciptionHeading]}>
+                                        New {showAddType}
+                                      </Text>
+                                    </View>
+                                    <TextInput
+                                      placeholder={'Type new manufacturer'}
+                                      value={addManufacturer}
+                                      style={styles.meterInput}
+                                      mode={'outlined'}
+                                      theme={{
+                                        colors: {
+                                          text: '#25AAE1ec',
+                                          primary: '#25AAE1ec',
+                                          selectionColor: 'red',
+                                        },
+                                      }}
+                                      onChangeText={(text) => {
+                                        setAddManufacturer(text);
+                                      }}
+                                    />
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                      }}>
+                                      <TouchableOpacity
+                                        onPress={cancelAddNewType}>
+                                        <Text
+                                          style={{
+                                            fontWeight: 'bold',
+                                            fontSize: width * 0.045,
+                                            color: '#25AAE1ec',
+                                            width: width * 0.15,
+                                            textAlign: 'center',
+                                          }}>
+                                          Cancel
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity
+                                        onPress={doneAddType}
+                                        disabled={
+                                          showAddType == 'Manufacturer' &&
+                                          addManufacturer
+                                            ? false
+                                            : showAddType != 'Manufacturer' &&
+                                              addDevice[0].selectId &&
+                                              addDevice[1].selectId &&
+                                              addDevice[2].select
+                                            ? false
+                                            : showAddType == 'Utility' &&
+                                              addUtility
+                                            ? false
+                                            : showAddType == 'Attached To' &&
+                                              addAttached
+                                            ? false
+                                            : true
+                                        }>
+                                        <Text
+                                          style={{
+                                            fontWeight: 'bold',
+                                            fontSize: width * 0.045,
+                                            color:
+                                              showAddType == 'Manufacturer' &&
+                                              addManufacturer
+                                                ? '#25AAE1ec'
+                                                : showAddType !=
+                                                    'Manufacturer' &&
+                                                  addDevice[0].selectId &&
+                                                  addDevice[1].selectId &&
+                                                  addDevice[2].select
+                                                ? '#25AAE1ec'
+                                                : showAddType == 'Utility' &&
+                                                  addUtility
+                                                ? '#25AAE1ec'
+                                                : showAddType ==
+                                                    'Attached To' && addAttached
+                                                ? '#25AAE1ec'
+                                                : '#D0D0D0',
+                                            width: width * 0.15,
+                                            textAlign: 'center',
+                                          }}>
+                                          Add
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                )}
+                                {showAddType == 'Device' && (
+                                  <View style={{zIndex: 10}}>
+                                    {addDevice &&
+                                      addDevice?.map((item, index) => (
+                                        <View
+                                          style={{
+                                            width: width * 0.8,
+                                            // zIndex: 9,
+                                          }}
+                                          key={item.id}>
+                                          <View>
+                                            <Text
+                                              style={
+                                                styles.meterDesciptionHeading
+                                              }>
+                                              {item.name}
+                                            </Text>
+                                          </View>
+                                          {index < 2 ? (
+                                            <SearchableDropdown
+                                              onItemSelect={(items) => {
+                                                getNewDeviceData(items, index);
+                                              }}
+                                              containerStyle={{
+                                                paddingBottom: width * 0.02,
+                                              }}
+                                              itemStyle={{
+                                                padding: width * 0.027,
+                                                backgroundColor: '#fff',
+                                                borderColor: '#bbb',
+                                                borderWidth: width * 0.0015,
+                                                borderRadius: width * 0.015,
+                                                margin: width * 0.005,
+                                              }}
+                                              itemTextStyle={{color: '#222'}}
+                                              itemsContainerStyle={
+                                                Platform.OS == 'android'
+                                                  ? {
+                                                      height: width * 0.2,
+                                                      zIndex: 1,
+                                                      position: 'absolute',
+                                                      width: width * 0.8,
+                                                      top: width * 0.1,
+                                                      flex: 1,
+                                                      zIndex: 20,
+                                                      backgroundColor: 'white',
+                                                      elevation: width * 0.01,
+                                                      shadowColor: '#000',
+                                                      shadowOffset: {
+                                                        width: 0,
+                                                        height: 2,
+                                                      },
+                                                      shadowOpacity: 0.25,
+                                                      shadowRadius: 3.84,
+                                                    }
+                                                  : {
+                                                      height: width * 0.2,
+                                                      zIndex: 1,
+                                                    }
+                                              }
+                                              items={item.data}
+                                              resetValue={false}
+                                              textInputProps={{
+                                                placeholder: item.name,
+                                                underlineColorAndroid:
+                                                  'transparent',
+                                                style: {
+                                                  padding: width * 0.027,
+                                                  margin: 0,
+                                                  borderRadius: width * 0.015,
+                                                  height: width * 0.13,
+                                                  backgroundColor: '#F6F6F6',
+                                                  borderWidth: width * 0.0019,
+                                                },
+                                                onTextChange: (text) => {
+                                                  onChangeNewDevice(
+                                                    text,
+                                                    index,
+                                                  );
+                                                },
+                                                value: setTimeout(
+                                                  () => item.select,
+                                                  200,
+                                                ),
+                                                defaultValue: item.select,
+                                              }}
+                                              listProps={{
+                                                nestedScrollEnabled: true,
+                                              }}
+                                            />
+                                          ) : (
+                                            <TextInput
+                                              placeholder={'Type new Device'}
+                                              value={item.select}
+                                              style={styles.meterInput}
+                                              mode={'outlined'}
+                                              theme={{
+                                                colors: {
+                                                  text: '#25AAE1ec',
+                                                  primary: '#25AAE1ec',
+                                                  selectionColor: 'red',
+                                                  zIndex: 10,
+                                                },
+                                              }}
+                                              onChangeText={(text) => {
+                                                onChangeNewDevice(text, index);
+                                              }}
+                                            />
+                                          )}
+                                        </View>
+                                      ))}
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                      }}>
+                                      <TouchableOpacity
+                                        onPress={cancelAddNewType}>
+                                        <Text
+                                          style={{
+                                            fontWeight: 'bold',
+                                            fontSize: width * 0.045,
+                                            color: '#25AAE1ec',
+                                            width: width * 0.15,
+                                            textAlign: 'center',
+                                          }}>
+                                          Cancel
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity
+                                        onPress={doneAddType}
+                                        disabled={
+                                          showAddType == 'Manufacturer' &&
+                                          addManufacturer
+                                            ? false
+                                            : showAddType != 'Manufacturer' &&
+                                              addDevice[0].selectId &&
+                                              addDevice[1].selectId &&
+                                              addDevice[2].select
+                                            ? false
+                                            : showAddType == 'Utility' &&
+                                              addUtility
+                                            ? false
+                                            : showAddType == 'Attached To' &&
+                                              addAttached
+                                            ? false
+                                            : true
+                                        }>
+                                        <Text
+                                          style={{
+                                            fontWeight: 'bold',
+                                            fontSize: width * 0.045,
+                                            color:
+                                              showAddType == 'Manufacturer' &&
+                                              addManufacturer
+                                                ? '#25AAE1ec'
+                                                : showAddType !=
+                                                    'Manufacturer' &&
+                                                  addDevice[0].selectId &&
+                                                  addDevice[1].selectId &&
+                                                  addDevice[2].select
+                                                ? '#25AAE1ec'
+                                                : showAddType == 'Utility' &&
+                                                  addUtility
+                                                ? '#25AAE1ec'
+                                                : showAddType ==
+                                                    'Attached To' && addAttached
+                                                ? '#25AAE1ec'
+                                                : '#D0D0D0',
+                                            width: width * 0.15,
+                                            textAlign: 'center',
+                                          }}>
+                                          Add
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                )}
+                              </View>
+                            </>
+                          )}
+
                           <View
                             style={{
                               flexDirection: 'row',
@@ -3913,7 +4579,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: width * 0.03,
     // height: width * 1,
-    height: height * 0.8,
+    height: width * 1.2,
   },
   boxHeader: {
     width: width * 0.8,
@@ -4061,7 +4727,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: width * 0.8,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
   },
   reasonFileContainer: {
