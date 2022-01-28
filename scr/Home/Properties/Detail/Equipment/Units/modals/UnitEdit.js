@@ -18,6 +18,7 @@ import {
   Linking,
   ActivityIndicator,
   ToastAndroid,
+  Switch,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
@@ -94,6 +95,8 @@ export default function UnitEdit({
   propertyLong,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [defaultValues, setDefaultValues] = useState(false);
+  const [defaultScreen, setDefaultScreen] = useState(false);
   const [distanceBtw, setDistanceBtw] = useState(0);
   const [radialDis, setRadialDis] = useState(100);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
@@ -123,6 +126,8 @@ export default function UnitEdit({
   const [checkSerial, setCheckSerial] = useState(false);
   const [modelNo, setModelNo] = useState('');
   const [productNo, setProductNo] = useState('');
+  const [addModelNo, setAddModelNo] = useState('');
+  const [addProductNo, setAddProductNo] = useState('');
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -341,7 +346,8 @@ export default function UnitEdit({
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      setShowAddMeterSlider(true);
+      // setShowAddMeterSlider(true);
+      setDefaultScreen(true);
       _renderMap();
     } else {
       Alert.alert(
@@ -737,7 +743,6 @@ export default function UnitEdit({
     ];
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
-
     const defaultUnitData = await api.get(
       `/property/default-meter-device/${propertyId}`,
     );
@@ -1499,6 +1504,8 @@ export default function UnitEdit({
     setAttachedTo('');
     setModelNo('');
     setProductNo('');
+    setAddModelNo('');
+    setAddProductNo('');
     setSelectUtil([]);
     slide1?.map((item, index) => {
       let newArr = [...slide1];
@@ -1645,6 +1652,8 @@ export default function UnitEdit({
         name: addDevice[2].select,
         manufacturer_id: addDevice[0].selectId,
         device_type_id: addDevice[1].selectId,
+        model_no: addModelNo,
+        product_no: addProductNo,
       };
       const DeviceTypesResponse = await api.post(
         '/property/equipment/device/add',
@@ -1695,6 +1704,19 @@ export default function UnitEdit({
     setAddAttached('');
     setShowAddType(false);
     setAddTypeInput(false);
+  };
+
+  const useDefaultOrNot = () => {
+    if (defaultValues) {
+      setSliderNumber(3);
+      setShowAddMeterSlider(true);
+      setDefaultScreen(false);
+    } else {
+      cancelMeter();
+      setSliderNumber(1);
+      setShowAddMeterSlider(true);
+      setDefaultScreen(false);
+    }
   };
 
   const getMeterData = (data) => {
@@ -2119,7 +2141,7 @@ export default function UnitEdit({
                                     </View>
                                     <TextInput
                                       placeholder="Type Model Number"
-                                      value={modelNo}
+                                      value={addModelNo}
                                       showSoftInputOnFocus={false}
                                       style={styles.meterInput}
                                       mode={'outlined'}
@@ -2131,7 +2153,7 @@ export default function UnitEdit({
                                         },
                                       }}
                                       onChangeText={(text) => {
-                                        setModelNo(text);
+                                        setAddModelNo(text);
                                       }}
                                     />
                                   </View>
@@ -2144,7 +2166,7 @@ export default function UnitEdit({
                                     </View>
                                     <TextInput
                                       placeholder="Type Product Description"
-                                      value={productNo}
+                                      value={addProductNo}
                                       showSoftInputOnFocus={false}
                                       style={styles.meterInput}
                                       mode={'outlined'}
@@ -2156,7 +2178,7 @@ export default function UnitEdit({
                                         },
                                       }}
                                       onChangeText={(text) => {
-                                        setProductNo(text);
+                                        setAddProductNo(text);
                                       }}
                                     />
                                   </View>
@@ -4057,6 +4079,110 @@ export default function UnitEdit({
                   </View>
                 </View>
               )
+            ) : defaultScreen ? (
+              <View
+                style={{
+                  height: width * 1.2,
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  borderRadius: width * 0.03,
+                  overflow: 'hidden',
+                  // backgroundColor: 'pink',
+                  // justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    height: width * 0.18,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      width: width * 0.85,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={[
+                        styles.meterDesciptionHeading,
+                        {fontSize: width * 0.06},
+                      ]}>
+                      Make Selection
+                    </Text>
+
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: cancelMeter,
+                            },
+                          ],
+                        )
+                      }>
+                      <Icon
+                        name="cancel"
+                        size={width * 0.06}
+                        color="black"
+                        maxOpacity={0.5}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    // backgroundColor: 'yellow',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Use Default Values</Text>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#81b0ff'}}
+                    thumbColor={defaultValues ? '#25AAE1ec ' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={() => setDefaultValues(!defaultValues)}
+                    value={defaultValues}
+                  />
+                  {/* <TouchableOpacity
+                    onPress={() => {
+                      setSliderNumber(3),
+                        setShowAddMeterSlider(true),
+                        setDefaultScreen(false);
+                    }}
+                    style={[styles.attemptBtn, {backgroundColor: 'green'}]}>
+                    <Text style={styles.attemptText}>Use Default Values</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSliderNumber(1),
+                        setShowAddMeterSlider(true),
+                        setDefaultScreen(false);
+                    }}
+                    style={[styles.attemptBtn, {backgroundColor: '#f00'}]}>
+                    <Text style={styles.attemptText}>Don't Use Default</Text>
+                  </TouchableOpacity> */}
+                </View>
+                <TouchableOpacity
+                  onPress={() => useDefaultOrNot()}
+                  style={styles.doneButton}>
+                  <Icon
+                    size={width * 0.07}
+                    color="#fff"
+                    name={'navigate-next'}
+                  />
+                </TouchableOpacity>
+              </View>
             ) : (
               <View style={styles.boxInner}>
                 {/* Box Header */}
@@ -4204,10 +4330,11 @@ export default function UnitEdit({
                                 type: LayoutAnimation.Types.easeInEaseOut,
                               },
                             }),
-                              setShowAddMeterSlider(true),
-                              enableLocation();
+                              // setShowAddMeterSlider(true),
+                              // setDefaultScreen(true),
+                              callApi();
                             getMeterData(item);
-                            callApi();
+                            enableLocation();
                           }}
                           style={{
                             flexDirection: 'row',
@@ -4279,9 +4406,10 @@ export default function UnitEdit({
                                   type: LayoutAnimation.Types.easeInEaseOut,
                                 },
                               }),
-                                setShowAddMeterSlider(true),
-                                enableLocation();
-                              callApi();
+                                // setShowAddMeterSlider(true),
+                                // setDefauttScreen(true),
+                                callApi();
+                              enableLocation();
                             }}
                             style={{
                               flexDirection: 'row',
