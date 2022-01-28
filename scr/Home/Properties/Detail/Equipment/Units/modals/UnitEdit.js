@@ -97,7 +97,6 @@ export default function UnitEdit({
   const [meterListData, setMeterListData] = useState([]);
   const [defaultValues, setDefaultValues] = useState(false);
   const [defaultScreen, setDefaultScreen] = useState(false);
-  const [distanceBtw, setDistanceBtw] = useState(0);
   const [radialDis, setRadialDis] = useState(100);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
   const [loadMeters, setLoadMeters] = useState(false);
@@ -951,11 +950,36 @@ export default function UnitEdit({
     if (sliderNumber == 3 && meterAddingId == '') {
       setCheckSerial(true);
       checkingSerial();
-    } else if (sliderNumber == 4 && distanceBtw > radialDis) {
-      console.log('DIS BTW', distanceBtw);
-      console.log('RADIAL DIS', radialDis);
+    } else if (sliderNumber == 4) {
+      var dis = getDistance(
+        {
+          latitude: propertyLat,
+          longitude: propertyLong,
+        },
+        {
+          latitude: lat,
+          longitude: long,
+        },
+      );
+      if (dis > radialDis) {
+        console.log('DIS BTW', dis);
+        console.log('RADIAL DIS', radialDis);
 
-      Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
+        Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
+      } else {
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        setSliderNumber(sliderNumber + 1);
+        setSliderProgress(sliderProgress + 0.25);
+      }
     } else {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -984,7 +1008,7 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-
+    setShowAddType(false);
     const addMeter = meterListData.filter(
       (item) => item.meter_id != meterAddingId,
     );
@@ -1391,17 +1415,7 @@ export default function UnitEdit({
   const moveMarker = (region) => {
     setLat(region?.latitude);
     setLong(region?.longitude);
-    var dis = getDistance(
-      {
-        latitude: propertyLat,
-        longitude: propertyLong,
-      },
-      {
-        latitude: region?.latitude,
-        longitude: region?.longitude,
-      },
-    );
-    setDistanceBtw(dis);
+
     console.log('DISTANCE BETWEEN', dis);
   };
 
@@ -1711,8 +1725,8 @@ export default function UnitEdit({
       setSliderNumber(3);
       setShowAddMeterSlider(true);
       setDefaultScreen(false);
+      setSliderProgress(0.5);
     } else {
-      cancelMeter();
       setSliderNumber(1);
       setShowAddMeterSlider(true);
       setDefaultScreen(false);
@@ -1770,6 +1784,12 @@ export default function UnitEdit({
       name: '',
     }));
     setShowAddMeterSlider(false);
+  };
+
+  const slideBacker = () => {
+    setSliderNumber(sliderNumber - 1);
+    setSliderProgress(sliderProgress - 0.25);
+    setShowAddType(false);
   };
 
   const AddNewMeterType = async () => {
@@ -2279,7 +2299,7 @@ export default function UnitEdit({
               ) : (
                 <View
                   style={{
-                    height: width * 1.2,
+                    height: width * 1.3,
                     backgroundColor: 'white',
                     // backgroundColor: 'pink',
                     alignItems: 'center',
@@ -2421,8 +2441,8 @@ export default function UnitEdit({
                                       borderBottomWidth: width * 0.0019,
                                     },
                                     onTextChange: (text) => {},
-                                    value: newMeter.name,
-                                    // defaultValue: item.select,
+                                    value: setTimeout(() => newMeter.name, 200),
+                                    defaultValue: newMeter.name,
                                   }}
                                   listProps={{
                                     nestedScrollEnabled: true,
@@ -2487,7 +2507,7 @@ export default function UnitEdit({
                                     marginBottom: width * 0.01,
                                     fontWeight: 'bold',
                                   }}>
-                                  Add new Meter Type
+                                  New Meter Type
                                 </Text>
                                 <TextInput
                                   placeholder="Type New Meter Name"
@@ -2515,7 +2535,8 @@ export default function UnitEdit({
                                   style={{
                                     flexDirection: 'row',
                                     width: width * 0.8,
-                                    justifyContent: 'space-between',
+                                    justifyContent: 'space-around',
+                                    alignItems: 'center',
                                   }}>
                                   <TouchableOpacity onPress={cancelAddNewType}>
                                     <Text
@@ -2647,7 +2668,10 @@ export default function UnitEdit({
                                   <View>
                                     <View>
                                       <Text
-                                        style={[styles.meterDesciptionHeading]}>
+                                        style={[
+                                          styles.meterDesciptionHeading,
+                                          {fontWeight: 'bold'},
+                                        ]}>
                                         New {showAddType} Type
                                       </Text>
                                     </View>
@@ -2670,8 +2694,8 @@ export default function UnitEdit({
                                     <View
                                       style={{
                                         flexDirection: 'row',
+                                        justifyContent: 'space-around',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
                                       }}>
                                       <TouchableOpacity
                                         onPress={() => setShowAddType(false)}>
@@ -2931,8 +2955,8 @@ export default function UnitEdit({
                                 onTextChange: (text) => {
                                   onChangeAttachedTo(text);
                                 },
-                                value: attachedTo,
-                                // defaultValue: item.select,
+                                value: setTimeout(() => attachedTo, 200),
+                                defaultValue: attachedTo,
                               }}
                               listProps={{
                                 nestedScrollEnabled: true,
@@ -2959,65 +2983,17 @@ export default function UnitEdit({
                               />
                             </TouchableOpacity>
                           </View>
-                          {/* <SearchableDropdown
-                        onItemSelect={(item) => {
-                          setAttachedToId(item.id);
-                          setAttachedTo(item.name);
-                        }}
-                        containerStyle={{
-                          paddingBottom: width * 0.02,
-                        }}
-                        itemStyle={{
-                          padding: width * 0.027,
-                          backgroundColor: '#fff',
-                          borderColor: '#bbb',
-                          borderWidth: width * 0.0015,
-                          borderRadius: width * 0.015,
-                          margin: width * 0.005,
-                        }}
-                        itemTextStyle={{color: '#222'}}
-                        itemsContainerStyle={
-                          Platform.OS == 'android'
-                            ? {
-                                maxHeight: width * 0.15,
-                                position: 'absolute',
-                                width: width * 0.8,
-                                top: width * 0.15,
-                                zIndex: 1,
-                                backgroundColor: 'white',
-                                elevation: width * 0.01,
-                              }
-                            : {maxHeight: width * 0.15}
-                        }
-                        items={attachedToData}
-                        resetValue={false}
-                        textInputProps={{
-                          placeholder: 'Select Attached To',
-                          underlineColorAndroid: 'transparent',
-                          style: {
-                            padding: width * 0.027,
-                            margin: 0,
-                            borderRadius: width * 0.015,
-                            height: width * 0.13,
-                            backgroundColor: '#F6F6F6',
-                            borderWidth: width * 0.0019,
-                          },
-                          onTextChange: (text) => {
-                            onChangeAttachedTo(text);
-                          },
-                          value: attachedTo,
-                        }}
-                        listProps={{
-                          nestedScrollEnabled: true,
-                        }}
-                      /> */}
                         </View>
                       ) : (
-                        <View>
+                        <View style={{flex: 20}}>
                           {showAddType == 'Attached To' && (
                             <View>
                               <View>
-                                <Text style={[styles.meterDesciptionHeading]}>
+                                <Text
+                                  style={[
+                                    styles.meterDesciptionHeading,
+                                    {fontWeight: 'bold'},
+                                  ]}>
                                   Add New {showAddType}
                                 </Text>
                               </View>
@@ -3040,8 +3016,8 @@ export default function UnitEdit({
                               <View
                                 style={{
                                   flexDirection: 'row',
+                                  justifyContent: 'space-around',
                                   alignItems: 'center',
-                                  justifyContent: 'space-between',
                                 }}>
                                 <TouchableOpacity onPress={cancelAddNewType}>
                                   <Text
@@ -3561,7 +3537,10 @@ export default function UnitEdit({
                                   <View>
                                     <View>
                                       <Text
-                                        style={[styles.meterDesciptionHeading]}>
+                                        style={[
+                                          styles.meterDesciptionHeading,
+                                          {fontWeight: 'bold'},
+                                        ]}>
                                         New {showAddType}
                                       </Text>
                                     </View>
@@ -3584,8 +3563,8 @@ export default function UnitEdit({
                                     <View
                                       style={{
                                         flexDirection: 'row',
+                                        justifyContent: 'space-around',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
                                       }}>
                                       <TouchableOpacity
                                         onPress={cancelAddNewType}>
@@ -3651,6 +3630,18 @@ export default function UnitEdit({
                                 )}
                                 {showAddType == 'Device' && (
                                   <View style={{zIndex: 10}}>
+                                    <Text
+                                      style={{
+                                        alignSelf: 'flex-start',
+                                        fontSize: width * 0.03,
+                                        color: '#3E4A4F',
+                                        textTransform: 'capitalize',
+                                        fontFamily: Fonts.ComfortaaRegular,
+                                        marginBottom: width * 0.01,
+                                        fontWeight: 'bold',
+                                      }}>
+                                      Add New Device
+                                    </Text>
                                     {addDevice &&
                                       addDevice?.map((item, index) => (
                                         <View
@@ -3763,8 +3754,8 @@ export default function UnitEdit({
                                     <View
                                       style={{
                                         flexDirection: 'row',
+                                        justifyContent: 'space-around',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
                                       }}>
                                       <TouchableOpacity
                                         onPress={cancelAddNewType}>
@@ -3983,7 +3974,7 @@ export default function UnitEdit({
                         }}>
                         {sliderNumber > 1 && (
                           <TouchableOpacity
-                            onPress={() => setSliderNumber(sliderNumber - 1)}
+                            onPress={slideBacker}
                             style={[
                               styles.doneButton,
                               {
@@ -4082,7 +4073,7 @@ export default function UnitEdit({
             ) : defaultScreen ? (
               <View
                 style={{
-                  height: width * 1.2,
+                  height: width * 1.3,
                   backgroundColor: 'white',
                   alignItems: 'center',
                   borderRadius: width * 0.03,
@@ -4579,7 +4570,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: width * 0.03,
     // height: width * 1,
-    height: width * 1.2,
+    height: width * 1.3,
   },
   boxHeader: {
     width: width * 0.8,
