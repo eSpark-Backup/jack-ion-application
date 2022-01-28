@@ -1416,7 +1416,7 @@ export default function UnitEdit({
     setLat(region?.latitude);
     setLong(region?.longitude);
 
-    console.log('DISTANCE BETWEEN', dis);
+    // console.log('DISTANCE BETWEEN', dis);
   };
 
   const catchLocation = (region) => {
