@@ -18,6 +18,7 @@ import {
   Linking,
   ActivityIndicator,
   ToastAndroid,
+  Switch,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
@@ -94,6 +95,8 @@ export default function UnitEdit({
   propertyLong,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [defaultValues, setDefaultValues] = useState(false);
+  const [defaultScreen, setDefaultScreen] = useState(false);
   const [radialDis, setRadialDis] = useState(100);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
   const [loadMeters, setLoadMeters] = useState(false);
@@ -122,6 +125,8 @@ export default function UnitEdit({
   const [checkSerial, setCheckSerial] = useState(false);
   const [modelNo, setModelNo] = useState('');
   const [productNo, setProductNo] = useState('');
+  const [addModelNo, setAddModelNo] = useState('');
+  const [addProductNo, setAddProductNo] = useState('');
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -340,7 +345,8 @@ export default function UnitEdit({
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      setShowAddMeterSlider(true);
+      // setShowAddMeterSlider(true);
+      setDefaultScreen(true);
       _renderMap();
     } else {
       Alert.alert(
@@ -736,7 +742,6 @@ export default function UnitEdit({
     ];
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
-
     const defaultUnitData = await api.get(
       `/property/default-meter-device/${propertyId}`,
     );
@@ -1003,7 +1008,7 @@ export default function UnitEdit({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-
+    setShowAddType(false);
     const addMeter = meterListData.filter(
       (item) => item.meter_id != meterAddingId,
     );
@@ -1513,6 +1518,8 @@ export default function UnitEdit({
     setAttachedTo('');
     setModelNo('');
     setProductNo('');
+    setAddModelNo('');
+    setAddProductNo('');
     setSelectUtil([]);
     slide1?.map((item, index) => {
       let newArr = [...slide1];
@@ -1659,6 +1666,8 @@ export default function UnitEdit({
         name: addDevice[2].select,
         manufacturer_id: addDevice[0].selectId,
         device_type_id: addDevice[1].selectId,
+        model_no: addModelNo,
+        product_no: addProductNo,
       };
       const DeviceTypesResponse = await api.post(
         '/property/equipment/device/add',
@@ -1709,6 +1718,19 @@ export default function UnitEdit({
     setAddAttached('');
     setShowAddType(false);
     setAddTypeInput(false);
+  };
+
+  const useDefaultOrNot = () => {
+    if (defaultValues) {
+      setSliderNumber(3);
+      setShowAddMeterSlider(true);
+      setDefaultScreen(false);
+      setSliderProgress(0.5);
+    } else {
+      setSliderNumber(1);
+      setShowAddMeterSlider(true);
+      setDefaultScreen(false);
+    }
   };
 
   const getMeterData = (data) => {
@@ -1762,6 +1784,12 @@ export default function UnitEdit({
       name: '',
     }));
     setShowAddMeterSlider(false);
+  };
+
+  const slideBacker = () => {
+    setSliderNumber(sliderNumber - 1);
+    setSliderProgress(sliderProgress - 0.25);
+    setShowAddType(false);
   };
 
   const AddNewMeterType = async () => {
@@ -2133,7 +2161,7 @@ export default function UnitEdit({
                                     </View>
                                     <TextInput
                                       placeholder="Type Model Number"
-                                      value={modelNo}
+                                      value={addModelNo}
                                       showSoftInputOnFocus={false}
                                       style={styles.meterInput}
                                       mode={'outlined'}
@@ -2145,7 +2173,7 @@ export default function UnitEdit({
                                         },
                                       }}
                                       onChangeText={(text) => {
-                                        setModelNo(text);
+                                        setAddModelNo(text);
                                       }}
                                     />
                                   </View>
@@ -2158,7 +2186,7 @@ export default function UnitEdit({
                                     </View>
                                     <TextInput
                                       placeholder="Type Product Description"
-                                      value={productNo}
+                                      value={addProductNo}
                                       showSoftInputOnFocus={false}
                                       style={styles.meterInput}
                                       mode={'outlined'}
@@ -2170,7 +2198,7 @@ export default function UnitEdit({
                                         },
                                       }}
                                       onChangeText={(text) => {
-                                        setProductNo(text);
+                                        setAddProductNo(text);
                                       }}
                                     />
                                   </View>
@@ -2271,7 +2299,7 @@ export default function UnitEdit({
               ) : (
                 <View
                   style={{
-                    height: width * 1.2,
+                    height: width * 1.3,
                     backgroundColor: 'white',
                     // backgroundColor: 'pink',
                     alignItems: 'center',
@@ -2413,8 +2441,8 @@ export default function UnitEdit({
                                       borderBottomWidth: width * 0.0019,
                                     },
                                     onTextChange: (text) => {},
-                                    value: newMeter.name,
-                                    // defaultValue: item.select,
+                                    value: setTimeout(() => newMeter.name, 200),
+                                    defaultValue: newMeter.name,
                                   }}
                                   listProps={{
                                     nestedScrollEnabled: true,
@@ -2479,7 +2507,7 @@ export default function UnitEdit({
                                     marginBottom: width * 0.01,
                                     fontWeight: 'bold',
                                   }}>
-                                  Add new Meter Type
+                                  New Meter Type
                                 </Text>
                                 <TextInput
                                   placeholder="Type New Meter Name"
@@ -2507,7 +2535,8 @@ export default function UnitEdit({
                                   style={{
                                     flexDirection: 'row',
                                     width: width * 0.8,
-                                    justifyContent: 'space-between',
+                                    justifyContent: 'space-around',
+                                    alignItems: 'center',
                                   }}>
                                   <TouchableOpacity onPress={cancelAddNewType}>
                                     <Text
@@ -2639,7 +2668,10 @@ export default function UnitEdit({
                                   <View>
                                     <View>
                                       <Text
-                                        style={[styles.meterDesciptionHeading]}>
+                                        style={[
+                                          styles.meterDesciptionHeading,
+                                          {fontWeight: 'bold'},
+                                        ]}>
                                         New {showAddType} Type
                                       </Text>
                                     </View>
@@ -2662,8 +2694,8 @@ export default function UnitEdit({
                                     <View
                                       style={{
                                         flexDirection: 'row',
+                                        justifyContent: 'space-around',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
                                       }}>
                                       <TouchableOpacity
                                         onPress={() => setShowAddType(false)}>
@@ -2923,8 +2955,8 @@ export default function UnitEdit({
                                 onTextChange: (text) => {
                                   onChangeAttachedTo(text);
                                 },
-                                value: attachedTo,
-                                // defaultValue: item.select,
+                                value: setTimeout(() => attachedTo, 200),
+                                defaultValue: attachedTo,
                               }}
                               listProps={{
                                 nestedScrollEnabled: true,
@@ -2951,65 +2983,17 @@ export default function UnitEdit({
                               />
                             </TouchableOpacity>
                           </View>
-                          {/* <SearchableDropdown
-                        onItemSelect={(item) => {
-                          setAttachedToId(item.id);
-                          setAttachedTo(item.name);
-                        }}
-                        containerStyle={{
-                          paddingBottom: width * 0.02,
-                        }}
-                        itemStyle={{
-                          padding: width * 0.027,
-                          backgroundColor: '#fff',
-                          borderColor: '#bbb',
-                          borderWidth: width * 0.0015,
-                          borderRadius: width * 0.015,
-                          margin: width * 0.005,
-                        }}
-                        itemTextStyle={{color: '#222'}}
-                        itemsContainerStyle={
-                          Platform.OS == 'android'
-                            ? {
-                                maxHeight: width * 0.15,
-                                position: 'absolute',
-                                width: width * 0.8,
-                                top: width * 0.15,
-                                zIndex: 1,
-                                backgroundColor: 'white',
-                                elevation: width * 0.01,
-                              }
-                            : {maxHeight: width * 0.15}
-                        }
-                        items={attachedToData}
-                        resetValue={false}
-                        textInputProps={{
-                          placeholder: 'Select Attached To',
-                          underlineColorAndroid: 'transparent',
-                          style: {
-                            padding: width * 0.027,
-                            margin: 0,
-                            borderRadius: width * 0.015,
-                            height: width * 0.13,
-                            backgroundColor: '#F6F6F6',
-                            borderWidth: width * 0.0019,
-                          },
-                          onTextChange: (text) => {
-                            onChangeAttachedTo(text);
-                          },
-                          value: attachedTo,
-                        }}
-                        listProps={{
-                          nestedScrollEnabled: true,
-                        }}
-                      /> */}
                         </View>
                       ) : (
-                        <View>
+                        <View style={{flex: 20}}>
                           {showAddType == 'Attached To' && (
                             <View>
                               <View>
-                                <Text style={[styles.meterDesciptionHeading]}>
+                                <Text
+                                  style={[
+                                    styles.meterDesciptionHeading,
+                                    {fontWeight: 'bold'},
+                                  ]}>
                                   Add New {showAddType}
                                 </Text>
                               </View>
@@ -3032,8 +3016,8 @@ export default function UnitEdit({
                               <View
                                 style={{
                                   flexDirection: 'row',
+                                  justifyContent: 'space-around',
                                   alignItems: 'center',
-                                  justifyContent: 'space-between',
                                 }}>
                                 <TouchableOpacity onPress={cancelAddNewType}>
                                   <Text
@@ -3553,7 +3537,10 @@ export default function UnitEdit({
                                   <View>
                                     <View>
                                       <Text
-                                        style={[styles.meterDesciptionHeading]}>
+                                        style={[
+                                          styles.meterDesciptionHeading,
+                                          {fontWeight: 'bold'},
+                                        ]}>
                                         New {showAddType}
                                       </Text>
                                     </View>
@@ -3576,8 +3563,8 @@ export default function UnitEdit({
                                     <View
                                       style={{
                                         flexDirection: 'row',
+                                        justifyContent: 'space-around',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
                                       }}>
                                       <TouchableOpacity
                                         onPress={cancelAddNewType}>
@@ -3643,6 +3630,18 @@ export default function UnitEdit({
                                 )}
                                 {showAddType == 'Device' && (
                                   <View style={{zIndex: 10}}>
+                                    <Text
+                                      style={{
+                                        alignSelf: 'flex-start',
+                                        fontSize: width * 0.03,
+                                        color: '#3E4A4F',
+                                        textTransform: 'capitalize',
+                                        fontFamily: Fonts.ComfortaaRegular,
+                                        marginBottom: width * 0.01,
+                                        fontWeight: 'bold',
+                                      }}>
+                                      Add New Device
+                                    </Text>
                                     {addDevice &&
                                       addDevice?.map((item, index) => (
                                         <View
@@ -3755,8 +3754,8 @@ export default function UnitEdit({
                                     <View
                                       style={{
                                         flexDirection: 'row',
+                                        justifyContent: 'space-around',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
                                       }}>
                                       <TouchableOpacity
                                         onPress={cancelAddNewType}>
@@ -3975,7 +3974,7 @@ export default function UnitEdit({
                         }}>
                         {sliderNumber > 1 && (
                           <TouchableOpacity
-                            onPress={() => setSliderNumber(sliderNumber - 1)}
+                            onPress={slideBacker}
                             style={[
                               styles.doneButton,
                               {
@@ -4071,6 +4070,110 @@ export default function UnitEdit({
                   </View>
                 </View>
               )
+            ) : defaultScreen ? (
+              <View
+                style={{
+                  height: width * 1.3,
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  borderRadius: width * 0.03,
+                  overflow: 'hidden',
+                  // backgroundColor: 'pink',
+                  // justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    height: width * 0.18,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      width: width * 0.85,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={[
+                        styles.meterDesciptionHeading,
+                        {fontSize: width * 0.06},
+                      ]}>
+                      Make Selection
+                    </Text>
+
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: cancelMeter,
+                            },
+                          ],
+                        )
+                      }>
+                      <Icon
+                        name="cancel"
+                        size={width * 0.06}
+                        color="black"
+                        maxOpacity={0.5}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    // backgroundColor: 'yellow',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Use Default Values</Text>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#81b0ff'}}
+                    thumbColor={defaultValues ? '#25AAE1ec ' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={() => setDefaultValues(!defaultValues)}
+                    value={defaultValues}
+                  />
+                  {/* <TouchableOpacity
+                    onPress={() => {
+                      setSliderNumber(3),
+                        setShowAddMeterSlider(true),
+                        setDefaultScreen(false);
+                    }}
+                    style={[styles.attemptBtn, {backgroundColor: 'green'}]}>
+                    <Text style={styles.attemptText}>Use Default Values</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSliderNumber(1),
+                        setShowAddMeterSlider(true),
+                        setDefaultScreen(false);
+                    }}
+                    style={[styles.attemptBtn, {backgroundColor: '#f00'}]}>
+                    <Text style={styles.attemptText}>Don't Use Default</Text>
+                  </TouchableOpacity> */}
+                </View>
+                <TouchableOpacity
+                  onPress={() => useDefaultOrNot()}
+                  style={styles.doneButton}>
+                  <Icon
+                    size={width * 0.07}
+                    color="#fff"
+                    name={'navigate-next'}
+                  />
+                </TouchableOpacity>
+              </View>
             ) : (
               <View style={styles.boxInner}>
                 {/* Box Header */}
@@ -4218,10 +4321,11 @@ export default function UnitEdit({
                                 type: LayoutAnimation.Types.easeInEaseOut,
                               },
                             }),
-                              setShowAddMeterSlider(true),
-                              enableLocation();
+                              // setShowAddMeterSlider(true),
+                              // setDefaultScreen(true),
+                              callApi();
                             getMeterData(item);
-                            callApi();
+                            enableLocation();
                           }}
                           style={{
                             flexDirection: 'row',
@@ -4293,9 +4397,10 @@ export default function UnitEdit({
                                   type: LayoutAnimation.Types.easeInEaseOut,
                                 },
                               }),
-                                setShowAddMeterSlider(true),
-                                enableLocation();
-                              callApi();
+                                // setShowAddMeterSlider(true),
+                                // setDefauttScreen(true),
+                                callApi();
+                              enableLocation();
                             }}
                             style={{
                               flexDirection: 'row',
@@ -4465,7 +4570,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: width * 0.03,
     // height: width * 1,
-    height: width * 1.2,
+    height: width * 1.3,
   },
   boxHeader: {
     width: width * 0.8,
