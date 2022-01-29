@@ -400,6 +400,7 @@ export default class Splash extends Component {
             />
             {this.state.showSearch ? (
               <Modal
+                statusBarTranslucent={true}
                 isVisible={this.state.showSearch}
                 style={styles.searchModalContainer}>
                 {Platform.OS == 'ios' && (
