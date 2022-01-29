@@ -1563,199 +1563,6 @@ export default class Splash extends React.Component {
                         </View>
                         <TouchableOpacity
                           style={styles.desciptionContainer}
-                          onPress={() => this.showMoreFn(1)}>
-                          <Text style={styles.desciptionHeading}>
-                            meter Type Info
-                          </Text>
-                          <Iconi
-                            name={
-                              this.state.dropDownShow[1].value
-                                ? 'chevron-up'
-                                : 'chevron-down'
-                            }
-                            size={width * 0.05}
-                            color="#3E4A4F"
-                          />
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            width: '90%',
-                            zIndex: 2,
-                            alignSelf: 'center',
-                            // justifyContent: 'center',
-                            marginTop: width * 0.02,
-                            height: this.state.dropDownShow[1].value
-                              ? height * 0.16
-                              : height * 0.0,
-                            overflow: 'hidden',
-                          }}>
-                          {this.state.addNewType &&
-                          this.state.showAddType == 'Meter' ? (
-                            <View>
-                              <View>
-                                <Text
-                                  style={{
-                                    fontSize: width * 0.03,
-                                    color: '#3E4A4F',
-                                    textTransform: 'capitalize',
-                                    fontFamily: Fonts.ComfortaaRegular,
-                                    marginBottom: width * 0.01,
-                                    fontWeight: 'bold',
-                                  }}>
-                                  Add New {this.state.showAddType} type
-                                </Text>
-                              </View>
-                              <TextInput
-                                placeholder={'Type New Meter Type Name'}
-                                value={this.state.addMeter}
-                                style={{
-                                  width: width * 0.8,
-                                  justifyContent: 'flex-end',
-                                  fontSize: width * 0.036,
-                                }}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                                onChangeText={(text) => {
-                                  this.setState({addMeter: text});
-                                }}
-                              />
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-around',
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => this.cancelAddType()}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: '#25AAE1ec',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Cancel
-                                  </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => this.doneAddType()}
-                                  disabled={this.state.addMeter ? false : true}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: this.state.addMeter
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Add
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          ) : (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropDown
-                                onItemSelect={(item) => {
-                                  this.AddTypes(item, 'Meter');
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                // items={item.data}
-                                items={this.state.meterList}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Select Meter Type',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                  },
-                                  onTextChange: (text) => {
-                                    this.setState({selectMeter: text});
-                                  },
-                                  value: this.state.selectMeter,
-                                  // defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TouchableOpacity
-                                style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                onPress={() => this.showAddNewType('Meter')}>
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                            // <FlatList
-                            //   scrollEnabled
-                            //   contentContainerStyle={{
-                            //     alignItems: 'center',
-                            //   }}
-                            //   nestedScrollEnabled
-                            //   data={this.state.meterList}
-                            //   renderItem={this.renderMeterInfo}
-                            // />
-                          )}
-                        </View>
-                        {this.state.error.meterId ? (
-                          <HelperText
-                            type="error"
-                            visible={this.state.error.meterId}>
-                            {this.state.error.meterId}
-                          </HelperText>
-                        ) : null}
-
-                        <TouchableOpacity
-                          style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(2)}>
                           <Text style={styles.desciptionHeading}>
                             Utility Type Info
@@ -1986,6 +1793,198 @@ export default class Splash extends React.Component {
                             type="error"
                             visible={this.state.error.utilType}>
                             {this.state.error.utilType}
+                          </HelperText>
+                        ) : null}
+                        <TouchableOpacity
+                          style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(1)}>
+                          <Text style={styles.desciptionHeading}>
+                            meter Type Info
+                          </Text>
+                          <Iconi
+                            name={
+                              this.state.dropDownShow[1].value
+                                ? 'chevron-up'
+                                : 'chevron-down'
+                            }
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            width: '90%',
+                            zIndex: 2,
+                            alignSelf: 'center',
+                            // justifyContent: 'center',
+                            marginTop: width * 0.02,
+                            height: this.state.dropDownShow[1].value
+                              ? height * 0.16
+                              : height * 0.0,
+                            overflow: 'hidden',
+                          }}>
+                          {this.state.addNewType &&
+                          this.state.showAddType == 'Meter' ? (
+                            <View>
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: width * 0.03,
+                                    color: '#3E4A4F',
+                                    textTransform: 'capitalize',
+                                    fontFamily: Fonts.ComfortaaRegular,
+                                    marginBottom: width * 0.01,
+                                    fontWeight: 'bold',
+                                  }}>
+                                  Add New {this.state.showAddType} type
+                                </Text>
+                              </View>
+                              <TextInput
+                                placeholder={'Type New Meter Type Name'}
+                                value={this.state.addMeter}
+                                style={{
+                                  width: width * 0.8,
+                                  justifyContent: 'flex-end',
+                                  fontSize: width * 0.036,
+                                }}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                                onChangeText={(text) => {
+                                  this.setState({addMeter: text});
+                                }}
+                              />
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-around',
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() => this.cancelAddType()}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: '#25AAE1ec',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => this.doneAddType()}
+                                  disabled={this.state.addMeter ? false : true}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: this.state.addMeter
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Add
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          ) : (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'flex-start',
+                              }}>
+                              <SearchableDropDown
+                                onItemSelect={(item) => {
+                                  this.AddTypes(item, 'Meter');
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                  width: width * 0.7,
+                                }}
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                }}
+                                itemTextStyle={{color: '#222'}}
+                                itemsContainerStyle={{
+                                  maxHeight: height * 0.08,
+                                }}
+                                // items={item.data}
+                                items={this.state.meterList}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder: 'Select Meter Type',
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderTopLeftRadius: width * 0.015,
+                                    borderBottomLeftRadius: width * 0.015,
+                                    borderColor: 'black',
+                                    height: width * 0.13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderTopWidth: width * 0.0019,
+                                    borderLeftWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    this.setState({selectMeter: text});
+                                  },
+                                  value: this.state.selectMeter,
+                                  // defaultValue: item.select,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <TouchableOpacity
+                                style={{
+                                  width: width * 0.1,
+                                  backgroundColor: '#25AAE199',
+                                  borderTopRightRadius: width * 0.015,
+                                  borderBottomRightRadius: width * 0.015,
+                                  borderTopWidth: width * 0.0019,
+                                  borderRightWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  height: width * 0.13,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                onPress={() => this.showAddNewType('Meter')}>
+                                <Icon
+                                  size={width * 0.06}
+                                  color="#fff"
+                                  name={'add'}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                            // <FlatList
+                            //   scrollEnabled
+                            //   contentContainerStyle={{
+                            //     alignItems: 'center',
+                            //   }}
+                            //   nestedScrollEnabled
+                            //   data={this.state.meterList}
+                            //   renderItem={this.renderMeterInfo}
+                            // />
+                          )}
+                        </View>
+                        {this.state.error.meterId ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.meterId}>
+                            {this.state.error.meterId}
                           </HelperText>
                         ) : null}
                         <TouchableOpacity
