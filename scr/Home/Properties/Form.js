@@ -23,6 +23,7 @@ import {
 //Packages
 
 import Iconi from 'react-native-vector-icons/Ionicons';
+import Geocoder from 'react-native-geocoding';
 import Toast from 'react-native-simple-toast';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -384,6 +385,8 @@ export default class Splash extends React.Component {
   };
 
   checkLocation = async (locationAccess) => {
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
+
     if (locationAccess) {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -872,12 +875,18 @@ export default class Splash extends React.Component {
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
         this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
-        var initialRegion = {
+        Geocoder.from({
           latitude: lat,
           longitude: long,
-          latitudeDelta: this.state.latDelta,
-          longitudeDelta: this.state.longDelta,
-        };
+        })
+          .then((json) => {
+            var location = json.results[0].geometry.location;
+            var locationName = json.results[0].formatted_address;
+            // this.fetchAddressData(details?.formatted_address);
+            console.log('Current Location', locationName);
+          })
+          .catch((error) => console.warn(error));
+
         // this.setState({initialPosition: initialRegion});
         this.setState({
           markers: [
