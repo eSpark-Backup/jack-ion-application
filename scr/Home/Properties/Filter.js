@@ -279,6 +279,7 @@ export default class Splash extends Component {
           animationIn="bounceInUp"
           animationOut="bounceInDown"
           backdropOpacity={5}
+          statusBarTranslucent={true}
           isVisible={this.state.isScannerVisible}>
           {scan && (
             <View style={styles.scannerContainer}>
@@ -310,6 +311,7 @@ export default class Splash extends Component {
         <Modal
           animationIn="slideInDown"
           animationOut="slideOutUp"
+          statusBarTranslucent={true}
           isVisible={isVisible}>
           <View style={styles.modalInner}>
             <View
@@ -457,7 +459,7 @@ export default class Splash extends Component {
             </View>
           </View>
         </Modal>
-        <Modal isVisible={this.state.showList}>
+        <Modal statusBarTranslucent={true} isVisible={this.state.showList}>
           <View style={styles.billingModalInner}>
             <View style={{height: '50%', width: '60%'}}>
               <View style={styles.boxInner}>
