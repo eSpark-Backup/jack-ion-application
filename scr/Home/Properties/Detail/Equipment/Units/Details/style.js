@@ -56,6 +56,7 @@ export default styles = StyleSheet.create({
   listInner: {backgroundColor: '#605c5c24'},
   listInnerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     padding: width * 0.04,
   },

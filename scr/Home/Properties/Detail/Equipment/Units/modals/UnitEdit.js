@@ -120,6 +120,8 @@ export default function UnitEdit({
   const [iniLong, setIniLong] = useState(0);
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
+  const [latDelta, setLatDelta] = useState(LATITUDE_DELTA);
+  const [longDelta, setLongDelta] = useState(LONGITUDE_DELTA);
   const [installationStatus, setInstallationStatus] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [checkSerial, setCheckSerial] = useState(false);
@@ -1352,12 +1354,7 @@ export default function UnitEdit({
         setIniLong(long);
         setLat(lat);
         setLong(long);
-        var initialRegion = {
-          latitude: lat,
-          longitude: long,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        };
+
         // this.setState({initialPosition: initialRegion});
         // console.log('What we Get', this.state.initialPosition);
         setMarkers([
@@ -1415,9 +1412,13 @@ export default function UnitEdit({
     });
   };
 
-  const moveMarker = (region) => {
-    setLat(region?.latitude);
-    setLong(region?.longitude);
+  const moveMarker = (region, gesture) => {
+    if (gesture.isGesture) {
+      setLat(region?.latitude);
+      setLong(region?.longitude);
+      setLatDelta(region?.latitudeDelta);
+      setLongDelta(region?.longitudeDelta);
+    }
   };
 
   const catchLocation = (region) => {
@@ -1826,8 +1827,8 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('Slide @ means IMR value', typeof slide2[1].value);
-  console.log('Slide @ means IMR value type', slide2[1].value);
+  // console.log('Slide @ means IMR value', typeof slide2[1].value);
+  // console.log('Slide @ means IMR value type', slide2[1].value);
   return (
     <View>
       <Modal
@@ -1936,23 +1937,23 @@ export default function UnitEdit({
                           borderRadius: width * 0.03,
                         }}
                         // scrollEnabled={false}
-                        initialRegion={{
-                          latitude: lat,
-                          longitude: long,
-                          latitudeDelta: LATITUDE_DELTA,
-                          longitudeDelta: LONGITUDE_DELTA,
-                        }}
+                        // initialRegion={{
+                        //   latitude: lat,
+                        //   longitude: long,
+                        //   latitudeDelta: LATITUDE_DELTA,
+                        //   longitudeDelta: LONGITUDE_DELTA,
+                        // }}
                         region={{
                           latitude: lat,
                           longitude: long,
-                          latitudeDelta: LATITUDE_DELTA,
-                          longitudeDelta: LONGITUDE_DELTA,
+                          latitudeDelta: latDelta,
+                          longitudeDelta: longDelta,
                         }}
                         zoomEnabled={true}
                         provider={PROVIDER_GOOGLE}
                         showsUserLocation={true}
                         showsMyLocationButton={false}
-                        onRegionChangeComplete={(e) => moveMarker(e)}
+                        onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}
                         // onPress={(e) => this.getLocation(e)}
                       >
                         <Marker
@@ -2808,83 +2809,6 @@ export default function UnitEdit({
                           <ActivityIndicator size={'large'} color="#25AAE1ec" />
                         </View>
                       )}
-                      {/* {!addTypeInput ? (
-                        <View
-                          style={{
-                            // backgroundColor: 'yellow',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                          }}>
-                          <TouchableOpacity
-                            style={[
-                              styles.button,
-                              {
-                                width: width * 0.8,
-                                justifyContent: 'center',
-                              },
-                            ]}
-                            onPress={() => setAddTypeInput(true)}>
-                            <Text style={styles.buttonText}>
-                              Add New Meter Type
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      ) : (
-                        <View
-                          style={{
-                            width: '100%',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                          }}>
-                          <TextInput
-                            placeholder="Type New Meter Type Name"
-                            // value={}
-                            dense
-                            style={[styles.meterInput, {width: width * 0.6}]}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                                zIndex: 10,
-                              },
-                            }}
-                            onChangeText={(text) => {
-                              setNewMeterType(text);
-                            }}
-                          />
-                          {newMeterType ? (
-                            <TouchableOpacity onPress={AddNewMeterType}>
-                              <Text
-                                style={{
-                                  fontWeight: 'bold',
-                                  fontSize: width * 0.045,
-                                  color: '#25AAE1ec',
-                                  width: width * 0.15,
-                                  textAlign: 'center',
-                                }}>
-                                Add
-                              </Text>
-                            </TouchableOpacity>
-                          ) : (
-                            <TouchableOpacity
-                              onPress={() => setAddTypeInput(false)}>
-                              <Text
-                                style={{
-                                  fontWeight: 'bold',
-                                  fontSize: width * 0.045,
-                                  color: '#25AAE1ec',
-                                  width: width * 0.15,
-                                  textAlign: 'center',
-                                }}>
-                                Cancel
-                              </Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
-                      )} */}
                     </View>
                   ) : sliderNumber == 3 ? (
                     <View
@@ -3828,7 +3752,6 @@ export default function UnitEdit({
                               </View>
                             </>
                           )}
-
                           <View
                             style={{
                               flexDirection: 'row',
@@ -3879,7 +3802,12 @@ export default function UnitEdit({
                               </View>
                               <TextInput
                                 placeholder="Type Product Description"
-                                value={productNo}
+                                value={
+                                  productNo.length > 13
+                                    ? productNo.slice(0, 13) + '...'
+                                    : productNo
+                                }
+                                selection
                                 dense={true}
                                 editable={false}
                                 showSoftInputOnFocus={false}
