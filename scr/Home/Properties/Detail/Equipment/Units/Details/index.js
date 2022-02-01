@@ -1699,37 +1699,54 @@ const App = ({navigation}) => {
           </View>
         </ScrollView>
         <View style={styles.footerStyle}>
-          {arrayOfUnits &&
-            arrayOfUnits.map((item, index) => (
-              <TouchableOpacity
-                style={[
-                  styles.meterStyle,
-                  {borderColor: typeColor(item.meter_name)},
-                ]}
-                onPress={() => {
-                  handleMeterSelect(item);
-                  setDangerView(false);
-                }}>
-                {item.id == unitMeter?.id && (
-                  <View
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {arrayOfUnits &&
+              arrayOfUnits.map((item, index) => (
+                <TouchableOpacity
+                  style={[
+                    styles.meterStyle,
+                    {borderColor: typeColor(item.meter_name)},
+                  ]}
+                  onPress={() => {
+                    handleMeterSelect(item);
+                    setDangerView(false);
+                  }}>
+                  {item.id == unitMeter?.id && (
+                    <View
+                      style={[
+                        styles.meterInner,
+                        {backgroundColor: typeColor(item.meter_name)},
+                      ]}>
+                      <Check
+                        name="check"
+                        style={{marginLeft: width * 0.005}}
+                        size={width * 0.02}
+                        color="#fff"
+                      />
+                    </View>
+                  )}
+                  {/* <Image
+                    source={typeSwitcher(item.meter_name)}
+                    style={styles.meterImg}
+                  /> */}
+                  <Text
                     style={[
-                      styles.meterInner,
-                      {backgroundColor: typeColor(item.meter_name)},
+                      styles.emptyMeterText,
+                      {
+                        flex: 1,
+                        fontSize: width * 0.026,
+                        fontWeight: 'bold',
+                        height: width * 0.15,
+                        width: width * 0.14,
+                        alignSelf: 'center',
+                        textAlignVertical: 'center',
+                      },
                     ]}>
-                    <Check
-                      name="check"
-                      style={{marginLeft: width * 0.005}}
-                      size={width * 0.02}
-                      color="#fff"
-                    />
-                  </View>
-                )}
-                <Image
-                  source={typeSwitcher(item.meter_name)}
-                  style={styles.meterImg}
-                />
-              </TouchableOpacity>
-            ))}
+                    {item.meter_name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+          </ScrollView>
         </View>
       </View>
     );

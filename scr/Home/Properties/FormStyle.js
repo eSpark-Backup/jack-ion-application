@@ -103,9 +103,9 @@ export default styles = StyleSheet.create({
     flex: 1,
     // height: height * 0.09,
     width: '90%',
-    alignItems: 'center',
-    justifyContent: 'center',
     alignSelf: 'center',
+    alignItems: 'center',
+    // justifyContent: 'center',
   },
   input: {
     width: '100%',
