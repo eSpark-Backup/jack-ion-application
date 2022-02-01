@@ -178,6 +178,7 @@ export default class Splash extends Component {
                 <Menu
                   visible={this.state.visible}
                   onDismiss={this.closeMenu}
+                  onRequestClose={this.closeMenu}
                   anchor={
                     <MaterialIcon
                       onPress={this.openMenu}

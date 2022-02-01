@@ -68,6 +68,8 @@ const App = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState([]);
+  const [reasonsData, setReasonsData] = useState([]);
+  const [reasonDataIndex, setReasonDataIndex] = useState(null);
   const [meterInfoData, setMeterInfoData] = useState([]);
   const [statusInfo, setStatusInfo] = useState([]);
   const [meterTypeData, setMeterTypeData] = useState([]);
@@ -523,6 +525,34 @@ const App = ({navigation}) => {
 
   useEffect(() => {
     // console.log('Kia ha unitMeter', data);
+    let reasonList = [];
+    for (let i = 0; i < unitMeter?.reasons?.length; i++) {
+      let reasonData = unitMeter?.reasons[i];
+      let data = {
+        leftName: 'Reason' + ' ' + reasonData.options_reason_id,
+        rightName: reasonData.name,
+        rightIcon: 'chevron-down',
+        type: 'feather',
+        data: [
+          {
+            leftText: 'Description',
+            rightText: reasonData.text_reason ?? 'N/A',
+            leftIcon: null,
+            type: 'feather',
+          },
+          {
+            leftText: 'Picture',
+            rightText: reasonData.picture ?? 'N/A',
+            leftIcon: null,
+            type: 'feather',
+          },
+        ],
+      };
+
+      console.log('Reason Picture', reasonData.picture);
+      reasonList.push(data);
+    }
+    console.log('Reason List', reasonList);
 
     setMeterInfoData([
       {
@@ -574,6 +604,13 @@ const App = ({navigation}) => {
       //   leftIcon: null,
       //   type: 'feather',
       // },
+    ]);
+    setReasonsData([
+      {
+        title: 'Reasons',
+        // img: meterSwitcher(),
+        data: reasonList,
+      },
     ]);
     setMeterTypeData([
       {
@@ -962,14 +999,81 @@ const App = ({navigation}) => {
     );
   };
 
-  const openView = () => {
+  const openView = (index) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpened(!opened);
+  };
+
+  const openReasonData = (index) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setReasonDataIndex(index == reasonDataIndex ? null : index);
   };
 
   const openStatusView = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpenedStatus(!openedStatus);
+  };
+
+  const renderReasonData = ({item, index}) => {
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            openReasonData(index), setDangerView(false);
+          }}>
+          <View style={styles.listOuter}>
+            <View style={styles.listContainer}>
+              <View style={styles.flexRow}>
+                <Text style={styles.listText}>{item.leftName}</Text>
+              </View>
+              <View style={styles.flexRow}>
+                <View style={styles.flexColoum}>
+                  <View
+                    style={{flexDirection: 'row-reverse', width: width * 0.6}}>
+                    {item.rightName == null ? null : (
+                      <TextTicker
+                        duration={6000}
+                        marqueeDelay={2000}
+                        repeatSpacer={width * 0.6}
+                        style={[
+                          styles.listText,
+                          {
+                            textAlign: 'right',
+                            textTransform: 'capitalize',
+                          },
+                        ]}>
+                        {item.rightName}
+                      </TextTicker>
+                    )}
+                  </View>
+                </View>
+                {item.rightIcon == null ? null : (
+                  <Icon
+                    name={item.rightIcon}
+                    type={item.type}
+                    size={width * 0.05}
+                    color="#000"
+                    style={styles.centerIcon}
+                  />
+                )}
+              </View>
+            </View>
+            <Divider style={styles.listDivider} />
+          </View>
+        </TouchableOpacity>
+        {index == reasonDataIndex && (
+          <FlatList
+            style={styles.statusList}
+            data={item.data}
+            keyExtractor={(item, index) => item + index}
+            renderItem={renderReasonInfo}
+            ItemSeparatorComponent={() => (
+              <Divider style={[styles.listDivider, {marginTop: 0}]} />
+            )}
+          />
+        )}
+      </View>
+    );
   };
 
   const renderMeterType = ({item, index}) => {
@@ -1021,6 +1125,44 @@ const App = ({navigation}) => {
     );
   };
 
+  const renderReasonInfo = ({item}) => {
+    return (
+      <View style={styles.listInner}>
+        <View style={styles.listInnerContainer}>
+          <View style={styles.flexRow}>
+            <Text style={styles.listInnerText}>{item.leftText}</Text>
+            {item.leftIcon == null ? null : (
+              <Icon
+                name={item.leftIcon}
+                type={item.leftType}
+                size={width * 0.05}
+                color={'rgb(90,134,183)'}
+                style={styles.leftedIcon}
+              />
+            )}
+          </View>
+          <View style={styles.flexRow}>
+            {item.leftText == 'Picture' && item.rightText != 'N/A' ? (
+              <Image
+                style={{
+                  width: width * 0.25,
+                  height: width * 0.2,
+                }}
+                source={{
+                  uri: item.rightText,
+                }}
+              />
+            ) : (
+              <Text
+                style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
+                {item.rightText}
+              </Text>
+            )}
+          </View>
+        </View>
+      </View>
+    );
+  };
   const renderMeterInfo = ({item}) => {
     return (
       <View style={styles.listInner}>
@@ -1450,6 +1592,35 @@ const App = ({navigation}) => {
                 )}
               />
             ) : null}
+            {/*
+        //* Reasons List
+        */}
+            {reasonsData[0].data.length > 0 && (
+              <SectionList
+                style={styles.sectionStyle}
+                contentContainerStyle={styles.sectionContainer}
+                sections={reasonsData}
+                keyExtractor={(item, index) => item + index}
+                renderItem={renderReasonData}
+                renderSectionHeader={({section: {title, img}}) => (
+                  <>
+                    <View style={styles.sectionTitle}>
+                      <Text
+                        style={[
+                          styles.sectionText,
+                          {
+                            textTransform: 'capitalize',
+                          },
+                        ]}>
+                        {title}
+                      </Text>
+                    </View>
+                    <Divider style={styles.sectionTitleDivider} />
+                  </>
+                )}
+              />
+            )}
+
             {/*
         //* Meter Type List
         */}

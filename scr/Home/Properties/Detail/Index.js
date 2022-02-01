@@ -92,6 +92,8 @@ export default class Splash extends React.Component {
       customId: 0,
       companies: false,
       companiesLoader: false,
+      lat: 0,
+      long: 0,
       markers: [],
       error: {
         property: '',
@@ -111,10 +113,11 @@ export default class Splash extends React.Component {
     const propertyData = this.props.navigation.state.params.item.item;
     this.getMetersLocation(propertyData?.id);
 
+    this.setState({});
     this.setState({
       listData: propertyData,
-    });
-    this.setState({
+      lat: propertyData.latitude,
+      long: propertyData.longitude,
       BillingCompany: propertyData?.billing_company,
       BillingCompanyId: propertyData?.billing_company_id,
       managementCompany: propertyData?.management_company,
@@ -534,17 +537,17 @@ export default class Splash extends React.Component {
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
-                  latitude: parseFloat(this.state.listData?.latitude),
-                  longitude: parseFloat(this.state.listData?.longitude),
+                  latitude: parseFloat(this.state.lat),
+                  longitude: parseFloat(this.state.long),
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 }}>
                 <Marker
                   coordinate={{
-                    latitude: parseFloat(this.state.listData?.latitude),
-                    longitude: parseFloat(this.state.listData?.longitude),
+                    latitude: parseFloat(this.state.lat),
+                    longitude: parseFloat(this.state.long),
                   }}
-                  title={'Your Location'}
+                  title={'Property Location'}
                   draggable
                 />
 

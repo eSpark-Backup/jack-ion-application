@@ -385,8 +385,6 @@ export default class Splash extends React.Component {
   };
 
   checkLocation = async (locationAccess) => {
-    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
-
     if (locationAccess) {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -806,9 +804,15 @@ export default class Splash extends React.Component {
     this.setState({open: false});
   };
 
-  moveMarker = (region) => {
-    this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
-    this.setState({long: region?.longitude, longDelta: region?.longitudeDelta});
+  moveMarker = (region, gesture) => {
+    if (gesture.isGesture) {
+      this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
+      this.setState({
+        long: region?.longitude,
+        longDelta: region?.longitudeDelta,
+      });
+    }
+
     var dis = getDistance(
       {
         latitude: this.state.iniLat,
@@ -819,7 +823,6 @@ export default class Splash extends React.Component {
         longitude: region?.longitude,
       },
     );
-    console.log('region BETWEEN', region);
   };
 
   catchLocation = (region) => {
@@ -875,19 +878,7 @@ export default class Splash extends React.Component {
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
         this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
-        Geocoder.from({
-          latitude: lat,
-          longitude: long,
-        })
-          .then((json) => {
-            var location = json.results[0].geometry.location;
-            var locationName = json.results[0].formatted_address;
-            // this.fetchAddressData(details?.formatted_address);
-            console.log('Current Location', locationName);
-          })
-          .catch((error) => console.warn(error));
 
-        // this.setState({initialPosition: initialRegion});
         this.setState({
           markers: [
             {
@@ -968,13 +959,13 @@ export default class Splash extends React.Component {
 
     let arr1 = res.data?.data;
     let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
-    console.log('arr1--->', arr1);
+    // console.log('arr1--->', arr1);
     this.setState({meterList: arr2});
     // this.setState({loadMeters: false});
 
     const utilRes = await api.get('/property/equipment/utility-type/all');
 
-    console.log('arr1--->', utilRes);
+    // console.log('arr1--->', utilRes);
     this.setState({utilTypes: utilRes?.data?.data});
 
     const ManufacturersResponse = await api.get(
@@ -1004,7 +995,7 @@ export default class Splash extends React.Component {
       filter.push(data);
     }
     this.setState({manageCompList: filter});
-    console.log('filtered manage company list', filter);
+    // console.log('filtered manage company list', filter);
   };
 
   AddTypes = (item, type) => {
@@ -1023,7 +1014,7 @@ export default class Splash extends React.Component {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     this.getToken();
-
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -1036,6 +1027,27 @@ export default class Splash extends React.Component {
         },
       ]);
     } else {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          var lat = parseFloat(position.coords.latitude);
+          var long = parseFloat(position.coords.longitude);
+          this.setState({lat: lat, long: long});
+          Geocoder.from({
+            latitude: lat,
+            longitude: long,
+          })
+            .then((json) => {
+              var locationName = json.results[0].formatted_address;
+              this.fetchAddressData(locationName);
+              this.setState({
+                locationBtn: locationName,
+              });
+            })
+            .catch((error) => console.warn(error));
+        },
+        (error) => console.log('geo location', error),
+        {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      );
       if (Platform.OS == 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
           .then((result) => {
@@ -1111,7 +1123,7 @@ export default class Splash extends React.Component {
   };
   render() {
     const {loadManufacturers, loadMeters, deviceData} = this.state;
-    console.log('AvoidKeyboard', this.state.avoidKeyboard);
+
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
@@ -1295,14 +1307,16 @@ export default class Splash extends React.Component {
                       region={{
                         latitude: this.state.lat,
                         longitude: this.state.long,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA,
+                        latitudeDelta: this.state.latDelta,
+                        longitudeDelta: this.state.longDelta,
                       }}
                       zoomEnabled={true}
                       provider={PROVIDER_GOOGLE}
                       showsUserLocation={true}
                       showsMyLocationButton={false}
-                      onRegionChangeComplete={(e) => this.moveMarker(e)}
+                      onRegionChangeComplete={(e, ges) =>
+                        this.moveMarker(e, ges)
+                      }
                       // onPress={(e) => this.getLocation(e)}
                     >
                       <Circle
@@ -1542,13 +1556,14 @@ export default class Splash extends React.Component {
                             onPress={this.selectMeterLocation}
                             style={{
                               width: width * 0.8,
-                              height: width * 0.1,
+                              // height: width * 0.1,
                               borderColor: '#25AAE1ec',
                               borderWidth: width * 0.003,
                               backgroundColor: 'white',
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               borderRadius: width * 0.005,
+                              paddingVertical: width * 0.02,
                               paddingHorizontal: width * 0.02,
                               flexDirection: 'row',
                               marginVertical: width * 0.015,
@@ -1570,199 +1585,6 @@ export default class Splash extends React.Component {
                             />
                           </TouchableOpacity>
                         </View>
-                        <TouchableOpacity
-                          style={styles.desciptionContainer}
-                          onPress={() => this.showMoreFn(1)}>
-                          <Text style={styles.desciptionHeading}>
-                            meter Type Info
-                          </Text>
-                          <Iconi
-                            name={
-                              this.state.dropDownShow[1].value
-                                ? 'chevron-up'
-                                : 'chevron-down'
-                            }
-                            size={width * 0.05}
-                            color="#3E4A4F"
-                          />
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            width: '90%',
-                            zIndex: 2,
-                            alignSelf: 'center',
-                            // justifyContent: 'center',
-                            marginTop: width * 0.02,
-                            height: this.state.dropDownShow[1].value
-                              ? height * 0.16
-                              : height * 0.0,
-                            overflow: 'hidden',
-                          }}>
-                          {this.state.addNewType &&
-                          this.state.showAddType == 'Meter' ? (
-                            <View>
-                              <View>
-                                <Text
-                                  style={{
-                                    fontSize: width * 0.03,
-                                    color: '#3E4A4F',
-                                    textTransform: 'capitalize',
-                                    fontFamily: Fonts.ComfortaaRegular,
-                                    marginBottom: width * 0.01,
-                                    fontWeight: 'bold',
-                                  }}>
-                                  Add New {this.state.showAddType} type
-                                </Text>
-                              </View>
-                              <TextInput
-                                placeholder={'Type New Meter Type Name'}
-                                value={this.state.addMeter}
-                                style={{
-                                  width: width * 0.8,
-                                  justifyContent: 'flex-end',
-                                  fontSize: width * 0.036,
-                                }}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                                onChangeText={(text) => {
-                                  this.setState({addMeter: text});
-                                }}
-                              />
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-around',
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => this.cancelAddType()}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: '#25AAE1ec',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Cancel
-                                  </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => this.doneAddType()}
-                                  disabled={this.state.addMeter ? false : true}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: this.state.addMeter
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Add
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          ) : (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropDown
-                                onItemSelect={(item) => {
-                                  this.AddTypes(item, 'Meter');
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                // items={item.data}
-                                items={this.state.meterList}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Select Meter Type',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                  },
-                                  onTextChange: (text) => {
-                                    this.setState({selectMeter: text});
-                                  },
-                                  value: this.state.selectMeter,
-                                  // defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TouchableOpacity
-                                style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                onPress={() => this.showAddNewType('Meter')}>
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                            // <FlatList
-                            //   scrollEnabled
-                            //   contentContainerStyle={{
-                            //     alignItems: 'center',
-                            //   }}
-                            //   nestedScrollEnabled
-                            //   data={this.state.meterList}
-                            //   renderItem={this.renderMeterInfo}
-                            // />
-                          )}
-                        </View>
-                        {this.state.error.meterId ? (
-                          <HelperText
-                            type="error"
-                            visible={this.state.error.meterId}>
-                            {this.state.error.meterId}
-                          </HelperText>
-                        ) : null}
-
                         <TouchableOpacity
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(2)}>
@@ -1995,6 +1817,198 @@ export default class Splash extends React.Component {
                             type="error"
                             visible={this.state.error.utilType}>
                             {this.state.error.utilType}
+                          </HelperText>
+                        ) : null}
+                        <TouchableOpacity
+                          style={styles.desciptionContainer}
+                          onPress={() => this.showMoreFn(1)}>
+                          <Text style={styles.desciptionHeading}>
+                            meter Type Info
+                          </Text>
+                          <Iconi
+                            name={
+                              this.state.dropDownShow[1].value
+                                ? 'chevron-up'
+                                : 'chevron-down'
+                            }
+                            size={width * 0.05}
+                            color="#3E4A4F"
+                          />
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            width: '90%',
+                            zIndex: 2,
+                            alignSelf: 'center',
+                            // justifyContent: 'center',
+                            marginTop: width * 0.02,
+                            height: this.state.dropDownShow[1].value
+                              ? height * 0.16
+                              : height * 0.0,
+                            overflow: 'hidden',
+                          }}>
+                          {this.state.addNewType &&
+                          this.state.showAddType == 'Meter' ? (
+                            <View>
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: width * 0.03,
+                                    color: '#3E4A4F',
+                                    textTransform: 'capitalize',
+                                    fontFamily: Fonts.ComfortaaRegular,
+                                    marginBottom: width * 0.01,
+                                    fontWeight: 'bold',
+                                  }}>
+                                  Add New {this.state.showAddType} type
+                                </Text>
+                              </View>
+                              <TextInput
+                                placeholder={'Type New Meter Type Name'}
+                                value={this.state.addMeter}
+                                style={{
+                                  width: width * 0.8,
+                                  justifyContent: 'flex-end',
+                                  fontSize: width * 0.036,
+                                }}
+                                mode={'outlined'}
+                                theme={{
+                                  colors: {
+                                    text: '#25AAE1ec',
+                                    primary: '#25AAE1ec',
+                                    selectionColor: 'red',
+                                  },
+                                }}
+                                onChangeText={(text) => {
+                                  this.setState({addMeter: text});
+                                }}
+                              />
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-around',
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() => this.cancelAddType()}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: '#25AAE1ec',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => this.doneAddType()}
+                                  disabled={this.state.addMeter ? false : true}>
+                                  <Text
+                                    style={{
+                                      fontWeight: 'bold',
+                                      fontSize: width * 0.045,
+                                      color: this.state.addMeter
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                      width: width * 0.16,
+                                      textAlign: 'center',
+                                    }}>
+                                    Add
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          ) : (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'flex-start',
+                              }}>
+                              <SearchableDropDown
+                                onItemSelect={(item) => {
+                                  this.AddTypes(item, 'Meter');
+                                }}
+                                containerStyle={{
+                                  paddingBottom: width * 0.02,
+                                  width: width * 0.7,
+                                }}
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                }}
+                                itemTextStyle={{color: '#222'}}
+                                itemsContainerStyle={{
+                                  maxHeight: height * 0.08,
+                                }}
+                                // items={item.data}
+                                items={this.state.meterList}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder: 'Select Meter Type',
+                                  underlineColorAndroid: 'transparent',
+                                  style: {
+                                    padding: width * 0.027,
+                                    margin: 0,
+                                    borderTopLeftRadius: width * 0.015,
+                                    borderBottomLeftRadius: width * 0.015,
+                                    borderColor: 'black',
+                                    height: width * 0.13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderTopWidth: width * 0.0019,
+                                    borderLeftWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    this.setState({selectMeter: text});
+                                  },
+                                  value: this.state.selectMeter,
+                                  // defaultValue: item.select,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <TouchableOpacity
+                                style={{
+                                  width: width * 0.1,
+                                  backgroundColor: '#25AAE199',
+                                  borderTopRightRadius: width * 0.015,
+                                  borderBottomRightRadius: width * 0.015,
+                                  borderTopWidth: width * 0.0019,
+                                  borderRightWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  height: width * 0.13,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                onPress={() => this.showAddNewType('Meter')}>
+                                <Icon
+                                  size={width * 0.06}
+                                  color="#fff"
+                                  name={'add'}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                            // <FlatList
+                            //   scrollEnabled
+                            //   contentContainerStyle={{
+                            //     alignItems: 'center',
+                            //   }}
+                            //   nestedScrollEnabled
+                            //   data={this.state.meterList}
+                            //   renderItem={this.renderMeterInfo}
+                            // />
+                          )}
+                        </View>
+                        {this.state.error.meterId ? (
+                          <HelperText
+                            type="error"
+                            visible={this.state.error.meterId}>
+                            {this.state.error.meterId}
                           </HelperText>
                         ) : null}
                         <TouchableOpacity

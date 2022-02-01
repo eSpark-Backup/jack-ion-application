@@ -97,7 +97,7 @@ export default styles = StyleSheet.create({
     height: height * 1,
     justifyContent: 'flex-start',
     left: '-5%',
-    top: '-2.5%',
+    // top: '-2.5%',
   },
   searchModalInner: {
     width: width * 1,
