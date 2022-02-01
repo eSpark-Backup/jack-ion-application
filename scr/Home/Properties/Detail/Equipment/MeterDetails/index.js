@@ -688,7 +688,7 @@ const App = ({navigation}) => {
             <View style={styles.flexRow}>
               {index == 1 ? (
                 <Image
-                  source={typeSwitcher(item.rightName)}
+                  source={require('../../../../../../Images/remote-reader.png')}
                   style={styles.imgHeader}
                 />
               ) : (
@@ -735,7 +735,7 @@ const App = ({navigation}) => {
           <View style={styles.flexRow}>
             {index == 1 ? (
               <Image
-                source={typeSwitcher(item.rightName)}
+                source={require('../../../../../../Images/remote-reader.png')}
                 style={styles.imgHeader}
               />
             ) : (
@@ -994,7 +994,8 @@ const App = ({navigation}) => {
                   <Text
                     style={{
                       fontSize: width * 0.08,
-                      color: typeColor(unitMeter?.meter_name),
+                      // color: typeColor(unitMeter?.meter_name),
+                      color: '#639CC7',
                     }}>
                     {unitMeter?.meter_read?.meter_reading
                       ? unitMeter?.meter_read?.meter_reading
@@ -1004,7 +1005,8 @@ const App = ({navigation}) => {
                   <RightArrow
                     name="chevron-thin-right"
                     size={width * 0.08}
-                    color={typeColor(unitMeter?.meter_name)}
+                    // color={typeColor(unitMeter?.meter_name)}
+                    color={'#639CC7'}
                     style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
                   />
@@ -1037,27 +1039,28 @@ const App = ({navigation}) => {
                     name="chevron-thin-left"
                     size={width * 0.08}
                     color={typeColor(unitMeter?.meter_name)}
+                    color={'#639CC7'}
                     style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
                   />
                   <View>
                     <Text style={styles.greyText}>PULSES</Text>
-                    <Text style={styles.text}>3,786</Text>
+                    <Text style={[styles.text, {color: '#639CC7'}]}>3,786</Text>
                   </View>
                   <Text style={styles.symbolStyle}>x</Text>
                   <View>
                     <Text style={styles.greyText}>MULTIPLIER</Text>
-                    <Text style={styles.text}>1</Text>
+                    <Text style={[styles.text, {color: '#639CC7'}]}>1</Text>
                   </View>
                   <Text style={styles.symbolStyle}>+</Text>
                   <View>
                     <Text style={styles.greyText}>IMR</Text>
-                    <Text style={styles.text}>21</Text>
+                    <Text style={[styles.text, {color: '#639CC7'}]}>21</Text>
                   </View>
                   <Text style={styles.symbolStyle}>=</Text>
                   <View>
                     <Text style={styles.greyText}>CURRENT READ</Text>
-                    <Text style={styles.text}>3,807</Text>
+                    <Text style={[styles.text, {color: '#639CC7'}]}>3,807</Text>
                   </View>
                 </View>
               </MotiView>
@@ -1065,16 +1068,19 @@ const App = ({navigation}) => {
             <View>
               <Button
                 title="Quick Actions"
+                titleStyle={{color: '#000'}}
                 icon={
                   <Radio
                     name="radio"
                     size={width * 0.06}
                     color="#fff"
+                    color="#000"
                     style={{marginRight: width * 0.025}}
                   />
                 }
                 buttonStyle={{
                   backgroundColor: typeColor(unitMeter?.meter_name),
+                  backgroundColor: 'transparent',
                 }}
                 onPress={() => console.log('Quick Actions Press')}
               />
