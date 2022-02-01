@@ -803,9 +803,16 @@ export default class Splash extends React.Component {
     this.setState({open: false});
   };
 
-  moveMarker = (region) => {
-    this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
-    this.setState({long: region?.longitude, longDelta: region?.longitudeDelta});
+  moveMarker = (region, gesture) => {
+    console.log('MOVE MARKER CHALA GESTURE', gesture.isGesture);
+    if (gesture.isGesture) {
+      this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
+      this.setState({
+        long: region?.longitude,
+        longDelta: region?.longitudeDelta,
+      });
+    }
+
     var dis = getDistance(
       {
         latitude: this.state.iniLat,
@@ -872,12 +879,7 @@ export default class Splash extends React.Component {
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
         this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
-        var initialRegion = {
-          latitude: lat,
-          longitude: long,
-          latitudeDelta: this.state.latDelta,
-          longitudeDelta: this.state.longDelta,
-        };
+
         // this.setState({initialPosition: initialRegion});
         this.setState({
           markers: [
@@ -1102,7 +1104,10 @@ export default class Splash extends React.Component {
   };
   render() {
     const {loadManufacturers, loadMeters, deviceData} = this.state;
-    console.log('AvoidKeyboard', this.state.avoidKeyboard);
+    console.log('Lat', this.state.lat);
+    console.log('Long', this.state.long);
+    console.log('LatDelta', this.state.latDelta);
+    console.log('LongDelta', this.state.longDelta);
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
@@ -1286,14 +1291,16 @@ export default class Splash extends React.Component {
                       region={{
                         latitude: this.state.lat,
                         longitude: this.state.long,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA,
+                        latitudeDelta: this.state.latDelta,
+                        longitudeDelta: this.state.longDelta,
                       }}
                       zoomEnabled={true}
                       provider={PROVIDER_GOOGLE}
                       showsUserLocation={true}
                       showsMyLocationButton={false}
-                      onRegionChangeComplete={(e) => this.moveMarker(e)}
+                      onRegionChangeComplete={(e, ges) =>
+                        this.moveMarker(e, ges)
+                      }
                       // onPress={(e) => this.getLocation(e)}
                     >
                       <Circle
