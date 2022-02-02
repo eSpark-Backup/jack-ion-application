@@ -527,7 +527,7 @@ export default function UnitEdit({
 
   useEffect(() => {
     console.log('sliderProgress-->>', sliderProgress);
-    if (sliderNumber == 5) {
+    if (sliderNumber == 6) {
       // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
       setDoneAnimation(true);
       setTimeout(() => {
@@ -934,7 +934,7 @@ export default function UnitEdit({
         },
       });
       setSliderNumber(sliderNumber + 1);
-      setSliderProgress(sliderProgress + 0.25);
+      setSliderProgress(sliderProgress + 0.2);
     } else {
       Alert.alert(
         'Device Serial Already Exists',
@@ -975,7 +975,7 @@ export default function UnitEdit({
           },
         });
         setSliderNumber(sliderNumber + 1);
-        setSliderProgress(sliderProgress + 0.25);
+        setSliderProgress(sliderProgress + 0.2);
       }
     } else {
       LayoutAnimation.configureNext({
@@ -989,7 +989,7 @@ export default function UnitEdit({
         },
       });
       setSliderNumber(sliderNumber + 1);
-      setSliderProgress(sliderProgress + 0.25);
+      setSliderProgress(sliderProgress + 0.2);
     }
   };
 
@@ -1340,8 +1340,10 @@ export default function UnitEdit({
     Geolocation.getCurrentPosition(
       (position) => {
         console.log('Positon Batao', position);
-        var lat = parseFloat(position.coords.latitude);
-        var long = parseFloat(position.coords.longitude);
+        // var lat = parseFloat(position.coords.latitude);
+        // var long = parseFloat(position.coords.longitude);
+        var lat = parseFloat(propertyLat);
+        var long = parseFloat(propertyLong);
         setIniLat(lat);
         setIniLong(long);
         setLat(lat);
@@ -1789,7 +1791,7 @@ export default function UnitEdit({
 
   const slideBacker = () => {
     setSliderNumber(sliderNumber - 1);
-    setSliderProgress(sliderProgress - 0.25);
+    setSliderProgress(sliderProgress - 0.2);
     setShowAddType(false);
   };
 
@@ -1859,11 +1861,8 @@ export default function UnitEdit({
                       flex: 1,
                       zIndex: 2,
                       position: 'absolute',
-                      // padding: 10,
                       top: width * 0.04,
                       width: width * 0.72,
-                      // paddingTop: Constants.statusBarHeight + 10,
-                      // backgroundColor: '#ecf0f1',
                     }}>
                     <GooglePlacesAutocomplete
                       placeholder="Address"
@@ -1898,7 +1897,7 @@ export default function UnitEdit({
                     <Icon
                       size={width * 0.07}
                       color="#fff"
-                      name={sliderNumber == 5 ? 'check' : 'navigate-next'}
+                      name={sliderNumber == 6 ? 'check' : 'navigate-next'}
                     />
                   </TouchableOpacity>
                   {markers.length > 0 && (
@@ -1963,7 +1962,6 @@ export default function UnitEdit({
                           <Image
                             source={require('../../../../../../../Images/Proplocate.png')}
                             // resizeMode="center"
-
                             style={{
                               width: width * 0.2,
                               height: height * 0.08,
@@ -2354,7 +2352,6 @@ export default function UnitEdit({
                             fontSize: width * 0.045,
                             height: width * 0.2,
                             top: -5,
-                            // marginBottom: width * 0.03,
                           },
                         ]}>
                         {sliderNumber == 1
@@ -2364,17 +2361,19 @@ export default function UnitEdit({
                           : sliderNumber == 3
                           ? 'Device Information'
                           : sliderNumber == 4
-                          ? 'Thumbnail & Location'
+                          ? 'Use Location'
                           : sliderNumber == 5
+                          ? 'Set Thumbnail'
+                          : sliderNumber == 6
                           ? 'Installation Status'
                           : 'Device Selection'}
                       </Text>
-                      {sliderNumber < 5 ? (
+                      {sliderNumber < 6 ? (
                         <TouchableOpacity
                           style={{
                             position: 'absolute',
                             right: 0,
-                            top: width * -0.13,
+                            top: width * -0.12,
                           }}
                           onPress={() =>
                             Alert.alert(
@@ -2398,6 +2397,7 @@ export default function UnitEdit({
                         </TouchableOpacity>
                       ) : null}
                     </View>
+                    <View style={{height: 5}} />
                   </View>
                   {sliderNumber == 2 ? (
                     <View
@@ -3005,16 +3005,149 @@ export default function UnitEdit({
                     </View>
                   ) : sliderNumber == 4 ? (
                     <View style={styles.container}>
-                      <TouchableOpacity
-                        onPress={selectMeterLocation}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>Change Location</Text>
-                        <Iconi
-                          name="location"
-                          size={width * 0.05}
-                          color="#3E4A4F"
-                        />
-                      </TouchableOpacity>
+                      <View
+                        style={{
+                          flex: 1,
+                          width: width * 0.9,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginTop: width * 0.01,
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            zIndex: 2,
+                            position: 'absolute',
+                            top: width * 0.04,
+                            width: width * 0.72,
+                          }}>
+                          <GooglePlacesAutocomplete
+                            placeholder="Address"
+                            query={{
+                              key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                              language: 'en', // language of the results
+                            }}
+                            fetchDetails={true}
+                            onPress={(data, details) =>
+                              catchLocation(details.geometry.location)
+                            }
+                            onFail={(error) => console.error(error)}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => getPropertyLocation()}
+                          style={[styles.doneButton, {bottom: width * 0.15}]}>
+                          <Icon
+                            size={width * 0.07}
+                            color="#fff"
+                            name={'location-city'}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => getCurrentLocation()}
+                          style={[styles.doneButton, {bottom: 5}]}>
+                          <Icon
+                            size={width * 0.07}
+                            color="#fff"
+                            name={'gps-fixed'}
+                          />
+                        </TouchableOpacity>
+                        {markers.length > 0 && (
+                          <View
+                            style={{
+                              // backgroundColor: 'blue',
+                              width: width * 0.12,
+                              // height: height * 0.11,
+                              zIndex: 1,
+                              position: 'absolute',
+                              top: width * 0.4,
+                              alignItems: 'center',
+                            }}>
+                            <Icon
+                              size={width * 0.12}
+                              color="#f00"
+                              name={'location-pin'}
+                            />
+                          </View>
+                        )}
+                        {markers.length > 0 ? (
+                          <View
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              borderRadius: width * 0.3,
+                            }}>
+                            <MapView
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: width * 0.03,
+                              }}
+                              // scrollEnabled={false}
+                              // initialRegion={{
+                              //   latitude: parseFloat(propertyLat),
+                              //   longitude: parseFloat(propertyLong),
+                              //   latitudeDelta: LATITUDE_DELTA,
+                              //   longitudeDelta: LONGITUDE_DELTA,
+                              // }}
+                              region={{
+                                latitude: lat,
+                                longitude: long,
+                                latitudeDelta: latDelta,
+                                longitudeDelta: longDelta,
+                              }}
+                              zoomEnabled={true}
+                              provider={PROVIDER_GOOGLE}
+                              showsUserLocation={true}
+                              showsMyLocationButton={false}
+                              onRegionChangeComplete={(e, ges) =>
+                                moveMarker(e, ges)
+                              }
+                              // onPress={(e) => this.getLocation(e)}
+                            >
+                              <Marker
+                                coordinate={{
+                                  latitude: parseFloat(propertyLat),
+                                  longitude: parseFloat(propertyLong),
+                                }}
+                                title={'Property Location'}
+                                // icon={require('../../../../../../../Images/Proplocate.png')}
+                                draggable>
+                                <View
+                                  style={{
+                                    width: width * 0.1,
+                                    height: width * 0.1,
+                                    backgroundColor: 'transparent',
+                                  }}>
+                                  <Image
+                                    source={require('../../../../../../../Images/Proplocate.png')}
+                                    // resizeMode="center"
+                                    resizeMode="cover"
+                                    resizeMethod="auto"
+                                    style={{
+                                      width: width * 0.1,
+                                      height: width * 0.1,
+                                      // backgroundColor: 'red',
+                                    }}
+                                  />
+                                </View>
+                              </Marker>
+                              <Circle
+                                center={{
+                                  latitude: parseFloat(propertyLat),
+                                  longitude: parseFloat(propertyLong),
+                                }}
+                                radius={radialDis}
+                                fillColor="rgba(12,170,225,0.3)"
+                                strokeColor="rgba(12,170,225,1)"
+                              />
+                            </MapView>
+                          </View>
+                        ) : null}
+                      </View>
+                    </View>
+                  ) : sliderNumber == 5 ? (
+                    <View style={styles.container}>
                       <TouchableOpacity
                         onPress={requestCameraPermission}
                         style={styles.button}>
@@ -3046,8 +3179,9 @@ export default function UnitEdit({
                       {filePath != '' && filePath != null && (
                         <Image
                           resizeMode="cover"
-                          resizeMethod="scale"
+                          // resizeMethod="scale"
                           style={{
+                            flex: 1,
                             width: width * 0.7,
                             height: width * 0.35,
                             marginVertical: 5,
@@ -3056,7 +3190,7 @@ export default function UnitEdit({
                         />
                       )}
                     </View>
-                  ) : sliderNumber == 5 ? (
+                  ) : sliderNumber == 6 ? (
                     doneAnimation ? (
                       <Image
                         resizeMode="contain"
@@ -3116,8 +3250,11 @@ export default function UnitEdit({
                           </View>
                         )}
                         {installationStatus == 2 && statusAnimation == false && (
-                          <>
-                            <View style={{width: width * 0.8}}>
+                          <View style={{flex: 1}}>
+                            <View
+                              style={{
+                                width: width * 0.8,
+                              }}>
                               <Text
                                 style={[
                                   styles.meterDesciptionHeading,
@@ -3205,6 +3342,8 @@ export default function UnitEdit({
                             <View
                               style={{
                                 flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                               }}>
                               <View>
                                 <TouchableOpacity
@@ -3230,30 +3369,36 @@ export default function UnitEdit({
                               </View>
                               <View style={styles.imageListContainer}>
                                 {reasonPath.length > 0 ? (
-                                  <ScrollView>
-                                    {reasonPath?.map(({uri, index}) => (
-                                      <View style={styles.imageContainer}>
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            removeImage(uri, 'reason')
-                                          }
-                                          style={styles.imageRemovebtn}>
-                                          <Iconi
-                                            name="close-circle"
-                                            size={width * 0.07}
+                                  <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}>
+                                    <View
+                                      style={{flexDirection: 'row', flex: 1}}>
+                                      {reasonPath?.map(({uri, index}) => (
+                                        <View style={styles.imageContainer}>
+                                          <TouchableOpacity
+                                            onPress={() =>
+                                              removeImage(uri, 'reason')
+                                            }
+                                            style={styles.imageRemovebtn}>
+                                            <Iconi
+                                              name="close-circle"
+                                              size={width * 0.07}
+                                            />
+                                          </TouchableOpacity>
+                                          <Image
+                                            resizeMode="cover"
+                                            style={{
+                                              alignSelf: 'center',
+                                              height: width * 0.25,
+                                              width: width * 0.25,
+                                            }}
+                                            source={{uri: uri}}
+                                            key={index}
                                           />
-                                        </TouchableOpacity>
-                                        <Image
-                                          // resizeMode="contain"
-                                          resizeMethod="scale"
-                                          style={{
-                                            height: width * 0.15,
-                                          }}
-                                          source={{uri: uri}}
-                                          key={index}
-                                        />
-                                      </View>
-                                    ))}
+                                        </View>
+                                      ))}
+                                    </View>
                                   </ScrollView>
                                 ) : (
                                   <Text style={{textAlign: 'center'}}>
@@ -3295,7 +3440,7 @@ export default function UnitEdit({
                                 </Text>
                               ))}
                           </TouchableOpacity> */}
-                          </>
+                          </View>
                         )}
                         {installationStatus == 0 && statusAnimation == false && (
                           <View
@@ -3910,14 +4055,16 @@ export default function UnitEdit({
                                     attachedToId != null
                                   ? '#25AAE1ec'
                                   : sliderNumber == 4 &&
-                                    filePath != '' &&
-                                    filePath != null &&
                                     lat != undefined &&
                                     long != undefined
                                   ? '#25AAE1ec'
-                                  : (sliderNumber == 5 &&
+                                  : sliderNumber == 5 &&
+                                    filePath != '' &&
+                                    filePath != null
+                                  ? '#25AAE1ec'
+                                  : (sliderNumber == 6 &&
                                       installationStatus == 1) ||
-                                    (sliderNumber == 5 &&
+                                    (sliderNumber == 6 &&
                                       installationStatus == 2 &&
                                       reasonId &&
                                       reasonDes)
@@ -3926,7 +4073,7 @@ export default function UnitEdit({
                             },
                           ]}
                           onPress={
-                            sliderNumber == 5 ? finishSlider : changeSlider
+                            sliderNumber == 6 ? finishSlider : changeSlider
                           }
                           disabled={
                             sliderNumber == 1 &&
@@ -3943,14 +4090,16 @@ export default function UnitEdit({
                                 attachedToId != null
                               ? false
                               : sliderNumber == 4 &&
-                                filePath != '' &&
-                                filePath != null &&
                                 lat != undefined &&
                                 long != undefined
                               ? false
-                              : (sliderNumber == 5 &&
+                              : sliderNumber == 5 &&
+                                filePath != '' &&
+                                filePath != null
+                              ? false
+                              : (sliderNumber == 6 &&
                                   installationStatus == 1) ||
-                                (sliderNumber == 5 &&
+                                (sliderNumber == 6 &&
                                   installationStatus == 2 &&
                                   reasonId &&
                                   reasonDes)
@@ -3960,7 +4109,7 @@ export default function UnitEdit({
                           <Icon
                             size={width * 0.07}
                             color="#fff"
-                            name={sliderNumber == 5 ? 'check' : 'navigate-next'}
+                            name={sliderNumber == 6 ? 'check' : 'navigate-next'}
                           />
                         </TouchableOpacity>
                       </View>
@@ -4672,18 +4821,24 @@ const styles = StyleSheet.create({
     right: width * 0.03,
   },
   imageListContainer: {
-    width: width * 0.7,
-    height: width * 0.2,
-    marginVertical: 2,
-    paddingVertical: 2,
-    marginHorizontal: 2,
-    justifyContent: 'center',
+    width: width * 0.68,
+    height: width * 0.3,
+    margin: 5,
+    padding: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
     borderWidth: 0,
     elevation: 2,
   },
   imageContainer: {
     borderWidth: 2,
     marginVertical: 2,
+    marginHorizontal: 2,
+    height: width * 0.27,
+    width: width * 0.27,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   imageRemovebtn: {
     position: 'absolute',
