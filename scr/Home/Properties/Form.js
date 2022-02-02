@@ -1408,7 +1408,7 @@ export default class Splash extends React.Component {
                               }));
                             }}
                             error={this.state.error.property}
-                            style={styles.input}
+                            style={[styles.input, {width: '99%'}]}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -1603,9 +1603,10 @@ export default class Splash extends React.Component {
                         </TouchableOpacity>
                         <View
                           style={{
-                            width: '90%',
+                            width: '100%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            alignItems: 'center',
                             marginTop: width * 0.02,
                             height: this.state.dropDownShow[2].value
                               ? height * 0.16
@@ -1837,10 +1838,11 @@ export default class Splash extends React.Component {
                         </TouchableOpacity>
                         <View
                           style={{
-                            width: '90%',
+                            width: '100%',
                             zIndex: 2,
                             alignSelf: 'center',
                             // justifyContent: 'center',
+                            alignItems: 'center',
                             marginTop: width * 0.02,
                             height: this.state.dropDownShow[1].value
                               ? height * 0.16
@@ -2030,8 +2032,10 @@ export default class Splash extends React.Component {
                         <View
                           style={{
                             // height: height * 0.25,
+                            width: '100%',
+                            alignSelf: 'center',
                             alignItems: 'center',
-                            justifyContent: 'center',
+                            // justifyContent: 'center',
                             zIndex: 2,
                             height: this.state.dropDownShow[3].value
                               ? height * 0.25
@@ -2042,9 +2046,10 @@ export default class Splash extends React.Component {
                           this.state.showAddType == 'Manufacturer' ? (
                             <View
                               style={{
-                                width: '90%',
+                                width: '100%',
                                 zIndex: 2,
                                 alignSelf: 'center',
+                                alignItems: 'center',
                               }}>
                               <View>
                                 <View>
@@ -2626,9 +2631,10 @@ export default class Splash extends React.Component {
                         </TouchableOpacity>
                         <View
                           style={{
-                            width: '90%',
+                            width: '100%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            alignItems: 'center',
                             height: this.state.dropDownShow[5].value
                               ? height * 0.16
                               : height * 0.0,
@@ -2833,9 +2839,10 @@ export default class Splash extends React.Component {
                         </TouchableOpacity>
                         <View
                           style={{
-                            width: '90%',
+                            width: '100%',
                             zIndex: 2,
                             alignSelf: 'center',
+                            alignItems: 'center',
                             height: this.state.dropDownShow[6].value
                               ? height * 0.16
                               : height * 0.0,

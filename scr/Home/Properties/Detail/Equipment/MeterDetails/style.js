@@ -27,7 +27,7 @@ export default styles = StyleSheet.create({
     marginBottom: height * 0.03,
   },
   imgHeader: {
-    height: width * 0.06,
+    height: width * 0.055,
     width: width * 0.055,
     marginRight: width * 0.025,
   },

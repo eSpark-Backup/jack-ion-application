@@ -202,7 +202,7 @@ export default function UnitEdit({
   const [selectUtil, setSelectUtil] = useState([]);
   const [utilTypes, setUtilTypes] = useState([]);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
-
+  const [newMeterFlag, setNewMeterFlag] = useState(true);
   const [inputFocus, setInputFocus] = useState(false);
   const selectedTypes = useRef([]);
   const [reasons, setReasons] = useState([]);
@@ -237,6 +237,7 @@ export default function UnitEdit({
   });
   const [newMeter, setNewMeter] = useState({
     id: 0,
+    number: 0,
     deviceSerialNum:
       type == 'meterDirect' || type == 'addMeterDirect'
         ? unitDetails?.unit?.meterSerial
@@ -1508,6 +1509,7 @@ export default function UnitEdit({
     });
     setAddTypeInput(false);
     setDefaultValues(false);
+    setNewMeterFlag(true);
     setSliderNumber(1);
     setSliderProgress(0);
     setReasonText('');
@@ -1721,6 +1723,7 @@ export default function UnitEdit({
     setAddAttached('');
     setShowAddType(false);
     setAddTypeInput(false);
+    setNewMeterFlag(true);
   };
 
   const useDefaultOrNot = () => {
@@ -1738,7 +1741,7 @@ export default function UnitEdit({
     }
   };
 
-  const getMeterData = (data) => {
+  const getMeterData = (data, index) => {
     console.log('REASONS DATA', data.reasons);
     // if (data.reasons.length > 0) {
     //   setReasonText(data.reasons.name);
@@ -1787,7 +1790,9 @@ export default function UnitEdit({
       ...oldState,
       id: 0,
       name: '',
+      number: index + 1,
     }));
+    setNewMeterFlag(false);
     setShowAddMeterSlider(false);
   };
 
@@ -2322,6 +2327,30 @@ export default function UnitEdit({
                     }}>
                     <View
                       style={{
+                        width: width * 0.85,
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        height: width * 0.25,
+                      }}>
+                      <Text
+                        style={[
+                          styles.meterDesciptionHeading,
+                          {fontSize: width * 0.045, fontWeight: 'bold'},
+                        ]}>
+                        Meter Number{' '}
+                        {newMeterFlag
+                          ? meterListData.length + 1
+                          : newMeter.number}
+                      </Text>
+                    </View>
+                    <Progress.Bar
+                      progress={sliderProgress}
+                      width={width * 0.8}
+                      color={'#25AAE1ec'}
+                      style={{marginBottom: width * 0.03}}
+                    />
+                    <View
+                      style={{
                         flexDirection: 'row',
                         width: width * 0.85,
                         justifyContent: 'center',
@@ -2330,7 +2359,12 @@ export default function UnitEdit({
                       <Text
                         style={[
                           styles.meterDesciptionHeading,
-                          {fontSize: width * 0.06},
+                          {
+                            fontSize: width * 0.045,
+                            height: width * 0.2,
+                            top: -5,
+                            // marginBottom: width * 0.03,
+                          },
                         ]}>
                         {sliderNumber == 1
                           ? 'Device Selection'
@@ -2349,7 +2383,7 @@ export default function UnitEdit({
                           style={{
                             position: 'absolute',
                             right: 0,
-                            top: 0,
+                            top: width * -0.13,
                           }}
                           onPress={() =>
                             Alert.alert(
@@ -2373,11 +2407,6 @@ export default function UnitEdit({
                         </TouchableOpacity>
                       ) : null}
                     </View>
-                    <Progress.Bar
-                      progress={sliderProgress}
-                      width={width * 0.8}
-                      color={'#25AAE1ec'}
-                    />
                   </View>
                   {sliderNumber == 2 ? (
                     <View
@@ -3559,7 +3588,10 @@ export default function UnitEdit({
                                   </View>
                                 )}
                                 {showAddType == 'Device' && (
-                                  <View style={{zIndex: 10}}>
+                                  <View
+                                    style={{
+                                      zIndex: 10,
+                                    }}>
                                     <Text
                                       style={{
                                         alignSelf: 'flex-start',
@@ -3766,7 +3798,14 @@ export default function UnitEdit({
                                     width: width * 0.35,
                                   },
                                 ]}>
-                                <Text style={styles.desciptionHeading}>
+                                <Text
+                                  style={[
+                                    styles.desciptionHeading,
+                                    {
+                                      height: width * 0.05,
+                                      textAlignVertical: 'bottom',
+                                    },
+                                  ]}>
                                   Model Number*
                                 </Text>
                               </View>
@@ -3796,7 +3835,14 @@ export default function UnitEdit({
                                     width: width * 0.35,
                                   },
                                 ]}>
-                                <Text style={styles.desciptionHeading}>
+                                <Text
+                                  style={[
+                                    styles.desciptionHeading,
+                                    {
+                                      height: width * 0.05,
+                                      textAlignVertical: 'bottom',
+                                    },
+                                  ]}>
                                   Product Desc*
                                 </Text>
                               </View>
@@ -4241,53 +4287,58 @@ export default function UnitEdit({
                       <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
                     ) : (
                       meterListData.length > 0 &&
-                      meterListData?.map((item) => (
-                        // console.log('meterListData'),
-                        <TouchableOpacity
-                          onPress={() => {
-                            LayoutAnimation.configureNext({
-                              duration: 300,
-                              create: {
-                                type: LayoutAnimation.Types.easeInEaseOut,
-                                property: LayoutAnimation.Properties.opacity,
-                              },
-                              update: {
-                                type: LayoutAnimation.Types.easeInEaseOut,
-                              },
-                            }),
-                              // setShowAddMeterSlider(true),
-                              // setDefaultScreen(true),
-                              getMeterData(item);
-                            enableLocation();
-                          }}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: width * 0.02,
-                            elevation: 2,
-                            backgroundColor: 'white',
-                            shadowColor: '#000',
-                            shadowOffset: {
-                              width: 0,
-                              height: 1,
-                            },
-                            shadowOpacity: 0.2,
-                            shadowRadius: 1.41,
-                          }}>
-                          <Image
-                            source={typeSwitcher(item.meter_name)}
-                            style={styles.untiDetailImage}
-                          />
-                          <Text
-                            style={[
-                              styles.meterDesciptionHeading,
-                              {marginBottom: 0},
-                            ]}>
-                            {item.meter_name}
-                          </Text>
-                        </TouchableOpacity>
-                      ))
+                      meterListData?.map(
+                        (item, index) => (
+                          console.log('meterListData+++>>>>>', index),
+                          (
+                            <TouchableOpacity
+                              onPress={() => {
+                                LayoutAnimation.configureNext({
+                                  duration: 300,
+                                  create: {
+                                    type: LayoutAnimation.Types.easeInEaseOut,
+                                    property:
+                                      LayoutAnimation.Properties.opacity,
+                                  },
+                                  update: {
+                                    type: LayoutAnimation.Types.easeInEaseOut,
+                                  },
+                                }),
+                                  // setShowAddMeterSlider(true),
+                                  // setDefaultScreen(true),
+                                  getMeterData(item, index);
+                                enableLocation();
+                              }}
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: width * 0.02,
+                                elevation: 2,
+                                backgroundColor: 'white',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                  width: 0,
+                                  height: 1,
+                                },
+                                shadowOpacity: 0.2,
+                                shadowRadius: 1.41,
+                              }}>
+                              <Image
+                                source={typeSwitcher(item.meter_name)}
+                                style={styles.untiDetailImage}
+                              />
+                              <Text
+                                style={[
+                                  styles.meterDesciptionHeading,
+                                  {marginBottom: 0},
+                                ]}>
+                                {item.meter_name}
+                              </Text>
+                            </TouchableOpacity>
+                          )
+                        ),
+                      )
                     )}
                   </View>
                 </View>
@@ -4295,7 +4346,6 @@ export default function UnitEdit({
                 <View
                   style={{
                     flex: 1,
-                    // backgroundColor: 'pink',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-end',
                   }}>

@@ -19,7 +19,7 @@ export default styles = StyleSheet.create({
   },
   headerContainerStyle: {borderBottomWidth: width * 0.003, elevation: 1},
   imgHeader: {
-    height: width * 0.06,
+    height: width * 0.055,
     width: width * 0.055,
     marginRight: width * 0.025,
   },
