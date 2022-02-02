@@ -819,16 +819,7 @@ export default function UnitEdit({
     if (type == 'add') {
       matchUnit = unitsArray?.filter((e) => e.name == state.lastUnitData);
     }
-    // const checkSerial = meterListData.filter(
-    //   (item) => item.deviceSerialNum === '',
-    // );
-    // const checkInitial = meterListData.filter(
-    //   (item) => item.initialMeterReading === '',
-    // );
-    // const checkManufacturer = meterListData.filter(
-    //   (item) => item.manufacturersId == '',
-    // );
-    // const checkDevice = meterListData.filter((item) => item.meterType == '');
+
     setNewMeter((oldState) => ({
       ...oldState,
       id: 0,
@@ -2424,14 +2415,6 @@ export default function UnitEdit({
                               marginVertical: height * 0.025,
                               // backgroundColor: 'seagreen',
                             }}>
-                            {/* <FlatList
-                              contentContainerStyle={{
-                                justifyContent: 'center',
-                                backgroundColor: 'yellow',
-                              }}
-                              data={state.meterList}
-                              renderItem={renderSlide2}
-                            /> */}
                             {!addTypeInput ? (
                               <View
                                 pointerEvents={'auto'}
@@ -2506,26 +2489,6 @@ export default function UnitEdit({
                                 </TouchableOpacity>
                               </View>
                             ) : (
-                              // <View
-                              //   style={{
-                              //     // backgroundColor: 'yellow',
-                              //     justifyContent: 'flex-end',
-                              //     alignItems: 'center',
-                              //   }}>
-                              //   <TouchableOpacity
-                              //     style={[
-                              //       styles.button,
-                              //       {
-                              //         width: width * 0.8,
-                              //         justifyContent: 'center',
-                              //       },
-                              //     ]}
-                              //     onPress={() => setAddTypeInput(true)}>
-                              //     <Text style={styles.buttonText}>
-                              //       Add New Meter Type
-                              //     </Text>
-                              //   </TouchableOpacity>
-                              // </View>
                               <View
                                 style={{
                                   width: '100%',
@@ -3899,50 +3862,6 @@ export default function UnitEdit({
                         )
                       ) : null
                     ) : (
-                      // <View
-                      //   style={{
-                      //     flexDirection: 'row',
-                      //     right: 0,
-                      //     position: 'absolute',
-                      //     bottom: width * 0.04,
-                      //     // backgroundColor: 'red',
-                      //     justifyContent: 'space-evenly',
-                      //   }}>
-                      //   {sliderNumber == 5 &&
-                      //     installationStatus == 2 &&
-                      //     statusAnimation == false && (
-                      //       <TouchableOpacity
-                      //         style={[
-                      //           styles.doneButton,
-                      //           {
-                      //             right: 0,
-                      //             bottom: 0,
-                      //             position: 'relative',
-                      //             marginRight: 4,
-                      //             backgroundColor:
-                      //               sliderNumber == 5 &&
-                      //               installationStatus == 2 &&
-                      //               reasonId &&
-                      //               reasonDes
-                      //                 ? '#25AAE1ec'
-                      //                 : '#D0D0D0',
-                      //           },
-                      //         ]}
-                      //         disabled={
-                      //           sliderNumber == 5 &&
-                      //           installationStatus == 2 &&
-                      //           reasonId &&
-                      //           reasonDes
-                      //             ? false
-                      //             : true
-                      //         }>
-                      //         <Icon
-                      //           size={width * 0.07}
-                      //           color="#fff"
-                      //           name={sliderNumber == 5 && 'add'}
-                      //         />
-                      //       </TouchableOpacity>
-                      //     )}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -4125,24 +4044,6 @@ export default function UnitEdit({
                     onValueChange={() => setDefaultValues(!defaultValues)}
                     value={defaultValues}
                   />
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      setSliderNumber(3),
-                        setShowAddMeterSlider(true),
-                        setDefaultScreen(false);
-                    }}
-                    style={[styles.attemptBtn, {backgroundColor: 'green'}]}>
-                    <Text style={styles.attemptText}>Use Default Values</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSliderNumber(1),
-                        setShowAddMeterSlider(true),
-                        setDefaultScreen(false);
-                    }}
-                    style={[styles.attemptBtn, {backgroundColor: '#f00'}]}>
-                    <Text style={styles.attemptText}>Don't Use Default</Text>
-                  </TouchableOpacity> */}
                 </View>
                 <TouchableOpacity
                   onPress={() => useDefaultOrNot()}
