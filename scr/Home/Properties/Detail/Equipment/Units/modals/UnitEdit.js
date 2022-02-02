@@ -1832,8 +1832,8 @@ export default function UnitEdit({
       setTypeLoader(false);
     }
   };
-  console.log('Slide @ means IMR value', typeof slide2[1].value);
-  console.log('Slide @ means IMR value type', slide2[1].value);
+  // console.log('Slide @ means IMR value', typeof slide2[1].value);
+  // console.log('Slide @ means IMR value type', slide2[1].value);
   return (
     <View>
       <Modal

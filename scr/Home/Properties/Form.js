@@ -23,6 +23,7 @@ import {
 //Packages
 
 import Iconi from 'react-native-vector-icons/Ionicons';
+import Geocoder from 'react-native-geocoding';
 import Toast from 'react-native-simple-toast';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -804,7 +805,6 @@ export default class Splash extends React.Component {
   };
 
   moveMarker = (region, gesture) => {
-    console.log('MOVE MARKER CHALA GESTURE', gesture.isGesture);
     if (gesture.isGesture) {
       this.setState({lat: region?.latitude, latDelta: region?.latitudeDelta});
       this.setState({
@@ -823,7 +823,6 @@ export default class Splash extends React.Component {
         longitude: region?.longitude,
       },
     );
-    console.log('region BETWEEN', region);
   };
 
   catchLocation = (region) => {
@@ -880,7 +879,6 @@ export default class Splash extends React.Component {
         var long = parseFloat(position.coords.longitude);
         this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
 
-        // this.setState({initialPosition: initialRegion});
         this.setState({
           markers: [
             {
@@ -961,13 +959,13 @@ export default class Splash extends React.Component {
 
     let arr1 = res.data?.data;
     let arr2 = arr1.sort((a, b) => (a.name > b.name ? 1 : -1));
-    console.log('arr1--->', arr1);
+    // console.log('arr1--->', arr1);
     this.setState({meterList: arr2});
     // this.setState({loadMeters: false});
 
     const utilRes = await api.get('/property/equipment/utility-type/all');
 
-    console.log('arr1--->', utilRes);
+    // console.log('arr1--->', utilRes);
     this.setState({utilTypes: utilRes?.data?.data});
 
     const ManufacturersResponse = await api.get(
@@ -997,7 +995,7 @@ export default class Splash extends React.Component {
       filter.push(data);
     }
     this.setState({manageCompList: filter});
-    console.log('filtered manage company list', filter);
+    // console.log('filtered manage company list', filter);
   };
 
   AddTypes = (item, type) => {
@@ -1016,7 +1014,7 @@ export default class Splash extends React.Component {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     this.getToken();
-
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -1029,6 +1027,27 @@ export default class Splash extends React.Component {
         },
       ]);
     } else {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          var lat = parseFloat(position.coords.latitude);
+          var long = parseFloat(position.coords.longitude);
+          this.setState({lat: lat, long: long});
+          Geocoder.from({
+            latitude: lat,
+            longitude: long,
+          })
+            .then((json) => {
+              var locationName = json.results[0].formatted_address;
+              this.fetchAddressData(locationName);
+              this.setState({
+                locationBtn: locationName,
+              });
+            })
+            .catch((error) => console.warn(error));
+        },
+        (error) => console.log('geo location', error),
+        {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      );
       if (Platform.OS == 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
           .then((result) => {
@@ -1104,10 +1123,7 @@ export default class Splash extends React.Component {
   };
   render() {
     const {loadManufacturers, loadMeters, deviceData} = this.state;
-    console.log('Lat', this.state.lat);
-    console.log('Long', this.state.long);
-    console.log('LatDelta', this.state.latDelta);
-    console.log('LongDelta', this.state.longDelta);
+
     return (
       <View style={styles.headingInner}>
         {this.state.loadScreen ? <Loader /> : null}
@@ -1540,13 +1556,14 @@ export default class Splash extends React.Component {
                             onPress={this.selectMeterLocation}
                             style={{
                               width: width * 0.8,
-                              height: width * 0.1,
+                              // height: width * 0.1,
                               borderColor: '#25AAE1ec',
                               borderWidth: width * 0.003,
                               backgroundColor: 'white',
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               borderRadius: width * 0.005,
+                              paddingVertical: width * 0.02,
                               paddingHorizontal: width * 0.02,
                               flexDirection: 'row',
                               marginVertical: width * 0.015,
