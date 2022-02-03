@@ -639,49 +639,95 @@ export default class Splash extends Component {
                         ]}
                       />
                     </View>
-                    {/* <View style={styles.unitDetailInnerif}>
-                      <Image
-                        source={this.typeSwitcher(item.meter_name)}
-                        style={styles.untiDetailImage}
-                      />
-                      <TextTicker
-                        duration={10000}
-                        marqueeDelay={2000}
-                        // repeatSpacer={width * 0.17}
-                        style={[
-                          styles.dataFieldText,
-                          {
-                            minWidth: width * 0.15,
-                            maxWidth: width * 0.2,
-                            fontSize: width * 0.025,
-                          },
-                        ]}>
-                        {item?.meter_read?.meter_reading
-                          ? item?.meter_read?.meter_reading + ' Gallons'
-                          : 0 + ' Gallons'}
-                      </TextTicker>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        maxWidth: width * 0.5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View style={styles.unitDetailInnerif}>
+                        <MaterialCommunityIcons
+                          name="barcode-scan"
+                          size={width * 0.03}
+                          style={{marginRight: width * 0.01}}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.device_serial_number}
+                        </TextTicker>
+                      </View>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.meter_name}
+                        </TextTicker>
+                      </View>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.attachedTo_name}
+                        </TextTicker>
+                      </View>
+                      {/* <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.time_diff}
+                        </TextTicker>
+                      </View> */}
                     </View>
-                    <View style={styles.unitDetailInnerif}>
-                      <MaterialCommunityIcons
-                        name="barcode-scan"
-                        size={width * 0.03}
-                        style={{marginRight: width * 0.01}}
-                      />
-                      <TextTicker
-                        duration={10000}
-                        marqueeDelay={2000}
-                        // repeatSpacer={width * 0.17}
-                        style={[
-                          styles.dataFieldText,
-                          {
-                            minWidth: width * 0.15,
-                            maxWidth: width * 0.2,
-                            fontSize: width * 0.025,
-                          },
-                        ]}>
-                        {item?.device_serial_number}
-                      </TextTicker>
-                    </View> */}
                   </View>
                 ))}
             </View>
