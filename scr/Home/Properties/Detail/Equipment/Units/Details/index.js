@@ -1235,23 +1235,23 @@ const App = ({navigation}) => {
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
-          showMenu={() => setEditUnitMenuVisible(true)}
-          hideMenu={() => setEditUnitMenuVisible(false)}
+          // showMenu={() => setEditUnitMenuVisible(true)}
+          // hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
-          openModal={() => setEditUnitModalVisible(true)}
+          // openModal={() => setEditUnitModalVisible(true)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
-          itemPressHandle={() => {
-            setEditUnitMenuVisible(false);
-          }}
-          handleEditUnit={() => {
-            ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
-            setEditUnitModalVisible(false);
-          }}
+          // itemPressHandle={() => {
+          //   setEditUnitMenuVisible(false);
+          // }}
+          // handleEditUnit={() => {
+          //   ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
+          //   setEditUnitModalVisible(false);
+          // }}
         />
         <Header
           leftComponent={{
