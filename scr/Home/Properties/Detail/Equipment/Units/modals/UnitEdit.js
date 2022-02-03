@@ -95,7 +95,9 @@ export default function UnitEdit({
   propertyLong,
 }) {
   const [meterListData, setMeterListData] = useState([]);
-  const [defaultValues, setDefaultValues] = useState(false);
+  const [defaultMeterValues, setDefaultMeterValues] = useState(true);
+  const [defaultDeviceValues, setDefaultDeviceValues] = useState(true);
+  const [defaultData, setDefaultData] = useState([]);
   const [defaultScreen, setDefaultScreen] = useState(false);
   const [radialDis, setRadialDis] = useState(100);
   const [isActivityLoader, setIsActivityLoader] = useState(false);
@@ -348,8 +350,8 @@ export default function UnitEdit({
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      // setShowAddMeterSlider(true);
-      setDefaultScreen(true);
+
+      setShowAddMeterSlider(true);
       _renderMap();
     } else {
       Alert.alert(
@@ -443,11 +445,6 @@ export default function UnitEdit({
     // const antiIntersection = arr1.filter(
     //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
     // );
-
-    const utilRes = await api.get('/property/equipment/utility-type/all');
-
-    console.log('arr1--->', utilRes);
-    setUtilTypes(utilRes?.data?.data);
 
     // // console.log('antiIntersection--->', antiIntersection);
     setState((oldState) => ({
@@ -711,9 +708,20 @@ export default function UnitEdit({
   const callApi = async () => {
     setReasons([]);
     setLoadManufacturers(true);
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+    const utilRes = await api.get('/property/equipment/utility-type/all');
+    console.log('utilRes--->', utilRes?.data?.data);
+    setUtilTypes(utilRes?.data?.data);
+    const utilityRes = utilRes?.data?.data;
+
     const defaultUnitData = await api.get(
       `/property/default-meter-device/${propertyId}`,
     );
+
+    console.log('Default Unit Data--->', defaultUnitData);
     if (defaultUnitData.ok) {
       console.log(
         clc.cyanBright(
@@ -721,24 +729,31 @@ export default function UnitEdit({
           JSON.stringify(defaultUnitData?.data?.data),
         ),
       );
-      console.log('defaultValues', defaultValues);
-      if (defaultValues) {
-        const some = defaultUnitData?.data?.data?.default_meter_device;
-        let listSlide = [...slide1]; // copying the old datas array
-        listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
-        listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-        listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
-        listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
-        setModelNo(some?.device_name?.model_no);
-        setProductNo(some?.device_name?.product_desc);
-        setSlide1(listSlide);
+      // console.log('defaultDeviceValues', defaultDeviceValues);
+      const some = defaultUnitData?.data?.data?.default_meter_device;
+      setDefaultData(some);
+      let listSlide = [...slide1]; // copying the old datas array
+      listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      setModelNo(some?.device_name?.model_no);
+      setProductNo(some?.device_name?.product_desc);
+      setSlide1(listSlide);
+      setNewMeter((oldState) => ({
+        ...oldState,
+        id: some?.meter_id,
+        name: some?.meter_name,
+      }));
 
-        setNewMeter((oldState) => ({
-          ...oldState,
-          id: some?.meter_id,
-          name: some?.meter_name,
-        }));
-      }
+      const utilityIds = some?.utility_type_id;
+
+      const filterRes = utilityRes.filter((item1) =>
+        utilityIds.some((item2) => item1.id == item2),
+      );
+      console.log(' UTILITY RES', filterRes);
+      setSelectUtil(filterRes);
+
       const defaultDis =
         defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
       setRadialDis(defaultDis * 1000);
@@ -765,7 +780,7 @@ export default function UnitEdit({
     const AttachedToResponse = await api.get(
       '/property/equipment/attached_to/attach',
     );
-    console.log('AttachedToResponse_________', AttachedToResponse?.data);
+    // console.log('AttachedToResponse_________', AttachedToResponse?.data);
     setAttachedToData(AttachedToResponse?.data?.data);
     const reasoneResponce = await api.get(
       '/property/equipment/unit/reasons/all',
@@ -778,6 +793,39 @@ export default function UnitEdit({
     setReasons(uniqueArr);
     // console.log('reasons_________', reasoneResponce?.data?.data);
     setLoadManufacturers(false);
+  };
+
+  const getdefaultDeviceData = (val) => {
+    setDefaultDeviceValues(val);
+    if (val) {
+      let listSlide = [...slide1]; // copying the old datas array
+      listSlide[0].select = defaultData?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = defaultData?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = defaultData?.device_name?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = defaultData?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      setModelNo(defaultData?.device_name?.model_no);
+      setProductNo(defaultData?.device_name?.product_desc);
+      setSlide1(listSlide);
+    }
+  };
+
+  const getdefaultMeterData = (val) => {
+    setDefaultMeterValues(val);
+    if (val) {
+      setNewMeter((oldState) => ({
+        ...oldState,
+        id: defaultData?.meter_id,
+        name: defaultData?.meter_name,
+      }));
+
+      const utilityIds = defaultData.utility_type_id;
+
+      const filterRes = utilTypes.filter((item1) =>
+        utilityIds.some((item2) => item1.id == item2),
+      );
+      console.log(' UTILITY RES', filterRes);
+      setSelectUtil(filterRes);
+    }
   };
 
   const getDevice = async (some, index) => {
@@ -1508,7 +1556,8 @@ export default function UnitEdit({
       },
     });
     setAddTypeInput(false);
-    setDefaultValues(false);
+    setDefaultDeviceValues(true);
+    setDefaultMeterValues(true);
     setNewMeterFlag(true);
     setSliderNumber(1);
     setSliderProgress(0);
@@ -1724,21 +1773,6 @@ export default function UnitEdit({
     setShowAddType(false);
     setAddTypeInput(false);
     setNewMeterFlag(true);
-  };
-
-  const useDefaultOrNot = () => {
-    if (defaultValues) {
-      setSliderNumber(3);
-      setShowAddMeterSlider(true);
-      setDefaultScreen(false);
-      setSliderProgress(0.5);
-      callApi();
-    } else {
-      setSliderNumber(1);
-      setShowAddMeterSlider(true);
-      setDefaultScreen(false);
-      callApi();
-    }
   };
 
   const getMeterData = (data, index) => {
@@ -2462,6 +2496,7 @@ export default function UnitEdit({
                                   }}
                                   resetValue={false}
                                   textInputProps={{
+                                    editable: !defaultMeterValues,
                                     placeholder: 'Add Meter Type',
                                     underlineColorAndroid: 'transparent',
                                     style: {
@@ -2653,6 +2688,7 @@ export default function UnitEdit({
                                   }}
                                   resetValue={false}
                                   textInputProps={{
+                                    editable: !defaultMeterValues,
                                     placeholder: 'Add Utility Type',
                                     underlineColorAndroid: 'transparent',
                                     style: {
@@ -2819,6 +2855,7 @@ export default function UnitEdit({
                                       {item.name}
                                     </Text>
                                     <TouchableOpacity
+                                      disabled={defaultMeterValues}
                                       onPress={() => {
                                         const items = selectUtil.filter(
                                           (sitem) => sitem.id !== item.id,
@@ -2831,6 +2868,16 @@ export default function UnitEdit({
                                 )}
                               />
                             </View>
+                            <Switch
+                              trackColor={{
+                                false: '#767577',
+                                true: '#81b0ff',
+                              }}
+                              thumbColor={'#f4f3f4'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={(val) => getdefaultMeterData(val)}
+                              value={defaultMeterValues}
+                            />
                           </View>
                         </>
                       ) : (
@@ -3398,13 +3445,6 @@ export default function UnitEdit({
                                     {item.name}*
                                   </Text>
                                   <View
-                                    pointerEvents={
-                                      index > 0
-                                        ? slide1[0].selectId
-                                          ? 'auto'
-                                          : 'none'
-                                        : 'auto'
-                                    }
                                     style={{
                                       flexDirection: 'row',
                                       alignItems: 'flex-start',
@@ -3431,6 +3471,16 @@ export default function UnitEdit({
                                       items={item.data}
                                       resetValue={false}
                                       textInputProps={{
+                                        editable:
+                                          index > 0
+                                            ? slide1[0].selectId &&
+                                              !defaultDeviceValues
+                                              ? true
+                                              : false
+                                            : defaultDeviceValues
+                                            ? false
+                                            : true,
+
                                         placeholder:
                                           index == 1
                                             ? slide1[0].selectId
@@ -3814,6 +3864,7 @@ export default function UnitEdit({
                                 value={modelNo}
                                 dense={true}
                                 editable={false}
+                                disabled={defaultDeviceValues}
                                 showSoftInputOnFocus={false}
                                 style={[styles.input, {width: width * 0.38}]}
                                 mode={'outlined'}
@@ -3856,6 +3907,7 @@ export default function UnitEdit({
                                 selection
                                 dense={true}
                                 editable={false}
+                                disabled={defaultDeviceValues}
                                 showSoftInputOnFocus={false}
                                 style={[styles.input, {width: width * 0.38}]}
                                 mode={'outlined'}
@@ -3869,10 +3921,18 @@ export default function UnitEdit({
                               />
                             </View>
                           </View>
+                          <Switch
+                            trackColor={{false: '#767577', true: '#81b0ff'}}
+                            thumbColor={'#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => getdefaultDeviceData(val)}
+                            value={defaultDeviceValues}
+                          />
                         </View>
                       )}
                     </View>
                   )}
+
                   <View
                     style={{
                       height: width * 0.2,
@@ -4050,110 +4110,6 @@ export default function UnitEdit({
                   </View>
                 </View>
               )
-            ) : defaultScreen ? (
-              <View
-                style={{
-                  height: width * 1.3,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  borderRadius: width * 0.03,
-                  overflow: 'hidden',
-                  // backgroundColor: 'pink',
-                  // justifyContent: 'center',
-                }}>
-                <View
-                  style={{
-                    height: width * 0.18,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      width: width * 0.85,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={[
-                        styles.meterDesciptionHeading,
-                        {fontSize: width * 0.06},
-                      ]}>
-                      Make Selection
-                    </Text>
-
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 0,
-                      }}
-                      onPress={() =>
-                        Alert.alert(
-                          'Alert',
-                          'Are you sure you want to clear current selected data',
-                          [
-                            {text: 'No', style: 'cancel'},
-                            {
-                              text: 'Yes',
-                              onPress: cancelMeter,
-                            },
-                          ],
-                        )
-                      }>
-                      <Icon
-                        name="cancel"
-                        size={width * 0.06}
-                        color="black"
-                        maxOpacity={0.5}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    // backgroundColor: 'yellow',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text>Use Default Values</Text>
-                  <Switch
-                    trackColor={{false: '#767577', true: '#81b0ff'}}
-                    thumbColor={defaultValues ? '#25AAE1ec ' : '#f4f3f4'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={() => setDefaultValues(!defaultValues)}
-                    value={defaultValues}
-                  />
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      setSliderNumber(3),
-                        setShowAddMeterSlider(true),
-                        setDefaultScreen(false);
-                    }}
-                    style={[styles.attemptBtn, {backgroundColor: 'green'}]}>
-                    <Text style={styles.attemptText}>Use Default Values</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSliderNumber(1),
-                        setShowAddMeterSlider(true),
-                        setDefaultScreen(false);
-                    }}
-                    style={[styles.attemptBtn, {backgroundColor: '#f00'}]}>
-                    <Text style={styles.attemptText}>Don't Use Default</Text>
-                  </TouchableOpacity> */}
-                </View>
-                <TouchableOpacity
-                  onPress={() => useDefaultOrNot()}
-                  style={styles.doneButton}>
-                  <Icon
-                    size={width * 0.07}
-                    color="#fff"
-                    name={'navigate-next'}
-                  />
-                </TouchableOpacity>
-              </View>
             ) : (
               <View style={styles.boxInner}>
                 {/* Box Header */}
@@ -4304,9 +4260,8 @@ export default function UnitEdit({
                                     type: LayoutAnimation.Types.easeInEaseOut,
                                   },
                                 }),
-                                  // setShowAddMeterSlider(true),
-                                  // setDefaultScreen(true),
                                   getMeterData(item, index);
+                                callApi();
                                 enableLocation();
                               }}
                               style={{
@@ -4380,10 +4335,8 @@ export default function UnitEdit({
                                   type: LayoutAnimation.Types.easeInEaseOut,
                                 },
                               }),
-                                // setShowAddMeterSlider(true),
-                                // setDefauttScreen(true),
-
-                                enableLocation();
+                                callApi();
+                              enableLocation();
                             }}
                             style={{
                               flexDirection: 'row',

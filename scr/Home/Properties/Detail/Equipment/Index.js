@@ -405,7 +405,7 @@ export default class Splash extends Component {
   };
 
   _renderUnitList = (unit) => {
-    console.log('>><<<<<<<<<', unit);
+    // console.log('>><<<<<<<<<', unit);
     return (
       <View
         style={{
