@@ -1882,7 +1882,10 @@ const App = ({navigation}) => {
                 <TouchableOpacity
                   style={[
                     styles.meterStyle,
-                    {borderColor: typeColor(item.meter_name)},
+                    {
+                      borderColor: typeColor(item.meter_name),
+                      borderColor: '#639CC7',
+                    },
                   ]}
                   onPress={() => {
                     handleMeterSelect(item);
@@ -1890,10 +1893,7 @@ const App = ({navigation}) => {
                   }}>
                   {item.id == unitMeter?.id && (
                     <View
-                      style={[
-                        styles.meterInner,
-                        {backgroundColor: typeColor(item.meter_name)},
-                      ]}>
+                      style={[styles.meterInner, {backgroundColor: '#639CC7'}]}>
                       <Check
                         name="check"
                         style={{marginLeft: width * 0.005}}

@@ -350,6 +350,7 @@ export default class Splash extends Component {
   };
 
   actionOnPress = (unit) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
       currUnitIndex:
         unit.index === this.state.currUnitIndex ? null : unit.index,
@@ -414,7 +415,16 @@ export default class Splash extends Component {
           width: width * 0.9,
         }}>
         <TouchableOpacity onPress={() => this.actionOnPress(unit)}>
-          <View style={[styles.infoViewContainer]}>
+          <View
+            style={[
+              styles.infoViewContainer,
+              {
+                borderBottomLeftRadius:
+                  unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
+                borderBottomRightRadius:
+                  unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
+              },
+            ]}>
             <View style={styles.infoViewInner}>
               <View style={styles.unitNameContainer}>
                 <FontAwesome5
@@ -510,29 +520,198 @@ export default class Splash extends Component {
         </TouchableOpacity>
         {unit.index === this.state.currUnitIndex ? (
           <View
-            style={[styles.buildingEditBtn, {justifyContent: 'space-between'}]}>
-            <TouchableOpacity
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <View
               style={{
-                margin: width * 0.01,
-                flexDirection: 'row',
+                width: '100%',
+                // overflow: 'hidden',
+                height: width * 0.16,
+                backgroundColor: 'white',
+                justifyContent: 'center',
                 alignItems: 'center',
-              }}
-              onPress={() => this.goToDetails(unit)}>
-              <MaterialCommunityIcons
-                name="view-compact-outline"
-                color="white"
-                size={width * 0.04}
-              />
-              <Text
+                borderLeftWidth: width * 0.001,
+                borderRightWidth: width * 0.001,
+              }}>
+              {unit?.item?.unit_meter?.length &&
+                unit?.item?.unit_meter?.map((item, index) => (
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        maxWidth: width * 0.5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.device?.manufacturer}
+                        </TextTicker>
+                      </View>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.device?.name}
+                        </TextTicker>
+                      </View>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.device?.model_no}
+                        </TextTicker>
+                      </View>
+                      <View style={styles.unitDetailInnerif}>
+                        <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        />
+                        <TextTicker
+                          duration={10000}
+                          marqueeDelay={2000}
+                          // repeatSpacer={width * 0.17}
+                          style={[
+                            styles.dataFieldText,
+                            {
+                              minWidth: width * 0.15,
+                              maxWidth: width * 0.2,
+                              fontSize: width * 0.025,
+                            },
+                          ]}>
+                          {item?.device?.product_desc}
+                        </TextTicker>
+                      </View>
+
+                      <View
+                        style={[
+                          styles.unitDetailSeprater,
+                          {
+                            borderBottomWidth:
+                              index == 0 && unit?.item?.unit_meter?.length > 1
+                                ? width * 0.004
+                                : 0,
+                          },
+                        ]}
+                      />
+                    </View>
+                    {/* <View style={styles.unitDetailInnerif}>
+                      <Image
+                        source={this.typeSwitcher(item.meter_name)}
+                        style={styles.untiDetailImage}
+                      />
+                      <TextTicker
+                        duration={10000}
+                        marqueeDelay={2000}
+                        // repeatSpacer={width * 0.17}
+                        style={[
+                          styles.dataFieldText,
+                          {
+                            minWidth: width * 0.15,
+                            maxWidth: width * 0.2,
+                            fontSize: width * 0.025,
+                          },
+                        ]}>
+                        {item?.meter_read?.meter_reading
+                          ? item?.meter_read?.meter_reading + ' Gallons'
+                          : 0 + ' Gallons'}
+                      </TextTicker>
+                    </View>
+                    <View style={styles.unitDetailInnerif}>
+                      <MaterialCommunityIcons
+                        name="barcode-scan"
+                        size={width * 0.03}
+                        style={{marginRight: width * 0.01}}
+                      />
+                      <TextTicker
+                        duration={10000}
+                        marqueeDelay={2000}
+                        // repeatSpacer={width * 0.17}
+                        style={[
+                          styles.dataFieldText,
+                          {
+                            minWidth: width * 0.15,
+                            maxWidth: width * 0.2,
+                            fontSize: width * 0.025,
+                          },
+                        ]}>
+                        {item?.device_serial_number}
+                      </TextTicker>
+                    </View> */}
+                  </View>
+                ))}
+            </View>
+            <View
+              style={[
+                styles.buildingEditBtn,
+                {justifyContent: 'space-between', borderWidth: width * 0.001},
+              ]}>
+              <TouchableOpacity
                 style={{
-                  color: 'white',
-                  fontFamily: Fonts.Montserrat,
-                  fontSize: width * 0.03,
-                }}>
-                View
-              </Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={{margin: width * 0.01}}>
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={() => this.goToDetails(unit)}>
+                <MaterialCommunityIcons
+                  name="view-compact-outline"
+                  color="white"
+                  size={width * 0.04}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  View
+                </Text>
+              </TouchableOpacity>
+              {/* <TouchableOpacity style={{margin: width * 0.01}}>
                 <Text
                   style={{
                     color: 'white',
@@ -543,27 +722,28 @@ export default class Splash extends Component {
                 </Text>
               </TouchableOpacity> */}
 
-            <TouchableOpacity
-              onPress={() => this.confirmDelete(unit?.item?.id)}
-              style={{
-                margin: width * 0.01,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                color="white"
-                size={width * 0.04}
-              />
-              <Text
+              <TouchableOpacity
+                onPress={() => this.confirmDelete(unit?.item?.id)}
                 style={{
-                  color: 'white',
-                  fontFamily: Fonts.Montserrat,
-                  fontSize: width * 0.03,
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                Delete
-              </Text>
-            </TouchableOpacity>
+                <MaterialCommunityIcons
+                  name="delete-outline"
+                  color="white"
+                  size={width * 0.04}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : null}
       </View>
@@ -771,7 +951,6 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
-    console.log('Currindex', this.state.currUnitIndex);
     return (
       <>
         <View style={styles.container}>
