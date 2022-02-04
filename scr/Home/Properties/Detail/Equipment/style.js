@@ -180,7 +180,7 @@ export default styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignItems: 'center',
     maxWidth: width * 0.23,
-    marginRight: width * 0.02,
+    marginRight: width * 0.01,
     marginVertical: width * 0.01,
     // padding: width * 0.005,
     // backgroundColor: 'red',
@@ -210,7 +210,7 @@ export default styles = StyleSheet.create({
   unitDetailSeprater: {
     borderColor: '#3E4A4F50',
     position: 'absolute',
-    width: '100%',
+    width: '85%',
     // flex:1,
     borderRadius: width * 1,
     bottom: width * -0.005,
@@ -218,7 +218,7 @@ export default styles = StyleSheet.create({
   dataFieldText: {
     fontSize: width * 0.03,
     fontFamily: Fonts.Montserrat,
-    textAlign: 'center',
+    // textAlign: 'center',
     textTransform: 'capitalize',
     color: '#3E4A4F',
   },

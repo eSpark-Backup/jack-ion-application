@@ -99,12 +99,12 @@ export default class Splash extends Component {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
-    // this.getToken();
+    this.getToken();
   }
 
   onFocusFunction = () => {
     // this.setState({ loader: true, loaderBuildings: true });
-    this.getToken();
+    // this.getToken();
     this.setState({isModalVisible: false});
   };
 
@@ -528,8 +528,6 @@ export default class Splash extends Component {
             <View
               style={{
                 width: '100%',
-                // overflow: 'hidden',
-                height: width * 0.16,
                 backgroundColor: 'white',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -538,196 +536,90 @@ export default class Splash extends Component {
               }}>
               {unit?.item?.unit_meter?.length &&
                 unit?.item?.unit_meter?.map((item, index) => (
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        maxWidth: width * 0.5,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.device?.manufacturer}
-                        </TextTicker>
-                      </View>
-                      <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.device?.name}
-                        </TextTicker>
-                      </View>
-                      <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.device?.model_no}
-                        </TextTicker>
-                      </View>
-                      <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.device?.product_desc}
-                        </TextTicker>
-                      </View>
-
-                      <View
-                        style={[
-                          styles.unitDetailSeprater,
-                          {
-                            borderBottomWidth:
-                              index == 0 && unit?.item?.unit_meter?.length > 1
-                                ? width * 0.004
-                                : 0,
-                          },
-                        ]}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        maxWidth: width * 0.5,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <View style={styles.unitDetailInnerif}>
-                        <MaterialCommunityIcons
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      maxWidth: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: width * 0.02,
+                    }}>
+                    <View style={styles.unitDetailInnerif}>
+                      {/* <MaterialCommunityIcons
                           name="barcode-scan"
                           size={width * 0.03}
                           style={{marginRight: width * 0.01}}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.device_serial_number}
-                        </TextTicker>
-                      </View>
-                      <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.meter_name}
-                        </TextTicker>
-                      </View>
-                      <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.attachedTo_name}
-                        </TextTicker>
-                      </View>
-                      {/* <View style={styles.unitDetailInnerif}>
-                        <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.time_diff}
-                        </TextTicker>
-                      </View> */}
+                        /> */}
+                      <TextTicker
+                        duration={10000}
+                        marqueeDelay={2000}
+                        // repeatSpacer={width * 0.17}
+                        style={[
+                          styles.dataFieldText,
+                          {
+                            minWidth: width * 0.15,
+                            maxWidth: width * 0.2,
+                            fontSize: width * 0.025,
+                          },
+                        ]}>
+                        {item?.meter_read?.meter_reading
+                          ? item?.meter_read?.meter_reading + ' Gallons'
+                          : 0 + ' Gallons'}
+                      </TextTicker>
                     </View>
+                    <View style={styles.unitDetailInnerif}>
+                      <MaterialCommunityIcons
+                        name="barcode-scan"
+                        size={width * 0.03}
+                        style={{marginRight: width * 0.01}}
+                      />
+                      <TextTicker
+                        duration={10000}
+                        marqueeDelay={2000}
+                        // repeatSpacer={width * 0.17}
+                        style={[
+                          styles.dataFieldText,
+                          {
+                            minWidth: width * 0.15,
+                            maxWidth: width * 0.2,
+                            fontSize: width * 0.025,
+                          },
+                        ]}>
+                        {item?.device_serial_number}
+                      </TextTicker>
+                    </View>
+
+                    <View style={styles.unitDetailInnerif}>
+                      {/* <Image
+                          source={this.typeSwitcher(item.meter_name)}
+                          style={styles.untiDetailImage}
+                        /> */}
+                      <TextTicker
+                        duration={10000}
+                        marqueeDelay={2000}
+                        // repeatSpacer={width * 0.17}
+                        style={[
+                          styles.dataFieldText,
+                          {
+                            minWidth: width * 0.15,
+                            maxWidth: width * 0.2,
+                            fontSize: width * 0.025,
+                          },
+                        ]}>
+                        {item?.time_diff}
+                      </TextTicker>
+                    </View>
+                    <View
+                      style={[
+                        styles.unitDetailSeprater,
+                        {
+                          borderBottomWidth:
+                            index == 0 && unit?.item?.unit_meter?.length > 1
+                              ? width * 0.004
+                              : 0,
+                        },
+                      ]}
+                    />
                   </View>
                 ))}
             </View>
