@@ -4078,8 +4078,9 @@ export default function UnitEdit({
                           {showAddType !== 'Device' && (
                             <View
                               style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
+                                // flexDirection: 'row',
+                                // justifyContent: 'space-between',
+                                backgroundColor: 'tomato',
                               }}>
                               <View>
                                 <View
@@ -4101,7 +4102,107 @@ export default function UnitEdit({
                                     Model Number*
                                   </Text>
                                 </View>
-                                <TextInput
+                                {slide1?.map((item, index) =>
+                                  index === 1 ? (
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'flex-start',
+                                      }}>
+                                      <SearchableDropdown
+                                        onItemSelect={(item) => {
+                                          getDevice(item, index);
+                                        }}
+                                        containerStyle={{
+                                          paddingBottom: width * 0.02,
+                                          width: width * 0.7,
+                                        }}
+                                        itemStyle={{
+                                          padding: width * 0.027,
+                                          backgroundColor: 'rgb(247, 247, 247)',
+                                          borderColor: '#bbb',
+                                          borderWidth: width * 0.0015,
+                                          borderRadius: width * 0.015,
+                                        }}
+                                        itemTextStyle={{color: '#222'}}
+                                        itemsContainerStyle={{
+                                          maxHeight: height * 0.08,
+                                        }}
+                                        items={item.data}
+                                        resetValue={false}
+                                        textInputProps={{
+                                          editable:
+                                            index > 0
+                                              ? slide1[1].selectId &&
+                                                !defaultDeviceValues
+                                                ? true
+                                                : false
+                                              : defaultDeviceValues
+                                              ? false
+                                              : true,
+
+                                          placeholder:
+                                            index == 1
+                                              ? slide1[1].selectId
+                                                ? item.name
+                                                : 'First Select Device'
+                                              : item.name,
+                                          underlineColorAndroid: 'transparent',
+                                          style: {
+                                            padding: width * 0.027,
+                                            margin: 0,
+                                            borderTopLeftRadius: width * 0.015,
+                                            borderBottomLeftRadius:
+                                              width * 0.015,
+                                            borderColor: item.error
+                                              ? '#A3001B'
+                                              : 'black',
+                                            height: width * 0.13,
+                                            backgroundColor: '#F6F6F6',
+                                            borderTopWidth: width * 0.0019,
+                                            borderLeftWidth: width * 0.0019,
+                                            borderBottomWidth: width * 0.0019,
+                                          },
+                                          onTextChange: (text) => {
+                                            onChangeManufacturer(text, index);
+                                          },
+                                          value: setTimeout(
+                                            () => item.select,
+                                            200,
+                                          ),
+                                          defaultValue: item.select,
+                                        }}
+                                        listProps={{
+                                          nestedScrollEnabled: true,
+                                        }}
+                                      />
+                                      <TouchableOpacity
+                                        style={{
+                                          width: width * 0.1,
+                                          backgroundColor: '#25AAE199',
+                                          borderTopRightRadius: width * 0.015,
+                                          borderBottomRightRadius:
+                                            width * 0.015,
+                                          borderTopWidth: width * 0.0019,
+                                          borderRightWidth: width * 0.0019,
+                                          borderBottomWidth: width * 0.0019,
+                                          height: width * 0.13,
+                                          justifyContent: 'center',
+                                          alignItems: 'center',
+                                        }}
+                                        onPress={() =>
+                                          showAddNewType(item.name)
+                                        }>
+                                        <Icon
+                                          size={width * 0.06}
+                                          color="#fff"
+                                          name={'add'}
+                                        />
+                                      </TouchableOpacity>
+                                    </View>
+                                  ) : null,
+                                )}
+                                {/* <TextInput
                                   placeholder="Model Number"
                                   value={modelNo}
                                   dense={true}
@@ -4116,7 +4217,7 @@ export default function UnitEdit({
                                       selectionColor: 'red',
                                     },
                                   }}
-                                />
+                                /> */}
                               </View>
                               <View>
                                 <View
@@ -4141,15 +4242,15 @@ export default function UnitEdit({
                                 <TextInput
                                   placeholder="Type Product Description"
                                   value={
-                                    productNo.length > 13
-                                      ? productNo.slice(0, 13) + '...'
+                                    productNo.length > 24
+                                      ? productNo.slice(0, 24) + '...'
                                       : productNo
                                   }
                                   selection
                                   dense={true}
                                   editable={false}
                                   showSoftInputOnFocus={false}
-                                  style={[styles.input, {width: width * 0.38}]}
+                                  style={[styles.input, {width: '100%'}]}
                                   mode={'outlined'}
                                   theme={{
                                     colors: {
