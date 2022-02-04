@@ -190,6 +190,14 @@ export default class Splash extends React.Component {
           name: 'Device',
           data: [],
         },
+        {
+          id: 2,
+          selectId: '',
+          select: '',
+          error: '',
+          name: 'Model Number',
+          data: [],
+        },
       ],
     };
     if (Platform.OS === 'android') {
@@ -2038,9 +2046,10 @@ export default class Splash extends React.Component {
                             // justifyContent: 'center',
                             zIndex: 2,
                             height: this.state.dropDownShow[3].value
-                              ? height * 0.25
+                              ? height * 0.5
                               : height * 0.0,
                             overflow: 'hidden',
+                            // backgroundColor: 'tomato',
                           }}>
                           {this.state.addNewType &&
                           this.state.showAddType == 'Manufacturer' ? (
@@ -2342,118 +2351,177 @@ export default class Splash extends React.Component {
                               </View>
                             </ScrollView>
                           ) : (
-                            deviceData.map((item, index) => (
-                              <View
-                                style={{
-                                  width: '90%',
-                                  zIndex: 2,
-                                  alignSelf: 'center',
-                                }}
-                                key={item.id}>
-                                <Text style={styles.meterDesciptionHeading}>
-                                  {item.name}*
-                                </Text>
+                            <View>
+                              {deviceData.map((item, index) => (
                                 <View
                                   style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'flex-start',
-                                  }}>
+                                    width: '90%',
+                                    zIndex: 2,
+                                    alignSelf: 'center',
+                                  }}
+                                  key={item.id}>
+                                  <Text style={styles.meterDesciptionHeading}>
+                                    {item.name}*
+                                  </Text>
                                   <View
-                                    pointerEvents={
-                                      index > 0
-                                        ? deviceData[0].selectId
-                                          ? 'auto'
-                                          : 'none'
-                                        : 'auto'
-                                    }>
-                                    <SearchableDropDown
-                                      onItemSelect={(item) => {
-                                        this.getDevice(item, index);
-                                        // console.log('kia mila', item);
-                                      }}
-                                      containerStyle={{
-                                        paddingBottom: width * 0.02,
-                                        width: width * 0.7,
-                                      }}
-                                      itemStyle={{
-                                        padding: width * 0.027,
-                                        backgroundColor: 'rgb(247, 247, 247)',
-                                        borderColor: '#bbb',
-                                        borderWidth: width * 0.0015,
-                                        borderRadius: width * 0.015,
-                                        zIndex: 99,
-                                      }}
-                                      itemTextStyle={{color: '#222'}}
-                                      itemsContainerStyle={{
-                                        maxHeight: height * 0.08,
-                                      }}
-                                      items={item.data}
-                                      resetValue={false}
-                                      textInputProps={{
-                                        placeholder:
-                                          index == 1
-                                            ? deviceData[0].selectId
-                                              ? item.name
-                                              : 'First Select Manufacture'
-                                            : item.name,
-                                        underlineColorAndroid: 'transparent',
-                                        style: {
-                                          padding: width * 0.027,
-                                          margin: 0,
-                                          borderTopLeftRadius: width * 0.015,
-                                          borderBottomLeftRadius: width * 0.015,
-                                          borderColor: item.error
-                                            ? '#A3001B'
-                                            : 'black',
-                                          height: width * 0.13,
-                                          backgroundColor: '#F6F6F6',
-                                          borderTopWidth: width * 0.0019,
-                                          borderLeftWidth: width * 0.0019,
-                                          borderBottomWidth: width * 0.0019,
-                                          zIndex: 0,
-                                        },
-                                        onTextChange: (text) => {
-                                          this.onChangeManufacturer(
-                                            text,
-                                            index,
-                                          );
-                                        },
-                                        value: setTimeout(
-                                          () => item.select,
-                                          200,
-                                        ),
-                                        defaultValue: item.select,
-                                      }}
-                                      listProps={{
-                                        nestedScrollEnabled: true,
-                                      }}
-                                    />
-                                  </View>
-                                  <TouchableOpacity
                                     style={{
-                                      width: width * 0.1,
-                                      backgroundColor: '#25AAE199',
-                                      borderTopRightRadius: width * 0.015,
-                                      borderBottomRightRadius: width * 0.015,
-                                      borderTopWidth: width * 0.0019,
-                                      borderRightWidth: width * 0.0019,
-                                      borderBottomWidth: width * 0.0019,
-                                      height: width * 0.13,
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                    }}
-                                    onPress={() =>
-                                      this.showAddNewType(item.name)
-                                    }>
-                                    <Icon
-                                      size={width * 0.06}
-                                      color="#fff"
-                                      name={'add'}
-                                    />
-                                  </TouchableOpacity>
+                                      flexDirection: 'row',
+                                      alignItems: 'flex-start',
+                                    }}>
+                                    <View
+                                      pointerEvents={
+                                        index > 0
+                                          ? deviceData[0].selectId
+                                            ? 'auto'
+                                            : 'none'
+                                          : 'auto'
+                                      }>
+                                      <SearchableDropDown
+                                        onItemSelect={(item) => {
+                                          this.getDevice(item, index);
+                                          // console.log('kia mila', item);
+                                        }}
+                                        containerStyle={{
+                                          paddingBottom: width * 0.02,
+                                          width: width * 0.7,
+                                        }}
+                                        itemStyle={{
+                                          padding: width * 0.027,
+                                          backgroundColor: 'rgb(247, 247, 247)',
+                                          borderColor: '#bbb',
+                                          borderWidth: width * 0.0015,
+                                          borderRadius: width * 0.015,
+                                          zIndex: 99,
+                                        }}
+                                        itemTextStyle={{color: '#222'}}
+                                        itemsContainerStyle={{
+                                          maxHeight: height * 0.08,
+                                        }}
+                                        items={item.data}
+                                        resetValue={false}
+                                        textInputProps={{
+                                          editable:
+                                            index == 2
+                                              ? deviceData[1].selectId
+                                                ? true
+                                                : false
+                                              : true,
+                                          placeholder:
+                                            index == 1
+                                              ? deviceData[0].selectId
+                                                ? item.name
+                                                : 'First Select Manufacture'
+                                              : item.name,
+                                          underlineColorAndroid: 'transparent',
+                                          style: {
+                                            padding: width * 0.027,
+                                            margin: 0,
+                                            borderTopLeftRadius: width * 0.015,
+                                            borderBottomLeftRadius:
+                                              width * 0.015,
+                                            borderColor: item.error
+                                              ? '#A3001B'
+                                              : 'black',
+                                            height: width * 0.13,
+                                            backgroundColor: '#F6F6F6',
+                                            borderTopWidth: width * 0.0019,
+                                            borderLeftWidth: width * 0.0019,
+                                            borderBottomWidth: width * 0.0019,
+                                            zIndex: 0,
+                                          },
+                                          onTextChange: (text) => {
+                                            this.onChangeManufacturer(
+                                              text,
+                                              index,
+                                            );
+                                          },
+                                          value: setTimeout(
+                                            () => item.select,
+                                            200,
+                                          ),
+                                          defaultValue: item.select,
+                                        }}
+                                        listProps={{
+                                          nestedScrollEnabled: true,
+                                        }}
+                                      />
+                                    </View>
+                                    <TouchableOpacity
+                                      style={{
+                                        width: width * 0.1,
+                                        backgroundColor: '#25AAE199',
+                                        borderTopRightRadius: width * 0.015,
+                                        borderBottomRightRadius: width * 0.015,
+                                        borderTopWidth: width * 0.0019,
+                                        borderRightWidth: width * 0.0019,
+                                        borderBottomWidth: width * 0.0019,
+                                        height: width * 0.13,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                      onPress={() =>
+                                        this.showAddNewType(item.name)
+                                      }>
+                                      <Icon
+                                        size={width * 0.06}
+                                        color="#fff"
+                                        name={'add'}
+                                      />
+                                    </TouchableOpacity>
+                                  </View>
                                 </View>
+                              ))}
+                              <View
+                                style={{
+                                  width: width * 0.8,
+                                }}>
+                                <View
+                                  style={[
+                                    styles.desciptionContainer,
+                                    {
+                                      alignSelf: 'flex-start',
+                                      borderBottomWidth: 0,
+                                    },
+                                  ]}>
+                                  <Text
+                                    style={[
+                                      styles.desciptionHeading,
+                                      {
+                                        height: width * 0.05,
+                                        textAlignVertical: 'bottom',
+                                      },
+                                    ]}>
+                                    Product Desc*
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder="Type Product Description"
+                                  // value={
+                                  //   productNo.length > 24
+                                  //     ? productNo.slice(0, 24) + '...'
+                                  //     : productNo
+                                  // }
+                                  selection
+                                  dense={true}
+                                  editable={false}
+                                  showSoftInputOnFocus={false}
+                                  style={[
+                                    styles.input,
+                                    {
+                                      width: '100%',
+                                    },
+                                  ]}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                />
                               </View>
-                            ))
+                            </View>
                           )}
                           {this.state.error.deviceId ? (
                             <HelperText

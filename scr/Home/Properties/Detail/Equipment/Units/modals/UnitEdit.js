@@ -4077,11 +4077,13 @@ export default function UnitEdit({
                           )}
                           {showAddType !== 'Device' && (
                             <View
-                              style={{
-                                // flexDirection: 'row',
-                                // justifyContent: 'space-between',
-                                backgroundColor: 'tomato',
-                              }}>
+                              style={
+                                {
+                                  // flexDirection: 'row',
+                                  // justifyContent: 'space-between',
+                                  // backgroundColor: 'tomato',
+                                }
+                              }>
                               <View>
                                 <View
                                   style={[
@@ -4587,10 +4589,11 @@ export default function UnitEdit({
                 <View
                   style={{
                     flex: 1,
+                    // backgroundColor: 'pink',
+                    paddingTop: 8,
                   }}>
                   <View
                     style={{
-                      // backgroundColor: 'pink',
                       alignItems: 'center',
                     }}>
                     <View style={styles.desciptionContainer}>
@@ -4976,6 +4979,8 @@ const styles = StyleSheet.create({
     height: height,
   },
   boxHeader: {
+    // backgroundColor: 'tomato',
+    marginTop: 8,
     width: '100%',
     height: width * 0.18,
   },
