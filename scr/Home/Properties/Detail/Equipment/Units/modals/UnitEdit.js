@@ -19,6 +19,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
   Switch,
+  Keyboard,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
@@ -268,6 +269,8 @@ export default function UnitEdit({
   const [error, setError] = useState({
     errorUnits: '',
   });
+
+  const verticalOffset = useRef(-180);
 
   const turnLocationOn = () => {
     if (Platform.OS == 'ios') {
@@ -1284,6 +1287,11 @@ export default function UnitEdit({
 
   const renderSlide3 = ({item, index}) => {
     // console.log('index check slider 3 ---> ',index)
+    if (index == 1 && item.value == null) {
+      let newArr = [...slide2]; // copying the old datas array
+      newArr[index].value = '0'; // replace e.target.value with whatever you want to change it to
+      setSlide2(newArr);
+    }
     return (
       <View style={{width: width * 0.8}} key={item.id}>
         <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
@@ -1476,6 +1484,21 @@ export default function UnitEdit({
       setLong(long);
     });
   };
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      console.log('Keyboard Shown');
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      console.log('Keyboard Hidden');
+      setVerticalOffs(-180);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const getPropertyLocation = () => {
     var lat = parseFloat(propertyLat);
@@ -1831,6 +1854,8 @@ export default function UnitEdit({
     setShowAddType(false);
   };
 
+  const [verticalOffs, setVerticalOffs] = useState(-180);
+
   const AddNewMeterType = async () => {
     setTypeLoader(true);
     setAddTypeInput(false);
@@ -1881,7 +1906,10 @@ export default function UnitEdit({
             </View>
           </View>
         ) : (
-          <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+          <KeyboardAvoidingView
+            style={{flex: 1, justifyContent: 'flex-end'}}
+            behavior={Platform.OS ? 'padding' : 'height'}
+            keyboardVerticalOffset={verticalOffs}>
             {showAddMeterSlider ? (
               selectLocation ? (
                 <View
@@ -2193,7 +2221,7 @@ export default function UnitEdit({
                                     <View>
                                       <Text
                                         style={styles.meterDesciptionHeading}>
-                                        Model Number*
+                                        Model Number* (Bekkar hai)
                                       </Text>
                                     </View>
                                     <TextInput
@@ -3086,7 +3114,10 @@ export default function UnitEdit({
                         </View>
                         <TouchableOpacity
                           onPress={() => getPropertyLocation()}
-                          style={[styles.doneButton, {bottom: width * 0.15}]}>
+                          style={[
+                            styles.doneButton,
+                            {bottom: width * 0.15, right: width * 0.025},
+                          ]}>
                           <Icon
                             size={width * 0.07}
                             color="#fff"
@@ -3095,7 +3126,10 @@ export default function UnitEdit({
                         </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => getCurrentLocation()}
-                          style={[styles.doneButton, {bottom: 5}]}>
+                          style={[
+                            styles.doneButton,
+                            {bottom: 5, right: width * 0.025},
+                          ]}>
                           <Icon
                             size={width * 0.07}
                             color="#fff"
@@ -3338,7 +3372,7 @@ export default function UnitEdit({
                                         position: 'absolute',
                                         width: width * 0.8,
                                         top: width * 0.15,
-                                        zIndex: 1,
+                                        zIndex: 11,
                                         backgroundColor: 'white',
                                         elevation: width * 0.01,
                                       }
@@ -3857,6 +3891,9 @@ export default function UnitEdit({
                                             />
                                           ) : (
                                             <View>
+                                              {/*
+                                              //! Ye New Device Adding ka hai
+                                               */}
                                               <TextInput
                                                 placeholder={
                                                   'Type New Device Name'
@@ -3891,8 +3928,11 @@ export default function UnitEdit({
                                                 <TextInput
                                                   placeholder="Type Model Number"
                                                   value={addModelNo}
-                                                  showSoftInputOnFocus={false}
+                                                  // showSoftInputOnFocus={false}
                                                   style={styles.meterInput}
+                                                  onSubmitEditing={
+                                                    Keyboard.dismiss
+                                                  }
                                                   mode={'outlined'}
                                                   theme={{
                                                     colors: {
@@ -3900,6 +3940,18 @@ export default function UnitEdit({
                                                       primary: '#25AAE1ec',
                                                       selectionColor: 'red',
                                                     },
+                                                  }}
+                                                  onFocus={() => {
+                                                    console.log(
+                                                      'Focusing Model number',
+                                                    );
+                                                    setVerticalOffs(-60);
+                                                  }}
+                                                  onBlur={() => {
+                                                    console.log(
+                                                      'Blurring Model number',
+                                                    );
+                                                    setVerticalOffs(-180);
                                                   }}
                                                   onChangeText={(text) => {
                                                     setAddModelNo(text);
@@ -3918,9 +3970,12 @@ export default function UnitEdit({
                                                 <TextInput
                                                   placeholder="Type Product Description"
                                                   value={addProductNo}
-                                                  showSoftInputOnFocus={false}
+                                                  // showSoftInputOnFocus={false}
                                                   style={styles.meterInput}
                                                   mode={'outlined'}
+                                                  onSubmitEditing={
+                                                    Keyboard.dismiss
+                                                  }
                                                   theme={{
                                                     colors: {
                                                       text: '#25AAE1ec',
@@ -3930,6 +3985,18 @@ export default function UnitEdit({
                                                   }}
                                                   onChangeText={(text) => {
                                                     setAddProductNo(text);
+                                                  }}
+                                                  onFocus={() => {
+                                                    console.log(
+                                                      'Focusing Product Desc',
+                                                    );
+                                                    setVerticalOffs(-60);
+                                                  }}
+                                                  onBlur={() => {
+                                                    console.log(
+                                                      'Blurring Product Desc',
+                                                    );
+                                                    setVerticalOffs(-180);
                                                   }}
                                                 />
                                               </View>
@@ -4128,10 +4195,11 @@ export default function UnitEdit({
                     ) : (
                       <View
                         style={{
+                          flex: 1,
                           flexDirection: 'row',
                           justifyContent: 'space-between',
                           position: 'absolute',
-                          width: width * 0.85,
+                          width: width * 0.95,
                           height: width * 0.12,
                           zIndex: 1,
                         }}>
@@ -4329,13 +4397,57 @@ export default function UnitEdit({
                 {/* Box Header */}
                 <View style={styles.boxHeader}>
                   <View style={styles.boxHeaderInner}>
-                    <Icon
+                    {/* <Icon
                       name={'business'}
                       size={height * 0.05}
                       color="#5e5e5e"
-                    />
+                    /> */}
+                    <Pressable
+                      style={{marginLeft: 5}}
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: changeUtilityAndToggle,
+                            },
+                          ],
+                        )
+                      }
+                      android_ripple={{
+                        color: '#5e5e5e',
+                        borderless: true,
+                        // radius: width * 0.03,
+                      }}>
+                      <Text
+                        style={[
+                          styles.modalHeading,
+                          {color: '#5e5e5e', fontSize: width * 0.04},
+                        ]}>
+                        Cancel
+                      </Text>
+                    </Pressable>
                     <Text style={styles.modalHeading}>{modalName}</Text>
                     <Pressable
+                      style={{marginRight: 5}}
+                      onPress={handleAddNewUnit}
+                      android_ripple={{
+                        color: '#25AAE1',
+                        borderless: true,
+                        // radius: width * 0.03,
+                      }}>
+                      <Text
+                        style={[
+                          styles.modalHeading,
+                          {color: '#25AAE1', fontSize: width * 0.04},
+                        ]}>
+                        Confirm
+                      </Text>
+                    </Pressable>
+                    {/* <Pressable
                       onPress={() =>
                         Alert.alert(
                           'Alert',
@@ -4360,92 +4472,105 @@ export default function UnitEdit({
                         color="black"
                         maxOpacity={0.5}
                       />
-                    </Pressable>
+                    </Pressable> */}
                   </View>
                 </View>
                 {/* Box Body */}
-                <View style={{flex: 1, justifyContent: 'center'}}>
-                  {/* <View style={{ flex: 1 }}> */}
-                  <View style={styles.desciptionContainer}>
-                    <Build
-                      name={'office-building'}
-                      size={height * 0.02}
-                      color="#5e5e5e"
-                    />
-                    <Text style={styles.desciptionHeading}>BUILDING*</Text>
-                  </View>
-                  <View style={styles.inputContainer}>
-                    {/* //todo: This is Drop down picker */}
-                    <TextInput
-                      placeholder="Building Name"
-                      value={buildingName}
-                      dense={true}
-                      editable={false}
-                      showSoftInputOnFocus={false}
-                      style={styles.input}
-                      mode={'outlined'}
-                      theme={{
-                        colors: {
-                          text: '#25AAE1ec',
-                          primary: '#25AAE1ec',
-                          selectionColor: 'red',
-                        },
-                      }}
-                    />
-                  </View>
-                  <View style={styles.desciptionContainer}>
-                    <Text style={styles.desciptionHeading}>UNIT*</Text>
-                  </View>
-                  <View style={[styles.inputContainer]}>
-                    <TextInput
-                      placeholder="Unit Name"
-                      value={state.lastUnitData}
-                      dense={true}
-                      onChangeText={(text) => {
-                        LayoutAnimation.configureNext({
-                          duration: 300,
-                          create: {
-                            type: LayoutAnimation.Types.easeInEaseOut,
-                            property: LayoutAnimation.Properties.opacity,
+                <View
+                  style={{
+                    flex: 1,
+                  }}>
+                  <View
+                    style={{
+                      // backgroundColor: 'pink',
+                      alignItems: 'center',
+                    }}>
+                    <View style={styles.desciptionContainer}>
+                      <Build
+                        name={'office-building'}
+                        size={height * 0.02}
+                        color="#5e5e5e"
+                      />
+                      <Text style={styles.desciptionHeading}>BUILDING*</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                      {/* //todo: This is Drop down picker */}
+                      <TextInput
+                        placeholder="Building Name"
+                        value={buildingName}
+                        dense={true}
+                        editable={false}
+                        showSoftInputOnFocus={false}
+                        style={styles.input}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
                           },
-                          update: {
-                            type: LayoutAnimation.Types.easeInEaseOut,
+                        }}
+                      />
+                    </View>
+                    <View style={styles.desciptionContainer}>
+                      <Text style={styles.desciptionHeading}>UNIT*</Text>
+                    </View>
+                    <View style={[styles.inputContainer]}>
+                      <TextInput
+                        placeholder="Unit Name"
+                        value={state.lastUnitData}
+                        dense={true}
+                        onChangeText={(text) => {
+                          LayoutAnimation.configureNext({
+                            duration: 300,
+                            create: {
+                              type: LayoutAnimation.Types.easeInEaseOut,
+                              property: LayoutAnimation.Properties.opacity,
+                            },
+                            update: {
+                              type: LayoutAnimation.Types.easeInEaseOut,
+                            },
+                          });
+                          setError((oldState) => ({
+                            ...oldState,
+                            errorUnits: '',
+                          }));
+                          type == 'meterDirect'
+                            ? null
+                            : (setState((oldState) => ({
+                                ...oldState,
+                                lastUnitData: text,
+                              })),
+                              console.log('unit Name', state.lastUnitData));
+                        }}
+                        disabled={type == 'meterDirect' ? true : false}
+                        style={styles.input}
+                        error={error.errorUnits}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
                           },
-                        });
-                        setError((oldState) => ({
-                          ...oldState,
-                          errorUnits: '',
-                        }));
-                        type == 'meterDirect'
-                          ? null
-                          : (setState((oldState) => ({
-                              ...oldState,
-                              lastUnitData: text,
-                            })),
-                            console.log('unit Name', state.lastUnitData));
-                      }}
-                      disabled={type == 'meterDirect' ? true : false}
-                      style={styles.input}
-                      error={error.errorUnits}
-                      mode={'outlined'}
-                      theme={{
-                        colors: {
-                          text: '#25AAE1ec',
-                          primary: '#25AAE1ec',
-                          selectionColor: 'red',
-                        },
-                      }}
-                    />
+                        }}
+                      />
+                    </View>
+                    <View style={{width: '80%'}}>
+                      {error.errorUnits ? (
+                        <HelperText type="error" visible={error.errorUnits}>
+                          {error.errorUnits}
+                        </HelperText>
+                      ) : null}
+                    </View>
                   </View>
-                  {error.errorUnits ? (
-                    <HelperText type="error" visible={error.errorUnits}>
-                      {error.errorUnits}
-                    </HelperText>
-                  ) : null}
                   {/* </View> */}
                   <View
                     style={{
                       flex: 10,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      // backgroundColor: 'yellow',
                     }}>
                     <View
                       style={[
@@ -4491,6 +4616,7 @@ export default function UnitEdit({
                                   alignItems: 'center',
                                   justifyContent: 'center',
                                   padding: width * 0.02,
+                                  margin: width * 0.01,
                                   elevation: 2,
                                   backgroundColor: 'white',
                                   shadowColor: '#000',
@@ -4621,12 +4747,13 @@ export default function UnitEdit({
                   {/* Box Footer */}
                   <View
                     style={{
+                      // backgroundColor: 'pink',
                       flex: 2,
                       justifyContent: 'flex-end',
                       alignItems: 'flex-end',
                     }}>
                     <View style={styles.footerBtn}>
-                      <View style={styles.addUnitBtnContainer}>
+                      {/* <View style={styles.addUnitBtnContainer}>
                         <TouchableOpacity
                           onPress={() =>
                             Alert.alert(
@@ -4668,7 +4795,7 @@ export default function UnitEdit({
                             </Text>
                           </View>
                         </TouchableOpacity>
-                      </View>
+                      </View> */}
                     </View>
                   </View>
                 </View>
@@ -4741,7 +4868,7 @@ const styles = StyleSheet.create({
     height: height,
   },
   boxHeader: {
-    width: '90%',
+    width: '100%',
     height: width * 0.18,
   },
   boxHeaderInner: {
@@ -4755,11 +4882,11 @@ const styles = StyleSheet.create({
     fontSize: width * 0.048,
     color: 'black',
     fontFamily: Fonts.ComfortaaRegular,
-    right: width * 0.02,
+    // right: width * 0.02,
   },
   desciptionContainer: {
     height: width * 0.05,
-    width: width * 0.7,
+    width: width * 0.8,
     alignSelf: 'center',
     alignItems: 'flex-end',
     flexDirection: 'row',
@@ -4836,13 +4963,13 @@ const styles = StyleSheet.create({
     elevation: width * 0.001,
   },
   footerBtn: {
-    width: width * 0.8,
-    height: width * 0.2,
+    width: width * 1,
+    height: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: width * 0.02,
-    borderTopWidth: width * 0.001,
-    // backgroundColor: 'yellow',
+    // borderTopWidth: width * 0.001,
+    // borderColor: '#25AAE1ec',
     // top: '20%',
   },
   input: {
