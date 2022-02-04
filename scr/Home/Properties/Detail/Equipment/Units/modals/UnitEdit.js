@@ -46,6 +46,7 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
+import {Icon as IconX} from 'react-native-elements';
 import {
   check,
   openSettings,
@@ -76,23 +77,23 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default function UnitEdit({
-  modalVisible,
-  closeModal,
-  openModal,
-  unitsArray,
-  buildingName,
-  unitDetails,
-  meterTypes,
-  buildingId,
-  reRun,
-  type,
-  modalName,
   flag,
-  enableFlag,
-  disableFlag,
   propertyId,
   propertyLat,
   propertyLong,
+  enableFlag,
+  disableFlag,
+  modalVisible,
+  closeModal,
+  reRun,
+  meterTypes,
+  modalName,
+  buildingName,
+  buildingId,
+  unitDetails,
+  unitsArray,
+  openModal,
+  type,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [defaultMeterValues, setDefaultMeterValues] = useState(true);
@@ -1567,6 +1568,7 @@ export default function UnitEdit({
     setAddModelNo('');
     setAddProductNo('');
     setSelectUtil([]);
+    setDefaultScreen(false);
     slide1?.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
@@ -1708,6 +1710,7 @@ export default function UnitEdit({
         alert(AttachedToResponse?.data?.message);
       }
     } else {
+      //* FIXME: Device Adding
       let data = {
         name: addDevice[2].select,
         manufacturer_id: addDevice[0].selectId,
@@ -1868,7 +1871,7 @@ export default function UnitEdit({
         hasBackdrop={true}
         backdropColor="black"
         statusBarTranslucent
-        // style={{top: width * -0.1}}
+        style={{margin: 0}}
         // onBackdropPress={() => se7tShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         {isActivityLoader ? (
@@ -1878,7 +1881,7 @@ export default function UnitEdit({
             </View>
           </View>
         ) : (
-          <KeyboardAvoidingView behavior="padding">
+          <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
             {showAddMeterSlider ? (
               selectLocation ? (
                 <View
@@ -2019,11 +2022,11 @@ export default function UnitEdit({
                 <View style={styles.boxInner}>
                   <View
                     style={{
-                      height: width * 0.18,
+                      // height: width * 0.18,
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexDirection: 'row',
-                      width: width * 0.85,
+                      // width: width * 0.85,
                     }}>
                     <Text
                       style={[
@@ -2333,12 +2336,13 @@ export default function UnitEdit({
               ) : (
                 <View
                   style={{
-                    height: width * 1.3,
+                    height: height,
+                    padding: 20,
                     backgroundColor: 'white',
                     // backgroundColor: 'pink',
                     alignItems: 'center',
                     // justifyContent: 'center',
-                    borderRadius: width * 0.03,
+                    // borderRadius: width * 0.03,
                     overflow: 'hidden',
                   }}>
                   <View
@@ -3054,7 +3058,7 @@ export default function UnitEdit({
                       <View
                         style={{
                           flex: 1,
-                          width: width * 0.9,
+                          width: width,
                           alignItems: 'center',
                           justifyContent: 'center',
                           marginTop: width * 0.01,
@@ -3101,13 +3105,15 @@ export default function UnitEdit({
                         {markers.length > 0 && (
                           <View
                             style={{
+                              flex: 1,
                               // backgroundColor: 'blue',
-                              width: width * 0.12,
+                              width: width * 0.14,
                               // height: height * 0.11,
                               zIndex: 1,
                               position: 'absolute',
-                              top: width * 0.4,
+                              // top: width * 0.4,
                               alignItems: 'center',
+                              justifyContent: 'center',
                             }}>
                             <Icon
                               size={width * 0.12}
@@ -3850,23 +3856,84 @@ export default function UnitEdit({
                                               }}
                                             />
                                           ) : (
-                                            <TextInput
-                                              placeholder={'Type new Device'}
-                                              value={item.select}
-                                              style={styles.meterInput}
-                                              mode={'outlined'}
-                                              theme={{
-                                                colors: {
-                                                  text: '#25AAE1ec',
-                                                  primary: '#25AAE1ec',
-                                                  selectionColor: 'red',
-                                                  zIndex: 10,
-                                                },
-                                              }}
-                                              onChangeText={(text) => {
-                                                onChangeNewDevice(text, index);
-                                              }}
-                                            />
+                                            <View>
+                                              <TextInput
+                                                placeholder={
+                                                  'Type New Device Name'
+                                                }
+                                                value={item.select}
+                                                style={styles.meterInput}
+                                                mode={'outlined'}
+                                                theme={{
+                                                  colors: {
+                                                    text: '#25AAE1ec',
+                                                    primary: '#25AAE1ec',
+                                                    selectionColor: 'red',
+                                                    zIndex: 10,
+                                                  },
+                                                }}
+                                                onChangeText={(text) => {
+                                                  onChangeNewDevice(
+                                                    text,
+                                                    index,
+                                                  );
+                                                }}
+                                              />
+                                              <View>
+                                                <View>
+                                                  <Text
+                                                    style={
+                                                      styles.meterDesciptionHeading
+                                                    }>
+                                                    Model Number*
+                                                  </Text>
+                                                </View>
+                                                <TextInput
+                                                  placeholder="Type Model Number"
+                                                  value={addModelNo}
+                                                  showSoftInputOnFocus={false}
+                                                  style={styles.meterInput}
+                                                  mode={'outlined'}
+                                                  theme={{
+                                                    colors: {
+                                                      text: '#25AAE1ec',
+                                                      primary: '#25AAE1ec',
+                                                      selectionColor: 'red',
+                                                    },
+                                                  }}
+                                                  onChangeText={(text) => {
+                                                    setAddModelNo(text);
+                                                  }}
+                                                />
+                                              </View>
+                                              <View>
+                                                <View>
+                                                  <Text
+                                                    style={
+                                                      styles.meterDesciptionHeading
+                                                    }>
+                                                    Product Description*
+                                                  </Text>
+                                                </View>
+                                                <TextInput
+                                                  placeholder="Type Product Description"
+                                                  value={addProductNo}
+                                                  showSoftInputOnFocus={false}
+                                                  style={styles.meterInput}
+                                                  mode={'outlined'}
+                                                  theme={{
+                                                    colors: {
+                                                      text: '#25AAE1ec',
+                                                      primary: '#25AAE1ec',
+                                                      selectionColor: 'red',
+                                                    },
+                                                  }}
+                                                  onChangeText={(text) => {
+                                                    setAddProductNo(text);
+                                                  }}
+                                                />
+                                              </View>
+                                            </View>
                                           )}
                                         </View>
                                       ))}
@@ -3941,100 +4008,93 @@ export default function UnitEdit({
                               </View>
                             </>
                           )}
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                            }}>
-                            <View>
-                              <View
-                                style={[
-                                  styles.desciptionContainer,
-                                  {
-                                    alignSelf: 'flex-start',
-                                    width: width * 0.35,
-                                  },
-                                ]}>
-                                <Text
+                          {showAddType !== 'Device' && (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                              }}>
+                              <View>
+                                <View
                                   style={[
-                                    styles.desciptionHeading,
+                                    styles.desciptionContainer,
                                     {
-                                      height: width * 0.05,
-                                      textAlignVertical: 'bottom',
+                                      alignSelf: 'flex-start',
+                                      width: width * 0.35,
                                     },
                                   ]}>
-                                  Model Number*
-                                </Text>
+                                  <Text
+                                    style={[
+                                      styles.desciptionHeading,
+                                      {
+                                        height: width * 0.05,
+                                        textAlignVertical: 'bottom',
+                                      },
+                                    ]}>
+                                    Model Number*
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder="Model Number"
+                                  value={modelNo}
+                                  dense={true}
+                                  editable={false}
+                                  showSoftInputOnFocus={false}
+                                  style={[styles.input, {width: width * 0.38}]}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                />
                               </View>
-                              <TextInput
-                                placeholder="Model Number"
-                                value={modelNo}
-                                dense={true}
-                                editable={false}
-                                disabled={defaultDeviceValues}
-                                showSoftInputOnFocus={false}
-                                style={[styles.input, {width: width * 0.38}]}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
-                            </View>
-                            <View>
-                              <View
-                                style={[
-                                  styles.desciptionContainer,
-                                  {
-                                    alignSelf: 'flex-start',
-                                    width: width * 0.35,
-                                  },
-                                ]}>
-                                <Text
+                              <View>
+                                <View
                                   style={[
-                                    styles.desciptionHeading,
+                                    styles.desciptionContainer,
                                     {
-                                      height: width * 0.05,
-                                      textAlignVertical: 'bottom',
+                                      alignSelf: 'flex-start',
+                                      width: width * 0.35,
                                     },
                                   ]}>
-                                  Product Desc*
-                                </Text>
+                                  <Text
+                                    style={[
+                                      styles.desciptionHeading,
+                                      {
+                                        height: width * 0.05,
+                                        textAlignVertical: 'bottom',
+                                      },
+                                    ]}>
+                                    Product Desc*
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder="Type Product Description"
+                                  value={
+                                    productNo.length > 13
+                                      ? productNo.slice(0, 13) + '...'
+                                      : productNo
+                                  }
+                                  selection
+                                  dense={true}
+                                  editable={false}
+                                  showSoftInputOnFocus={false}
+                                  style={[styles.input, {width: width * 0.38}]}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                />
                               </View>
-                              <TextInput
-                                placeholder="Type Product Description"
-                                value={
-                                  productNo.length > 13
-                                    ? productNo.slice(0, 13) + '...'
-                                    : productNo
-                                }
-                                selection
-                                dense={true}
-                                editable={false}
-                                disabled={defaultDeviceValues}
-                                showSoftInputOnFocus={false}
-                                style={[styles.input, {width: width * 0.38}]}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                              />
                             </View>
-                          </View>
-                          <Switch
-                            trackColor={{false: '#767577', true: '#81b0ff'}}
-                            thumbColor={'#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={(val) => getdefaultDeviceData(val)}
-                            value={defaultDeviceValues}
-                          />
+                          )}
                         </View>
                       )}
                     </View>
@@ -4177,6 +4237,93 @@ export default function UnitEdit({
                   </View>
                 </View>
               )
+            ) : defaultScreen ? (
+              <View
+                style={{
+                  height: height,
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  // borderRadius: width * 0.03,
+                  overflow: 'hidden',
+                  // backgroundColor: 'pink',
+                  // justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    height: width * 0.18,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 10,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      width: width * 0.85,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={[
+                        styles.meterDesciptionHeading,
+                        {fontSize: width * 0.06},
+                      ]}>
+                      Make Selection
+                    </Text>
+
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to clear current selected data',
+                          [
+                            {text: 'No', style: 'cancel'},
+                            {
+                              text: 'Yes',
+                              onPress: cancelMeter,
+                            },
+                          ],
+                        )
+                      }>
+                      <Icon
+                        name="cancel"
+                        size={width * 0.06}
+                        color="black"
+                        maxOpacity={0.5}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    // backgroundColor: 'yellow',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Use Default Values</Text>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#81b0ff'}}
+                    thumbColor={defaultValues ? '#25AAE1ec ' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={() => setDefaultValues(!defaultValues)}
+                    value={defaultValues}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => useDefaultOrNot()}
+                  style={styles.doneButton}>
+                  <Icon
+                    size={width * 0.07}
+                    color="#fff"
+                    name={'navigate-next'}
+                  />
+                </TouchableOpacity>
+              </View>
             ) : (
               <View style={styles.boxInner}>
                 {/* Box Header */}
@@ -4217,7 +4364,7 @@ export default function UnitEdit({
                   </View>
                 </View>
                 {/* Box Body */}
-                <View style={{height: width * 0.62, justifyContent: 'center'}}>
+                <View style={{flex: 1, justifyContent: 'center'}}>
                   {/* <View style={{ flex: 1 }}> */}
                   <View style={styles.desciptionContainer}>
                     <Build
@@ -4297,93 +4444,92 @@ export default function UnitEdit({
                   ) : null}
                   {/* </View> */}
                   <View
-                    style={[
-                      styles.inputContainer,
-                      {
-                        flexDirection: 'row',
-                        height: width * 0.15,
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                      },
-                    ]}>
-                    {loadMeters ? (
-                      <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
-                    ) : (
-                      meterListData.length > 0 &&
-                      meterListData?.map(
-                        (item, index) => (
-                          console.log('meterListData+++>>>>>', index),
-                          (
-                            <TouchableOpacity
-                              onPress={() => {
-                                LayoutAnimation.configureNext({
-                                  duration: 300,
-                                  create: {
-                                    type: LayoutAnimation.Types.easeInEaseOut,
-                                    property:
-                                      LayoutAnimation.Properties.opacity,
+                    style={{
+                      flex: 10,
+                    }}>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        {
+                          flex: 8,
+                          flexDirection: 'row',
+                          // height: width * 0.15,
+                          justifyContent: 'space-around',
+                          alignItems: 'flex-start',
+                          flexWrap: 'wrap',
+                          padding: 5,
+                        },
+                      ]}>
+                      {loadMeters ? (
+                        <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
+                      ) : (
+                        meterListData.length > 0 &&
+                        meterListData?.map(
+                          (item, index) => (
+                            console.log('meterListData+++>>>>>', index),
+                            (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  LayoutAnimation.configureNext({
+                                    duration: 300,
+                                    create: {
+                                      type: LayoutAnimation.Types.easeInEaseOut,
+                                      property:
+                                        LayoutAnimation.Properties.opacity,
+                                    },
+                                    update: {
+                                      type: LayoutAnimation.Types.easeInEaseOut,
+                                    },
+                                  }),
+                                    // setShowAddMeterSlider(true),
+                                    // setDefaultScreen(true),
+                                    getMeterData(item, index);
+                                  enableLocation();
+                                }}
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  padding: width * 0.02,
+                                  elevation: 2,
+                                  backgroundColor: 'white',
+                                  shadowColor: '#000',
+                                  shadowOffset: {
+                                    width: 0,
+                                    height: 1,
                                   },
-                                  update: {
-                                    type: LayoutAnimation.Types.easeInEaseOut,
-                                  },
-                                }),
-                                  getMeterData(item, index);
-                                callApi();
-                                enableLocation();
-                              }}
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: width * 0.02,
-                                elevation: 2,
-                                backgroundColor: 'white',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                  width: 0,
-                                  height: 1,
-                                },
-                                shadowOpacity: 0.2,
-                                shadowRadius: 1.41,
-                              }}>
-                              <Image
-                                source={typeSwitcher(item.meter_name)}
-                                style={styles.untiDetailImage}
-                              />
-                              <Text
-                                style={[
-                                  styles.meterDesciptionHeading,
-                                  {marginBottom: 0},
-                                ]}>
-                                {item.meter_name}
-                              </Text>
-                            </TouchableOpacity>
-                          )
-                        ),
-                      )
-                    )}
-                  </View>
-                </View>
-                {/* Box Footer */}
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                  }}>
-                  <View style={styles.footerBtn}>
+                                  shadowOpacity: 0.2,
+                                  shadowRadius: 1.41,
+                                }}>
+                                {/* <Image
+                                  source={typeSwitcher(item.meter_name)}
+                                  style={styles.untiDetailImage}
+                                /> */}
+                                <Text
+                                  style={[
+                                    styles.meterDesciptionHeading,
+                                    {marginBottom: 0},
+                                  ]}>
+                                  {item.meter_name}
+                                </Text>
+                              </TouchableOpacity>
+                            )
+                          ),
+                        )
+                      )}
+                    </View>
                     <View
                       style={{
-                        height: '100%',
+                        flex: 2,
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        justifyContent: 'flex-end',
                       }}>
                       {type == 'addMeterDirect' || type == 'meterDirect' ? (
                         meterData.length == 1 ? (
                           <View style={{marginLeft: width * 0.02}}>
                             <Text
                               style={{
-                                fontSize: height * 0.018,
+                                fontSize: height * 0.04,
                                 color: '#25AAE1ec',
                               }}>
                               No Meters
@@ -4406,20 +4552,25 @@ export default function UnitEdit({
                               enableLocation();
                             }}
                             style={{
-                              flexDirection: 'row',
+                              // flexDirection: 'row',
                               justifyContent: 'flex-start',
                               alignItems: 'center',
                               zIndex: 1,
                             }}>
                             {/*//todo: Button for meter */}
-                            <Plus name="plus" size={25} color="#25AAE1ec" />
                             <Text
                               style={{
-                                fontSize: height * 0.018,
+                                fontSize: height * 0.04,
                                 color: '#25AAE1ec',
                               }}>
-                              Meter
+                              Add Meter
                             </Text>
+                            <IconX
+                              name="plus-circle"
+                              type="feather"
+                              size={width * 0.1}
+                              color={'#25AAE1ec'}
+                            />
                           </TouchableOpacity>
                         )
                       ) : !meterListLoader ? (
@@ -4429,26 +4580,31 @@ export default function UnitEdit({
                               enableLocation();
                             }}
                             style={{
-                              flexDirection: 'row',
+                              // flexDirection: 'row',
                               justifyContent: 'flex-start',
                               alignItems: 'center',
                               zIndex: 1,
                             }}>
                             {/*//todo: Button for meter */}
-                            <Plus name="plus" size={25} color="#25AAE1ec" />
                             <Text
                               style={{
-                                fontSize: height * 0.018,
+                                fontSize: height * 0.04,
                                 color: '#25AAE1ec',
                               }}>
-                              Meter
+                              Add Meter
                             </Text>
+                            <IconX
+                              name="plus-circle"
+                              type="feather"
+                              size={width * 0.1}
+                              color={'#25AAE1ec'}
+                            />
                           </TouchableOpacity>
                         ) : (
                           <View style={{marginLeft: width * 0.02}}>
                             <Text
                               style={{
-                                fontSize: height * 0.018,
+                                fontSize: height * 0.04,
                                 color: '#25AAE1ec',
                               }}>
                               No Meters
@@ -4456,53 +4612,63 @@ export default function UnitEdit({
                           </View>
                         )
                       ) : (
-                        <View style={{marginLeft: width * 0.02}}>
+                        <View style={{marginBottom: width * 0.05}}>
                           <DotsLoader color="#25AAE1ec" />
                         </View>
                       )}
                     </View>
-                    <View style={styles.addUnitBtnContainer}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          Alert.alert(
-                            'Alert',
-                            'Are you sure you want to clear current selected data',
-                            [
-                              {text: 'No', style: 'cancel'},
-                              {
-                                text: 'Yes',
-                                onPress: changeUtilityAndToggle,
-                              },
-                            ],
-                          )
-                        }>
-                        <View style={styles.cancelBotton}>
-                          <Plus name="close" color="black" size={18} />
-                          <Text style={{color: 'black'}}>Cancel</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={handleAddNewUnit}>
-                        <View style={styles.submitBotton}>
-                          <Plus
-                            name={
-                              type == 'meterDirect' ||
+                  </View>
+                  {/* Box Footer */}
+                  <View
+                    style={{
+                      flex: 2,
+                      justifyContent: 'flex-end',
+                      alignItems: 'flex-end',
+                    }}>
+                    <View style={styles.footerBtn}>
+                      <View style={styles.addUnitBtnContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            Alert.alert(
+                              'Alert',
+                              'Are you sure you want to clear current selected data',
+                              [
+                                {text: 'No', style: 'cancel'},
+                                {
+                                  text: 'Yes',
+                                  onPress: changeUtilityAndToggle,
+                                },
+                              ],
+                            )
+                          }>
+                          <View style={styles.cancelBotton}>
+                            <Plus name="close" color="black" size={18} />
+                            <Text style={{color: 'black'}}>Cancel</Text>
+                          </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleAddNewUnit}>
+                          <View style={styles.submitBotton}>
+                            <Plus
+                              name={
+                                type == 'meterDirect' ||
+                                type == 'addMeterDirect' ||
+                                type == 'add'
+                                  ? 'plus'
+                                  : 'pencil-plus'
+                              }
+                              color="white"
+                              size={18}
+                            />
+                            <Text style={{color: 'white'}}>
+                              {type == 'meterDirect' ||
                               type == 'addMeterDirect' ||
                               type == 'add'
-                                ? 'plus'
-                                : 'pencil-plus'
-                            }
-                            color="white"
-                            size={18}
-                          />
-                          <Text style={{color: 'white'}}>
-                            {type == 'meterDirect' ||
-                            type == 'addMeterDirect' ||
-                            type == 'add'
-                              ? 'Add Unit'
-                              : 'Edit Unit'}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
+                                ? 'Add Unit'
+                                : 'Edit Unit'}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
@@ -4570,12 +4736,12 @@ const styles = StyleSheet.create({
   boxInner: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    borderRadius: width * 0.03,
-    // height: width * 1,
-    height: width * 1.3,
+    // borderRadius: width * 0.03,
+    width: width,
+    height: height,
   },
   boxHeader: {
-    width: width * 0.8,
+    width: '90%',
     height: width * 0.18,
   },
   boxHeaderInner: {

@@ -88,6 +88,9 @@ export default class Splash extends Component {
         editBuilding: '',
       },
       editBuildId: 0,
+      unitMeters: [],
+      unitDatax: [],
+      isEditUnitModalVisible: false,
     };
 
     if (Platform.OS === 'android') {
@@ -405,6 +408,23 @@ export default class Splash extends Component {
     }
   };
 
+  //! Work in Progress (UX)
+
+  _openEditUnit = async (unitId) => {
+    console.log('Unit ID', unitId);
+    const res = await this.api.get(`/property/equipment/unit/${unitId}`);
+    console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
+    this.setState({
+      unitMeters: res.data?.data?.unit?.unit_meter,
+      unitDatax: res.data,
+    });
+    this.toggleModalEditUnit();
+  };
+
+  toggleModalEditUnit = () => {
+    this.setState({isEditUnitModalVisible: !this.state.isEditUnitModalVisible});
+  };
+
   _renderUnitList = (unit) => {
     // console.log('>><<<<<<<<<', unit);
     return (
@@ -628,27 +648,50 @@ export default class Splash extends Component {
                 styles.buildingEditBtn,
                 {justifyContent: 'space-between', borderWidth: width * 0.001},
               ]}>
-              <TouchableOpacity
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                onPress={() => this.goToDetails(unit)}>
-                <MaterialCommunityIcons
-                  name="view-compact-outline"
-                  color="white"
-                  size={width * 0.04}
-                />
-                <Text
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
                   style={{
-                    color: 'white',
-                    fontFamily: Fonts.Montserrat,
-                    fontSize: width * 0.03,
+                    margin: width * 0.01,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => this.goToDetails(unit)}>
+                  <MaterialCommunityIcons
+                    name="view-compact-outline"
+                    color="white"
+                    size={width * 0.04}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: Fonts.Montserrat,
+                      fontSize: width * 0.03,
+                    }}>
+                    View
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this._openEditUnit(unit?.item?.id)}
+                  style={{
+                    margin: width * 0.01,
+                    flexDirection: 'row',
+                    alignItems: 'center',
                   }}>
-                  View
-                </Text>
-              </TouchableOpacity>
+                  <MaterialIcons
+                    name="edit"
+                    color="white"
+                    size={width * 0.04}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: Fonts.Montserrat,
+                      fontSize: width * 0.03,
+                    }}>
+                    Edit
+                  </Text>
+                </TouchableOpacity>
+              </View>
               {/* <TouchableOpacity style={{margin: width * 0.01}}>
                 <Text
                   style={{
@@ -659,7 +702,6 @@ export default class Splash extends Component {
                   Edit
                 </Text>
               </TouchableOpacity> */}
-
               <TouchableOpacity
                 onPress={() => this.confirmDelete(unit?.item?.id)}
                 style={{
@@ -1172,6 +1214,36 @@ export default class Splash extends Component {
                   this.setState({isModalUnitVisible: false});
                 }}
                 unitsArray={this.state.realData}
+              />
+              {/*
+              //! for edit unit
+              */}
+              <EditUnit
+                flag={this.state.flag}
+                propertyId={this.props.navigation.state.params.item.item.id}
+                propertyLat={
+                  this.props.navigation.state.params.item.item.latitude
+                }
+                propertyLong={
+                  this.props.navigation.state.params.item.item.longitude
+                }
+                enableFlag={() => this.setState({flag: true})}
+                disableFlag={() => this.setState({flag: false})}
+                modalVisible={this.state.isEditUnitModalVisible}
+                closeModal={() =>
+                  this.setState({
+                    isEditUnitModalVisible: !this.state.isEditUnitModalVisible,
+                  })
+                }
+                reRun={() => this.checkData()}
+                meterTypes={this.state.unitMeters}
+                modalName="Edit Unit"
+                buildingName={this.state.buildingData.name}
+                buildingId={this.state.editBuildId}
+                unitDetails={this.state.unitDatax.data}
+                // handleEditUnit={() => {
+                //   this.setState({isEditUnitModalVisible: false});
+                // }}
               />
               <AddBuilding
                 modalVisible={this.state.isModalBuildVisible}
