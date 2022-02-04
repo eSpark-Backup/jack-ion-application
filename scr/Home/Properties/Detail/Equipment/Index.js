@@ -102,12 +102,12 @@ export default class Splash extends Component {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
-    this.getToken();
+    // this.getToken();
   }
 
   onFocusFunction = () => {
     // this.setState({ loader: true, loaderBuildings: true });
-    // this.getToken();
+    this.getToken();
     this.setState({isModalVisible: false});
   };
 
