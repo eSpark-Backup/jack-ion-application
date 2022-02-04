@@ -1824,7 +1824,7 @@ export default class Splash extends React.Component {
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(1)}>
                           <Text style={styles.desciptionHeading}>
-                            meter Type Info
+                            Point of Entry
                           </Text>
                           <Iconi
                             name={
