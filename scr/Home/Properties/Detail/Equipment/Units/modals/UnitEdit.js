@@ -4162,6 +4162,13 @@ export default function UnitEdit({
                               </View>
                             </View>
                           )}
+                          <Switch
+                            trackColor={{false: '#767577', true: '#81b0ff'}}
+                            thumbColor={'#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => getdefaultDeviceData(val)}
+                            value={defaultDeviceValues}
+                          />
                         </View>
                       )}
                     </View>
