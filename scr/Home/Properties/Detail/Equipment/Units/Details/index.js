@@ -557,13 +557,13 @@ const App = ({navigation}) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.device?.manufacturer ?? 'N/A',
+        rightText: unitMeter?.model_no?.device?.manufacturer ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
       {
         leftText: 'Device',
-        rightText: unitMeter?.device?.name ?? 'N/A',
+        rightText: unitMeter?.model_no?.device?.name ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
@@ -587,7 +587,7 @@ const App = ({navigation}) => {
       // },
       {
         leftText: 'Meter Serial',
-        rightText: unitMeter?.meter_serial_number ?? 'N/A',
+        rightText: unitMeter?.device_serial_number ?? 'N/A',
         leftIcon: 'barcode-outline',
         leftType: 'ionicon',
         type: 'feather',
@@ -615,14 +615,14 @@ const App = ({navigation}) => {
     setMeterTypeData([
       {
         title: 'Hot Water Meter',
-        img: meterSwitcher(),
+        // img: meterSwitcher(),
         data: [
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.device?.manufacturer +
+              unitMeter?.model_no?.device?.manufacturer +
               ' (' +
-              unitMeter?.device?.name +
+              unitMeter?.model_no?.device?.name +
               ')',
             rightIcon: 'chevron-down',
             type: 'feather',
@@ -632,7 +632,7 @@ const App = ({navigation}) => {
     ]);
     setRemoteReaderData([
       {
-        title: unitMeter?.device?.device_type,
+        title: unitMeter?.model_no?.device?.device_type,
         img: require('../../../../../../../Images/remote-reader.png'),
         data: [
           {
@@ -707,7 +707,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: unitMeter?.meter_name,
+            rightName: 'unitMeter?.meter_name',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -1430,7 +1430,7 @@ const App = ({navigation}) => {
                   <Text
                     style={{
                       fontSize: iconSize,
-                      color: typeColor(unitMeter?.meter_name),
+                      // color: typeColor(unitMeter?.meter_name),
                       color: '#639CC7',
                     }}>
                     {unitMeter?.meter_read?.meter_reading
@@ -1441,7 +1441,7 @@ const App = ({navigation}) => {
                   <RightArrow
                     name="chevron-thin-right"
                     size={iconSize}
-                    color={typeColor(unitMeter?.meter_name)}
+                    // color={typeColor(unitMeter?.meter_name)}
                     color={'#639CC7'}
                     style={styles.rightedIcon}
                     onPress={() => setHeadView(!headView)}
@@ -1478,7 +1478,7 @@ const App = ({navigation}) => {
                   <RightArrow
                     name="chevron-thin-left"
                     size={iconSize}
-                    color={typeColor(unitMeter?.meter_name)}
+                    // color={typeColor(unitMeter?.meter_name)}
                     color={'#639CC7'}
                     style={styles.rightedIcon}
                     onPress={() => setHeadView(!headView)}
@@ -1532,7 +1532,7 @@ const App = ({navigation}) => {
                   />
                 }
                 buttonStyle={{
-                  backgroundColor: typeColor(unitMeter?.meter_name),
+                  // backgroundColor: typeColor(unitMeter?.meter_name),
                   backgroundColor: 'transparent',
                 }}
                 onPress={() => console.log('Quick Actions Press')}
@@ -1646,7 +1646,7 @@ const App = ({navigation}) => {
                           textTransform: 'capitalize',
                         },
                       ]}>
-                      {unitMeter?.meter_name + ' Meter'}
+                      {'unitMeter?.meter_name' + ' Meter'}
                     </Text>
                     <Image
                       source={img}
@@ -1861,7 +1861,7 @@ const App = ({navigation}) => {
                   <Button
                     onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${unitMeter?.meter_name} Meter`}
+                    title={`Delete {unitMeter?.meter_name} Meter`}
                     buttonStyle={styles.dangerBtn}
                   />
                   <Button
@@ -1883,7 +1883,7 @@ const App = ({navigation}) => {
                   style={[
                     styles.meterStyle,
                     {
-                      borderColor: typeColor(item.meter_name),
+                      // borderColor: typeColor(item.meter_name),
                       borderColor: '#639CC7',
                     },
                   ]}
@@ -1919,7 +1919,7 @@ const App = ({navigation}) => {
                         textAlignVertical: 'center',
                       },
                     ]}>
-                    {item.meter_name}
+                    {'item.meter_name'}
                   </Text>
                 </TouchableOpacity>
               ))}

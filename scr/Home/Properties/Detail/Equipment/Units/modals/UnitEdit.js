@@ -2609,7 +2609,7 @@ export default function UnitEdit({
                                         fontWeight: 'bold',
                                         fontSize: width * 0.045,
                                         color: '#25AAE1ec',
-                                        width: width * 0.15,
+                                        width: width * 0.17,
                                         textAlign: 'center',
                                       }}>
                                       Cancel
@@ -2770,7 +2770,7 @@ export default function UnitEdit({
                                             fontWeight: 'bold',
                                             fontSize: width * 0.045,
                                             color: '#25AAE1ec',
-                                            width: width * 0.15,
+                                            width: width * 0.17,
                                             textAlign: 'center',
                                           }}>
                                           Cancel
@@ -3025,7 +3025,7 @@ export default function UnitEdit({
                                       fontWeight: 'bold',
                                       fontSize: width * 0.045,
                                       color: '#25AAE1ec',
-                                      width: width * 0.15,
+                                      width: width * 0.17,
                                       textAlign: 'center',
                                     }}>
                                     Cancel
@@ -3729,7 +3729,7 @@ export default function UnitEdit({
                                             fontWeight: 'bold',
                                             fontSize: width * 0.045,
                                             color: '#25AAE1ec',
-                                            width: width * 0.15,
+                                            width: width * 0.17,
                                             textAlign: 'center',
                                           }}>
                                           Cancel
@@ -4017,7 +4017,7 @@ export default function UnitEdit({
                                             fontWeight: 'bold',
                                             fontSize: width * 0.045,
                                             color: '#25AAE1ec',
-                                            width: width * 0.15,
+                                            width: width * 0.17,
                                             textAlign: 'center',
                                           }}>
                                           Cancel
@@ -4263,15 +4263,17 @@ export default function UnitEdit({
                                   }}
                                 />
                               </View>
+                              <Switch
+                                trackColor={{false: '#767577', true: '#81b0ff'}}
+                                thumbColor={'#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={(val) =>
+                                  getdefaultDeviceData(val)
+                                }
+                                value={defaultDeviceValues}
+                              />
                             </View>
                           )}
-                          <Switch
-                            trackColor={{false: '#767577', true: '#81b0ff'}}
-                            thumbColor={'#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={(val) => getdefaultDeviceData(val)}
-                            value={defaultDeviceValues}
-                          />
                         </View>
                       )}
                     </View>
@@ -4331,84 +4333,88 @@ export default function UnitEdit({
                             />
                           </TouchableOpacity>
                         )}
-                        <TouchableOpacity
-                          style={[
-                            styles.doneButton,
-                            {
-                              right: 0,
-                              bottom: 0,
-                              backgroundColor:
-                                sliderNumber == 1 &&
-                                slide1[0].selectId &&
-                                slide1[1].selectId
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 2 &&
-                                    newMeter.id != 0 &&
-                                    newMeter.name
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 3 &&
-                                    slide2[0].value &&
-                                    slide2[1].value &&
-                                    attachedToId != null
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 4 &&
-                                    lat != undefined &&
-                                    long != undefined
-                                  ? '#25AAE1ec'
-                                  : sliderNumber == 5 &&
-                                    filePath != '' &&
-                                    filePath != null
-                                  ? '#25AAE1ec'
-                                  : (sliderNumber == 6 &&
-                                      installationStatus == 1) ||
-                                    (sliderNumber == 6 &&
-                                      installationStatus == 2 &&
-                                      reasonId &&
-                                      reasonDes)
-                                  ? '#25AAE1ec'
-                                  : '#D0D0D0',
-                            },
-                          ]}
-                          onPress={
-                            sliderNumber == 6 ? finishSlider : changeSlider
-                          }
-                          disabled={
-                            sliderNumber == 1 &&
-                            slide1[0].selectId &&
-                            slide1[1].selectId
-                              ? false
-                              : sliderNumber == 2 &&
-                                newMeter.id != 0 &&
-                                newMeter.name
-                              ? false
-                              : sliderNumber == 3 &&
-                                slide2[0].value &&
-                                slide2[1].value &&
-                                attachedToId != null
-                              ? false
-                              : sliderNumber == 4 &&
-                                lat != undefined &&
-                                long != undefined
-                              ? false
-                              : sliderNumber == 5 &&
-                                filePath != '' &&
-                                filePath != null
-                              ? false
-                              : (sliderNumber == 6 &&
-                                  installationStatus == 1) ||
-                                (sliderNumber == 6 &&
-                                  installationStatus == 2 &&
-                                  reasonId &&
-                                  reasonDes)
-                              ? false
-                              : true
-                          }>
-                          <Icon
-                            size={width * 0.07}
-                            color="#fff"
-                            name={sliderNumber == 6 ? 'check' : 'navigate-next'}
-                          />
-                        </TouchableOpacity>
+                        {showAddType == false && (
+                          <TouchableOpacity
+                            style={[
+                              styles.doneButton,
+                              {
+                                right: 0,
+                                bottom: 0,
+                                backgroundColor:
+                                  sliderNumber == 1 &&
+                                  slide1[0].selectId &&
+                                  slide1[1].selectId
+                                    ? '#25AAE1ec'
+                                    : sliderNumber == 2 &&
+                                      newMeter.id != 0 &&
+                                      newMeter.name
+                                    ? '#25AAE1ec'
+                                    : sliderNumber == 3 &&
+                                      slide2[0].value &&
+                                      slide2[1].value &&
+                                      attachedToId != null
+                                    ? '#25AAE1ec'
+                                    : sliderNumber == 4 &&
+                                      lat != undefined &&
+                                      long != undefined
+                                    ? '#25AAE1ec'
+                                    : sliderNumber == 5 &&
+                                      filePath != '' &&
+                                      filePath != null
+                                    ? '#25AAE1ec'
+                                    : (sliderNumber == 6 &&
+                                        installationStatus == 1) ||
+                                      (sliderNumber == 6 &&
+                                        installationStatus == 2 &&
+                                        reasonId &&
+                                        reasonDes)
+                                    ? '#25AAE1ec'
+                                    : '#D0D0D0',
+                              },
+                            ]}
+                            onPress={
+                              sliderNumber == 6 ? finishSlider : changeSlider
+                            }
+                            disabled={
+                              sliderNumber == 1 &&
+                              slide1[0].selectId &&
+                              slide1[1].selectId
+                                ? false
+                                : sliderNumber == 2 &&
+                                  newMeter.id != 0 &&
+                                  newMeter.name
+                                ? false
+                                : sliderNumber == 3 &&
+                                  slide2[0].value &&
+                                  slide2[1].value &&
+                                  attachedToId != null
+                                ? false
+                                : sliderNumber == 4 &&
+                                  lat != undefined &&
+                                  long != undefined
+                                ? false
+                                : sliderNumber == 5 &&
+                                  filePath != '' &&
+                                  filePath != null
+                                ? false
+                                : (sliderNumber == 6 &&
+                                    installationStatus == 1) ||
+                                  (sliderNumber == 6 &&
+                                    installationStatus == 2 &&
+                                    reasonId &&
+                                    reasonDes)
+                                ? false
+                                : true
+                            }>
+                            <Icon
+                              size={width * 0.07}
+                              color="#fff"
+                              name={
+                                sliderNumber == 6 ? 'check' : 'navigate-next'
+                              }
+                            />
+                          </TouchableOpacity>
+                        )}
                       </View>
                       // </View>
                     )}
