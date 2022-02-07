@@ -378,6 +378,7 @@ export default class Splash extends Component {
     //   this.props.navigation.state.params.item.item.longitude,
     // );
     this.setState({
+      currUnitIndex: null,
       showSearch: false,
       loader: true,
       loaderBuildings: true,
@@ -423,6 +424,7 @@ export default class Splash extends Component {
     const res = await this.api.get(`/property/equipment/unit/${unitId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     this.setState({
+      currUnitIndex: null,
       unitMeters: res.data?.data?.unit?.unit_meter,
       unitDatax: res.data,
     });

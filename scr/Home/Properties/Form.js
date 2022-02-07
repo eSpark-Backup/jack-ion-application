@@ -2283,6 +2283,8 @@ export default class Splash extends React.Component {
                                 zIndex: 2,
                                 alignSelf: 'center',
                               }}
+                              keyboardShouldPersistTaps={true}
+                              nestedScrollEnabled={true}
                               showsVerticalScrollIndicator={false}>
                               {this.state.addDevice &&
                                 this.state.addDevice?.map((item, index) => (
@@ -2796,6 +2798,7 @@ export default class Splash extends React.Component {
                               <View
                                 style={{
                                   width: width * 0.8,
+                                  paddingTop: width * 0.027,
                                 }}>
                                 <View
                                   style={[
@@ -2811,6 +2814,7 @@ export default class Splash extends React.Component {
                                       {
                                         height: width * 0.05,
                                         textAlignVertical: 'bottom',
+                                        textTransform: 'capitalize',
                                       },
                                     ]}>
                                     Product Desc*
@@ -2824,7 +2828,7 @@ export default class Splash extends React.Component {
                                       : this.state.productD
                                   }
                                   selection
-                                  dense={true}
+                                  // dense={true}
                                   editable={false}
                                   // showSoftInputOnFocus={false}
                                   style={[
