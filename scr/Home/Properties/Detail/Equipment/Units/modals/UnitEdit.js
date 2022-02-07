@@ -1492,7 +1492,7 @@ export default function UnitEdit({
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       console.log('Keyboard Hidden');
-      setVerticalOffs(-180);
+      setVerticalOffs(-400);
     });
 
     return () => {
@@ -1855,7 +1855,7 @@ export default function UnitEdit({
     setShowAddType(false);
   };
 
-  const [verticalOffs, setVerticalOffs] = useState(-180);
+  const [verticalOffs, setVerticalOffs] = useState(-400);
 
   const AddNewMeterType = async () => {
     setTypeLoader(true);
@@ -2956,6 +2956,10 @@ export default function UnitEdit({
                                 onTextChange: (text) => {
                                   onChangeAttachedTo(text);
                                 },
+                                onFocus: () => {
+                                  setVerticalOffs(-180);
+                                  console.log('chala onFoucs');
+                                },
                                 value: setTimeout(() => attachedTo, 200),
                                 defaultValue: attachedTo,
                               }}
@@ -3948,12 +3952,12 @@ export default function UnitEdit({
                                                     );
                                                     setVerticalOffs(-60);
                                                   }}
-                                                  onBlur={() => {
-                                                    console.log(
-                                                      'Blurring Model number',
-                                                    );
-                                                    setVerticalOffs(-180);
-                                                  }}
+                                                  // onBlur={() => {
+                                                  //   console.log(
+                                                  //     'Blurring Model number',
+                                                  //   );
+                                                  //   setVerticalOffs(-180);
+                                                  // }}
                                                   onChangeText={(text) => {
                                                     setAddModelNo(text);
                                                   }}
@@ -3993,12 +3997,12 @@ export default function UnitEdit({
                                                     );
                                                     setVerticalOffs(-60);
                                                   }}
-                                                  onBlur={() => {
-                                                    console.log(
-                                                      'Blurring Product Desc',
-                                                    );
-                                                    setVerticalOffs(-180);
-                                                  }}
+                                                  // onBlur={() => {
+                                                  //   console.log(
+                                                  //     'Blurring Product Desc',
+                                                  //   );
+                                                  //   setVerticalOffs(-180);
+                                                  // }}
                                                 />
                                               </View>
                                             </View>
