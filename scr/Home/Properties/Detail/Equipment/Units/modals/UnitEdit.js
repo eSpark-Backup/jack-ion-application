@@ -736,17 +736,17 @@ export default function UnitEdit({
       const some = defaultUnitData?.data?.data?.default_meter_device;
       setDefaultData(some);
       let listSlide = [...slide1]; // copying the old datas array
-      listSlide[0].select = some?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
-      listSlide[0].selectId = some?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-      listSlide[1].select = some?.device_name?.name; // replace e.target.value with whatever you want to change it to
-      listSlide[1].selectId = some?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      listSlide[0].select = some?.devices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = some?.devices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = some?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = some?.devices[0]?.id; // replace e.target.value with whatever you want to change it to
       setModelNo(some?.device_name?.model_no);
-      setProductNo(some?.device_name?.product_desc);
+      setProductNo(some?.devices[0]?.product_desc);
       setSlide1(listSlide);
       setNewMeter((oldState) => ({
         ...oldState,
-        id: some?.meter_id,
-        name: some?.meter_name,
+        id: some?.meter_id[0],
+        name: some?.meter_name[0]?.name,
       }));
 
       const utilityIds = some?.utility_type_id;
@@ -802,12 +802,12 @@ export default function UnitEdit({
     setDefaultDeviceValues(val);
     if (val) {
       let listSlide = [...slide1]; // copying the old datas array
-      listSlide[0].select = defaultData?.device_name?.manufacturer; // replace e.target.value with whatever you want to change it to
-      listSlide[0].selectId = defaultData?.device_name?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-      listSlide[1].select = defaultData?.device_name?.name; // replace e.target.value with whatever you want to change it to
-      listSlide[1].selectId = defaultData?.device_name?.id; // replace e.target.value with whatever you want to change it to
+      listSlide[0].select = defaultData?.devices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = defaultData?.devices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = defaultData?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = defaultData?.devices[0]?.id; // replace e.target.value with whatever you want to change it to
       setModelNo(defaultData?.device_name?.model_no);
-      setProductNo(defaultData?.device_name?.product_desc);
+      setProductNo(defaultData?.devices[0]?.product_desc);
       setSlide1(listSlide);
     }
   };
@@ -817,8 +817,8 @@ export default function UnitEdit({
     if (val) {
       setNewMeter((oldState) => ({
         ...oldState,
-        id: defaultData?.meter_id,
-        name: defaultData?.meter_name,
+        id: defaultData?.meter_id[0],
+        name: defaultData?.meter_name[0]?.name,
       }));
 
       const utilityIds = defaultData.utility_type_id;
@@ -848,7 +848,8 @@ export default function UnitEdit({
       listSlide[1].selectId = '';
       listSlide[1].select = '';
     } else if (index == 1) {
-      console.log('get model_no--->', some?.model_no);
+      console.log('get model_no--->', some?.model_nos);
+
       setModelNo(some?.model_no);
       setProductNo(some?.product_desc);
     }
@@ -4244,7 +4245,7 @@ export default function UnitEdit({
                                 <TextInput
                                   placeholder="Type Product Description"
                                   value={
-                                    productNo.length > 24
+                                    productNo?.length > 24
                                       ? productNo.slice(0, 24) + '...'
                                       : productNo
                                   }
@@ -4820,6 +4821,7 @@ export default function UnitEdit({
                         state.meterList.length ? (
                           <TouchableOpacity
                             onPress={() => {
+                              callApi();
                               enableLocation();
                             }}
                             style={{

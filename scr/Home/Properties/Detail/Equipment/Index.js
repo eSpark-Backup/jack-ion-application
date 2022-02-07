@@ -546,24 +546,24 @@ export default class Splash extends Component {
             </View>
           </View>
         </TouchableOpacity>
-        {unit.index === this.state.currUnitIndex ? (
+        {unit.index === this.state.currUnitIndex && (
           <View
             style={{
               width: '100%',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <View
-              style={{
-                width: '100%',
-                backgroundColor: 'white',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderLeftWidth: width * 0.001,
-                borderRightWidth: width * 0.001,
-              }}>
-              {unit?.item?.unit_meter?.length &&
-                unit?.item?.unit_meter?.map((item, index) => (
+            {unit?.item?.unit_meter?.length > 0 && (
+              <View
+                style={{
+                  width: '100%',
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderLeftWidth: width * 0.001,
+                  borderRightWidth: width * 0.001,
+                }}>
+                {unit?.item?.unit_meter?.map((item, index) => (
                   <View
                     style={{
                       flexDirection: 'row',
@@ -650,7 +650,8 @@ export default class Splash extends Component {
                     />
                   </View>
                 ))}
-            </View>
+              </View>
+            )}
             <View
               style={[
                 styles.buildingEditBtn,
@@ -700,16 +701,7 @@ export default class Splash extends Component {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {/* <TouchableOpacity style={{margin: width * 0.01}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: Fonts.Montserrat,
-                    fontSize: width * 0.03,
-                  }}>
-                  Edit
-                </Text>
-              </TouchableOpacity> */}
+
               <TouchableOpacity
                 onPress={() => this.confirmDelete(unit?.item?.id)}
                 style={{
@@ -733,7 +725,7 @@ export default class Splash extends Component {
               </TouchableOpacity>
             </View>
           </View>
-        ) : null}
+        )}
       </View>
     );
   };
