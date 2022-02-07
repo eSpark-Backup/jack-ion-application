@@ -4101,7 +4101,7 @@ export default function UnitEdit({
                                         textAlignVertical: 'bottom',
                                       },
                                     ]}>
-                                    Model Number*
+                                    xxModel Number*
                                   </Text>
                                 </View>
                                 {slide1?.map((item, index) =>
