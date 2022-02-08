@@ -1101,7 +1101,7 @@ export default class Splash extends React.Component {
     this.setState({meterList: arr2});
     // this.setState({loadMeters: false});
 
-    const utilRes = await api.get('/property/equipment/utility-type/all');
+    const utilRes = await api.get('/property/equipment/utility-type');
 
     // console.log('arr1--->', utilRes);
     this.setState({utilTypes: utilRes?.data?.data});

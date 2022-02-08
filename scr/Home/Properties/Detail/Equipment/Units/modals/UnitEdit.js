@@ -205,6 +205,7 @@ export default function UnitEdit({
   ]);
   const [selectUtil, setSelectUtil] = useState([]);
   const [utilTypes, setUtilTypes] = useState([]);
+  const [utilLength, setUtilLength] = useState(0);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
   const [newMeterFlag, setNewMeterFlag] = useState(true);
   const [inputFocus, setInputFocus] = useState(false);
@@ -477,22 +478,21 @@ export default function UnitEdit({
     const res = await api.get('/property/equipment/meter/all-meters');
     let arr1 = res.data?.data;
     let arr2 = meterTypes;
-    // console.log('antiIntersection USEEFFECT arr1--->', arr1);
+    console.log('antiIntersection USEEFFECT arr1--->', arr1);
     console.log('antiIntersection USEEFFECT arr2--->', arr2);
 
     if (arr2.length > 0) {
       const Intersection = arr2.filter((item1) =>
-        arr1.some((item2) => item1.meter_id == item2.id),
+        arr1.some((item2, index) => item1?.meter_id[index] == item2.id),
       );
-      // console.log('Intersection--->>>>', Intersection);
+
       let arr3 = unitDetails?.unit?.unit_meter;
+      console.log('Intersection--->>>>', Intersection);
+      console.log('arr3--->>>>', arr3);
       var getMeter = Intersection.filter((item1) =>
         arr3.some((item2) => item1.meter_id == item2.meter_id),
       );
-      // console.log(
-      //   'Get Meter Information---->>',
-      //   getMeter[0].reasons[0].options_reason_id,
-      // );
+      console.log('Get Meter Information---->>', getMeter);
       setMeterListData(getMeter);
       // if (getMeter.length) {
 
@@ -716,7 +716,7 @@ export default function UnitEdit({
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
-    const utilRes = await api.get('/property/equipment/utility-type/all');
+    const utilRes = await api.get('/property/equipment/utility-type');
     // console.log('utilRes--->', utilRes?.data?.data);
     setUtilTypes(utilRes?.data?.data);
     const utilityRes = utilRes?.data?.data;
@@ -750,6 +750,8 @@ export default function UnitEdit({
       }));
 
       const utilityIds = some?.utility_type_id;
+
+      setUtilLength(utilityIds.length);
 
       const filterRes = utilityRes.filter((item1) =>
         utilityIds.some((item2) => item1.id == item2),
@@ -2683,8 +2685,14 @@ export default function UnitEdit({
                                   }}
                                   resetValue={false}
                                   textInputProps={{
-                                    editable: !defaultMeterValues,
-                                    placeholder: 'Add Utility Type',
+                                    editable:
+                                      selectUtil.length == utilLength
+                                        ? false
+                                        : !defaultMeterValues,
+                                    placeholder:
+                                      selectUtil.length == utilLength
+                                        ? 'Adding Limit Reached'
+                                        : 'Add Utility Type',
                                     underlineColorAndroid: 'transparent',
                                     style: {
                                       padding: width * 0.027,
@@ -4713,55 +4721,61 @@ export default function UnitEdit({
                         meterListData.length > 0 &&
                         meterListData?.map(
                           (item, index) => (
-                            console.log('meterListData+++>>>>>', index),
-                            (
-                              <TouchableOpacity
-                                onPress={() => {
-                                  LayoutAnimation.configureNext({
-                                    duration: 300,
-                                    create: {
-                                      type: LayoutAnimation.Types.easeInEaseOut,
-                                      property:
-                                        LayoutAnimation.Properties.opacity,
+                            console.log(
+                              'meterListData+++>>>>>',
+                              item.meter_name,
+                            ),
+                            item.meter_name &&
+                              item.meter_name?.map((meterItem, meterIndex) => (
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    LayoutAnimation.configureNext({
+                                      duration: 300,
+                                      create: {
+                                        type:
+                                          LayoutAnimation.Types.easeInEaseOut,
+                                        property:
+                                          LayoutAnimation.Properties.opacity,
+                                      },
+                                      update: {
+                                        type:
+                                          LayoutAnimation.Types.easeInEaseOut,
+                                      },
+                                    }),
+                                      // setShowAddMeterSlider(true),
+                                      // setDefaultScreen(true),
+                                      getMeterData(item, index);
+                                    enableLocation();
+                                  }}
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: width * 0.02,
+                                    margin: width * 0.01,
+                                    elevation: 2,
+                                    backgroundColor: 'white',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                      width: 0,
+                                      height: 1,
                                     },
-                                    update: {
-                                      type: LayoutAnimation.Types.easeInEaseOut,
-                                    },
-                                  }),
-                                    // setShowAddMeterSlider(true),
-                                    // setDefaultScreen(true),
-                                    getMeterData(item, index);
-                                  enableLocation();
-                                }}
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  padding: width * 0.02,
-                                  margin: width * 0.01,
-                                  elevation: 2,
-                                  backgroundColor: 'white',
-                                  shadowColor: '#000',
-                                  shadowOffset: {
-                                    width: 0,
-                                    height: 1,
-                                  },
-                                  shadowOpacity: 0.2,
-                                  shadowRadius: 1.41,
-                                }}>
-                                {/* <Image
+                                    shadowOpacity: 0.2,
+                                    shadowRadius: 1.41,
+                                  }}>
+                                  {/* <Image
                                   source={typeSwitcher(item.meter_name)}
                                   style={styles.untiDetailImage}
                                 /> */}
-                                <Text
-                                  style={[
-                                    styles.meterDesciptionHeading,
-                                    {marginBottom: 0},
-                                  ]}>
-                                  {item.meter_name}
-                                </Text>
-                              </TouchableOpacity>
-                            )
+                                  <Text
+                                    style={[
+                                      styles.meterDesciptionHeading,
+                                      {marginBottom: 0},
+                                    ]}>
+                                    {meterItem.name}
+                                  </Text>
+                                </TouchableOpacity>
+                              ))
                           ),
                         )
                       )}
