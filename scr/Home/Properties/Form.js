@@ -116,13 +116,16 @@ export default class Splash extends React.Component {
       addModelNumber: '',
       addBilling: '',
       addMeter: '',
+      //* working here
       productD: '',
       enableDevice: false,
       devicesArray: [],
       showAddManufacturer: false,
       showEditManufacturer: false,
       manufacturersArray: [],
+      modelNoIdArray: [],
       selectedDevice: {},
+      currentManuIndex: null,
       addDevice: [
         {
           id: 0,
@@ -170,6 +173,7 @@ export default class Splash extends React.Component {
         city: '',
         zipcode: '',
         st: '',
+        modelNos: '',
       },
       value: '',
       dropDownShow: [
@@ -596,23 +600,44 @@ export default class Splash extends React.Component {
         },
       }));
     }
-    if (this.state.deviceData[1].selectId === '') {
+    //! -------------------------+++
+    // if (this.state.deviceData[1].selectId === '') {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       deviceId: 'Please select a device from above', // update the value of specific key
+    //     },
+    //   }));
+    //   Toast.show('Please select a device', Toast.SHORT);
+    //   return;
+    // } else {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       ...prevState.error, // keep all other key-value pairs
+    //       deviceId: '', // update the value of specific key
+    //     },
+    //   }));
+    // }
+    if (this.state.modelNoIdArray.length < 1) {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          deviceId: 'Please select a device from above', // update the value of specific key
+          modelNos: 'Please add a Manufacturer from above', // update the value of specific key
         },
       }));
-      Toast.show('Please select a device', Toast.SHORT);
+      Toast.show('Please Add Manufacturers', Toast.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           ...prevState.error, // keep all other key-value pairs
-          deviceId: '', // update the value of specific key
+          modelNos: '', // update the value of specific key
         },
       }));
     }
@@ -645,7 +670,8 @@ export default class Splash extends React.Component {
           propContactPhone: this.state.customerPhone,
           propContactEmail: this.state.customerEmail,
           meter_id: this.state.selectedMeterId,
-          device_id: this.state.deviceData[1].selectId,
+          // device_id: this.state.deviceData[1].selectId,
+          model_no_id: this.state.modelNoIdArray,
           propLat: this.state.lat,
           propLong: this.state.long,
           utility_type_id: selectUtilIds,
@@ -964,7 +990,7 @@ export default class Splash extends React.Component {
                 disabled={
                   this.state.addDevice[0].selectId &&
                   this.state.addDevice[1].selectId &&
-                  this.state.addDevice[2].select &&
+                  this.state.addDevice[2].selectId &&
                   this.state.modelNo &&
                   this.state.productNo
                     ? false
@@ -977,7 +1003,7 @@ export default class Splash extends React.Component {
                     color:
                       this.state.addDevice[0].selectId &&
                       this.state.addDevice[1].selectId &&
-                      this.state.addDevice[2].select &&
+                      this.state.addDevice[2].selectId &&
                       this.state.modelNo &&
                       this.state.productNo
                         ? '#25AAE1ec'
@@ -1219,7 +1245,7 @@ export default class Splash extends React.Component {
                           index == 1
                             ? deviceData[0].selectId
                               ? item.name
-                              : 'First Select Manufacture'
+                              : 'First Select Manufacturer'
                             : index == 2
                             ? deviceData[1].selectId
                               ? item.name
@@ -1325,7 +1351,7 @@ export default class Splash extends React.Component {
                 alignItems: 'center',
                 justifyContent: 'space-around',
                 flexDirection: 'row',
-                backgroundColor: 'pink',
+                // backgroundColor: 'pink',
                 marginTop: 8,
               }}>
               <TouchableOpacity
@@ -1359,15 +1385,18 @@ export default class Splash extends React.Component {
                       )
                     : this.editManufacturer(
                         deviceData[0].select,
+                        deviceData[0].selectId,
                         deviceData[1].select,
+                        deviceData[1].selectId,
                         deviceData[2].select,
+                        deviceData[2].selectId,
                         this.state.productD,
                       )
                 }
                 disabled={
-                  deviceData[0].select !== '' &&
-                  deviceData[1].select !== '' &&
-                  deviceData[2].select !== '' &&
+                  deviceData[0].selectId !== '' &&
+                  deviceData[1].selectId !== '' &&
+                  deviceData[2].selectId !== '' &&
                   this.state.productD !== ''
                     ? false
                     : true
@@ -1377,9 +1406,9 @@ export default class Splash extends React.Component {
                     fontWeight: 'bold',
                     fontSize: width * 0.045,
                     color:
-                      deviceData[0].select !== '' &&
-                      deviceData[1].select !== '' &&
-                      deviceData[2].select !== '' &&
+                      deviceData[0].selectId !== '' &&
+                      deviceData[1].selectId !== '' &&
+                      deviceData[2].selectId !== '' &&
                       this.state.productD !== ''
                         ? '#25AAE1ec'
                         : 'grey',
@@ -1401,9 +1430,43 @@ export default class Splash extends React.Component {
     );
   };
 
-  editManufacturer = (manu, device, modelNo, prodNo) => {
-    let newArr = this.state.manufacturersArray.map((item, index) => {});
-    this.setState({manufacturersArray: newArr, showEditManufacturer: false});
+  editManufacturer = (
+    manu,
+    manuId,
+    device,
+    deviceId,
+    modelNo,
+    modelNoId,
+    prodNo,
+  ) => {
+    const {currentManuIndex} = this.state;
+    let newArr = [...this.state.manufacturersArray];
+
+    newArr[currentManuIndex].manufacturer = manu;
+    newArr[currentManuIndex].manuId = manuId;
+    newArr[currentManuIndex].device = device;
+    newArr[currentManuIndex].deviceId = deviceId;
+    newArr[currentManuIndex].model_No = modelNo;
+    newArr[currentManuIndex].model_No_Id = modelNoId;
+
+    this.setState(
+      {
+        manufacturersArray: newArr,
+        productD: prodNo,
+        showEditManufacturer: false,
+      },
+      () =>
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        }),
+    );
   };
 
   addManufacturer = (
@@ -1416,7 +1479,10 @@ export default class Splash extends React.Component {
     prodNo,
   ) => {
     let newArr = [...this.state.manufacturersArray];
+    let newModelIdArr = [...this.state.modelNoIdArray];
+
     let deviceArr = [...this.state.deviceData];
+
     console.log('Kia hai manu', manu, ' ', manuId);
     console.log('Kia hai device', device, ' ', deviceId);
     console.log('Kia hai modelNo', modelNo, ' ', modelNoId);
@@ -1431,6 +1497,8 @@ export default class Splash extends React.Component {
       model_No_Id: modelNoId,
       product_No: prodNo,
     });
+
+    newModelIdArr.push(parseInt(modelNoId));
     deviceArr[0].select = '';
     deviceArr[0].selectId = '';
     deviceArr[1].select = '';
@@ -1438,12 +1506,28 @@ export default class Splash extends React.Component {
     deviceArr[2].select = '';
     deviceArr[2].selectId = '';
 
-    this.setState({
-      manufacturersArray: newArr,
-      showAddManufacturer: false,
-      deviceData: deviceArr,
-      productD: '',
-    });
+    this.setState(
+      {
+        showAddManufacturer: false,
+        manufacturersArray: newArr,
+        modelNoIdArray: newModelIdArr,
+        deviceData: deviceArr,
+        productD: '',
+      },
+      () => {
+        console.log('model ID Array', this.state.modelNoIdArray);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+      },
+    );
   };
 
   doneAddType = async () => {
@@ -1786,6 +1870,7 @@ export default class Splash extends React.Component {
     let listSlide = [...this.state.deviceData]; // copying the old datas array
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
+    console.log('XX___--->>', some?.name);
     if (index == 0) {
       listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
@@ -1796,6 +1881,7 @@ export default class Splash extends React.Component {
           ...prevState.error, // keep all other key-value pairs
           deviceId: '',
         },
+        productD: '',
       }));
     }
     if (index == 1) {
@@ -1813,10 +1899,15 @@ export default class Splash extends React.Component {
           ...prevState.error, // keep all other key-value pairs
           deviceId: '',
         },
+        productD: '',
       }));
       this.setState({productD: product_desc});
       console.log(clc.cyanBright('product desc of device'), product_desc);
       console.log('DAEA of models', modelNos);
+    }
+    if (index == 2) {
+      listSlide[2].selectId = some?.id;
+      listSlide[2].select = some?.name;
     }
     this.setState({deviceData: listSlide});
   };
@@ -1829,13 +1920,19 @@ export default class Splash extends React.Component {
     if (index == 0) {
       listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
       listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[1].select = '';
       listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = '';
       listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
       listSlide[2].select = '';
+      listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[2].error = '';
     } else if (index == 1) {
       listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[2].select = '';
+      listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
+    } else if (index == 2) {
+      listSlide[2].selectId = '';
       listSlide[2].select = '';
       listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
     }
@@ -1860,7 +1957,7 @@ export default class Splash extends React.Component {
     this.setState({meterList: arr2});
     // this.setState({loadMeters: false});
 
-    const utilRes = await api.get('/property/equipment/utility-type/all');
+    const utilRes = await api.get('/property/equipment/utility-type');
 
     // console.log('arr1--->', utilRes);
     this.setState({utilTypes: utilRes?.data?.data});
@@ -2031,13 +2128,54 @@ export default class Splash extends React.Component {
   };
 
   openEditManu = (item, index) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     let newArr = [...this.state.deviceData];
+
     newArr[0].select = item.manufacturer;
+    newArr[0].selectId = item.manu_Id;
     newArr[1].select = item.device;
+    newArr[1].selectId = item.deviceId;
     newArr[2].select = item.model_No;
-    this.setState({deviceData: newArr, productD: item.product_No}, () =>
-      this.setState({showEditManufacturer: true}),
+    newArr[2].selectId = item.model_No_Id;
+
+    this.setState(
+      {deviceData: newArr, productD: item.product_No, currentManuIndex: index},
+      () => this.setState({showEditManufacturer: true}),
     );
+  };
+
+  openAddManu = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    let newArr = [...this.state.deviceData];
+    newArr[0].select = '';
+    newArr[0].selectId = '';
+    newArr[1].select = '';
+    newArr[1].selectId = '';
+    newArr[2].select = '';
+    newArr[2].selectId = '';
+    this.setState({
+      productD: '',
+      deviceData: newArr,
+      showAddManufacturer: true,
+    });
   };
 
   renderManufacturerList = ({item, index}) => {
@@ -3004,9 +3142,7 @@ export default class Splash extends React.Component {
                                   )}
                                   <TouchableOpacity
                                     onPress={() => {
-                                      this.setState({
-                                        showAddManufacturer: true,
-                                      });
+                                      this.openAddManu();
                                     }}
                                     style={{
                                       alignSelf: 'center',

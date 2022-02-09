@@ -140,10 +140,17 @@ class GlobalState extends React.Component {
     this.setState({isLoading: true});
     const data = {
       name: info.propName,
+      latitude: info.propLat,
+      longitude: info.propLong,
       street: info.propStreet,
       city: info.propCity,
       st: info.propState,
+      meter_id: info.meter_id,
+      model_no_id: info.model_no_id,
+      utility_type_id: info.utility_type_id,
       zipcode: info.propZipCode,
+      radial_dist: info.radial_dist,
+      // not requrired data below
       property_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
       management_company_id: info.propManageCompId,
@@ -151,12 +158,7 @@ class GlobalState extends React.Component {
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
-      meter_id: info.meter_id,
-      device_id: info.device_id,
-      latitude: info.propLat,
-      longitude: info.propLong,
-      utility_type_id: info.utility_type_id,
-      radial_dist: info.radial_dist,
+      // device_id: info.device_id,
     };
     console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
