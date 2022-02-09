@@ -1797,12 +1797,12 @@ export default function UnitEdit({
   };
 
   const getMeterData = (data, index) => {
-    console.log('REASONS DATA', data.reasons);
+    console.log('DATA', data);
     // if (data.reasons.length > 0) {
     //   setReasonText(data.reasons.name);
     //   setReasonId(data.reasons.options_reason_id);
     //   setReasonDes(data.reasons.text_reason);
-    // }
+    // }x
     setReasonArr(data.reasons);
     setMeterAddingId(data.meter_id);
     // let arr1 = {
@@ -1815,6 +1815,7 @@ export default function UnitEdit({
     //   ...oldState,
     //   meterList: arr2,
     // }));
+    setProductNo(data.device.product_desc);
     setAttachedToId(data.attachedTo_id);
     setAttachedTo(data.attachedTo_name);
     console.log('GET METER DATA', data.installation_status);
