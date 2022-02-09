@@ -116,10 +116,16 @@ export default class Splash extends React.Component {
       addModelNumber: '',
       addBilling: '',
       addMeter: '',
+      //* working here
       productD: '',
       enableDevice: false,
       devicesArray: [],
+      showAddManufacturer: false,
+      showEditManufacturer: false,
+      manufacturersArray: [],
+      modelNoIdArray: [],
       selectedDevice: {},
+      currentManuIndex: null,
       addDevice: [
         {
           id: 0,
@@ -167,6 +173,7 @@ export default class Splash extends React.Component {
         city: '',
         zipcode: '',
         st: '',
+        modelNos: '',
       },
       value: '',
       dropDownShow: [
@@ -593,23 +600,44 @@ export default class Splash extends React.Component {
         },
       }));
     }
-    if (this.state.deviceData[1].selectId === '') {
+    //! -------------------------+++
+    // if (this.state.deviceData[1].selectId === '') {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       deviceId: 'Please select a device from above', // update the value of specific key
+    //     },
+    //   }));
+    //   Toast.show('Please select a device', Toast.SHORT);
+    //   return;
+    // } else {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       ...prevState.error, // keep all other key-value pairs
+    //       deviceId: '', // update the value of specific key
+    //     },
+    //   }));
+    // }
+    if (this.state.modelNoIdArray.length < 1) {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          deviceId: 'Please select a device from above', // update the value of specific key
+          modelNos: 'Please add a Manufacturer from above', // update the value of specific key
         },
       }));
-      Toast.show('Please select a device', Toast.SHORT);
+      Toast.show('Please Add Manufacturers', Toast.SHORT);
       return;
     } else {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           ...prevState.error, // keep all other key-value pairs
-          deviceId: '', // update the value of specific key
+          modelNos: '', // update the value of specific key
         },
       }));
     }
@@ -642,7 +670,8 @@ export default class Splash extends React.Component {
           propContactPhone: this.state.customerPhone,
           propContactEmail: this.state.customerEmail,
           meter_id: this.state.selectedMeterId,
-          device_id: this.state.deviceData[1].selectId,
+          // device_id: this.state.deviceData[1].selectId,
+          model_no_id: this.state.modelNoIdArray,
           propLat: this.state.lat,
           propLong: this.state.long,
           utility_type_id: selectUtilIds,
@@ -685,6 +714,820 @@ export default class Splash extends React.Component {
       selectedDevice: {},
       addModelNumber: '',
     });
+  };
+
+  deviceTypeInfoComponent = (flag) => {
+    const {deviceData} = this.state;
+    return (
+      <View
+        style={{
+          // height: height * 0.25,
+          width: '100%',
+          alignSelf: 'center',
+          alignItems: 'center',
+          // justifyContent: 'center',
+          zIndex: 2,
+          height: this.state.dropDownShow[3].value
+            ? height * 0.5
+            : height * 0.0,
+          overflow: 'hidden',
+          // backgroundColor: 'tomato',
+        }}>
+        {this.state.addNewType && this.state.showAddType == 'Manufacturer' ? (
+          <View
+            style={{
+              width: '100%',
+              zIndex: 2,
+              alignSelf: 'center',
+              alignItems: 'center',
+            }}>
+            <View>
+              <View>
+                <Text
+                  style={{
+                    fontSize: width * 0.03,
+                    color: '#3E4A4F',
+                    textTransform: 'capitalize',
+                    fontFamily: Fonts.ComfortaaRegular,
+                    marginBottom: width * 0.01,
+                    fontWeight: 'bold',
+                  }}>
+                  Add New {this.state.showAddType}
+                </Text>
+              </View>
+              <TextInput
+                placeholder={'Type New Manufacturer Name'}
+                value={this.state.addManufacturer}
+                style={{
+                  width: width * 0.8,
+                  justifyContent: 'flex-end',
+                  fontSize: width * 0.036,
+                }}
+                mode={'outlined'}
+                theme={{
+                  colors: {
+                    text: '#25AAE1ec',
+                    primary: '#25AAE1ec',
+                    selectionColor: 'red',
+                  },
+                }}
+                onChangeText={(text) => {
+                  this.setState({addManufacturer: text});
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  marginVertical: height * 0.01,
+                }}>
+                <TouchableOpacity onPress={() => this.cancelAddType()}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: '#25AAE1ec',
+                      width: width * 0.16,
+                      textAlign: 'center',
+                    }}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.doneAddType()}
+                  disabled={this.state.addManufacturer ? false : true}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: this.state.addManufacturer
+                        ? '#25AAE1ec'
+                        : '#d0d0d0',
+                      width: width * 0.16,
+                      textAlign: 'center',
+                    }}>
+                    Add
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        ) : this.state.addNewType && this.state.showAddType == 'Device' ? (
+          <ScrollView
+            style={{
+              width: '90%',
+              zIndex: 2,
+              alignSelf: 'center',
+            }}
+            showsVerticalScrollIndicator={false}>
+            {this.state.addDevice &&
+              this.state.addDevice?.map((item, index) => (
+                <View
+                  style={{
+                    width: width * 0.8,
+                    // zIndex: 9,
+                  }}
+                  key={item.id}>
+                  <View>
+                    <Text style={styles.meterDesciptionHeading}>
+                      {item.name}
+                    </Text>
+                  </View>
+                  {index < 2 ? (
+                    <SearchableDropDown
+                      onItemSelect={(items) => {
+                        this.getNewDeviceData(items, index);
+                      }}
+                      containerStyle={{
+                        paddingBottom: width * 0.02,
+                      }}
+                      itemStyle={{
+                        padding: width * 0.027,
+                        backgroundColor: '#fff',
+                        borderColor: '#bbb',
+                        borderWidth: width * 0.0015,
+                        borderRadius: width * 0.015,
+                        margin: width * 0.005,
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={
+                        Platform.OS == 'android'
+                          ? {
+                              height: width * 0.2,
+                              zIndex: 1,
+                              position: 'absolute',
+                              width: width * 0.8,
+                              top: width * 0.1,
+                              flex: 1,
+                              zIndex: 20,
+                              backgroundColor: 'white',
+                              elevation: width * 0.01,
+                              shadowColor: '#000',
+                              shadowOffset: {
+                                width: 0,
+                                height: 2,
+                              },
+                              shadowOpacity: 0.25,
+                              shadowRadius: 3.84,
+                            }
+                          : {height: width * 0.2, zIndex: 1}
+                      }
+                      items={item.data}
+                      resetValue={false}
+                      textInputProps={{
+                        placeholder: item.name,
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: width * 0.027,
+                          margin: 0,
+                          borderRadius: width * 0.015,
+                          height: width * 0.13,
+                          backgroundColor: '#F6F6F6',
+                          borderWidth: width * 0.0019,
+                        },
+
+                        onTextChange: (text) => {
+                          this.onChangeNewDevice(text, index);
+                        },
+                        value: setTimeout(() => item.select, 200),
+                        defaultValue: item.select,
+                      }}
+                      listProps={{
+                        nestedScrollEnabled: true,
+                      }}
+                    />
+                  ) : (
+                    <View>
+                      <TextInput
+                        placeholder={'Type New Device Name'}
+                        value={item.select}
+                        style={styles.meterInput}
+                        mode={'outlined'}
+                        theme={{
+                          colors: {
+                            text: '#25AAE1ec',
+                            primary: '#25AAE1ec',
+                            selectionColor: 'red',
+                            zIndex: 10,
+                          },
+                        }}
+                        onChangeText={(text) => {
+                          this.onChangeNewDevice(text, index);
+                        }}
+                      />
+                      <View>
+                        <View>
+                          <Text style={styles.meterDesciptionHeading}>
+                            Model Number*
+                          </Text>
+                        </View>
+                        <TextInput
+                          placeholder="Type Model Number"
+                          value={this.state.modelNo}
+                          showSoftInputOnFocus={false}
+                          style={styles.meterInput}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                          onChangeText={(text) => {
+                            this.setState({modelNo: text});
+                          }}
+                        />
+                      </View>
+                      <View>
+                        <View>
+                          <Text style={styles.meterDesciptionHeading}>
+                            Product Description*
+                          </Text>
+                        </View>
+                        <TextInput
+                          placeholder="Type Product Description"
+                          value={this.state.productNo}
+                          showSoftInputOnFocus={false}
+                          style={styles.meterInput}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                          onChangeText={(text) => {
+                            this.setState({productNo: text});
+                          }}
+                        />
+                      </View>
+                    </View>
+                  )}
+                </View>
+              ))}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                marginVertical: height * 0.01,
+              }}>
+              <TouchableOpacity onPress={() => this.cancelAddType()}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.doneAddType()}
+                disabled={
+                  this.state.addDevice[0].selectId &&
+                  this.state.addDevice[1].selectId &&
+                  this.state.addDevice[2].selectId &&
+                  this.state.modelNo &&
+                  this.state.productNo
+                    ? false
+                    : true
+                }>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color:
+                      this.state.addDevice[0].selectId &&
+                      this.state.addDevice[1].selectId &&
+                      this.state.addDevice[2].selectId &&
+                      this.state.modelNo &&
+                      this.state.productNo
+                        ? '#25AAE1ec'
+                        : '#d0d0d0',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Add
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        ) : this.state.addNewType &&
+          this.state.showAddType == 'Model Number' ? (
+          <View
+            style={{
+              width: '100%',
+              zIndex: 2,
+              alignSelf: 'center',
+              alignItems: 'center',
+            }}>
+            {!this.state.enableDevice ? (
+              <ActivityIndicator size={'large'} color="#25AAE1ec" />
+            ) : (
+              <View>
+                <View>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: width * 0.03,
+                        color: '#3E4A4F',
+                        textTransform: 'capitalize',
+                        fontFamily: Fonts.ComfortaaRegular,
+                        marginBottom: width * 0.01,
+                        fontWeight: 'bold',
+                      }}>
+                      Select Device
+                    </Text>
+                  </View>
+                  <SearchableDropDown
+                    onItemSelect={(item) => {
+                      // this.getNewDeviceData(items, index);
+                      this.setState({selectedDevice: item});
+                      console.log('kia ha', item);
+                    }}
+                    containerStyle={{
+                      paddingBottom: width * 0.02,
+                    }}
+                    itemStyle={{
+                      padding: width * 0.027,
+                      backgroundColor: '#fff',
+                      borderColor: '#bbb',
+                      borderWidth: width * 0.0015,
+                      borderRadius: width * 0.015,
+                      margin: width * 0.005,
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={
+                      Platform.OS == 'android'
+                        ? {
+                            height: width * 0.2,
+                            zIndex: 1,
+                            position: 'absolute',
+                            width: width * 0.8,
+                            top: width * 0.1,
+                            flex: 1,
+                            zIndex: 20,
+                            backgroundColor: 'white',
+                            elevation: width * 0.01,
+                            shadowColor: '#000',
+                            shadowOffset: {
+                              width: 0,
+                              height: 2,
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 3.84,
+                          }
+                        : {height: width * 0.2, zIndex: 1}
+                    }
+                    items={this.state.devicesArray}
+                    resetValue={false}
+                    textInputProps={{
+                      editable: this.state.enableDevice,
+                      placeholder: 'Select Device',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: width * 0.027,
+                        margin: 0,
+                        borderRadius: width * 0.015,
+                        height: width * 0.13,
+                        backgroundColor: '#F6F6F6',
+                        borderWidth: width * 0.0019,
+                      },
+
+                      onTextChange: (text) => {
+                        // this.onChangeNewDevice(text, index);
+                        console.log('tes', text);
+                      },
+                      value: setTimeout(
+                        () => this.state.selectedDevice?.name,
+                        200,
+                      ),
+                      defaultValue: this.state.selectedDevice?.name,
+                    }}
+                    listProps={{
+                      nestedScrollEnabled: true,
+                    }}
+                  />
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: width * 0.03,
+                      color: '#3E4A4F',
+                      textTransform: 'capitalize',
+                      fontFamily: Fonts.ComfortaaRegular,
+                      marginBottom: width * 0.01,
+                      fontWeight: 'bold',
+                    }}>
+                    Add New {this.state.showAddType}
+                  </Text>
+                </View>
+                <TextInput
+                  placeholder={'Type New Model Number'}
+                  value={this.state.addModelNumber}
+                  style={{
+                    width: width * 0.8,
+                    justifyContent: 'flex-end',
+                    fontSize: width * 0.036,
+                  }}
+                  mode={'outlined'}
+                  theme={{
+                    colors: {
+                      text: '#25AAE1ec',
+                      primary: '#25AAE1ec',
+                      selectionColor: 'red',
+                    },
+                  }}
+                  onChangeText={(text) => {
+                    this.setState({addModelNumber: text});
+                  }}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    marginVertical: height * 0.01,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => this.cancelAddType()}
+                    // onPress={() => console.log('Cancel Press')}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: width * 0.045,
+                        color: '#25AAE1ec',
+                        width: width * 0.16,
+                        textAlign: 'center',
+                      }}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => this.doneAddType()}
+                    // onPress={() => console.log('Press Done')}
+                    disabled={this.state.addModelNumber ? false : true}>
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: width * 0.045,
+                        color: this.state.addModelNumber
+                          ? '#25AAE1ec'
+                          : '#d0d0d0',
+                        width: width * 0.16,
+                        textAlign: 'center',
+                      }}>
+                      Add
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View>
+            {deviceData.map((item, index) => (
+              <View
+                style={{
+                  width: '90%',
+                  zIndex: 2,
+                  alignSelf: 'center',
+                }}
+                key={item.id}>
+                <Text style={styles.meterDesciptionHeading}>{item.name}*</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                  }}>
+                  <View
+                    pointerEvents={
+                      index > 0
+                        ? deviceData[0].selectId
+                          ? 'auto'
+                          : 'none'
+                        : 'auto'
+                    }>
+                    <SearchableDropDown
+                      onItemSelect={(item) => {
+                        this.getDevice(item, index);
+                      }}
+                      containerStyle={{
+                        paddingBottom: width * 0.02,
+                        width: width * 0.7,
+                      }}
+                      itemStyle={{
+                        padding: width * 0.027,
+                        backgroundColor: 'rgb(247, 247, 247)',
+                        borderColor: '#bbb',
+                        borderWidth: width * 0.0015,
+                        borderRadius: width * 0.015,
+                        zIndex: 99,
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={{
+                        maxHeight: height * 0.08,
+                      }}
+                      items={item.data}
+                      resetValue={false}
+                      textInputProps={{
+                        editable:
+                          index == 2
+                            ? deviceData[1].selectId
+                              ? true
+                              : false
+                            : true,
+                        placeholder:
+                          index == 1
+                            ? deviceData[0].selectId
+                              ? item.name
+                              : 'First Select Manufacturer'
+                            : index == 2
+                            ? deviceData[1].selectId
+                              ? item.name
+                              : 'First Select Device'
+                            : item.name,
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: width * 0.027,
+                          margin: 0,
+                          borderTopLeftRadius: width * 0.015,
+                          borderBottomLeftRadius: width * 0.015,
+                          borderColor: item.error ? '#A3001B' : 'black',
+                          height: width * 0.13,
+                          backgroundColor: '#F6F6F6',
+                          borderTopWidth: width * 0.0019,
+                          borderLeftWidth: width * 0.0019,
+                          borderBottomWidth: width * 0.0019,
+                          zIndex: 0,
+                        },
+                        onTextChange: (text) => {
+                          this.onChangeManufacturer(text, index);
+                        },
+                        value: setTimeout(() => item.select, 200),
+                        defaultValue: item.select,
+                      }}
+                      listProps={{
+                        nestedScrollEnabled: true,
+                      }}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      width: width * 0.1,
+                      backgroundColor: '#25AAE199',
+                      borderTopRightRadius: width * 0.015,
+                      borderBottomRightRadius: width * 0.015,
+                      borderTopWidth: width * 0.0019,
+                      borderRightWidth: width * 0.0019,
+                      borderBottomWidth: width * 0.0019,
+                      height: width * 0.13,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => this.showAddNewType(item.name)}>
+                    <Icon size={width * 0.06} color="#fff" name={'add'} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+            <View
+              style={{
+                width: width * 0.8,
+              }}>
+              <View
+                style={[
+                  styles.desciptionContainer,
+                  {
+                    alignSelf: 'flex-start',
+                    borderBottomWidth: 0,
+                  },
+                ]}>
+                <Text
+                  style={[
+                    styles.desciptionHeading,
+                    {
+                      height: width * 0.05,
+                      textAlignVertical: 'bottom',
+                    },
+                  ]}>
+                  Product Desc*
+                </Text>
+              </View>
+              <TextInput
+                placeholder="Type Product Description"
+                value={
+                  this.state.productD.length > 24
+                    ? this.state.productD.slice(0, 24) + '...'
+                    : this.state.productD
+                }
+                selection
+                dense={true}
+                editable={false}
+                // showSoftInputOnFocus={false}
+                style={[
+                  styles.input,
+                  {
+                    width: '100%',
+                  },
+                ]}
+                mode={'outlined'}
+                theme={{
+                  colors: {
+                    text: '#25AAE1ec',
+                    primary: '#25AAE1ec',
+                    selectionColor: 'red',
+                  },
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                flexDirection: 'row',
+                // backgroundColor: 'pink',
+                marginTop: 8,
+              }}>
+              <TouchableOpacity
+                onPress={() =>
+                  flag == 'add'
+                    ? this.setState({showAddManufacturer: false})
+                    : this.setState({showEditManufacturer: false})
+                }>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  flag == 'add'
+                    ? this.addManufacturer(
+                        deviceData[0].select,
+                        deviceData[0].selectId,
+                        deviceData[1].select,
+                        deviceData[1].selectId,
+                        deviceData[2].select,
+                        deviceData[2].selectId,
+                        this.state.productD,
+                      )
+                    : this.editManufacturer(
+                        deviceData[0].select,
+                        deviceData[0].selectId,
+                        deviceData[1].select,
+                        deviceData[1].selectId,
+                        deviceData[2].select,
+                        deviceData[2].selectId,
+                        this.state.productD,
+                      )
+                }
+                disabled={
+                  deviceData[0].selectId !== '' &&
+                  deviceData[1].selectId !== '' &&
+                  deviceData[2].selectId !== '' &&
+                  this.state.productD !== ''
+                    ? false
+                    : true
+                }>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color:
+                      deviceData[0].selectId !== '' &&
+                      deviceData[1].selectId !== '' &&
+                      deviceData[2].selectId !== '' &&
+                      this.state.productD !== ''
+                        ? '#25AAE1ec'
+                        : 'grey',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  {flag == 'add' ? 'Add' : 'Edit'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        {this.state.error.deviceId ? (
+          <HelperText type="error" visible={this.state.error.deviceId}>
+            {this.state.error.deviceId}
+          </HelperText>
+        ) : null}
+      </View>
+    );
+  };
+
+  editManufacturer = (
+    manu,
+    manuId,
+    device,
+    deviceId,
+    modelNo,
+    modelNoId,
+    prodNo,
+  ) => {
+    const {currentManuIndex} = this.state;
+    let newArr = [...this.state.manufacturersArray];
+
+    newArr[currentManuIndex].manufacturer = manu;
+    newArr[currentManuIndex].manuId = manuId;
+    newArr[currentManuIndex].device = device;
+    newArr[currentManuIndex].deviceId = deviceId;
+    newArr[currentManuIndex].model_No = modelNo;
+    newArr[currentManuIndex].model_No_Id = modelNoId;
+
+    this.setState(
+      {
+        manufacturersArray: newArr,
+        productD: prodNo,
+        showEditManufacturer: false,
+      },
+      () =>
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        }),
+    );
+  };
+
+  addManufacturer = (
+    manu,
+    manuId,
+    device,
+    deviceId,
+    modelNo,
+    modelNoId,
+    prodNo,
+  ) => {
+    let newArr = [...this.state.manufacturersArray];
+    let newModelIdArr = [...this.state.modelNoIdArray];
+
+    let deviceArr = [...this.state.deviceData];
+
+    console.log('Kia hai manu', manu, ' ', manuId);
+    console.log('Kia hai device', device, ' ', deviceId);
+    console.log('Kia hai modelNo', modelNo, ' ', modelNoId);
+    console.log('Kia hai prodNo', prodNo);
+
+    newArr.push({
+      manufacturer: manu,
+      manu_Id: manuId,
+      device: device,
+      deviceId: deviceId,
+      model_No: modelNo,
+      model_No_Id: modelNoId,
+      product_No: prodNo,
+    });
+
+    newModelIdArr.push(parseInt(modelNoId));
+    deviceArr[0].select = '';
+    deviceArr[0].selectId = '';
+    deviceArr[1].select = '';
+    deviceArr[1].selectId = '';
+    deviceArr[2].select = '';
+    deviceArr[2].selectId = '';
+
+    this.setState(
+      {
+        showAddManufacturer: false,
+        manufacturersArray: newArr,
+        modelNoIdArray: newModelIdArr,
+        deviceData: deviceArr,
+        productD: '',
+      },
+      () => {
+        console.log('model ID Array', this.state.modelNoIdArray);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+      },
+    );
   };
 
   doneAddType = async () => {
@@ -1027,6 +1870,7 @@ export default class Splash extends React.Component {
     let listSlide = [...this.state.deviceData]; // copying the old datas array
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
+    console.log('XX___--->>', some?.name);
     if (index == 0) {
       listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
@@ -1037,6 +1881,7 @@ export default class Splash extends React.Component {
           ...prevState.error, // keep all other key-value pairs
           deviceId: '',
         },
+        productD: '',
       }));
     }
     if (index == 1) {
@@ -1054,10 +1899,15 @@ export default class Splash extends React.Component {
           ...prevState.error, // keep all other key-value pairs
           deviceId: '',
         },
+        productD: '',
       }));
       this.setState({productD: product_desc});
       console.log(clc.cyanBright('product desc of device'), product_desc);
       console.log('DAEA of models', modelNos);
+    }
+    if (index == 2) {
+      listSlide[2].selectId = some?.id;
+      listSlide[2].select = some?.name;
     }
     this.setState({deviceData: listSlide});
   };
@@ -1070,13 +1920,19 @@ export default class Splash extends React.Component {
     if (index == 0) {
       listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
       listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[1].select = '';
       listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = '';
       listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
       listSlide[2].select = '';
+      listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[2].error = '';
     } else if (index == 1) {
       listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[2].select = '';
+      listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
+    } else if (index == 2) {
+      listSlide[2].selectId = '';
       listSlide[2].select = '';
       listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
     }
@@ -1270,6 +2126,77 @@ export default class Splash extends React.Component {
     // this.setState({ dropDownShow });
     // // const newArray = [...this.state.dropDownShow];
   };
+
+  openEditManu = (item, index) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    let newArr = [...this.state.deviceData];
+
+    newArr[0].select = item.manufacturer;
+    newArr[0].selectId = item.manu_Id;
+    newArr[1].select = item.device;
+    newArr[1].selectId = item.deviceId;
+    newArr[2].select = item.model_No;
+    newArr[2].selectId = item.model_No_Id;
+
+    this.setState(
+      {deviceData: newArr, productD: item.product_No, currentManuIndex: index},
+      () => this.setState({showEditManufacturer: true}),
+    );
+  };
+
+  openAddManu = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    let newArr = [...this.state.deviceData];
+    newArr[0].select = '';
+    newArr[0].selectId = '';
+    newArr[1].select = '';
+    newArr[1].selectId = '';
+    newArr[2].select = '';
+    newArr[2].selectId = '';
+    this.setState({
+      productD: '',
+      deviceData: newArr,
+      showAddManufacturer: true,
+    });
+  };
+
+  renderManufacturerList = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => this.openEditManu(item, index)}
+        style={{
+          backgroundColor: '#fff',
+          borderWidth: 2,
+          borderColor: '#787878',
+          height: width * 0.1,
+          width: width * 0.8,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 8,
+        }}>
+        <Text style={{color: '#787878'}}>{item.manufacturer}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   render() {
     const {loadManufacturers, loadMeters, deviceData} = this.state;
 
@@ -2178,685 +3105,67 @@ export default class Splash extends React.Component {
                             color="#3E4A4F"
                           />
                         </TouchableOpacity>
-                        <View
-                          style={{
-                            // height: height * 0.25,
-                            width: '100%',
-                            alignSelf: 'center',
-                            alignItems: 'center',
-                            // justifyContent: 'center',
-                            zIndex: 2,
-                            height: this.state.dropDownShow[3].value
-                              ? height * 0.5
-                              : height * 0.0,
-                            overflow: 'hidden',
-                            // backgroundColor: 'tomato',
-                          }}>
-                          {this.state.addNewType &&
-                          this.state.showAddType == 'Manufacturer' ? (
-                            <View
-                              style={{
-                                width: '100%',
-                                zIndex: 2,
-                                alignSelf: 'center',
-                                alignItems: 'center',
-                              }}>
-                              <View>
-                                <View>
-                                  <Text
-                                    style={{
-                                      fontSize: width * 0.03,
-                                      color: '#3E4A4F',
-                                      textTransform: 'capitalize',
-                                      fontFamily: Fonts.ComfortaaRegular,
-                                      marginBottom: width * 0.01,
-                                      fontWeight: 'bold',
-                                    }}>
-                                    Add New {this.state.showAddType}
-                                  </Text>
-                                </View>
-                                <TextInput
-                                  placeholder={'Type New Manufacturer Name'}
-                                  value={this.state.addManufacturer}
-                                  style={{
-                                    width: width * 0.8,
-                                    justifyContent: 'flex-end',
-                                    fontSize: width * 0.036,
-                                  }}
-                                  mode={'outlined'}
-                                  theme={{
-                                    colors: {
-                                      text: '#25AAE1ec',
-                                      primary: '#25AAE1ec',
-                                      selectionColor: 'red',
-                                    },
-                                  }}
-                                  onChangeText={(text) => {
-                                    this.setState({addManufacturer: text});
-                                  }}
-                                />
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                    marginVertical: height * 0.01,
-                                  }}>
-                                  <TouchableOpacity
-                                    onPress={() => this.cancelAddType()}>
-                                    <Text
-                                      style={{
-                                        fontWeight: 'bold',
-                                        fontSize: width * 0.045,
-                                        color: '#25AAE1ec',
-                                        width: width * 0.16,
-                                        textAlign: 'center',
-                                      }}>
-                                      Cancel
-                                    </Text>
-                                  </TouchableOpacity>
-                                  <TouchableOpacity
-                                    onPress={() => this.doneAddType()}
-                                    disabled={
-                                      this.state.addManufacturer ? false : true
-                                    }>
-                                    <Text
-                                      style={{
-                                        fontWeight: 'bold',
-                                        fontSize: width * 0.045,
-                                        color: this.state.addManufacturer
-                                          ? '#25AAE1ec'
-                                          : '#d0d0d0',
-                                        width: width * 0.16,
-                                        textAlign: 'center',
-                                      }}>
-                                      Add
-                                    </Text>
-                                  </TouchableOpacity>
-                                </View>
-                              </View>
-                            </View>
-                          ) : this.state.addNewType &&
-                            this.state.showAddType == 'Device' ? (
-                            <ScrollView
-                              style={{
-                                width: '90%',
-                                zIndex: 2,
-                                alignSelf: 'center',
-                              }}
-                              keyboardShouldPersistTaps={true}
-                              nestedScrollEnabled={true}
-                              showsVerticalScrollIndicator={false}>
-                              {this.state.addDevice &&
-                                this.state.addDevice?.map((item, index) => (
-                                  <View
-                                    style={{
-                                      width: width * 0.8,
-                                      // zIndex: 9,
-                                    }}
-                                    key={item.id}>
-                                    <View>
-                                      <Text
-                                        style={styles.meterDesciptionHeading}>
-                                        {item.name}
-                                      </Text>
-                                    </View>
-                                    {index < 2 ? (
-                                      <SearchableDropDown
-                                        onItemSelect={(items) => {
-                                          this.getNewDeviceData(items, index);
-                                        }}
-                                        containerStyle={{
-                                          paddingBottom: width * 0.02,
-                                        }}
-                                        itemStyle={{
-                                          padding: width * 0.027,
-                                          backgroundColor: '#fff',
-                                          borderColor: '#bbb',
-                                          borderWidth: width * 0.0015,
-                                          borderRadius: width * 0.015,
-                                          margin: width * 0.005,
-                                        }}
-                                        itemTextStyle={{color: '#222'}}
-                                        itemsContainerStyle={
-                                          Platform.OS == 'android'
-                                            ? {
-                                                height: width * 0.2,
-                                                zIndex: 1,
-                                                position: 'absolute',
-                                                width: width * 0.8,
-                                                top: width * 0.1,
-                                                flex: 1,
-                                                zIndex: 20,
-                                                backgroundColor: 'white',
-                                                elevation: width * 0.01,
-                                                shadowColor: '#000',
-                                                shadowOffset: {
-                                                  width: 0,
-                                                  height: 2,
-                                                },
-                                                shadowOpacity: 0.25,
-                                                shadowRadius: 3.84,
-                                              }
-                                            : {height: width * 0.2, zIndex: 1}
-                                        }
-                                        items={item.data}
-                                        resetValue={false}
-                                        textInputProps={{
-                                          placeholder: item.name,
-                                          underlineColorAndroid: 'transparent',
-                                          style: {
-                                            padding: width * 0.027,
-                                            margin: 0,
-                                            borderRadius: width * 0.015,
-                                            height: width * 0.13,
-                                            backgroundColor: '#F6F6F6',
-                                            borderWidth: width * 0.0019,
-                                          },
-
-                                          onTextChange: (text) => {
-                                            this.onChangeNewDevice(text, index);
-                                          },
-                                          value: setTimeout(
-                                            () => item.select,
-                                            200,
-                                          ),
-                                          defaultValue: item.select,
-                                        }}
-                                        listProps={{
-                                          nestedScrollEnabled: true,
-                                        }}
-                                      />
-                                    ) : (
-                                      <View>
-                                        <TextInput
-                                          placeholder={'Type New Device Name'}
-                                          value={item.select}
-                                          style={styles.meterInput}
-                                          mode={'outlined'}
-                                          theme={{
-                                            colors: {
-                                              text: '#25AAE1ec',
-                                              primary: '#25AAE1ec',
-                                              selectionColor: 'red',
-                                              zIndex: 10,
-                                            },
-                                          }}
-                                          onChangeText={(text) => {
-                                            this.onChangeNewDevice(text, index);
-                                          }}
-                                        />
-                                        <View>
-                                          <View>
-                                            <Text
-                                              style={
-                                                styles.meterDesciptionHeading
-                                              }>
-                                              Model Number*
-                                            </Text>
-                                          </View>
-                                          <TextInput
-                                            placeholder="Type Model Number"
-                                            value={this.state.modelNo}
-                                            showSoftInputOnFocus={false}
-                                            style={styles.meterInput}
-                                            mode={'outlined'}
-                                            theme={{
-                                              colors: {
-                                                text: '#25AAE1ec',
-                                                primary: '#25AAE1ec',
-                                                selectionColor: 'red',
-                                              },
-                                            }}
-                                            onChangeText={(text) => {
-                                              this.setState({modelNo: text});
-                                            }}
-                                          />
-                                        </View>
-                                        <View>
-                                          <View>
-                                            <Text
-                                              style={
-                                                styles.meterDesciptionHeading
-                                              }>
-                                              Product Description*
-                                            </Text>
-                                          </View>
-                                          <TextInput
-                                            placeholder="Type Product Description"
-                                            value={this.state.productNo}
-                                            showSoftInputOnFocus={false}
-                                            style={styles.meterInput}
-                                            mode={'outlined'}
-                                            theme={{
-                                              colors: {
-                                                text: '#25AAE1ec',
-                                                primary: '#25AAE1ec',
-                                                selectionColor: 'red',
-                                              },
-                                            }}
-                                            onChangeText={(text) => {
-                                              this.setState({productNo: text});
-                                            }}
-                                          />
-                                        </View>
-                                      </View>
-                                    )}
-                                  </View>
-                                ))}
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-around',
-                                  marginVertical: height * 0.01,
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => this.cancelAddType()}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: '#25AAE1ec',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Cancel
-                                  </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => this.doneAddType()}
-                                  disabled={
-                                    this.state.addDevice[0].selectId &&
-                                    this.state.addDevice[1].selectId &&
-                                    this.state.addDevice[2].select &&
-                                    this.state.modelNo &&
-                                    this.state.productNo
-                                      ? false
-                                      : true
-                                  }>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color:
-                                        this.state.addDevice[0].selectId &&
-                                        this.state.addDevice[1].selectId &&
-                                        this.state.addDevice[2].select &&
-                                        this.state.modelNo &&
-                                        this.state.productNo
-                                          ? '#25AAE1ec'
-                                          : '#d0d0d0',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Add
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </ScrollView>
-                          ) : this.state.addNewType &&
-                            this.state.showAddType == 'Model Number' ? (
-                            <View
-                              style={{
-                                width: '100%',
-                                zIndex: 2,
-                                alignSelf: 'center',
-                                alignItems: 'center',
-                              }}>
-                              {!this.state.enableDevice ? (
-                                <ActivityIndicator
-                                  size={'large'}
-                                  color="#25AAE1ec"
-                                />
-                              ) : (
-                                <View>
-                                  <View>
-                                    <View>
-                                      <Text
-                                        style={{
-                                          fontSize: width * 0.03,
-                                          color: '#3E4A4F',
-                                          textTransform: 'capitalize',
-                                          fontFamily: Fonts.ComfortaaRegular,
-                                          marginBottom: width * 0.01,
-                                          fontWeight: 'bold',
-                                        }}>
-                                        Select Device
-                                      </Text>
-                                    </View>
-                                    <SearchableDropDown
-                                      onItemSelect={(item) => {
-                                        // this.getNewDeviceData(items, index);
-                                        this.setState({selectedDevice: item});
-                                        console.log('kia ha', item);
-                                      }}
-                                      containerStyle={{
-                                        paddingBottom: width * 0.02,
-                                      }}
-                                      itemStyle={{
-                                        padding: width * 0.027,
-                                        backgroundColor: '#fff',
-                                        borderColor: '#bbb',
-                                        borderWidth: width * 0.0015,
-                                        borderRadius: width * 0.015,
-                                        margin: width * 0.005,
-                                      }}
-                                      itemTextStyle={{color: '#222'}}
-                                      itemsContainerStyle={
-                                        Platform.OS == 'android'
-                                          ? {
-                                              height: width * 0.2,
-                                              zIndex: 1,
-                                              position: 'absolute',
-                                              width: width * 0.8,
-                                              top: width * 0.1,
-                                              flex: 1,
-                                              zIndex: 20,
-                                              backgroundColor: 'white',
-                                              elevation: width * 0.01,
-                                              shadowColor: '#000',
-                                              shadowOffset: {
-                                                width: 0,
-                                                height: 2,
-                                              },
-                                              shadowOpacity: 0.25,
-                                              shadowRadius: 3.84,
-                                            }
-                                          : {height: width * 0.2, zIndex: 1}
-                                      }
-                                      items={this.state.devicesArray}
-                                      resetValue={false}
-                                      textInputProps={{
-                                        editable: this.state.enableDevice,
-                                        placeholder: 'Select Device',
-                                        underlineColorAndroid: 'transparent',
-                                        style: {
-                                          padding: width * 0.027,
-                                          margin: 0,
-                                          borderRadius: width * 0.015,
-                                          height: width * 0.13,
-                                          backgroundColor: '#F6F6F6',
-                                          borderWidth: width * 0.0019,
-                                        },
-
-                                        onTextChange: (text) => {
-                                          // this.onChangeNewDevice(text, index);
-                                          console.log('tes', text);
-                                        },
-                                        value: setTimeout(
-                                          () => this.state.selectedDevice?.name,
-                                          200,
-                                        ),
-                                        defaultValue: this.state.selectedDevice
-                                          ?.name,
-                                      }}
-                                      listProps={{
-                                        nestedScrollEnabled: true,
-                                      }}
+                        {/*
+                         //! multi-manufacturer
+                        */}
+                        <ScrollView
+                          keyboardShouldPersistTaps="handled"
+                          nestedScrollEnabled>
+                          <View
+                            style={{
+                              // height: height * 0.25,
+                              width: '100%',
+                              alignSelf: 'center',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              // justifyContent: 'center',
+                              zIndex: 2,
+                              height: this.state.dropDownShow[3].value
+                                ? this.state.showAddManufacturer ||
+                                  this.state.showEditManufacturer
+                                  ? height * 0.5
+                                  : this.state.manufacturersArray.length > 0
+                                  ? height * 0.25
+                                  : height * 0.15
+                                : height * 0.0,
+                              overflow: 'hidden',
+                              // backgroundColor: 'tomato',
+                            }}>
+                            {!this.state.showAddManufacturer &&
+                              !this.state.showEditManufacturer && (
+                                <View style={{paddingVertical: 10}}>
+                                  {this.state.manufacturersArray.length > 0 && (
+                                    <FlatList
+                                      data={this.state.manufacturersArray}
+                                      renderItem={this.renderManufacturerList}
                                     />
-                                  </View>
-                                  <View>
-                                    <Text
-                                      style={{
-                                        fontSize: width * 0.03,
-                                        color: '#3E4A4F',
-                                        textTransform: 'capitalize',
-                                        fontFamily: Fonts.ComfortaaRegular,
-                                        marginBottom: width * 0.01,
-                                        fontWeight: 'bold',
-                                      }}>
-                                      Add New {this.state.showAddType}
-                                    </Text>
-                                  </View>
-                                  <TextInput
-                                    placeholder={'Type New Model Number'}
-                                    value={this.state.addModelNumber}
+                                  )}
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      this.openAddManu();
+                                    }}
                                     style={{
+                                      alignSelf: 'center',
+                                      backgroundColor: '#fff',
+                                      borderWidth: 2,
+                                      borderColor: '#25AAE1ec',
+                                      height: width * 0.1,
                                       width: width * 0.8,
-                                      justifyContent: 'flex-end',
-                                      fontSize: width * 0.036,
-                                    }}
-                                    mode={'outlined'}
-                                    theme={{
-                                      colors: {
-                                        text: '#25AAE1ec',
-                                        primary: '#25AAE1ec',
-                                        selectionColor: 'red',
-                                      },
-                                    }}
-                                    onChangeText={(text) => {
-                                      this.setState({addModelNumber: text});
-                                    }}
-                                  />
-                                  <View
-                                    style={{
-                                      flexDirection: 'row',
-                                      justifyContent: 'space-around',
-                                      marginVertical: height * 0.01,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
                                     }}>
-                                    <TouchableOpacity
-                                      onPress={() => this.cancelAddType()}
-                                      // onPress={() => console.log('Cancel Press')}
-                                    >
-                                      <Text
-                                        style={{
-                                          fontWeight: 'bold',
-                                          fontSize: width * 0.045,
-                                          color: '#25AAE1ec',
-                                          width: width * 0.16,
-                                          textAlign: 'center',
-                                        }}>
-                                        Cancel
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                      onPress={() => this.doneAddType()}
-                                      // onPress={() => console.log('Press Done')}
-                                      disabled={
-                                        this.state.addModelNumber ? false : true
-                                      }>
-                                      <Text
-                                        style={{
-                                          fontWeight: 'bold',
-                                          fontSize: width * 0.045,
-                                          color: this.state.addModelNumber
-                                            ? '#25AAE1ec'
-                                            : '#d0d0d0',
-                                          width: width * 0.16,
-                                          textAlign: 'center',
-                                        }}>
-                                        Add
-                                      </Text>
-                                    </TouchableOpacity>
-                                  </View>
+                                    <Text style={{color: '#25AAE1ec'}}>
+                                      Add Manufacturer
+                                    </Text>
+                                  </TouchableOpacity>
                                 </View>
                               )}
-                            </View>
-                          ) : (
-                            <View>
-                              {deviceData.map((item, index) => (
-                                <View
-                                  style={{
-                                    width: '90%',
-                                    zIndex: 2,
-                                    alignSelf: 'center',
-                                  }}
-                                  key={item.id}>
-                                  <Text style={styles.meterDesciptionHeading}>
-                                    {item.name}*
-                                  </Text>
-                                  <View
-                                    style={{
-                                      flexDirection: 'row',
-                                      alignItems: 'flex-start',
-                                    }}>
-                                    <View
-                                      pointerEvents={
-                                        index > 0
-                                          ? deviceData[0].selectId
-                                            ? 'auto'
-                                            : 'none'
-                                          : 'auto'
-                                      }>
-                                      <SearchableDropDown
-                                        onItemSelect={(item) => {
-                                          this.getDevice(item, index);
-                                        }}
-                                        containerStyle={{
-                                          paddingBottom: width * 0.02,
-                                          width: width * 0.7,
-                                        }}
-                                        itemStyle={{
-                                          padding: width * 0.027,
-                                          backgroundColor: 'rgb(247, 247, 247)',
-                                          borderColor: '#bbb',
-                                          borderWidth: width * 0.0015,
-                                          borderRadius: width * 0.015,
-                                          zIndex: 99,
-                                        }}
-                                        itemTextStyle={{color: '#222'}}
-                                        itemsContainerStyle={{
-                                          maxHeight: height * 0.08,
-                                        }}
-                                        items={item.data}
-                                        resetValue={false}
-                                        textInputProps={{
-                                          editable:
-                                            index == 2
-                                              ? deviceData[1].selectId
-                                                ? true
-                                                : false
-                                              : true,
-                                          placeholder:
-                                            index == 1
-                                              ? deviceData[0].selectId
-                                                ? item.name
-                                                : 'First Select Manufacture'
-                                              : index == 2
-                                              ? deviceData[1].selectId
-                                                ? item.name
-                                                : 'First Select Device'
-                                              : item.name,
-                                          underlineColorAndroid: 'transparent',
-                                          style: {
-                                            padding: width * 0.027,
-                                            margin: 0,
-                                            borderTopLeftRadius: width * 0.015,
-                                            borderBottomLeftRadius:
-                                              width * 0.015,
-                                            borderColor: item.error
-                                              ? '#A3001B'
-                                              : 'black',
-                                            height: width * 0.13,
-                                            backgroundColor: '#F6F6F6',
-                                            borderTopWidth: width * 0.0019,
-                                            borderLeftWidth: width * 0.0019,
-                                            borderBottomWidth: width * 0.0019,
-                                            zIndex: 0,
-                                          },
-                                          onTextChange: (text) => {
-                                            this.onChangeManufacturer(
-                                              text,
-                                              index,
-                                            );
-                                          },
-                                          value: setTimeout(
-                                            () => item.select,
-                                            200,
-                                          ),
-                                          defaultValue: item.select,
-                                        }}
-                                        listProps={{
-                                          nestedScrollEnabled: true,
-                                        }}
-                                      />
-                                    </View>
-                                    <TouchableOpacity
-                                      style={{
-                                        width: width * 0.1,
-                                        backgroundColor: '#25AAE199',
-                                        borderTopRightRadius: width * 0.015,
-                                        borderBottomRightRadius: width * 0.015,
-                                        borderTopWidth: width * 0.0019,
-                                        borderRightWidth: width * 0.0019,
-                                        borderBottomWidth: width * 0.0019,
-                                        height: width * 0.13,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                      }}
-                                      onPress={() =>
-                                        this.showAddNewType(item.name)
-                                      }>
-                                      <Icon
-                                        size={width * 0.06}
-                                        color="#fff"
-                                        name={'add'}
-                                      />
-                                    </TouchableOpacity>
-                                  </View>
-                                </View>
-                              ))}
-                              <View
-                                style={{
-                                  width: width * 0.8,
-                                  paddingTop: width * 0.027,
-                                }}>
-                                <View
-                                  style={[
-                                    styles.desciptionContainer,
-                                    {
-                                      alignSelf: 'flex-start',
-                                      borderBottomWidth: 0,
-                                    },
-                                  ]}>
-                                  <Text
-                                    style={[
-                                      styles.desciptionHeading,
-                                      {
-                                        height: width * 0.05,
-                                        textAlignVertical: 'bottom',
-                                        textTransform: 'capitalize',
-                                      },
-                                    ]}>
-                                    Product Desc*
-                                  </Text>
-                                </View>
-                                <TextInput
-                                  placeholder="Type Product Description"
-                                  value={
-                                    this.state.productD.length > 24
-                                      ? this.state.productD.slice(0, 24) + '...'
-                                      : this.state.productD
-                                  }
-                                  selection
-                                  // dense={true}
-                                  editable={false}
-                                  // showSoftInputOnFocus={false}
-                                  style={[
-                                    styles.input,
-                                    {
-                                      width: '100%',
-                                    },
-                                  ]}
-                                  mode={'outlined'}
-                                  theme={{
-                                    colors: {
-                                      text: '#25AAE1ec',
-                                      primary: '#25AAE1ec',
-                                      selectionColor: 'red',
-                                    },
-                                  }}
-                                />
-                              </View>
-                            </View>
-                          )}
-                          {this.state.error.deviceId ? (
-                            <HelperText
-                              type="error"
-                              visible={this.state.error.deviceId}>
-                              {this.state.error.deviceId}
-                            </HelperText>
-                          ) : null}
-                        </View>
+                            {this.state.showAddManufacturer &&
+                              this.deviceTypeInfoComponent('add')}
+                            {this.state.showEditManufacturer &&
+                              this.deviceTypeInfoComponent('edit')}
+                          </View>
+                        </ScrollView>
                         <TouchableOpacity
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(4)}>
