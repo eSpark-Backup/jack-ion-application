@@ -79,6 +79,7 @@ export default class Splash extends React.Component {
       customerEmail: '',
       avoidKeyboard: false,
       selectedMeterId: null,
+      selectedMetersId: [],
       loadManufacturers: false,
       loadMeters: false,
       selectLocation: false,
@@ -104,6 +105,7 @@ export default class Splash extends React.Component {
       selectMeter: '',
       selectManagement: '',
       selectUtil: [],
+      selectMeters: [],
       modelNo: '',
       productNo: '',
       btnLoading: false,
@@ -290,8 +292,10 @@ export default class Splash extends React.Component {
   };
 
   addMeterInNewArray = (value) => {
+    let newArr = [...this.state.selectedMetersId];
+    newArr.push(parseInt(value.id));
     console.log('ITEM VALUE', value);
-    this.setState({selectedMeterId: value.id});
+    this.setState({selectedMeterId: value.id, selectedMetersId: newArr});
     this.setState({selectMeter: value.name});
     this.setState((prevState) => ({
       ...prevState,
@@ -554,7 +558,29 @@ export default class Splash extends React.Component {
       }));
     }
 
-    if (this.state.selectedMeterId == null) {
+    // if (this.state.selectedMeterId == null) {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       meterId: 'Please select a meter from above', // update the value of specific key
+    //     },
+    //   }));
+    //   Toast.show('Please select a meter', Toast.SHORT);
+    //   return;
+    // } else {
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     error: {
+    //       // object that we want to update
+    //       ...prevState.error, // keep all other key-value pairs
+    //       meterId: '', // update the value of specific key
+    //     },
+    //   }));
+    // }
+
+    if (this.state.selectedMetersId.length < 1) {
       this.setState((prevState) => ({
         ...prevState,
         error: {
@@ -575,6 +601,7 @@ export default class Splash extends React.Component {
         },
       }));
     }
+
     if (this.state.selectUtil == null) {
       this.setState((prevState) => ({
         ...prevState,
@@ -669,7 +696,7 @@ export default class Splash extends React.Component {
           propContactTitle: this.state.customerjobDes,
           propContactPhone: this.state.customerPhone,
           propContactEmail: this.state.customerEmail,
-          meter_id: this.state.selectedMeterId,
+          meter_id: this.state.selectedMetersId,
           // device_id: this.state.deviceData[1].selectId,
           model_no_id: this.state.modelNoIdArray,
           propLat: this.state.lat,
@@ -1858,6 +1885,7 @@ export default class Splash extends React.Component {
     }
   };
 
+  //* karna hai set
   getDevice = async (some, index) => {
     console.log('get devices--->');
     const deviceResponse = await api.get(
@@ -1912,6 +1940,7 @@ export default class Splash extends React.Component {
     this.setState({deviceData: listSlide});
   };
 
+  //* karna hai set
   onChangeManufacturer = (e, index) => {
     let listSlide = [...this.state.deviceData]; // copying the old datas array
 
@@ -2005,6 +2034,16 @@ export default class Splash extends React.Component {
 
   AddTypes = (item, type) => {
     if (type == 'Meter') {
+      console.log('ADD CHALA Meter', item);
+      const items = this.state.selectMeters;
+      items.push(item);
+      // selectedTypes.current = items;
+      this.setState({selectMeters: items}, () =>
+        console.log(
+          'Multi Meters list',
+          clc.bgCyan(JSON.stringify(this.state.selectMeters)),
+        ),
+      );
       this.addMeterInNewArray(item);
     } else if (type == 'Utility') {
       console.log('ADD CHALA', item);
@@ -2998,88 +3037,128 @@ export default class Splash extends React.Component {
                               </View>
                             </View>
                           ) : (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropDown
-                                onItemSelect={(item) => {
-                                  this.AddTypes(item, 'Meter');
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                // items={item.data}
-                                items={this.state.meterList}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Select Meter Type',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                  },
-                                  onTextChange: (text) => {
-                                    this.setState({selectMeter: text});
-                                  },
-                                  value: this.state.selectMeter,
-                                  // defaultValue: item.select,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TouchableOpacity
+                            <View>
+                              <View
                                 style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                onPress={() => this.showAddNewType('Meter')}>
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropDown
+                                  multi={true}
+                                  selectedItems={this.state.selectMeters}
+                                  onItemSelect={(item) => {
+                                    console.log('Testing', item);
+                                    this.AddTypes(item, 'Meter');
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  // items={item.data}
+                                  items={this.state.meterList}
+                                  onRemoveItem={(item, index) => {
+                                    const items = this.state.selectMeters.filter(
+                                      (sitem) => sitem.id !== item.id,
+                                    );
+
+                                    this.setState({selectMeters: items});
+                                  }}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Select Meter Type',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                    },
+                                    // onTextChange: (text) => {
+                                    //   this.setState({selectMeter: text});
+                                    // },
+                                    // value: this.state.selectMeter,
+                                    // defaultValue: item.select,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
                                 />
-                              </TouchableOpacity>
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() => this.showAddNewType('Meter')}>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                              <View>
+                                <FlatList
+                                  data={this.state.selectMeters}
+                                  horizontal
+                                  renderItem={({item}) => (
+                                    <View
+                                      style={{
+                                        borderWidth: 1,
+                                        borderRadius: 8,
+                                        flexDirection: 'row',
+                                        padding: 5,
+                                        margin: 5,
+                                        height: width * 0.1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                      }}>
+                                      <Text style={{color: 'black'}}>
+                                        {item.name}
+                                      </Text>
+                                      <TouchableOpacity
+                                        onPress={() => {
+                                          const items = this.state.selectMeters.filter(
+                                            (sitem) => sitem.id !== item.id,
+                                          );
+                                          this.setState({
+                                            selectMeters: items,
+                                          });
+                                        }}>
+                                        <Icon
+                                          name="close"
+                                          size={width * 0.05}
+                                        />
+                                      </TouchableOpacity>
+                                    </View>
+                                  )}
+                                />
+                              </View>
                             </View>
-                            // <FlatList
-                            //   scrollEnabled
-                            //   contentContainerStyle={{
-                            //     alignItems: 'center',
-                            //   }}
-                            //   nestedScrollEnabled
-                            //   data={this.state.meterList}
-                            //   renderItem={this.renderMeterInfo}
-                            // />
                           )}
                         </View>
                         {this.state.error.meterId ? (
