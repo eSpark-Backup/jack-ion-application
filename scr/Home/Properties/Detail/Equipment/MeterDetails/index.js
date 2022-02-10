@@ -246,6 +246,7 @@ const App = ({navigation}) => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
+    console.log('Kia ha Meter INfo Data', meterInfo);
     setUnitMeter(meterInfo);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
@@ -592,7 +593,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: unitMeter?.meter_name,
+            rightName: 'unitMeter?.meter_name',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -709,7 +710,7 @@ const App = ({navigation}) => {
                     styles.listText,
                     {
                       textTransform: 'capitalize',
-                      color: index == 1 ? typeColor(item.rightName) : '#000',
+                      // color: index == 1 ? typeColor(item.rightName) : '#000',
                     },
                   ]}>
                   {item.rightName}
@@ -756,7 +757,7 @@ const App = ({navigation}) => {
                   styles.listText,
                   {
                     textTransform: 'capitalize',
-                    color: index == 1 ? typeColor(item.rightName) : '#000',
+                    // color: index == 1 ? typeColor(item.rightName) : '#000',
                   },
                 ]}>
                 {item.rightName}
@@ -1038,7 +1039,7 @@ const App = ({navigation}) => {
                   <RightArrow
                     name="chevron-thin-left"
                     size={width * 0.08}
-                    color={typeColor(unitMeter?.meter_name)}
+                    // color={typeColor(unitMeter?.meter_name)}
                     color={'#639CC7'}
                     style={{alignSelf: 'center', marginRight: width * 0.01}}
                     onPress={() => setHeadView(!headView)}
@@ -1079,7 +1080,7 @@ const App = ({navigation}) => {
                   />
                 }
                 buttonStyle={{
-                  backgroundColor: typeColor(unitMeter?.meter_name),
+                  // backgroundColor: typeColor(unitMeter?.meter_name),
                   backgroundColor: 'transparent',
                 }}
                 onPress={() => console.log('Quick Actions Press')}
@@ -1158,7 +1159,7 @@ const App = ({navigation}) => {
                           textTransform: 'capitalize',
                         },
                       ]}>
-                      {unitMeter?.meter_name + ' Meter'}
+                      {unitMeter?.meter_name[0]?.name + ' Meter'}
                     </Text>
                     <Image
                       source={img}
@@ -1397,7 +1398,7 @@ const App = ({navigation}) => {
                   <Button
                     onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${unitMeter?.meter_name} Meter`}
+                    title={`Delete ${unitMeter?.meter_name[0]?.name} Meter`}
                     buttonStyle={styles.dangerBtn}
                   />
                 </View>

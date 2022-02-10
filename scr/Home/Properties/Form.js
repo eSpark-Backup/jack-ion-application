@@ -1531,6 +1531,7 @@ export default class Splash extends React.Component {
   };
 
   doneAddType = async () => {
+    console.log('Show Add Type', this.state.showAddType);
     if (this.state.showAddType == 'Manufacturer') {
       let data = {
         name: this.state.addManufacturer,
@@ -1587,7 +1588,7 @@ export default class Splash extends React.Component {
         name: this.state.addUtility,
       };
       const UtilityResponse = await api.post(
-        '/property/equipment/utility-type/add',
+        '/property/equipment/utility-type',
         data,
       );
       if (UtilityResponse?.data?.bool) {
@@ -1604,6 +1605,7 @@ export default class Splash extends React.Component {
         });
         this.getToken();
         this.cancelAddType();
+        alert(UtilityResponse?.data?.message);
       } else {
         alert(UtilityResponse?.data?.message);
       }
@@ -1629,6 +1631,7 @@ export default class Splash extends React.Component {
         });
         this.getToken();
         this.cancelAddType();
+        alert(MeterResponse?.data?.message);
       } else {
         alert(MeterResponse?.data?.message);
       }
@@ -1640,7 +1643,7 @@ export default class Splash extends React.Component {
         '/property/billing-company/add',
         data,
       );
-      if (MeterResponse?.data?.bool) {
+      if (BillingResponse?.data?.bool) {
         console.log('datachecckk-->>', BillingResponse?.data?.data);
         LayoutAnimation.configureNext({
           duration: 300,
@@ -1654,17 +1657,20 @@ export default class Splash extends React.Component {
         });
         this.getToken();
         this.cancelAddType();
+        alert(BillingResponse?.data?.message);
       } else {
         alert(BillingResponse?.data?.message);
       }
     } else if (this.state.showAddType == 'Management') {
       let data = {
-        name: this.state.addManagement,
+        manager_name: this.state.addManagement,
       };
+      console.log('Management Company data -->>', data);
       const ManagementResponse = await api.post(
         '/property/management-company/add',
         data,
       );
+      console.log('Management Company-->>', ManagementResponse?.data?.data);
       if (ManagementResponse?.data?.bool) {
         console.log('datachecckk-->>', ManagementResponse?.data?.data);
         LayoutAnimation.configureNext({
@@ -1679,6 +1685,7 @@ export default class Splash extends React.Component {
         });
         this.getToken();
         this.cancelAddType();
+        alert(ManagementResponse?.data?.message);
       } else {
         alert(ManagementResponse?.data?.message);
       }
@@ -1708,6 +1715,7 @@ export default class Splash extends React.Component {
         });
         this.getToken();
         this.cancelAddType();
+        alert(DeviceTypesResponse?.data?.message);
       } else {
         alert(DeviceTypesResponse?.data?.message);
       }
@@ -3043,7 +3051,10 @@ export default class Splash extends React.Component {
                                   onTextChange: (text) => {
                                     this.setState({selectMeter: text});
                                   },
-                                  value: this.state.selectMeter,
+                                  value: setTimeout(
+                                    () => this.state.selectMeter,
+                                    200,
+                                  ),
                                   // defaultValue: item.select,
                                 }}
                                 listProps={{
@@ -3492,7 +3503,10 @@ export default class Splash extends React.Component {
                                   onTextChange: (text) => {
                                     this.setState({managementCompany: text});
                                   },
-                                  value: this.state.managementCompany,
+                                  value: setTimeout(
+                                    () => this.state.managementCompany,
+                                    200,
+                                  ),
                                   // defaultValue: item.select,
                                 }}
                                 listProps={{
@@ -3688,7 +3702,11 @@ export default class Splash extends React.Component {
                                     onTextChange: (text) => {
                                       this.setState({BillingCompany: text});
                                     },
-                                    value: this.state.BillingCompany,
+                                    value: setTimeout(
+                                      () => this.state.BillingCompany,
+                                      200,
+                                    ),
+
                                     // defaultValue: item.select,
                                   }}
                                   listProps={{

@@ -812,7 +812,7 @@ export default function UnitEdit({
     console.log('AttachedToResponse_________', AttachedToResponse?.data?.data);
     setAttachedToData(AttachedToResponse?.data?.data);
     const reasoneResponce = await api.get(
-      '/property/equipment/unit/reasons/all',
+      '/property/equipment/unit/option-reasons/all',
     );
 
     let reasonArr = reasoneResponce?.data?.data;
@@ -966,6 +966,7 @@ export default function UnitEdit({
     let data = {
       name: state.lastUnitData,
       building_id: buildingId,
+      defaultRadial_dist: radialDis,
       meters: meterData,
     };
 
@@ -1150,18 +1151,20 @@ export default function UnitEdit({
     var meterArray = [...meterListData]; // copying the old datas array
     meterArray.push({
       device: {
-        manufacturer: slide1[0].select,
         manufacturer_id: slide1[0].selectId,
-        name: slide1[1].select,
+        product_desc: productNo,
       },
-      meter_id: newMeter.id,
-      meter_name: newMeter.name,
+      meter_id: [newMeter.id],
+      meter_name: [{id: newMeter.id, name: newMeter.name}],
+      model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
       meter_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
       initial_meter_reading: slide2[1].value,
       latitude: lat,
       longitude: long,
+      defaultLatitude: propertyLat,
+      defaultLongitude: propertyLong,
       attachedTo_id: attachedToId,
       attachedTo_name: attachedTo,
       thumbnail: filePath,
@@ -1214,9 +1217,13 @@ export default function UnitEdit({
         device_serial_number: item.device_serial_number,
         meter_serial_number: item.meter_serial_number,
         device_id: item.device_id,
+        device: item.device,
+        model_no_id: item.model_no_id,
         initial_meter_reading: item.initial_meter_reading,
         latitude: item.latitude,
         longitude: item.longitude,
+        defaultLatitude: item.defaultLatitude,
+        defaultLongitude: item.defaultLongitude,
         attachedTo_id: item.attachedTo_id,
         thumbnail: `data:image/jpeg;base64,${imageBase64}`,
         utility_type_id: item.utility_type_id,
@@ -1770,7 +1777,7 @@ export default function UnitEdit({
         name: addUtility,
       };
       const UtilityResponse = await api.post(
-        '/property/equipment/utility-type/add',
+        '/property/equipment/utility-type',
         data,
       );
       if (UtilityResponse?.data?.bool) {
@@ -3495,7 +3502,7 @@ export default function UnitEdit({
                                   onTextChange: (text) => {
                                     setReasonText(text);
                                   },
-                                  value: reasonText,
+                                  value: setTimeout(() => reasonText, 200),
                                 }}
                                 listProps={{
                                   nestedScrollEnabled: true,
