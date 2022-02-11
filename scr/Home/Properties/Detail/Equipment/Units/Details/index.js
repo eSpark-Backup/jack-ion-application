@@ -310,9 +310,53 @@ const App = ({navigation}) => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     setData(res.data);
+    let unitData = res.data?.data?.unit?.unit_meter?.[0];
     setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
+
+    setUnitData([
+      {
+        title: 'Unit',
+        icon: 'home',
+        type: 'ionicon',
+        data: [
+          {
+            leftIcon: 'home',
+            leftName: 'Name',
+            rightIcon: null,
+            rightName: res.data?.data?.unit?.name ?? 'N/A',
+            type: 'feather',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: null,
+            leftName: 'Utility Type',
+            rightIcon: null,
+            rightName: unitData?.meter_name[0]?.name,
+            type: 'ionicon',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'building',
+            leftName: 'Building',
+            rightIcon: null,
+            rightName: buildingName ?? 'Bluegrass MHP',
+            type: 'font-awesome-5',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'ios-clipboard-outline',
+            leftName: 'Notes',
+            rightIcon: 'chevron-right',
+            rightName: null,
+            type: 'ionicon',
+            typeRight: 'feather',
+          },
+        ],
+      },
+    ]);
+
     const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
     let data = {
@@ -689,47 +733,8 @@ const App = ({navigation}) => {
         bold: false,
       },
     ]);
-    setUnitData([
-      {
-        title: 'Unit',
-        icon: 'home',
-        type: 'ionicon',
-        data: [
-          {
-            leftIcon: 'home',
-            leftName: 'Name',
-            rightIcon: null,
-            rightName: data?.data?.unit?.name ?? 'N/A',
-            type: 'feather',
-            typeRight: 'feather',
-          },
-          {
-            leftIcon: null,
-            leftName: 'Utility Type',
-            rightIcon: null,
-            rightName: 'unitMeter?.meter_name',
-            type: 'ionicon',
-            typeRight: 'feather',
-          },
-          {
-            leftIcon: 'building',
-            leftName: 'Building',
-            rightIcon: null,
-            rightName: buildingName ?? 'Bluegrass MHP',
-            type: 'font-awesome-5',
-            typeRight: 'feather',
-          },
-          {
-            leftIcon: 'ios-clipboard-outline',
-            leftName: 'Notes',
-            rightIcon: 'chevron-right',
-            rightName: null,
-            type: 'ionicon',
-            typeRight: 'feather',
-          },
-        ],
-      },
-    ]);
+    console.log('UNITMETER KA BTA', unitMeter);
+
     if (data.length != 0) {
       setLoading(false);
     }
@@ -1646,7 +1651,7 @@ const App = ({navigation}) => {
                           textTransform: 'capitalize',
                         },
                       ]}>
-                      {'unitMeter?.meter_name' + ' Meter'}
+                      {unitMeter?.meter_name[0].name + ' Meter'}
                     </Text>
                     <Image
                       source={img}
@@ -1861,7 +1866,7 @@ const App = ({navigation}) => {
                   <Button
                     onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete {unitMeter?.meter_name} Meter`}
+                    title={`Delete ${unitMeter?.meter_name[0].name} Meter`}
                     buttonStyle={styles.dangerBtn}
                   />
                   <Button
@@ -1919,7 +1924,7 @@ const App = ({navigation}) => {
                         textAlignVertical: 'center',
                       },
                     ]}>
-                    {'item.meter_name'}
+                    {item.meter_name[0].name}
                   </Text>
                 </TouchableOpacity>
               ))}

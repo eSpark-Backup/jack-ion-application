@@ -593,7 +593,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: 'unitMeter?.meter_name',
+            rightName: meterInfo?.meter_name[0].name,
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -629,7 +629,7 @@ const App = ({navigation}) => {
     }
   }, [unitMeter]);
   const meterSwitcher = () => {
-    switch (unitMeter?.meter_name) {
+    switch (unitMeter?.meter_name[0].name) {
       case 'hot water':
         return require('../../../../../../Images/meter-hot.png');
       case 'cold water':

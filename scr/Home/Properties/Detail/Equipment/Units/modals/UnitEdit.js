@@ -488,14 +488,19 @@ export default function UnitEdit({
       api.setHeader('Authorization', 'Bearer ' + token);
     }
     const res = await api.get('/property/equipment/meter/all-meters');
+    // let arr1 = res.data?.data;
     let arr1 = res.data?.data;
     let arr2 = meterTypes;
+
     console.log('antiIntersection USEEFFECT arr1--->', arr1);
     console.log('antiIntersection USEEFFECT arr2--->', arr2);
 
     if (arr2.length > 0) {
       const Intersection = arr2.filter((item1) =>
-        arr1.some((item2, index) => item1?.meter_id[index] == item2.id),
+        arr1.some(
+          (item2, index) => item1?.meter_id == item2.id,
+          // console.log('ITEM MATCH', index, item1?.meter_id[index], item2.id),
+        ),
       );
 
       let arr3 = unitDetails?.unit?.unit_meter;
@@ -809,7 +814,7 @@ export default function UnitEdit({
     const AttachedToResponse = await api.get(
       '/property/equipment/attached_to/attach',
     );
-    console.log('AttachedToResponse_________', AttachedToResponse?.data?.data);
+    // console.log('AttachedToResponse_________', AttachedToResponse?.data?.data);
     setAttachedToData(AttachedToResponse?.data?.data);
     const reasoneResponce = await api.get(
       '/property/equipment/unit/option-reasons/all',
@@ -4869,63 +4874,56 @@ export default function UnitEdit({
                       ) : (
                         meterListData.length > 0 &&
                         meterListData?.map(
-                          (item, index) => (
-                            console.log(
-                              'meterListData+++>>>>>',
-                              item.meter_name,
-                            ),
+                          (item, index) =>
                             item.meter_name &&
-                              item.meter_name?.map((meterItem, meterIndex) => (
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    LayoutAnimation.configureNext({
-                                      duration: 300,
-                                      create: {
-                                        type:
-                                          LayoutAnimation.Types.easeInEaseOut,
-                                        property:
-                                          LayoutAnimation.Properties.opacity,
-                                      },
-                                      update: {
-                                        type:
-                                          LayoutAnimation.Types.easeInEaseOut,
-                                      },
-                                    }),
-                                      // setShowAddMeterSlider(true),
-                                      // setDefaultScreen(true),
-                                      getMeterData(item, index);
-                                    enableLocation();
-                                  }}
-                                  style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    padding: width * 0.02,
-                                    margin: width * 0.01,
-                                    elevation: 2,
-                                    backgroundColor: 'white',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                      width: 0,
-                                      height: 1,
+                            item.meter_name?.map((meterItem, meterIndex) => (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  LayoutAnimation.configureNext({
+                                    duration: 300,
+                                    create: {
+                                      type: LayoutAnimation.Types.easeInEaseOut,
+                                      property:
+                                        LayoutAnimation.Properties.opacity,
                                     },
-                                    shadowOpacity: 0.2,
-                                    shadowRadius: 1.41,
-                                  }}>
-                                  {/* <Image
+                                    update: {
+                                      type: LayoutAnimation.Types.easeInEaseOut,
+                                    },
+                                  }),
+                                    // setShowAddMeterSlider(true),
+                                    // setDefaultScreen(true),
+                                    getMeterData(item, index);
+                                  enableLocation();
+                                }}
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  padding: width * 0.02,
+                                  margin: width * 0.01,
+                                  elevation: 2,
+                                  backgroundColor: 'white',
+                                  shadowColor: '#000',
+                                  shadowOffset: {
+                                    width: 0,
+                                    height: 1,
+                                  },
+                                  shadowOpacity: 0.2,
+                                  shadowRadius: 1.41,
+                                }}>
+                                {/* <Image
                                   source={typeSwitcher(item.meter_name)}
                                   style={styles.untiDetailImage}
                                 /> */}
-                                  <Text
-                                    style={[
-                                      styles.meterDesciptionHeading,
-                                      {marginBottom: 0},
-                                    ]}>
-                                    {meterItem.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              ))
-                          ),
+                                <Text
+                                  style={[
+                                    styles.meterDesciptionHeading,
+                                    {marginBottom: 0},
+                                  ]}>
+                                  {meterItem.name}
+                                </Text>
+                              </TouchableOpacity>
+                            )),
                         )
                       )}
                     </View>
