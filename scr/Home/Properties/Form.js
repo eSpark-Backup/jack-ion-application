@@ -67,6 +67,7 @@ export default class Splash extends React.Component {
     super();
     this.state = {
       isVisible: false,
+      count: 0,
       Name: '',
       Street: '',
       State: '',
@@ -106,6 +107,7 @@ export default class Splash extends React.Component {
       selectManagement: '',
       selectUtil: [],
       selectMeters: [],
+      selectDevices: [],
       modelNo: '',
       productNo: '',
       btnLoading: false,
@@ -128,6 +130,8 @@ export default class Splash extends React.Component {
       modelNoIdArray: [],
       selectedDevice: {},
       currentManuIndex: null,
+      devIdsArr: [],
+
       addDevice: [
         {
           id: 0,
@@ -176,6 +180,7 @@ export default class Splash extends React.Component {
         zipcode: '',
         st: '',
         modelNos: '',
+        devIdsArr: '',
       },
       value: '',
       dropDownShow: [
@@ -648,13 +653,13 @@ export default class Splash extends React.Component {
     //     },
     //   }));
     // }
-    if (this.state.modelNoIdArray.length < 1) {
+    if (this.state.devIdsArr.length < 1) {
       this.setState((prevState) => ({
         ...prevState,
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
-          modelNos: 'Please add a Manufacturer from above', // update the value of specific key
+          devIdsArr: 'Please add a Manufacturer from above', // update the value of specific key
         },
       }));
       Toast.show('Please Add Manufacturers', Toast.SHORT);
@@ -664,7 +669,7 @@ export default class Splash extends React.Component {
         ...prevState,
         error: {
           ...prevState.error, // keep all other key-value pairs
-          modelNos: '', // update the value of specific key
+          devIdsArr: '', // update the value of specific key
         },
       }));
     }
@@ -697,8 +702,8 @@ export default class Splash extends React.Component {
           propContactPhone: this.state.customerPhone,
           propContactEmail: this.state.customerEmail,
           meter_id: this.state.selectedMetersId,
-          // device_id: this.state.deviceData[1].selectId,
-          model_no_id: this.state.modelNoIdArray,
+          device_id: this.state.devIdsArr,
+          // model_no_id: this.state.modelNoIdArray,
           propLat: this.state.lat,
           propLong: this.state.long,
           utility_type_id: selectUtilIds,
@@ -1353,8 +1358,11 @@ export default class Splash extends React.Component {
                             : 'auto'
                         }>
                         <SearchableDropDown
+                          multi={true}
+                          selectedItems={this.state.selectDevices}
                           onItemSelect={(item) => {
-                            this.getDevice(item, index);
+                            // this.getDevice(item, index);
+                            this.AddTypes(item, 'Devices');
                           }}
                           containerStyle={{
                             paddingBottom: width * 0.02,
@@ -1373,6 +1381,13 @@ export default class Splash extends React.Component {
                             maxHeight: height * 0.08,
                           }}
                           items={item.data}
+                          onRemoveItem={(item, index) => {
+                            const items = this.state.selectDevices.filter(
+                              (sitem) => sitem.id !== item.id,
+                            );
+                            // selectedTypes.current = items;
+                            this.setState({selectDevices: items});
+                          }}
                           resetValue={false}
                           textInputProps={{
                             editable:
@@ -1405,11 +1420,11 @@ export default class Splash extends React.Component {
                               borderBottomWidth: width * 0.0019,
                               zIndex: 0,
                             },
-                            onTextChange: (text) => {
-                              this.onChangeManufacturer(text, index);
-                            },
-                            value: setTimeout(() => item.select, 200),
-                            defaultValue: item.select,
+                            // onTextChange: (text) => {
+                            //   this.onChangeManufacturer(text, index);
+                            // },
+                            // value: setTimeout(() => item.select, 200),
+                            // defaultValue: item.select,
                           }}
                           listProps={{
                             nestedScrollEnabled: true,
@@ -1432,6 +1447,37 @@ export default class Splash extends React.Component {
                         onPress={() => this.showAddNewType(item.name)}>
                         <Icon size={width * 0.06} color="#fff" name={'add'} />
                       </TouchableOpacity>
+                    </View>
+                    <View>
+                      <FlatList
+                        data={this.state.selectDevices}
+                        // extraData={selectedTypes.current}
+                        horizontal
+                        renderItem={({item}) => (
+                          <View
+                            style={{
+                              borderWidth: 1,
+                              borderRadius: 8,
+                              flexDirection: 'row',
+                              padding: 5,
+                              margin: 5,
+                              height: width * 0.1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Text style={{color: 'black'}}>{item.name}</Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                const items = this.state.selectDevices.filter(
+                                  (sitem) => sitem.id !== item.id,
+                                );
+                                this.setState({selectDevices: items});
+                              }}>
+                              <Icon name="close" size={width * 0.05} />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      />
                     </View>
                   </View>
                 );
@@ -1496,12 +1542,7 @@ export default class Splash extends React.Component {
                 // backgroundColor: 'pink',
                 marginTop: 8,
               }}>
-              <TouchableOpacity
-                onPress={() =>
-                  flag == 'add'
-                    ? this.setState({showAddManufacturer: false})
-                    : this.setState({showEditManufacturer: false})
-                }>
+              <TouchableOpacity onPress={() => this.cancelManu(flag)}>
                 <Text
                   style={{
                     fontWeight: 'bold',
@@ -1519,27 +1560,15 @@ export default class Splash extends React.Component {
                     ? this.addManufacturer(
                         deviceData[0].select,
                         deviceData[0].selectId,
-                        deviceData[1].select,
-                        deviceData[1].selectId,
-                        deviceData[2].select,
-                        deviceData[2].selectId,
-                        this.state.productD,
                       )
                     : this.editManufacturer(
                         deviceData[0].select,
                         deviceData[0].selectId,
-                        deviceData[1].select,
-                        deviceData[1].selectId,
-                        deviceData[2].select,
-                        deviceData[2].selectId,
-                        this.state.productD,
                       )
                 }
                 disabled={
                   deviceData[0].selectId !== '' &&
-                  deviceData[1].selectId !== '' &&
-                  deviceData[2].selectId !== '' &&
-                  this.state.productD !== ''
+                  this.state.selectDevices.length > 0
                     ? false
                     : true
                 }>
@@ -1549,9 +1578,7 @@ export default class Splash extends React.Component {
                     fontSize: width * 0.045,
                     color:
                       deviceData[0].selectId !== '' &&
-                      deviceData[1].selectId !== '' &&
-                      deviceData[2].selectId !== '' &&
-                      this.state.productD !== ''
+                      this.state.selectDevices.length > 0
                         ? '#25AAE1ec'
                         : 'grey',
                     width: width * 0.16,
@@ -1572,102 +1599,99 @@ export default class Splash extends React.Component {
     );
   };
 
-  editManufacturer = (
-    manu,
-    manuId,
-    device,
-    deviceId,
-    modelNo,
-    modelNoId,
-    prodNo,
-  ) => {
+  editManufacturer = (manu, manuId) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
     const {currentManuIndex} = this.state;
     let newArr = [...this.state.manufacturersArray];
 
-    newArr[currentManuIndex].manufacturer = manu;
-    newArr[currentManuIndex].manuId = manuId;
-    newArr[currentManuIndex].device = device;
-    newArr[currentManuIndex].deviceId = deviceId;
-    newArr[currentManuIndex].model_No = modelNo;
-    newArr[currentManuIndex].model_No_Id = modelNoId;
+    let newDevice = [...this.state.selectDevices]; // used for getting only name and id of devices
+
+    newArr[currentManuIndex].name = manu;
+    newArr[currentManuIndex].manu_Id = manuId;
+    newArr[currentManuIndex].devices = newDevice;
 
     this.setState(
       {
         manufacturersArray: newArr,
-        productD: prodNo,
         showEditManufacturer: false,
       },
-      () =>
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        }),
+      () => {
+        const newD = newArr.map(({devices}) => devices.map(({id}) => id));
+        this.setState({devIdsArr: newD.flat()}, () =>
+          console.log(
+            clc.greenBright('kia hai devices Ids'),
+            this.state.devIdsArr,
+          ),
+        );
+      },
     );
   };
 
-  addManufacturer = (
-    manu,
-    manuId,
-    device,
-    deviceId,
-    modelNo,
-    modelNoId,
-    prodNo,
-  ) => {
-    let newArr = [...this.state.manufacturersArray];
-    let newModelIdArr = [...this.state.modelNoIdArray];
-
-    let deviceArr = [...this.state.deviceData];
-
-    console.log('Kia hai manu', manu, ' ', manuId);
-    console.log('Kia hai device', device, ' ', deviceId);
-    console.log('Kia hai modelNo', modelNo, ' ', modelNoId);
-    console.log('Kia hai prodNo', prodNo);
-
-    newArr.push({
-      manufacturer: manu,
-      manu_Id: manuId,
-      device: device,
-      deviceId: deviceId,
-      model_No: modelNo,
-      model_No_Id: modelNoId,
-      product_No: prodNo,
+  addManufacturer = (manu, manuId) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
     });
 
-    newModelIdArr.push(parseInt(modelNoId));
+    const compareName = (obj1, obj2) => {
+      return obj1.name === obj2.name;
+    };
+
+    let newArr = [...this.state.manufacturersArray]; // used for adding in the list
+    let deviceArr = [...this.state.deviceData]; // used for clearing data
+    // let newDevice = [...this.state.selectDevices]; // used for getting only name and id of devices
+
+    console.log('Kia hai manu', manu, ' ', manuId);
+
+    newArr.push({
+      name: manu,
+      manu_Id: manuId,
+      devices: this.state.selectDevices,
+    });
+
     deviceArr[0].select = '';
     deviceArr[0].selectId = '';
-    deviceArr[1].select = '';
-    deviceArr[1].selectId = '';
-    deviceArr[2].select = '';
-    deviceArr[2].selectId = '';
+
+    deviceArr[0].data = deviceArr[0].data.filter((b) => {
+      let indexFound = newArr.findIndex((a) => compareName(a, b));
+      return indexFound === -1;
+    });
 
     this.setState(
       {
-        showAddManufacturer: false,
+        selectDevices: [],
         manufacturersArray: newArr,
-        modelNoIdArray: newModelIdArr,
         deviceData: deviceArr,
-        productD: '',
+        showAddManufacturer: false,
       },
       () => {
-        console.log('model ID Array', this.state.modelNoIdArray);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
+        const newD = newArr.map(({devices}) => devices.map(({id}) => id));
+        this.setState({devIdsArr: newD.flat()}, () =>
+          console.log(
+            clc.greenBright('kia hai devices Ids'),
+            this.state.devIdsArr,
+          ),
+        );
+        console.log(
+          clc.cyan('kia ha Manu Arr'),
+          JSON.stringify(this.state.manufacturersArray),
+        );
       },
     );
   };
@@ -2019,6 +2043,7 @@ export default class Splash extends React.Component {
       listSlide[1].selectId = '';
       listSlide[1].select = '';
       this.setState((prevState) => ({
+        selectDevices: [],
         error: {
           // object that we want to update
           ...prevState.error, // keep all other key-value pairs
@@ -2166,6 +2191,17 @@ export default class Splash extends React.Component {
       items.push(item);
       // selectedTypes.current = items;
       this.setState({selectUtil: items});
+    } else if (type == 'Devices') {
+      console.log('ADD CHALA', item);
+      const items = this.state.selectDevices;
+      items.push(item);
+      // selectedTypes.current = items;
+      this.setState({selectDevices: items, count: this.state.count + 1}, () =>
+        console.log(
+          'what is the manufacturersArray',
+          this.state.manufacturersArray,
+        ),
+      );
     }
   };
 
@@ -2281,6 +2317,18 @@ export default class Splash extends React.Component {
     // // const newArray = [...this.state.dropDownShow];
   };
 
+  cancelManu = (flag) => {
+    if (flag == 'add') {
+      this.setState({showAddManufacturer: false});
+    } else {
+      console.log('COUNT Final', this.state.count);
+      this.setState({
+        selectDevices: [],
+        showEditManufacturer: false,
+      });
+    }
+  };
+
   openEditManu = (item, index) => {
     LayoutAnimation.configureNext({
       duration: 300,
@@ -2292,18 +2340,27 @@ export default class Splash extends React.Component {
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+
+    // let manuArr = [...this.state.manufacturersArray];
     let newArr = [...this.state.deviceData];
 
-    newArr[0].select = item.manufacturer;
+    newArr[0].select = item.name;
     newArr[0].selectId = item.manu_Id;
-    newArr[1].select = item.device;
-    newArr[1].selectId = item.deviceId;
-    newArr[2].select = item.model_No;
-    newArr[2].selectId = item.model_No_Id;
 
     this.setState(
-      {deviceData: newArr, productD: item.product_No, currentManuIndex: index},
-      () => this.setState({showEditManufacturer: true}),
+      {
+        count: 0,
+        deviceData: newArr,
+        selectDevices: item.devices,
+        currentManuIndex: index,
+      },
+      () => {
+        this.setState({showEditManufacturer: true});
+        console.log(
+          clc.xterm(80)('Devices Array on Open Edit'),
+          JSON.stringify(this.state.selectDevices),
+        );
+      },
     );
   };
 
@@ -2319,14 +2376,13 @@ export default class Splash extends React.Component {
       },
     });
     let newArr = [...this.state.deviceData];
+
     newArr[0].select = '';
     newArr[0].selectId = '';
-    newArr[1].select = '';
-    newArr[1].selectId = '';
-    newArr[2].select = '';
-    newArr[2].selectId = '';
+
     this.setState({
-      productD: '',
+      count: 0,
+      selectDevices: [],
       deviceData: newArr,
       showAddManufacturer: true,
     });
@@ -2346,7 +2402,7 @@ export default class Splash extends React.Component {
           justifyContent: 'center',
           marginBottom: 8,
         }}>
-        <Text style={{color: '#787878'}}>{item.manufacturer}</Text>
+        <Text style={{color: '#787878'}}>{item.name}</Text>
       </TouchableOpacity>
     );
   };
