@@ -1547,6 +1547,21 @@ export default class Splash extends React.Component {
                 );
               }
             })}
+            <TouchableOpacity
+              style={{width: '50%'}}
+              onPress={() => this.showAddNewType('Model Number')}>
+              <View
+                style={{
+                  height: width * 0.1,
+                  width: width * 0.4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderWidth: 1,
+                  borderColor: '#25AAE1',
+                }}>
+                <Text style={{color: '#25AAE1'}}>Add New Model No</Text>
+              </View>
+            </TouchableOpacity>
             {/* <View
               style={{
                 width: width * 0.8,
