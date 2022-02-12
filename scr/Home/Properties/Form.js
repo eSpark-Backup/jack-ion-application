@@ -127,7 +127,7 @@ export default class Splash extends React.Component {
       showAddManufacturer: false,
       showEditManufacturer: false,
       manufacturersArray: [],
-      modelNoIdArray: [],
+      modelArr: [],
       selectedDevice: {},
       currentManuIndex: null,
       devIdsArr: [],
@@ -744,6 +744,7 @@ export default class Splash extends React.Component {
       addMeter: '',
       addDevice: deviceData,
       devicesArray: [],
+      modelArr: [],
       selectedDevice: {},
       addModelNumber: '',
       productNo: '',
@@ -958,23 +959,81 @@ export default class Splash extends React.Component {
                             Model Number*
                           </Text>
                         </View>
-                        <TextInput
-                          placeholder="Type Model Number"
-                          value={this.state.modelNo}
-                          showSoftInputOnFocus={false}
-                          style={styles.meterInput}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                          onChangeText={(text) => {
-                            this.setState({modelNo: text});
-                          }}
-                        />
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            width: width * 0.8,
+                            justifyContent: 'space-between',
+                          }}>
+                          <TextInput
+                            placeholder="Type Model Number"
+                            value={this.state.modelNo}
+                            showSoftInputOnFocus={false}
+                            style={[styles.meterInput, {width: width * 0.6}]}
+                            mode={'outlined'}
+                            theme={{
+                              colors: {
+                                text: '#25AAE1ec',
+                                primary: '#25AAE1ec',
+                                selectionColor: 'red',
+                              },
+                            }}
+                            onChangeText={(text) => {
+                              this.setState({modelNo: text});
+                            }}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              // backgroundColor: '#25AAE1ec',
+                              width: width * 0.14,
+                              height: width * 0.14,
+                              borderWidth: 2,
+                              borderRadius: 5,
+                              alignSelf: 'flex-end',
+                              borderColor: '#25AAE1ec',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() =>
+                              this.AddTypes(this.state.modelNo, 'Models')
+                            }>
+                            <Icon
+                              size={width * 0.1}
+                              color="#25AAE1ec"
+                              name={'add'}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        {this.state.modelArr.length > 0 && (
+                          <FlatList
+                            data={this.state.modelArr}
+                            horizontal
+                            renderItem={({item}) => (
+                              <View
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 8,
+                                  flexDirection: 'row',
+                                  padding: 5,
+                                  margin: 5,
+                                  height: width * 0.1,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}>
+                                <Text style={{color: 'black'}}>{item}</Text>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    const items = this.state.modelArr.filter(
+                                      (sitem) => sitem !== item,
+                                    );
+                                    this.setState({modelArr: items});
+                                  }}>
+                                  <Icon name="close" size={width * 0.05} />
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          />
+                        )}
                       </View>
                       <View>
                         <View>
@@ -1028,7 +1087,7 @@ export default class Splash extends React.Component {
                   this.state.addDevice[0].selectId &&
                   this.state.addDevice[1].selectId &&
                   this.state.addDevice[2].select !== '' &&
-                  this.state.modelNo !== '' &&
+                  this.state.modelArr.length > 0 &&
                   this.state.productNo !== ''
                     ? false
                     : true
@@ -1041,7 +1100,7 @@ export default class Splash extends React.Component {
                       this.state.addDevice[0].selectId &&
                       this.state.addDevice[1].selectId &&
                       this.state.addDevice[2].select !== '' &&
-                      this.state.modelNo !== '' &&
+                      this.state.modelArr.length > 0 &&
                       this.state.productNo !== ''
                         ? '#25AAE1ec'
                         : '#d0d0d0',
@@ -1861,12 +1920,13 @@ export default class Splash extends React.Component {
         alert(ManagementResponse?.data?.message);
       }
     } else {
+      this.setState({modelArr: []});
       let data = {
         name: this.state.addDevice[2].select,
         manufacturer_id: this.state.addDevice[0].selectId,
         device_type_id: this.state.addDevice[1].selectId,
-        model_no: this.state.modelNo,
-        product_no: this.state.productNo,
+        model_nos: this.state.modelArr,
+        product_desc: this.state.productNo,
       };
       const DeviceTypesResponse = await api.post(
         '/property/equipment/device/add',
@@ -2209,12 +2269,19 @@ export default class Splash extends React.Component {
       const items = [...this.state.selectDevices];
       items.push(item);
       // selectedTypes.current = items;
-      this.setState({selectDevices: items, count: this.state.count + 1}, () =>
+      this.setState({selectDevices: items}, () =>
         console.log(
           'what is the manufacturersArray',
           this.state.manufacturersArray,
         ),
       );
+    } else if (type == 'Models') {
+      if (item !== '') {
+        console.log('ADD CHALA', item);
+        const items = [...this.state.modelArr];
+        items.push(item);
+        this.setState({modelArr: items, modelNo: ''});
+      }
     }
   };
 

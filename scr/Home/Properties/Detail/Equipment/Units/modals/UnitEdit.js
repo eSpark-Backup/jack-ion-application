@@ -2481,6 +2481,7 @@ export default function UnitEdit({
                       height: width * 0.18,
                       alignItems: 'center',
                       justifyContent: 'center',
+                      marginTop: 8,
                     }}>
                     <View
                       style={{
@@ -2500,6 +2501,37 @@ export default function UnitEdit({
                           : newMeter.number}
                       </Text>
                     </View>
+                    {sliderNumber < 6 ? (
+                      <TouchableOpacity
+                        style={{
+                          height: '100%',
+                          width: '100%',
+                          flexDirection: 'row-reverse',
+                          position: 'absolute',
+                          // right: 0,
+                          top: 1,
+                        }}
+                        onPress={() =>
+                          Alert.alert(
+                            'Alert',
+                            'Are you sure you want to clear current selected data',
+                            [
+                              {text: 'No', style: 'cancel'},
+                              {
+                                text: 'Yes',
+                                onPress: cancelMeter,
+                              },
+                            ],
+                          )
+                        }>
+                        <Icon
+                          name="cancel"
+                          size={width * 0.06}
+                          color="black"
+                          maxOpacity={0.5}
+                        />
+                      </TouchableOpacity>
+                    ) : null}
                     <Progress.Bar
                       progress={sliderProgress}
                       width={width * 0.8}
@@ -2536,34 +2568,6 @@ export default function UnitEdit({
                           ? 'Installation Status'
                           : 'Device Selection'}
                       </Text>
-                      {sliderNumber < 6 ? (
-                        <TouchableOpacity
-                          style={{
-                            position: 'absolute',
-                            right: 0,
-                            top: width * -0.12,
-                          }}
-                          onPress={() =>
-                            Alert.alert(
-                              'Alert',
-                              'Are you sure you want to clear current selected data',
-                              [
-                                {text: 'No', style: 'cancel'},
-                                {
-                                  text: 'Yes',
-                                  onPress: cancelMeter,
-                                },
-                              ],
-                            )
-                          }>
-                          <Icon
-                            name="cancel"
-                            size={width * 0.06}
-                            color="black"
-                            maxOpacity={0.5}
-                          />
-                        </TouchableOpacity>
-                      ) : null}
                     </View>
                     <View style={{height: 5}} />
                   </View>
@@ -4686,7 +4690,7 @@ export default function UnitEdit({
                       color="#5e5e5e"
                     /> */}
                     <Pressable
-                      style={{marginLeft: 5}}
+                      style={{marginLeft: 5, top: 8}}
                       onPress={() =>
                         Alert.alert(
                           'Alert',
@@ -4713,9 +4717,11 @@ export default function UnitEdit({
                         Cancel
                       </Text>
                     </Pressable>
-                    <Text style={styles.modalHeading}>{modalName}</Text>
+                    <Text style={[styles.modalHeading, {top: 8}]}>
+                      {modalName}
+                    </Text>
                     <Pressable
-                      style={{marginRight: 5}}
+                      style={{marginRight: 5, top: 8}}
                       onPress={handleAddNewUnit}
                       android_ripple={{
                         color: '#25AAE1',
@@ -5152,13 +5158,15 @@ const styles = StyleSheet.create({
     height: height,
   },
   boxHeader: {
-    // backgroundColor: 'tomato',
+    flexDirection: 'column',
+    justifyContent: 'center',
     marginTop: 8,
     width: '100%',
-    height: width * 0.18,
+    height: width * 0.2,
   },
   boxHeaderInner: {
     flex: 1,
+    // top: 8,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
