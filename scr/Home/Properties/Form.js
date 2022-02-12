@@ -131,7 +131,6 @@ export default class Splash extends React.Component {
       selectedDevice: {},
       currentManuIndex: null,
       devIdsArr: [],
-
       addDevice: [
         {
           id: 0,
@@ -747,6 +746,8 @@ export default class Splash extends React.Component {
       devicesArray: [],
       selectedDevice: {},
       addModelNumber: '',
+      productNo: '',
+      modelNo: '',
     });
   };
 
@@ -853,7 +854,9 @@ export default class Splash extends React.Component {
               zIndex: 2,
               alignSelf: 'center',
             }}
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps={'handled'}>
             {this.state.addDevice &&
               this.state.addDevice?.map((item, index) => (
                 <View
@@ -1024,9 +1027,9 @@ export default class Splash extends React.Component {
                 disabled={
                   this.state.addDevice[0].selectId &&
                   this.state.addDevice[1].selectId &&
-                  this.state.addDevice[2].selectId &&
-                  this.state.modelNo &&
-                  this.state.productNo
+                  this.state.addDevice[2].select !== '' &&
+                  this.state.modelNo !== '' &&
+                  this.state.productNo !== ''
                     ? false
                     : true
                 }>
@@ -1037,9 +1040,9 @@ export default class Splash extends React.Component {
                     color:
                       this.state.addDevice[0].selectId &&
                       this.state.addDevice[1].selectId &&
-                      this.state.addDevice[2].selectId &&
-                      this.state.modelNo &&
-                      this.state.productNo
+                      this.state.addDevice[2].select !== '' &&
+                      this.state.modelNo !== '' &&
+                      this.state.productNo !== ''
                         ? '#25AAE1ec'
                         : '#d0d0d0',
                     width: width * 0.16,
