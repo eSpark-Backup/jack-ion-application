@@ -409,6 +409,8 @@ export default class Splash extends React.Component {
       long: null,
       selectMeter: '',
       selectUtil: [],
+      manufacturersArray: [],
+      selectDevices: [],
       addDevice: [
         {
           id: 0,
@@ -2327,7 +2329,10 @@ export default class Splash extends React.Component {
 
   cancelManu = (flag) => {
     if (flag == 'add') {
-      this.setState({showAddManufacturer: false});
+      let deviceArr = [...this.state.deviceData]; // used for clearing data
+      deviceArr[0].select = '';
+      deviceArr[0].selectId = '';
+      this.setState({deviceData: deviceArr, showAddManufacturer: false});
     } else {
       console.log('COUNT Final', this.state.count);
       this.setState({
@@ -2337,7 +2342,7 @@ export default class Splash extends React.Component {
     }
   };
 
-  openEditManu = (item, index) => {
+  openEditManu = async (item, index) => {
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2349,11 +2354,19 @@ export default class Splash extends React.Component {
       },
     });
 
+    console.log('get devices---> Open Edit');
+    const deviceResponse = await api.get(
+      `/property/equipment/device/all/${item.manu_Id}`,
+    );
     // let manuArr = [...this.state.manufacturersArray];
     let newArr = [...this.state.deviceData];
 
     newArr[0].select = item.name;
     newArr[0].selectId = item.manu_Id;
+    newArr[1].data = deviceResponse?.data?.data;
+
+    console.log('item.name', item.name);
+    console.log('item.id', item.manu_Id);
 
     this.setState(
       {
@@ -2365,8 +2378,8 @@ export default class Splash extends React.Component {
       () => {
         this.setState({showEditManufacturer: true});
         console.log(
-          clc.xterm(80)('Devices Array on Open Edit'),
-          JSON.stringify(this.state.selectDevices),
+          clc.xterm(149)('Devices Array on Open Edit'),
+          JSON.stringify(this.state.deviceData),
         );
       },
     );
