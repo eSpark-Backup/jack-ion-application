@@ -198,12 +198,12 @@ export default function UnitEdit({
       name: 'Initial Meter Reading',
       value: '0',
     },
-    {
-      id: 2,
-      error: '',
-      name: 'Meter Serial Number',
-      value: '',
-    },
+    // {
+    //   id: 2,
+    //   error: '',
+    //   name: 'Meter Serial Number',
+    //   value: '',
+    // },
     // {
     //   id: 2,
     //   error: '',
@@ -696,12 +696,14 @@ export default function UnitEdit({
 
     if (index == 0) {
       listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
-      listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = '';
-      listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
       listSlide[2].select = '';
+      listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
     } else if (index == 1) {
       listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[2].select = '';
@@ -795,12 +797,31 @@ export default function UnitEdit({
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
+
+    const DefaultManufacturersResponse = await api.get(
+      `/property/default-meter-device/${propertyId}`,
+    );
+
+    console.log(
+      'Default Meter Manufacturers',
+      DefaultManufacturersResponse?.data?.data?.default_meter_device
+        .manufacturers,
+    );
+
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   manufacturersData: ManufacturersResponse?.data?.data,
+    // }));
     setState((oldState) => ({
       ...oldState,
-      manufacturersData: ManufacturersResponse?.data?.data,
+      manufacturersData:
+        DefaultManufacturersResponse?.data?.data?.default_meter_device
+          .manufacturers,
     }));
     let listSlide = [...slide1]; // copying the old datas array
-    listSlide[0].data = ManufacturersResponse?.data?.data;
+    listSlide[0].data =
+      DefaultManufacturersResponse?.data?.data?.default_meter_device.manufacturers;
+    // listSlide[0].data = ManufacturersResponse?.data?.data;
     setSlide1(listSlide);
     let deviceDataManufacturer = [...addDevice]; // copying the old datas array
     deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
@@ -837,6 +858,8 @@ export default function UnitEdit({
       listSlide[0].selectId = defaultData?.devices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = defaultData?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = defaultData?.devices[0]?.id; // replace e.target.value with whatever you want to change it to
+      listSlide[2].select = defaultData?.model_no[0]?.model_no; // replace e.target.value with whatever you want to change it to
+      listSlide[2].selectId = defaultData?.model_no[0]?.id; // replace e.target.value with whatever you want to change it to
       setModelNo(defaultData?.device_name?.model_no);
       setProductNo(defaultData?.devices[0]?.product_desc);
       setSlide1(listSlide);
@@ -876,21 +899,40 @@ export default function UnitEdit({
 
   const getDevice = async (some, index) => {
     console.log('get devices--->', some?.id);
+    console.log('get devices--->', some);
     const deviceResponse = await api.get(
       `/property/equipment/device/all/${some?.id}`,
     );
+    const defaultDeviceResponse = await api.get(
+      `/property/default-meter-device/${propertyId}`,
+    );
+
+    console.log(
+      'Default Meter Devices',
+      defaultDeviceResponse?.data?.data?.default_meter_device.devices,
+    );
+
     setState((oldState) => ({
       ...oldState,
       devicesData: deviceResponse?.data?.data,
     }));
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   devicesData:
+    //     defaultDeviceResponse?.data?.data?.default_meter_device.devices,
+    // }));
 
     let listSlide = [...slide1]; // copying the old datas array
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
     if (index == 0) {
-      listSlide[1].data = deviceResponse?.data?.data;
+      listSlide[1].data =
+        defaultDeviceResponse?.data?.data?.default_meter_device.devices;
+      // listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
+      listSlide[2].selectId = '';
       listSlide[1].select = '';
+      listSlide[2].select = '';
     }
     if (index == 1) {
       const product_desc = some?.product_desc;
@@ -901,13 +943,13 @@ export default function UnitEdit({
       listSlide[2].data = modelNos;
       listSlide[2].selectId = '';
       listSlide[2].select = '';
-      this.setState((prevState) => ({
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          deviceId: '',
-        },
-      }));
+      // this.setState((prevState) => ({
+      //   error: {
+      //     // object that we want to update
+      //     ...prevState.error, // keep all other key-value pairs
+      //     deviceId: '',
+      //   },
+      // }));
       setProductNo(product_desc);
       console.log(clc.cyanBright('product desc of device'), product_desc);
       console.log('DAEA of models', modelNos);
@@ -3068,10 +3110,10 @@ export default function UnitEdit({
                                 onTextChange: (text) => {
                                   onChangeAttachedTo(text);
                                 },
-                                // onFocus: () => {
-                                //   setVerticalOffs(-180);
-                                //   console.log('chala onFoucs');
-                                // },
+                                onFocus: () => {
+                                  setVerticalOffs(-180);
+                                  console.log('chala onFoucs');
+                                },
                                 value: setTimeout(() => attachedTo, 200),
                                 defaultValue: attachedTo,
                               }}

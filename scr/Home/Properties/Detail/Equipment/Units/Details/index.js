@@ -67,7 +67,8 @@ const App = ({navigation}) => {
   const [openedStatus, setOpenedStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [unitMeter, setUnitMeter] = useState([]);
+  const [unitMeter, setUnitMeter] = useState({});
+  const [unitMeterName, setUnitMeterName] = useState('');
   const [reasonsData, setReasonsData] = useState([]);
   const [reasonDataIndex, setReasonDataIndex] = useState(null);
   const [meterInfoData, setMeterInfoData] = useState([]);
@@ -309,53 +310,60 @@ const App = ({navigation}) => {
   const getUnitDetail = async () => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
-    setData(res.data);
-    let unitData = res.data?.data?.unit?.unit_meter?.[0];
-    setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
+    if (res.data?.bool) {
+      setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
+      setData(res.data);
+      setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
+      // console.log(
+      //   'GET Meter Name',
+      //   res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name,
+      // );
+    }
+    // let unitData = res.data?.data?.unit?.unit_meter?.[0];
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
 
-    setUnitData([
-      {
-        title: 'Unit',
-        icon: 'home',
-        type: 'ionicon',
-        data: [
-          {
-            leftIcon: 'home',
-            leftName: 'Name',
-            rightIcon: null,
-            rightName: res.data?.data?.unit?.name ?? 'N/A',
-            type: 'feather',
-            typeRight: 'feather',
-          },
-          {
-            leftIcon: null,
-            leftName: 'Utility Type',
-            rightIcon: null,
-            rightName: unitData?.meter_name[0]?.name,
-            type: 'ionicon',
-            typeRight: 'feather',
-          },
-          {
-            leftIcon: 'building',
-            leftName: 'Building',
-            rightIcon: null,
-            rightName: buildingName ?? 'Bluegrass MHP',
-            type: 'font-awesome-5',
-            typeRight: 'feather',
-          },
-          {
-            leftIcon: 'ios-clipboard-outline',
-            leftName: 'Notes',
-            rightIcon: 'chevron-right',
-            rightName: null,
-            type: 'ionicon',
-            typeRight: 'feather',
-          },
-        ],
-      },
-    ]);
+    // setUnitData([
+    //   {
+    //     title: 'Unit',
+    //     icon: 'home',
+    //     type: 'ionicon',
+    //     data: [
+    //       {
+    //         leftIcon: 'home',
+    //         leftName: 'Name',
+    //         rightIcon: null,
+    //         rightName: res.data?.data?.unit?.name ?? 'N/A',
+    //         type: 'feather',
+    //         typeRight: 'feather',
+    //       },
+    //       {
+    //         leftIcon: null,
+    //         leftName: 'Utility Type',
+    //         rightIcon: null,
+    //         rightName: unitMeter?.meter_name[0]?.name,
+    //         type: 'ionicon',
+    //         typeRight: 'feather',
+    //       },
+    //       {
+    //         leftIcon: 'building',
+    //         leftName: 'Building',
+    //         rightIcon: null,
+    //         rightName: buildingName ?? 'Bluegrass MHP',
+    //         type: 'font-awesome-5',
+    //         typeRight: 'feather',
+    //       },
+    //       {
+    //         leftIcon: 'ios-clipboard-outline',
+    //         leftName: 'Notes',
+    //         rightIcon: 'chevron-right',
+    //         rightName: null,
+    //         type: 'ionicon',
+    //         typeRight: 'feather',
+    //       },
+    //     ],
+    //   },
+    // ]);
 
     const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
@@ -697,6 +705,48 @@ const App = ({navigation}) => {
         ],
       },
     ]);
+    console.log('unitMeterName ', unitMeterName);
+    setUnitData([
+      {
+        title: 'Unit',
+        icon: 'home',
+        type: 'ionicon',
+        data: [
+          {
+            leftIcon: 'home',
+            leftName: 'Name',
+            rightIcon: null,
+            rightName: data?.data?.unit?.name ?? 'N/A',
+            type: 'feather',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: null,
+            leftName: 'Utility Type',
+            rightIcon: null,
+            rightName: unitMeterName,
+            type: 'ionicon',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'building',
+            leftName: 'Building',
+            rightIcon: null,
+            rightName: buildingName ?? 'Bluegrass MHP',
+            type: 'font-awesome-5',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'ios-clipboard-outline',
+            leftName: 'Notes',
+            rightIcon: 'chevron-right',
+            rightName: null,
+            type: 'ionicon',
+            typeRight: 'feather',
+          },
+        ],
+      },
+    ]);
     setStatusInfo([
       {
         leftText: 'Pulses',
@@ -733,7 +783,6 @@ const App = ({navigation}) => {
         bold: false,
       },
     ]);
-    console.log('UNITMETER KA BTA', unitMeter);
 
     if (data.length != 0) {
       setLoading(false);
@@ -760,6 +809,8 @@ const App = ({navigation}) => {
   const handleMeterSelect = async (data) => {
     // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
+      setUnitMeter(data);
+      setUnitMeterName(data.meter_name[0].name);
       setLoading(true);
       setDataSet([]);
       setMeterUsage([]);
@@ -767,27 +818,36 @@ const App = ({navigation}) => {
       setMeterReadData([]);
       setMeterUsageData([]);
       setDateData([]);
-      setUnitMeter(data);
       setLoadChartData(true);
 
-      if (data?.meter_read?.meter_reading > 0) {
+      const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const todayDate = new Date();
+
+      let date = {
+        start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
+        end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
+      };
+
+      const chartRes = await api.post(
+        `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
+        date,
+      );
+
+      if (
+        data?.meter_read?.meter_reading > 0 &&
+        chartRes.data?.data?.dataset.length > 0
+      ) {
         // console.log('Function Chala Kia');
-        const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        const todayDate = new Date();
-        let date = {
-          start_date: `2021-${startDate.getMonth() + 1}-${startDate.getDate()}`,
-          end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
-        };
+
         // console.log('Date', date);
-        const chartRes = await api.post(
-          `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
-          date,
-        );
+
         // console.log('Chart Data', chartRes.data?.data?.dataset[0]);
         setDataSet(chartRes.data?.data?.dataset);
         getChartData(chartRes);
+      } else {
+        console.log('Loading False');
+        setLoadChartData(false);
       }
-      setLoadChartData(false);
     }
   };
   const typeColor = (arg) => {
