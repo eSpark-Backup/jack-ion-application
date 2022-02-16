@@ -841,11 +841,11 @@ export default function UnitEdit({
       '/property/equipment/unit/option-reasons/all',
     );
 
-    let reasonArr = reasoneResponce?.data?.data;
-    const uniqueArr = [
-      ...new Map(reasonArr?.map((v) => [v.options_reason_id, v])).values(),
-    ];
-    setReasons(uniqueArr);
+    // let reasonArr = reasoneResponce?.data?.data;
+    // const uniqueArr = [
+    //   ...new Map(reasonArr?.map((v) => [v.options_reason_id, v])).values(),
+    // ];
+    setReasons(reasoneResponce?.data?.data);
     // console.log('reasons_________', reasoneResponce?.data?.data);
     setLoadManufacturers(false);
   };
@@ -3551,6 +3551,7 @@ export default function UnitEdit({
                                     setReasonText(text);
                                   },
                                   value: setTimeout(() => reasonText, 200),
+                                  defaultValue: reasonText,
                                 }}
                                 listProps={{
                                   nestedScrollEnabled: true,

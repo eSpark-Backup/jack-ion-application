@@ -704,7 +704,7 @@ export default class Splash extends React.Component {
           propContactEmail: this.state.customerEmail,
           meter_id: this.state.selectedMetersId,
           device_id: this.state.devIdsArr,
-          // model_no_id: this.state.modelNoIdArray,
+          model_no_id: this.state.deviceData[2].data,
           propLat: this.state.lat,
           propLong: this.state.long,
           utility_type_id: selectUtilIds,
@@ -3852,7 +3852,7 @@ export default class Splash extends React.Component {
                                     () => this.state.managementCompany,
                                     200,
                                   ),
-                                  // defaultValue: item.select,
+                                  defaultValue: this.state.managementCompany,
                                 }}
                                 listProps={{
                                   nestedScrollEnabled: true,
@@ -4052,7 +4052,7 @@ export default class Splash extends React.Component {
                                       200,
                                     ),
 
-                                    // defaultValue: item.select,
+                                    defaultValue: this.state.BillingCompany,
                                   }}
                                   listProps={{
                                     nestedScrollEnabled: true,
