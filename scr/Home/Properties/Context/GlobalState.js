@@ -17,6 +17,7 @@ class GlobalState extends React.Component {
         : this.setState({isLoading: true});
     });
   }
+
   getToken = async () => {
     console.log('Get Token');
     const token = await EncryptedStorage.getItem('user_token');
@@ -147,6 +148,7 @@ class GlobalState extends React.Component {
       st: info.propState,
       meter_id: info.meter_id,
       model_no_id: info.model_no_id,
+      manufacturer_id: info.manufacturer_id,
       device_id: info.device_id,
       utility_type_id: info.utility_type_id,
       zipcode: info.propZipCode,
@@ -159,7 +161,6 @@ class GlobalState extends React.Component {
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
-      device_id: info.device_id,
     };
     console.log('data--->', data);
     this.api.post('/property/add', data).then((res) => {
@@ -171,6 +172,7 @@ class GlobalState extends React.Component {
       }
     });
   };
+
   getBillingCompany = async () => {
     const response = await this.api?.get('/property/billing-company/all');
     console.log(

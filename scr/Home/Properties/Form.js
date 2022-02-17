@@ -131,6 +131,7 @@ export default class Splash extends React.Component {
       selectedDevice: {},
       currentManuIndex: null,
       devIdsArr: [],
+      manuIdsArr: [],
       addDevice: [
         {
           id: 0,
@@ -703,6 +704,7 @@ export default class Splash extends React.Component {
           propContactPhone: this.state.customerPhone,
           propContactEmail: this.state.customerEmail,
           meter_id: this.state.selectedMetersId,
+          manufacturer_id: this.state.manuIdsArr,
           device_id: this.state.devIdsArr,
           model_no_id: this.state.deviceData[2].data,
           propLat: this.state.lat,
@@ -2127,6 +2129,9 @@ export default class Splash extends React.Component {
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
     console.log('XX___--->>', some?.name);
     if (index == 0) {
+      let idsArr = [...this.state.manuIdsArr];
+      idsArr.push(some.id);
+      this.setState({manuIdsArr: idsArr});
       listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
       listSlide[1].select = '';
@@ -2140,6 +2145,7 @@ export default class Splash extends React.Component {
         productD: '',
       }));
     }
+    console.log('MANUFACTURERS IDS', this.state.manuIdsArr);
     if (index == 1) {
       const product_desc = some?.product_desc;
       const modelNos = some?.model_nos.map((item) => {

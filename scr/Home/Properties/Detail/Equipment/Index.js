@@ -1026,7 +1026,7 @@ export default class Splash extends Component {
                   size={width * 0.06}
                   color="white"
                 />
-                <Text style={styles.mainHeadiing}>Equiments</Text>
+                <Text style={styles.mainHeadiing}>Equipments</Text>
               </View>
             </View>
           </View>
