@@ -841,11 +841,11 @@ export default function UnitEdit({
       '/property/equipment/unit/option-reasons/all',
     );
 
-    let reasonArr = reasoneResponce?.data?.data;
-    const uniqueArr = [
-      ...new Map(reasonArr?.map((v) => [v.options_reason_id, v])).values(),
-    ];
-    setReasons(uniqueArr);
+    // let reasonArr = reasoneResponce?.data?.data;
+    // const uniqueArr = [
+    //   ...new Map(reasonArr?.map((v) => [v.options_reason_id, v])).values(),
+    // ];
+    setReasons(reasoneResponce?.data?.data);
     // console.log('reasons_________', reasoneResponce?.data?.data);
     setLoadManufacturers(false);
   };
@@ -1205,7 +1205,7 @@ export default function UnitEdit({
       meter_name: [{id: newMeter.id, name: newMeter.name}],
       model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
-      meter_serial_number: slide2[2].value,
+      // meter_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
       initial_meter_reading: slide2[1].value,
       latitude: lat,
@@ -1711,7 +1711,7 @@ export default function UnitEdit({
       let newArr = [...slide2];
       newArr[0].value = '';
       newArr[1].value = '0';
-      newArr[2].value = '';
+      // newArr[2].value = '';
     });
     setNewMeter((oldState) => ({
       ...oldState,
@@ -1981,7 +1981,7 @@ export default function UnitEdit({
       let newArr = [...slide2];
       newArr[0].value = data.device_serial_number;
       newArr[1].value = data.initial_meter_reading;
-      newArr[2].value = data.meter_serial_number;
+      // newArr[2].value = data.meter_serial_number;
     });
     setNewMeter((oldState) => ({
       ...oldState,
@@ -3110,10 +3110,10 @@ export default function UnitEdit({
                                 onTextChange: (text) => {
                                   onChangeAttachedTo(text);
                                 },
-                                onFocus: () => {
-                                  setVerticalOffs(-180);
-                                  console.log('chala onFoucs');
-                                },
+                                // onFocus: () => {
+                                //   setVerticalOffs(-180);
+                                //   console.log('chala onFoucs');
+                                // },
                                 value: setTimeout(() => attachedTo, 200),
                                 defaultValue: attachedTo,
                               }}
@@ -3298,15 +3298,12 @@ export default function UnitEdit({
                         {markers.length > 0 && (
                           <View
                             style={{
-                              flex: 1,
                               // backgroundColor: 'blue',
-                              width: width * 0.14,
-                              // height: height * 0.11,
+                              width: width * 0.13,
+                              height: width * 0.22,
                               zIndex: 1,
                               position: 'absolute',
-                              // top: width * 0.4,
                               alignItems: 'center',
-                              justifyContent: 'center',
                             }}>
                             <Icon
                               size={width * 0.12}
@@ -3554,6 +3551,7 @@ export default function UnitEdit({
                                     setReasonText(text);
                                   },
                                   value: setTimeout(() => reasonText, 200),
+                                  defaultValue: reasonText,
                                 }}
                                 listProps={{
                                   nestedScrollEnabled: true,
