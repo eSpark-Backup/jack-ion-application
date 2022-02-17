@@ -2268,7 +2268,7 @@ export default class Splash extends React.Component {
       // selectedTypes.current = items;
       this.setState({selectMeters: items}, () =>
         console.log(
-          'Multi Meters list',
+          'Multi Meters lists',
           clc.bgCyan(JSON.stringify(this.state.selectMeters)),
         ),
       );
