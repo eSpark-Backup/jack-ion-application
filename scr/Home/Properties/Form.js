@@ -2335,7 +2335,7 @@ export default class Splash extends React.Component {
             })
             .catch((error) => console.warn(error));
         },
-        (error) => console.log('geo location', error),
+        (error) => console.log('geo locations', error),
         {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
       );
       if (Platform.OS == 'ios') {
