@@ -408,6 +408,8 @@ export default class Splash extends React.Component {
       lat: null,
       long: null,
       selectMeter: '',
+      selectMeters: [],
+      selectedMetersId: [],
       selectUtil: [],
       manufacturersArray: [],
       selectDevices: [],
@@ -2129,6 +2131,7 @@ export default class Splash extends React.Component {
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
     console.log('XX___--->>', some?.name);
     if (index == 0) {
+      this.setState({manuIdsArr: []});
       let idsArr = [...this.state.manuIdsArr];
       idsArr.push(some.id);
       this.setState({manuIdsArr: idsArr});
