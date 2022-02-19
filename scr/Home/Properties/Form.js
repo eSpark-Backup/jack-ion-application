@@ -1012,6 +1012,7 @@ export default class Splash extends React.Component {
                           <FlatList
                             data={this.state.modelArr}
                             horizontal
+                            showsHorizontalScrollIndicator={false}
                             renderItem={({item}) => (
                               <View
                                 style={{
@@ -1521,6 +1522,7 @@ export default class Splash extends React.Component {
                         data={this.state.selectDevices}
                         // extraData={selectedTypes.current}
                         horizontal
+                        showsHorizontalScrollIndicator={false}
                         renderItem={({item}) => (
                           <View
                             style={{
@@ -2277,7 +2279,7 @@ export default class Splash extends React.Component {
       // selectedTypes.current = items;
       this.setState({selectMeters: items}, () =>
         console.log(
-          'Multi Meters list',
+          'Multi Meters lists',
           clc.bgCyan(JSON.stringify(this.state.selectMeters)),
         ),
       );
@@ -2344,7 +2346,7 @@ export default class Splash extends React.Component {
             })
             .catch((error) => console.warn(error));
         },
-        (error) => console.log('geo location', error),
+        (error) => console.log('geo locations', error),
         {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
       );
       if (Platform.OS == 'ios') {
@@ -3411,6 +3413,7 @@ export default class Splash extends React.Component {
                                 <FlatList
                                   data={this.state.selectMeters}
                                   horizontal
+                                  showsHorizontalScrollIndicator={false}
                                   renderItem={({item}) => (
                                     <View
                                       style={{
