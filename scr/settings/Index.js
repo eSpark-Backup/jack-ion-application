@@ -537,7 +537,7 @@ export default class Splash extends Component {
             </TouchableOpacity>
             <View
               style={{
-                height: height * 0.09,
+                // height: height * 0.09,
                 width: '100%',
                 backgroundColor: 'white',
                 marginVertical: height * 0.01,

@@ -48,8 +48,8 @@ export default class Login extends Component {
     };
   }
 
-  //todo: For testing enter email: strongone@gmail.com
-  //todo: For testing enter password: qwertyui
+  //todo: For testing enter email: superadmin@email.com
+  //todo: For testing enter password: admin123$
 
   setLoggedIn = async () => {
     try {
@@ -84,7 +84,7 @@ export default class Login extends Component {
         isLoading: false,
       });
     } else if (response?.ok) {
-      this.storeToken(response.data.data.token); //todo: Token Saved this point
+      this.storeToken(response.data.data.token); //todo: Token Saved at this point
       this.props.navigation.navigate('Home');
       this.setState({
         errName: '',
@@ -193,16 +193,17 @@ export default class Login extends Component {
                 <View
                   style={{
                     width: width * 0.75,
-                    marginBottom: height * 0.02,
+                    height: width * 0.06,
+                    // marginBottom: height * 0.02,
                     alignItems: 'flex-start',
                     paddingLeft: width * 0.025,
                   }}>
-                  {touched.email ? (
+                  {touched.email && (
                     <Text style={{color: '#A3001B'}}>
                       {errors.email || this.state.errName}
                     </Text>
-                  ) : (
-                    <View style={{height: height * 0.02}} />
+                    // ) : (
+                    //   <View style={{height: width * 0.02}} />
                   )}
                 </View>
                 <View style={[styles.textInputContainer]}>
@@ -237,20 +238,27 @@ export default class Login extends Component {
                 <View
                   style={{
                     width: width * 0.75,
-                    marginBottom: height * 0.05,
+                    height: width * 0.06,
+                    // marginBottom: height * 0.05,
                     alignItems: 'flex-start',
                     paddingLeft: width * 0.025,
                     // marginLeft: width * 0.15,
                   }}>
-                  {touched.password ? (
-                    <Text style={{color: '#A3001B'}}>
+                  {touched.password && (
+                    <Text
+                      style={{
+                        color: '#A3001B',
+                      }}>
                       {errors.password || this.state.errPass}
                     </Text>
-                  ) : (
-                    <View style={{height: height * 0.02}} />
+                    // ) : (
+                    //   <View style={{height: height * 0.02}} />
                   )}
                 </View>
-                <TouchableOpacity activeOpacity={0.8} onPress={handleSubmit}>
+                <TouchableOpacity
+                  style={{marginTop: width * 0.05}}
+                  activeOpacity={0.8}
+                  onPress={handleSubmit}>
                   <View style={styles.buttonContainer}>
                     {this.state.isLoading ? (
                       <ActivityIndicator size="small" color="#ffffff" />
