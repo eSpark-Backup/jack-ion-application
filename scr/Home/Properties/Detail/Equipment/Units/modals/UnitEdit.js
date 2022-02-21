@@ -760,15 +760,18 @@ export default function UnitEdit({
       //   ),
       // );
       const some = defaultUnitData?.data?.data?.default_meter_device;
-      console.log('Default Unit Data--->', some?.model_no[0]?.model_no);
+      console.log(
+        'Default Unit Data--->',
+        some?.devices[0]?.model_nos[0]?.model_no,
+      );
       setDefaultData(some);
       let listSlide = [...slide1]; // copying the old datas array
       listSlide[0].select = some?.devices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
       listSlide[0].selectId = some?.devices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = some?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = some?.devices[0]?.id; // replace e.target.value with whatever you want to change it to
-      listSlide[2].select = some?.model_no[0]?.model_no; // replace e.target.value with whatever you want to change it to
-      listSlide[2].selectId = some?.model_no[0]?.id; // replace e.target.value with whatever you want to change it to
+      listSlide[2].select = some?.devices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+      listSlide[2].selectId = some?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
       setModelNo(some?.device_name?.model_no);
       setProductNo(some?.devices[0]?.product_desc);
       setSlide1(listSlide);
@@ -858,8 +861,8 @@ export default function UnitEdit({
       listSlide[0].selectId = defaultData?.devices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = defaultData?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = defaultData?.devices[0]?.id; // replace e.target.value with whatever you want to change it to
-      listSlide[2].select = defaultData?.model_no[0]?.model_no; // replace e.target.value with whatever you want to change it to
-      listSlide[2].selectId = defaultData?.model_no[0]?.id; // replace e.target.value with whatever you want to change it to
+      listSlide[2].select = defaultData?.devices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+      listSlide[2].selectId = defaultData?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
       setModelNo(defaultData?.device_name?.model_no);
       setProductNo(defaultData?.devices[0]?.product_desc);
       setSlide1(listSlide);
@@ -3017,16 +3020,25 @@ export default function UnitEdit({
                                 )}
                               />
                             </View>
-                            <Switch
-                              trackColor={{
-                                false: '#767577',
-                                true: '#81b0ff',
-                              }}
-                              thumbColor={'#f4f3f4'}
-                              ios_backgroundColor="#3e3e3e"
-                              onValueChange={(val) => getdefaultMeterData(val)}
-                              value={defaultMeterValues}
-                            />
+                            <View
+                              style={{
+                                flex: 1,
+                                alignItems: 'flex-end',
+                                marginVertical: height * 0.01,
+                              }}>
+                              <Switch
+                                trackColor={{
+                                  false: '#767577',
+                                  true: '#81b0ff',
+                                }}
+                                thumbColor={'#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={(val) =>
+                                  getdefaultMeterData(val)
+                                }
+                                value={defaultMeterValues}
+                              />
+                            </View>
                           </View>
                         </>
                       ) : (
@@ -3896,18 +3908,25 @@ export default function UnitEdit({
                                     }}
                                   />
                                 </View>
-                                <Switch
-                                  trackColor={{
-                                    false: '#767577',
-                                    true: '#81b0ff',
-                                  }}
-                                  thumbColor={'#f4f3f4'}
-                                  ios_backgroundColor="#3e3e3e"
-                                  onValueChange={(val) =>
-                                    getdefaultDeviceData(val)
-                                  }
-                                  value={defaultDeviceValues}
-                                />
+                                <View
+                                  style={{
+                                    flex: 1,
+                                    alignItems: 'flex-end',
+                                    marginVertical: height * 0.01,
+                                  }}>
+                                  <Switch
+                                    trackColor={{
+                                      false: '#767577',
+                                      true: '#81b0ff',
+                                    }}
+                                    thumbColor={'#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={(val) =>
+                                      getdefaultDeviceData(val)
+                                    }
+                                    value={defaultDeviceValues}
+                                  />
+                                </View>
                               </View>
                             </View>
                           ) : (
