@@ -26,6 +26,7 @@ import Iconi from 'react-native-vector-icons/Ionicons';
 import Geocoder from 'react-native-geocoding';
 import Toast from 'react-native-simple-toast';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../components/Loader';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -60,6 +61,7 @@ const api = create({baseURL: Base_URL});
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0322;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const circleRef = React.createRef(null);
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -1554,19 +1556,17 @@ export default class Splash extends React.Component {
               }
             })}
             <TouchableOpacity
-              style={{width: '50%'}}
+              style={{
+                height: width * 0.1,
+                width: width * 0.8,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderWidth: 1,
+                borderColor: '#25AAE1',
+                zIndex: 3,
+              }}
               onPress={() => this.showAddNewType('Model Number')}>
-              <View
-                style={{
-                  height: width * 0.1,
-                  width: width * 0.4,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderWidth: 1,
-                  borderColor: '#25AAE1',
-                }}>
-                <Text style={{color: '#25AAE1'}}>Add New Model No</Text>
-              </View>
+              <Text style={{color: '#25AAE1'}}>Add New Model No</Text>
             </TouchableOpacity>
             {/* <View
               style={{
@@ -2106,7 +2106,8 @@ export default class Splash extends React.Component {
 
   getAllDevices = async () => {
     console.log('get all Devices-->>>');
-    const devicesResponse = await api.get(`/property/equipment/device/all/`);
+    const devicesResponse = await api.get('/property/equipment/device/all');
+    console.log('DEVICES DATA', devicesResponse?.data);
     if (devicesResponse.ok) {
       console.log('cha;a', devicesResponse?.data?.data);
       this.setState({
@@ -2505,22 +2506,58 @@ export default class Splash extends React.Component {
     });
   };
 
+  DeleteManufacture = (item) => {
+    console.log('DEVICE DATA', this.state.deviceData[0].data);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    // const updateDev = this.state.manufacturersArray.filter(
+    //   (sitem) => sitem.id !== item.id,
+    // );
+
+    const items = this.state.manufacturersArray.filter(
+      (sitem) => sitem.id !== item.id,
+    );
+    this.setState({manufacturersArray: items});
+  };
+
   renderManufacturerList = ({item, index}) => {
     return (
-      <TouchableOpacity
-        onPress={() => this.openEditManu(item, index)}
-        style={{
-          backgroundColor: '#fff',
-          borderWidth: 2,
-          borderColor: '#787878',
-          height: width * 0.1,
-          width: width * 0.8,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 8,
-        }}>
-        <Text style={{color: '#787878'}}>{item.name}</Text>
-      </TouchableOpacity>
+      <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity
+          onPress={() => this.openEditManu(item, index)}
+          style={{
+            backgroundColor: '#fff',
+            borderWidth: 2,
+            borderColor: '#787878',
+            height: width * 0.1,
+            width: width * 0.7,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 8,
+          }}>
+          <Text style={{color: '#787878'}}>{item.name}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.DeleteManufacture(item)}
+          style={{
+            // borderWidth: 2,
+            // borderColor: '#787878',
+            width: width * 0.1,
+            height: width * 0.1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <MaterialCommunityIcon name="delete-outline" size={width * 0.08} />
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -2727,9 +2764,16 @@ export default class Splash extends React.Component {
                           latitude: this.state.lat,
                           longitude: this.state.long,
                         }}
+                        ref={circleRef}
+                        onLayout={() =>
+                          circleRef.current.setNativeProps({
+                            strokeColor: 'rgba(12,170,225,1)',
+                            fillColor: 'rgba(12,170,225,0.3)',
+                          })
+                        }
                         radius={this.state.radialDis * 1000}
-                        fillColor="rgba(12,170,225,0.3)"
-                        strokeColor="rgba(12,170,225,1)"
+                        // fillColor="rgba(12,170,225,0.3)"
+                        // strokeColor="rgba(12,170,225,1)"
                       />
                     </MapView>
                   ) : null}
