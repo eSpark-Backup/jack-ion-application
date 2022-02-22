@@ -914,6 +914,12 @@ export default function UnitEdit({
       'Default Meter Devices',
       defaultDeviceResponse?.data?.data?.default_meter_device.devices,
     );
+    const DefaultDevices =
+      defaultDeviceResponse?.data?.data?.default_meter_device.devices;
+
+    const filterDevices = DefaultDevices.filter(
+      (item) => item.manufacturer_id === some?.id,
+    );
 
     setState((oldState) => ({
       ...oldState,
@@ -929,8 +935,7 @@ export default function UnitEdit({
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
     if (index == 0) {
-      listSlide[1].data =
-        defaultDeviceResponse?.data?.data?.default_meter_device.devices;
+      listSlide[1].data = filterDevices;
       // listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
       listSlide[2].selectId = '';
@@ -939,6 +944,7 @@ export default function UnitEdit({
     }
     if (index == 1) {
       const product_desc = some?.product_desc;
+      console.log('MODEL NOS OF DEVICE', some?.model_nos);
       const modelNos = some?.model_nos.map((item) => {
         const {model_no: name, ...rest} = item;
         return {name, ...rest};
@@ -1959,6 +1965,8 @@ export default function UnitEdit({
     //   ...oldState,
     //   meterList: arr2,
     // }));
+    setLat(data.latitude);
+    setLong(data.longitude);
     setProductNo(data.device.product_desc);
     setAttachedToId(data.attachedTo_id);
     setAttachedTo(data.attachedTo_name);
@@ -1972,13 +1980,16 @@ export default function UnitEdit({
     }
     setFilePath(data.thumbnail);
     setReasonPath([]);
+    setSelectUtil(data.utility_type_name);
     slide1?.map((item, index) => {
       let newArr = [...slide1];
       newArr[index].data = [];
       newArr[0].select = data.device.manufacturer;
       newArr[1].select = data.device.name;
+      newArr[2].select = data.model_no.model_no;
       newArr[0].selectId = data.device.manufacturer_id;
       newArr[1].selectId = data.id;
+      newArr[2].selectId = data.model_no.id;
     });
     slide2?.map((item, index) => {
       let newArr = [...slide2];

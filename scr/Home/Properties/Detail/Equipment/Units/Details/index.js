@@ -1971,21 +1971,26 @@ const App = ({navigation}) => {
                     source={typeSwitcher(item.meter_name)}
                     style={styles.meterImg}
                   /> */}
-                  <Text
-                    style={[
-                      styles.emptyMeterText,
-                      {
-                        flex: 1,
-                        fontSize: width * 0.026,
-                        fontWeight: 'bold',
-                        height: width * 0.15,
-                        width: width * 0.14,
-                        alignSelf: 'center',
-                        textAlignVertical: 'center',
-                      },
-                    ]}>
-                    {item.meter_name[0].name}
-                  </Text>
+                  <View
+                    style={{
+                      height: width * 0.15,
+                      width: width * 0.14,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={[
+                        styles.emptyMeterText,
+                        {
+                          fontSize: width * 0.026,
+                          fontWeight: 'bold',
+                          width: width * 0.14,
+                          textAlignVertical: 'center',
+                        },
+                      ]}>
+                      {item.meter_name[0].name}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               ))}
           </ScrollView>
