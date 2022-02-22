@@ -2482,7 +2482,7 @@ export default class Splash extends React.Component {
     );
   };
 
-  openAddManu = () => {
+  openAddManu = async () => {
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2493,6 +2493,7 @@ export default class Splash extends React.Component {
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+
     let newArr = [...this.state.deviceData];
 
     newArr[0].select = '';
@@ -2548,14 +2549,14 @@ export default class Splash extends React.Component {
         <TouchableOpacity
           onPress={() => this.DeleteManufacture(item)}
           style={{
-            // borderWidth: 2,
-            // borderColor: '#787878',
+            borderWidth: 2,
+            borderColor: '#787878',
             width: width * 0.1,
             height: width * 0.1,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <MaterialCommunityIcon name="delete-outline" size={width * 0.08} />
+          <MaterialCommunityIcon name="delete" size={width * 0.08} />
         </TouchableOpacity>
       </View>
     );
