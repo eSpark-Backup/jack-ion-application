@@ -2499,15 +2499,16 @@ export default class Splash extends React.Component {
     newArr[0].selectId = '';
 
     this.setState({
-      count: 0,
       selectDevices: [],
       deviceData: newArr,
       showAddManufacturer: true,
     });
   };
 
-  DeleteManufacture = (item) => {
-    console.log('DEVICE DATA', this.state.deviceData[0].data);
+  checkManufacture = async (item) => {
+    const ManufacturersResponse = await api.get(
+      '/property/equipment/manufacturer/all',
+    );
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2518,14 +2519,27 @@ export default class Splash extends React.Component {
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
-    // const updateDev = this.state.manufacturersArray.filter(
-    //   (sitem) => sitem.id !== item.id,
-    // );
+
+    let listSlide = [...this.state.deviceData]; // copying the old datas array
+    listSlide[0].data = ManufacturersResponse?.data?.data;
 
     const items = this.state.manufacturersArray.filter(
-      (sitem) => sitem.id !== item.id,
+      (sitem) => sitem.manu_Id !== item.manu_Id,
     );
+
+    let result = listSlide[0].data.filter(
+      (o1) => !items.some((o2) => o1.id === o2.manu_Id),
+    );
+    listSlide[0].data = result;
+
+    console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
     this.setState({manufacturersArray: items});
+    this.setState({deviceData: listSlide});
+  };
+
+  DeleteManufacture = (item) => {
+    console.log('DEVICE DATA', this.state.deviceData[0].data);
+    this.checkManufacture(item);
   };
 
   renderManufacturerList = ({item, index}) => {
@@ -3022,6 +3036,7 @@ export default class Splash extends React.Component {
                                 fontFamily: Fonts.Montserrat,
                                 color: '#3E4A4F',
                                 marginRight: width * 0.01,
+                                width: width * 0.65,
                               }}>
                               {this.state.locationBtn}
                             </Text>
