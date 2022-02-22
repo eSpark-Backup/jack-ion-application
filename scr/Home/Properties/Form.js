@@ -2533,7 +2533,7 @@ export default class Splash extends React.Component {
     );
     listSlide[0].data = result;
 
-    console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
+    // console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
     this.setState({manufacturersArray: items});
     this.setState({deviceData: listSlide});
   };
