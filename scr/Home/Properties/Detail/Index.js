@@ -13,6 +13,7 @@ import {
   Platform,
   ActivityIndicator,
   ToastAndroid,
+  Image,
 } from 'react-native';
 
 //Packages
@@ -140,10 +141,15 @@ export default class Splash extends React.Component {
   };
 
   getMetersLocation = async (propertyId) => {
+    const token = await EncryptedStorage.getItem('user_token');
+    console.log('Get Token', token);
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
     const metersLocation = await api.get(
       `/property/location-meters/${propertyId}`,
     );
-    console.log('Meters Location', metersLocation?.data);
+    console.log('Meters Location', metersLocation?.data?.data);
     if (metersLocation?.data?.bool) {
       this.setState({markers: metersLocation?.data?.data});
     }
@@ -547,13 +553,41 @@ export default class Splash extends React.Component {
                     latitude: parseFloat(this.state.lat),
                     longitude: parseFloat(this.state.long),
                   }}
+                  style={{
+                    zIndex: 1,
+                  }}
                   title={'Property Location'}
                   draggable
                 />
 
                 {this.state.markers.length > 0 &&
                   this.state.markers.map((marker) => (
-                    <Marker coordinate={marker.position} title={'Meter'} />
+                    <Marker
+                      coordinate={{
+                        latitude: marker.position.lat,
+                        longitude: marker.position.lng,
+                      }}
+                      style={{
+                        zIndex: 5,
+                      }}
+                      title={'Meter'}>
+                      <View
+                        style={{
+                          width: width * 0.05,
+                          height: width * 0.05,
+                        }}>
+                        <Image
+                          source={require('../../../../Images/meter-icon.png')}
+                          resizeMode="center"
+                          // resizeMode="cover"
+                          resizeMethod="auto"
+                          style={{
+                            width: width * 0.05,
+                            height: width * 0.05,
+                          }}
+                        />
+                      </View>
+                    </Marker>
                   ))}
               </MapView>
               <View style={styles.clientName}>

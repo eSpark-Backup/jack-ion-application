@@ -417,6 +417,7 @@ export default class Splash extends React.Component {
       selectUtil: [],
       manufacturersArray: [],
       selectDevices: [],
+      ownerName: '',
       addDevice: [
         {
           id: 0,
@@ -757,7 +758,6 @@ export default class Splash extends React.Component {
       addModelNumber: '',
       productNo: '',
       modelNo: '',
-      ownerName: '',
     });
   };
 
