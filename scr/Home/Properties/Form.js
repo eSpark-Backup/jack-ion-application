@@ -130,6 +130,8 @@ export default class Splash extends React.Component {
       showEditManufacturer: false,
       manufacturersArray: [],
       modelArr: [],
+      ownerData: [],
+      ownerName: '',
       selectedDevice: {},
       currentManuIndex: null,
       devIdsArr: [],
@@ -755,6 +757,7 @@ export default class Splash extends React.Component {
       addModelNumber: '',
       productNo: '',
       modelNo: '',
+      ownerName: '',
     });
   };
 
@@ -2231,6 +2234,11 @@ export default class Splash extends React.Component {
     // console.log('arr1--->', utilRes);
     this.setState({utilTypes: utilRes?.data?.data});
 
+    const ownerRes = await api.get('/property/owner/own');
+
+    console.log('ownerRes--->', ownerRes?.data?.data);
+    this.setState({ownerData: ownerRes?.data?.data});
+
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
     );
@@ -3641,12 +3649,64 @@ export default class Splash extends React.Component {
                             styles.inputContainer,
                             {
                               height: this.state.dropDownShow[4].value
-                                ? height * 0.09
+                                ? 'auto'
                                 : height * 0.0,
+
                               overflow: 'hidden',
                             },
                           ]}>
-                          <TextInput
+                          <SearchableDropDown
+                            onItemSelect={(item) => {
+                              this.setState({
+                                CustomerName: item.id,
+                                ownerName: item.name,
+                              });
+                            }}
+                            containerStyle={{
+                              paddingVertical: width * 0.02,
+                              width: '99.50%',
+                            }}
+                            itemStyle={{
+                              padding: width * 0.027,
+                              backgroundColor: 'rgb(247, 247, 247)',
+                              borderColor: '#bbb',
+                              borderWidth: width * 0.0015,
+                              borderRadius: width * 0.015,
+                              zIndex: 99,
+                            }}
+                            itemTextStyle={{color: '#222'}}
+                            itemsContainerStyle={{
+                              maxHeight: height * 0.08,
+                            }}
+                            items={this.state.ownerData}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: 'Customer Name',
+                              underlineColorAndroid: 'transparent',
+                              style: {
+                                padding: width * 0.027,
+                                margin: 0,
+                                borderRadius: 5,
+                                borderColor: 'black',
+                                height: width * 0.13,
+                                backgroundColor: '#F6F6F6',
+                                borderWidth: width * 0.0019,
+                                zIndex: 0,
+                              },
+                              onTextChange: (text) => {
+                                this.setState({ownerName: text});
+                              },
+                              value: setTimeout(
+                                () => this.state.ownerName,
+                                200,
+                              ),
+                              defaultValue: this.state.ownerName,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          />
+                          {/* <TextInput
                             placeholder="Customer Name"
                             style={styles.input}
                             value={this.state.CustomerName}
@@ -3661,7 +3721,7 @@ export default class Splash extends React.Component {
                                 selectionColor: 'red',
                               },
                             }}
-                          />
+                          /> */}
                         </View>
                         <View
                           style={[
