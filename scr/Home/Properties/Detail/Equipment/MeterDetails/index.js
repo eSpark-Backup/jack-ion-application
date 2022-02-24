@@ -503,7 +503,7 @@ const App = ({navigation}) => {
     setMeterTypeData([
       {
         title: 'Hot Water Meter',
-        img: meterSwitcher(),
+        // img: meterSwitcher(),
         data: [
           {
             leftName: 'Type',

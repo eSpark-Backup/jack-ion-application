@@ -2386,7 +2386,7 @@ export default function UnitEdit({
                                     <TextInput
                                       placeholder="Type Model Number"
                                       value={addModelNo}
-                                      showSoftInputOnFocus={false}
+                                      // showSoftInputOnFocus={false}
                                       style={styles.meterInput}
                                       mode={'outlined'}
                                       theme={{
@@ -2411,7 +2411,7 @@ export default function UnitEdit({
                                     <TextInput
                                       placeholder="Type Product Description"
                                       value={addProductNo}
-                                      showSoftInputOnFocus={false}
+                                      // showSoftInputOnFocus={false}
                                       style={styles.meterInput}
                                       mode={'outlined'}
                                       theme={{
@@ -2611,18 +2611,18 @@ export default function UnitEdit({
                           },
                         ]}>
                         {sliderNumber == 1
-                          ? 'Device Selection'
+                          ? 'Device Info'
                           : sliderNumber == 2
-                          ? 'Meter Type Selection'
+                          ? 'Point Of Entry'
                           : sliderNumber == 3
-                          ? 'Device Information'
+                          ? 'Single Point Of Entry'
                           : sliderNumber == 4
-                          ? 'Use Location'
+                          ? 'Location'
                           : sliderNumber == 5
-                          ? 'Set Thumbnail'
+                          ? 'Image'
                           : sliderNumber == 6
-                          ? 'Installation Status'
-                          : 'Device Selection'}
+                          ? 'Installation'
+                          : 'Device Info'}
                       </Text>
                     </View>
                     <View style={{height: 5}} />
@@ -3530,7 +3530,7 @@ export default function UnitEdit({
                               <SearchableDropdown
                                 onItemSelect={(item) => {
                                   setReasonText(item.name);
-                                  setReasonId(item.options_reason_id);
+                                  setReasonId(item.id);
                                 }}
                                 containerStyle={{
                                   paddingBottom: width * 0.02,
@@ -3907,7 +3907,7 @@ export default function UnitEdit({
                                     selection
                                     dense={true}
                                     editable={false}
-                                    showSoftInputOnFocus={false}
+                                    // showSoftInputOnFocus={false}
                                     style={[styles.input, {width: '100%'}]}
                                     mode={'outlined'}
                                     theme={{
@@ -4623,7 +4623,8 @@ export default function UnitEdit({
                                 ? false
                                 : sliderNumber == 2 &&
                                   newMeter.id != 0 &&
-                                  newMeter.name
+                                  newMeter.name &&
+                                  selectUtil.length > 0
                                 ? false
                                 : sliderNumber == 3 &&
                                   slide2[0].value &&
@@ -4860,7 +4861,7 @@ export default function UnitEdit({
                         value={buildingName}
                         dense={true}
                         editable={false}
-                        showSoftInputOnFocus={false}
+                        // showSoftInputOnFocus={false}
                         style={styles.input}
                         mode={'outlined'}
                         theme={{

@@ -386,8 +386,10 @@ export default class Splash extends Component {
   };
 
   deleteUnit = async (id) => {
-    const response = await api.delete(`/property/equipment/unit/${id}`);
+    console.log('ID', id);
+    const response = await this.api.delete(`/property/equipment/unit/${id}`);
     alert(response?.data?.message);
+    this.checkData();
   };
 
   confirmDelete = (id) => {
@@ -396,7 +398,7 @@ export default class Splash extends Component {
         text: 'No',
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => deleteMeter(id)},
+      {text: 'Yes', onPress: () => this.deleteUnit(id)},
     ]);
   };
 
