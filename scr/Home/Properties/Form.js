@@ -108,6 +108,7 @@ export default class Splash extends React.Component {
       selectMeter: '',
       selectManagement: '',
       selectUtil: [],
+      selectAddManuUtil: [],
       selectMeters: [],
       selectDevices: [],
       modelNo: '',
@@ -136,6 +137,7 @@ export default class Splash extends React.Component {
       currentManuIndex: null,
       devIdsArr: [],
       manuIdsArr: [],
+      addManuLoad: false,
       addDevice: [
         {
           id: 0,
@@ -417,6 +419,7 @@ export default class Splash extends React.Component {
       selectUtil: [],
       manufacturersArray: [],
       selectDevices: [],
+      ownerName: '',
       addDevice: [
         {
           id: 0,
@@ -757,7 +760,6 @@ export default class Splash extends React.Component {
       addModelNumber: '',
       productNo: '',
       modelNo: '',
-      ownerName: '',
     });
   };
 
@@ -820,6 +822,206 @@ export default class Splash extends React.Component {
                   this.setState({addManufacturer: text});
                 }}
               />
+              <View>
+                <Text
+                  style={{
+                    fontSize: width * 0.03,
+                    color: '#3E4A4F',
+                    textTransform: 'capitalize',
+                    fontFamily: Fonts.ComfortaaRegular,
+                    marginVertical: width * 0.02,
+                    fontWeight: 'bold',
+                  }}>
+                  Select Utility Type
+                </Text>
+              </View>
+              {this.state.addNewType && this.state.showAddType == 'Utility' ? (
+                <View>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: width * 0.03,
+                        color: '#3E4A4F',
+                        textTransform: 'capitalize',
+                        fontFamily: Fonts.ComfortaaRegular,
+                        marginBottom: width * 0.01,
+                        fontWeight: 'bold',
+                      }}>
+                      Add New {this.state.showAddType} Type
+                    </Text>
+                  </View>
+                  <TextInput
+                    placeholder={'Type New Utility Type Name'}
+                    value={this.state.addUtility}
+                    style={{
+                      width: width * 0.8,
+                      justifyContent: 'flex-end',
+                      fontSize: width * 0.036,
+                    }}
+                    mode={'outlined'}
+                    theme={{
+                      colors: {
+                        text: '#25AAE1ec',
+                        primary: '#25AAE1ec',
+                        selectionColor: 'red',
+                      },
+                    }}
+                    onChangeText={(text) => {
+                      this.setState({addUtility: text});
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}>
+                    <TouchableOpacity onPress={() => this.cancelAddType()}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: width * 0.045,
+                          color: '#25AAE1ec',
+                          width: width * 0.16,
+                          textAlign: 'center',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => this.doneAddType()}
+                      disabled={this.state.addUtility ? false : true}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: width * 0.045,
+                          color: this.state.addUtility
+                            ? '#25AAE1ec'
+                            : '#d0d0d0',
+                          width: width * 0.16,
+                          textAlign: 'center',
+                        }}>
+                        Add
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'flex-start',
+                    }}>
+                    <SearchableDropDown
+                      multi={true}
+                      selectedItems={this.state.selectAddManuUtil}
+                      onItemSelect={(item) => {
+                        console.log('Test', item);
+                        this.AddTypes(item, 'Manu Utility');
+                      }}
+                      containerStyle={{
+                        paddingBottom: width * 0.02,
+                        width: width * 0.7,
+                      }}
+                      itemStyle={{
+                        padding: width * 0.027,
+                        backgroundColor: 'rgb(247, 247, 247)',
+                        borderColor: '#bbb',
+                        borderWidth: width * 0.0015,
+                        borderRadius: width * 0.015,
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={{
+                        maxHeight: height * 0.08,
+                      }}
+                      // items={item.data}
+                      items={this.state.utilTypes}
+                      onRemoveItem={(item, index) => {
+                        const items = this.state.selectAddManuUtil.filter(
+                          (sitem) => sitem.id !== item.id,
+                        );
+                        this.setState({
+                          selectAddManuUtil: items,
+                        });
+                      }}
+                      resetValue={false}
+                      textInputProps={{
+                        placeholder: 'Add Utility Type',
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: width * 0.027,
+                          margin: 0,
+                          borderTopLeftRadius: width * 0.015,
+                          borderBottomLeftRadius: width * 0.015,
+                          borderColor: 'black',
+                          height: width * 0.13,
+                          backgroundColor: '#F6F6F6',
+                          borderTopWidth: width * 0.0019,
+                          borderLeftWidth: width * 0.0019,
+                          borderBottomWidth: width * 0.0019,
+                        },
+                        // onTextChange: (text) => {
+                        //   onChangeManufacturer(text, index);
+                        // },
+                        // value: setTimeout(() => item.select, 200),
+                        // defaultValue: item.select,
+                      }}
+                      listProps={{
+                        nestedScrollEnabled: true,
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        width: width * 0.1,
+                        backgroundColor: '#25AAE199',
+                        borderTopRightRadius: width * 0.015,
+                        borderBottomRightRadius: width * 0.015,
+                        borderTopWidth: width * 0.0019,
+                        borderRightWidth: width * 0.0019,
+                        borderBottomWidth: width * 0.0019,
+                        height: width * 0.13,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => this.showAddNewType('Utility')}>
+                      <Icon size={width * 0.06} color="#fff" name={'add'} />
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <FlatList
+                      data={this.state.selectAddManuUtil}
+                      // extraData={selectedTypes.current}
+                      horizontal
+                      renderItem={({item}) => (
+                        <View
+                          style={{
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            flexDirection: 'row',
+                            padding: 5,
+                            margin: 5,
+                            height: width * 0.1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Text style={{color: 'black'}}>{item.name}</Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              const items = this.state.selectAddManuUtil.filter(
+                                (sitem) => sitem.id !== item.id,
+                              );
+                              this.setState({
+                                selectAddManuUtil: items,
+                              });
+                            }}>
+                            <Icon name="close" size={width * 0.05} />
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    />
+                  </View>
+                </View>
+              )}
               <View
                 style={{
                   flexDirection: 'row',
@@ -1558,7 +1760,7 @@ export default class Splash extends React.Component {
                 );
               }
             })}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 height: width * 0.1,
                 width: width * 0.8,
@@ -1570,7 +1772,7 @@ export default class Splash extends React.Component {
               }}
               onPress={() => this.showAddNewType('Model Number')}>
               <Text style={{color: '#25AAE1'}}>Add New Model No</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* <View
               style={{
                 width: width * 0.8,
@@ -2239,19 +2441,6 @@ export default class Splash extends React.Component {
     console.log('ownerRes--->', ownerRes?.data?.data);
     this.setState({ownerData: ownerRes?.data?.data});
 
-    const ManufacturersResponse = await api.get(
-      '/property/equipment/manufacturer/all',
-    );
-
-    let listSlide = [...this.state.deviceData]; // copying the old datas array
-    listSlide[0].data = ManufacturersResponse?.data?.data;
-    this.setState({deviceData: listSlide});
-    // this.setState({loadManufacturers: false});
-
-    let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
-    deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
-    this.setState({addDevice: deviceDataManufacturer});
-
     const DeviceTypesResponse = await api.get(
       '/property/equipment/device-type/all',
     );
@@ -2299,6 +2488,11 @@ export default class Splash extends React.Component {
       items.push(item);
       // selectedTypes.current = items;
       this.setState({selectUtil: items});
+    } else if (type == 'Manu Utility') {
+      const items = this.state.selectAddManuUtil;
+      items.push(item);
+      // selectedTypes.current = items;
+      this.setState({selectAddManuUtil: items});
     } else if (type == 'Devices') {
       console.log('ADD CHALA', item);
       const items = [...this.state.selectDevices];
@@ -2389,7 +2583,11 @@ export default class Splash extends React.Component {
   };
 
   showMoreFn = (indexx) => {
-    this.setState({addNewType: false});
+    this.setState({
+      addNewType: false,
+      // showEditManufacturer: false,
+      // showAddManufacturer: false,
+    });
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2491,27 +2689,61 @@ export default class Splash extends React.Component {
   };
 
   openAddManu = async () => {
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+    if (this.state.selectUtil.length > 0) {
+      let listSlide = [...this.state.deviceData];
+      listSlide[0].data = [];
+      this.setState({deviceData: listSlide});
+      this.setState({addManuLoad: true});
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
 
-    let newArr = [...this.state.deviceData];
+      const ManufacturersResponse = await api.get(
+        '/property/equipment/manufacturer/all',
+      );
 
-    newArr[0].select = '';
-    newArr[0].selectId = '';
+      let UtilArray = [...this.state.selectUtil];
+      const filterManu = UtilArray.filter((item) => {
+        ManufacturersResponse?.data?.data?.map((manuItem) => {
+          if (manuItem?.utility_type[0]?.name != undefined) {
+            if (item.name == manuItem?.utility_type[0]?.name) {
+              let listSlide = [...this.state.deviceData]; // copying the old datas array
+              listSlide[0].data.push(manuItem);
+              this.setState({deviceData: listSlide}, () =>
+                console.log('000--->', this.state.deviceData),
+              );
+            }
+          }
+        });
+      });
 
-    this.setState({
-      selectDevices: [],
-      deviceData: newArr,
-      showAddManufacturer: true,
-    });
+      // this.setState({loadManufacturers: false});
+
+      let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
+      deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+      this.setState({addDevice: deviceDataManufacturer});
+
+      let newArr = [...this.state.deviceData];
+
+      newArr[0].select = '';
+      newArr[0].selectId = '';
+
+      this.setState({
+        selectDevices: [],
+        deviceData: newArr,
+        showAddManufacturer: true,
+        addManuLoad: false,
+      });
+    } else {
+      alert('Please select utility type first');
+    }
   };
 
   checkManufacture = async (item) => {
@@ -2842,7 +3074,7 @@ export default class Splash extends React.Component {
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(0)}>
                           <Text style={styles.desciptionHeading}>
-                            information
+                            Property Name & Address
                           </Text>
                           <Iconi
                             name={
@@ -3060,7 +3292,7 @@ export default class Splash extends React.Component {
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(2)}>
                           <Text style={styles.desciptionHeading}>
-                            Utility Type Info
+                            Utility & Meter Type
                           </Text>
                           <Iconi
                             name={
@@ -3080,209 +3312,491 @@ export default class Splash extends React.Component {
                             alignItems: 'center',
                             marginTop: width * 0.02,
                             height: this.state.dropDownShow[2].value
-                              ? height * 0.16
+                              ? height * 0.26
                               : height * 0.0,
                             overflow: 'hidden',
                           }}>
-                          {this.state.addNewType &&
-                          this.state.showAddType == 'Utility' ? (
-                            <View>
+                          <View
+                            style={{
+                              marginBottom: width * 0.03,
+                              height: this.state.dropDownShow[2].value
+                                ? height * 0.12
+                                : height * 0.0,
+                            }}>
+                            {this.state.addNewType &&
+                            this.state.showAddType == 'Utility' ? (
                               <View>
-                                <Text
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: width * 0.03,
+                                      color: '#3E4A4F',
+                                      textTransform: 'capitalize',
+                                      fontFamily: Fonts.ComfortaaRegular,
+                                      marginBottom: width * 0.01,
+                                      fontWeight: 'bold',
+                                    }}>
+                                    Add New {this.state.showAddType} Type
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder={'Type New Utility Type Name'}
+                                  value={this.state.addUtility}
                                   style={{
-                                    fontSize: width * 0.03,
-                                    color: '#3E4A4F',
-                                    textTransform: 'capitalize',
-                                    fontFamily: Fonts.ComfortaaRegular,
-                                    marginBottom: width * 0.01,
-                                    fontWeight: 'bold',
-                                  }}>
-                                  Add New {this.state.showAddType} Type
-                                </Text>
-                              </View>
-                              <TextInput
-                                placeholder={'Type New Utility Type Name'}
-                                value={this.state.addUtility}
-                                style={{
-                                  width: width * 0.8,
-                                  justifyContent: 'flex-end',
-                                  fontSize: width * 0.036,
-                                }}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                                onChangeText={(text) => {
-                                  this.setState({addUtility: text});
-                                }}
-                              />
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-around',
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => this.cancelAddType()}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: '#25AAE1ec',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Cancel
-                                  </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => this.doneAddType()}
-                                  disabled={
-                                    this.state.addUtility ? false : true
-                                  }>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: this.state.addUtility
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Add
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          ) : (
-                            <View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'flex-start',
-                                }}>
-                                <SearchableDropDown
-                                  multi={true}
-                                  selectedItems={this.state.selectUtil}
-                                  onItemSelect={(item) => {
-                                    console.log('Test', item);
-                                    this.AddTypes(item, 'Utility');
+                                    width: width * 0.8,
+                                    justifyContent: 'flex-end',
+                                    fontSize: width * 0.036,
                                   }}
-                                  containerStyle={{
-                                    paddingBottom: width * 0.02,
-                                    width: width * 0.7,
-                                  }}
-                                  itemStyle={{
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                  }}
-                                  itemTextStyle={{color: '#222'}}
-                                  itemsContainerStyle={{
-                                    maxHeight: height * 0.08,
-                                  }}
-                                  // items={item.data}
-                                  items={this.state.utilTypes}
-                                  onRemoveItem={(item, index) => {
-                                    const items = this.state.selectUtil.filter(
-                                      (sitem) => sitem.id !== item.id,
-                                    );
-                                    // selectedTypes.current = items;
-                                    this.setState({selectUtil: items});
-                                  }}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder: 'Add Utility Type',
-                                    underlineColorAndroid: 'transparent',
-                                    style: {
-                                      padding: width * 0.027,
-                                      margin: 0,
-                                      borderTopLeftRadius: width * 0.015,
-                                      borderBottomLeftRadius: width * 0.015,
-                                      borderColor: 'black',
-                                      height: width * 0.13,
-                                      backgroundColor: '#F6F6F6',
-                                      borderTopWidth: width * 0.0019,
-                                      borderLeftWidth: width * 0.0019,
-                                      borderBottomWidth: width * 0.0019,
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
                                     },
-                                    // onTextChange: (text) => {
-                                    //   onChangeManufacturer(text, index);
-                                    // },
-                                    // value: setTimeout(() => item.select, 200),
-                                    // defaultValue: item.select,
                                   }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
+                                  onChangeText={(text) => {
+                                    this.setState({addUtility: text});
                                   }}
                                 />
-                                <TouchableOpacity
+                                <View
                                   style={{
-                                    width: width * 0.1,
-                                    backgroundColor: '#25AAE199',
-                                    borderTopRightRadius: width * 0.015,
-                                    borderBottomRightRadius: width * 0.015,
-                                    borderTopWidth: width * 0.0019,
-                                    borderRightWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    height: width * 0.13,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  onPress={() =>
-                                    this.showAddNewType('Utility')
-                                  }>
-                                  <Icon
-                                    size={width * 0.06}
-                                    color="#fff"
-                                    name={'add'}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                              <View>
-                                <FlatList
-                                  data={this.state.selectUtil}
-                                  // extraData={selectedTypes.current}
-                                  horizontal
-                                  renderItem={({item}) => (
-                                    <View
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => this.cancelAddType()}>
+                                    <Text
                                       style={{
-                                        borderWidth: 1,
-                                        borderRadius: 8,
-                                        flexDirection: 'row',
-                                        padding: 5,
-                                        margin: 5,
-                                        height: width * 0.1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
                                       }}>
-                                      <Text style={{color: 'black'}}>
-                                        {item.name}
-                                      </Text>
-                                      <TouchableOpacity
-                                        onPress={() => {
-                                          const items = this.state.selectUtil.filter(
-                                            (sitem) => sitem.id !== item.id,
-                                          );
-                                          this.setState({selectUtil: items});
-                                        }}>
-                                        <Icon
-                                          name="close"
-                                          size={width * 0.05}
-                                        />
-                                      </TouchableOpacity>
-                                    </View>
-                                  )}
-                                />
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => this.doneAddType()}
+                                    disabled={
+                                      this.state.addUtility ? false : true
+                                    }>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: this.state.addUtility
+                                          ? '#25AAE1ec'
+                                          : '#d0d0d0',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
                               </View>
-                            </View>
-                          )}
+                            ) : (
+                              <View>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'flex-start',
+                                  }}>
+                                  <SearchableDropDown
+                                    multi={true}
+                                    selectedItems={this.state.selectAddManuUtil}
+                                    onItemSelect={(item) => {
+                                      console.log('Test', item);
+                                      this.AddTypes(item, 'Utility');
+                                    }}
+                                    containerStyle={{
+                                      paddingBottom: width * 0.02,
+                                      width: width * 0.7,
+                                    }}
+                                    itemStyle={{
+                                      padding: width * 0.027,
+                                      backgroundColor: 'rgb(247, 247, 247)',
+                                      borderColor: '#bbb',
+                                      borderWidth: width * 0.0015,
+                                      borderRadius: width * 0.015,
+                                    }}
+                                    itemTextStyle={{color: '#222'}}
+                                    itemsContainerStyle={{
+                                      maxHeight: height * 0.08,
+                                    }}
+                                    // items={item.data}
+                                    items={this.state.utilTypes}
+                                    onRemoveItem={(item, index) => {
+                                      if (
+                                        this.state.manufacturersArray.length > 0
+                                      ) {
+                                        Alert.alert(
+                                          'Becareful',
+                                          'This will remove your selected Manufacturers also',
+                                          [
+                                            {
+                                              text: 'Cancel',
+                                              style: 'cancel',
+                                            },
+                                            {
+                                              text: 'Remove',
+                                              onPress: () => {
+                                                const items = this.state.selectUtil.filter(
+                                                  (sitem) =>
+                                                    sitem.id !== item.id,
+                                                );
+                                                // selectedTypes.current = items;
+                                                this.setState({
+                                                  selectUtil: items,
+                                                  manufacturersArray: [],
+                                                });
+                                              },
+                                            },
+                                          ],
+                                        );
+                                      } else {
+                                        const items = this.state.selectUtil.filter(
+                                          (sitem) => sitem.id !== item.id,
+                                        );
+                                        // selectedTypes.current = items;
+                                        this.setState({
+                                          selectUtil: items,
+                                          manufacturersArray: [],
+                                        });
+                                      }
+                                    }}
+                                    resetValue={false}
+                                    textInputProps={{
+                                      placeholder: 'Add Utility Type',
+                                      underlineColorAndroid: 'transparent',
+                                      style: {
+                                        padding: width * 0.027,
+                                        margin: 0,
+                                        borderTopLeftRadius: width * 0.015,
+                                        borderBottomLeftRadius: width * 0.015,
+                                        borderColor: 'black',
+                                        height: width * 0.13,
+                                        backgroundColor: '#F6F6F6',
+                                        borderTopWidth: width * 0.0019,
+                                        borderLeftWidth: width * 0.0019,
+                                        borderBottomWidth: width * 0.0019,
+                                      },
+                                      // onTextChange: (text) => {
+                                      //   onChangeManufacturer(text, index);
+                                      // },
+                                      // value: setTimeout(() => item.select, 200),
+                                      // defaultValue: item.select,
+                                    }}
+                                    listProps={{
+                                      nestedScrollEnabled: true,
+                                    }}
+                                  />
+                                  <TouchableOpacity
+                                    style={{
+                                      width: width * 0.1,
+                                      backgroundColor: '#25AAE199',
+                                      borderTopRightRadius: width * 0.015,
+                                      borderBottomRightRadius: width * 0.015,
+                                      borderTopWidth: width * 0.0019,
+                                      borderRightWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                      height: width * 0.13,
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                    onPress={() =>
+                                      this.showAddNewType('Utility')
+                                    }>
+                                    <Icon
+                                      size={width * 0.06}
+                                      color="#fff"
+                                      name={'add'}
+                                    />
+                                  </TouchableOpacity>
+                                </View>
+                                <View>
+                                  <FlatList
+                                    data={this.state.selectUtil}
+                                    // extraData={selectedTypes.current}
+                                    horizontal
+                                    renderItem={({item}) => (
+                                      <View
+                                        style={{
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                          flexDirection: 'row',
+                                          padding: 5,
+                                          margin: 5,
+                                          height: width * 0.1,
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                        }}>
+                                        <Text style={{color: 'black'}}>
+                                          {item.name}
+                                        </Text>
+                                        <TouchableOpacity
+                                          onPress={() => {
+                                            if (
+                                              this.state.manufacturersArray
+                                                .length > 0
+                                            ) {
+                                              Alert.alert(
+                                                'Becareful',
+                                                'This will remove your selected Manufacturers also',
+                                                [
+                                                  {
+                                                    text: 'Cancel',
+                                                    style: 'cancel',
+                                                  },
+                                                  {
+                                                    text: 'Remove',
+                                                    onPress: () => {
+                                                      const items = this.state.selectUtil.filter(
+                                                        (sitem) =>
+                                                          sitem.id !== item.id,
+                                                      );
+                                                      // selectedTypes.current = items;
+                                                      this.setState({
+                                                        selectUtil: items,
+                                                        manufacturersArray: [],
+                                                      });
+                                                    },
+                                                  },
+                                                ],
+                                              );
+                                            } else {
+                                              const items = this.state.selectUtil.filter(
+                                                (sitem) => sitem.id !== item.id,
+                                              );
+                                              // selectedTypes.current = items;
+                                              this.setState({
+                                                selectUtil: items,
+                                                manufacturersArray: [],
+                                              });
+                                            }
+                                          }}>
+                                          <Icon
+                                            name="close"
+                                            size={width * 0.05}
+                                          />
+                                        </TouchableOpacity>
+                                      </View>
+                                    )}
+                                  />
+                                </View>
+                              </View>
+                            )}
+                          </View>
+                          <View
+                            style={{
+                              height: this.state.dropDownShow[2].value
+                                ? height * 0.12
+                                : height * 0.0,
+                            }}>
+                            {this.state.addNewType &&
+                            this.state.showAddType == 'Meter' ? (
+                              <View>
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: width * 0.03,
+                                      color: '#3E4A4F',
+                                      textTransform: 'capitalize',
+                                      fontFamily: Fonts.ComfortaaRegular,
+                                      marginBottom: width * 0.01,
+                                      fontWeight: 'bold',
+                                    }}>
+                                    Add New {this.state.showAddType} type
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder={'Type New Meter Type Name'}
+                                  value={this.state.addMeter}
+                                  style={{
+                                    width: width * 0.8,
+                                    justifyContent: 'flex-end',
+                                    fontSize: width * 0.036,
+                                  }}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    this.setState({addMeter: text});
+                                  }}
+                                />
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => this.cancelAddType()}>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => this.doneAddType()}
+                                    disabled={
+                                      this.state.addMeter ? false : true
+                                    }>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: this.state.addMeter
+                                          ? '#25AAE1ec'
+                                          : '#d0d0d0',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            ) : (
+                              <View>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'flex-start',
+                                  }}>
+                                  <SearchableDropDown
+                                    multi={true}
+                                    selectedItems={this.state.selectMeters}
+                                    onItemSelect={(item) => {
+                                      console.log('Testing', item);
+                                      this.AddTypes(item, 'Meter');
+                                    }}
+                                    containerStyle={{
+                                      paddingBottom: width * 0.02,
+                                      width: width * 0.7,
+                                    }}
+                                    itemStyle={{
+                                      padding: width * 0.027,
+                                      backgroundColor: 'rgb(247, 247, 247)',
+                                      borderColor: '#bbb',
+                                      borderWidth: width * 0.0015,
+                                      borderRadius: width * 0.015,
+                                    }}
+                                    itemTextStyle={{color: '#222'}}
+                                    itemsContainerStyle={{
+                                      maxHeight: height * 0.08,
+                                    }}
+                                    // items={item.data}
+                                    items={this.state.meterList}
+                                    onRemoveItem={(item, index) => {
+                                      const items = this.state.selectMeters.filter(
+                                        (sitem) => sitem.id !== item.id,
+                                      );
+
+                                      this.setState({selectMeters: items});
+                                    }}
+                                    resetValue={false}
+                                    textInputProps={{
+                                      placeholder: 'Select Meter Type',
+                                      underlineColorAndroid: 'transparent',
+                                      style: {
+                                        padding: width * 0.027,
+                                        margin: 0,
+                                        borderTopLeftRadius: width * 0.015,
+                                        borderBottomLeftRadius: width * 0.015,
+                                        borderColor: 'black',
+                                        height: width * 0.13,
+                                        backgroundColor: '#F6F6F6',
+                                        borderTopWidth: width * 0.0019,
+                                        borderLeftWidth: width * 0.0019,
+                                        borderBottomWidth: width * 0.0019,
+                                      },
+                                      // onTextChange: (text) => {
+                                      //   this.setState({selectMeter: text});
+                                      // },
+                                      // value: this.state.selectMeter,
+                                      // defaultValue: item.select,
+                                    }}
+                                    listProps={{
+                                      nestedScrollEnabled: true,
+                                    }}
+                                  />
+                                  <TouchableOpacity
+                                    style={{
+                                      width: width * 0.1,
+                                      backgroundColor: '#25AAE199',
+                                      borderTopRightRadius: width * 0.015,
+                                      borderBottomRightRadius: width * 0.015,
+                                      borderTopWidth: width * 0.0019,
+                                      borderRightWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                      height: width * 0.13,
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                    onPress={() =>
+                                      this.showAddNewType('Meter')
+                                    }>
+                                    <Icon
+                                      size={width * 0.06}
+                                      color="#fff"
+                                      name={'add'}
+                                    />
+                                  </TouchableOpacity>
+                                </View>
+                                <View>
+                                  <FlatList
+                                    data={this.state.selectMeters}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({item}) => (
+                                      <View
+                                        style={{
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                          flexDirection: 'row',
+                                          padding: 5,
+                                          margin: 5,
+                                          height: width * 0.1,
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                        }}>
+                                        <Text style={{color: 'black'}}>
+                                          {item.name}
+                                        </Text>
+                                        <TouchableOpacity
+                                          onPress={() => {
+                                            const items = this.state.selectMeters.filter(
+                                              (sitem) => sitem.id !== item.id,
+                                            );
+                                            this.setState({
+                                              selectMeters: items,
+                                            });
+                                          }}>
+                                          <Icon
+                                            name="close"
+                                            size={width * 0.05}
+                                          />
+                                        </TouchableOpacity>
+                                      </View>
+                                    )}
+                                  />
+                                </View>
+                              </View>
+                            )}
+                          </View>
                         </View>
                         {this.state.error.utilType ? (
                           <HelperText
@@ -3319,205 +3833,7 @@ export default class Splash extends React.Component {
                               ? height * 0.16
                               : height * 0.0,
                             overflow: 'hidden',
-                          }}>
-                          {this.state.addNewType &&
-                          this.state.showAddType == 'Meter' ? (
-                            <View>
-                              <View>
-                                <Text
-                                  style={{
-                                    fontSize: width * 0.03,
-                                    color: '#3E4A4F',
-                                    textTransform: 'capitalize',
-                                    fontFamily: Fonts.ComfortaaRegular,
-                                    marginBottom: width * 0.01,
-                                    fontWeight: 'bold',
-                                  }}>
-                                  Add New {this.state.showAddType} type
-                                </Text>
-                              </View>
-                              <TextInput
-                                placeholder={'Type New Meter Type Name'}
-                                value={this.state.addMeter}
-                                style={{
-                                  width: width * 0.8,
-                                  justifyContent: 'flex-end',
-                                  fontSize: width * 0.036,
-                                }}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                                onChangeText={(text) => {
-                                  this.setState({addMeter: text});
-                                }}
-                              />
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-around',
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => this.cancelAddType()}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: '#25AAE1ec',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Cancel
-                                  </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => this.doneAddType()}
-                                  disabled={this.state.addMeter ? false : true}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: this.state.addMeter
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Add
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          ) : (
-                            <View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'flex-start',
-                                }}>
-                                <SearchableDropDown
-                                  multi={true}
-                                  selectedItems={this.state.selectMeters}
-                                  onItemSelect={(item) => {
-                                    console.log('Testing', item);
-                                    this.AddTypes(item, 'Meter');
-                                  }}
-                                  containerStyle={{
-                                    paddingBottom: width * 0.02,
-                                    width: width * 0.7,
-                                  }}
-                                  itemStyle={{
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                  }}
-                                  itemTextStyle={{color: '#222'}}
-                                  itemsContainerStyle={{
-                                    maxHeight: height * 0.08,
-                                  }}
-                                  // items={item.data}
-                                  items={this.state.meterList}
-                                  onRemoveItem={(item, index) => {
-                                    const items = this.state.selectMeters.filter(
-                                      (sitem) => sitem.id !== item.id,
-                                    );
-
-                                    this.setState({selectMeters: items});
-                                  }}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder: 'Select Meter Type',
-                                    underlineColorAndroid: 'transparent',
-                                    style: {
-                                      padding: width * 0.027,
-                                      margin: 0,
-                                      borderTopLeftRadius: width * 0.015,
-                                      borderBottomLeftRadius: width * 0.015,
-                                      borderColor: 'black',
-                                      height: width * 0.13,
-                                      backgroundColor: '#F6F6F6',
-                                      borderTopWidth: width * 0.0019,
-                                      borderLeftWidth: width * 0.0019,
-                                      borderBottomWidth: width * 0.0019,
-                                    },
-                                    // onTextChange: (text) => {
-                                    //   this.setState({selectMeter: text});
-                                    // },
-                                    // value: this.state.selectMeter,
-                                    // defaultValue: item.select,
-                                  }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
-                                  }}
-                                />
-                                <TouchableOpacity
-                                  style={{
-                                    width: width * 0.1,
-                                    backgroundColor: '#25AAE199',
-                                    borderTopRightRadius: width * 0.015,
-                                    borderBottomRightRadius: width * 0.015,
-                                    borderTopWidth: width * 0.0019,
-                                    borderRightWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    height: width * 0.13,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  onPress={() => this.showAddNewType('Meter')}>
-                                  <Icon
-                                    size={width * 0.06}
-                                    color="#fff"
-                                    name={'add'}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                              <View>
-                                <FlatList
-                                  data={this.state.selectMeters}
-                                  horizontal
-                                  showsHorizontalScrollIndicator={false}
-                                  renderItem={({item}) => (
-                                    <View
-                                      style={{
-                                        borderWidth: 1,
-                                        borderRadius: 8,
-                                        flexDirection: 'row',
-                                        padding: 5,
-                                        margin: 5,
-                                        height: width * 0.1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                      }}>
-                                      <Text style={{color: 'black'}}>
-                                        {item.name}
-                                      </Text>
-                                      <TouchableOpacity
-                                        onPress={() => {
-                                          const items = this.state.selectMeters.filter(
-                                            (sitem) => sitem.id !== item.id,
-                                          );
-                                          this.setState({
-                                            selectMeters: items,
-                                          });
-                                        }}>
-                                        <Icon
-                                          name="close"
-                                          size={width * 0.05}
-                                        />
-                                      </TouchableOpacity>
-                                    </View>
-                                  )}
-                                />
-                              </View>
-                            </View>
-                          )}
-                        </View>
+                          }}></View>
                         {this.state.error.meterId ? (
                           <HelperText
                             type="error"
@@ -3590,9 +3906,16 @@ export default class Splash extends React.Component {
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                     }}>
-                                    <Text style={{color: '#25AAE1ec'}}>
-                                      Add Manufacturer
-                                    </Text>
+                                    {this.state.addManuLoad ? (
+                                      <ActivityIndicator
+                                        size="small"
+                                        color={'#25AAE1ec'}
+                                      />
+                                    ) : (
+                                      <Text style={{color: '#25AAE1ec'}}>
+                                        Add Manufacturer
+                                      </Text>
+                                    )}
                                   </TouchableOpacity>
                                 </View>
                               )}
