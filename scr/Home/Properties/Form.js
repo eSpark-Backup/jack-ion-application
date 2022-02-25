@@ -116,6 +116,7 @@ export default class Splash extends React.Component {
       btnLoading: false,
       addNewType: false,
       showAddType: '',
+      addNewUType: false,
       addUtility: '',
       addManufacturer: '',
       addMeter: '',
@@ -252,6 +253,16 @@ export default class Splash extends React.Component {
     // if (this.state.dropDownShow[3].value) {
     //   this.setState({avoidKeyboard: true});
     // }
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     this.state.dropDownShow[3].value
       ? this.setState({avoidKeyboard: true})
       : this.state.dropDownShow[4].value
@@ -265,6 +276,16 @@ export default class Splash extends React.Component {
 
   _keyboardDidHide = () => {
     // alert('Keyboard Hidden');
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
     this.setState({avoidKeyboard: false});
   };
 
@@ -527,6 +548,20 @@ export default class Splash extends React.Component {
     });
   };
 
+  showAddUNewType = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    this.setState({addNewUType: true});
+  };
+
   addProperty = () => {
     console.log('kiya Mila', this.state.Name);
     const selectUtilIds = [];
@@ -763,6 +798,24 @@ export default class Splash extends React.Component {
     });
   };
 
+  cancelAddUType = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
+    this.setState({
+      addNewUType: false,
+      showAddType: 'Manufacturer',
+    });
+  };
+
   deviceTypeInfoComponent = (flag) => {
     const {deviceData} = this.state;
     return (
@@ -781,13 +834,7 @@ export default class Splash extends React.Component {
           // backgroundColor: 'tomato',
         }}>
         {this.state.addNewType && this.state.showAddType == 'Manufacturer' ? (
-          <View
-            style={{
-              width: '100%',
-              zIndex: 2,
-              alignSelf: 'center',
-              alignItems: 'center',
-            }}>
+          this.state.addNewUType ? (
             <View>
               <View>
                 <Text
@@ -799,12 +846,12 @@ export default class Splash extends React.Component {
                     marginBottom: width * 0.01,
                     fontWeight: 'bold',
                   }}>
-                  Add New {this.state.showAddType}
+                  Add New {this.state.showAddType} Type
                 </Text>
               </View>
               <TextInput
-                placeholder={'Type New Manufacturer Name'}
-                value={this.state.addManufacturer}
+                placeholder={'Type New Utility Type Name'}
+                value={this.state.addUtility}
                 style={{
                   width: width * 0.8,
                   justifyContent: 'flex-end',
@@ -819,93 +866,97 @@ export default class Splash extends React.Component {
                   },
                 }}
                 onChangeText={(text) => {
-                  this.setState({addManufacturer: text});
+                  this.setState({addUtility: text});
                 }}
               />
-              <View>
-                <Text
-                  style={{
-                    fontSize: width * 0.03,
-                    color: '#3E4A4F',
-                    textTransform: 'capitalize',
-                    fontFamily: Fonts.ComfortaaRegular,
-                    marginVertical: width * 0.02,
-                    fontWeight: 'bold',
-                  }}>
-                  Select Utility Type
-                </Text>
-              </View>
-              {this.state.addNewType && this.state.showAddType == 'Utility' ? (
-                <View>
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: width * 0.03,
-                        color: '#3E4A4F',
-                        textTransform: 'capitalize',
-                        fontFamily: Fonts.ComfortaaRegular,
-                        marginBottom: width * 0.01,
-                        fontWeight: 'bold',
-                      }}>
-                      Add New {this.state.showAddType} Type
-                    </Text>
-                  </View>
-                  <TextInput
-                    placeholder={'Type New Utility Type Name'}
-                    value={this.state.addUtility}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                <TouchableOpacity onPress={() => this.cancelAddUType()}>
+                  <Text
                     style={{
-                      width: width * 0.8,
-                      justifyContent: 'flex-end',
-                      fontSize: width * 0.036,
-                    }}
-                    mode={'outlined'}
-                    theme={{
-                      colors: {
-                        text: '#25AAE1ec',
-                        primary: '#25AAE1ec',
-                        selectionColor: 'red',
-                      },
-                    }}
-                    onChangeText={(text) => {
-                      this.setState({addUtility: text});
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: '#25AAE1ec',
+                      width: width * 0.16,
+                      textAlign: 'center',
                     }}>
-                    <TouchableOpacity onPress={() => this.cancelAddType()}>
-                      <Text
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: width * 0.045,
-                          color: '#25AAE1ec',
-                          width: width * 0.16,
-                          textAlign: 'center',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => this.doneAddType()}
-                      disabled={this.state.addUtility ? false : true}>
-                      <Text
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: width * 0.045,
-                          color: this.state.addUtility
-                            ? '#25AAE1ec'
-                            : '#d0d0d0',
-                          width: width * 0.16,
-                          textAlign: 'center',
-                        }}>
-                        Add
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.doneAddType('Utility')}
+                  disabled={this.state.addUtility ? false : true}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: this.state.addUtility ? '#25AAE1ec' : '#d0d0d0',
+                      width: width * 0.16,
+                      textAlign: 'center',
+                    }}>
+                    Add
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                width: '100%',
+                zIndex: 2,
+                alignSelf: 'center',
+                alignItems: 'center',
+              }}>
+              <View>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: width * 0.03,
+                      color: '#3E4A4F',
+                      textTransform: 'capitalize',
+                      fontFamily: Fonts.ComfortaaRegular,
+                      marginBottom: width * 0.01,
+                      fontWeight: 'bold',
+                    }}>
+                    Add New {this.state.showAddType}
+                  </Text>
                 </View>
-              ) : (
+                <TextInput
+                  placeholder={'Type New Manufacturer Name'}
+                  value={this.state.addManufacturer}
+                  style={{
+                    width: width * 0.8,
+                    justifyContent: 'flex-end',
+                    fontSize: width * 0.036,
+                  }}
+                  mode={'outlined'}
+                  theme={{
+                    colors: {
+                      text: '#25AAE1ec',
+                      primary: '#25AAE1ec',
+                      selectionColor: 'red',
+                    },
+                  }}
+                  onChangeText={(text) => {
+                    this.setState({addManufacturer: text});
+                  }}
+                />
+                <View>
+                  <Text
+                    style={{
+                      fontSize: width * 0.03,
+                      color: '#3E4A4F',
+                      textTransform: 'capitalize',
+                      fontFamily: Fonts.ComfortaaRegular,
+                      marginVertical: width * 0.02,
+                      fontWeight: 'bold',
+                    }}>
+                    Select Utility Type
+                  </Text>
+                </View>
                 <View>
                   <View
                     style={{
@@ -983,7 +1034,7 @@ export default class Splash extends React.Component {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
-                      onPress={() => this.showAddNewType('Utility')}>
+                      onPress={() => this.showAddUNewType()}>
                       <Icon size={width * 0.06} color="#fff" name={'add'} />
                     </TouchableOpacity>
                   </View>
@@ -1020,45 +1071,52 @@ export default class Splash extends React.Component {
                       )}
                     />
                   </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      marginVertical: height * 0.01,
+                    }}>
+                    <TouchableOpacity onPress={() => this.cancelAddType()}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: width * 0.045,
+                          color: '#25AAE1ec',
+                          width: width * 0.16,
+                          textAlign: 'center',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => this.doneAddType()}
+                      disabled={
+                        this.state.addManufacturer &&
+                        this.state.selectAddManuUtil.length > 0
+                          ? false
+                          : true
+                      }>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: width * 0.045,
+                          color:
+                            this.state.addManufacturer &&
+                            this.state.selectAddManuUtil.length > 0
+                              ? '#25AAE1ec'
+                              : '#d0d0d0',
+                          width: width * 0.16,
+                          textAlign: 'center',
+                        }}>
+                        Add
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              )}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  marginVertical: height * 0.01,
-                }}>
-                <TouchableOpacity onPress={() => this.cancelAddType()}>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: width * 0.045,
-                      color: '#25AAE1ec',
-                      width: width * 0.16,
-                      textAlign: 'center',
-                    }}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.doneAddType()}
-                  disabled={this.state.addManufacturer ? false : true}>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: width * 0.045,
-                      color: this.state.addManufacturer
-                        ? '#25AAE1ec'
-                        : '#d0d0d0',
-                      width: width * 0.16,
-                      textAlign: 'center',
-                    }}>
-                    Add
-                  </Text>
-                </TouchableOpacity>
               </View>
             </View>
-          </View>
+          )
         ) : this.state.addNewType && this.state.showAddType == 'Device' ? (
           <ScrollView
             style={{
@@ -1179,7 +1237,7 @@ export default class Splash extends React.Component {
                           <TextInput
                             placeholder="Type Model Number"
                             value={this.state.modelNo}
-                            showSoftInputOnFocus={false}
+                            // showSoftInputOnFocus={false}
                             style={[styles.meterInput, {width: width * 0.6}]}
                             mode={'outlined'}
                             theme={{
@@ -1256,7 +1314,7 @@ export default class Splash extends React.Component {
                         <TextInput
                           placeholder="Type Product Description"
                           value={this.state.productNo}
-                          showSoftInputOnFocus={false}
+                          // showSoftInputOnFocus={false}
                           style={styles.meterInput}
                           mode={'outlined'}
                           theme={{
@@ -1498,7 +1556,7 @@ export default class Splash extends React.Component {
           </View>
         ) : (
           <View>
-            {deviceData.map((item, index) => {
+            {deviceData?.map((item, index) => {
               if (index == 0) {
                 return (
                   <View
@@ -1986,11 +2044,46 @@ export default class Splash extends React.Component {
     );
   };
 
-  doneAddType = async () => {
+  doneAddType = async (val) => {
     console.log('Show Add Type', this.state.showAddType);
-    if (this.state.showAddType == 'Manufacturer') {
+    if (this.state.showAddType == 'Utility' || val == 'Utility') {
+      let data = {
+        name: this.state.addUtility,
+      };
+      const UtilityResponse = await api.post(
+        '/property/equipment/utility-type',
+        data,
+      );
+      if (UtilityResponse?.data?.bool) {
+        console.log('datachecckk-->>', UtilityResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        if (val) {
+          this.setState({
+            showAddType: 'Manufacturer',
+            addNewType: true,
+            addNewUType: false,
+          });
+        } else {
+          this.cancelAddType();
+        }
+        this.getToken();
+        alert(UtilityResponse?.data?.message);
+      } else {
+        alert(UtilityResponse?.data?.message);
+      }
+    } else if (this.state.showAddType == 'Manufacturer') {
       let data = {
         name: this.state.addManufacturer,
+        utility_type_id: this.state.selectAddManuUtil,
       };
       const ManufacturersResponse = await api.post(
         '/property/equipment/manufacturer/add',
@@ -2038,32 +2131,6 @@ export default class Splash extends React.Component {
         });
         this.getToken();
         this.cancelAddType();
-      }
-    } else if (this.state.showAddType == 'Utility') {
-      let data = {
-        name: this.state.addUtility,
-      };
-      const UtilityResponse = await api.post(
-        '/property/equipment/utility-type',
-        data,
-      );
-      if (UtilityResponse?.data?.bool) {
-        console.log('datachecckk-->>', UtilityResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        alert(UtilityResponse?.data?.message);
-      } else {
-        alert(UtilityResponse?.data?.message);
       }
     } else if (this.state.showAddType == 'Meter') {
       let data = {
@@ -3805,35 +3872,7 @@ export default class Splash extends React.Component {
                             {this.state.error.utilType}
                           </HelperText>
                         ) : null}
-                        <TouchableOpacity
-                          style={styles.desciptionContainer}
-                          onPress={() => this.showMoreFn(1)}>
-                          <Text style={styles.desciptionHeading}>
-                            Point of Entry
-                          </Text>
-                          <Iconi
-                            name={
-                              this.state.dropDownShow[1].value
-                                ? 'chevron-up'
-                                : 'chevron-down'
-                            }
-                            size={width * 0.05}
-                            color="#3E4A4F"
-                          />
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            width: '100%',
-                            zIndex: 2,
-                            alignSelf: 'center',
-                            // justifyContent: 'center',
-                            alignItems: 'center',
-                            marginTop: width * 0.02,
-                            height: this.state.dropDownShow[1].value
-                              ? height * 0.16
-                              : height * 0.0,
-                            overflow: 'hidden',
-                          }}></View>
+
                         {this.state.error.meterId ? (
                           <HelperText
                             type="error"
@@ -3844,8 +3883,8 @@ export default class Splash extends React.Component {
                         <TouchableOpacity
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(3)}>
-                          <Text style={styles.desciptionHeading}>
-                            device Type Info
+                          <Text style={[styles.desciptionHeading]}>
+                            Manufacture, Device, Model No & Desc
                           </Text>
                           <Iconi
                             name={
@@ -3928,7 +3967,9 @@ export default class Splash extends React.Component {
                         <TouchableOpacity
                           style={styles.desciptionContainer}
                           onPress={() => this.showMoreFn(4)}>
-                          <Text style={styles.desciptionHeading}>owner</Text>
+                          <Text style={styles.desciptionHeading}>
+                            owner info & contact person
+                          </Text>
                           <Iconi
                             name={
                               this.state.dropDownShow[4].value

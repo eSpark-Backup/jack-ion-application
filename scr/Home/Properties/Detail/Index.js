@@ -123,7 +123,7 @@ export default class Splash extends React.Component {
       BillingCompanyId: propertyData?.billing_company_id,
       managementCompany: propertyData?.management_company,
       managementCompanyId: propertyData?.management_company_id,
-      customId: propertyData.property_id.toString(),
+      customId: propertyData.custom_id.toString(),
     });
 
     console.log(
@@ -1109,9 +1109,9 @@ export default class Splash extends React.Component {
                   <View style={styles.infoViewInner}>
                     <Folder name="folder" size={width * 0.06} />
                     <Text style={styles.dataFieldText}>
-                      {this.state.listData.property_id == null
+                      {this.state.listData.custom_id == null
                         ? '--'
-                        : this.state.listData.property_id}
+                        : this.state.listData.custom_id}
                     </Text>
                   </View>
                 </View>
