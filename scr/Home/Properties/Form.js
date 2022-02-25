@@ -2081,9 +2081,13 @@ export default class Splash extends React.Component {
         alert(UtilityResponse?.data?.message);
       }
     } else if (this.state.showAddType == 'Manufacturer') {
+      let utilIds = [];
+      for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
+        utilIds.push(this.state.selectAddManuUtil[i].id);
+      }
       let data = {
         name: this.state.addManufacturer,
-        utility_type_id: this.state.selectAddManuUtil,
+        utility_type_id: utilIds,
       };
       const ManufacturersResponse = await api.post(
         '/property/equipment/manufacturer/add',
@@ -2908,7 +2912,7 @@ export default class Splash extends React.Component {
             statusBarTranslucent={true}
             style={{
               margin: 0,
-              bottom: this.state.avoidKeyboard ? width * 0.5 : 0,
+              bottom: this.state.avoidKeyboard ? width * 0.45 : 0,
             }}
             isVisible={this.state.isModalAddPropVisible}>
             {this.state.selectLocation ? (
@@ -3473,7 +3477,7 @@ export default class Splash extends React.Component {
                                   }}>
                                   <SearchableDropDown
                                     multi={true}
-                                    selectedItems={this.state.selectAddManuUtil}
+                                    selectedItems={this.state.selectUtil}
                                     onItemSelect={(item) => {
                                       console.log('Test', item);
                                       this.AddTypes(item, 'Utility');

@@ -113,6 +113,7 @@ export default class Splash extends React.Component {
     this.getToken();
     const propertyData = this.props.navigation.state.params.item.item;
     this.getMetersLocation(propertyData?.id);
+    console.log('Property Data', propertyData);
 
     this.setState({});
     this.setState({
@@ -123,7 +124,7 @@ export default class Splash extends React.Component {
       BillingCompanyId: propertyData?.billing_company_id,
       managementCompany: propertyData?.management_company,
       managementCompanyId: propertyData?.management_company_id,
-      customId: propertyData.custom_id.toString(),
+      customId: propertyData.custom_id,
     });
 
     console.log(
@@ -564,8 +565,8 @@ export default class Splash extends React.Component {
                   this.state.markers.map((marker) => (
                     <Marker
                       coordinate={{
-                        latitude: marker.position.lat,
-                        longitude: marker.position.lng,
+                        latitude: marker?.position?.lat,
+                        longitude: marker?.position?.lng,
                       }}
                       style={{
                         zIndex: 5,
