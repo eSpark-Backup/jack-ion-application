@@ -146,12 +146,13 @@ export default class Splash extends React.Component {
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
+    this.setState({isLoading: true});
     const metersLocation = await api.get(
       `/property/location-meters/${propertyId}`,
     );
     console.log('Meters Location', metersLocation?.data?.data);
     if (metersLocation?.data?.bool) {
-      this.setState({markers: metersLocation?.data?.data});
+      this.setState({markers: metersLocation?.data?.data, isLoading: false});
     }
   };
 
@@ -564,8 +565,8 @@ export default class Splash extends React.Component {
                   this.state.markers.map((marker) => (
                     <Marker
                       coordinate={{
-                        latitude: marker.position.lat,
-                        longitude: marker.position.lng,
+                        latitude: marker.property.position.lat,
+                        longitude: marker.property.position.lng,
                       }}
                       style={{
                         zIndex: 5,
