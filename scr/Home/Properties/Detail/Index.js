@@ -566,8 +566,8 @@ export default class Splash extends React.Component {
                   this.state.markers.map((marker) => (
                     <Marker
                       coordinate={{
-                        latitude: marker?.position?.lat,
-                        longitude: marker?.position?.lng,
+                        latitude: this.state.lat,
+                        longitude: this.state.long,
                       }}
                       style={{
                         zIndex: 5,

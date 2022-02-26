@@ -2913,11 +2913,9 @@ export default function UnitEdit({
                                     />
                                     <View
                                       style={{
-                                        fontWeight: 'bold',
-                                        fontSize: width * 0.045,
-                                        color: '#25AAE1ec',
-                                        width: width * 0.17,
-                                        textAlign: 'center',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-around',
+                                        alignItems: 'center',
                                       }}>
                                       <TouchableOpacity
                                         onPress={cancelAddNewType}>
@@ -2937,15 +2935,15 @@ export default function UnitEdit({
                                         disabled={
                                           showAddType == 'Manufacturer' &&
                                           addManufacturer
-                                            ? '#25AAE1ec'
+                                            ? false
                                             : showAddType != 'Manufacturer' &&
                                               addDevice[0].selectId &&
                                               addDevice[1].selectId &&
                                               addDevice[2].select
-                                            ? '#25AAE1ec'
+                                            ? false
                                             : showAddType == 'Utility' &&
                                               addUtility
-                                            ? '#25AAE1ec'
+                                            ? false
                                             : showAddType == 'Attached To' &&
                                               addAttached
                                             ? false
