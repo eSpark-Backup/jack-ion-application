@@ -147,12 +147,13 @@ export default class Splash extends React.Component {
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
+    this.setState({isLoading: true});
     const metersLocation = await api.get(
       `/property/location-meters/${propertyId}`,
     );
     console.log('Meters Location', metersLocation?.data?.data);
     if (metersLocation?.data?.bool) {
-      this.setState({markers: metersLocation?.data?.data});
+      this.setState({markers: metersLocation?.data?.data, isLoading: false});
     }
   };
 

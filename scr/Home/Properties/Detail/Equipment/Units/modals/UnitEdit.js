@@ -121,6 +121,7 @@ export default function UnitEdit({
   const [typeLoader, setTypeLoader] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [statusAnimation, setStatusAnimation] = useState(false);
+  const [loadingState, setLoadingState] = useState(false);
   const [iniLat, setIniLat] = useState(0);
   const [iniLong, setIniLong] = useState(0);
   const [lat, setLat] = useState(0);
@@ -1851,7 +1852,7 @@ export default function UnitEdit({
         model_no: addModelNumber,
         device_id: selectedDevice?.id,
       };
-
+      setLoadingState(true);
       const ModelNumberResponse = await api.post(
         '/property/equipment/model-number/number',
         data,
@@ -1868,13 +1869,18 @@ export default function UnitEdit({
             type: LayoutAnimation.Types.easeInEaseOut,
           },
         });
+        setLoadingState(false);
         getToken();
         cancelAddNewType();
+      } else {
+        alert(ModelNumberResponse?.data?.message);
+        setLoadingState(false);
       }
     } else if (showAddType == 'Utility') {
       let data = {
         name: addUtility,
       };
+      setLoadingState(true);
       const UtilityResponse = await api.post(
         '/property/equipment/utility-type',
         data,
@@ -1892,15 +1898,18 @@ export default function UnitEdit({
             type: LayoutAnimation.Types.easeInEaseOut,
           },
         });
+        setLoadingState(false);
         callApi();
         cancelAddNewType();
       } else {
         alert(UtilityResponse?.data?.message);
+        setLoadingState(false);
       }
     } else if (showAddType == 'Attached To') {
       let data = {
         name: addAttached,
       };
+      setLoadingState(true);
       const AttachedToResponse = await api.post(
         '/property/equipment/attached_to/attach',
         data,
@@ -1918,10 +1927,12 @@ export default function UnitEdit({
             type: LayoutAnimation.Types.easeInEaseOut,
           },
         });
+        setLoadingState(false);
         callApi();
         cancelAddNewType();
       } else {
         alert(AttachedToResponse?.data?.message);
+        setLoadingState(false);
       }
     } else {
       //* FIXME: Device Adding
@@ -2062,6 +2073,7 @@ export default function UnitEdit({
     setTypeLoader(true);
     setAddTypeInput(false);
     setNewMeterType('');
+    setLoadingState(true);
     let data = {
       name: newMeterType,
     };
@@ -2083,9 +2095,11 @@ export default function UnitEdit({
         meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
       }));
       setTypeLoader(false);
+      setLoadingState(false);
     } else {
       alert('Add Meter Failed');
       setTypeLoader(false);
+      setLoadingState(false);
     }
   };
   // console.log('Slide @ means IMR value', typeof slide2[1].value);
@@ -2849,7 +2863,6 @@ export default function UnitEdit({
                                 </View>
                                 <View
                                   style={{
-                                    flex: 1,
                                     alignItems: 'flex-end',
                                     marginVertical: height * 0.01,
                                   }}>
@@ -2900,9 +2913,11 @@ export default function UnitEdit({
                                     />
                                     <View
                                       style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-around',
-                                        alignItems: 'center',
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.17,
+                                        textAlign: 'center',
                                       }}>
                                       <TouchableOpacity
                                         onPress={cancelAddNewType}>
@@ -2922,15 +2937,15 @@ export default function UnitEdit({
                                         disabled={
                                           showAddType == 'Manufacturer' &&
                                           addManufacturer
-                                            ? false
+                                            ? '#25AAE1ec'
                                             : showAddType != 'Manufacturer' &&
                                               addDevice[0].selectId &&
                                               addDevice[1].selectId &&
                                               addDevice[2].select
-                                            ? false
+                                            ? '#25AAE1ec'
                                             : showAddType == 'Utility' &&
                                               addUtility
-                                            ? false
+                                            ? '#25AAE1ec'
                                             : showAddType == 'Attached To' &&
                                               addAttached
                                             ? false

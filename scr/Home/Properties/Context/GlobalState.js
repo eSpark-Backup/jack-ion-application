@@ -97,7 +97,7 @@ class GlobalState extends React.Component {
   };
 
   filterData = async (sort) => {
-    this.setState({biller: sort.billing, filterWork: true});
+    this.setState({biller: sort.billing, filterWork: true, isLoading: true});
     const response = await this.api.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {

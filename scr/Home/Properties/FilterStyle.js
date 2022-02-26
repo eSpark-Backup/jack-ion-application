@@ -147,6 +147,7 @@ export default styles = StyleSheet.create({
   filterListText: {
     color: '#5c5c5ccf',
     fontSize: width * 0.04,
+    paddingRight: 8,
   },
   inputFilterView: {
     flexDirection: 'row',
