@@ -3433,16 +3433,16 @@ export default class Splash extends React.Component {
                               alignItems: 'center',
                               marginTop: width * 0.02,
                               height: this.state.dropDownShow[2].value
-                                ? height * 0.26
-                                : height * 0.0,
+                                ? width * 0.65
+                                : width * 0.0,
                               overflow: 'hidden',
                             }}>
                             <View
                               style={{
                                 marginBottom: width * 0.03,
-                                height: this.state.dropDownShow[2].value
-                                  ? height * 0.12
-                                  : height * 0.0,
+                                maxHeight: this.state.dropDownShow[2].value
+                                  ? width * 0.3
+                                  : width * 0.0,
                               }}>
                               {this.state.addNewType &&
                               this.state.showAddType == 'Utility' ? (
@@ -3547,7 +3547,7 @@ export default class Splash extends React.Component {
                                       }}
                                       itemTextStyle={{color: '#222'}}
                                       itemsContainerStyle={{
-                                        maxHeight: height * 0.08,
+                                        maxHeight: width * 0.18,
                                       }}
                                       // items={item.data}
                                       items={this.state.utilTypes}
@@ -3714,9 +3714,9 @@ export default class Splash extends React.Component {
                             </View>
                             <View
                               style={{
-                                height: this.state.dropDownShow[2].value
-                                  ? height * 0.12
-                                  : height * 0.0,
+                                maxHeight: this.state.dropDownShow[2].value
+                                  ? width * 0.3
+                                  : width * 0.0,
                               }}>
                               {this.state.addNewType &&
                               this.state.showAddType == 'Meter' ? (
@@ -3819,7 +3819,7 @@ export default class Splash extends React.Component {
                                       }}
                                       itemTextStyle={{color: '#222'}}
                                       itemsContainerStyle={{
-                                        maxHeight: height * 0.08,
+                                        maxHeight: width * 0.18,
                                       }}
                                       // items={item.data}
                                       items={this.state.meterList}
