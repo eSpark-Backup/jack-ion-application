@@ -1238,12 +1238,19 @@ export default class Splash extends React.Component {
                             flexDirection: 'row',
                             width: width * 0.8,
                             justifyContent: 'space-between',
+                            height: width * 0.15,
                           }}>
                           <TextInput
                             placeholder="Type Model Number"
                             value={this.state.modelNo}
                             // showSoftInputOnFocus={false}
-                            style={[styles.meterInput, {width: width * 0.6}]}
+                            style={[
+                              styles.meterInput,
+                              {
+                                width: width * 0.6,
+                                height: width * 0.145,
+                              },
+                            ]}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -1260,7 +1267,7 @@ export default class Splash extends React.Component {
                             style={{
                               // backgroundColor: '#25AAE1ec',
                               width: width * 0.14,
-                              height: width * 0.14,
+                              height: width * 0.15,
                               borderWidth: 2,
                               borderRadius: 5,
                               alignSelf: 'flex-end',
@@ -2099,9 +2106,13 @@ export default class Splash extends React.Component {
       val == 'Manufacturer'
     ) {
       console.log('chala');
+      let utilIds = [];
+      for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
+        utilIds.push(this.state.selectAddManuUtil[i].id);
+      }
       let data = {
         name: this.state.addManufacturer,
-        utility_type_id: this.state.selectAddManuUtil,
+        utility_type_id: utilIds,
       };
       this.setState({loadingStateDev: true});
       const ManufacturersResponse = await api.post(
@@ -2948,7 +2959,7 @@ export default class Splash extends React.Component {
             statusBarTranslucent={true}
             style={{
               margin: 0,
-              bottom: this.state.avoidKeyboard ? width * 0.5 : 0,
+              bottom: this.state.avoidKeyboard ? width * 0.45 : 0,
             }}
             isVisible={this.state.isModalAddPropVisible}>
             {this.state.selectLocation ? (
