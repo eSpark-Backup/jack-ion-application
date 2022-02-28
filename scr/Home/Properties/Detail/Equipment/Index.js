@@ -369,14 +369,14 @@ export default class Splash extends Component {
       propertyLat: this.props.navigation.state.params.item.item.latitude,
       propertyLong: this.props.navigation.state.params.item.item.longitude,
     });
-    // console.log(
-    //   'Sub me Kch na Kch Mila Ya Nhi',
-    //   this.state.buildingData.name,
-    //   this.state.editBuildId,
-    //   this.props.navigation.state.params.item.item.id,
-    //   this.props.navigation.state.params.item.item.latitude,
-    //   this.props.navigation.state.params.item.item.longitude,
-    // );
+    console.log(
+      'Sub me Kch na Kch Mila Ya Nhi',
+      this.state.buildingData.name,
+      this.state.editBuildId,
+      this.props.navigation.state.params.item.item.id,
+      this.props.navigation.state.params.item.item.latitude,
+      this.props.navigation.state.params.item.item.longitude,
+    );
     this.setState({
       currUnitIndex: null,
       showSearch: false,
