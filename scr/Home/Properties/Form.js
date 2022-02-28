@@ -1239,12 +1239,19 @@ export default class Splash extends React.Component {
                             flexDirection: 'row',
                             width: width * 0.8,
                             justifyContent: 'space-between',
+                            height: width * 0.15,
                           }}>
                           <TextInput
                             placeholder="Type Model Number"
                             value={this.state.modelNo}
                             // showSoftInputOnFocus={false}
-                            style={[styles.meterInput, {width: width * 0.6}]}
+                            style={[
+                              styles.meterInput,
+                              {
+                                width: width * 0.6,
+                                height: width * 0.145,
+                              },
+                            ]}
                             mode={'outlined'}
                             theme={{
                               colors: {
@@ -1261,7 +1268,7 @@ export default class Splash extends React.Component {
                             style={{
                               // backgroundColor: '#25AAE1ec',
                               width: width * 0.14,
-                              height: width * 0.14,
+                              height: width * 0.15,
                               borderWidth: 2,
                               borderRadius: 5,
                               alignSelf: 'flex-end',
@@ -2097,7 +2104,11 @@ export default class Splash extends React.Component {
         alert(UtilityResponse?.data?.message);
         this.setState({loadingState: false, loadingStateDev: false});
       }
-    } else if (this.state.showAddType == 'Manufacturer') {
+    } else if (
+      this.state.showAddType == 'Manufacturer' ||
+      val == 'Manufacturer'
+    ) {
+      console.log('chala');
       let utilIds = [];
       for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
         utilIds.push(this.state.selectAddManuUtil[i].id);
