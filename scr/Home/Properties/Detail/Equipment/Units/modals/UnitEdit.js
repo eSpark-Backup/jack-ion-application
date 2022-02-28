@@ -776,11 +776,11 @@ export default function UnitEdit({
       // listSlide[2].selectId = some?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
       // setProductNo(some?.devices[0]?.product_desc);
       // setSlide1(listSlide);
-      setNewMeter((oldState) => ({
-        ...oldState,
-        id: some?.meter_id[0],
-        name: some?.meter_name[0]?.name,
-      }));
+      // setNewMeter((oldState) => ({ check later
+      //   ...oldState,
+      //   id: some?.meter_id[0],
+      //   name: some?.meter_name[0]?.name,
+      // }));
 
       const utilityIds = some?.utility_type_id;
       const utilityRes = some?.utility_type_name;
@@ -876,11 +876,11 @@ export default function UnitEdit({
   const getdefaultMeterData = (val) => {
     setDefaultMeterValues(val);
     if (val) {
-      setNewMeter((oldState) => ({
-        ...oldState,
-        id: defaultData?.meter_id[0],
-        name: defaultData?.meter_name[0]?.name,
-      }));
+      // setNewMeter((oldState) => ({ check later
+      //   ...oldState,
+      //   id: defaultData?.meter_id[0],
+      //   name: defaultData?.meter_name[0]?.name,
+      // }));
 
       const utilityIds = defaultData.utility_type_id;
 
@@ -1255,8 +1255,8 @@ export default function UnitEdit({
         manufacturer_id: slide1[0].selectId,
         product_desc: productNo,
       },
-      meter_id: [newMeter.id],
-      meter_name: [{id: newMeter.id, name: newMeter.name}],
+      // meter_id: [newMeter.id], check later
+      // meter_name: [{id: newMeter.id, name: newMeter.name}],
       model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
       // meter_serial_number: slide2[2].value,
@@ -1314,7 +1314,7 @@ export default function UnitEdit({
         });
       }
       loopData.push({
-        meter_id: item.meter_id,
+        // meter_id: item.meter_id, check later
         device_serial_number: item.device_serial_number,
         meter_serial_number: item.meter_serial_number,
         device_id: item.device_id,
@@ -2008,7 +2008,7 @@ export default function UnitEdit({
     setDefaultMeterValues(false);
     setDefaultDeviceValues(false);
     setReasonArr(data.reasons);
-    setMeterAddingId(data.meter_id);
+    // setMeterAddingId(data.meter_id);
     // let arr1 = {
     //   id: data.meter_id,
     //   name: data.meter_name,
@@ -2051,12 +2051,12 @@ export default function UnitEdit({
       newArr[1].value = data.initial_meter_reading;
       // newArr[2].value = data.meter_serial_number;
     });
-    setNewMeter((oldState) => ({
-      ...oldState,
-      id: data?.meter_name[0]?.id,
-      name: data?.meter_name[0]?.name,
-      number: index + 1,
-    }));
+    // setNewMeter((oldState) => ({
+    //   ...oldState,
+    //   id: data?.meter_name[0]?.id,
+    //   name: data?.meter_name[0]?.name,
+    //   number: index + 1,
+    // }));
     setNewMeterFlag(false);
     setShowAddMeterSlider(false);
   };
@@ -2691,7 +2691,6 @@ export default function UnitEdit({
                         height: width * 0.8,
                         justifyContent: 'flex-start',
                       }}>
-                      {/* sliderNumber == 1 */}
                       {loadManufacturers ? (
                         <ActivityIndicator
                           size="large"
@@ -4432,50 +4431,7 @@ export default function UnitEdit({
                         ) : null}
                       </View>
                     </View>
-                  ) : // <View style={styles.container}>
-                  //   <TouchableOpacity
-                  //     onPress={requestCameraPermission}
-                  //     style={styles.button}>
-                  //     <Text style={styles.buttonText}>
-                  //       Launch Camera Directly
-                  //     </Text>
-                  //     <Iconi
-                  //       name="camera"
-                  //       size={width * 0.05}
-                  //       color="#3E4A4F"
-                  //     />
-                  //   </TouchableOpacity>
-                  //   <Text style={[styles.buttonText, {opacity: 0.5}]}>
-                  //     ------------- OR --------------
-                  //   </Text>
-                  //   <TouchableOpacity
-                  //     onPress={imageGalleryLaunch}
-                  //     style={styles.button}>
-                  //     <Text style={styles.buttonText}>
-                  //       Launch Image Gallery Directly
-                  //     </Text>
-                  //     <Iconi
-                  //       name="images"
-                  //       size={width * 0.05}
-                  //       color="#3E4A4F"
-                  //     />
-                  //   </TouchableOpacity>
-
-                  //   {filePath != '' && filePath != null && (
-                  //     <Image
-                  //       resizeMode="cover"
-                  //       // resizeMethod="scale"
-                  //       style={{
-                  //         flex: 1,
-                  //         width: width * 0.7,
-                  //         height: width * 0.35,
-                  //         marginVertical: 5,
-                  //       }}
-                  //       source={{uri: filePath}}
-                  //     />
-                  //   )}
-                  // </View>
-                  sliderNumber == 6 ? (
+                  ) : sliderNumber == 6 ? (
                     doneAnimation ? (
                       <Image
                         resizeMode="contain"
@@ -5216,776 +5172,6 @@ export default function UnitEdit({
                         </View>
                       )}
                     </View>
-                    // <View
-                    //   style={{
-                    //     flex: 1,
-                    //     height: width * 0.8,
-                    //     justifyContent: 'flex-start',
-                    //   }}>
-                    //   {/* sliderNumber == 1 */}
-                    //   {loadManufacturers ? (
-                    //     <ActivityIndicator
-                    //       size="large"
-                    //       color="#25AAE1ec"
-                    //       style={{alignSelf: 'center', flex: 1}}
-                    //     />
-                    //   ) : (
-                    //     <View>
-                    //       {!showAddType ? (
-                    //         <View>
-                    //           {slide1?.map((item, index) => (
-                    //             <View
-                    //               style={{width: width * 0.8}}
-                    //               key={item.id}>
-                    //               <Text style={styles.meterDesciptionHeading}>
-                    //                 {item.name}*
-                    //               </Text>
-                    //               <View
-                    //                 style={{
-                    //                   flexDirection: 'row',
-                    //                   alignItems: 'flex-start',
-                    //                 }}>
-                    //                 <SearchableDropdown
-                    //                   onItemSelect={(item) => {
-                    //                     getDevice(item, index);
-                    //                   }}
-                    //                   containerStyle={{
-                    //                     paddingBottom: width * 0.02,
-                    //                     width: width * 0.7,
-                    //                   }}
-                    //                   itemStyle={{
-                    //                     padding: width * 0.027,
-                    //                     backgroundColor: 'rgb(247, 247, 247)',
-                    //                     borderColor: '#bbb',
-                    //                     borderWidth: width * 0.0015,
-                    //                     borderRadius: width * 0.015,
-                    //                   }}
-                    //                   itemTextStyle={{color: '#222'}}
-                    //                   itemsContainerStyle={{
-                    //                     maxHeight: height * 0.08,
-                    //                   }}
-                    //                   items={item.data}
-                    //                   resetValue={false}
-                    //                   textInputProps={{
-                    //                     editable:
-                    //                       index > 0
-                    //                         ? slide1[0].selectId &&
-                    //                           !defaultDeviceValues
-                    //                           ? true
-                    //                           : false
-                    //                         : defaultDeviceValues
-                    //                         ? false
-                    //                         : true,
-
-                    //                     placeholder:
-                    //                       index == 1
-                    //                         ? slide1[0].selectId
-                    //                           ? item.name
-                    //                           : 'First Select Manufacture'
-                    //                         : index == 2
-                    //                         ? slide1[1].selectId
-                    //                           ? item.name
-                    //                           : 'First Select Device'
-                    //                         : item.name,
-                    //                     underlineColorAndroid: 'transparent',
-                    //                     style: {
-                    //                       padding: width * 0.027,
-                    //                       margin: 0,
-                    //                       borderTopLeftRadius: width * 0.015,
-                    //                       borderBottomLeftRadius: width * 0.015,
-                    //                       borderColor: item.error
-                    //                         ? '#A3001B'
-                    //                         : 'black',
-                    //                       height: width * 0.13,
-                    //                       backgroundColor: '#F6F6F6',
-                    //                       borderTopWidth: width * 0.0019,
-                    //                       borderLeftWidth: width * 0.0019,
-                    //                       borderBottomWidth: width * 0.0019,
-                    //                     },
-                    //                     onTextChange: (text) => {
-                    //                       onChangeManufacturer(text, index);
-                    //                     },
-                    //                     value: setTimeout(
-                    //                       () => item.select,
-                    //                       200,
-                    //                     ),
-                    //                     defaultValue: item.select,
-                    //                   }}
-                    //                   listProps={{
-                    //                     nestedScrollEnabled: true,
-                    //                   }}
-                    //                 />
-                    //                 <TouchableOpacity
-                    //                   style={{
-                    //                     width: width * 0.1,
-                    //                     backgroundColor: '#25AAE199',
-                    //                     borderTopRightRadius: width * 0.015,
-                    //                     borderBottomRightRadius: width * 0.015,
-                    //                     borderTopWidth: width * 0.0019,
-                    //                     borderRightWidth: width * 0.0019,
-                    //                     borderBottomWidth: width * 0.0019,
-                    //                     height: width * 0.13,
-                    //                     justifyContent: 'center',
-                    //                     alignItems: 'center',
-                    //                   }}
-                    //                   onPress={() => showAddNewType(item.name)}>
-                    //                   <Icon
-                    //                     size={width * 0.06}
-                    //                     color="#fff"
-                    //                     name={'add'}
-                    //                   />
-                    //                 </TouchableOpacity>
-                    //               </View>
-                    //             </View>
-                    //           ))}
-                    //           <View
-                    //             style={
-                    //               {
-                    //                 // flexDirection: 'row',
-                    //                 // justifyContent: 'space-between',
-                    //                 // backgroundColor: 'tomato',
-                    //               }
-                    //             }>
-                    //             <View>
-                    //               <View
-                    //                 style={[
-                    //                   styles.desciptionContainer,
-                    //                   {
-                    //                     alignSelf: 'flex-start',
-                    //                     width: width * 0.35,
-                    //                   },
-                    //                 ]}>
-                    //                 <Text
-                    //                   style={[
-                    //                     styles.desciptionHeading,
-                    //                     {
-                    //                       height: width * 0.05,
-                    //                       textAlignVertical: 'bottom',
-                    //                     },
-                    //                   ]}>
-                    //                   Product Desc*
-                    //                 </Text>
-                    //               </View>
-                    //               <TextInput
-                    //                 placeholder="Type Product Description"
-                    //                 value={
-                    //                   productNo?.length > 24
-                    //                     ? productNo.slice(0, 24) + '...'
-                    //                     : productNo
-                    //                 }
-                    //                 selection
-                    //                 dense={true}
-                    //                 editable={false}
-                    //                 // showSoftInputOnFocus={false}
-                    //                 style={[styles.input, {width: '100%'}]}
-                    //                 mode={'outlined'}
-                    //                 theme={{
-                    //                   colors: {
-                    //                     text: '#25AAE1ec',
-                    //                     primary: '#25AAE1ec',
-                    //                     selectionColor: 'red',
-                    //                   },
-                    //                 }}
-                    //               />
-                    //             </View>
-                    //             <View
-                    //               style={{
-                    //                 flex: 1,
-                    //                 alignItems: 'flex-end',
-                    //                 marginVertical: height * 0.01,
-                    //               }}>
-                    //               <Switch
-                    //                 trackColor={{
-                    //                   false: '#767577',
-                    //                   true: '#81b0ff',
-                    //                 }}
-                    //                 thumbColor={'#f4f3f4'}
-                    //                 ios_backgroundColor="#3e3e3e"
-                    //                 onValueChange={(val) =>
-                    //                   getdefaultDeviceData(val)
-                    //                 }
-                    //                 value={defaultDeviceValues}
-                    //               />
-                    //             </View>
-                    //           </View>
-                    //         </View>
-                    //       ) : (
-                    //         <>
-                    //           <View>
-                    //             {showAddType == 'Manufacturer' && (
-                    //               <View>
-                    //                 <View>
-                    //                   <Text
-                    //                     style={[
-                    //                       styles.meterDesciptionHeading,
-                    //                       {fontWeight: 'bold'},
-                    //                     ]}>
-                    //                     New {showAddType}
-                    //                   </Text>
-                    //                 </View>
-                    //                 <TextInput
-                    //                   placeholder={'Type new manufacturer'}
-                    //                   value={addManufacturer}
-                    //                   style={styles.meterInput}
-                    //                   mode={'outlined'}
-                    //                   theme={{
-                    //                     colors: {
-                    //                       text: '#25AAE1ec',
-                    //                       primary: '#25AAE1ec',
-                    //                       selectionColor: 'red',
-                    //                     },
-                    //                   }}
-                    //                   onChangeText={(text) => {
-                    //                     setAddManufacturer(text);
-                    //                   }}
-                    //                 />
-                    //                 <View
-                    //                   style={{
-                    //                     flexDirection: 'row',
-                    //                     justifyContent: 'space-around',
-                    //                     alignItems: 'center',
-                    //                   }}>
-                    //                   <TouchableOpacity
-                    //                     onPress={cancelAddNewType}>
-                    //                     <Text
-                    //                       style={{
-                    //                         fontWeight: 'bold',
-                    //                         fontSize: width * 0.045,
-                    //                         color: '#25AAE1ec',
-                    //                         width: width * 0.17,
-                    //                         textAlign: 'center',
-                    //                       }}>
-                    //                       Cancel
-                    //                     </Text>
-                    //                   </TouchableOpacity>
-                    //                   <TouchableOpacity
-                    //                     onPress={doneAddType}
-                    //                     disabled={
-                    //                       showAddType == 'Manufacturer' &&
-                    //                       addManufacturer
-                    //                         ? false
-                    //                         : showAddType != 'Manufacturer' &&
-                    //                           addDevice[0].selectId &&
-                    //                           addDevice[1].selectId &&
-                    //                           addDevice[2].select
-                    //                         ? false
-                    //                         : showAddType == 'Utility' &&
-                    //                           addUtility
-                    //                         ? false
-                    //                         : showAddType == 'Attached To' &&
-                    //                           addAttached
-                    //                         ? false
-                    //                         : true
-                    //                     }>
-                    //                     <Text
-                    //                       style={{
-                    //                         fontWeight: 'bold',
-                    //                         fontSize: width * 0.045,
-                    //                         color:
-                    //                           showAddType == 'Manufacturer' &&
-                    //                           addManufacturer
-                    //                             ? '#25AAE1ec'
-                    //                             : showAddType !=
-                    //                                 'Manufacturer' &&
-                    //                               addDevice[0].selectId &&
-                    //                               addDevice[1].selectId &&
-                    //                               addDevice[2].select
-                    //                             ? '#25AAE1ec'
-                    //                             : showAddType == 'Utility' &&
-                    //                               addUtility
-                    //                             ? '#25AAE1ec'
-                    //                             : showAddType ==
-                    //                                 'Attached To' && addAttached
-                    //                             ? '#25AAE1ec'
-                    //                             : '#D0D0D0',
-                    //                         width: width * 0.15,
-                    //                         textAlign: 'center',
-                    //                       }}>
-                    //                       Add
-                    //                     </Text>
-                    //                   </TouchableOpacity>
-                    //                 </View>
-                    //               </View>
-                    //             )}
-                    //             {showAddType == 'Device' && (
-                    //               <View
-                    //                 style={{
-                    //                   zIndex: 10,
-                    //                 }}>
-                    //                 <Text
-                    //                   style={{
-                    //                     alignSelf: 'flex-start',
-                    //                     fontSize: width * 0.03,
-                    //                     color: '#3E4A4F',
-                    //                     textTransform: 'capitalize',
-                    //                     fontFamily: Fonts.ComfortaaRegular,
-                    //                     marginBottom: width * 0.01,
-                    //                     fontWeight: 'bold',
-                    //                   }}>
-                    //                   Add New Device
-                    //                 </Text>
-                    //                 {addDevice &&
-                    //                   addDevice?.map((item, index) => (
-                    //                     <View
-                    //                       style={{
-                    //                         width: width * 0.8,
-                    //                         // zIndex: 9,
-                    //                       }}
-                    //                       key={item.id}>
-                    //                       <View>
-                    //                         <Text
-                    //                           style={
-                    //                             styles.meterDesciptionHeading
-                    //                           }>
-                    //                           {item.name}
-                    //                         </Text>
-                    //                       </View>
-                    //                       {index < 2 ? (
-                    //                         <SearchableDropdown
-                    //                           onItemSelect={(items) => {
-                    //                             getNewDeviceData(items, index);
-                    //                           }}
-                    //                           containerStyle={{
-                    //                             paddingBottom: width * 0.02,
-                    //                           }}
-                    //                           itemStyle={{
-                    //                             padding: width * 0.027,
-                    //                             backgroundColor: '#fff',
-                    //                             borderColor: '#bbb',
-                    //                             borderWidth: width * 0.0015,
-                    //                             borderRadius: width * 0.015,
-                    //                             margin: width * 0.005,
-                    //                           }}
-                    //                           itemTextStyle={{color: '#222'}}
-                    //                           itemsContainerStyle={
-                    //                             Platform.OS == 'android'
-                    //                               ? {
-                    //                                   height: width * 0.2,
-                    //                                   zIndex: 1,
-                    //                                   position: 'absolute',
-                    //                                   width: width * 0.8,
-                    //                                   top: width * 0.1,
-                    //                                   flex: 1,
-                    //                                   zIndex: 20,
-                    //                                   backgroundColor: 'white',
-                    //                                   elevation: width * 0.01,
-                    //                                   shadowColor: '#000',
-                    //                                   shadowOffset: {
-                    //                                     width: 0,
-                    //                                     height: 2,
-                    //                                   },
-                    //                                   shadowOpacity: 0.25,
-                    //                                   shadowRadius: 3.84,
-                    //                                 }
-                    //                               : {
-                    //                                   height: width * 0.2,
-                    //                                   zIndex: 1,
-                    //                                 }
-                    //                           }
-                    //                           items={item.data}
-                    //                           resetValue={false}
-                    //                           textInputProps={{
-                    //                             placeholder: item.name,
-                    //                             underlineColorAndroid:
-                    //                               'transparent',
-                    //                             style: {
-                    //                               padding: width * 0.027,
-                    //                               margin: 0,
-                    //                               borderRadius: width * 0.015,
-                    //                               height: width * 0.13,
-                    //                               backgroundColor: '#F6F6F6',
-                    //                               borderWidth: width * 0.0019,
-                    //                             },
-                    //                             onTextChange: (text) => {
-                    //                               onChangeNewDevice(
-                    //                                 text,
-                    //                                 index,
-                    //                               );
-                    //                             },
-                    //                             value: setTimeout(
-                    //                               () => item.select,
-                    //                               200,
-                    //                             ),
-                    //                             defaultValue: item.select,
-                    //                           }}
-                    //                           listProps={{
-                    //                             nestedScrollEnabled: true,
-                    //                           }}
-                    //                         />
-                    //                       ) : (
-                    //                         <View>
-                    //                           {/*
-                    //                           //! Ye New Device Adding ka hai
-                    //                            */}
-                    //                           <TextInput
-                    //                             placeholder={
-                    //                               'Type New Device Name'
-                    //                             }
-                    //                             value={item.select}
-                    //                             style={styles.meterInput}
-                    //                             mode={'outlined'}
-                    //                             theme={{
-                    //                               colors: {
-                    //                                 text: '#25AAE1ec',
-                    //                                 primary: '#25AAE1ec',
-                    //                                 selectionColor: 'red',
-                    //                                 zIndex: 10,
-                    //                               },
-                    //                             }}
-                    //                             onChangeText={(text) => {
-                    //                               onChangeNewDevice(
-                    //                                 text,
-                    //                                 index,
-                    //                               );
-                    //                             }}
-                    //                           />
-                    //                           <View>
-                    //                             <View>
-                    //                               <Text
-                    //                                 style={
-                    //                                   styles.meterDesciptionHeading
-                    //                                 }>
-                    //                                 Model Number*
-                    //                               </Text>
-                    //                             </View>
-                    //                             <TextInput
-                    //                               placeholder="Type Model Number"
-                    //                               value={addModelNo}
-                    //                               // showSoftInputOnFocus={false}
-                    //                               style={styles.meterInput}
-                    //                               onSubmitEditing={
-                    //                                 Keyboard.dismiss
-                    //                               }
-                    //                               mode={'outlined'}
-                    //                               theme={{
-                    //                                 colors: {
-                    //                                   text: '#25AAE1ec',
-                    //                                   primary: '#25AAE1ec',
-                    //                                   selectionColor: 'red',
-                    //                                 },
-                    //                               }}
-                    //                               onFocus={() => {
-                    //                                 console.log(
-                    //                                   'Focusing Model number',
-                    //                                 );
-                    //                                 setVerticalOffs(-60);
-                    //                               }}
-                    //                               // onBlur={() => {
-                    //                               //   console.log(
-                    //                               //     'Blurring Model number',
-                    //                               //   );
-                    //                               //   setVerticalOffs(-180);
-                    //                               // }}
-                    //                               onChangeText={(text) => {
-                    //                                 setAddModelNo(text);
-                    //                               }}
-                    //                             />
-                    //                           </View>
-                    //                           <View>
-                    //                             <View>
-                    //                               <Text
-                    //                                 style={
-                    //                                   styles.meterDesciptionHeading
-                    //                                 }>
-                    //                                 Product Description*
-                    //                               </Text>
-                    //                             </View>
-                    //                             <TextInput
-                    //                               placeholder="Type Product Description"
-                    //                               value={addProductNo}
-                    //                               // showSoftInputOnFocus={false}
-                    //                               style={styles.meterInput}
-                    //                               mode={'outlined'}
-                    //                               onSubmitEditing={
-                    //                                 Keyboard.dismiss
-                    //                               }
-                    //                               theme={{
-                    //                                 colors: {
-                    //                                   text: '#25AAE1ec',
-                    //                                   primary: '#25AAE1ec',
-                    //                                   selectionColor: 'red',
-                    //                                 },
-                    //                               }}
-                    //                               onChangeText={(text) => {
-                    //                                 setAddProductNo(text);
-                    //                               }}
-                    //                               onFocus={() => {
-                    //                                 console.log(
-                    //                                   'Focusing Product Desc',
-                    //                                 );
-                    //                                 setVerticalOffs(-60);
-                    //                               }}
-                    //                               // onBlur={() => {
-                    //                               //   console.log(
-                    //                               //     'Blurring Product Desc',
-                    //                               //   );
-                    //                               //   setVerticalOffs(-180);
-                    //                               // }}
-                    //                             />
-                    //                           </View>
-                    //                         </View>
-                    //                       )}
-                    //                     </View>
-                    //                   ))}
-                    //                 <View
-                    //                   style={{
-                    //                     flexDirection: 'row',
-                    //                     justifyContent: 'space-around',
-                    //                     alignItems: 'center',
-                    //                   }}>
-                    //                   <TouchableOpacity
-                    //                     onPress={cancelAddNewType}>
-                    //                     <Text
-                    //                       style={{
-                    //                         fontWeight: 'bold',
-                    //                         fontSize: width * 0.045,
-                    //                         color: '#25AAE1ec',
-                    //                         width: width * 0.17,
-                    //                         textAlign: 'center',
-                    //                       }}>
-                    //                       Cancel
-                    //                     </Text>
-                    //                   </TouchableOpacity>
-                    //                   <TouchableOpacity
-                    //                     onPress={doneAddType}
-                    //                     disabled={
-                    //                       showAddType == 'Manufacturer' &&
-                    //                       addManufacturer
-                    //                         ? false
-                    //                         : showAddType != 'Manufacturer' &&
-                    //                           addDevice[0].selectId &&
-                    //                           addDevice[1].selectId &&
-                    //                           addDevice[2].select
-                    //                         ? false
-                    //                         : showAddType == 'Utility' &&
-                    //                           addUtility
-                    //                         ? false
-                    //                         : showAddType == 'Attached To' &&
-                    //                           addAttached
-                    //                         ? false
-                    //                         : true
-                    //                     }>
-                    //                     <Text
-                    //                       style={{
-                    //                         fontWeight: 'bold',
-                    //                         fontSize: width * 0.045,
-                    //                         color:
-                    //                           showAddType == 'Manufacturer' &&
-                    //                           addManufacturer
-                    //                             ? '#25AAE1ec'
-                    //                             : showAddType !=
-                    //                                 'Manufacturer' &&
-                    //                               addDevice[0].selectId &&
-                    //                               addDevice[1].selectId &&
-                    //                               addDevice[2].select
-                    //                             ? '#25AAE1ec'
-                    //                             : showAddType == 'Utility' &&
-                    //                               addUtility
-                    //                             ? '#25AAE1ec'
-                    //                             : showAddType ==
-                    //                                 'Attached To' && addAttached
-                    //                             ? '#25AAE1ec'
-                    //                             : '#D0D0D0',
-                    //                         width: width * 0.15,
-                    //                         textAlign: 'center',
-                    //                       }}>
-                    //                       Add
-                    //                     </Text>
-                    //                   </TouchableOpacity>
-                    //                 </View>
-                    //               </View>
-                    //             )}
-                    //             {showAddType == 'Model Number' && (
-                    //               <View
-                    //                 style={{
-                    //                   width: '100%',
-                    //                   zIndex: 2,
-                    //                   alignSelf: 'center',
-                    //                   alignItems: 'center',
-                    //                   // backgroundColor: 'pink',
-                    //                 }}>
-                    //                 {!enableDevice ? (
-                    //                   <ActivityIndicator
-                    //                     size={'large'}
-                    //                     color="#25AAE1ec"
-                    //                   />
-                    //                 ) : (
-                    //                   <View>
-                    //                     <View>
-                    //                       <View>
-                    //                         <Text
-                    //                           style={{
-                    //                             fontSize: width * 0.03,
-                    //                             color: '#3E4A4F',
-                    //                             textTransform: 'capitalize',
-                    //                             fontFamily:
-                    //                               Fonts.ComfortaaRegular,
-                    //                             marginBottom: width * 0.01,
-                    //                             fontWeight: 'bold',
-                    //                           }}>
-                    //                           Select Device
-                    //                         </Text>
-                    //                       </View>
-                    //                       <SearchableDropdown
-                    //                         onItemSelect={(item) => {
-                    //                           // this.getNewDeviceData(items, index);
-                    //                           setSelectedDevice(item);
-                    //                           console.log('kia ha', item);
-                    //                         }}
-                    //                         containerStyle={{
-                    //                           paddingBottom: width * 0.02,
-                    //                         }}
-                    //                         itemStyle={{
-                    //                           padding: width * 0.027,
-                    //                           backgroundColor: '#fff',
-                    //                           borderColor: '#bbb',
-                    //                           borderWidth: width * 0.0015,
-                    //                           borderRadius: width * 0.015,
-                    //                           margin: width * 0.005,
-                    //                         }}
-                    //                         itemTextStyle={{color: '#222'}}
-                    //                         itemsContainerStyle={
-                    //                           Platform.OS == 'android'
-                    //                             ? {
-                    //                                 height: width * 0.2,
-                    //                                 zIndex: 1,
-                    //                                 position: 'absolute',
-                    //                                 width: width * 0.8,
-                    //                                 top: width * 0.1,
-                    //                                 flex: 1,
-                    //                                 zIndex: 20,
-                    //                                 backgroundColor: 'white',
-                    //                                 elevation: width * 0.01,
-                    //                                 shadowColor: '#000',
-                    //                                 shadowOffset: {
-                    //                                   width: 0,
-                    //                                   height: 2,
-                    //                                 },
-                    //                                 shadowOpacity: 0.25,
-                    //                                 shadowRadius: 3.84,
-                    //                               }
-                    //                             : {
-                    //                                 height: width * 0.2,
-                    //                                 zIndex: 1,
-                    //                               }
-                    //                         }
-                    //                         items={devicesArray}
-                    //                         resetValue={false}
-                    //                         textInputProps={{
-                    //                           editable: enableDevice,
-                    //                           placeholder: 'Select Device',
-                    //                           underlineColorAndroid:
-                    //                             'transparent',
-                    //                           style: {
-                    //                             padding: width * 0.027,
-                    //                             margin: 0,
-                    //                             borderRadius: width * 0.015,
-                    //                             height: width * 0.13,
-                    //                             backgroundColor: '#F6F6F6',
-                    //                             borderWidth: width * 0.0019,
-                    //                           },
-
-                    //                           onTextChange: (text) => {
-                    //                             // this.onChangeNewDevice(text, index);
-                    //                             console.log('tes', text);
-                    //                           },
-                    //                           value: setTimeout(
-                    //                             () => selectedDevice?.name,
-                    //                             200,
-                    //                           ),
-                    //                           defaultValue:
-                    //                             selectedDevice?.name,
-                    //                         }}
-                    //                         listProps={{
-                    //                           nestedScrollEnabled: true,
-                    //                         }}
-                    //                       />
-                    //                     </View>
-                    //                     <View>
-                    //                       <Text
-                    //                         style={{
-                    //                           fontSize: width * 0.03,
-                    //                           color: '#3E4A4F',
-                    //                           textTransform: 'capitalize',
-                    //                           fontFamily:
-                    //                             Fonts.ComfortaaRegular,
-                    //                           marginBottom: width * 0.01,
-                    //                           fontWeight: 'bold',
-                    //                         }}>
-                    //                         Add New {showAddType}
-                    //                       </Text>
-                    //                     </View>
-                    //                     <TextInput
-                    //                       placeholder={'Type New Model Number'}
-                    //                       value={addModelNumber}
-                    //                       style={{
-                    //                         width: width * 0.8,
-                    //                         justifyContent: 'flex-end',
-                    //                         fontSize: width * 0.036,
-                    //                       }}
-                    //                       mode={'outlined'}
-                    //                       theme={{
-                    //                         colors: {
-                    //                           text: '#25AAE1ec',
-                    //                           primary: '#25AAE1ec',
-                    //                           selectionColor: 'red',
-                    //                         },
-                    //                       }}
-                    //                       onChangeText={(text) => {
-                    //                         setAddModelNumber(text);
-                    //                       }}
-                    //                     />
-                    //                     <View
-                    //                       style={{
-                    //                         flexDirection: 'row',
-                    //                         justifyContent: 'space-around',
-                    //                         marginVertical: height * 0.01,
-                    //                       }}>
-                    //                       <TouchableOpacity
-                    //                         onPress={cancelAddNewType}
-                    //                         // onPress={() => console.log('Cancel Press')}
-                    //                       >
-                    //                         <Text
-                    //                           style={{
-                    //                             fontWeight: 'bold',
-                    //                             fontSize: width * 0.045,
-                    //                             color: '#25AAE1ec',
-                    //                             width: width * 0.16,
-                    //                             textAlign: 'center',
-                    //                           }}>
-                    //                           Cancel
-                    //                         </Text>
-                    //                       </TouchableOpacity>
-                    //                       <TouchableOpacity
-                    //                         onPress={doneAddType}
-                    //                         // onPress={() => console.log('Press Done')}
-                    //                         disabled={
-                    //                           addModelNumber ? false : true
-                    //                         }>
-                    //                         <Text
-                    //                           style={{
-                    //                             fontWeight: 'bold',
-                    //                             fontSize: width * 0.045,
-                    //                             color: addModelNumber
-                    //                               ? '#25AAE1ec'
-                    //                               : '#d0d0d0',
-                    //                             width: width * 0.16,
-                    //                             textAlign: 'center',
-                    //                           }}>
-                    //                           Add
-                    //                         </Text>
-                    //                       </TouchableOpacity>
-                    //                     </View>
-                    //                   </View>
-                    //                 )}
-                    //               </View>
-                    //             )}
-                    //           </View>
-                    //         </>
-                    //       )}
-                    //     </View>
-                    //   )}
-                    // </View>
                   )}
 
                   <View
@@ -6462,7 +5648,8 @@ export default function UnitEdit({
                                 styles.meterDesciptionHeading,
                                 {marginBottom: 0},
                               ]}>
-                              {item.meter_name[0].name}
+                              {/* {item.meter_name[0].name} */}
+                              Meter
                             </Text>
                           </TouchableOpacity>
                         ))
