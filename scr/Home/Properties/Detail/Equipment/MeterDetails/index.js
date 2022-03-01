@@ -534,9 +534,14 @@ const App = ({navigation}) => {
             leftName: 'Status',
             rightIcon2: 'check',
             rightIcon: 'chevron-down',
-            rightName: 'Good',
+            rightName:
+              unitMeter?.installation_status == 1
+                ? 'Attempted and installed'
+                : 'Attempted but incomplete',
             type: 'feather',
-            text: 'As of 5 hours ago',
+            text: unitMeter?.time_diff
+              ? 'As of ' + unitMeter?.time_diff
+              : 'As of 5 hours ago',
           },
         ],
       },
@@ -593,7 +598,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: meterInfo?.meter_name[0].name,
+            rightName: unitMeter?.device?.name ?? 'N/A',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -795,20 +800,41 @@ const App = ({navigation}) => {
               <View style={styles.flexColumn}>
                 <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text style={styles.listText}>{item.rightName}</Text>
+                    <Text
+                      style={[
+                        styles.listText,
+                        {
+                          backgroundColor:
+                            index == 1
+                              ? unitMeter?.installation_status == 1
+                                ? '#0fc908'
+                                : '#f00'
+                              : null,
+                          color: index == 1 ? '#fff' : null,
+                          borderRadius: 5,
+                          padding: 2,
+                          fontWeight: 'bold',
+                        },
+                      ]}>
+                      {item.rightName}
+                    </Text>
                   )}
                   {item.rightIcon2 == null ? null : (
                     <Icon
                       name={item.rightIcon2}
                       type={item.type}
                       size={iconSize}
-                      color="#0fc908"
+                      color={
+                        unitMeter?.installation_status == 1 ? '#0fc908' : '#f00'
+                      }
                       style={{marginRight: width * 0.01}}
                     />
                   )}
                 </View>
                 {item.text && (
-                  <Text style={styles.listGreyText}>{item.text}</Text>
+                  <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
+                    {item.text}
+                  </Text>
                 )}
               </View>
               {item.rightIcon == null ? null : (
@@ -1159,7 +1185,7 @@ const App = ({navigation}) => {
                           textTransform: 'capitalize',
                         },
                       ]}>
-                      {unitMeter?.meter_name[0]?.name + ' Meter'}
+                      {unitMeter?.device?.name ?? 'N/A'}
                     </Text>
                     <Image
                       source={img}
@@ -1332,9 +1358,14 @@ const App = ({navigation}) => {
                   </Svg>
                 ) : (
                   <View
-                    style={{height: height * 0.3, justifyContent: 'center'}}>
+                    style={{
+                      height: height * 0.3,
+                      justifyContent: 'center',
+                    }}>
                     <Text style={{fontSize: width * 0.06}}>
-                      {loadChartData ? 'Loading Data...' : 'No Read Data'}
+                      {loadChartData
+                        ? 'Loading Data...'
+                        : 'No Data for this Week'}
                     </Text>
                   </View>
                 )}
@@ -1398,7 +1429,7 @@ const App = ({navigation}) => {
                   <Button
                     onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${unitMeter?.meter_name[0]?.name} Meter`}
+                    title={`Delete ${unitMeter?.device?.name ?? 'N/A'}`}
                     buttonStyle={styles.dangerBtn}
                   />
                 </View>

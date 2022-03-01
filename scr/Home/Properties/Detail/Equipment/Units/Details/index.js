@@ -311,7 +311,7 @@ const App = ({navigation}) => {
     const res = await api.get(`/property/equipment/unit/${testId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     if (res.data?.bool) {
-      setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
+      // setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
       setData(res.data);
       setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
       // console.log(
@@ -698,9 +698,14 @@ const App = ({navigation}) => {
             leftName: 'Status',
             rightIcon2: 'check',
             rightIcon: 'chevron-down',
-            rightName: 'Good',
+            rightName:
+              unitMeter?.installation_status == 1
+                ? 'Attempted and installed'
+                : 'Attempted but incomplete',
             type: 'feather',
-            text: 'As of 5 hours ago',
+            text: unitMeter?.time_diff
+              ? 'As of ' + unitMeter?.time_diff
+              : 'As of 5 hours ago',
           },
         ],
       },
@@ -724,7 +729,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: unitMeterName,
+            rightName: unitMeter?.model_no?.device?.name ?? 'N/A',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -810,7 +815,7 @@ const App = ({navigation}) => {
     // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setUnitMeter(data);
-      setUnitMeterName(data.meter_name[0].name);
+      setUnitMeterName('data.meter_name[0].name');
       setLoading(true);
       setDataSet([]);
       setMeterUsage([]);
@@ -1031,20 +1036,41 @@ const App = ({navigation}) => {
               <View style={styles.flexColoum}>
                 <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text style={styles.listText}>{item.rightName}</Text>
+                    <Text
+                      style={[
+                        styles.listText,
+                        {
+                          backgroundColor:
+                            index == 1
+                              ? unitMeter?.installation_status == 1
+                                ? '#0fc908'
+                                : '#f00'
+                              : null,
+                          color: index == 1 ? '#fff' : null,
+                          borderRadius: 5,
+                          padding: 2,
+                          fontWeight: 'bold',
+                        },
+                      ]}>
+                      {item.rightName}
+                    </Text>
                   )}
                   {item.rightIcon2 == null ? null : (
                     <Icon
                       name={item.rightIcon2}
                       type={item.type}
                       size={width * 0.05}
-                      color="#0fc908"
+                      color={
+                        unitMeter?.installation_status == 1 ? '#0fc908' : '#f00'
+                      }
                       style={{marginRight: width * 0.01}}
                     />
                   )}
                 </View>
                 {item.text && (
-                  <Text style={styles.listGreyText}>{item.text}</Text>
+                  <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
+                    {item.text}
+                  </Text>
                 )}
               </View>
               {item.rightIcon == null ? null : (
@@ -1711,7 +1737,7 @@ const App = ({navigation}) => {
                           textTransform: 'capitalize',
                         },
                       ]}>
-                      {unitMeter?.meter_name[0].name + ' Meter'}
+                      {unitMeter?.model_no?.device?.name ?? 'N/A'}
                     </Text>
                     <Image
                       source={img}
@@ -1884,7 +1910,10 @@ const App = ({navigation}) => {
                   </Svg>
                 ) : (
                   <View
-                    style={{height: height * 0.3, justifyContent: 'center'}}>
+                    style={{
+                      height: height * 0.3,
+                      justifyContent: 'center',
+                    }}>
                     <Text style={{fontSize: width * 0.06}}>
                       {loadChartData
                         ? 'Loading Data...'
@@ -1926,7 +1955,9 @@ const App = ({navigation}) => {
                   <Button
                     onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${unitMeter?.meter_name[0].name} Meter`}
+                    title={`Delete ${
+                      unitMeter?.model_no?.device?.name ?? 'N/A'
+                    }`}
                     buttonStyle={styles.dangerBtn}
                   />
                   <Button
@@ -1988,7 +2019,7 @@ const App = ({navigation}) => {
                           textAlignVertical: 'center',
                         },
                       ]}>
-                      {item.meter_name[0].name}
+                      {item?.model_no?.device?.name ?? 'N/A'}
                     </Text>
                   </View>
                 </TouchableOpacity>

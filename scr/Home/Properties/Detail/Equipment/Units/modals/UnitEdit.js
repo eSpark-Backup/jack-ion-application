@@ -500,8 +500,8 @@ export default function UnitEdit({
     let arr1 = res.data?.data;
     let arr2 = meterTypes;
 
-    console.log('antiIntersection USEEFFECT arr1--->', arr1);
-    console.log('antiIntersection USEEFFECT arr2--->', arr2);
+    // console.log('antiIntersection USEEFFECT arr1--->', arr1);
+    // console.log('antiIntersection USEEFFECT arr2--->', arr2);
 
     if (arr2.length > 0) {
       // const Intersection = arr2.filter((item1) =>
@@ -813,11 +813,11 @@ export default function UnitEdit({
       `/property/default-meter-device/${propertyId}`,
     );
 
-    console.log(
-      'Default Meter Manufacturers',
-      DefaultManufacturersResponse?.data?.data?.default_meter_device
-        .manufacturers,
-    );
+    // console.log(
+    //   'Default Meter Manufacturers',
+    //   DefaultManufacturersResponse?.data?.data?.default_meter_device
+    //     .manufacturers,
+    // );
 
     // setState((oldState) => ({
     //   ...oldState,
@@ -868,7 +868,7 @@ export default function UnitEdit({
 
     let UtilArray = [...selectUtil];
     let ManuArray = [...defaultManuLis];
-    console.log('Utility DATA', UtilArray);
+    // console.log('Utility DATA', UtilArray);
     console.log('SLIDE DATA', ManuArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
@@ -877,24 +877,26 @@ export default function UnitEdit({
       ManuArray.map((manuItem) => {
         if (manuItem?.utility_type[0]?.name != undefined) {
           console.log(clc.redBright('Current Utility Name', item.name));
-          console.log(
-            clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
-          );
+          console
+            .log
+            // clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
+            ();
           if (item.name == manuItem?.utility_type[0]?.name) {
-            console.log('Current manuItem', manuItem);
+            // console.log('Current manuItem', manuItem);
             let listSlide = [...slide1]; // copying the old datas array
             listSlide[0].data.push(manuItem);
-            console.log(
-              clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
-            );
+            console
+              .log
+              // clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
+              ();
             setSlide1(listSlide);
-            console.log('LIST SLIDE', listSlide[0].data);
+            // console.log('LIST SLIDE', listSlide[0].data);
           }
         }
       });
     });
     const defaultDevices = helperDefaultData.current.devices;
-    console.log('default Devices', defaultDevices);
+    // console.log('default Devices', defaultDevices);
 
     //? Some thing wrong with this code -----------
 
@@ -902,7 +904,7 @@ export default function UnitEdit({
       (item) => item.manufacturer_id === slide1[0].data[0]?.id,
     );
     setDefaultInfoData(filterDevices);
-    console.log('Filter Devices', filterDevices);
+    // console.log('Filter Devices', filterDevices);
 
     //? -------------------------------------------
 
@@ -1172,7 +1174,7 @@ export default function UnitEdit({
   const doSome = (items) => {
     let UtilArray = typeof items !== 'undefined' ? [...items] : [...selectUtil];
     let ManuArray = [...defaultManuLis];
-    console.log('Utility DATA', UtilArray);
+    // console.log('Utility DATA', UtilArray);
     console.log('SLIDE DATA', ManuArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
@@ -1181,29 +1183,31 @@ export default function UnitEdit({
       ManuArray.map((manuItem) => {
         if (manuItem?.utility_type[0]?.name != undefined) {
           console.log(clc.redBright('Current Utility Name', item.name));
-          console.log(
-            clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
-          );
+          console
+            .log
+            // clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
+            ();
           if (item.name == manuItem?.utility_type[0]?.name) {
-            console.log('Current manuItem', manuItem);
+            // console.log('Current manuItem', manuItem);
             let listSlide = [...slide1]; // copying the old datas array
             listSlide[0].data.push(manuItem);
-            console.log(
-              clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
-            );
+            console
+              .log
+              // clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
+              ();
             setSlide1(listSlide);
-            console.log('LIST SLIDE', listSlide[0].data);
+            // console.log('LIST SLIDE', listSlide[0].data);
           }
         }
       });
     });
     const defaultDevices = defaultData.devices;
-    console.log('default Devices', defaultDevices);
+    // console.log('default Devices', defaultDevices);
     const filterDevices = defaultDevices.filter(
       (item) => item.manufacturer_id === slide1[0].data[0]?.id,
     );
     setDefaultInfoData(filterDevices);
-    console.log('Filter Devices', filterDevices);
+    // console.log('Filter Devices', filterDevices);
     let listSlide = [...slide1]; // copying the old datas array
     listSlide[0].select = filterDevices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
     listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
@@ -2221,7 +2225,6 @@ export default function UnitEdit({
   };
   // console.log('Slide @ means IMR value', typeof slide2[1].value);
   // console.log('Slide @ means IMR value type', slide2[1].value);
-  console.log('LOSDXKNFKXK', installationStatus, statusAnimation);
   return (
     <View>
       <Modal

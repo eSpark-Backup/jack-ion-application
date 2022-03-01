@@ -820,7 +820,7 @@ export default class RedirectMeter extends Component {
                                     </TextTicker>
                                   </View>
                                   <View style={styles.unitsMeterContainer}>
-                                    {item?.unit_meter?.length ? (
+                                    {/* {item?.unit_meter?.length ? (
                                       item?.unit_meter?.map((item) => (
                                         // console.log('item--->meter', item),
                                         <Image
@@ -834,7 +834,7 @@ export default class RedirectMeter extends Component {
                                       <Text style={styles.unitsNoMeterText}>
                                         No meters
                                       </Text>
-                                    )}
+                                    )} */}
                                   </View>
                                 </View>
                                 {item.id == this.state.unitId && (
