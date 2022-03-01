@@ -20,6 +20,7 @@ import {
   Keyboard,
 } from 'react-native';
 
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 //Packages
 
 import Iconi from 'react-native-vector-icons/Ionicons';
@@ -69,6 +70,8 @@ export default class Splash extends React.Component {
     super();
     this.state = {
       isVisible: false,
+      manuFlag: false,
+      loadManuList: false,
       count: 0,
       Name: '',
       Street: '',
@@ -497,6 +500,10 @@ export default class Splash extends React.Component {
       ],
       addNewType: false,
       productD: '',
+      manuFlag: false,
+      avoidKey: false,
+      showAddManufacturer: false,
+      showEditManufacturer: false,
     });
   };
 
@@ -1293,28 +1300,31 @@ export default class Splash extends React.Component {
                             style={{width: width * 0.8}}
                             showsHorizontalScrollIndicator={false}
                             renderItem={({item}) => (
-                              <View
-                                style={{
-                                  borderWidth: 1,
-                                  borderRadius: 8,
-                                  flexDirection: 'row',
-                                  padding: 5,
-                                  // margin: 5,
-                                  height: width * 0.1,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}>
-                                <Text style={{color: 'black'}}>{item}</Text>
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    const items = this.state.modelArr.filter(
-                                      (sitem) => sitem !== item,
-                                    );
-                                    this.setState({modelArr: items});
+                              <>
+                                <View
+                                  style={{
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                    flexDirection: 'row',
+                                    padding: 5,
+                                    // margin: 5,
+                                    height: width * 0.1,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                   }}>
-                                  <Icon name="close" size={width * 0.05} />
-                                </TouchableOpacity>
-                              </View>
+                                  <Text style={{color: 'black'}}>{item}</Text>
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      const items = this.state.modelArr.filter(
+                                        (sitem) => sitem !== item,
+                                      );
+                                      this.setState({modelArr: items});
+                                    }}>
+                                    <Icon name="close" size={width * 0.05} />
+                                  </TouchableOpacity>
+                                </View>
+                                <View style={{width: 5}} />
+                              </>
                             )}
                           />
                         )}
@@ -1803,28 +1813,31 @@ export default class Splash extends React.Component {
                       horizontal
                       showsHorizontalScrollIndicator={false}
                       renderItem={({item}) => (
-                        <View
-                          style={{
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            flexDirection: 'row',
-                            padding: 5,
-                            // margin: 5,
-                            height: width * 0.1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Text style={{color: 'black'}}>{item.name}</Text>
-                          <TouchableOpacity
-                            onPress={() => {
-                              const items = this.state.selectDevices.filter(
-                                (sitem) => sitem.id !== item.id,
-                              );
-                              this.setState({selectDevices: items});
+                        <>
+                          <View
+                            style={{
+                              borderWidth: 1,
+                              borderRadius: 8,
+                              flexDirection: 'row',
+                              padding: 5,
+                              // margin: 5,
+                              height: width * 0.1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
                             }}>
-                            <Icon name="close" size={width * 0.05} />
-                          </TouchableOpacity>
-                        </View>
+                            <Text style={{color: 'black'}}>{item.name}</Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                const items = this.state.selectDevices.filter(
+                                  (sitem) => sitem.id !== item.id,
+                                );
+                                this.setState({selectDevices: items});
+                              }}>
+                              <Icon name="close" size={width * 0.05} />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={{width: 5}} />
+                        </>
                       )}
                     />
                   </View>
@@ -1961,7 +1974,7 @@ export default class Splash extends React.Component {
   };
 
   editManufacturer = (manu, manuId) => {
-    this.setState({avoidKey: false});
+    this.setState({avoidKey: false, manuFlag: false});
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2000,7 +2013,7 @@ export default class Splash extends React.Component {
   };
 
   addManufacturer = (manu, manuId) => {
-    this.setState({avoidKey: false});
+    this.setState({avoidKey: false, manuFlag: false});
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2570,6 +2583,14 @@ export default class Splash extends React.Component {
     deviceData[1].data = DeviceTypesResponse?.data?.data;
     this.setState({addDevice: deviceData});
 
+    const ManufacturersResponse = await api.get(
+      '/property/equipment/manufacturer/all',
+    );
+
+    let listSlide = [...this.state.deviceData];
+    listSlide[0].data = ManufacturersResponse?.data?.data;
+    this.setState({deviceData: listSlide});
+
     // const ModelNumberResponse = await api.get(
     //   '/property/equipment/model-number/number',
     // );
@@ -2752,7 +2773,7 @@ export default class Splash extends React.Component {
   };
 
   cancelManu = (flag) => {
-    this.setState({avoidKey: false});
+    this.setState({avoidKey: false, manuFlag: false});
     if (flag == 'add') {
       let deviceArr = [...this.state.deviceData]; // used for clearing data
       deviceArr[0].select = '';
@@ -2768,6 +2789,8 @@ export default class Splash extends React.Component {
   };
 
   openEditManu = async (item, index) => {
+    this.setState({loadManuList: true});
+    this.setState({avoidKey: true, manuFlag: true});
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -2801,7 +2824,7 @@ export default class Splash extends React.Component {
         currentManuIndex: index,
       },
       () => {
-        this.setState({showEditManufacturer: true});
+        this.setState({showEditManufacturer: true, loadManuList: false});
         console.log(
           clc.xterm(149)('Devices Array on Open Edit'),
           JSON.stringify(this.state.deviceData),
@@ -2813,9 +2836,9 @@ export default class Splash extends React.Component {
   openAddManu = async () => {
     this.setState({avoidKey: true});
     if (this.state.selectUtil.length > 0) {
+      this.setState({manuFlag: true});
       let listSlide = [...this.state.deviceData];
-      listSlide[0].data = [];
-      this.setState({deviceData: listSlide});
+
       this.setState({addManuLoad: true});
       LayoutAnimation.configureNext({
         duration: 300,
@@ -2832,25 +2855,47 @@ export default class Splash extends React.Component {
         '/property/equipment/manufacturer/all',
       );
 
+      console.log(clc.xterm(80)('WHATS', JSON.stringify(listSlide[0].data)));
+
       let UtilArray = [...this.state.selectUtil];
-      const filterManu = UtilArray.filter((item) => {
-        ManufacturersResponse?.data?.data?.map((manuItem) => {
+      let temp = [];
+      let listSlide2 = [...this.state.deviceData]; // copying the old datas array
+
+      UtilArray.filter((item) => {
+        listSlide[0].data.map((manuItem) => {
           if (manuItem?.utility_type[0]?.name != undefined) {
             if (item.name == manuItem?.utility_type[0]?.name) {
-              let listSlide = [...this.state.deviceData]; // copying the old datas array
-              listSlide[0].data.push(manuItem);
-              this.setState({deviceData: listSlide}, () =>
-                console.log('000--->', this.state.deviceData),
+              temp.push(manuItem);
+              listSlide2[0].data = temp;
+              this.setState({deviceData: listSlide2}, () =>
+                console.log('000--->', JSON.stringify(this.state.deviceData)),
               );
             }
           }
         });
+        // ManufacturersResponse?.data?.data?.map((manuItem) => {
+        //   if (manuItem?.utility_type[0]?.name != undefined) {
+        //     if (item.name == manuItem?.utility_type[0]?.name) {
+        //       let listSlide = [...this.state.deviceData]; // copying the old datas array
+        //       listSlide[0].data.push(manuItem);
+        //       this.setState({deviceData: listSlide}, () =>
+        //         console.log('000--->', this.state.deviceData),
+        //       );
+        //     }
+        //   }
+        // });
       });
 
       // this.setState({loadManufacturers: false});
 
       let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
       deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+      // console.log(
+      //   clc.greenBright(
+      //     'WHATS',
+      //     JSON.stringify(deviceDataManufacturer[0].data),
+      //   ),
+      // );
       this.setState({addDevice: deviceDataManufacturer});
 
       let newArr = [...this.state.deviceData];
@@ -2896,12 +2941,13 @@ export default class Splash extends React.Component {
     );
     listSlide[0].data = result;
 
-    // console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
+    console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
     this.setState({manufacturersArray: items});
-    this.setState({deviceData: listSlide});
+    this.setState({deviceData: listSlide, loadManuList: false});
   };
 
   DeleteManufacture = (item) => {
+    this.setState({loadManuList: true});
     console.log('DEVICE DATA', this.state.deviceData[0].data);
     this.checkManufacture(item);
   };
@@ -3187,8 +3233,9 @@ export default class Splash extends React.Component {
                       </View>
                     </View>
                     {/* Box Body */}
-                    <ScrollView
-                      style={{width: '90%'}}
+                    <KeyboardAwareScrollView
+                      style={{flex: 1, width: '90%', backgroundColor: '#fff'}}
+                      contentContainerStyle={{backgroundColor: '#fff'}}
                       showsVerticalScrollIndicator={false}
                       keyboardShouldPersistTaps="handled"
                       nestedScrollEnabled={true}>
@@ -4141,6 +4188,9 @@ export default class Splash extends React.Component {
                                           }}
                                           resetValue={false}
                                           textInputProps={{
+                                            editable: this.state.manuFlag
+                                              ? false
+                                              : true,
                                             placeholder: 'Add Utility Type',
                                             underlineColorAndroid:
                                               'transparent',
@@ -4198,69 +4248,79 @@ export default class Splash extends React.Component {
                                         // extraData={selectedTypes.current}
                                         horizontal
                                         renderItem={({item}) => (
-                                          <View
-                                            style={{
-                                              borderWidth: 1,
-                                              borderRadius: 8,
-                                              flexDirection: 'row',
-                                              padding: 5,
-                                              // marginRight: 4,
-                                              height: width * 0.1,
-                                              alignItems: 'center',
-                                              justifyContent: 'center',
-                                            }}>
-                                            <Text style={{color: 'black'}}>
-                                              {item.name}
-                                            </Text>
-                                            <TouchableOpacity
-                                              onPress={() => {
-                                                if (
-                                                  this.state.manufacturersArray
-                                                    .length > 0
-                                                ) {
-                                                  Alert.alert(
-                                                    'Becareful',
-                                                    'This will remove your selected Manufacturers also',
-                                                    [
-                                                      {
-                                                        text: 'Cancel',
-                                                        style: 'cancel',
-                                                      },
-                                                      {
-                                                        text: 'Remove',
-                                                        onPress: () => {
-                                                          const items = this.state.selectUtil.filter(
-                                                            (sitem) =>
-                                                              sitem.id !==
-                                                              item.id,
-                                                          );
-                                                          // selectedTypes.current = items;
-                                                          this.setState({
-                                                            selectUtil: items,
-                                                            manufacturersArray: [],
-                                                          });
-                                                        },
-                                                      },
-                                                    ],
-                                                  );
-                                                } else {
-                                                  const items = this.state.selectUtil.filter(
-                                                    (sitem) =>
-                                                      sitem.id !== item.id,
-                                                  );
-                                                  // selectedTypes.current = items;
-                                                  this.setState({
-                                                    selectUtil: items,
-                                                    manufacturersArray: [],
-                                                  });
-                                                }
+                                          <>
+                                            <View
+                                              style={{
+                                                borderWidth: 1,
+                                                borderRadius: 8,
+                                                flexDirection: 'row',
+                                                padding: 5,
+                                                // marginRight: 4,
+                                                height: width * 0.1,
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
                                               }}>
-                                              <Icon
-                                                name="close"
-                                                size={width * 0.05}
-                                              />
-                                            </TouchableOpacity>
-                                          </View>
+                                              <Text style={{color: 'black'}}>
+                                                {item.name}
+                                              </Text>
+                                              <TouchableOpacity
+                                                onPress={() => {
+                                                  if (
+                                                    this.state
+                                                      .manufacturersArray
+                                                      .length > 0
+                                                  ) {
+                                                    Alert.alert(
+                                                      'Alert',
+                                                      'This will remove your currently selected Manufacturers',
+                                                      [
+                                                        {
+                                                          text: 'Cancel',
+                                                          style: 'cancel',
+                                                        },
+                                                        {
+                                                          text: 'Remove',
+                                                          onPress: () => {
+                                                            const items = this.state.selectUtil.filter(
+                                                              (sitem) =>
+                                                                sitem.id !==
+                                                                item.id,
+                                                            );
+                                                            this.setState({
+                                                              selectUtil: items,
+                                                              manufacturersArray: [],
+                                                            });
+                                                          },
+                                                        },
+                                                      ],
+                                                    );
+                                                  } else if (
+                                                    this.state.manuFlag
+                                                  ) {
+                                                    Toast.show(
+                                                      'Cannot Remove while Adding Manufacturer',
+                                                      Toast.SHORT,
+                                                    );
+                                                  } else {
+                                                    const items = this.state.selectUtil.filter(
+                                                      (sitem) =>
+                                                        sitem.id !== item.id,
+                                                    );
+                                                    // selectedTypes.current = items;
+                                                    this.setState({
+                                                      selectUtil: items,
+                                                      manufacturersArray: [],
+                                                    });
+                                                  }
+                                                }}>
+                                                <Icon
+                                                  name="close"
+                                                  size={width * 0.05}
+                                                />
+                                              </TouchableOpacity>
+                                            </View>
+                                            <View style={{width: 5}} />
+                                          </>
                                         )}
                                       />
                                     </View>
@@ -4290,15 +4350,24 @@ export default class Splash extends React.Component {
                                 {!this.state.showAddManufacturer &&
                                   !this.state.showEditManufacturer && (
                                     <View style={{paddingVertical: 10}}>
-                                      {this.state.manufacturersArray.length >
-                                        0 && (
-                                        <FlatList
-                                          data={this.state.manufacturersArray}
-                                          renderItem={
-                                            this.renderManufacturerList
-                                          }
+                                      {this.state.loadManuList ? (
+                                        <ActivityIndicator
+                                          size="large"
+                                          style={{bottom: 15}}
+                                          color={'#25AAE1ec'}
                                         />
+                                      ) : (
+                                        this.state.manufacturersArray.length >
+                                          0 && (
+                                          <FlatList
+                                            data={this.state.manufacturersArray}
+                                            renderItem={
+                                              this.renderManufacturerList
+                                            }
+                                          />
+                                        )
                                       )}
+
                                       <TouchableOpacity
                                         onPress={() => {
                                           this.openAddManu();
@@ -4960,7 +5029,7 @@ export default class Splash extends React.Component {
                           )}
                         </View>
                       </View>
-                    </ScrollView>
+                    </KeyboardAwareScrollView>
                     {/* Box Header */}
                     <View style={styles.boxHeader}>
                       <View style={styles.bottonContainer}>
