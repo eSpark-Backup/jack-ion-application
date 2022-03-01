@@ -20,6 +20,7 @@ import {
   ToastAndroid,
   Switch,
   Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
@@ -245,6 +246,7 @@ export default function UnitEdit({
   const [enableDevice, setEnableDevice] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState({});
   const [addModelNumber, setAddModelNumber] = useState('');
+  const [noScroll, setNoScroll] = useState(false);
   const [state, setState] = useState({
     isScannerVisible: false,
     hasAccess: false,
@@ -2807,6 +2809,9 @@ export default function UnitEdit({
                         flex: 1,
                         height: width * 0.8,
                         justifyContent: 'flex-start',
+                        marginTop: scroll ? height * -0.25 : 0,
+                        zIndex: 99,
+                        overflow: 'hidden',
                       }}>
                       {loadingState ? (
                         <ActivityIndicator
@@ -2907,6 +2912,7 @@ export default function UnitEdit({
                                             borderBottomRightRadius:
                                               width * 0.015,
                                           },
+                                          onFocus: () => setScroll(false),
                                           // onTextChange: (text) => {
                                           //   onChangeManufacturer(text, index);
                                           // },
