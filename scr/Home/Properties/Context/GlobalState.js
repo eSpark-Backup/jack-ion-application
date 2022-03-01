@@ -146,7 +146,7 @@ class GlobalState extends React.Component {
       street: info.propStreet,
       city: info.propCity,
       st: info.propState,
-      meter_id: info.meter_id,
+      // meter_id: info.meter_id,
       // model_no_id: info.model_no_id,
       // manufacturer_id: info.manufacturer_id,
       device_id: info.device_id,
@@ -174,21 +174,29 @@ class GlobalState extends React.Component {
   };
 
   getBillingCompany = async () => {
+    this.setState({isLoading: true});
     const response = await this.api?.get('/property/billing-company/all');
     console.log(
       'Check billing company response',
       response?.data?.data?.billingCompany,
     );
-    this.setState({itemList: response?.data?.data?.billingCompany});
+    this.setState({
+      itemList: response?.data?.data?.billingCompany,
+      isLoading: false,
+    });
   };
 
   getManagementCompany = async () => {
+    this.setState({isLoading: true});
     const response = await this.api?.get('/property/management-company/all');
     console.log(
       'Check management company response',
       response?.data?.data?.managementCompany,
     );
-    this.setState({manageCompList: response?.data?.data?.managementCompany});
+    this.setState({
+      manageCompList: response?.data?.data?.managementCompany,
+      isLoading: false,
+    });
   };
 
   searchProperties = async (e) => {

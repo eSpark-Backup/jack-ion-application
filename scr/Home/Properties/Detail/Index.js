@@ -563,34 +563,37 @@ export default class Splash extends React.Component {
                 />
 
                 {this.state.markers.length > 0 &&
-                  this.state.markers.map((marker) => (
-                    <Marker
-                      coordinate={{
-                        latitude: marker?.position?.lat,
-                        longitude: marker?.position?.lng,
-                      }}
-                      style={{
-                        zIndex: 5,
-                      }}
-                      title={'Meter'}>
-                      <View
-                        style={{
-                          width: width * 0.05,
-                          height: width * 0.05,
-                        }}>
-                        <Image
-                          source={require('../../../../Images/meter-icon.png')}
-                          resizeMode="center"
-                          // resizeMode="cover"
-                          resizeMethod="auto"
-                          style={{
-                            width: width * 0.05,
-                            height: width * 0.05,
+                  this.state.markers.map(
+                    (marker) =>
+                      marker?.position?.lat && (
+                        <Marker
+                          coordinate={{
+                            latitude: marker?.position?.lat,
+                            longitude: marker?.position?.lng,
                           }}
-                        />
-                      </View>
-                    </Marker>
-                  ))}
+                          style={{
+                            zIndex: 5,
+                          }}
+                          title={'Meter'}>
+                          <View
+                            style={{
+                              width: width * 0.05,
+                              height: width * 0.05,
+                            }}>
+                            <Image
+                              source={require('../../../../Images/meter-icon.png')}
+                              resizeMode="center"
+                              // resizeMode="cover"
+                              resizeMethod="auto"
+                              style={{
+                                width: width * 0.05,
+                                height: width * 0.05,
+                              }}
+                            />
+                          </View>
+                        </Marker>
+                      ),
+                  )}
               </MapView>
               <View style={styles.clientName}>
                 <Properties name="home-city-outline" size={width * 0.08} />
