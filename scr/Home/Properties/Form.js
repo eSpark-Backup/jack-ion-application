@@ -15,7 +15,7 @@ import {
   Alert,
   FlatList,
   ToastAndroid,
-  TouchableHighlightBase,
+  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
@@ -72,6 +72,7 @@ export default class Splash extends React.Component {
       isVisible: false,
       manuFlag: false,
       loadManuList: false,
+      loadManus: false,
       count: 0,
       Name: '',
       Street: '',
@@ -112,6 +113,7 @@ export default class Splash extends React.Component {
       selectMeter: '',
       selectManagement: '',
       selectUtil: [],
+      selectedUtil: '',
       selectAddManuUtil: [],
       selectMeters: [],
       selectDevices: [],
@@ -136,6 +138,7 @@ export default class Splash extends React.Component {
       loadingStateBill: false,
       loadingStateManage: false,
       devicesArray: [],
+      allManuList: [],
       showAddManufacturer: false,
       showEditManufacturer: false,
       manufacturersArray: [],
@@ -845,7 +848,76 @@ export default class Splash extends React.Component {
           overflow: 'hidden',
           // backgroundColor: 'tomato',
         }}>
-        {this.state.addNewType && this.state.showAddType == 'Manufacturer' ? (
+        {this.state.addNewType && this.state.showAddType == 'Utility' ? (
+          <View>
+            <View>
+              <Text
+                style={{
+                  fontSize: width * 0.03,
+                  color: '#3E4A4F',
+                  textTransform: 'capitalize',
+                  fontFamily: Fonts.ComfortaaRegular,
+                  marginBottom: width * 0.01,
+                  fontWeight: 'bold',
+                }}>
+                Add New {this.state.showAddType} Type
+              </Text>
+            </View>
+            <TextInput
+              placeholder={'Type New Utility Type Name'}
+              value={this.state.addUtility}
+              style={{
+                width: width * 0.8,
+                justifyContent: 'flex-end',
+                fontSize: width * 0.036,
+              }}
+              mode={'outlined'}
+              theme={{
+                colors: {
+                  text: '#25AAE1ec',
+                  primary: '#25AAE1ec',
+                  selectionColor: 'red',
+                },
+              }}
+              onChangeText={(text) => {
+                this.setState({addUtility: text});
+              }}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}>
+              <TouchableOpacity onPress={() => this.cancelAddType()}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.doneAddType('Utility', true)}
+                disabled={this.state.addUtility ? false : true}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: this.state.addUtility ? '#25AAE1ec' : '#d0d0d0',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Add
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : this.state.addNewType &&
+          this.state.showAddType == 'Manufacturer' ? (
           this.state.addNewUType ? (
             <View>
               <View>
@@ -1580,6 +1652,192 @@ export default class Splash extends React.Component {
           </View>
         ) : (
           <View>
+            <View
+              style={{
+                width: '100%',
+                zIndex: 2,
+                alignSelf: 'center',
+              }}>
+              <Text style={styles.meterDesciptionHeading}>
+                Select Utility Type*
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                }}>
+                <SearchableDropDown
+                  // multi={true}
+                  // selectedItems={this.state.selectUtil}
+                  onItemSelect={(item) => {
+                    this.setState({loadManus: true}, () => {
+                      this.AddTypes(item, 'Utility');
+                    });
+                  }}
+                  containerStyle={{
+                    paddingBottom: width * 0.02,
+                    width: width * 0.7,
+                  }}
+                  itemStyle={{
+                    padding: width * 0.027,
+                    backgroundColor: 'rgb(247, 247, 247)',
+                    borderColor: '#bbb',
+                    borderWidth: width * 0.0015,
+                    borderRadius: width * 0.015,
+                  }}
+                  itemTextStyle={{color: '#222'}}
+                  itemsContainerStyle={{
+                    maxHeight: width * 0.18,
+                  }}
+                  items={this.state.utilTypes}
+                  // onRemoveItem={(item, index) => {
+                  //   if (this.state.manufacturersArray.length > 0) {
+                  //     Alert.alert(
+                  //       'Becareful',
+                  //       'This will remove your selected Manufacturers also',
+                  //       [
+                  //         {
+                  //           text: 'Cancel',
+                  //           style: 'cancel',
+                  //         },
+                  //         {
+                  //           text: 'Remove',
+                  //           onPress: () => {
+                  //             const items = this.state.selectUtil.filter(
+                  //               (sitem) => sitem.id !== item.id,
+                  //             );
+                  //             // selectedTypes.current = items;
+                  //             this.setState({
+                  //               selectUtil: items,
+                  //               manufacturersArray: [],
+                  //             });
+                  //           },
+                  //         },
+                  //       ],
+                  //     );
+                  //   } else {
+                  //     const items = this.state.selectUtil.filter(
+                  //       (sitem) => sitem.id !== item.id,
+                  //     );
+                  //     // selectedTypes.current = items;
+                  //     this.setState({
+                  //       selectUtil: items,
+                  //       manufacturersArray: [],
+                  //     });
+                  //   }
+                  // }}
+                  resetValue={false}
+                  textInputProps={{
+                    // editable: this.state.manuFlag ? false : true,
+                    placeholder: 'Add Utility Type',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: width * 0.027,
+                      margin: 0,
+                      borderTopLeftRadius: width * 0.015,
+                      borderBottomLeftRadius: width * 0.015,
+                      borderColor: 'black',
+                      height: width * 0.13,
+                      backgroundColor: '#F6F6F6',
+                      borderTopWidth: width * 0.0019,
+                      borderLeftWidth: width * 0.0019,
+                      borderBottomWidth: width * 0.0019,
+                    },
+                    onTextChange: (text) => {
+                      this.setState({selectedUtil: text});
+                    },
+                    value: setTimeout(() => this.state.selectedUtil, 200),
+                    defaultValue: this.state.selectedUtil,
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.1,
+                    backgroundColor: '#25AAE199',
+                    borderTopRightRadius: width * 0.015,
+                    borderBottomRightRadius: width * 0.015,
+                    borderTopWidth: width * 0.0019,
+                    borderRightWidth: width * 0.0019,
+                    borderBottomWidth: width * 0.0019,
+                    height: width * 0.13,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => this.showAddNewType('Utility')}>
+                  <Icon size={width * 0.06} color="#fff" name={'add'} />
+                </TouchableOpacity>
+              </View>
+              {/* <FlatList
+                data={this.state.selectUtil}
+                style={{width: width * 0.8}}
+                // extraData={selectedTypes.current}
+                horizontal
+                renderItem={({item}) => (
+                  <>
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        flexDirection: 'row',
+                        padding: 5,
+                        // marginRight: 4,
+                        height: width * 0.1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text style={{color: 'black'}}>{item.name}</Text>
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (this.state.manufacturersArray.length > 0) {
+                            Alert.alert(
+                              'Alert',
+                              'This will remove your currently selected Manufacturers',
+                              [
+                                {
+                                  text: 'Cancel',
+                                  style: 'cancel',
+                                },
+                                {
+                                  text: 'Remove',
+                                  onPress: () => {
+                                    const items = this.state.selectUtil.filter(
+                                      (sitem) => sitem.id !== item.id,
+                                    );
+                                    this.setState({
+                                      selectUtil: items,
+                                      manufacturersArray: [],
+                                    });
+                                  },
+                                },
+                              ],
+                            );
+                          } else if (this.state.manuFlag) {
+                            Toast.show(
+                              'Cannot Remove while Adding Manufacturer',
+                              Toast.SHORT,
+                            );
+                          } else {
+                            const items = this.state.selectUtil.filter(
+                              (sitem) => sitem.id !== item.id,
+                            );
+                            // selectedTypes.current = items;
+                            this.setState({
+                              selectUtil: items,
+                              manufacturersArray: [],
+                            });
+                          }
+                        }}>
+                        <Icon name="close" size={width * 0.05} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{width: 5}} />
+                  </>
+                )}
+              /> */}
+            </View>
             {deviceData?.map((item, index) => {
               if (index == 0) {
                 return (
@@ -1593,19 +1851,14 @@ export default class Splash extends React.Component {
                     <Text style={styles.meterDesciptionHeading}>
                       {item.name}*
                     </Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'flex-start',
-                      }}>
+                    {this.state.loadManus ? (
+                      <ActivityIndicator size={'large'} color="#25AAE1ec" />
+                    ) : (
                       <View
-                        pointerEvents={
-                          index > 0
-                            ? deviceData[0].selectId
-                              ? 'auto'
-                              : 'none'
-                            : 'auto'
-                        }>
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'flex-start',
+                        }}>
                         <SearchableDropDown
                           onItemSelect={(item) => {
                             this.getDevice(item, index);
@@ -1669,24 +1922,25 @@ export default class Splash extends React.Component {
                             nestedScrollEnabled: true,
                           }}
                         />
+
+                        <TouchableOpacity
+                          style={{
+                            width: width * 0.1,
+                            backgroundColor: '#25AAE199',
+                            borderTopRightRadius: width * 0.015,
+                            borderBottomRightRadius: width * 0.015,
+                            borderTopWidth: width * 0.0019,
+                            borderRightWidth: width * 0.0019,
+                            borderBottomWidth: width * 0.0019,
+                            height: width * 0.13,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                          onPress={() => this.showAddNewType(item.name)}>
+                          <Icon size={width * 0.06} color="#fff" name={'add'} />
+                        </TouchableOpacity>
                       </View>
-                      <TouchableOpacity
-                        style={{
-                          width: width * 0.1,
-                          backgroundColor: '#25AAE199',
-                          borderTopRightRadius: width * 0.015,
-                          borderBottomRightRadius: width * 0.015,
-                          borderTopWidth: width * 0.0019,
-                          borderRightWidth: width * 0.0019,
-                          borderBottomWidth: width * 0.0019,
-                          height: width * 0.13,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                        onPress={() => this.showAddNewType(item.name)}>
-                        <Icon size={width * 0.06} color="#fff" name={'add'} />
-                      </TouchableOpacity>
-                    </View>
+                    )}
                   </View>
                 );
               }
@@ -2031,6 +2285,7 @@ export default class Splash extends React.Component {
 
     let newArr = [...this.state.manufacturersArray]; // used for adding in the list
     let deviceArr = [...this.state.deviceData]; // used for clearing data
+    let deviceArr2 = [...this.state.allManuList]; // used for clearing data
     // let newDevice = [...this.state.selectDevices]; // used for getting only name and id of devices
 
     console.log('Kia hai manu', manu, ' ', manuId);
@@ -2049,12 +2304,19 @@ export default class Splash extends React.Component {
       return indexFound === -1;
     });
 
+    deviceArr2 = deviceArr2.filter((b) => {
+      let indexFound = newArr.findIndex((a) => compareName(a, b));
+      return indexFound === -1;
+    });
+
     this.setState(
       {
         selectDevices: [],
         manufacturersArray: newArr,
         deviceData: deviceArr,
         showAddManufacturer: false,
+        allManuList: deviceArr2,
+        selectedUtil: '',
       },
       () => {
         const newD = newArr.map(({devices}) => devices.map(({id}) => id));
@@ -2589,7 +2851,10 @@ export default class Splash extends React.Component {
 
     let listSlide = [...this.state.deviceData];
     listSlide[0].data = ManufacturersResponse?.data?.data;
-    this.setState({deviceData: listSlide});
+    this.setState({
+      deviceData: listSlide,
+      allManuList: ManufacturersResponse?.data?.data,
+    });
 
     // const ModelNumberResponse = await api.get(
     //   '/property/equipment/model-number/number',
@@ -2626,10 +2891,38 @@ export default class Splash extends React.Component {
       this.addMeterInNewArray(item);
     } else if (type == 'Utility') {
       console.log('ADD CHALA', item);
+      this.setState({selectedUtil: item.name});
       const items = this.state.selectUtil;
       items.push(item);
-      // selectedTypes.current = items;
       this.setState({selectUtil: items});
+
+      let listDevice = [...this.state.deviceData];
+      listDevice[0].select = '';
+      listDevice[1].select = '';
+      listDevice[0].selectId = '';
+      listDevice[1].selectId = '';
+
+      let listSlide = [...this.state.allManuList];
+      // let listSlide = [...this.state.deviceData];
+      let temp = [];
+      let listSlide2 = [...this.state.deviceData]; // copying the old datas array
+
+      // console.log('ALL MANU LIST', listSlide);
+
+      listSlide.map((manuItem) => {
+        if (manuItem?.utility_type[0]?.name != undefined) {
+          if (item.name == manuItem?.utility_type[0]?.name) {
+            temp.push(manuItem);
+            listSlide2[0].data = temp;
+            this.setState({deviceData: listSlide2});
+          }
+        }
+      });
+
+      this.setState({deviceData: listDevice});
+      this.setState({loadManus: false});
+
+      // selectedTypes.current = items;
     } else if (type == 'Manu Utility') {
       const items = this.state.selectAddManuUtil;
       items.push(item);
@@ -2778,12 +3071,17 @@ export default class Splash extends React.Component {
       let deviceArr = [...this.state.deviceData]; // used for clearing data
       deviceArr[0].select = '';
       deviceArr[0].selectId = '';
-      this.setState({deviceData: deviceArr, showAddManufacturer: false});
+      this.setState({
+        deviceData: deviceArr,
+        showAddManufacturer: false,
+        selectedUtil: '',
+      });
     } else {
       console.log('COUNT Final', this.state.count);
       this.setState({
         selectDevices: [],
         showEditManufacturer: false,
+        selectedUtil: '',
       });
     }
   };
@@ -2835,83 +3133,80 @@ export default class Splash extends React.Component {
 
   openAddManu = async () => {
     this.setState({avoidKey: true});
-    if (this.state.selectUtil.length > 0) {
-      this.setState({manuFlag: true});
-      let listSlide = [...this.state.deviceData];
 
-      this.setState({addManuLoad: true});
-      LayoutAnimation.configureNext({
-        duration: 300,
-        create: {
-          type: LayoutAnimation.Types.easeInEaseOut,
-          property: LayoutAnimation.Properties.opacity,
-        },
-        update: {
-          type: LayoutAnimation.Types.easeInEaseOut,
-        },
-      });
+    this.setState({manuFlag: true});
 
-      const ManufacturersResponse = await api.get(
-        '/property/equipment/manufacturer/all',
-      );
+    this.setState({addManuLoad: true});
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
 
-      console.log(clc.xterm(80)('WHATS', JSON.stringify(listSlide[0].data)));
+    const ManufacturersResponse = await api.get(
+      '/property/equipment/manufacturer/all',
+    );
 
-      let UtilArray = [...this.state.selectUtil];
-      let temp = [];
-      let listSlide2 = [...this.state.deviceData]; // copying the old datas array
+    // let listSlide = [...this.state.deviceData];
+    // console.log(clc.xterm(80)('WHATS', JSON.stringify(listSlide[0].data)));
 
-      UtilArray.filter((item) => {
-        listSlide[0].data.map((manuItem) => {
-          if (manuItem?.utility_type[0]?.name != undefined) {
-            if (item.name == manuItem?.utility_type[0]?.name) {
-              temp.push(manuItem);
-              listSlide2[0].data = temp;
-              this.setState({deviceData: listSlide2}, () =>
-                console.log('000--->', JSON.stringify(this.state.deviceData)),
-              );
-            }
-          }
-        });
-        // ManufacturersResponse?.data?.data?.map((manuItem) => {
-        //   if (manuItem?.utility_type[0]?.name != undefined) {
-        //     if (item.name == manuItem?.utility_type[0]?.name) {
-        //       let listSlide = [...this.state.deviceData]; // copying the old datas array
-        //       listSlide[0].data.push(manuItem);
-        //       this.setState({deviceData: listSlide}, () =>
-        //         console.log('000--->', this.state.deviceData),
-        //       );
-        //     }
-        //   }
-        // });
-      });
+    // let UtilArray = [...this.state.selectUtil];
+    // let temp = [];
+    // let listSlide2 = [...this.state.deviceData]; // copying the old datas array
 
-      // this.setState({loadManufacturers: false});
+    // UtilArray.filter((item) => {
+    //   listSlide[0].data.map((manuItem) => {
+    //     if (manuItem?.utility_type[0]?.name != undefined) {
+    //       if (item.name == manuItem?.utility_type[0]?.name) {
+    //         temp.push(manuItem);
+    //         listSlide2[0].data = temp;
+    //         this.setState({deviceData: listSlide2}, () =>
+    //           console.log('000--->', JSON.stringify(this.state.deviceData)),
+    //         );
+    //       }
+    //     }
+    //   });
+    //   // ManufacturersResponse?.data?.data?.map((manuItem) => {
+    //   //   if (manuItem?.utility_type[0]?.name != undefined) {
+    //   //     if (item.name == manuItem?.utility_type[0]?.name) {
+    //   //       let listSlide = [...this.state.deviceData]; // copying the old datas array
+    //   //       listSlide[0].data.push(manuItem);
+    //   //       this.setState({deviceData: listSlide}, () =>
+    //   //         console.log('000--->', this.state.deviceData),
+    //   //       );
+    //   //     }
+    //   //   }
+    //   // });
+    // });
 
-      let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
-      deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
-      // console.log(
-      //   clc.greenBright(
-      //     'WHATS',
-      //     JSON.stringify(deviceDataManufacturer[0].data),
-      //   ),
-      // );
-      this.setState({addDevice: deviceDataManufacturer});
+    // this.setState({loadManufacturers: false});
 
-      let newArr = [...this.state.deviceData];
+    let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
+    deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+    // console.log(
+    //   clc.greenBright(
+    //     'WHATS',
+    //     JSON.stringify(deviceDataManufacturer[0].data),
+    //   ),
+    // );
+    this.setState({addDevice: deviceDataManufacturer});
 
-      newArr[0].select = '';
-      newArr[0].selectId = '';
+    let newArr = [...this.state.deviceData];
 
-      this.setState({
-        selectDevices: [],
-        deviceData: newArr,
-        showAddManufacturer: true,
-        addManuLoad: false,
-      });
-    } else {
-      alert('Please select utility type first');
-    }
+    newArr[0].select = '';
+    newArr[0].selectId = '';
+
+    this.setState({
+      selectDevices: [],
+      deviceData: newArr,
+      showAddManufacturer: true,
+      addManuLoad: false,
+    });
   };
 
   checkManufacture = async (item) => {
@@ -2943,7 +3238,11 @@ export default class Splash extends React.Component {
 
     console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
     this.setState({manufacturersArray: items});
-    this.setState({deviceData: listSlide, loadManuList: false});
+    this.setState({
+      deviceData: listSlide,
+      allManuList: result,
+      loadManuList: false,
+    });
   };
 
   DeleteManufacture = (item) => {
@@ -4017,316 +4316,6 @@ export default class Splash extends React.Component {
                             />
                           ) : (
                             <>
-                              <View
-                                style={{
-                                  width: '100%',
-                                  zIndex: 2,
-                                  alignSelf: 'center',
-                                  alignItems: 'center',
-                                  marginTop: width * 0.02,
-                                  height: this.state.dropDownShow[3].value
-                                    ? width * 0.3
-                                    : width * 0.0,
-                                  overflow: 'hidden',
-                                }}>
-                                <View
-                                  style={{
-                                    marginBottom: width * 0.03,
-                                    maxHeight: this.state.dropDownShow[3].value
-                                      ? width * 0.3
-                                      : width * 0.0,
-                                  }}>
-                                  {this.state.addNewType &&
-                                  this.state.showAddType == 'Utility' ? (
-                                    <View>
-                                      <View>
-                                        <Text
-                                          style={{
-                                            fontSize: width * 0.03,
-                                            color: '#3E4A4F',
-                                            textTransform: 'capitalize',
-                                            fontFamily: Fonts.ComfortaaRegular,
-                                            marginBottom: width * 0.01,
-                                            fontWeight: 'bold',
-                                          }}>
-                                          Add New {this.state.showAddType} Type
-                                        </Text>
-                                      </View>
-                                      <TextInput
-                                        placeholder={
-                                          'Type New Utility Type Name'
-                                        }
-                                        value={this.state.addUtility}
-                                        style={{
-                                          width: width * 0.8,
-                                          justifyContent: 'flex-end',
-                                          fontSize: width * 0.036,
-                                        }}
-                                        mode={'outlined'}
-                                        theme={{
-                                          colors: {
-                                            text: '#25AAE1ec',
-                                            primary: '#25AAE1ec',
-                                            selectionColor: 'red',
-                                          },
-                                        }}
-                                        onChangeText={(text) => {
-                                          this.setState({addUtility: text});
-                                        }}
-                                      />
-                                      <View
-                                        style={{
-                                          flexDirection: 'row',
-                                          justifyContent: 'space-around',
-                                        }}>
-                                        <TouchableOpacity
-                                          onPress={() => this.cancelAddType()}>
-                                          <Text
-                                            style={{
-                                              fontWeight: 'bold',
-                                              fontSize: width * 0.045,
-                                              color: '#25AAE1ec',
-                                              width: width * 0.16,
-                                              textAlign: 'center',
-                                            }}>
-                                            Cancel
-                                          </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            this.doneAddType('Utility', true)
-                                          }
-                                          disabled={
-                                            this.state.addUtility ? false : true
-                                          }>
-                                          <Text
-                                            style={{
-                                              fontWeight: 'bold',
-                                              fontSize: width * 0.045,
-                                              color: this.state.addUtility
-                                                ? '#25AAE1ec'
-                                                : '#d0d0d0',
-                                              width: width * 0.16,
-                                              textAlign: 'center',
-                                            }}>
-                                            Add
-                                          </Text>
-                                        </TouchableOpacity>
-                                      </View>
-                                    </View>
-                                  ) : (
-                                    <View>
-                                      <View
-                                        style={{
-                                          flexDirection: 'row',
-                                          alignItems: 'flex-start',
-                                        }}>
-                                        <SearchableDropDown
-                                          multi={true}
-                                          selectedItems={this.state.selectUtil}
-                                          onItemSelect={(item) => {
-                                            console.log('Test', item);
-                                            this.AddTypes(item, 'Utility');
-                                          }}
-                                          containerStyle={{
-                                            paddingBottom: width * 0.02,
-                                            width: width * 0.7,
-                                          }}
-                                          itemStyle={{
-                                            padding: width * 0.027,
-                                            backgroundColor:
-                                              'rgb(247, 247, 247)',
-                                            borderColor: '#bbb',
-                                            borderWidth: width * 0.0015,
-                                            borderRadius: width * 0.015,
-                                          }}
-                                          itemTextStyle={{color: '#222'}}
-                                          itemsContainerStyle={{
-                                            maxHeight: width * 0.18,
-                                          }}
-                                          // items={item.data}
-                                          items={this.state.utilTypes}
-                                          onRemoveItem={(item, index) => {
-                                            if (
-                                              this.state.manufacturersArray
-                                                .length > 0
-                                            ) {
-                                              Alert.alert(
-                                                'Becareful',
-                                                'This will remove your selected Manufacturers also',
-                                                [
-                                                  {
-                                                    text: 'Cancel',
-                                                    style: 'cancel',
-                                                  },
-                                                  {
-                                                    text: 'Remove',
-                                                    onPress: () => {
-                                                      const items = this.state.selectUtil.filter(
-                                                        (sitem) =>
-                                                          sitem.id !== item.id,
-                                                      );
-                                                      // selectedTypes.current = items;
-                                                      this.setState({
-                                                        selectUtil: items,
-                                                        manufacturersArray: [],
-                                                      });
-                                                    },
-                                                  },
-                                                ],
-                                              );
-                                            } else {
-                                              const items = this.state.selectUtil.filter(
-                                                (sitem) => sitem.id !== item.id,
-                                              );
-                                              // selectedTypes.current = items;
-                                              this.setState({
-                                                selectUtil: items,
-                                                manufacturersArray: [],
-                                              });
-                                            }
-                                          }}
-                                          resetValue={false}
-                                          textInputProps={{
-                                            editable: this.state.manuFlag
-                                              ? false
-                                              : true,
-                                            placeholder: 'Add Utility Type',
-                                            underlineColorAndroid:
-                                              'transparent',
-                                            style: {
-                                              padding: width * 0.027,
-                                              margin: 0,
-                                              borderTopLeftRadius:
-                                                width * 0.015,
-                                              borderBottomLeftRadius:
-                                                width * 0.015,
-                                              borderColor: 'black',
-                                              height: width * 0.13,
-                                              backgroundColor: '#F6F6F6',
-                                              borderTopWidth: width * 0.0019,
-                                              borderLeftWidth: width * 0.0019,
-                                              borderBottomWidth: width * 0.0019,
-                                            },
-                                            // onTextChange: (text) => {
-                                            //   onChangeManufacturer(text, index);
-                                            // },
-                                            // value: setTimeout(() => item.select, 200),
-                                            // defaultValue: item.select,
-                                          }}
-                                          listProps={{
-                                            nestedScrollEnabled: true,
-                                          }}
-                                        />
-                                        <TouchableOpacity
-                                          style={{
-                                            width: width * 0.1,
-                                            backgroundColor: '#25AAE199',
-                                            borderTopRightRadius: width * 0.015,
-                                            borderBottomRightRadius:
-                                              width * 0.015,
-                                            borderTopWidth: width * 0.0019,
-                                            borderRightWidth: width * 0.0019,
-                                            borderBottomWidth: width * 0.0019,
-                                            height: width * 0.13,
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                          }}
-                                          onPress={() =>
-                                            this.showAddNewType('Utility')
-                                          }>
-                                          <Icon
-                                            size={width * 0.06}
-                                            color="#fff"
-                                            name={'add'}
-                                          />
-                                        </TouchableOpacity>
-                                      </View>
-                                      <FlatList
-                                        data={this.state.selectUtil}
-                                        style={{width: width * 0.8}}
-                                        // extraData={selectedTypes.current}
-                                        horizontal
-                                        renderItem={({item}) => (
-                                          <>
-                                            <View
-                                              style={{
-                                                borderWidth: 1,
-                                                borderRadius: 8,
-                                                flexDirection: 'row',
-                                                padding: 5,
-                                                // marginRight: 4,
-                                                height: width * 0.1,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                              }}>
-                                              <Text style={{color: 'black'}}>
-                                                {item.name}
-                                              </Text>
-                                              <TouchableOpacity
-                                                onPress={() => {
-                                                  if (
-                                                    this.state
-                                                      .manufacturersArray
-                                                      .length > 0
-                                                  ) {
-                                                    Alert.alert(
-                                                      'Alert',
-                                                      'This will remove your currently selected Manufacturers',
-                                                      [
-                                                        {
-                                                          text: 'Cancel',
-                                                          style: 'cancel',
-                                                        },
-                                                        {
-                                                          text: 'Remove',
-                                                          onPress: () => {
-                                                            const items = this.state.selectUtil.filter(
-                                                              (sitem) =>
-                                                                sitem.id !==
-                                                                item.id,
-                                                            );
-                                                            this.setState({
-                                                              selectUtil: items,
-                                                              manufacturersArray: [],
-                                                            });
-                                                          },
-                                                        },
-                                                      ],
-                                                    );
-                                                  } else if (
-                                                    this.state.manuFlag
-                                                  ) {
-                                                    Toast.show(
-                                                      'Cannot Remove while Adding Manufacturer',
-                                                      Toast.SHORT,
-                                                    );
-                                                  } else {
-                                                    const items = this.state.selectUtil.filter(
-                                                      (sitem) =>
-                                                        sitem.id !== item.id,
-                                                    );
-                                                    // selectedTypes.current = items;
-                                                    this.setState({
-                                                      selectUtil: items,
-                                                      manufacturersArray: [],
-                                                    });
-                                                  }
-                                                }}>
-                                                <Icon
-                                                  name="close"
-                                                  size={width * 0.05}
-                                                />
-                                              </TouchableOpacity>
-                                            </View>
-                                            <View style={{width: 5}} />
-                                          </>
-                                        )}
-                                      />
-                                    </View>
-                                  )}
-                                </View>
-                              </View>
                               <View
                                 style={{
                                   // height: height * 0.25,

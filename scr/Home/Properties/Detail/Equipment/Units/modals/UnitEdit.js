@@ -221,6 +221,7 @@ export default function UnitEdit({
   const helperDefaultData = useRef([]);
 
   const [selectUtil, setSelectUtil] = useState([]);
+  const [selectedUtil, setSelectedUtil] = useState([]);
   const [utilTypes, setUtilTypes] = useState([]);
   const [utilLength, setUtilLength] = useState(0);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -359,9 +360,11 @@ export default function UnitEdit({
 
   const AddTypes = (item) => {
     console.log('ADD CHALA', item);
+    setSelectedUtil(item.name);
     const items = selectUtil;
     items.push(item);
     // selectedTypes.current = items;
+
     setSelectUtil(items);
   };
 
@@ -1174,36 +1177,48 @@ export default function UnitEdit({
     }
   };
 
-  const doSome = (items) => {
+  const doSome = (item) => {
     let UtilArray = typeof items !== 'undefined' ? [...items] : [...selectUtil];
     let ManuArray = [...defaultManuLis];
     // console.log('Utility DATA', UtilArray);
-    console.log('SLIDE DATA', ManuArray);
+    console.log('SLIDE  ', ManuArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);
-    const filterManu = UtilArray.filter((item) => {
-      ManuArray.map((manuItem) => {
-        if (manuItem?.utility_type[0]?.name != undefined) {
-          console.log(clc.redBright('Current Utility Name', item.name));
-          console
-            .log
-            // clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
-            ();
-          if (item.name == manuItem?.utility_type[0]?.name) {
-            // console.log('Current manuItem', manuItem);
-            let listSlide = [...slide1]; // copying the old datas array
-            listSlide[0].data.push(manuItem);
-            console
-              .log
-              // clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
-              ();
-            setSlide1(listSlide);
-            // console.log('LIST SLIDE', listSlide[0].data);
-          }
+    let temp = [];
+    let listSlide2 = [...slide1];
+    ManuArray.map((manuItem) => {
+      if (manuItem?.utility_type[0]?.name != undefined) {
+        if (item.name == manuItem?.utility_type[0]?.name) {
+          temp.push(manuItem);
+          listSlide2[0].data = temp;
+          setSlide1(listSlide2);
         }
-      });
+      }
     });
+
+    // const filterManu = UtilArray.filter((item) => {
+    //   ManuArray.map((manuItem) => {
+    //     if (manuItem?.utility_type[0]?.name != undefined) {
+    //       console.log(clc.redBright('Current Utility Name', item.name));
+    //       console
+    //         .log
+    //         // clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
+    //         ();
+    //       if (item.name == manuItem?.utility_type[0]?.name) {
+    //         // console.log('Current manuItem', manuItem);
+    //         let listSlide = [...slide1]; // copying the old datas array
+    //         listSlide[0].data.push(manuItem);
+    //         console
+    //           .log
+    //           // clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
+    //           ();
+    //         setSlide1(listSlide);
+    //         // console.log('LIST SLIDE', listSlide[0].data);
+    //       }
+    //     }
+    //   });
+    // });
     const defaultDevices = defaultData.devices;
     // console.log('default Devices', defaultDevices);
     const filterDevices = defaultDevices.filter(
@@ -2859,14 +2874,14 @@ export default function UnitEdit({
                                         alignItems: 'flex-start',
                                       }}>
                                       <SearchableDropdown
-                                        multi={true}
-                                        selectedItems={selectUtil}
+                                        // multi={true}
+                                        // selectedItems={selectUtil}
                                         onItemSelect={(item) => {
                                           // getDevice(item, index);
                                           console.log('Test', item);
                                           AddTypes(item);
                                           forceUpdate();
-                                          doSome();
+                                          doSome(item);
                                         }}
                                         containerStyle={{
                                           paddingBottom: width * 0.02,
@@ -2885,23 +2900,24 @@ export default function UnitEdit({
                                         }}
                                         // items={item.data}
                                         items={utilTypes}
-                                        onRemoveItem={(item, index) => {
-                                          const items = selectUtil.filter(
-                                            (sitem) => sitem.id !== item.id,
-                                          );
-                                          // selectedTypes.current = items;
-                                          setSelectUtil(items);
-                                        }}
+                                        // onRemoveItem={(item, index) => {
+                                        //   const items = selectUtil.filter(
+                                        //     (sitem) => sitem.id !== item.id,
+                                        //   );
+                                        //   // selectedTypes.current = items;
+                                        //   setSelectUtil(items);
+                                        // }}
                                         resetValue={false}
                                         textInputProps={{
-                                          editable:
-                                            selectUtil.length == utilLength
-                                              ? false
-                                              : !defaultMeterValues,
+                                          // editable:
+                                          //   selectUtil.length == utilLength
+                                          //     ? false
+                                          //     : !defaultMeterValues,
                                           placeholder:
-                                            selectUtil.length == utilLength
-                                              ? 'Adding Limit Reached'
-                                              : 'Add Utility Type',
+                                            // selectUtil.length == utilLength
+                                            //   ? 'Adding Limit Reached'
+                                            //   :
+                                            'Add Utility Type',
                                           underlineColorAndroid: 'transparent',
                                           style: {
                                             padding: width * 0.027,
@@ -2921,11 +2937,14 @@ export default function UnitEdit({
                                               width * 0.015,
                                           },
                                           // onFocus: () => setScroll(false),
-                                          // onTextChange: (text) => {
-                                          //   onChangeManufacturer(text, index);
-                                          // },
-                                          // value: setTimeout(() => item.select, 200),
-                                          // defaultValue: item.select,
+                                          onTextChange: (text) => {
+                                            setSelectedUtil(text);
+                                          },
+                                          value: setTimeout(
+                                            () => selectedUtil,
+                                            200,
+                                          ),
+                                          defaultValue: selectedUtil,
                                         }}
                                         listProps={{
                                           nestedScrollEnabled: true,
@@ -3038,7 +3057,7 @@ export default function UnitEdit({
                                       )}
                                     </View>
                                   )}
-                                  <View>
+                                  {/* <View>
                                     <FlatList
                                       data={selectUtil}
                                       // extraData={selectedTypes.current}
@@ -3075,7 +3094,7 @@ export default function UnitEdit({
                                         </View>
                                       )}
                                     />
-                                  </View>
+                                  </View> */}
                                 </View>
                                 {/* <View
                                   style={{
