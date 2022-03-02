@@ -22,6 +22,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -98,6 +99,7 @@ export default function UnitEdit({
   type,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const inputRef = useRef(null);
   const [defaultMeterValues, setDefaultMeterValues] = useState(false);
   const [defaultDeviceValues, setDefaultDeviceValues] = useState(false);
   const [defaultData, setDefaultData] = useState([]);
@@ -794,6 +796,7 @@ export default function UnitEdit({
 
       setUtilLength(utilityIds.length);
       setUtilTypes(some?.utility_type_name);
+      console.log('what is ', some?.utility_type_name);
       const filterRes = utilityRes.filter((item1) =>
         utilityIds.some((item2) => item1.id == item2),
       );
@@ -2243,13 +2246,16 @@ export default function UnitEdit({
             </View>
           </View>
         ) : (
-          <KeyboardAvoidingView
+          <KeyboardAwareScrollView
+            keyboardShouldPersistTaps={'handled'}
+            showsVerticalScrollIndicator={false}
+            scrollEnabled={sliderNumber == 1 ? true : false}
+            contentContainerStyle={{backgroundColor: '#fff'}}
             style={{
               flex: 1,
-              justifyContent: 'flex-end',
-            }}
-            behavior={Platform.OS ? 'padding' : 'height'}
-            keyboardVerticalOffset={verticalOffs}>
+              marginBottom: scroll ? 125 : 0,
+              backgroundColor: '#fff',
+            }}>
             {showAddMeterSlider ? (
               selectLocation ? (
                 <View
@@ -2812,7 +2818,6 @@ export default function UnitEdit({
                         flex: 1,
                         height: width * 0.8,
                         justifyContent: 'flex-start',
-                        marginTop: scroll ? height * -0.25 : 0,
                         zIndex: 99,
                         overflow: 'hidden',
                       }}>
@@ -2915,7 +2920,7 @@ export default function UnitEdit({
                                             borderBottomRightRadius:
                                               width * 0.015,
                                           },
-                                          onFocus: () => setScroll(false),
+                                          // onFocus: () => setScroll(false),
                                           // onTextChange: (text) => {
                                           //   onChangeManufacturer(text, index);
                                           // },
@@ -3194,6 +3199,10 @@ export default function UnitEdit({
                                           onTextChange: (text) => {
                                             onChangeManufacturer(text, index);
                                           },
+                                          // onFocus: () => {
+                                          //   console.log('Focused slide1 items');
+                                          //   setScroll(true);
+                                          // },
                                           value: setTimeout(
                                             () => item.select,
                                             200,
@@ -5205,7 +5214,7 @@ export default function UnitEdit({
                                 {marginBottom: 0},
                               ]}>
                               {/* {item.meter_name[0].name} */}
-                              Meter
+                              Meter {index + 1}
                             </Text>
                           </TouchableOpacity>
                         ))
@@ -5369,7 +5378,7 @@ export default function UnitEdit({
                 </View>
               </View>
             )}
-          </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
         )}
       </Modal>
       <Modal
