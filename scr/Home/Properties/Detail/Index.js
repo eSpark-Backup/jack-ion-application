@@ -14,9 +14,11 @@ import {
   ActivityIndicator,
   ToastAndroid,
   Image,
+  LayoutAnimation,
 } from 'react-native';
 
 //Packages
+import Iconi from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Menu from 'react-native-vector-icons/Entypo';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -39,12 +41,14 @@ import {
   VictoryLegend,
   VictoryAxis,
 } from 'victory-native';
+import SearchableDropDown from 'react-native-searchable-dropdown';
 import ContextProp from '../Context/propContext';
 import {TextInput, FAB, HelperText} from 'react-native-paper';
 
 // Components
 import styles from './style';
 import style from './style';
+import {Fonts} from '../../../utils/fonts';
 import Base_URL from '../../../api/WebServices';
 import {create} from 'apisauce';
 import CustumStatusBar from '../../../components/StatusBar';
@@ -93,6 +97,7 @@ export default class Splash extends React.Component {
       customId: 0,
       companies: false,
       companiesLoader: false,
+      selectLocation: false,
       lat: 0,
       long: 0,
       markers: [],
@@ -103,6 +108,13 @@ export default class Splash extends React.Component {
         city: '',
         zipcode: '',
       },
+      dropDownShow: [
+        {value: true},
+        {value: false},
+        {value: false},
+        {value: false},
+        {value: false},
+      ],
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -358,6 +370,48 @@ export default class Splash extends React.Component {
     if (this.context.manageCompList.length > 0) {
       this.setState({companiesLoader: false});
     }
+  };
+
+  showMoreFn = (indexx) => {
+    // this.setState({
+    //   addNewType: false,
+    //   // showEditManufacturer: false,
+    //   // showAddManufacturer: false,
+    // });
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    this.state.dropDownShow.map((item, index) => {
+      if (index == indexx) {
+        let dropDownShow = [...this.state.dropDownShow];
+        console.log('el --->', dropDownShow[index]);
+        // let dropDownShow = [...this.state.dropDownShow];
+        // let index = markers.findIndex(el => console.log('el--->',el));
+        // dropDownShow[index] = { ...dropDownShow[index], key: false };
+        dropDownShow[index].value = true;
+        this.setState({dropDownShow});
+      } else {
+        let dropDownShow = [...this.state.dropDownShow];
+        console.log('el --->', dropDownShow[index]);
+        // let dropDownShow = [...this.state.dropDownShow];
+        // let index = markers.findIndex(el => console.log('el--->',el));
+        // dropDownShow[index] = { ...dropDownShow[index], key: false };
+        dropDownShow[index].value = false;
+        this.setState({dropDownShow});
+      }
+    });
+  };
+
+  selectMeterLocation = async () => {
+    console.log('Location ka batao', await SystemSetting.isLocationEnabled());
+    this.setState({selectLocation: true});
   };
 
   handleDropDownData = (value) => {
@@ -652,12 +706,32 @@ export default class Splash extends React.Component {
                         style={{width: '90%'}}
                         showsVerticalScrollIndicator={false}>
                         <View style={{flex: 1}}>
-                          <View style={styles.desciptionContainer}>
+                          <TouchableOpacity
+                            style={styles.desciptionContainer}
+                            onPress={() => this.showMoreFn(0)}>
                             <Text style={styles.desciptionHeading}>
-                              property information
+                              Property Name & Address
                             </Text>
-                          </View>
-                          <View style={styles.inputContainer}>
+                            <Iconi
+                              name={
+                                this.state.dropDownShow[0].value
+                                  ? 'chevron-up'
+                                  : 'chevron-down'
+                              }
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[0].value
+                                  ? height * 0.09
+                                  : height * 0.0,
+                                overflow: 'hidden',
+                              },
+                            ]}>
                             <TextInput
                               label="Property Name*"
                               value={this.state?.listData?.name}
@@ -695,7 +769,67 @@ export default class Splash extends React.Component {
                               {this.state.error.property}
                             </HelperText>
                           ) : null}
-                          <View style={styles.inputContainer}>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[0].value
+                                  ? height * 0.09
+                                  : height * 0.0,
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TouchableOpacity
+                              onPress={this.selectMeterLocation}
+                              style={{
+                                width: width * 0.8,
+                                // height: width * 0.1,
+                                borderColor: '#25AAE1ec',
+                                borderWidth: width * 0.003,
+                                backgroundColor: 'white',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                borderRadius: width * 0.005,
+                                paddingVertical: width * 0.02,
+                                paddingHorizontal: width * 0.02,
+                                flexDirection: 'row',
+                                marginVertical: width * 0.015,
+                                elevation: width * 0.003,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: width * 0.03,
+                                  fontFamily: Fonts.Montserrat,
+                                  color: '#3E4A4F',
+                                  marginRight: width * 0.01,
+                                  width: width * 0.65,
+                                }}>
+                                {this.state.locationBtn}
+                              </Text>
+                              <Iconi
+                                name="location"
+                                size={width * 0.05}
+                                color="#3E4A4F"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <TouchableOpacity
+                            style={styles.desciptionContainer}
+                            onPress={() => this.showMoreFn(2)}>
+                            <Text style={[styles.desciptionHeading]}>
+                              Utility Type, Manufacturer & Device
+                            </Text>
+                            <Iconi
+                              name={
+                                this.state.dropDownShow[2].value
+                                  ? 'chevron-up'
+                                  : 'chevron-down'
+                              }
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
+                          {/* <View style={styles.inputContainer}>
                             <TextInput
                               value={this.state?.listData?.street}
                               error={this.state.error.street}
@@ -848,14 +982,315 @@ export default class Splash extends React.Component {
                                 },
                               }}
                             />
+                          </View> */}
+                          <TouchableOpacity
+                            style={styles.desciptionContainer}
+                            onPress={() => this.showMoreFn(3)}>
+                            <Text style={styles.desciptionHeading}>
+                              owner info & contact person
+                            </Text>
+                            <Iconi
+                              name={
+                                this.state.dropDownShow[3].value
+                                  ? 'chevron-up'
+                                  : 'chevron-down'
+                              }
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[3].value
+                                  ? height * 0.09
+                                  : height * 0.0,
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Company Specific ID"
+                              style={styles.input}
+                              value={this.state.CustomId}
+                              onChangeText={(text) => {
+                                this.setState({CustomId: text});
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[3].value
+                                  ? 'auto'
+                                  : height * 0.0,
+
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Contact Name"
+                              label="Contact Name"
+                              style={styles.input}
+                              value={this.state.listData?.contact_name}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_name: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[3].value
+                                  ? 'auto'
+                                  : height * 0.0,
+
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Title / Job Description"
+                              label="Title / Job Description"
+                              style={styles.input}
+                              value={this.state.listData?.contact_title}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_title: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[3].value
+                                  ? 'auto'
+                                  : height * 0.0,
+
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Phone"
+                              label="Phone"
+                              style={styles.input}
+                              value={this.state.listData?.contact_phone}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_phone: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[3].value
+                                  ? 'auto'
+                                  : height * 0.0,
+
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Email"
+                              label="Email"
+                              style={styles.input}
+                              value={this.state.listData?.contact_email}
+                              onChangeText={(text) => {
+                                this.setState((prevState) => ({
+                                  ...prevState,
+                                  listData: {
+                                    // object that we want to update
+                                    ...prevState.listData, // keep all other key-value pairs
+                                    contact_email: text, // update the value of specific key
+                                  },
+                                }));
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
                           </View>
 
-                          <View style={styles.desciptionContainer}>
+                          <TouchableOpacity
+                            style={styles.desciptionContainer}
+                            onPress={() => this.showMoreFn(4)}>
                             <Text style={styles.desciptionHeading}>
                               management company*
                             </Text>
+                            <Iconi
+                              name={
+                                this.state.dropDownShow[4].value
+                                  ? 'chevron-up'
+                                  : 'chevron-down'
+                              }
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'flex-start',
+                              height: this.state.dropDownShow[4].value
+                                ? 'auto'
+                                : height * 0.0,
+
+                              overflow: 'hidden',
+                            }}>
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                this.setState({
+                                  managementCompany: item.name,
+                                  managementCompanyId: item.id,
+                                });
+                              }}
+                              containerStyle={{
+                                paddingBottom: width * 0.02,
+                                width: width * 0.7,
+                              }}
+                              itemStyle={{
+                                padding: width * 0.027,
+                                backgroundColor: 'rgb(247, 247, 247)',
+                                borderColor: '#bbb',
+                                borderWidth: width * 0.0015,
+                                borderRadius: width * 0.015,
+                                zIndex: 99,
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: height * 0.08,
+                              }}
+                              items={this.state.manageCompList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Management Company',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                  zIndex: 99,
+                                },
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: height * 0.08,
+                              }}
+                              items={this.state.manageCompList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Management Company',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  margin: 0,
+                                  borderTopLeftRadius: width * 0.015,
+                                  borderBottomLeftRadius: width * 0.015,
+                                  borderColor: 'black',
+                                  height: width * 0.13,
+                                  backgroundColor: '#F6F6F6',
+                                  borderTopWidth: width * 0.0019,
+                                  borderLeftWidth: width * 0.0019,
+                                  borderBottomWidth: width * 0.0019,
+                                  zIndex: 0,
+                                },
+                                onTextChange: (text) => {
+                                  this.setState({managementCompany: text});
+                                },
+                                value: setTimeout(
+                                  () => this.state.managementCompany,
+                                  200,
+                                ),
+                                defaultValue: this.state.managementCompany,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                width: width * 0.1,
+                                backgroundColor: '#25AAE199',
+                                borderTopRightRadius: width * 0.015,
+                                borderBottomRightRadius: width * 0.015,
+                                borderTopWidth: width * 0.0019,
+                                borderRightWidth: width * 0.0019,
+                                borderBottomWidth: width * 0.0019,
+                                height: width * 0.13,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onPress={() => this.showAddNewType('Management')}>
+                              <Icon
+                                size={width * 0.06}
+                                color="#fff"
+                                name={'add'}
+                              />
+                            </TouchableOpacity>
                           </View>
-                          <View style={styles.inputContainer}>
+                          {/* <View style={styles.inputContainer}>
                             <TouchableOpacity
                               onPress={() => this.handleOpenDropDown(false)}
                               style={{
@@ -870,12 +1305,23 @@ export default class Splash extends React.Component {
                                   : this.state.managementCompany}
                               </Text>
                             </TouchableOpacity>
-                          </View>
-                          <View style={styles.desciptionContainer}>
+                          </View> */}
+                          <TouchableOpacity
+                            style={styles.desciptionContainer}
+                            onPress={() => this.showMoreFn(3)}>
                             <Text style={styles.desciptionHeading}>
                               billing company*
                             </Text>
-                          </View>
+                            <Iconi
+                              name={
+                                this.state.dropDownShow[3].value
+                                  ? 'chevron-up'
+                                  : 'chevron-down'
+                              }
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
                           <View style={styles.inputContainer}>
                             <TouchableOpacity
                               onPress={() => this.handleOpenDropDown(true)}
@@ -956,115 +1402,6 @@ export default class Splash extends React.Component {
                               {this.state.error.billingId}
                             </HelperText>
                           ) : null}
-                          <View style={styles.desciptionContainer}>
-                            <Text style={styles.desciptionHeading}>
-                              Contact Info
-                            </Text>
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Contact Name"
-                              label="Contact Name"
-                              style={styles.input}
-                              value={this.state.listData?.contact_name}
-                              onChangeText={(text) => {
-                                this.setState((prevState) => ({
-                                  ...prevState,
-                                  listData: {
-                                    // object that we want to update
-                                    ...prevState.listData, // keep all other key-value pairs
-                                    contact_name: text, // update the value of specific key
-                                  },
-                                }));
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Title / Job Description"
-                              label="Title / Job Description"
-                              style={styles.input}
-                              value={this.state.listData?.contact_title}
-                              onChangeText={(text) => {
-                                this.setState((prevState) => ({
-                                  ...prevState,
-                                  listData: {
-                                    // object that we want to update
-                                    ...prevState.listData, // keep all other key-value pairs
-                                    contact_title: text, // update the value of specific key
-                                  },
-                                }));
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Phone"
-                              label="Phone"
-                              style={styles.input}
-                              value={this.state.listData?.contact_phone}
-                              onChangeText={(text) => {
-                                this.setState((prevState) => ({
-                                  ...prevState,
-                                  listData: {
-                                    // object that we want to update
-                                    ...prevState.listData, // keep all other key-value pairs
-                                    contact_phone: text, // update the value of specific key
-                                  },
-                                }));
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View style={styles.inputContainer}>
-                            <TextInput
-                              placeholder="Email"
-                              label="Email"
-                              style={styles.input}
-                              value={this.state.listData?.contact_email}
-                              onChangeText={(text) => {
-                                this.setState((prevState) => ({
-                                  ...prevState,
-                                  listData: {
-                                    // object that we want to update
-                                    ...prevState.listData, // keep all other key-value pairs
-                                    contact_email: text, // update the value of specific key
-                                  },
-                                }));
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
                         </View>
                       </ScrollView>
                       {/* Box Header */}

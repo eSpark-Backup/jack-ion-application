@@ -147,7 +147,7 @@ class Splash extends Component {
           <Image
             source={require('../../Images/loogo.png')}
             resizeMode="contain"
-            style={{height: height * 0.14}}
+            style={{height: width * 0.18}}
           />
         </View>
         <View

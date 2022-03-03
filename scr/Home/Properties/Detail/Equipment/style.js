@@ -157,7 +157,7 @@ export default styles = StyleSheet.create({
   infoViewInner: {
     flex: 1,
     flexDirection: 'row',
-    // justifyContent: '',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: width * 0.01,
   },
@@ -179,7 +179,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     // justifyContent: 'space-between',
     alignItems: 'center',
-    maxWidth: width * 0.23,
+    maxWidth: width * 0.25,
     marginRight: width * 0.01,
     marginVertical: width * 0.01,
     // padding: width * 0.005,
@@ -203,8 +203,8 @@ export default styles = StyleSheet.create({
     marginRight: width * 0.01,
   },
   untiDetailImage: {
-    height: width * 0.03,
-    width: width * 0.03,
+    height: width * 0.04,
+    width: width * 0.04,
     marginRight: width * 0.01,
   },
   unitDetailSeprater: {

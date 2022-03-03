@@ -326,6 +326,7 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     marginBottom: height * 0.01,
+    justifyContent: 'space-between',
   },
   desciptionHeading: {
     fontSize: height * 0.015,

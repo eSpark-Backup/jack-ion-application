@@ -476,65 +476,32 @@ export default class Splash extends Component {
               </View>
               <View style={styles.unitDetailContainer}>
                 {unit?.item?.unit_meter?.length ? (
-                  unit?.item?.unit_meter?.map((item, index) => (
-                    <View style={{flexDirection: 'row', maxWidth: width * 0.5}}>
-                      <View style={styles.unitDetailInnerif}>
-                        {/* <Image
-                          source={this.typeSwitcher(item.meter_name)}
-                          style={styles.untiDetailImage}
-                        /> */}
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.meter_read?.meter_reading
-                            ? item?.meter_read?.meter_reading + ' Gallons'
-                            : 0 + ' Gallons'}
-                        </TextTicker>
-                      </View>
-                      <View style={styles.unitDetailInnerif}>
-                        <MaterialCommunityIcons
-                          name="barcode-scan"
-                          size={width * 0.03}
-                          style={{marginRight: width * 0.01}}
-                        />
-                        <TextTicker
-                          duration={10000}
-                          marqueeDelay={2000}
-                          // repeatSpacer={width * 0.17}
-                          style={[
-                            styles.dataFieldText,
-                            {
-                              minWidth: width * 0.15,
-                              maxWidth: width * 0.2,
-                              fontSize: width * 0.025,
-                            },
-                          ]}>
-                          {item?.device_serial_number}
-                        </TextTicker>
-                      </View>
-                      <View
-                        style={[
-                          styles.unitDetailSeprater,
-                          {
-                            borderBottomWidth:
-                              index == 0 &&
-                              unit?.item?.unit_meter?.meter_name?.length > 1
-                                ? width * 0.004
-                                : 0,
-                          },
-                        ]}
+                  <View style={{flexDirection: 'row', maxWidth: width * 0.5}}>
+                    <View style={styles.unitDetailInnerif}>
+                      <Image
+                        source={require('../../../../../Images/remote-reader.png')}
+                        style={styles.untiDetailImage}
                       />
+                      <TextTicker
+                        duration={10000}
+                        marqueeDelay={2000}
+                        // repeatSpacer={width * 0.17}
+                        style={[
+                          styles.dataFieldText,
+                          {
+                            minWidth: width * 0.15,
+                            maxWidth: width * 0.25,
+                            fontSize: width * 0.025,
+                          },
+                        ]}>
+                        {`${unit?.item?.unit_meter?.length}${
+                          unit?.item?.unit_meter?.length > 1
+                            ? ' Devices'
+                            : ' Device'
+                        }`}
+                      </TextTicker>
                     </View>
-                  ))
+                  </View>
                 ) : (
                   <View style={styles.unitDetailInnerElse}>
                     <MaterialCommunityIcons
@@ -644,6 +611,19 @@ export default class Splash extends Component {
                     </View>
                     <View
                       style={[
+                        styles.unitDetailInnerif,
+                        {width: width * 0.1, justifyContent: 'center'},
+                      ]}>
+                      <MaterialIcons
+                        name={item.installation_status == 1 ? 'check' : 'close'}
+                        color={
+                          item.installation_status == 1 ? '#0fc908' : '#f00'
+                        }
+                        size={width * 0.05}
+                      />
+                    </View>
+                    <View
+                      style={[
                         styles.unitDetailSeprater,
                         {
                           borderBottomWidth:
@@ -660,7 +640,7 @@ export default class Splash extends Component {
             <View
               style={[
                 styles.buildingEditBtn,
-                {justifyContent: 'space-between', borderWidth: width * 0.001},
+                {justifyContent: 'space-between', borderWidth: 1},
               ]}>
               <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity

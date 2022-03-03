@@ -221,7 +221,8 @@ export default function UnitEdit({
   const helperDefaultData = useRef([]);
 
   const [selectUtil, setSelectUtil] = useState([]);
-  const [selectedUtil, setSelectedUtil] = useState([]);
+  const [selectedUtil, setSelectedUtil] = useState('');
+  const [selectedUtilId, setSelectedUtilId] = useState(null);
   const [utilTypes, setUtilTypes] = useState([]);
   const [utilLength, setUtilLength] = useState(0);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -361,6 +362,7 @@ export default function UnitEdit({
   const AddTypes = (item) => {
     console.log('ADD CHALA', item);
     setSelectedUtil(item.name);
+    setSelectedUtilId(item.id);
     const items = selectUtil;
     items.push(item);
     // selectedTypes.current = items;
@@ -777,6 +779,8 @@ export default function UnitEdit({
         'Default Unit Data--->',
         some?.devices[0]?.model_nos[0]?.model_no,
       );
+      setSelectedUtil(some.utility_type_name[0].name);
+      setSelectedUtilId(some.utility_type_name[0].id);
       setDefaultData(some);
       helperDefaultData.current = some;
       // let listSlide = [...slide1]; // copying the old datas array
@@ -1178,7 +1182,7 @@ export default function UnitEdit({
   };
 
   const doSome = (item) => {
-    let UtilArray = typeof items !== 'undefined' ? [...items] : [...selectUtil];
+    // let UtilArray = typeof items !== 'undefined' ? [...items] : [...selectUtil];
     let ManuArray = [...defaultManuLis];
     // console.log('Utility DATA', UtilArray);
     console.log('SLIDE  ', ManuArray);
@@ -2939,6 +2943,7 @@ export default function UnitEdit({
                                           // onFocus: () => setScroll(false),
                                           onTextChange: (text) => {
                                             setSelectedUtil(text);
+                                            setSelectedUtilId(null)
                                           },
                                           value: setTimeout(
                                             () => selectedUtil,
@@ -4832,7 +4837,8 @@ export default function UnitEdit({
                                   sliderNumber == 1 &&
                                   slide1[0].selectId &&
                                   slide1[1].selectId &&
-                                  selectUtil.length > 0
+                                  selectedUtil &&
+                                  selectedUtilId != null
                                     ? '#25AAE1ec'
                                     : sliderNumber == 2 &&
                                       slide2[0].value &&
@@ -4864,7 +4870,8 @@ export default function UnitEdit({
                               sliderNumber == 1 &&
                               slide1[0].selectId &&
                               slide1[1].selectId &&
-                              selectUtil.length > 0
+                              selectedUtil &&
+                                  selectedUtilId != null
                                 ? false
                                 : sliderNumber == 2 &&
                                   slide2[0].value &&
