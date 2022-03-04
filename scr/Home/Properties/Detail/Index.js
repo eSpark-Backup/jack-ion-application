@@ -89,9 +89,17 @@ export default class Splash extends React.Component {
       isModalVisible: false,
       points: 80,
       isLoading: false,
+      addNewType: false,
+      showAddType: '',
+      propertyId: null,
+      loadingStateManage: false,
       listData: {},
+      ownerData: [],
+      locationBtn: '',
+      addBilling: '',
       BillingCompany: 'BILLING COMPANY',
       BillingCompanyId: null,
+      addManagement: '',
       managementCompany: 'MANAGEMENT COMPANY',
       managementCompanyId: '',
       customId: 0,
@@ -127,8 +135,8 @@ export default class Splash extends React.Component {
     this.getMetersLocation(propertyData?.id);
     console.log('Property Data', propertyData);
 
-    this.setState({});
     this.setState({
+      propertyId: propertyData?.id,
       listData: propertyData,
       lat: propertyData.latitude,
       long: propertyData.longitude,
@@ -137,6 +145,14 @@ export default class Splash extends React.Component {
       managementCompany: propertyData?.management_company,
       managementCompanyId: propertyData?.management_company_id,
       customId: propertyData.custom_id,
+      locationBtn:
+        propertyData?.street +
+        ', ' +
+        propertyData?.city +
+        ', ' +
+        propertyData?.st +
+        ' ' +
+        propertyData?.zipcode,
     });
 
     console.log(
@@ -146,11 +162,18 @@ export default class Splash extends React.Component {
   }
 
   getToken = async () => {
+    this.context.getBillingCompany();
+    this.context.getManagementCompany();
     const token = await EncryptedStorage.getItem('user_token');
     console.log('Get Token', token);
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
+
+    const ownerRes = await api.get('/property/owner/own');
+
+    console.log('ownerRes--->', ownerRes?.data?.data);
+    this.setState({ownerData: ownerRes?.data?.data});
   };
 
   getMetersLocation = async (propertyId) => {
@@ -181,6 +204,8 @@ export default class Splash extends React.Component {
     this.setState({
       isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
     });
+    this.context.getBillingCompany();
+    this.context.getManagementCompany();
     this.setState((prevState) => ({
       ...prevState,
       error: {
@@ -209,6 +234,42 @@ export default class Splash extends React.Component {
         street: '', // update the value of specific key
       },
     }));
+  };
+
+  cancelAddType = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    // let deviceData = [...this.state.addDevice]; // copying the old datas array
+    // deviceData[0].select = '';
+    // deviceData[0].selectId = '';
+    // deviceData[1].select = '';
+    // deviceData[1].selectId = '';
+    // deviceData[2].select = '';
+    // deviceData[2].selectId = '';
+    this.setState({
+      addNewType: false,
+      showAddType: '',
+      addBilling: '',
+      addManagement: '',
+      // addManufacturer: '',
+      // addUtility: '',
+      // addMeter: '',
+      // addDevice: deviceData,
+      // devicesArray: [],
+      // modelArr: [],
+      // selectedDevice: {},
+      // addModelNumber: '',
+      // productNo: '',
+      // modelNo: '',
+    });
   };
 
   editProp = async () => {
@@ -362,16 +423,6 @@ export default class Splash extends React.Component {
     this.props.navigation.navigate('Support');
   };
 
-  handleOpenDropDown = (value) => {
-    this.setState({companiesLoader: true});
-    this.context.getBillingCompany();
-    this.context.getManagementCompany();
-    this.setState({open: !this.state.open, companies: value});
-    if (this.context.manageCompList.length > 0) {
-      this.setState({companiesLoader: false});
-    }
-  };
-
   showMoreFn = (indexx) => {
     // this.setState({
     //   addNewType: false,
@@ -431,6 +482,267 @@ export default class Splash extends React.Component {
         billingId: '',
       },
     }));
+  };
+  doneAddType = async (val, temp) => {
+    console.log('Show Add Type', this.state.showAddType);
+    if (this.state.showAddType == 'Utility' || val == 'Utility') {
+      let data = {
+        name: this.state.addUtility,
+      };
+      if (temp) {
+        this.setState({loadingState: true});
+      } else {
+        this.setState({loadingStateDev: true});
+      }
+      const UtilityResponse = await api.post(
+        '/property/equipment/utility-type',
+        data,
+      );
+      if (UtilityResponse?.data?.bool) {
+        console.log('datachecckk-->>', UtilityResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        if (!temp) {
+          this.setState({
+            showAddType: 'Manufacturer',
+            addNewType: true,
+            addNewUType: false,
+            addUtility: '',
+          });
+        } else {
+          this.cancelAddType();
+        }
+        this.setState({loadingState: false, loadingStateDev: false});
+        this.getToken();
+        alert(UtilityResponse?.data?.message);
+      } else {
+        alert(UtilityResponse?.data?.message);
+        this.setState({loadingState: false, loadingStateDev: false});
+      }
+    } else if (
+      this.state.showAddType == 'Manufacturer' ||
+      val == 'Manufacturer'
+    ) {
+      console.log('chala');
+      let utilIds = [];
+      for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
+        utilIds.push(this.state.selectAddManuUtil[i].id);
+      }
+      let data = {
+        name: this.state.addManufacturer,
+        utility_type_id: utilIds,
+      };
+      this.setState({loadingStateDev: true});
+      const ManufacturersResponse = await api.post(
+        '/property/equipment/manufacturer/add',
+        data,
+      );
+      if (ManufacturersResponse?.data?.bool) {
+        // this.setState({loadManufacturers: true});
+        console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingStateDev: false});
+      } else {
+        alert(ManufacturersResponse?.data?.message);
+        this.setState({loadingStateDev: false});
+      }
+    } else if (
+      this.state.showAddType == 'Model Number' ||
+      val == 'Model Number'
+    ) {
+      let data = {
+        model_no: this.state.addModelNumber,
+        device_id: this.state.selectedDevice?.id,
+      };
+      this.setState({loadingStateDev: true});
+      const ModelNumberResponse = await api.post(
+        '/property/equipment/model-number/number',
+        data,
+      );
+      if (ModelNumberResponse?.data?.bool) {
+        console.log('datachecckk-->>', ModelNumberResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingStateDev: false});
+      } else {
+        alert(ModelNumberResponse?.data?.message);
+        this.setState({loadingStateDev: false});
+      }
+    } else if (this.state.showAddType == 'Meter' || val == 'Meter') {
+      let data = {
+        name: this.state.addMeter,
+      };
+      this.setState({loadingState: true});
+      const MeterResponse = await api.post(
+        '/property/equipment/meter/add-meter',
+        data,
+      );
+      if (MeterResponse?.data?.bool) {
+        console.log('datachecckk-->>', MeterResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingState: false});
+        alert(MeterResponse?.data?.message);
+      } else {
+        this.setState({loadingState: false});
+        alert(MeterResponse?.data?.message);
+      }
+    } else if (this.state.showAddType == 'Billing' || val == 'Billing') {
+      let data = {
+        name: this.state.addBilling,
+      };
+      this.setState({loadingStateBill: true});
+      const BillingResponse = await api.post(
+        '/property/billing-company/add',
+        data,
+      );
+      if (BillingResponse?.data?.bool) {
+        console.log('datachecckk-->>', BillingResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingStateBill: false});
+        alert(BillingResponse?.data?.message);
+      } else {
+        this.setState({loadingStateBill: false});
+        alert(BillingResponse?.data?.message);
+      }
+    } else if (this.state.showAddType == 'Management' || val == 'Management') {
+      let data = {
+        manager_name: this.state.addManagement,
+      };
+      console.log('Management Company data -->>', data);
+      this.setState({loadingStateManage: true});
+      const ManagementResponse = await api.post(
+        '/property/management-company/add',
+        data,
+      );
+      console.log('Management Company-->>', ManagementResponse?.data?.data);
+      if (ManagementResponse?.data?.bool) {
+        console.log('datachecckk-->>', ManagementResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+
+        this.setState({loadingStateManage: false});
+        alert(ManagementResponse?.data?.message);
+      } else {
+        this.setState({loadingStateManage: false});
+        alert(ManagementResponse?.data?.message);
+      }
+    } else {
+      this.setState({modelArr: []});
+      let data = {
+        name: this.state.addDevice[2].select,
+        manufacturer_id: this.state.addDevice[0].selectId,
+        device_type_id: this.state.addDevice[1].selectId,
+        model_nos: this.state.modelArr,
+        product_desc: this.state.productNo,
+      };
+      this.setState({loadingStateDev: true});
+      const DeviceTypesResponse = await api.post(
+        '/property/equipment/device/add',
+        data,
+      );
+      if (DeviceTypesResponse?.data?.bool) {
+        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingStateDev: false});
+        alert(DeviceTypesR4esponse?.data?.message);
+      } else {
+        this.setState({loadingStateDev: false});
+        alert(DeviceTypesResponse?.data?.message);
+      }
+    }
+  };
+
+  showAddNewType = (value) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    this.setState({addNewType: true});
+    this.setState({showAddType: value}, () => {
+      if (value == 'Model Number') {
+        this.setState({enableDevice: false});
+        console.log('Model Number Adding------');
+        this.getAllDevices();
+      }
+    });
   };
 
   handleCloseDropDown = () => {
@@ -591,7 +903,8 @@ export default class Splash extends React.Component {
           <ScrollView
             style={{flex: 1}}
             showsVerticalScrollIndicator={false}
-            nestedScrollEnabled>
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled">
             <View style={styles.bodyContainer}>
               <MapView
                 style={styles.map}
@@ -669,6 +982,8 @@ export default class Splash extends React.Component {
               <Modal
                 animationIn="slideInDown"
                 animationOut="slideOutUp"
+                coverScreen={true}
+                statusBarTranslucent={true}
                 style={{
                   margin: 0,
                 }}
@@ -704,7 +1019,8 @@ export default class Splash extends React.Component {
                       {/* Box Body */}
                       <ScrollView
                         style={{width: '90%'}}
-                        showsVerticalScrollIndicator={false}>
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps={'handled'}>
                         <View style={{flex: 1}}>
                           <TouchableOpacity
                             style={styles.desciptionContainer}
@@ -815,13 +1131,13 @@ export default class Splash extends React.Component {
                           </View>
                           <TouchableOpacity
                             style={styles.desciptionContainer}
-                            onPress={() => this.showMoreFn(2)}>
+                            onPress={() => this.showMoreFn(1)}>
                             <Text style={[styles.desciptionHeading]}>
                               Utility Type, Manufacturer & Device
                             </Text>
                             <Iconi
                               name={
-                                this.state.dropDownShow[2].value
+                                this.state.dropDownShow[1].value
                                   ? 'chevron-up'
                                   : 'chevron-down'
                               }
@@ -985,13 +1301,13 @@ export default class Splash extends React.Component {
                           </View> */}
                           <TouchableOpacity
                             style={styles.desciptionContainer}
-                            onPress={() => this.showMoreFn(3)}>
+                            onPress={() => this.showMoreFn(2)}>
                             <Text style={styles.desciptionHeading}>
                               owner info & contact person
                             </Text>
                             <Iconi
                               name={
-                                this.state.dropDownShow[3].value
+                                this.state.dropDownShow[2].value
                                   ? 'chevron-up'
                                   : 'chevron-down'
                               }
@@ -1003,7 +1319,7 @@ export default class Splash extends React.Component {
                             style={[
                               styles.inputContainer,
                               {
-                                height: this.state.dropDownShow[3].value
+                                height: this.state.dropDownShow[2].value
                                   ? height * 0.09
                                   : height * 0.0,
                                 overflow: 'hidden',
@@ -1030,7 +1346,70 @@ export default class Splash extends React.Component {
                             style={[
                               styles.inputContainer,
                               {
-                                height: this.state.dropDownShow[3].value
+                                height: this.state.dropDownShow[2].value
+                                  ? 'auto'
+                                  : height * 0.0,
+
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                this.setState({
+                                  CustomerName: item.id,
+                                  ownerName: item.name,
+                                });
+                              }}
+                              containerStyle={{
+                                paddingVertical: width * 0.02,
+                                width: '99.50%',
+                              }}
+                              itemStyle={{
+                                padding: width * 0.027,
+                                backgroundColor: 'rgb(247, 247, 247)',
+                                borderColor: '#bbb',
+                                borderWidth: width * 0.0015,
+                                borderRadius: width * 0.015,
+                                zIndex: 99,
+                              }}
+                              itemTextStyle={{color: '#222'}}
+                              itemsContainerStyle={{
+                                maxHeight: height * 0.08,
+                              }}
+                              items={this.state.ownerData}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Owner or Developer Name',
+                                underlineColorAndroid: 'transparent',
+                                style: {
+                                  padding: width * 0.027,
+                                  margin: 0,
+                                  borderRadius: 5,
+                                  borderColor: 'black',
+                                  height: width * 0.13,
+                                  backgroundColor: '#F6F6F6',
+                                  borderWidth: width * 0.0019,
+                                  zIndex: 0,
+                                },
+                                onTextChange: (text) => {
+                                  this.setState({ownerName: text});
+                                },
+                                value: setTimeout(
+                                  () => this.state.ownerName,
+                                  200,
+                                ),
+                                defaultValue: this.state.ownerName,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: this.state.dropDownShow[2].value
                                   ? 'auto'
                                   : height * 0.0,
 
@@ -1066,7 +1445,7 @@ export default class Splash extends React.Component {
                             style={[
                               styles.inputContainer,
                               {
-                                height: this.state.dropDownShow[3].value
+                                height: this.state.dropDownShow[2].value
                                   ? 'auto'
                                   : height * 0.0,
 
@@ -1102,7 +1481,7 @@ export default class Splash extends React.Component {
                             style={[
                               styles.inputContainer,
                               {
-                                height: this.state.dropDownShow[3].value
+                                height: this.state.dropDownShow[2].value
                                   ? 'auto'
                                   : height * 0.0,
 
@@ -1138,7 +1517,7 @@ export default class Splash extends React.Component {
                             style={[
                               styles.inputContainer,
                               {
-                                height: this.state.dropDownShow[3].value
+                                height: this.state.dropDownShow[2].value
                                   ? 'auto'
                                   : height * 0.0,
 
@@ -1173,9 +1552,208 @@ export default class Splash extends React.Component {
 
                           <TouchableOpacity
                             style={styles.desciptionContainer}
-                            onPress={() => this.showMoreFn(4)}>
+                            onPress={() => {
+                              this.showMoreFn(3);
+                            }}>
                             <Text style={styles.desciptionHeading}>
                               management company*
+                            </Text>
+                            <Iconi
+                              name={
+                                this.state.dropDownShow[3].value
+                                  ? 'chevron-up'
+                                  : 'chevron-down'
+                              }
+                              size={width * 0.05}
+                              color="#3E4A4F"
+                            />
+                          </TouchableOpacity>
+                          <View
+                            style={{
+                              width: '100%',
+                              zIndex: 2,
+                              alignSelf: 'center',
+                              alignItems: 'center',
+                              height: this.state.dropDownShow[3].value
+                                ? 'auto'
+                                : height * 0.0,
+                              overflow: 'hidden',
+                            }}>
+                            {this.state.loadingStateManage ? (
+                              <ActivityIndicator
+                                size="large"
+                                color={'#25AAE1ec'}
+                              />
+                            ) : this.state.addNewType &&
+                              this.state.showAddType == 'Management' ? (
+                              <View>
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: width * 0.03,
+                                      color: '#3E4A4F',
+                                      textTransform: 'capitalize',
+                                      fontFamily: Fonts.ComfortaaRegular,
+                                      marginBottom: width * 0.01,
+                                      fontWeight: 'bold',
+                                    }}>
+                                    Add New {this.state.showAddType} Company
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder={
+                                    'Type New Management Company Name'
+                                  }
+                                  value={this.state.addManagement}
+                                  style={{
+                                    width: width * 0.8,
+                                    justifyContent: 'flex-end',
+                                    fontSize: width * 0.036,
+                                  }}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    this.setState({addManagement: text});
+                                  }}
+                                />
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => this.cancelAddType()}>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() =>
+                                      this.doneAddType('Management')
+                                    }
+                                    disabled={
+                                      this.state.addManagement ? false : true
+                                    }>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: this.state.addManagement
+                                          ? '#25AAE1ec'
+                                          : '#d0d0d0',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropDown
+                                  onItemSelect={(item) => {
+                                    this.setState({
+                                      managementCompany: item.name,
+                                      managementCompanyId: item.id,
+                                    });
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                    zIndex: 99,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  items={this.context.manageCompList}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Management Company',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                      zIndex: 0,
+                                    },
+                                    onTextChange: (text) => {
+                                      this.setState({managementCompany: text});
+                                    },
+                                    value: setTimeout(
+                                      () => this.state.managementCompany,
+                                      200,
+                                    ),
+                                    defaultValue: this.state.managementCompany,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    this.showAddNewType('Management')
+                                  }>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </View>
+                          <TouchableOpacity
+                            style={styles.desciptionContainer}
+                            onPress={() => {
+                              this.showMoreFn(4);
+                            }}>
+                            <Text style={styles.desciptionHeading}>
+                              billing company*
                             </Text>
                             <Iconi
                               name={
@@ -1189,140 +1767,180 @@ export default class Splash extends React.Component {
                           </TouchableOpacity>
                           <View
                             style={{
-                              flexDirection: 'row',
-                              alignItems: 'flex-start',
+                              width: '100%',
+                              zIndex: 2,
+                              alignSelf: 'center',
+                              alignItems: 'center',
                               height: this.state.dropDownShow[4].value
                                 ? 'auto'
                                 : height * 0.0,
-
                               overflow: 'hidden',
                             }}>
-                            <SearchableDropDown
-                              onItemSelect={(item) => {
-                                this.setState({
-                                  managementCompany: item.name,
-                                  managementCompanyId: item.id,
-                                });
-                              }}
-                              containerStyle={{
-                                paddingBottom: width * 0.02,
-                                width: width * 0.7,
-                              }}
-                              itemStyle={{
-                                padding: width * 0.027,
-                                backgroundColor: 'rgb(247, 247, 247)',
-                                borderColor: '#bbb',
-                                borderWidth: width * 0.0015,
-                                borderRadius: width * 0.015,
-                                zIndex: 99,
-                              }}
-                              itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={{
-                                maxHeight: height * 0.08,
-                              }}
-                              items={this.state.manageCompList}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Management Company',
-                                underlineColorAndroid: 'transparent',
-                                style: {
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                  zIndex: 99,
-                                },
-                              }}
-                              itemTextStyle={{color: '#222'}}
-                              itemsContainerStyle={{
-                                maxHeight: height * 0.08,
-                              }}
-                              items={this.state.manageCompList}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Management Company',
-                                underlineColorAndroid: 'transparent',
-                                style: {
-                                  padding: width * 0.027,
-                                  margin: 0,
-                                  borderTopLeftRadius: width * 0.015,
-                                  borderBottomLeftRadius: width * 0.015,
-                                  borderColor: 'black',
-                                  height: width * 0.13,
-                                  backgroundColor: '#F6F6F6',
-                                  borderTopWidth: width * 0.0019,
-                                  borderLeftWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  zIndex: 0,
-                                },
-                                onTextChange: (text) => {
-                                  this.setState({managementCompany: text});
-                                },
-                                value: setTimeout(
-                                  () => this.state.managementCompany,
-                                  200,
-                                ),
-                                defaultValue: this.state.managementCompany,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                            <TouchableOpacity
-                              style={{
-                                width: width * 0.1,
-                                backgroundColor: '#25AAE199',
-                                borderTopRightRadius: width * 0.015,
-                                borderBottomRightRadius: width * 0.015,
-                                borderTopWidth: width * 0.0019,
-                                borderRightWidth: width * 0.0019,
-                                borderBottomWidth: width * 0.0019,
-                                height: width * 0.13,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                              onPress={() => this.showAddNewType('Management')}>
-                              <Icon
-                                size={width * 0.06}
-                                color="#fff"
-                                name={'add'}
+                            {this.state.loadingStateBill ? (
+                              <ActivityIndicator
+                                size="large"
+                                color={'#25AAE1ec'}
                               />
-                            </TouchableOpacity>
+                            ) : this.state.addNewType &&
+                              this.state.showAddType == 'Billing' ? (
+                              <View>
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: width * 0.03,
+                                      color: '#3E4A4F',
+                                      textTransform: 'capitalize',
+                                      fontFamily: Fonts.ComfortaaRegular,
+                                      marginBottom: width * 0.01,
+                                      fontWeight: 'bold',
+                                    }}>
+                                    Add New {this.state.showAddType} Company
+                                  </Text>
+                                </View>
+                                <TextInput
+                                  placeholder={'Type New Billing Company Name'}
+                                  value={this.state.addBilling}
+                                  style={{
+                                    width: width * 0.8,
+                                    justifyContent: 'flex-end',
+                                    fontSize: width * 0.036,
+                                  }}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    this.setState({addBilling: text});
+                                  }}
+                                />
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => this.cancelAddType()}>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: '#25AAE1ec',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => this.doneAddType('Billing')}
+                                    disabled={
+                                      this.state.addBilling ? false : true
+                                    }>
+                                    <Text
+                                      style={{
+                                        fontWeight: 'bold',
+                                        fontSize: width * 0.045,
+                                        color: this.state.addBilling
+                                          ? '#25AAE1ec'
+                                          : '#d0d0d0',
+                                        width: width * 0.16,
+                                        textAlign: 'center',
+                                      }}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'flex-start',
+                                }}>
+                                <SearchableDropDown
+                                  onItemSelect={(item) => {
+                                    this.setState({
+                                      BillingCompany: item.name,
+                                      BillingCompanyId: item.id,
+                                    });
+                                  }}
+                                  containerStyle={{
+                                    paddingBottom: width * 0.02,
+                                    width: width * 0.7,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                    zIndex: 99,
+                                  }}
+                                  itemTextStyle={{color: '#222'}}
+                                  itemsContainerStyle={{
+                                    maxHeight: height * 0.08,
+                                  }}
+                                  items={this.context.propitemList}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Billing Company',
+                                    underlineColorAndroid: 'transparent',
+                                    style: {
+                                      padding: width * 0.027,
+                                      margin: 0,
+                                      borderTopLeftRadius: width * 0.015,
+                                      borderBottomLeftRadius: width * 0.015,
+                                      borderColor: 'black',
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderTopWidth: width * 0.0019,
+                                      borderLeftWidth: width * 0.0019,
+                                      borderBottomWidth: width * 0.0019,
+                                      zIndex: 0,
+                                    },
+                                    onTextChange: (text) => {
+                                      this.setState({BillingCompany: text});
+                                    },
+                                    value: setTimeout(
+                                      () => this.state.BillingCompany,
+                                      200,
+                                    ),
+                                    defaultValue: this.state.BillingCompany,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    width: width * 0.1,
+                                    backgroundColor: '#25AAE199',
+                                    borderTopRightRadius: width * 0.015,
+                                    borderBottomRightRadius: width * 0.015,
+                                    borderTopWidth: width * 0.0019,
+                                    borderRightWidth: width * 0.0019,
+                                    borderBottomWidth: width * 0.0019,
+                                    height: width * 0.13,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    this.showAddNewType('Billing')
+                                  }>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            )}
                           </View>
                           {/* <View style={styles.inputContainer}>
-                            <TouchableOpacity
-                              onPress={() => this.handleOpenDropDown(false)}
-                              style={{
-                                ...styles.billingCompanyBtn,
-                                borderColor: this.state.error.billingId
-                                  ? '#A3001B'
-                                  : 'gray',
-                              }}>
-                              <Text>
-                                {this.state.managementCompany == null
-                                  ? 'Select Company'
-                                  : this.state.managementCompany}
-                              </Text>
-                            </TouchableOpacity>
-                          </View> */}
-                          <TouchableOpacity
-                            style={styles.desciptionContainer}
-                            onPress={() => this.showMoreFn(3)}>
-                            <Text style={styles.desciptionHeading}>
-                              billing company*
-                            </Text>
-                            <Iconi
-                              name={
-                                this.state.dropDownShow[3].value
-                                  ? 'chevron-up'
-                                  : 'chevron-down'
-                              }
-                              size={width * 0.05}
-                              color="#3E4A4F"
-                            />
-                          </TouchableOpacity>
-                          <View style={styles.inputContainer}>
                             <TouchableOpacity
                               onPress={() => this.handleOpenDropDown(true)}
                               style={{
@@ -1394,7 +2012,7 @@ export default class Splash extends React.Component {
                                   ))}
                               </View>
                             </Modal>
-                          </View>
+                          </View> */}
                           {this.state.error.billingId ? (
                             <HelperText
                               type="error"

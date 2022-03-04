@@ -94,7 +94,6 @@ export default class Splash extends React.Component {
       locationSelected: false,
       companies: false,
       markers: [],
-      manageCompList: [],
       iniLat: 0,
       iniLong: 0,
       lat: 0,
@@ -800,6 +799,8 @@ export default class Splash extends React.Component {
     this.setState({
       addNewType: false,
       showAddType: '',
+      addBilling: '',
+      addManagement: '',
       addManufacturer: '',
       addUtility: '',
       addMeter: '',
@@ -2874,15 +2875,6 @@ export default class Splash extends React.Component {
     // modelDataDevice[2].data = ModelNumberResponse?.data?.data;
     // this.setState({deviceData: modelDataDevice});
 
-    let filter = [];
-    for (let i = 0; i < this.context.manageCompList.length; i++) {
-      const data = {
-        name: this.context.manageCompList[i].manager_name,
-        id: this.context.manageCompList[i].id,
-      };
-      filter.push(data);
-    }
-    this.setState({manageCompList: filter});
     // console.log('filtered manage company list', filter);
   };
 
@@ -4105,25 +4097,7 @@ export default class Splash extends React.Component {
                                 itemsContainerStyle={{
                                   maxHeight: height * 0.08,
                                 }}
-                                items={this.state.manageCompList}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Management Company',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                    zIndex: 99,
-                                  },
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                items={this.state.manageCompList}
+                                items={this.context.manageCompList}
                                 resetValue={false}
                                 textInputProps={{
                                   placeholder: 'Management Company',

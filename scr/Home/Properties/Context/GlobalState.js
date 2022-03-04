@@ -193,8 +193,17 @@ class GlobalState extends React.Component {
       'Check management company response',
       response?.data?.data?.managementCompany,
     );
+    let list = response?.data?.data?.managementCompany;
+    let filter = [];
+    for (let i = 0; i < list.length; i++) {
+      const data = {
+        name: list[i].manager_name,
+        id: list[i].id,
+      };
+      filter.push(data);
+    }
     this.setState({
-      manageCompList: response?.data?.data?.managementCompany,
+      manageCompList: filter,
       isLoading: false,
     });
   };
