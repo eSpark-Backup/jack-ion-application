@@ -44,6 +44,8 @@ import {
 import SearchableDropDown from 'react-native-searchable-dropdown';
 import ContextProp from '../Context/propContext';
 import {TextInput, FAB, HelperText} from 'react-native-paper';
+import Geolocation from '@react-native-community/geolocation';
+import Geocoder from 'react-native-geocoding';
 
 // Components
 import styles from './style';
@@ -53,6 +55,7 @@ import Base_URL from '../../../api/WebServices';
 import {create} from 'apisauce';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
+import AddEditProperty from '../../../components/modal/AddEditProperty';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
@@ -131,6 +134,7 @@ export default class Splash extends React.Component {
 
   async componentDidMount() {
     this.getToken();
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     const propertyData = this.props.navigation.state.params.item.item;
     this.getMetersLocation(propertyData?.id);
     console.log('Property Data', propertyData);
@@ -145,15 +149,22 @@ export default class Splash extends React.Component {
       managementCompany: propertyData?.management_company,
       managementCompanyId: propertyData?.management_company_id,
       customId: propertyData.custom_id,
-      locationBtn:
-        propertyData?.street +
-        ', ' +
-        propertyData?.city +
-        ', ' +
-        propertyData?.st +
-        ' ' +
-        propertyData?.zipcode,
     });
+
+    var lat = parseFloat(propertyData.latitude);
+    var long = parseFloat(propertyData.longitude);
+    Geocoder.from({
+      latitude: lat,
+      longitude: long,
+    })
+      .then((json) => {
+        console.log('JSON', json.results[0]);
+        var locationName = json.results[0].formatted_address;
+        this.setState({
+          locationBtn: locationName,
+        });
+      })
+      .catch((error) => console.warn(error));
 
     console.log(
       'LIST DATA >>>>>',
@@ -756,6 +767,7 @@ export default class Splash extends React.Component {
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
         <CustumStatusBar />
         <View style={styles.container}>
+          <AddEditProperty />
           {this.state.isLoading && <Loader />}
           <Modal
             animationIn="slideInLeft"

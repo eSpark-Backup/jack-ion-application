@@ -11,6 +11,9 @@ import {
   ActivityIndicator,
   Platform,
   KeyboardAvoidingView,
+  Alert,
+  PermissionsAndroid,
+  Linking,
 } from 'react-native';
 
 //Packages
@@ -28,12 +31,23 @@ import NetInfo from '@react-native-community/netinfo';
 
 // Components
 import Add from './Form';
-
+import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import {FlatList} from 'react-native-gesture-handler';
 import Loader from '../../components/Loader';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
+import AddEditProperty from '../../components/modal/AddEditProperty';
+import SystemSetting from 'react-native-system-setting';
+import Geocoder from 'react-native-geocoding';
+import Geolocation from '@react-native-community/geolocation';
+import {
+  check,
+  openSettings,
+  PERMISSIONS,
+  request,
+  RESULTS,
+} from 'react-native-permissions';
 const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
@@ -43,6 +57,7 @@ export default class Splash extends Component {
     this.state = {
       meter: false,
       isVisible: false,
+      isAddPropVisible: false,
       Loading: false,
       loadScreen: false,
       stopLoader: false,
@@ -52,6 +67,8 @@ export default class Splash extends Component {
       showSearch: false,
       filterWork: false,
       noInternet: false,
+      locationBtn: '',
+      markers: [],
     };
 
     if (Platform.OS === 'android') {
@@ -130,6 +147,149 @@ export default class Splash extends Component {
   openAndClear = () => {
     this.setState({showSearch: true});
     this.context.clearSearchList();
+  };
+
+  turnLocationOn = () => {
+    if (Platform.OS == 'ios') {
+      Linking.openURL('App-Prefs:Privacy&path=LOCATION');
+    } else if (Platform.OS == 'android') {
+      SystemSetting.switchLocation();
+    }
+  };
+
+  _renderMap = () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log('Positon Batao', position);
+        var lat = parseFloat(position.coords.latitude);
+        var long = parseFloat(position.coords.longitude);
+        // this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
+
+        this.setState({
+          markers: [
+            {
+              coordinate: {
+                latitude: lat,
+                longitude: long,
+              },
+            },
+          ],
+        });
+        console.log('What we Get', this.state.markers);
+        this.setState({isAddPropVisible: true});
+      },
+      (error) => console.log('geo location', error),
+      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+    );
+  };
+
+  enableLocation = async () => {
+    const location = await SystemSetting.isLocationEnabled();
+    console.log('GPS', location);
+    // this.getToken();
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
+    if (!location) {
+      Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: this.turnLocationOn,
+        },
+      ]);
+    } else {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          var lat = parseFloat(position.coords.latitude);
+          var long = parseFloat(position.coords.longitude);
+          // this.setState({lat: lat, long: long});
+          Geocoder.from({
+            latitude: lat,
+            longitude: long,
+          })
+            .then((json) => {
+              var locationName = json.results[0].formatted_address;
+              console.log('LOACTION NAME', locationName);
+              // this.fetchAddressData(locationName);
+              this.setState({
+                locationBtn: locationName,
+              });
+            })
+            .catch((error) => console.warn(error));
+        },
+        (error) => console.log('geo locations', error),
+        {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      );
+      if (Platform.OS == 'ios') {
+        request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          .then((result) => {
+            if (result == RESULTS.GRANTED) {
+              this.checkLocation(true);
+            } else {
+              this.checkLocation(false);
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
+      if (Platform.OS == 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            this.checkLocation(true);
+          } else {
+            this.checkLocation(false);
+          }
+        } catch (err) {
+          alert(err);
+        }
+      }
+    }
+  };
+
+  checkLocation = async (locationAccess) => {
+    if (locationAccess) {
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
+
+      this._renderMap();
+    } else {
+      Alert.alert(
+        `You don't have access for the Location`,
+        `To Change the permission Open Settings`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open Settings',
+            onPress: openSettings,
+          },
+        ],
+      );
+    }
+  };
+
+  openAddProp = () => {
+    this.setState({isAddPropVisible: true});
+  };
+
+  closeAddProp = () => {
+    this.setState({isAddPropVisible: false});
   };
 
   _renderSearchPropList = (prop) => (
@@ -281,6 +441,13 @@ export default class Splash extends Component {
         <CustumStatusBar />
         <View style={styles.container}>
           {this.context.isLoading && <Loader />}
+          <AddEditProperty
+            modalVisible={this.state.isAddPropVisible}
+            closeModal={this.closeAddProp}
+            currLocate={this.state.markers}
+            currAddr={this.state.locationBtn}
+            type={'Add'}
+          />
           {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
           {/* <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
@@ -391,7 +558,26 @@ export default class Splash extends Component {
             </View>
           </View>
           <View style={styles.headingContainer}>
-            <Add loader={this.handleLoader} />
+            {/* <Add loader={this.handleLoader} /> */}
+            <View style={styles.headingInner}>
+              <TouchableOpacity
+                // onPress={this.openAddProp}
+                onPress={() => this.enableLocation()}
+                style={styles.addBotton}>
+                <MaterialIcon
+                  name="add"
+                  size={width * 0.06}
+                  color="black"
+                  maxOpacity={0.5}
+                />
+              </TouchableOpacity>
+              <MaterialCommunityIcon
+                name="home-city-outline"
+                size={width * 0.08}
+                color="white"
+              />
+              <Text style={styles.mainHeadiing}>Properties</Text>
+            </View>
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}

@@ -1097,7 +1097,7 @@ export default class Splash extends Component {
                               }
                               name="house-user"
                               size={width * 0.04}
-                              color="#3E4A4F"
+                              // color="#3E4A4F"
                               style={{
                                 paddingHorizontal:
                                   Platform.OS == 'ios' ? width * 0.025 : null,
