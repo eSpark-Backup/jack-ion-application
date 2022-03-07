@@ -1245,7 +1245,7 @@ export default function UnitEdit({
     if (sliderNumber == 2 && meterAddingId == '') {
       setCheckSerial(true);
       checkingSerial();
-    } else if (sliderNumber == 3) {
+    } else if (sliderNumber == 4) {
       var dis = getDistance(
         {
           latitude: propertyLat,
@@ -2943,7 +2943,7 @@ export default function UnitEdit({
                                           // onFocus: () => setScroll(false),
                                           onTextChange: (text) => {
                                             setSelectedUtil(text);
-                                            setSelectedUtilId(null)
+                                            setSelectedUtilId(null);
                                           },
                                           value: setTimeout(
                                             () => selectedUtil,
@@ -4871,7 +4871,7 @@ export default function UnitEdit({
                               slide1[0].selectId &&
                               slide1[1].selectId &&
                               selectedUtil &&
-                                  selectedUtilId != null
+                              selectedUtilId != null
                                 ? false
                                 : sliderNumber == 2 &&
                                   slide2[0].value &&

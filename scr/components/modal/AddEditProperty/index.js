@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {
   Text,
@@ -16,21 +16,26 @@ import {
   Image,
   LayoutAnimation,
   KeyboardAvoidingView,
+  FlatList,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
-
-//Component
-import styles from './style';
-import {Fonts} from '../../../utils/fonts';
 import Slider from '@react-native-community/slider';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import MapView, {PROVIDER_GOOGLE, Circle} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import SystemSetting from 'react-native-system-setting';
+import SearchableDropDown from 'react-native-searchable-dropdown';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {create} from 'apisauce';
+
+//Component
+import styles from './style';
+import {Fonts} from '../../../utils/fonts';
+import Base_URL from '../../../api/WebServices';
 
 export default function AddEditProperty({
   modalVisible,
@@ -44,8 +49,20 @@ export default function AddEditProperty({
   const LATITUDE_DELTA = 0.0322;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   const circleRef = useRef(null);
+  const api = create({baseURL: Base_URL});
 
-  const [isModalAddPropVisible, setIsModalAddPropVisible] = useState(true);
+  const [loadingStateManage, setLoadingStateManage] = useState(false);
+  const [loadingStateBill, setLoadingStateBill] = useState(false);
+  const [addNewType, setAddNewType] = useState(false);
+  const [showAddType, setShowAddType] = useState('');
+  const [billCompList, setBillCompList] = useState([]);
+  const [addBilling, setAddBilling] = useState('');
+  const [BillingCompany, setBillingCompany] = useState('');
+  const [BillingCompanyId, setBillingCompanyId] = useState('');
+  const [manageCompList, setManageCompList] = useState([]);
+  const [addManagement, setAddManagement] = useState('');
+  const [managementCompany, setManagementCompany] = useState('');
+  const [managementCompanyId, setManagementCompanyId] = useState(null);
   const [avoidKeyboard, setAvoidKeyboard] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [locationSelected, setLocationSelected] = useState(false);
@@ -56,6 +73,15 @@ export default function AddEditProperty({
   const [radialDis, setRadialDis] = useState(0.1);
   const [locationBtn, setLocationBtn] = useState('');
   const [markers, setMarkers] = useState(currLocate);
+  const [CustomId, setCustomId] = useState('');
+  const [unitCount, setUnitCount] = useState('');
+  const [unitMix, setUnitMix] = useState([1]);
+  const [ownerData, setOwnerData] = useState([]);
+  const [ownerId, setOwnerId] = useState(null);
+  const [ownerName, setOwnerName] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
   const [Name, setName] = useState('');
   const [Street, setStreet] = useState('');
   const [City, setCity] = useState('');
@@ -80,6 +106,50 @@ export default function AddEditProperty({
     {value: false},
     {value: false},
   ]);
+
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  const callApi = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+
+    setLoadingStateManage(true);
+    const ManageRes = await api.get('/property/management-company/all');
+
+    let list = ManageRes?.data?.data?.managementCompany;
+    let filter = [];
+    for (let i = 0; i < list.length; i++) {
+      const data = {
+        name: list[i].manager_name,
+        id: list[i].id,
+      };
+      filter.push(data);
+    }
+
+    setManageCompList(filter);
+    setLoadingStateManage(false);
+
+    setLoadingStateBill(true);
+    const BillingRes = await api.get('/property/billing-company/all');
+
+    setBillCompList(BillingRes?.data?.data?.billingCompany);
+    setLoadingStateBill(false);
+
+    const ownerRes = await api.get('/property/owner/own');
+
+    console.log('ownerRes--->', ownerRes?.data?.data);
+    setOwnerData(ownerRes?.data?.data);
+  };
+
+  const AddNewRow = () => {
+    let arr = [...unitMix];
+    arr.push(2);
+    setUnitMix(arr);
+  };
 
   const showMoreFn = (indexx) => {
     // this.setState({
@@ -168,6 +238,305 @@ export default function AddEditProperty({
     }
   };
 
+  const showAddNewType = (value) => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    setAddNewType(true);
+    setShowAddType(value);
+    // this.setState({showAddType: value}, () => {
+    //   if (value == 'Model Number') {
+    //     this.setState({enableDevice: false});
+    //     console.log('Model Number Adding------');
+    //     this.getAllDevices();
+    //   }
+    // });
+  };
+
+  const cancelAddType = () => {
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+    // let deviceData = [...this.state.addDevice]; // copying the old datas array
+    // deviceData[0].select = '';
+    // deviceData[0].selectId = '';
+    // deviceData[1].select = '';
+    // deviceData[1].selectId = '';
+    // deviceData[2].select = '';
+    // deviceData[2].selectId = '';
+    setAddNewType(false);
+    setShowAddType('');
+    setAddManagement('');
+    setAddBilling('');
+    // this.setState({
+    //   addManufacturer: '',
+    //   addUtility: '',
+    //   addMeter: '',
+    //   addDevice: deviceData,
+    //   devicesArray: [],
+    //   modelArr: [],
+    //   selectedDevice: {},
+    //   addModelNumber: '',
+    //   productNo: '',
+    //   modelNo: '',
+    // });
+  };
+
+  const doneAddType = async (val, temp) => {
+    console.log('Show Add Type', this.state.showAddType);
+    if (this.state.showAddType == 'Utility' || val == 'Utility') {
+      let data = {
+        name: this.state.addUtility,
+      };
+      if (temp) {
+        this.setState({loadingState: true});
+      } else {
+        this.setState({loadingStateDev: true});
+      }
+      const UtilityResponse = await api.post(
+        '/property/equipment/utility-type',
+        data,
+      );
+      if (UtilityResponse?.data?.bool) {
+        console.log('datachecckk-->>', UtilityResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        if (!temp) {
+          this.setState({
+            showAddType: 'Manufacturer',
+            addNewType: true,
+            addNewUType: false,
+            addUtility: '',
+          });
+        } else {
+          this.cancelAddType();
+        }
+        this.setState({loadingState: false, loadingStateDev: false});
+        this.getToken();
+        alert(UtilityResponse?.data?.message);
+      } else {
+        alert(UtilityResponse?.data?.message);
+        this.setState({loadingState: false, loadingStateDev: false});
+      }
+    } else if (
+      this.state.showAddType == 'Manufacturer' ||
+      val == 'Manufacturer'
+    ) {
+      console.log('chala');
+      let utilIds = [];
+      for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
+        utilIds.push(this.state.selectAddManuUtil[i].id);
+      }
+      let data = {
+        name: this.state.addManufacturer,
+        utility_type_id: utilIds,
+      };
+      this.setState({loadingStateDev: true});
+      const ManufacturersResponse = await api.post(
+        '/property/equipment/manufacturer/add',
+        data,
+      );
+      if (ManufacturersResponse?.data?.bool) {
+        // this.setState({loadManufacturers: true});
+        console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingStateDev: false});
+      } else {
+        alert(ManufacturersResponse?.data?.message);
+        this.setState({loadingStateDev: false});
+      }
+    } else if (
+      this.state.showAddType == 'Model Number' ||
+      val == 'Model Number'
+    ) {
+      let data = {
+        model_no: this.state.addModelNumber,
+        device_id: this.state.selectedDevice?.id,
+      };
+      this.setState({loadingStateDev: true});
+      const ModelNumberResponse = await api.post(
+        '/property/equipment/model-number/number',
+        data,
+      );
+      if (ModelNumberResponse?.data?.bool) {
+        console.log('datachecckk-->>', ModelNumberResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingStateDev: false});
+      } else {
+        alert(ModelNumberResponse?.data?.message);
+        this.setState({loadingStateDev: false});
+      }
+    } else if (this.state.showAddType == 'Meter' || val == 'Meter') {
+      let data = {
+        name: this.state.addMeter,
+      };
+      this.setState({loadingState: true});
+      const MeterResponse = await api.post(
+        '/property/equipment/meter/add-meter',
+        data,
+      );
+      if (MeterResponse?.data?.bool) {
+        console.log('datachecckk-->>', MeterResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        this.getToken();
+        this.cancelAddType();
+        this.setState({loadingState: false});
+        alert(MeterResponse?.data?.message);
+      } else {
+        this.setState({loadingState: false});
+        alert(MeterResponse?.data?.message);
+      }
+    } else if (this.state.showAddType == 'Billing' || val == 'Billing') {
+      let data = {
+        name: this.state.addBilling,
+      };
+      setLoadingStateBill(true);
+      const BillingResponse = await api.post(
+        '/property/billing-company/add',
+        data,
+      );
+      if (BillingResponse?.data?.bool) {
+        console.log('datachecckk-->>', BillingResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        callApi();
+        cancelAddType();
+        setLoadingStateBill(false);
+        alert(BillingResponse?.data?.message);
+      } else {
+        setLoadingStateBill(false);
+        alert(BillingResponse?.data?.message);
+      }
+    } else if (showAddType == 'Management' || val == 'Management') {
+      let data = {
+        manager_name: addManagement,
+      };
+      console.log('Management Company data -->>', data);
+      setLoadingStateManage(false);
+      const ManagementResponse = await api.post(
+        '/property/management-company/add',
+        data,
+      );
+      console.log('Management Company-->>', ManagementResponse?.data?.data);
+      if (ManagementResponse?.data?.bool) {
+        console.log('datachecckk-->>', ManagementResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        callApi();
+        cancelAddType();
+        setLoadingStateManage(false);
+        alert(ManagementResponse?.data?.message);
+      } else {
+        setLoadingStateManage(false);
+        alert(ManagementResponse?.data?.message);
+      }
+    } else {
+      this.setState({modelArr: []});
+      let data = {
+        name: this.state.addDevice[2].select,
+        manufacturer_id: this.state.addDevice[0].selectId,
+        device_type_id: this.state.addDevice[1].selectId,
+        model_nos: this.state.modelArr,
+        product_desc: this.state.productNo,
+      };
+      this.setState({loadingStateDev: true});
+      const DeviceTypesResponse = await api.post(
+        '/property/equipment/device/add',
+        data,
+      );
+      if (DeviceTypesResponse?.data?.bool) {
+        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        callApi();
+        cancelAddType();
+        this.setState({loadingStateDev: false});
+        alert(DeviceTypesR4esponse?.data?.message);
+      } else {
+        this.setState({loadingStateDev: false});
+        alert(DeviceTypesResponse?.data?.message);
+      }
+    }
+  };
+
+  console.log('UNIT MIX ARRAY', unitMix);
   return (
     <View>
       <KeyboardAvoidingView behavior="height">
@@ -424,8 +793,8 @@ export default function AddEditProperty({
                           styles.inputContainer,
                           {
                             height: dropDownShow[0].value
-                              ? height * 0.09
-                              : height * 0.0,
+                              ? width * 0.18
+                              : width * 0.0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -462,8 +831,8 @@ export default function AddEditProperty({
                           styles.inputContainer,
                           {
                             height: dropDownShow[0].value
-                              ? height * 0.09
-                              : height * 0.0,
+                              ? width * 0.18
+                              : width * 0.0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -485,11 +854,92 @@ export default function AddEditProperty({
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(1)}>
                         <Text style={[styles.desciptionHeading]}>
-                          Utility Type, Manufacturer & Device
+                          Unit Count & Unit Mix
                         </Text>
                         <IonicIcon
                           name={
                             dropDownShow[1].value
+                              ? 'chevron-up'
+                              : 'chevron-down'
+                          }
+                          size={width * 0.05}
+                          color="#3E4A4F"
+                        />
+                      </TouchableOpacity>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[1].value
+                              ? width * 0.18
+                              : width * 0.0,
+                            overflow: 'hidden',
+                          },
+                        ]}>
+                        <TextInput
+                          placeholder="Unit Count"
+                          style={styles.input}
+                          value={unitCount}
+                          onChangeText={(text) => {
+                            setUnitCount(text);
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{marginHorizontal: width * 0.01}}>
+                          Sq. Ft
+                        </Text>
+                        <Text style={{marginHorizontal: width * 0.01}}>
+                          Unit Type
+                        </Text>
+                        <Text style={{marginHorizontal: width * 0.01}}>
+                          Classes
+                        </Text>
+                        <Text style={{marginHorizontal: width * 0.01}}>
+                          Bedrooms
+                        </Text>
+                        <Text style={{marginHorizontal: width * 0.01}}>
+                          Action
+                        </Text>
+                      </View>
+
+                      {unitMix.map((item, index) => (
+                        <View>
+                          <Text>ROW</Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              let arr = [...unitMix];
+                              arr.splice(index, 1);
+                              setUnitMix(arr);
+                            }}>
+                            <Text>Remove</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ))}
+                      <TouchableOpacity onPress={AddNewRow}>
+                        <Text>Add New Rows</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.desciptionContainer}
+                        onPress={() => showMoreFn(2)}>
+                        <Text style={[styles.desciptionHeading]}>
+                          Utility Type & Manufacturer
+                        </Text>
+                        <IonicIcon
+                          name={
+                            dropDownShow[2].value
                               ? 'chevron-up'
                               : 'chevron-down'
                           }
@@ -590,13 +1040,13 @@ export default function AddEditProperty({
                     </ScrollView> */}
                       <TouchableOpacity
                         style={styles.desciptionContainer}
-                        onPress={() => showMoreFn(2)}>
+                        onPress={() => showMoreFn(3)}>
                         <Text style={styles.desciptionHeading}>
                           owner info & contact person
                         </Text>
                         <IonicIcon
                           name={
-                            dropDownShow[2].value
+                            dropDownShow[3].value
                               ? 'chevron-up'
                               : 'chevron-down'
                           }
@@ -604,177 +1054,158 @@ export default function AddEditProperty({
                           color="#3E4A4F"
                         />
                       </TouchableOpacity>
-                      {/* <View
-                      style={[
-                        styles.inputContainer,
-                        {
-                          height: dropDownShow[2].value
-                            ? height * 0.09
-                            : height * 0.0,
-                          overflow: 'hidden',
-                        },
-                      ]}>
-                      <TextInput
-                        placeholder="Company Specific ID"
-                        style={styles.input}
-                        value={this.state.CustomId}
-                        onChangeText={(text) => {
-                          this.setState({CustomId: text});
-                        }}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value
+                              ? width * 0.18
+                              : width * 0.0,
+                            overflow: 'hidden',
                           },
-                        }}
-                      />
-                    </View>
+                        ]}>
+                        <TextInput
+                          placeholder="Company Specific ID"
+                          style={styles.input}
+                          value={CustomId}
+                          onChangeText={(text) => {
+                            setCustomId(text);
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
 
-                    <View
-                      style={[
-                        styles.inputContainer,
-                        {
-                          height: dropDownShow[2].value
-                            ? 'auto'
-                            : height * 0.0,
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value
+                              ? width * 0.18
+                              : width * 0.0,
 
-                          overflow: 'hidden',
-                        },
-                      ]}>
-                      <SearchableDropDown
-                        onItemSelect={(item) => {
-                          this.setState({
-                            CustomerName: item.id,
-                            ownerName: item.name,
-                          });
-                        }}
-                        containerStyle={{
-                          paddingVertical: width * 0.02,
-                          width: '99.50%',
-                        }}
-                        itemStyle={{
-                          padding: width * 0.027,
-                          backgroundColor: 'rgb(247, 247, 247)',
-                          borderColor: '#bbb',
-                          borderWidth: width * 0.0015,
-                          borderRadius: width * 0.015,
-                          zIndex: 99,
-                        }}
-                        itemTextStyle={{color: '#222'}}
-                        itemsContainerStyle={{
-                          maxHeight: height * 0.08,
-                        }}
-                        items={this.state.ownerData}
-                        resetValue={false}
-                        textInputProps={{
-                          placeholder: 'Owner or Developer Name',
-                          underlineColorAndroid: 'transparent',
-                          style: {
-                            padding: width * 0.027,
-                            margin: 0,
-                            borderRadius: 5,
-                            borderColor: 'black',
-                            height: width * 0.13,
-                            backgroundColor: '#F6F6F6',
-                            borderWidth: width * 0.0019,
-                            zIndex: 0,
+                            overflow: 'hidden',
+                            justifyContent: 'center',
                           },
-                          onTextChange: (text) => {
-                            this.setState({ownerName: text});
+                        ]}>
+                        <SearchableDropDown
+                          onItemSelect={(item) => {
+                            setOwnerId(item.id);
+                            setOwnerName(item.name);
+                            // this.setState({
+                            //   CustomerName: item.id,
+                            //   ownerName: item.name,
+                            // });
+                          }}
+                          containerStyle={styles.dropDownFullContainer}
+                          itemStyle={styles.dropDownItems}
+                          itemTextStyle={styles.dropDownItemText}
+                          itemsContainerStyle={styles.dropDownItemContainer}
+                          items={ownerData}
+                          resetValue={false}
+                          textInputProps={{
+                            placeholder: 'Owner or Developer Name',
+                            underlineColorAndroid: 'transparent',
+                            style: styles.dropDownFullTextInput,
+                            onTextChange: (text) => {
+                              setOwnerName(text);
+                            },
+                            value: setTimeout(() => ownerName, 200),
+                            defaultValue: ownerName,
+                          }}
+                          listProps={{
+                            nestedScrollEnabled: true,
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value
+                              ? width * 0.18
+                              : width * 0.0,
+                            overflow: 'hidden',
                           },
-                          value: setTimeout(() => this.state.ownerName, 200),
-                          defaultValue: this.state.ownerName,
-                        }}
-                        listProps={{
-                          nestedScrollEnabled: true,
-                        }}
-                      />
-                      
-                    </View>
-                    <View
-                      style={[
-                        styles.inputContainer,
-                        {
-                          height: dropDownShow[2].value
-                            ? height * 0.09
-                            : height * 0.0,
-                          overflow: 'hidden',
-                        },
-                      ]}>
-                      <TextInput
-                        placeholder="Title / Job Description"
-                        style={styles.input}
-                        value={this.state.customerjobDes}
-                        onChangeText={(text) => {
-                          this.setState({customerjobDes: text});
-                        }}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
+                        ]}>
+                        <TextInput
+                          placeholder="Contact Name"
+                          style={styles.input}
+                          value={contactName}
+                          onChangeText={(text) => {
+                            setContactName(text);
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value
+                              ? width * 0.18
+                              : width * 0.0,
+                            overflow: 'hidden',
                           },
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={[
-                        styles.inputContainer,
-                        {
-                          height: dropDownShow[2].value
-                            ? height * 0.09
-                            : height * 0.0,
-                          overflow: 'hidden',
-                        },
-                      ]}>
-                      <TextInput
-                        placeholder="Phone"
-                        style={styles.input}
-                        value={this.state.customerPhone}
-                        onChangeText={(text) => {
-                          this.setState({customerPhone: text});
-                        }}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
+                        ]}>
+                        <TextInput
+                          placeholder="Contact Phone"
+                          style={styles.input}
+                          value={contactPhone}
+                          onChangeText={(text) => {
+                            setContactPhone(text);
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value
+                              ? width * 0.18
+                              : width * 0.0,
+                            overflow: 'hidden',
                           },
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={[
-                        styles.inputContainer,
-                        {
-                          height: dropDownShow[2].value
-                            ? height * 0.09
-                            : height * 0.0,
-                          overflow: 'hidden',
-                        },
-                      ]}>
-                      <TextInput
-                        placeholder="Email"
-                        style={styles.input}
-                        value={this.state.customerEmail}
-                        onChangeText={(text) => {
-                          this.setState({customerEmail: text});
-                        }}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
-                        }}
-                      />
-                    </View> */}
-                      <TouchableOpacity
+                        ]}>
+                        <TextInput
+                          placeholder="Email"
+                          style={styles.input}
+                          value={contactEmail}
+                          onChangeText={(text) => {
+                            setContactEmail(text);
+                          }}
+                          mode={'outlined'}
+                          theme={{
+                            colors: {
+                              text: '#25AAE1ec',
+                              primary: '#25AAE1ec',
+                              selectionColor: 'red',
+                            },
+                          }}
+                        />
+                      </View>
+                      {/* <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(3)}>
                         <Text style={styles.desciptionHeading}>
@@ -789,178 +1220,108 @@ export default function AddEditProperty({
                           size={width * 0.05}
                           color="#3E4A4F"
                         />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                       {/* <View
-                      style={{
-                        width: '100%',
-                        zIndex: 2,
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        height: dropDownShow[3].value
-                          ? height * 0.16
-                          : height * 0.0,
-                        overflow: 'hidden',
-                      }}>
-                      {this.state.loadingStateManage ? (
-                        <ActivityIndicator size="large" color={'#25AAE1ec'} />
-                      ) : this.state.addNewType &&
-                        this.state.showAddType == 'Management' ? (
-                        <View>
+                        style={[
+                          styles.bothViewContainer,
+                          {
+                            height: dropDownShow[3].value
+                              ? width * 0.18
+                              : width * 0.0,
+                          },
+                        ]}>
+                        {loadingStateManage ? (
+                          <ActivityIndicator size="large" color={'#25AAE1ec'} />
+                        ) : addNewType && showAddType == 'Management' ? (
                           <View>
-                            <Text
-                              style={{
-                                fontSize: width * 0.03,
-                                color: '#3E4A4F',
-                                textTransform: 'capitalize',
-                                fontFamily: Fonts.ComfortaaRegular,
-                                marginBottom: width * 0.01,
-                                fontWeight: 'bold',
-                              }}>
-                              Add New {this.state.showAddType} Company
-                            </Text>
-                          </View>
-                          <TextInput
-                            placeholder={'Type New Management Company Name'}
-                            value={this.state.addManagement}
-                            style={{
-                              width: width * 0.8,
-                              justifyContent: 'flex-end',
-                              fontSize: width * 0.036,
-                            }}
-                            mode={'outlined'}
-                            theme={{
-                              colors: {
-                                text: '#25AAE1ec',
-                                primary: '#25AAE1ec',
-                                selectionColor: 'red',
-                              },
-                            }}
-                            onChangeText={(text) => {
-                              this.setState({addManagement: text});
-                            }}
-                          />
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-around',
-                            }}>
-                            <TouchableOpacity
-                              onPress={() => this.cancelAddType()}>
-                              <Text
-                                style={{
-                                  fontWeight: 'bold',
-                                  fontSize: width * 0.045,
-                                  color: '#25AAE1ec',
-                                  width: width * 0.16,
-                                  textAlign: 'center',
-                                }}>
-                                Cancel
+                            <View>
+                              <Text style={styles.addTypeHeading}>
+                                Add New {showAddType} Company
                               </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => this.doneAddType('Management')}
-                              disabled={
-                                this.state.addManagement ? false : true
-                              }>
-                              <Text
-                                style={{
-                                  fontWeight: 'bold',
-                                  fontSize: width * 0.045,
-                                  color: this.state.addManagement
-                                    ? '#25AAE1ec'
-                                    : '#d0d0d0',
-                                  width: width * 0.16,
-                                  textAlign: 'center',
-                                }}>
-                                Add
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      ) : (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
-                          }}>
-                          <SearchableDropDown
-                            onItemSelect={(item) => {
-                              this.setState({
-                                managementCompany: item.name,
-                                managementCompanyId: item.id,
-                              });
-                            }}
-                            containerStyle={{
-                              paddingBottom: width * 0.02,
-                              width: width * 0.7,
-                            }}
-                            itemStyle={{
-                              padding: width * 0.027,
-                              backgroundColor: 'rgb(247, 247, 247)',
-                              borderColor: '#bbb',
-                              borderWidth: width * 0.0015,
-                              borderRadius: width * 0.015,
-                              zIndex: 99,
-                            }}
-                            itemTextStyle={{color: '#222'}}
-                            itemsContainerStyle={{
-                              maxHeight: height * 0.08,
-                            }}
-                            items={this.context.manageCompList}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder: 'Management Company',
-                              underlineColorAndroid: 'transparent',
-                              style: {
-                                padding: width * 0.027,
-                                margin: 0,
-                                borderTopLeftRadius: width * 0.015,
-                                borderBottomLeftRadius: width * 0.015,
-                                borderColor: 'black',
-                                height: width * 0.13,
-                                backgroundColor: '#F6F6F6',
-                                borderTopWidth: width * 0.0019,
-                                borderLeftWidth: width * 0.0019,
-                                borderBottomWidth: width * 0.0019,
-                                zIndex: 0,
-                              },
-                              onTextChange: (text) => {
-                                this.setState({managementCompany: text});
-                              },
-                              value: setTimeout(
-                                () => this.state.managementCompany,
-                                200,
-                              ),
-                              defaultValue: this.state.managementCompany,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              width: width * 0.1,
-                              backgroundColor: '#25AAE199',
-                              borderTopRightRadius: width * 0.015,
-                              borderBottomRightRadius: width * 0.015,
-                              borderTopWidth: width * 0.0019,
-                              borderRightWidth: width * 0.0019,
-                              borderBottomWidth: width * 0.0019,
-                              height: width * 0.13,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            onPress={() => this.showAddNewType('Management')}>
-                            <Icon
-                              size={width * 0.06}
-                              color="#fff"
-                              name={'add'}
+                            </View>
+                            <TextInput
+                              placeholder={'Type New Management Company Name'}
+                              value={addManagement}
+                              style={styles.addTypeTextInput}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                              onChangeText={(text) => {
+                                setAddManagement(text);
+                              }}
                             />
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                    </View> */}
-                      <TouchableOpacity
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                              }}>
+                              <TouchableOpacity onPress={() => cancelAddType()}>
+                                <Text style={styles.addTypeButtons}>
+                                  Cancel
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => doneAddType('Management')}
+                                disabled={addManagement ? false : true}>
+                                <Text
+                                  style={[
+                                    styles.addTypeButtons,
+                                    {
+                                      color: addBilling
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                    },
+                                  ]}>
+                                  Add
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ) : (
+                          <View style={styles.mainDropDownView}>
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                setManagementCompany(item.name);
+                                setManagementCompanyId(item.id);
+                              }}
+                              containerStyle={styles.dropDownContainer}
+                              itemStyle={styles.dropDownItems}
+                              itemTextStyle={styles.dropDownItemText}
+                              itemsContainerStyle={styles.dropDownItemContainer}
+                              items={manageCompList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Management Company',
+                                underlineColorAndroid: 'transparent',
+                                style: styles.dropDownTextInput,
+                                onTextChange: (text) => {
+                                  setManagementCompany(text);
+                                },
+                                value: setTimeout(() => managementCompany, 200),
+                                defaultValue: managementCompany,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={styles.addNewButton}
+                              onPress={() => showAddNewType('Management')}>
+                              <Icon
+                                size={width * 0.06}
+                                color="#fff"
+                                name={'add'}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View> */}
+                      {/* <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(4)}>
                         <Text style={styles.desciptionHeading}>
@@ -975,187 +1336,122 @@ export default function AddEditProperty({
                           size={width * 0.05}
                           color="#3E4A4F"
                         />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                       {/* <View
-                      style={{
-                        width: '100%',
-                        zIndex: 2,
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        height: dropDownShow[4].value
-                          ? height * 0.16
-                          : height * 0.0,
-                        overflow: 'hidden',
-                      }}>
-                      {this.state.loadingStateBill ? (
-                        <ActivityIndicator size="large" color={'#25AAE1ec'} />
-                      ) : (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
-                          }}>
-                          {this.state.addNewType &&
-                          this.state.showAddType == 'Billing' ? (
-                            <View>
+                        style={[
+                          styles.bothViewContainer,
+                          {
+                            height: dropDownShow[4].value
+                              ? width * 0.18
+                              : width * 0.0,
+                          },
+                        ]}>
+                        {loadingStateBill ? (
+                          <ActivityIndicator size="large" color={'#25AAE1ec'} />
+                        ) : (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'flex-start',
+                            }}>
+                            {addNewType && showAddType == 'Billing' ? (
                               <View>
-                                <Text
-                                  style={{
-                                    fontSize: width * 0.03,
-                                    color: '#3E4A4F',
-                                    textTransform: 'capitalize',
-                                    fontFamily: Fonts.ComfortaaRegular,
-                                    marginBottom: width * 0.01,
-                                    fontWeight: 'bold',
-                                  }}>
-                                  Add New {this.state.showAddType} Company
-                                </Text>
-                              </View>
-                              <TextInput
-                                placeholder={'Type New Billing Company Name'}
-                                value={this.state.addBilling}
-                                style={{
-                                  width: width * 0.8,
-                                  justifyContent: 'flex-end',
-                                  fontSize: width * 0.036,
-                                }}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                  },
-                                }}
-                                onChangeText={(text) => {
-                                  this.setState({addBilling: text});
-                                }}
-                              />
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-around',
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => this.cancelAddType()}>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: '#25AAE1ec',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Cancel
+                                <View>
+                                  <Text style={styles.addTypeHeading}>
+                                    Add New {showAddType} Company
                                   </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => this.doneAddType('Billing')}
-                                  disabled={
-                                    this.state.addBilling ? false : true
-                                  }>
-                                  <Text
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: width * 0.045,
-                                      color: this.state.addBilling
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                      width: width * 0.16,
-                                      textAlign: 'center',
-                                    }}>
-                                    Add
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          ) : (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                              }}>
-                              <SearchableDropDown
-                                onItemSelect={(item) => {
-                                  this.setState({
-                                    BillingCompany: item.name,
-                                    BillingCompanyId: item.id,
-                                  });
-                                  // console.log('kia mila', item);
-                                }}
-                                containerStyle={{
-                                  paddingBottom: width * 0.02,
-                                  width: width * 0.7,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                  zIndex: 99,
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                items={this.context.propitemList}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Billing Company',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
-                                    margin: 0,
-                                    borderTopLeftRadius: width * 0.015,
-                                    borderBottomLeftRadius: width * 0.015,
-                                    borderColor: 'black',
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderTopWidth: width * 0.0019,
-                                    borderLeftWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    zIndex: 0,
-                                  },
-                                  onTextChange: (text) => {
-                                    this.setState({BillingCompany: text});
-                                  },
-                                  value: setTimeout(
-                                    () => this.state.BillingCompany,
-                                    200,
-                                  ),
-
-                                  defaultValue: this.state.BillingCompany,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TouchableOpacity
-                                style={{
-                                  width: width * 0.1,
-                                  backgroundColor: '#25AAE199',
-                                  borderTopRightRadius: width * 0.015,
-                                  borderBottomRightRadius: width * 0.015,
-                                  borderTopWidth: width * 0.0019,
-                                  borderRightWidth: width * 0.0019,
-                                  borderBottomWidth: width * 0.0019,
-                                  height: width * 0.13,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                onPress={() => this.showAddNewType('Billing')}>
-                                <Icon
-                                  size={width * 0.06}
-                                  color="#fff"
-                                  name={'add'}
+                                </View>
+                                <TextInput
+                                  placeholder={'Type New Billing Company Name'}
+                                  value={addBilling}
+                                  style={styles.addTypeTextInput}
+                                  mode={'outlined'}
+                                  theme={{
+                                    colors: {
+                                      text: '#25AAE1ec',
+                                      primary: '#25AAE1ec',
+                                      selectionColor: 'red',
+                                    },
+                                  }}
+                                  onChangeText={(text) => {
+                                    setAddBilling(text);
+                                  }}
                                 />
-                              </TouchableOpacity>
-                            </View>
-                          )}
-                        </View>
-                      )}
-                    </View> */}
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => cancelAddType()}>
+                                    <Text style={styles.addTypeButtons}>
+                                      Cancel
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => doneAddType('Billing')}
+                                    disabled={addBilling ? false : true}>
+                                    <Text
+                                      style={[
+                                        styles.addTypeButtons,
+                                        {
+                                          color: addBilling
+                                            ? '#25AAE1ec'
+                                            : '#d0d0d0',
+                                        },
+                                      ]}>
+                                      Add
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            ) : (
+                              <View style={styles.mainDropDownView}>
+                                <SearchableDropDown
+                                  onItemSelect={(item) => {
+                                    setBillingCompany(item.name);
+                                    setBillingCompanyId(item.id);
+                                  }}
+                                  containerStyle={styles.dropDownContainer}
+                                  itemStyle={styles.dropDownItems}
+                                  itemTextStyle={styles.dropDownItemText}
+                                  itemsContainerStyle={
+                                    styles.dropDownItemContainer
+                                  }
+                                  items={billCompList}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Billing Company',
+                                    underlineColorAndroid: 'transparent',
+                                    style: styles.dropDownTextInput,
+                                    onTextChange: (text) => {
+                                      setBillingCompany(text);
+                                    },
+                                    value: setTimeout(
+                                      () => BillingCompany,
+                                      200,
+                                    ),
+
+                                    defaultValue: BillingCompany,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={styles.addNewButton}
+                                  onPress={() => showAddNewType('Billing')}>
+                                  <Icon
+                                    size={width * 0.06}
+                                    color="#fff"
+                                    name={'add'}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </View>
+                        )}
+                      </View> */}
                     </View>
                   </KeyboardAwareScrollView>
                   {/* Box Header */}
