@@ -558,8 +558,8 @@ export default class Splash extends Component {
             </View>
           </View>
           <View style={styles.headingContainer}>
-            <Add loader={this.handleLoader} />
-            {/* <View style={styles.headingInner}>
+            {/* <Add loader={this.handleLoader} /> */}
+            <View style={styles.headingInner}>
               <TouchableOpacity
                 // onPress={this.openAddProp}
                 onPress={() => this.enableLocation()}
@@ -577,7 +577,7 @@ export default class Splash extends Component {
                 color="white"
               />
               <Text style={styles.mainHeadiing}>Properties</Text>
-            </View> */}
+            </View>
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}

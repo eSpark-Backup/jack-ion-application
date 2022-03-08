@@ -31,11 +31,13 @@ import SystemSetting from 'react-native-system-setting';
 import SearchableDropDown from 'react-native-searchable-dropdown';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {create} from 'apisauce';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Component
 import styles from './style';
 import {Fonts} from '../../../utils/fonts';
 import Base_URL from '../../../api/WebServices';
+import style from './style';
 
 export default function AddEditProperty({
   modalVisible,
@@ -74,8 +76,17 @@ export default function AddEditProperty({
   const [locationBtn, setLocationBtn] = useState('');
   const [markers, setMarkers] = useState(currLocate);
   const [CustomId, setCustomId] = useState('');
+  const [unitTypeList, setUnitTypeList] = useState([{id: 1, name: 'br'}]);
+  const [classesList, setClassesList] = useState([{id: 1, name: 'br'}]);
   const [unitCount, setUnitCount] = useState('');
-  const [unitMix, setUnitMix] = useState([1]);
+  const [unitMix, setUnitMix] = useState([]);
+  const [sqft, setSqft] = useState('');
+  const [unitType, setUnitType] = useState('');
+  const [classes, setClasses] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [addUnitMix, setAddUnitMix] = useState(false);
+  const [unitMixIndex, setUnitMixIndex] = useState(null);
+  const [unitMixFlag, setUnitMixFlag] = useState(false);
   const [ownerData, setOwnerData] = useState([]);
   const [ownerId, setOwnerId] = useState(null);
   const [ownerName, setOwnerName] = useState('');
@@ -145,18 +156,7 @@ export default function AddEditProperty({
     setOwnerData(ownerRes?.data?.data);
   };
 
-  const AddNewRow = () => {
-    let arr = [...unitMix];
-    arr.push(2);
-    setUnitMix(arr);
-  };
-
-  const showMoreFn = (indexx) => {
-    // this.setState({
-    //   addNewType: false,
-    //   showEditManufacturer: false,
-    //   showAddManufacturer: false,
-    // });
+  const animate = () => {
     LayoutAnimation.configureNext({
       duration: 300,
       create: {
@@ -167,6 +167,59 @@ export default function AddEditProperty({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+  };
+
+  const AddNewRow = () => {
+    let arr = [...unitMix];
+    let data = {
+      square_feets: sqft,
+      unit_type: unitType,
+      classes: classes,
+      bedrooms: bedrooms,
+    };
+    arr.push(data);
+    setUnitMix(arr);
+    clearUnitMixData();
+  };
+
+  const editOldRow = () => {
+    let editArr = [...unitMix];
+    editArr[unitMixIndex].square_feets = sqft;
+    editArr[unitMixIndex].unit_type = unitType;
+    editArr[unitMixIndex].classes = classes;
+    editArr[unitMixIndex].bedrooms = bedrooms;
+    setUnitMix(editArr);
+    clearUnitMixData();
+  };
+
+  const getRowData = (item, index) => {
+    setUnitMixFlag(true);
+    setSqft(item.square_feets);
+    setUnitType(item.unit_type);
+    setClasses(item.classes);
+    setBedrooms(item.bedrooms);
+    setUnitMixIndex(index);
+    setAddUnitMix(true);
+  };
+
+  const clearUnitMixData = () => {
+    animate();
+    setSqft('');
+    setUnitType('');
+    setClasses('');
+    setBedrooms('');
+    setUnitMixIndex(null);
+    setUnitMixFlag(false);
+    setAddUnitMix(false);
+  };
+
+  const showMoreFn = (indexx) => {
+    // this.setState({
+    //   addNewType: false,
+    //   showEditManufacturer: false,
+    //   showAddManufacturer: false,
+    // });
+    animate();
     dropDownShow.map((item, index) => {
       if (index == indexx) {
         let dropDownVal = [...dropDownShow];
@@ -239,16 +292,7 @@ export default function AddEditProperty({
   };
 
   const showAddNewType = (value) => {
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+    animate();
     setAddNewType(true);
     setShowAddType(value);
     // this.setState({showAddType: value}, () => {
@@ -261,16 +305,7 @@ export default function AddEditProperty({
   };
 
   const cancelAddType = () => {
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+    animate();
     // let deviceData = [...this.state.addDevice]; // copying the old datas array
     // deviceData[0].select = '';
     // deviceData[0].selectId = '';
@@ -551,38 +586,13 @@ export default function AddEditProperty({
           }}
           isVisible={modalVisible}>
           {selectLocation ? (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <View
-                style={{
-                  width: width * 0.9,
-                  height: width * 1,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: width * 0.03,
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    zIndex: 2,
-                    position: 'absolute',
-                    top: width * 0.16,
-                    width: width * 0.72,
-                    backgroundColor: 'white',
-                  }}>
-                  <Text
-                    style={{
-                      marginTop: width * 0.02,
-                      marginLeft: width * 0.03,
-                    }}>
+            <View style={styles.loactionSelectionMainView}>
+              <View style={styles.loactionSelectionInnerView}>
+                <View style={styles.radialDisContainer}>
+                  <Text style={styles.radialDisHeading}>
                     RADIAL DISTANCE (KM)*
                   </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      margin: width * 0.01,
-                    }}>
+                  <View style={styles.radialDisSlider}>
                     <Slider
                       style={{width: width * 0.55, height: width * 0.08}}
                       minimumValue={0.1}
@@ -599,14 +609,7 @@ export default function AddEditProperty({
                     <Text>{radialDis} KM</Text>
                   </View>
                 </View>
-                <View
-                  style={{
-                    flex: 1,
-                    zIndex: 2,
-                    position: 'absolute',
-                    top: width * 0.04,
-                    width: width * 0.72,
-                  }}>
+                <View style={styles.autoCompleteInputContainer}>
                   <GooglePlacesAutocomplete
                     placeholder="Address"
                     query={{
@@ -627,19 +630,7 @@ export default function AddEditProperty({
                 </View>
                 <TouchableOpacity
                   onPress={() => getCurrentLocation()}
-                  style={{
-                    backgroundColor: '#25AAE1ec',
-                    zIndex: 1,
-                    position: 'absolute',
-                    height: width * 0.12,
-                    width: width * 0.12,
-                    borderRadius: width * 0.3,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    elevation: width * 0.005,
-                    bottom: width * 0.2,
-                    right: width * 0.03,
-                  }}>
+                  style={styles.currentLocationBtn}>
                   <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -647,19 +638,7 @@ export default function AddEditProperty({
                     setSelectLocation(false);
                     setLocationSelected(true);
                   }}
-                  style={{
-                    backgroundColor: '#25AAE1ec',
-                    zIndex: 1,
-                    position: 'absolute',
-                    height: width * 0.12,
-                    width: width * 0.12,
-                    borderRadius: width * 0.3,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    elevation: width * 0.005,
-                    bottom: width * 0.04,
-                    right: width * 0.03,
-                  }}>
+                  style={styles.loactionDoneBtn}>
                   <Icon
                     size={width * 0.07}
                     color="#fff"
@@ -668,15 +647,7 @@ export default function AddEditProperty({
                 </TouchableOpacity>
 
                 {markers.length > 0 || currLocate.length > 0 ? (
-                  <View
-                    style={{
-                      // backgroundColor: 'blue',
-                      width: width * 0.12,
-                      top: width * 0.4,
-                      zIndex: 1,
-                      position: 'absolute',
-                      alignItems: 'center',
-                    }}>
+                  <View style={styles.loactionPinContainer}>
                     <Icon
                       size={width * 0.12}
                       color="#f00"
@@ -686,19 +657,7 @@ export default function AddEditProperty({
                 ) : null}
                 {markers.length > 0 || currLocate.length > 0 ? (
                   <MapView
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      justifyContent: 'flex-end',
-                      alignItems: 'center',
-
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: width * 0.03,
-                    }}
+                    style={styles.mapView}
                     region={{
                       latitude: lat,
                       longitude: long,
@@ -725,8 +684,6 @@ export default function AddEditProperty({
                         })
                       }
                       radius={radialDis * 1000}
-                      // fillColor="rgba(12,170,225,0.3)"
-                      // strokeColor="rgba(12,170,225,1)"
                     />
                   </MapView>
                 ) : null}
@@ -825,7 +782,6 @@ export default function AddEditProperty({
                           {error.property}
                         </HelperText>
                       ) : null}
-
                       <View
                         style={[
                           styles.inputContainer,
@@ -849,7 +805,6 @@ export default function AddEditProperty({
                           />
                         </TouchableOpacity>
                       </View>
-
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(1)}>
@@ -866,71 +821,284 @@ export default function AddEditProperty({
                           color="#3E4A4F"
                         />
                       </TouchableOpacity>
-                      <View
-                        style={[
-                          styles.inputContainer,
-                          {
-                            height: dropDownShow[1].value
-                              ? width * 0.18
-                              : width * 0.0,
-                            overflow: 'hidden',
-                          },
-                        ]}>
-                        <TextInput
-                          placeholder="Unit Count"
-                          style={styles.input}
-                          value={unitCount}
-                          onChangeText={(text) => {
-                            setUnitCount(text);
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'center',
-                        }}>
-                        <Text style={{marginHorizontal: width * 0.01}}>
-                          Sq. Ft
-                        </Text>
-                        <Text style={{marginHorizontal: width * 0.01}}>
-                          Unit Type
-                        </Text>
-                        <Text style={{marginHorizontal: width * 0.01}}>
-                          Classes
-                        </Text>
-                        <Text style={{marginHorizontal: width * 0.01}}>
-                          Bedrooms
-                        </Text>
-                        <Text style={{marginHorizontal: width * 0.01}}>
-                          Action
-                        </Text>
-                      </View>
-
-                      {unitMix.map((item, index) => (
+                      {addUnitMix ? (
                         <View>
-                          <Text>ROW</Text>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: dropDownShow[1].value
+                                  ? width * 0.18
+                                  : width * 0.0,
+                                overflow: 'hidden',
+                                // marginBottom: width * 0.015,
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Square Feet"
+                              style={styles.input}
+                              value={sqft}
+                              keyboardType="decimal-pad"
+                              onChangeText={(text) => {
+                                setSqft(text);
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: dropDownShow[1].value
+                                  ? 'auto'
+                                  : width * 0.0,
+                                overflow: 'hidden',
+                                justifyContent: 'center',
+                              },
+                            ]}>
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                // setOwnerId(item.id);
+                                setUnitType(item.name);
+                              }}
+                              containerStyle={styles.dropDownFullContainer}
+                              itemStyle={styles.dropDownItems}
+                              itemTextStyle={styles.dropDownItemText}
+                              itemsContainerStyle={styles.dropDownItemContainer}
+                              items={unitTypeList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Unit Types',
+                                underlineColorAndroid: 'transparent',
+                                placeholderTextColor: '#777',
+                                style: styles.dropDownFullTextInput,
+                                onTextChange: (text) => {
+                                  setUnitType(text);
+                                },
+                                value: setTimeout(() => unitType, 200),
+                                defaultValue: unitType,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: dropDownShow[1].value
+                                  ? 'auto'
+                                  : width * 0.0,
+                                overflow: 'hidden',
+                                justifyContent: 'center',
+                              },
+                            ]}>
+                            <SearchableDropDown
+                              onItemSelect={(item) => {
+                                // setOwnerId(item.id);
+                                setClasses(item.name);
+                              }}
+                              containerStyle={styles.dropDownFullContainer}
+                              itemStyle={styles.dropDownItems}
+                              itemTextStyle={styles.dropDownItemText}
+                              itemsContainerStyle={styles.dropDownItemContainer}
+                              items={classesList}
+                              resetValue={false}
+                              textInputProps={{
+                                placeholder: 'Classes',
+                                underlineColorAndroid: 'transparent',
+                                placeholderTextColor: '#777',
+                                style: styles.dropDownFullTextInput,
+                                onTextChange: (text) => {
+                                  setClasses(text);
+                                },
+                                value: setTimeout(() => classes, 200),
+                                defaultValue: classes,
+                              }}
+                              listProps={{
+                                nestedScrollEnabled: true,
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: dropDownShow[1].value
+                                  ? width * 0.18
+                                  : width * 0.0,
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Bedrooms"
+                              style={styles.input}
+                              value={bedrooms}
+                              keyboardType="decimal-pad"
+                              onChangeText={(text) => {
+                                setBedrooms(text);
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={[
+                              styles.unitMixButtonContainer,
+                              {
+                                height: dropDownShow[1].value
+                                  ? 'auto'
+                                  : width * 0.0,
+                              },
+                            ]}>
+                            <TouchableOpacity onPress={clearUnitMixData}>
+                              <Text style={styles.unitMixButtonText}>
+                                Cancel
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={unitMixFlag ? editOldRow : AddNewRow}>
+                              <Text
+                                style={[
+                                  styles.unitMixButtonText,
+                                  {
+                                    color:
+                                      sqft && unitType && classes && bedrooms
+                                        ? '#25AAE1ec'
+                                        : '#d0d0d0',
+                                  },
+                                ]}>
+                                {unitMixFlag ? 'Edit' : 'Add'}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      ) : (
+                        <View
+                          style={[
+                            styles.unitCountAndMixContainer,
+                            {
+                              height: dropDownShow[1].value
+                                ? 'auto'
+                                : width * 0.0,
+                            },
+                          ]}>
+                          <View
+                            style={[
+                              styles.inputContainer,
+                              {
+                                height: dropDownShow[1].value
+                                  ? width * 0.18
+                                  : width * 0.0,
+                                overflow: 'hidden',
+                                marginBottom: width * 0.015,
+                              },
+                            ]}>
+                            <TextInput
+                              placeholder="Unit Count"
+                              style={styles.input}
+                              value={unitCount}
+                              keyboardType="decimal-pad"
+                              onChangeText={(text) => {
+                                setUnitCount(text);
+                              }}
+                              mode={'outlined'}
+                              theme={{
+                                colors: {
+                                  text: '#25AAE1ec',
+                                  primary: '#25AAE1ec',
+                                  selectionColor: 'red',
+                                },
+                              }}
+                            />
+                          </View>
+                          {unitMix.map((item, index) => (
+                            <View style={{flexDirection: 'row'}}>
+                              <TouchableOpacity
+                                style={styles.unitMixData}
+                                onPress={() => getRowData(item, index)}>
+                                <View style={styles.unitMixDataContainer}>
+                                  <Text style={styles.unitMixDataHeading}>
+                                    Sq. Ft
+                                  </Text>
+                                  <Text style={styles.unitMixDataValues}>
+                                    {item.square_feets}
+                                  </Text>
+                                </View>
+                                <View style={styles.unitMixDataContainer}>
+                                  <Text style={styles.unitMixDataHeading}>
+                                    Unit Type
+                                  </Text>
+                                  <Text style={styles.unitMixDataValues}>
+                                    {item.unit_type}
+                                  </Text>
+                                </View>
+                                <View style={styles.unitMixDataContainer}>
+                                  <Text style={styles.unitMixDataHeading}>
+                                    Classes
+                                  </Text>
+                                  <Text style={styles.unitMixDataValues}>
+                                    {item.classes}
+                                  </Text>
+                                </View>
+                                <View style={styles.unitMixDataContainer}>
+                                  <Text style={styles.unitMixDataHeading}>
+                                    Bedrooms
+                                  </Text>
+                                  <Text style={styles.unitMixDataValues}>
+                                    {item.bedrooms}
+                                  </Text>
+                                </View>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  let arr = [...unitMix];
+                                  arr.splice(index, 1);
+                                  setUnitMix(arr);
+                                }}
+                                style={styles.unitMixRemoveBtn}>
+                                <MaterialCommunityIcon
+                                  name="delete"
+                                  size={width * 0.08}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))}
                           <TouchableOpacity
                             onPress={() => {
-                              let arr = [...unitMix];
-                              arr.splice(index, 1);
-                              setUnitMix(arr);
-                            }}>
-                            <Text>Remove</Text>
+                              LayoutAnimation.configureNext({
+                                duration: 300,
+                                create: {
+                                  type: LayoutAnimation.Types.easeInEaseOut,
+                                  property: LayoutAnimation.Properties.opacity,
+                                },
+                                update: {
+                                  type: LayoutAnimation.Types.easeInEaseOut,
+                                },
+                              });
+                              setAddUnitMix(true);
+                            }}
+                            style={styles.addNewRowBtn}>
+                            <Text style={{color: '#25AAE1ec'}}>
+                              Add New Rows
+                            </Text>
                           </TouchableOpacity>
                         </View>
-                      ))}
-                      <TouchableOpacity onPress={AddNewRow}>
-                        <Text>Add New Rows</Text>
-                      </TouchableOpacity>
+                      )}
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(2)}>
@@ -1081,13 +1249,12 @@ export default function AddEditProperty({
                           }}
                         />
                       </View>
-
                       <View
                         style={[
                           styles.inputContainer,
                           {
                             height: dropDownShow[3].value
-                              ? width * 0.18
+                              ? 'auto'
                               : width * 0.0,
 
                             overflow: 'hidden',
@@ -1205,253 +1372,6 @@ export default function AddEditProperty({
                           }}
                         />
                       </View>
-                      {/* <TouchableOpacity
-                        style={styles.desciptionContainer}
-                        onPress={() => showMoreFn(3)}>
-                        <Text style={styles.desciptionHeading}>
-                          management company
-                        </Text>
-                        <IonicIcon
-                          name={
-                            dropDownShow[3].value
-                              ? 'chevron-up'
-                              : 'chevron-down'
-                          }
-                          size={width * 0.05}
-                          color="#3E4A4F"
-                        />
-                      </TouchableOpacity> */}
-                      {/* <View
-                        style={[
-                          styles.bothViewContainer,
-                          {
-                            height: dropDownShow[3].value
-                              ? width * 0.18
-                              : width * 0.0,
-                          },
-                        ]}>
-                        {loadingStateManage ? (
-                          <ActivityIndicator size="large" color={'#25AAE1ec'} />
-                        ) : addNewType && showAddType == 'Management' ? (
-                          <View>
-                            <View>
-                              <Text style={styles.addTypeHeading}>
-                                Add New {showAddType} Company
-                              </Text>
-                            </View>
-                            <TextInput
-                              placeholder={'Type New Management Company Name'}
-                              value={addManagement}
-                              style={styles.addTypeTextInput}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                              onChangeText={(text) => {
-                                setAddManagement(text);
-                              }}
-                            />
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                              }}>
-                              <TouchableOpacity onPress={() => cancelAddType()}>
-                                <Text style={styles.addTypeButtons}>
-                                  Cancel
-                                </Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => doneAddType('Management')}
-                                disabled={addManagement ? false : true}>
-                                <Text
-                                  style={[
-                                    styles.addTypeButtons,
-                                    {
-                                      color: addBilling
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                    },
-                                  ]}>
-                                  Add
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        ) : (
-                          <View style={styles.mainDropDownView}>
-                            <SearchableDropDown
-                              onItemSelect={(item) => {
-                                setManagementCompany(item.name);
-                                setManagementCompanyId(item.id);
-                              }}
-                              containerStyle={styles.dropDownContainer}
-                              itemStyle={styles.dropDownItems}
-                              itemTextStyle={styles.dropDownItemText}
-                              itemsContainerStyle={styles.dropDownItemContainer}
-                              items={manageCompList}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Management Company',
-                                underlineColorAndroid: 'transparent',
-                                style: styles.dropDownTextInput,
-                                onTextChange: (text) => {
-                                  setManagementCompany(text);
-                                },
-                                value: setTimeout(() => managementCompany, 200),
-                                defaultValue: managementCompany,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                            <TouchableOpacity
-                              style={styles.addNewButton}
-                              onPress={() => showAddNewType('Management')}>
-                              <Icon
-                                size={width * 0.06}
-                                color="#fff"
-                                name={'add'}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        )}
-                      </View> */}
-                      {/* <TouchableOpacity
-                        style={styles.desciptionContainer}
-                        onPress={() => showMoreFn(4)}>
-                        <Text style={styles.desciptionHeading}>
-                          billing company
-                        </Text>
-                        <IonicIcon
-                          name={
-                            dropDownShow[4].value
-                              ? 'chevron-up'
-                              : 'chevron-down'
-                          }
-                          size={width * 0.05}
-                          color="#3E4A4F"
-                        />
-                      </TouchableOpacity> */}
-                      {/* <View
-                        style={[
-                          styles.bothViewContainer,
-                          {
-                            height: dropDownShow[4].value
-                              ? width * 0.18
-                              : width * 0.0,
-                          },
-                        ]}>
-                        {loadingStateBill ? (
-                          <ActivityIndicator size="large" color={'#25AAE1ec'} />
-                        ) : (
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'flex-start',
-                            }}>
-                            {addNewType && showAddType == 'Billing' ? (
-                              <View>
-                                <View>
-                                  <Text style={styles.addTypeHeading}>
-                                    Add New {showAddType} Company
-                                  </Text>
-                                </View>
-                                <TextInput
-                                  placeholder={'Type New Billing Company Name'}
-                                  value={addBilling}
-                                  style={styles.addTypeTextInput}
-                                  mode={'outlined'}
-                                  theme={{
-                                    colors: {
-                                      text: '#25AAE1ec',
-                                      primary: '#25AAE1ec',
-                                      selectionColor: 'red',
-                                    },
-                                  }}
-                                  onChangeText={(text) => {
-                                    setAddBilling(text);
-                                  }}
-                                />
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                  }}>
-                                  <TouchableOpacity
-                                    onPress={() => cancelAddType()}>
-                                    <Text style={styles.addTypeButtons}>
-                                      Cancel
-                                    </Text>
-                                  </TouchableOpacity>
-                                  <TouchableOpacity
-                                    onPress={() => doneAddType('Billing')}
-                                    disabled={addBilling ? false : true}>
-                                    <Text
-                                      style={[
-                                        styles.addTypeButtons,
-                                        {
-                                          color: addBilling
-                                            ? '#25AAE1ec'
-                                            : '#d0d0d0',
-                                        },
-                                      ]}>
-                                      Add
-                                    </Text>
-                                  </TouchableOpacity>
-                                </View>
-                              </View>
-                            ) : (
-                              <View style={styles.mainDropDownView}>
-                                <SearchableDropDown
-                                  onItemSelect={(item) => {
-                                    setBillingCompany(item.name);
-                                    setBillingCompanyId(item.id);
-                                  }}
-                                  containerStyle={styles.dropDownContainer}
-                                  itemStyle={styles.dropDownItems}
-                                  itemTextStyle={styles.dropDownItemText}
-                                  itemsContainerStyle={
-                                    styles.dropDownItemContainer
-                                  }
-                                  items={billCompList}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder: 'Billing Company',
-                                    underlineColorAndroid: 'transparent',
-                                    style: styles.dropDownTextInput,
-                                    onTextChange: (text) => {
-                                      setBillingCompany(text);
-                                    },
-                                    value: setTimeout(
-                                      () => BillingCompany,
-                                      200,
-                                    ),
-
-                                    defaultValue: BillingCompany,
-                                  }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
-                                  }}
-                                />
-                                <TouchableOpacity
-                                  style={styles.addNewButton}
-                                  onPress={() => showAddNewType('Billing')}>
-                                  <Icon
-                                    size={width * 0.06}
-                                    color="#fff"
-                                    name={'add'}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                            )}
-                          </View>
-                        )}
-                      </View> */}
                     </View>
                   </KeyboardAwareScrollView>
                   {/* Box Header */}
