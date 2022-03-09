@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useReducer, useRef, useState} from 'react';
 
 import {
   Text,
@@ -38,6 +38,7 @@ import styles from './style';
 import {Fonts} from '../../../utils/fonts';
 import Base_URL from '../../../api/WebServices';
 import style from './style';
+import clc from 'cli-color';
 
 export default function AddEditProperty({
   modalVisible,
@@ -53,18 +54,21 @@ export default function AddEditProperty({
   const circleRef = useRef(null);
   const api = create({baseURL: Base_URL});
 
-  const [loadingStateManage, setLoadingStateManage] = useState(false);
-  const [loadingStateBill, setLoadingStateBill] = useState(false);
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [loadManuList, setLoadManuList] = useState(false);
+  const [loadingStateDev, setLoadingStateDev] = useState(false);
+  const [loadingState, setLoadingState] = useState(false);
   const [addNewType, setAddNewType] = useState(false);
   const [showAddType, setShowAddType] = useState('');
-  const [billCompList, setBillCompList] = useState([]);
-  const [addBilling, setAddBilling] = useState('');
-  const [BillingCompany, setBillingCompany] = useState('');
-  const [BillingCompanyId, setBillingCompanyId] = useState('');
-  const [manageCompList, setManageCompList] = useState([]);
-  const [addManagement, setAddManagement] = useState('');
-  const [managementCompany, setManagementCompany] = useState('');
-  const [managementCompanyId, setManagementCompanyId] = useState(null);
+  const [showAddManufacturer, setShowAddManufacturer] = useState(false);
+  const [showEditManufacturer, setShowEditManufacturer] = useState(false);
+  const [allManuList, setAllManuList] = useState([]);
+  const [utilTypes, setUtilTypes] = useState([]);
+  const [addManufacturer, setAddManufacturer] = useState('');
+  const [addUtility, setAddUtility] = useState('');
+  const [selectAddManuUtil, setSelectAddManuUtil] = useState([]);
+  const [manufacturersArray, setManufacturersArray] = useState([]);
+  const [currentManuIndex, setCurrentManuIndex] = useState(null);
   const [avoidKeyboard, setAvoidKeyboard] = useState(false);
   const [selectLocation, setSelectLocation] = useState(false);
   const [locationSelected, setLocationSelected] = useState(false);
@@ -98,6 +102,25 @@ export default function AddEditProperty({
   const [City, setCity] = useState('');
   const [State, setState] = useState('');
   const [ZipCode, setZipCode] = useState('');
+  const [utilAndManu, setUtilAndManu] = useState([
+    {
+      id: 0,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'Utility Type',
+      placeholder: 'Select Utilty Type',
+      data: [],
+    },
+    {
+      id: 0,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'Manufacturer',
+      data: [],
+    },
+  ]);
   const [error, setError] = useState({
     property: '',
     meterId: '',
@@ -128,32 +151,39 @@ export default function AddEditProperty({
       api.setHeader('Authorization', 'Bearer ' + token);
     }
 
-    setLoadingStateManage(true);
-    const ManageRes = await api.get('/property/management-company/all');
-
-    let list = ManageRes?.data?.data?.managementCompany;
-    let filter = [];
-    for (let i = 0; i < list.length; i++) {
-      const data = {
-        name: list[i].manager_name,
-        id: list[i].id,
-      };
-      filter.push(data);
-    }
-
-    setManageCompList(filter);
-    setLoadingStateManage(false);
-
-    setLoadingStateBill(true);
-    const BillingRes = await api.get('/property/billing-company/all');
-
-    setBillCompList(BillingRes?.data?.data?.billingCompany);
-    setLoadingStateBill(false);
-
     const ownerRes = await api.get('/property/owner/own');
 
     console.log('ownerRes--->', ownerRes?.data?.data);
     setOwnerData(ownerRes?.data?.data);
+
+    const manuResponse = await api.get('/property/equipment/manufacturer/all');
+
+    setAllManuList(manuResponse?.data?.data);
+
+    const utilRes = await api.get('/property/equipment/utility-type');
+
+    let utilArr = [...utilAndManu];
+    utilArr[0].data = utilRes?.data?.data;
+    setUtilAndManu(utilArr);
+    setUtilTypes(utilRes?.data?.data);
+  };
+
+  const onChangeUtilAndManu = (e, index) => {
+    let listSlide = [...utilAndManu]; // copying the old datas array
+
+    if (index == 0) {
+      listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = '';
+      listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
+    } else if (index == 1) {
+      listSlide[index].select = e;
+      listSlide[index].selectId = ''; // replace e.target.value with whatever you want to change it to
+      listSlide[index].error = ''; // replace e.target.value with whatever you want to change it to
+    }
+    setUtilAndManu(listSlide);
   };
 
   const animate = () => {
@@ -167,6 +197,80 @@ export default function AddEditProperty({
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     });
+  };
+
+  const AddTypes = (item, type) => {
+    if (type == 'Utility') {
+      console.log('ADD CHALA', item);
+      this.setState({selectedUtil: item.name});
+
+      // let listDevice = [...this.state.deviceData];
+      // listDevice[0].select = '';
+      // listDevice[1].select = '';
+      // listDevice[0].selectId = '';
+      // listDevice[1].selectId = '';
+
+      let listSlide = [...allManuList];
+      let temp = [];
+      let listSlide2 = [...utilAndManu]; // copying the old datas array
+
+      const compareName = (obj1, obj2) => {
+        return obj1.name === obj2.name;
+      };
+      // console.log('ALL MANU LIST', listSlide);
+
+      listSlide.map((manuItem) => {
+        if (manuItem?.utility_type[0]?.name != undefined) {
+          if (item.name == manuItem?.utility_type[0]?.name) {
+            temp.push(manuItem);
+            listSlide2[1].data = temp;
+            setUtilAndManu(listSlide2);
+          }
+        }
+      });
+
+      // this.setState({deviceData: listDevice});
+      // this.setState({loadManus: false});
+    } else if (type == 'Manu Utility') {
+      console.log('PUSHING', item);
+      const items = selectAddManuUtil;
+      items.push(item);
+      console.log('PUSHED', items);
+      setSelectAddManuUtil(items);
+      console.log('AFTER PUSHED');
+      forceUpdate();
+    }
+  };
+
+  const getData = async (some, index) => {
+    console.log('get devices--->', some);
+
+    let listSlide = [...utilAndManu]; // copying the old datas array
+    listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
+    console.log('XX___--->>', some?.name);
+    if (index == 0) {
+      let allManu = [...allManuList];
+
+      let temp = [];
+      let listSlide2 = [...utilAndManu]; // copying the old datas array
+
+      allManu.map((manuItem) => {
+        if (manuItem?.utility_type[0]?.name != undefined) {
+          if (some.name == manuItem?.utility_type[0]?.name) {
+            temp.push(manuItem);
+            listSlide2[1].data = temp;
+            setUtilAndManu(listSlide2);
+          }
+        }
+      });
+      let updateData = [...utilAndManu];
+      updateData[1].select = ''; // replace e.target.value with whatever you want to change it to
+      updateData[1].selectId = '';
+      setUtilAndManu(updateData);
+    }
+
+    setUtilAndManu(listSlide);
   };
 
   const AddNewRow = () => {
@@ -233,6 +337,196 @@ export default function AddEditProperty({
         setDropDownShow(dropDownVal);
       }
     });
+  };
+
+  const addManufacturers = () => {
+    // this.setState({avoidKey: false, manuFlag: false});
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
+    const compareName = (obj1, obj2) => {
+      return obj1.name === obj2.name;
+    };
+
+    let newArr = [...manufacturersArray]; // used for adding in the list
+    let deviceArr = [...utilAndManu]; // used for clearing data
+    let deviceArr2 = [...allManuList]; // used for clearing data
+    // let newDevice = [...this.state.selectDevices]; // used for getting only name and id of devices
+
+    newArr.push({
+      name: utilAndManu[1].select,
+      manu_Id: utilAndManu[1].selectId,
+      utility_type: utilAndManu[0].select,
+      utility_type_id: utilAndManu[0].selectId,
+      // devices: this.state.selectDevices,
+    });
+
+    deviceArr[0].select = '';
+    deviceArr[0].selectId = '';
+    deviceArr[1].select = '';
+    deviceArr[1].selectId = '';
+
+    // deviceArr[0].data = deviceArr[0].data.filter((b) => {
+    //   let indexFound = newArr.findIndex((a) => compareName(a, b));
+    //   return indexFound === -1;
+    // });
+
+    deviceArr2 = deviceArr2.filter((b) => {
+      let indexFound = newArr.findIndex((a) => compareName(a, b));
+      return indexFound === -1;
+    });
+
+    setManufacturersArray(newArr);
+    setShowAddManufacturer(false);
+    setAllManuList(deviceArr2);
+
+    // this.setState(
+    //   {
+    //     selectDevices: [],
+    //     manufacturersArray: newArr,
+    //     deviceData: deviceArr,
+    //     showAddManufacturer: false,
+    //     allManuList: deviceArr2,
+    //     selectedUtil: '',
+    //   },
+    //   () => {
+    //     const newD = newArr.map(({devices}) => devices.map(({id}) => id));
+    //     this.setState({devIdsArr: newD.flat()}, () =>
+    //       console.log(
+    //         clc.greenBright('kia hai devices Ids'),
+    //         this.state.devIdsArr,
+    //       ),
+    //     );
+    //     console.log(
+    //       clc.cyan('kia ha Manu Arr'),
+    //       JSON.stringify(this.state.manufacturersArray),
+    //     );
+    //   },
+    // );
+  };
+
+  const editManufacturers = (manu, manuId) => {
+    // this.setState({avoidKey: false, manuFlag: false});
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
+    let newArr = [...manufacturersArray];
+
+    newArr[currentManuIndex].name = utilAndManu[1].select;
+    newArr[currentManuIndex].manu_Id = utilAndManu[1].selectId;
+    newArr[currentManuIndex].utility_type = utilAndManu[0].select;
+    newArr[currentManuIndex].utility_type_id = utilAndManu[0].selectId;
+    setManufacturersArray(newArr);
+    setShowEditManufacturer(false);
+
+    // this.setState(
+    //   {
+    //     manufacturersArray: newArr,
+    //     showEditManufacturer: false,
+    //   },
+    //   () => {
+    //     const newD = newArr.map(({devices}) => devices.map(({id}) => id));
+    //     this.setState({devIdsArr: newD.flat()}, () =>
+    //       console.log(
+    //         clc.greenBright('kia hai devices Ids'),
+    //         this.state.devIdsArr,
+    //       ),
+    //     );
+    //   },
+    // );
+  };
+
+  const DeleteManufacture = (item) => {
+    setLoadManuList(true);
+    console.log('DEVICE DATA', utilAndManu[0].data);
+    checkManufacture(item);
+  };
+
+  const checkManufacture = async (item) => {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+    const ManufacturersResponse = await api.get(
+      '/property/equipment/manufacturer/all',
+    );
+    console.log('ManufacturersResponse', ManufacturersResponse?.data);
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
+    let manuData = [...allManuList];
+    manuData = ManufacturersResponse?.data?.data;
+
+    const items = manufacturersArray.filter(
+      (sitem) => sitem.manu_Id !== item.manu_Id,
+    );
+
+    console.log('ITEMS', items);
+
+    let result = manuData.filter(
+      (o1) => !items.some((o2) => o1.id === o2.manu_Id),
+    );
+
+    console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
+    setManufacturersArray(items);
+    setAllManuList(result);
+    setLoadManuList(false);
+  };
+
+  const cancelManu = (flag) => {
+    // this.setState({avoidKey: false, manuFlag: false});
+    if (flag == 'add') {
+      let deviceArr = [...utilAndManu]; // used for clearing data
+      deviceArr[0].select = '';
+      deviceArr[0].selectId = '';
+      deviceArr[1].select = '';
+      deviceArr[1].selectId = '';
+      setUtilAndManu(deviceArr);
+      setShowAddManufacturer(false);
+      // this.setState({
+      //   deviceData: deviceArr,
+      //   showAddManufacturer: false,
+      //   selectedUtil: '',
+      // });
+    } else {
+      // console.log('COUNT Final', this.state.count);
+      let deviceArr = [...utilAndManu]; // used for clearing data
+      deviceArr[0].select = '';
+      deviceArr[0].selectId = '';
+      // deviceArr[1].select = '';
+      // deviceArr[1].selectId = '';
+      setUtilAndManu(deviceArr);
+      setShowEditManufacturer(false);
+      // this.setState({
+      //   selectDevices: [],
+      //   showEditManufacturer: false,
+      //   selectedUtil: '',
+      // });
+    }
   };
 
   const selectMeterLocation = async () => {
@@ -315,8 +609,7 @@ export default function AddEditProperty({
     // deviceData[2].selectId = '';
     setAddNewType(false);
     setShowAddType('');
-    setAddManagement('');
-    setAddBilling('');
+
     // this.setState({
     //   addManufacturer: '',
     //   addUtility: '',
@@ -331,16 +624,662 @@ export default function AddEditProperty({
     // });
   };
 
+  const openAddManu = async () => {
+    // this.setState({avoidKey: true});
+
+    // this.setState({manuFlag: true});
+
+    // this.setState({addManuLoad: true});
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
+    // let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
+    // deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+
+    // this.setState({addDevice: deviceDataManufacturer});
+
+    // let newArr = [...this.state.deviceData];
+
+    // newArr[0].select = '';
+    // newArr[0].selectId = '';
+
+    // this.setState({
+    //   selectDevices: [],
+    //   deviceData: newArr,
+    //   showAddManufacturer: true,
+    //   addManuLoad: false,
+    // });
+    setShowAddManufacturer(true);
+  };
+
+  const openEditManu = async (item, index) => {
+    // this.setState({loadManuList: true});
+    // this.setState({avoidKey: true, manuFlag: true});
+    LayoutAnimation.configureNext({
+      duration: 300,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    });
+
+    console.log('get devices---> Open Edit');
+
+    // let manuArr = [...this.state.manufacturersArray];
+    let newArr = [...utilAndManu];
+
+    newArr[0].select = item.utility_type;
+    newArr[0].selectId = item.utility_type_id;
+    newArr[1].select = item.name;
+    newArr[1].selectId = item.manu_Id;
+
+    console.log('item.name', item.name);
+    console.log('item.id', item.manu_Id);
+    setUtilAndManu(newArr);
+    setCurrentManuIndex(index);
+    setShowEditManufacturer(true);
+
+    // this.setState(
+    //   {
+    //     count: 0,
+    //     deviceData: newArr,
+    //     selectDevices: item.devices,
+    //     currentManuIndex: index,
+    //   },
+    //   () => {
+    //     this.setState({showEditManufacturer: true, loadManuList: false});
+    //     console.log(
+    //       clc.xterm(149)('Devices Array on Open Edit'),
+    //       JSON.stringify(this.state.deviceData),
+    //     );
+    //   },
+    // );
+  };
+
+  const deviceTypeInfoComponent = (flag) => {
+    return (
+      <View
+        style={{
+          // height: height * 0.25,
+          width: '100%',
+          alignSelf: 'center',
+          alignItems: 'center',
+          // justifyContent: 'center',
+          zIndex: 2,
+          height: dropDownShow[2].value ? height * 0.5 : height * 0.0,
+          overflow: 'hidden',
+          // backgroundColor: 'tomato',
+        }}>
+        {addNewType && showAddType == 'Utility Type' ? (
+          <View>
+            <View>
+              <Text
+                style={{
+                  fontSize: width * 0.03,
+                  color: '#3E4A4F',
+                  textTransform: 'capitalize',
+                  fontFamily: Fonts.ComfortaaRegular,
+                  marginBottom: width * 0.01,
+                  fontWeight: 'bold',
+                }}>
+                Add New {showAddType} Type
+              </Text>
+            </View>
+            <TextInput
+              placeholder={'Type New Utility Type Name'}
+              value={addUtility}
+              style={{
+                width: width * 0.8,
+                justifyContent: 'flex-end',
+                fontSize: width * 0.036,
+              }}
+              mode={'outlined'}
+              theme={{
+                colors: {
+                  text: '#25AAE1ec',
+                  primary: '#25AAE1ec',
+                  selectionColor: 'red',
+                },
+              }}
+              onChangeText={(text) => {
+                setAddUtility(text);
+              }}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}>
+              <TouchableOpacity onPress={() => cancelAddType()}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => doneAddType('Utility', true)}
+                disabled={addUtility ? false : true}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Add
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : addNewType && showAddType == 'Manufacturer' ? (
+          // this.state.addNewUType ? (
+          //   <View>
+          //     <View>
+          //       <Text
+          //         style={{
+          //           fontSize: width * 0.03,
+          //           color: '#3E4A4F',
+          //           textTransform: 'capitalize',
+          //           fontFamily: Fonts.ComfortaaRegular,
+          //           marginBottom: width * 0.01,
+          //           fontWeight: 'bold',
+          //         }}>
+          //         Add New {this.state.showAddType} Type
+          //       </Text>
+          //     </View>
+          //     <TextInput
+          //       placeholder={'Type New Utility Type Name'}
+          //       value={this.state.addUtility}
+          //       style={{
+          //         width: width * 0.8,
+          //         justifyContent: 'flex-end',
+          //         fontSize: width * 0.036,
+          //       }}
+          //       mode={'outlined'}
+          //       theme={{
+          //         colors: {
+          //           text: '#25AAE1ec',
+          //           primary: '#25AAE1ec',
+          //           selectionColor: 'red',
+          //         },
+          //       }}
+          //       onChangeText={(text) => {
+          //         this.setState({addUtility: text});
+          //       }}
+          //     />
+          //     <View
+          //       style={{
+          //         flexDirection: 'row',
+          //         justifyContent: 'space-around',
+          //       }}>
+          //       <TouchableOpacity onPress={() => this.cancelAddUType()}>
+          //         <Text
+          //           style={{
+          //             fontWeight: 'bold',
+          //             fontSize: width * 0.045,
+          //             color: '#25AAE1ec',
+          //             width: width * 0.16,
+          //             textAlign: 'center',
+          //           }}>
+          //           Cancel
+          //         </Text>
+          //       </TouchableOpacity>
+          //       <TouchableOpacity
+          //         onPress={() => this.doneAddType('Utility', false)}
+          //         disabled={this.state.addUtility ? false : true}>
+          //         <Text
+          //           style={{
+          //             fontWeight: 'bold',
+          //             fontSize: width * 0.045,
+          //             color: this.state.addUtility ? '#25AAE1ec' : '#d0d0d0',
+          //             width: width * 0.16,
+          //             textAlign: 'center',
+          //           }}>
+          //           Add
+          //         </Text>
+          //       </TouchableOpacity>
+          //     </View>
+          //   </View>
+          // ) : (
+          <View
+            style={{
+              width: '100%',
+              zIndex: 2,
+              alignSelf: 'center',
+              alignItems: 'center',
+            }}>
+            <View>
+              <View>
+                <Text
+                  style={{
+                    fontSize: width * 0.03,
+                    color: '#3E4A4F',
+                    textTransform: 'capitalize',
+                    fontFamily: Fonts.ComfortaaRegular,
+                    marginBottom: width * 0.01,
+                    fontWeight: 'bold',
+                  }}>
+                  Add New {showAddType}
+                </Text>
+              </View>
+              <TextInput
+                placeholder={'Type New Manufacturer Name'}
+                value={addManufacturer}
+                style={{
+                  width: width * 0.8,
+                  justifyContent: 'flex-end',
+                  fontSize: width * 0.036,
+                }}
+                mode={'outlined'}
+                theme={{
+                  colors: {
+                    text: '#25AAE1ec',
+                    primary: '#25AAE1ec',
+                    selectionColor: 'red',
+                  },
+                }}
+                onChangeText={(text) => {
+                  setAddManufacturer(text);
+                }}
+              />
+              <View>
+                <Text
+                  style={{
+                    fontSize: width * 0.03,
+                    color: '#3E4A4F',
+                    textTransform: 'capitalize',
+                    fontFamily: Fonts.ComfortaaRegular,
+                    marginVertical: width * 0.02,
+                    fontWeight: 'bold',
+                  }}>
+                  Select Utility Type
+                </Text>
+              </View>
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                  }}>
+                  <SearchableDropDown
+                    multi={true}
+                    selectedItems={selectAddManuUtil}
+                    onItemSelect={(item) => {
+                      console.log('Test', item);
+                      AddTypes(item, 'Manu Utility');
+                    }}
+                    containerStyle={{
+                      paddingBottom: width * 0.02,
+                      width: width * 0.7,
+                    }}
+                    itemStyle={{
+                      padding: width * 0.027,
+                      backgroundColor: 'rgb(247, 247, 247)',
+                      borderColor: '#bbb',
+                      borderWidth: width * 0.0015,
+                      borderRadius: width * 0.015,
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{
+                      maxHeight: height * 0.08,
+                    }}
+                    // items={item.data}
+                    items={utilTypes}
+                    onRemoveItem={(item, index) => {
+                      const items = selectAddManuUtil.filter(
+                        (sitem) => sitem.id !== item.id,
+                      );
+                      setSelectAddManuUtil(items);
+                    }}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Add Utility Type',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: width * 0.027,
+                        margin: 0,
+                        borderTopLeftRadius: width * 0.015,
+                        borderBottomLeftRadius: width * 0.015,
+                        borderColor: 'black',
+                        height: width * 0.13,
+                        backgroundColor: '#F6F6F6',
+                        borderTopWidth: width * 0.0019,
+                        borderLeftWidth: width * 0.0019,
+                        borderBottomWidth: width * 0.0019,
+                      },
+                      // onTextChange: (text) => {
+                      //   onChangeManufacturer(text, index);
+                      // },
+                      // value: setTimeout(() => item.select, 200),
+                      // defaultValue: item.select,
+                    }}
+                    listProps={{
+                      nestedScrollEnabled: true,
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      width: width * 0.1,
+                      backgroundColor: '#25AAE199',
+                      borderTopRightRadius: width * 0.015,
+                      borderBottomRightRadius: width * 0.015,
+                      borderTopWidth: width * 0.0019,
+                      borderRightWidth: width * 0.0019,
+                      borderBottomWidth: width * 0.0019,
+                      height: width * 0.13,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => this.showAddUNewType()}>
+                    <Icon size={width * 0.06} color="#fff" name={'add'} />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <FlatList
+                    data={selectAddManuUtil}
+                    // extraData={selectedTypes.current}
+                    style={{height: width * 0.15, width: width * 0.8}}
+                    horizontal
+                    renderItem={({item}) => (
+                      <>
+                        <View
+                          style={{
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            flexDirection: 'row',
+                            padding: 5,
+                            height: width * 0.1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Text style={{color: 'black'}}>{item.name}</Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              const items = selectAddManuUtil.filter(
+                                (sitem) => sitem.id !== item.id,
+                              );
+                              setSelectAddManuUtil(items);
+                            }}>
+                            <Icon name="close" size={width * 0.05} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{width: 5}} />
+                      </>
+                    )}
+                  />
+                  <View
+                    style={{
+                      height: width * 0.15,
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      marginVertical: height * 0.01,
+                    }}>
+                    <TouchableOpacity onPress={() => cancelAddType()}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: width * 0.045,
+                          color: '#25AAE1ec',
+                          width: width * 0.16,
+                          textAlign: 'center',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => this.doneAddType('Manufacturer')}
+                      disabled={
+                        addManufacturer && selectAddManuUtil.length > 0
+                          ? false
+                          : true
+                      }>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: width * 0.045,
+                          color:
+                            addManufacturer && selectAddManuUtil.length > 0
+                              ? '#25AAE1ec'
+                              : '#d0d0d0',
+                          width: width * 0.16,
+                          textAlign: 'center',
+                        }}>
+                        Add
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        ) : (
+          // )
+          <View>
+            {utilAndManu?.map((item, index) => {
+              return (
+                <View
+                  style={{
+                    width: '90%',
+                    zIndex: 2,
+                    alignSelf: 'center',
+                  }}
+                  key={item.id}>
+                  <Text style={styles.meterDesciptionHeading}>
+                    {item.name}*
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'flex-start',
+                    }}>
+                    <SearchableDropDown
+                      onItemSelect={(item) => {
+                        getData(item, index);
+                      }}
+                      containerStyle={{
+                        paddingBottom: width * 0.02,
+                        width: width * 0.7,
+                      }}
+                      itemStyle={{
+                        padding: width * 0.027,
+                        backgroundColor: 'rgb(247, 247, 247)',
+                        borderColor: '#bbb',
+                        borderWidth: width * 0.0015,
+                        borderRadius: width * 0.015,
+                        zIndex: 99,
+                      }}
+                      itemTextStyle={{color: '#222'}}
+                      itemsContainerStyle={{
+                        maxHeight: height * 0.08,
+                      }}
+                      items={item.data}
+                      resetValue={false}
+                      textInputProps={{
+                        // editable:
+                        //   index == 2
+                        //     ? deviceData[1].selectId
+                        //       ? true
+                        //       : false
+                        //     : true,
+                        placeholder:
+                          index == 1
+                            ? utilAndManu[0].selectId
+                              ? 'Select Manufacturer'
+                              : 'First Select Utility Type'
+                            : index == 0 && 'Select Utility Type',
+                        underlineColorAndroid: 'transparent',
+                        style: {
+                          padding: width * 0.027,
+                          margin: 0,
+                          borderTopLeftRadius: width * 0.015,
+                          borderBottomLeftRadius: width * 0.015,
+                          borderColor: item.error ? '#A3001B' : 'black',
+                          height: width * 0.13,
+                          backgroundColor: '#F6F6F6',
+                          borderTopWidth: width * 0.0019,
+                          borderLeftWidth: width * 0.0019,
+                          borderBottomWidth: width * 0.0019,
+                          zIndex: 0,
+                        },
+                        onTextChange: (text) => {
+                          onChangeUtilAndManu(text, index);
+                        },
+                        value: setTimeout(() => item.select, 200),
+                        defaultValue: item.select,
+                      }}
+                      listProps={{
+                        nestedScrollEnabled: true,
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        width: width * 0.1,
+                        backgroundColor: '#25AAE199',
+                        borderTopRightRadius: width * 0.015,
+                        borderBottomRightRadius: width * 0.015,
+                        borderTopWidth: width * 0.0019,
+                        borderRightWidth: width * 0.0019,
+                        borderBottomWidth: width * 0.0019,
+                        height: width * 0.13,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => showAddNewType(item.name)}>
+                      <Icon size={width * 0.06} color="#fff" name={'add'} />
+                    </TouchableOpacity>
+                  </View>
+                  {/* {this.state.loadManus ? (
+                    <ActivityIndicator size={'large'} color="#25AAE1ec" />
+                  ) : (
+                  )} */}
+                </View>
+              );
+            })}
+
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                flexDirection: 'row',
+                // backgroundColor: 'pink',
+                marginTop: 8,
+              }}>
+              <TouchableOpacity onPress={() => cancelManu(flag)}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  flag == 'add'
+                    ? addManufacturers()
+                    : editManufacturers(
+                        utilAndManu[1].select,
+                        utilAndManu[1].selectId,
+                      )
+                }
+                disabled={
+                  utilAndManu[0].selectId !== '' &&
+                  utilAndManu[1].selectId !== ''
+                    ? false
+                    : true
+                }>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color:
+                      utilAndManu[0].selectId !== '' &&
+                      utilAndManu[1].selectId !== ''
+                        ? '#25AAE1ec'
+                        : 'grey',
+                    width: width * 0.16,
+                    textAlign: 'center',
+                  }}>
+                  {flag == 'add' ? 'Add' : 'Edit'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        {error.deviceId ? (
+          <HelperText type="error" visible={error.deviceId}>
+            {error.deviceId}
+          </HelperText>
+        ) : null}
+      </View>
+    );
+  };
+
+  const renderManufacturerList = ({item, index}) => {
+    return (
+      <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity
+          onPress={() => openEditManu(item, index)}
+          style={{
+            backgroundColor: '#fff',
+            borderWidth: 2,
+            borderColor: '#787878',
+            height: width * 0.1,
+            width: width * 0.7,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 8,
+          }}>
+          <Text style={{color: '#787878'}}>{item.name}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => DeleteManufacture(item)}
+          style={{
+            borderWidth: 2,
+            borderColor: '#787878',
+            width: width * 0.1,
+            height: width * 0.1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <MaterialCommunityIcon name="delete" size={width * 0.08} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   const doneAddType = async (val, temp) => {
     console.log('Show Add Type', this.state.showAddType);
-    if (this.state.showAddType == 'Utility' || val == 'Utility') {
+    if (this.state.showAddType == 'Utility Type' || val == 'Utility') {
       let data = {
         name: this.state.addUtility,
       };
       if (temp) {
-        this.setState({loadingState: true});
+        setLoadingState(true);
       } else {
-        this.setState({loadingStateDev: true});
+        setLoadingStateDev(true);
       }
       const UtilityResponse = await api.post(
         '/property/equipment/utility-type',
@@ -366,14 +1305,17 @@ export default function AddEditProperty({
             addUtility: '',
           });
         } else {
-          this.cancelAddType();
+          cancelAddType();
         }
-        this.setState({loadingState: false, loadingStateDev: false});
+
+        setLoadingState(false);
+        setLoadingStateDev(false);
         this.getToken();
         alert(UtilityResponse?.data?.message);
       } else {
         alert(UtilityResponse?.data?.message);
-        this.setState({loadingState: false, loadingStateDev: false});
+        setLoadingState(false);
+        setLoadingStateDev(false);
       }
     } else if (
       this.state.showAddType == 'Manufacturer' ||
@@ -381,14 +1323,14 @@ export default function AddEditProperty({
     ) {
       console.log('chala');
       let utilIds = [];
-      for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
-        utilIds.push(this.state.selectAddManuUtil[i].id);
+      for (let i = 0; i < selectAddManuUtil?.length; i++) {
+        utilIds.push(selectAddManuUtil[i].id);
       }
       let data = {
-        name: this.state.addManufacturer,
+        name: addManufacturer,
         utility_type_id: utilIds,
       };
-      this.setState({loadingStateDev: true});
+      setLoadingStateDev(true);
       const ManufacturersResponse = await api.post(
         '/property/equipment/manufacturer/add',
         data,
@@ -407,166 +1349,11 @@ export default function AddEditProperty({
           },
         });
         this.getToken();
-        this.cancelAddType();
-        this.setState({loadingStateDev: false});
+        cancelAddType();
+        setLoadingStateDev(false);
       } else {
         alert(ManufacturersResponse?.data?.message);
-        this.setState({loadingStateDev: false});
-      }
-    } else if (
-      this.state.showAddType == 'Model Number' ||
-      val == 'Model Number'
-    ) {
-      let data = {
-        model_no: this.state.addModelNumber,
-        device_id: this.state.selectedDevice?.id,
-      };
-      this.setState({loadingStateDev: true});
-      const ModelNumberResponse = await api.post(
-        '/property/equipment/model-number/number',
-        data,
-      );
-      if (ModelNumberResponse?.data?.bool) {
-        console.log('datachecckk-->>', ModelNumberResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingStateDev: false});
-      } else {
-        alert(ModelNumberResponse?.data?.message);
-        this.setState({loadingStateDev: false});
-      }
-    } else if (this.state.showAddType == 'Meter' || val == 'Meter') {
-      let data = {
-        name: this.state.addMeter,
-      };
-      this.setState({loadingState: true});
-      const MeterResponse = await api.post(
-        '/property/equipment/meter/add-meter',
-        data,
-      );
-      if (MeterResponse?.data?.bool) {
-        console.log('datachecckk-->>', MeterResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingState: false});
-        alert(MeterResponse?.data?.message);
-      } else {
-        this.setState({loadingState: false});
-        alert(MeterResponse?.data?.message);
-      }
-    } else if (this.state.showAddType == 'Billing' || val == 'Billing') {
-      let data = {
-        name: this.state.addBilling,
-      };
-      setLoadingStateBill(true);
-      const BillingResponse = await api.post(
-        '/property/billing-company/add',
-        data,
-      );
-      if (BillingResponse?.data?.bool) {
-        console.log('datachecckk-->>', BillingResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        callApi();
-        cancelAddType();
-        setLoadingStateBill(false);
-        alert(BillingResponse?.data?.message);
-      } else {
-        setLoadingStateBill(false);
-        alert(BillingResponse?.data?.message);
-      }
-    } else if (showAddType == 'Management' || val == 'Management') {
-      let data = {
-        manager_name: addManagement,
-      };
-      console.log('Management Company data -->>', data);
-      setLoadingStateManage(false);
-      const ManagementResponse = await api.post(
-        '/property/management-company/add',
-        data,
-      );
-      console.log('Management Company-->>', ManagementResponse?.data?.data);
-      if (ManagementResponse?.data?.bool) {
-        console.log('datachecckk-->>', ManagementResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        callApi();
-        cancelAddType();
-        setLoadingStateManage(false);
-        alert(ManagementResponse?.data?.message);
-      } else {
-        setLoadingStateManage(false);
-        alert(ManagementResponse?.data?.message);
-      }
-    } else {
-      this.setState({modelArr: []});
-      let data = {
-        name: this.state.addDevice[2].select,
-        manufacturer_id: this.state.addDevice[0].selectId,
-        device_type_id: this.state.addDevice[1].selectId,
-        model_nos: this.state.modelArr,
-        product_desc: this.state.productNo,
-      };
-      this.setState({loadingStateDev: true});
-      const DeviceTypesResponse = await api.post(
-        '/property/equipment/device/add',
-        data,
-      );
-      if (DeviceTypesResponse?.data?.bool) {
-        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        callApi();
-        cancelAddType();
-        this.setState({loadingStateDev: false});
-        alert(DeviceTypesR4esponse?.data?.message);
-      } else {
-        this.setState({loadingStateDev: false});
-        alert(DeviceTypesResponse?.data?.message);
+        setLoadingStateDev(false);
       }
     }
   };
@@ -1118,56 +1905,51 @@ export default function AddEditProperty({
                       {/*
                          //! multi-manufacturer
                         */}
-                      {/* <ScrollView
-                      keyboardShouldPersistTaps="handled"
-                      nestedScrollEnabled>
-                      {this.state.loadingStateDev || this.state.loadingState ? (
-                        <ActivityIndicator size="large" color={'#25AAE1ec'} />
-                      ) : (
-                        <>
-                          <View
-                            style={{
-                              // height: height * 0.25,
-                              width: '100%',
-                              alignSelf: 'center',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              // justifyContent: 'center',
-                              zIndex: 2,
-                              height: dropDownShow[1].value
-                                ? this.state.showAddManufacturer ||
-                                  this.state.showEditManufacturer
-                                  ? height * 0.5
-                                  : this.state.manufacturersArray.length > 0
-                                  ? height * 0.25
-                                  : height * 0.15
-                                : height * 0.0,
-                              overflow: 'hidden',
-                              // backgroundColor: 'tomato',
-                            }}>
-                            {!this.state.showAddManufacturer &&
-                              !this.state.showEditManufacturer && (
+                      <ScrollView
+                        keyboardShouldPersistTaps="handled"
+                        nestedScrollEnabled>
+                        {loadingStateDev || loadingState ? (
+                          <ActivityIndicator size="large" color={'#25AAE1ec'} />
+                        ) : (
+                          <>
+                            <View
+                              style={{
+                                // height: height * 0.25,
+                                width: '100%',
+                                alignSelf: 'center',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                // justifyContent: 'center',
+                                zIndex: 2,
+                                height: dropDownShow[2].value
+                                  ? showAddManufacturer || showEditManufacturer
+                                    ? height * 0.5
+                                    : manufacturersArray.length > 0
+                                    ? height * 0.25
+                                    : height * 0.15
+                                  : height * 0.0,
+                                overflow: 'hidden',
+                                // backgroundColor: 'tomato',
+                              }}>
+                              {!showAddManufacturer && !showEditManufacturer && (
                                 <View style={{paddingVertical: 10}}>
-                                  {this.state.loadManuList ? (
+                                  {loadManuList ? (
                                     <ActivityIndicator
                                       size="large"
                                       style={{bottom: 15}}
                                       color={'#25AAE1ec'}
                                     />
                                   ) : (
-                                    this.state.manufacturersArray.length >
-                                      0 && (
+                                    manufacturersArray.length > 0 && (
                                       <FlatList
-                                        data={this.state.manufacturersArray}
-                                        renderItem={this.renderManufacturerList}
+                                        data={manufacturersArray}
+                                        renderItem={renderManufacturerList}
                                       />
                                     )
                                   )}
 
                                   <TouchableOpacity
-                                    onPress={() => {
-                                      this.openAddManu();
-                                    }}
+                                    onPress={openAddManu}
                                     style={{
                                       alignSelf: 'center',
                                       backgroundColor: '#fff',
@@ -1178,34 +1960,32 @@ export default function AddEditProperty({
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                     }}>
-                                    {this.state.addManuLoad ? (
+                                    {/* {this.state.addManuLoad ? (
                                       <ActivityIndicator
                                         size="small"
                                         color={'#25AAE1ec'}
                                       />
-                                    ) : (
-                                      <Text style={{color: '#25AAE1ec'}}>
-                                        Add Manufacturer
-                                      </Text>
-                                    )}
+                                    ) : ( */}
+                                    <Text style={{color: '#25AAE1ec'}}>
+                                      Add Manufacturer
+                                    </Text>
+                                    {/* )} */}
                                   </TouchableOpacity>
                                 </View>
                               )}
-                            {this.state.showAddManufacturer &&
-                              this.deviceTypeInfoComponent('add')}
-                            {this.state.showEditManufacturer &&
-                              this.deviceTypeInfoComponent('edit')}
-                          </View>
-                          {error.utilType ? (
-                            <HelperText
-                              type="error"
-                              visible={error.utilType}>
-                              {error.utilType}
-                            </HelperText>
-                          ) : null}
-                        </>
-                      )}
-                    </ScrollView> */}
+                              {showAddManufacturer &&
+                                deviceTypeInfoComponent('add')}
+                              {showEditManufacturer &&
+                                deviceTypeInfoComponent('edit')}
+                            </View>
+                            {error.utilType ? (
+                              <HelperText type="error" visible={error.utilType}>
+                                {error.utilType}
+                              </HelperText>
+                            ) : null}
+                          </>
+                        )}
+                      </ScrollView>
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(3)}>
