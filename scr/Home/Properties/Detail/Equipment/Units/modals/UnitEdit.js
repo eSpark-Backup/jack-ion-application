@@ -766,7 +766,7 @@ export default function UnitEdit({
       `/property/default-meter-device/${propertyId}`,
     );
 
-    // console.log('Default Unit Data--->', defaultUnitData);
+    console.log('Default Unit Data--->', defaultUnitData.ok);
     if (defaultUnitData.ok) {
       // console.log(
       //   clc.cyanBright(
@@ -775,10 +775,11 @@ export default function UnitEdit({
       //   ),
       // );
       const some = defaultUnitData?.data?.data?.default_meter_device;
-      console.log(
-        'Default Unit Data--->',
-        some?.devices[0]?.model_nos[0]?.model_no,
-      );
+      console.log('Some Default Unit Data--->', some);
+      // console.log(
+      //   'Some Default Unit Data--->',
+      //   some?.devices[0]?.model_nos[0]?.model_no,
+      // );
       setSelectedUtil(some.utility_type_name[0].name);
       setSelectedUtilId(some.utility_type_name[0].id);
       setDefaultData(some);
@@ -813,14 +814,19 @@ export default function UnitEdit({
       const defaultDis =
         defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
       setRadialDis(defaultDis * 1000);
+
+      setState((oldState) => ({
+        ...oldState,
+        manufacturersData:
+          defaultUnitData?.data?.data?.default_meter_device.manufacturers,
+      }));
+      setDefaultManuLis(
+        defaultUnitData?.data?.data?.default_meter_device.manufacturers,
+      );
     }
 
     const ManufacturersResponse = await api.get(
       '/property/equipment/manufacturer/all',
-    );
-
-    const DefaultManufacturersResponse = await api.get(
-      `/property/default-meter-device/${propertyId}`,
     );
 
     // console.log(
@@ -833,21 +839,13 @@ export default function UnitEdit({
     //   ...oldState,
     //   manufacturersData: ManufacturersResponse?.data?.data,
     // }));
-    setState((oldState) => ({
-      ...oldState,
-      manufacturersData:
-        DefaultManufacturersResponse?.data?.data?.default_meter_device
-          .manufacturers,
-    }));
-    setDefaultManuLis(
-      DefaultManufacturersResponse?.data?.data?.default_meter_device
-        .manufacturers,
-    );
+
     // let listSlide = [...slide1]; // copying the old datas array
     // listSlide[0].data =
     //   DefaultManufacturersResponse?.data?.data?.default_meter_device.manufacturers;
     // listSlide[0].data = ManufacturersResponse?.data?.data;
     // setSlide1(listSlide);
+    console.log('Yaha tk chala kia.?');
     let deviceDataManufacturer = [...addDevice]; // copying the old datas array
     deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
     setAddDevice(deviceDataManufacturer);
@@ -883,29 +881,25 @@ export default function UnitEdit({
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);
-    const filterManu = UtilArray.filter((item) => {
+    UtilArray.filter((item) => {
       ManuArray.map((manuItem) => {
         if (manuItem?.utility_type[0]?.name != undefined) {
-          console.log(clc.redBright('Current Utility Name', item.name));
-          console
-            .log
-            // clc.blueBright('Current manuItem', manuItem?.utility_type[0]?.name),
-            ();
           if (item.name == manuItem?.utility_type[0]?.name) {
-            // console.log('Current manuItem', manuItem);
             let listSlide = [...slide1]; // copying the old datas array
+            console.log('MANUITEM BATA', manuItem.devices[0].model_nos);
             listSlide[0].data.push(manuItem);
-            console
-              .log
-              // clc.bgCyan('-----XXXXXX-----', JSON.stringify(listSlide[0].data)),
-              ();
+            listSlide[1].data = manuItem.devices;
+            const modelNos = manuItem.devices[0].model_nos.map((item) => {
+              const {model_no: name, ...rest} = item;
+              return {name, ...rest};
+            });
+            listSlide[2].data = modelNos;
             setSlide1(listSlide);
-            // console.log('LIST SLIDE', listSlide[0].data);
           }
         }
       });
     });
-    const defaultDevices = helperDefaultData.current.devices;
+    const defaultDevices = helperDefaultData.current.manufacturers[0].devices;
     // console.log('default Devices', defaultDevices);
 
     //? Some thing wrong with this code -----------
@@ -985,12 +979,13 @@ export default function UnitEdit({
       `/property/default-meter-device/${propertyId}`,
     );
 
-    console.log(
-      'Default Meter Devices',
-      defaultDeviceResponse?.data?.data?.default_meter_device.devices,
-    );
+    // console.log(
+    //   'Default Meter Devices',
+    //   defaultDeviceResponse?.data?.data?.default_meter_device.devices,
+    // );
     const DefaultDevices =
-      defaultDeviceResponse?.data?.data?.default_meter_device.devices;
+      defaultDeviceResponse?.data?.data?.default_meter_device.manufacturers[0]
+        .devices;
 
     const filterDevices = DefaultDevices.filter(
       (item) => item.manufacturer_id === some?.id,
@@ -1223,8 +1218,8 @@ export default function UnitEdit({
     //     }
     //   });
     // });
-    const defaultDevices = defaultData.devices;
-    // console.log('default Devices', defaultDevices);
+    const defaultDevices = defaultData.manufacturers[0].devices;
+    console.log('default Devices', defaultData);
     const filterDevices = defaultDevices.filter(
       (item) => item.manufacturer_id === slide1[0].data[0]?.id,
     );

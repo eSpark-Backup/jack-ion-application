@@ -82,6 +82,7 @@ export default class Splash extends Component {
   }
 
   onFocusFunction = () => {
+    this.setState({loadScreen: true});
     const unsubscribe = NetInfo.addEventListener((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
@@ -396,7 +397,9 @@ export default class Splash extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <Text style={styles.buildUnitCount}>{prop.item.unit_count}</Text>
+              <Text style={styles.buildUnitCount}>
+                {prop.item.unit_actual_count}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -446,6 +449,7 @@ export default class Splash extends Component {
             closeModal={this.closeAddProp}
             currLocate={this.state.markers}
             currAddr={this.state.locationBtn}
+            addedSuccessfully={this.onFocusFunction}
             type={'Add'}
           />
           {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}

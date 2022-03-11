@@ -193,6 +193,7 @@ export default styles = StyleSheet.create({
     padding: width * 0.02,
     borderWidth: width * 0.002,
     borderRadius: width * 0.01,
+    marginRight: width * 0.02,
   },
   unitDetailInnerElseText: {
     fontSize: width * 0.035,

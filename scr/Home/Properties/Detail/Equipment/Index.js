@@ -914,8 +914,12 @@ export default class Splash extends Component {
   render() {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
+    const unitCount = this.props.navigation.state.params.item.item.unit_count;
+    const unitActualCount = this.props.navigation.state.params.item.item
+      .unit_actual_count;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
+    console.log('ACTUAL UNIT COUNT', unitActualCount);
     return (
       <>
         <View style={styles.container}>
@@ -1056,18 +1060,48 @@ export default class Splash extends Component {
                     visible={this.state.addMenuVisible}
                     anchor={
                       <TouchableOpacity
-                        style={styles.dropDown}
+                        style={[
+                          styles.dropDown,
+                          {
+                            borderColor:
+                              unitCount == this.state.realData.length
+                                ? '#817e7e80'
+                                : '#3E4A4F',
+                          },
+                        ]}
+                        disabled={
+                          unitCount == this.state.realData.length ? true : false
+                        }
                         onPress={() => this.setState({addMenuVisible: true})}>
                         <Feather
                           name="plus"
                           size={height * 0.025}
-                          color="#3E4A4F"
+                          color={
+                            unitCount == this.state.realData.length
+                              ? '#817e7e80'
+                              : '#3E4A4F'
+                          }
                         />
-                        <Text style={styles.dropDownText}>Add</Text>
+                        <Text
+                          style={[
+                            styles.dropDownText,
+                            {
+                              color:
+                                unitCount == this.state.realData.length
+                                  ? '#817e7e80'
+                                  : '#3E4A4F',
+                            },
+                          ]}>
+                          Add
+                        </Text>
                         <Feather
                           name="chevron-down"
                           size={height * 0.02}
-                          color="#3E4A4F"
+                          color={
+                            unitCount == this.state.realData.length
+                              ? '#817e7e80'
+                              : '#3E4A4F'
+                          }
                           style={{marginLeft: width * 0.02}}
                         />
                       </TouchableOpacity>
@@ -1231,9 +1265,15 @@ export default class Splash extends Component {
                 // }}
               />
               <AddBuilding
+                unitCount={unitCount}
+                unitActualCount={unitActualCount}
                 modalVisible={this.state.isModalBuildVisible}
                 type={this.state.buildingModalType}
-                modalName="New Building"
+                modalName={
+                  this.state.buildingModalType
+                    ? 'Add Multiple Units'
+                    : 'Add Building'
+                }
                 closeModal={() => this.setState({isModalBuildVisible: false})}
                 reRun={this.handleAddBuilding}
                 propertyId={this.props.navigation.state.params.item.item.id}

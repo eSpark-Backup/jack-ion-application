@@ -1465,42 +1465,6 @@ export default class Splash extends React.Component {
                               },
                             ]}>
                             <TextInput
-                              placeholder="Title / Job Description"
-                              label="Title / Job Description"
-                              style={styles.input}
-                              value={this.state.listData?.contact_title}
-                              onChangeText={(text) => {
-                                this.setState((prevState) => ({
-                                  ...prevState,
-                                  listData: {
-                                    // object that we want to update
-                                    ...prevState.listData, // keep all other key-value pairs
-                                    contact_title: text, // update the value of specific key
-                                  },
-                                }));
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
-                          <View
-                            style={[
-                              styles.inputContainer,
-                              {
-                                height: this.state.dropDownShow[2].value
-                                  ? 'auto'
-                                  : height * 0.0,
-
-                                overflow: 'hidden',
-                              },
-                            ]}>
-                            <TextInput
                               placeholder="Phone"
                               label="Phone"
                               style={styles.input}

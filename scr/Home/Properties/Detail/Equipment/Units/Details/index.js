@@ -1617,7 +1617,7 @@ const App = ({navigation}) => {
                   <Radio
                     name="radio"
                     size={width * 0.06}
-                    color="#fff"
+                    // color="#fff"
                     color="#000"
                     style={{marginRight: width * 0.025}}
                   />

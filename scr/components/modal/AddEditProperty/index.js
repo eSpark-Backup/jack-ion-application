@@ -17,6 +17,7 @@ import {
   LayoutAnimation,
   KeyboardAvoidingView,
   FlatList,
+  Keyboard,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -32,6 +33,7 @@ import SearchableDropDown from 'react-native-searchable-dropdown';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {create} from 'apisauce';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-simple-toast';
 
 //Component
 import styles from './style';
@@ -46,6 +48,7 @@ export default function AddEditProperty({
   type,
   currAddr,
   currLocate,
+  addedSuccessfully,
 }) {
   const {width, height} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
@@ -55,9 +58,11 @@ export default function AddEditProperty({
   const api = create({baseURL: Base_URL});
 
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [btnLoading, setBtnLoading] = useState(false);
   const [loadManuList, setLoadManuList] = useState(false);
   const [loadingStateDev, setLoadingStateDev] = useState(false);
   const [loadingState, setLoadingState] = useState(false);
+  const [addNewUType, setAddNewUType] = useState(false);
   const [addNewType, setAddNewType] = useState(false);
   const [showAddType, setShowAddType] = useState('');
   const [showAddManufacturer, setShowAddManufacturer] = useState(false);
@@ -92,7 +97,7 @@ export default function AddEditProperty({
   const [unitMixIndex, setUnitMixIndex] = useState(null);
   const [unitMixFlag, setUnitMixFlag] = useState(false);
   const [ownerData, setOwnerData] = useState([]);
-  const [ownerId, setOwnerId] = useState(null);
+  const [ownerId, setOwnerId] = useState('');
   const [ownerName, setOwnerName] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -143,7 +148,33 @@ export default function AddEditProperty({
 
   useEffect(() => {
     callApi();
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      _keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      _keyboardDidHide,
+    );
+    return () => {
+      this.keyboardDidShowListener.remove();
+      this.keyboardDidHideListener.remove();
+    };
   }, []);
+
+  const _keyboardDidShow = () => {
+    animate();
+    dropDownShow[2].value
+      ? setAvoidKeyboard(true)
+      : dropDownShow[3].value
+      ? setAvoidKeyboard(true)
+      : null;
+  };
+
+  const _keyboardDidHide = () => {
+    animate();
+    setAvoidKeyboard(false);
+  };
 
   const callApi = async () => {
     const token = await EncryptedStorage.getItem('user_token');
@@ -199,47 +230,14 @@ export default function AddEditProperty({
     });
   };
 
-  const AddTypes = (item, type) => {
-    if (type == 'Utility') {
-      console.log('ADD CHALA', item);
-      this.setState({selectedUtil: item.name});
-
-      // let listDevice = [...this.state.deviceData];
-      // listDevice[0].select = '';
-      // listDevice[1].select = '';
-      // listDevice[0].selectId = '';
-      // listDevice[1].selectId = '';
-
-      let listSlide = [...allManuList];
-      let temp = [];
-      let listSlide2 = [...utilAndManu]; // copying the old datas array
-
-      const compareName = (obj1, obj2) => {
-        return obj1.name === obj2.name;
-      };
-      // console.log('ALL MANU LIST', listSlide);
-
-      listSlide.map((manuItem) => {
-        if (manuItem?.utility_type[0]?.name != undefined) {
-          if (item.name == manuItem?.utility_type[0]?.name) {
-            temp.push(manuItem);
-            listSlide2[1].data = temp;
-            setUtilAndManu(listSlide2);
-          }
-        }
-      });
-
-      // this.setState({deviceData: listDevice});
-      // this.setState({loadManus: false});
-    } else if (type == 'Manu Utility') {
-      console.log('PUSHING', item);
-      const items = selectAddManuUtil;
-      items.push(item);
-      console.log('PUSHED', items);
-      setSelectAddManuUtil(items);
-      console.log('AFTER PUSHED');
-      forceUpdate();
-    }
+  const AddTypes = (item) => {
+    console.log('PUSHING', item);
+    const items = selectAddManuUtil;
+    items.push(item);
+    console.log('PUSHED', items);
+    setSelectAddManuUtil(items);
+    console.log('AFTER PUSHED');
+    forceUpdate();
   };
 
   const getData = async (some, index) => {
@@ -318,11 +316,9 @@ export default function AddEditProperty({
   };
 
   const showMoreFn = (indexx) => {
-    // this.setState({
-    //   addNewType: false,
-    //   showEditManufacturer: false,
-    //   showAddManufacturer: false,
-    // });
+    setAddNewType(false);
+    setShowAddManufacturer(false);
+    setShowEditManufacturer(false);
     animate();
     dropDownShow.map((item, index) => {
       if (index == indexx) {
@@ -340,17 +336,7 @@ export default function AddEditProperty({
   };
 
   const addManufacturers = () => {
-    // this.setState({avoidKey: false, manuFlag: false});
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+    animate();
 
     const compareName = (obj1, obj2) => {
       return obj1.name === obj2.name;
@@ -359,25 +345,18 @@ export default function AddEditProperty({
     let newArr = [...manufacturersArray]; // used for adding in the list
     let deviceArr = [...utilAndManu]; // used for clearing data
     let deviceArr2 = [...allManuList]; // used for clearing data
-    // let newDevice = [...this.state.selectDevices]; // used for getting only name and id of devices
 
     newArr.push({
       name: utilAndManu[1].select,
       manu_Id: utilAndManu[1].selectId,
       utility_type: utilAndManu[0].select,
       utility_type_id: utilAndManu[0].selectId,
-      // devices: this.state.selectDevices,
     });
 
     deviceArr[0].select = '';
     deviceArr[0].selectId = '';
     deviceArr[1].select = '';
     deviceArr[1].selectId = '';
-
-    // deviceArr[0].data = deviceArr[0].data.filter((b) => {
-    //   let indexFound = newArr.findIndex((a) => compareName(a, b));
-    //   return indexFound === -1;
-    // });
 
     deviceArr2 = deviceArr2.filter((b) => {
       let indexFound = newArr.findIndex((a) => compareName(a, b));
@@ -387,44 +366,10 @@ export default function AddEditProperty({
     setManufacturersArray(newArr);
     setShowAddManufacturer(false);
     setAllManuList(deviceArr2);
-
-    // this.setState(
-    //   {
-    //     selectDevices: [],
-    //     manufacturersArray: newArr,
-    //     deviceData: deviceArr,
-    //     showAddManufacturer: false,
-    //     allManuList: deviceArr2,
-    //     selectedUtil: '',
-    //   },
-    //   () => {
-    //     const newD = newArr.map(({devices}) => devices.map(({id}) => id));
-    //     this.setState({devIdsArr: newD.flat()}, () =>
-    //       console.log(
-    //         clc.greenBright('kia hai devices Ids'),
-    //         this.state.devIdsArr,
-    //       ),
-    //     );
-    //     console.log(
-    //       clc.cyan('kia ha Manu Arr'),
-    //       JSON.stringify(this.state.manufacturersArray),
-    //     );
-    //   },
-    // );
   };
 
-  const editManufacturers = (manu, manuId) => {
-    // this.setState({avoidKey: false, manuFlag: false});
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+  const editManufacturers = () => {
+    animate();
 
     let newArr = [...manufacturersArray];
 
@@ -434,22 +379,6 @@ export default function AddEditProperty({
     newArr[currentManuIndex].utility_type_id = utilAndManu[0].selectId;
     setManufacturersArray(newArr);
     setShowEditManufacturer(false);
-
-    // this.setState(
-    //   {
-    //     manufacturersArray: newArr,
-    //     showEditManufacturer: false,
-    //   },
-    //   () => {
-    //     const newD = newArr.map(({devices}) => devices.map(({id}) => id));
-    //     this.setState({devIdsArr: newD.flat()}, () =>
-    //       console.log(
-    //         clc.greenBright('kia hai devices Ids'),
-    //         this.state.devIdsArr,
-    //       ),
-    //     );
-    //   },
-    // );
   };
 
   const DeleteManufacture = (item) => {
@@ -467,16 +396,7 @@ export default function AddEditProperty({
       '/property/equipment/manufacturer/all',
     );
     console.log('ManufacturersResponse', ManufacturersResponse?.data);
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+    animate();
 
     let manuData = [...allManuList];
     manuData = ManufacturersResponse?.data?.data;
@@ -498,34 +418,22 @@ export default function AddEditProperty({
   };
 
   const cancelManu = (flag) => {
-    // this.setState({avoidKey: false, manuFlag: false});
     if (flag == 'add') {
-      let deviceArr = [...utilAndManu]; // used for clearing data
-      deviceArr[0].select = '';
-      deviceArr[0].selectId = '';
-      deviceArr[1].select = '';
-      deviceArr[1].selectId = '';
-      setUtilAndManu(deviceArr);
+      let utilManuArr = [...utilAndManu]; // used for clearing data
+      utilManuArr[0].select = '';
+      utilManuArr[0].selectId = '';
+      utilManuArr[1].select = '';
+      utilManuArr[1].selectId = '';
+      setUtilAndManu(utilManuArr);
       setShowAddManufacturer(false);
-      // this.setState({
-      //   deviceData: deviceArr,
-      //   showAddManufacturer: false,
-      //   selectedUtil: '',
-      // });
     } else {
-      // console.log('COUNT Final', this.state.count);
-      let deviceArr = [...utilAndManu]; // used for clearing data
-      deviceArr[0].select = '';
-      deviceArr[0].selectId = '';
-      // deviceArr[1].select = '';
-      // deviceArr[1].selectId = '';
-      setUtilAndManu(deviceArr);
+      let utilManuArr = [...utilAndManu]; // used for clearing data
+      utilManuArr[0].select = '';
+      utilManuArr[0].selectId = '';
+      utilManuArr[1].select = '';
+      utilManuArr[1].selectId = '';
+      setUtilAndManu(utilManuArr);
       setShowEditManufacturer(false);
-      // this.setState({
-      //   selectDevices: [],
-      //   showEditManufacturer: false,
-      //   selectedUtil: '',
-      // });
     }
   };
 
@@ -589,94 +497,39 @@ export default function AddEditProperty({
     animate();
     setAddNewType(true);
     setShowAddType(value);
-    // this.setState({showAddType: value}, () => {
-    //   if (value == 'Model Number') {
-    //     this.setState({enableDevice: false});
-    //     console.log('Model Number Adding------');
-    //     this.getAllDevices();
-    //   }
-    // });
+  };
+
+  const showAddUNewType = () => {
+    animate();
+    setAddNewUType(true);
+  };
+
+  const cancelAddUType = () => {
+    animate();
+    setAddNewUType(false);
+    setShowAddType('Manufacturer');
   };
 
   const cancelAddType = () => {
     animate();
-    // let deviceData = [...this.state.addDevice]; // copying the old datas array
-    // deviceData[0].select = '';
-    // deviceData[0].selectId = '';
-    // deviceData[1].select = '';
-    // deviceData[1].selectId = '';
-    // deviceData[2].select = '';
-    // deviceData[2].selectId = '';
     setAddNewType(false);
     setShowAddType('');
-
-    // this.setState({
-    //   addManufacturer: '',
-    //   addUtility: '',
-    //   addMeter: '',
-    //   addDevice: deviceData,
-    //   devicesArray: [],
-    //   modelArr: [],
-    //   selectedDevice: {},
-    //   addModelNumber: '',
-    //   productNo: '',
-    //   modelNo: '',
-    // });
+    setAddManufacturer('');
+    setAddUtility('');
+    setSelectAddManuUtil([]);
   };
 
   const openAddManu = async () => {
-    // this.setState({avoidKey: true});
+    animate();
 
-    // this.setState({manuFlag: true});
-
-    // this.setState({addManuLoad: true});
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
-
-    // let deviceDataManufacturer = [...this.state.addDevice]; // copying the old datas array
-    // deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
-
-    // this.setState({addDevice: deviceDataManufacturer});
-
-    // let newArr = [...this.state.deviceData];
-
-    // newArr[0].select = '';
-    // newArr[0].selectId = '';
-
-    // this.setState({
-    //   selectDevices: [],
-    //   deviceData: newArr,
-    //   showAddManufacturer: true,
-    //   addManuLoad: false,
-    // });
     setShowAddManufacturer(true);
   };
 
   const openEditManu = async (item, index) => {
-    // this.setState({loadManuList: true});
-    // this.setState({avoidKey: true, manuFlag: true});
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
+    animate();
 
     console.log('get devices---> Open Edit');
 
-    // let manuArr = [...this.state.manufacturersArray];
     let newArr = [...utilAndManu];
 
     newArr[0].select = item.utility_type;
@@ -689,61 +542,226 @@ export default function AddEditProperty({
     setUtilAndManu(newArr);
     setCurrentManuIndex(index);
     setShowEditManufacturer(true);
+  };
 
-    // this.setState(
-    //   {
-    //     count: 0,
-    //     deviceData: newArr,
-    //     selectDevices: item.devices,
-    //     currentManuIndex: index,
-    //   },
-    //   () => {
-    //     this.setState({showEditManufacturer: true, loadManuList: false});
-    //     console.log(
-    //       clc.xterm(149)('Devices Array on Open Edit'),
-    //       JSON.stringify(this.state.deviceData),
-    //     );
-    //   },
-    // );
+  addProperty = async () => {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
+    const selectUtilIds = [];
+    const selectManuIds = [];
+    setBtnLoading(true);
+    // this.setState({btnLoading: true});
+    if (!Name) {
+      setError((oldState) => ({
+        ...oldState,
+        property: 'Invalid Property',
+      }));
+
+      Toast.show('Invalid Property', Toast.SHORT);
+      return;
+    } else {
+      setError((oldState) => ({
+        ...oldState,
+        property: '',
+      }));
+    }
+    if (!Street) {
+      setError((oldState) => ({
+        ...oldState,
+        street: 'Invalid Street',
+      }));
+
+      Toast.show('Invalid Street', Toast.SHORT);
+      return;
+    } else {
+      setError((oldState) => ({
+        ...oldState,
+        street: '',
+      }));
+    }
+
+    if (manufacturersArray.length < 1) {
+      setError((oldState) => ({
+        ...oldState,
+        utilType: 'Please select Manufacturer',
+      }));
+
+      Toast.show('Please select a Utility Type', Toast.SHORT);
+      return;
+    } else {
+      for (let i = 0; i < manufacturersArray?.length; i++) {
+        selectUtilIds.push(manufacturersArray[i].utility_type_id);
+        selectManuIds.push(manufacturersArray[i].manu_Id);
+      }
+      console.log('SELECTED UTILITY IDs', selectUtilIds);
+      setError((oldState) => ({
+        ...oldState,
+        utilType: '',
+      }));
+    }
+    //! -------------------------+++
+
+    if (!locationSelected) {
+      Alert.alert('Location Required', 'Please Select Property Location');
+      return;
+    } else {
+      setSelectLocation(false);
+
+      // console.log('Before', this.state.info.propName);
+      // const info = { ...this.state.info, propName: 'Good HAI' }
+      let propData = {
+        name: Name,
+        street: Street,
+        st: State,
+        city: City,
+        zipcode: ZipCode,
+        custom_id: CustomId,
+        owner_id: ownerId,
+        contact_name: contactName,
+        contact_phone: contactPhone,
+        contact_email: contactEmail,
+        manufacturer_id: selectManuIds,
+        utility_type_id: selectUtilIds,
+        unit_count: unitCount,
+        unit_mixes: unitMix,
+        radial_dist: Number(radialDis),
+        latitude: lat,
+        longitude: long,
+      };
+
+      console.log('PROPDATA', propData);
+      api.post('/property/add', propData).then((res) => {
+        console.log(res.data);
+        if (res?.data?.bool) {
+          // this.checkData();
+          addedSuccessfully();
+          clearInputs();
+          console.log('PROPERTY RUNNINg');
+        } else {
+          Alert.alert('Error', res?.data?.message);
+        }
+      });
+      setBtnLoading(false);
+      // this.setState(
+      //   Object.assign(this.state.info, {
+      //     propName: this.state.Name,
+      //     propStreet: this.state.Street,
+      //     propState: this.state.State,
+      //     propCity: this.state.City,
+      //     propZipCode: this.state.ZipCode,
+      //     propBillComp: this.state.BillingCompanyId
+      //       ? this.state.BillingCompany
+      //       : '',
+      //     propBillCompId: this.state.BillingCompanyId,
+      //     propManageComp: this.state.managementCompanyId
+      //       ? this.state.managementCompany
+      //       : '',
+      //     propManageCompId: this.state.managementCompanyId,
+      //     propCustomId: this.state.CustomId,
+      //     propContactName: this.state.CustomerName,
+      //     propContactTitle: this.state.customerjobDes,
+      //     propContactPhone: this.state.customerPhone,
+      //     propContactEmail: this.state.customerEmail,
+      //     // meter_id: this.state.selectedMetersId,
+      //     manufacturer_id: this.state.manuIdsArr,
+      //     device_id: this.state.devIdsArr,
+      //     model_no_id: this.state.deviceData[2].data,
+      //     propLat: this.state.lat,
+      //     propLong: this.state.long,
+      //     utility_type_id: selectUtilIds,
+      //     radial_dist: Number(this.state.radialDis),
+      //   }),
+      //   () => this.props.loader(true),
+      //   {btnLoading: false},
+      // );
+      // this.context.addProp(this.state.info);
+    }
+  };
+
+  const clearInputs = () => {
+    closeModal();
+    setName('');
+    setStreet('');
+    setState('');
+    setCity('');
+    setZipCode('');
+    setCustomId('');
+    setOwnerId('');
+    setOwnerName('');
+    setContactName('');
+    setContactPhone('');
+    setContactEmail('');
+    setLocationSelected(false);
+    setLat(null);
+    setLong(null);
+    setManufacturersArray([]);
+    setShowAddManufacturer(false);
+    setShowEditManufacturer(false);
+    setAddNewType(false);
+    setLocationBtn('');
+    setDropDownShow([
+      {value: true},
+      {value: false},
+      {value: false},
+      {value: false},
+      {value: false},
+    ]);
+
+    // this.setState({
+    //   Name: '',
+    //   Street: '',
+    //   State: '',
+    //   City: '',
+    //   ZipCode: '',
+    //   CustomId: '',
+    //   CustomerName: '',
+    //   customerjobDes: '',
+    //   customerPhone: '',
+    //   customerEmail: '',
+    //   error: '',
+    //   locationSelected: false,
+    //   locationBtn: 'Select Location',
+    //   lat: null,
+    //   long: null,
+    //   selectMeter: '',
+    //   selectMeters: [],
+    //   selectedMetersId: [],
+    //   selectUtil: [],
+    //   manufacturersArray: [],
+    //   selectDevices: [],
+    //   ownerName: '',
+
+    //   addNewType: false,
+    //   productD: '',
+    //   manuFlag: false,
+    //   avoidKey: false,
+    //   showAddManufacturer: false,
+    //   showEditManufacturer: false,
+    // });
   };
 
   const deviceTypeInfoComponent = (flag) => {
     return (
       <View
-        style={{
-          // height: height * 0.25,
-          width: '100%',
-          alignSelf: 'center',
-          alignItems: 'center',
-          // justifyContent: 'center',
-          zIndex: 2,
-          height: dropDownShow[2].value ? height * 0.5 : height * 0.0,
-          overflow: 'hidden',
-          // backgroundColor: 'tomato',
-        }}>
+        style={[
+          styles.utilAndManuSectionContainer,
+          {
+            height: dropDownShow[2].value ? height * 0.5 : height * 0.0,
+          },
+        ]}>
         {addNewType && showAddType == 'Utility Type' ? (
           <View>
             <View>
-              <Text
-                style={{
-                  fontSize: width * 0.03,
-                  color: '#3E4A4F',
-                  textTransform: 'capitalize',
-                  fontFamily: Fonts.ComfortaaRegular,
-                  marginBottom: width * 0.01,
-                  fontWeight: 'bold',
-                }}>
+              <Text style={styles.addTypeHeading}>
                 Add New {showAddType} Type
               </Text>
             </View>
             <TextInput
               placeholder={'Type New Utility Type Name'}
               value={addUtility}
-              style={{
-                width: width * 0.8,
-                justifyContent: 'flex-end',
-                fontSize: width * 0.036,
-              }}
+              style={styles.addTypeTextInput}
               mode={'outlined'}
               theme={{
                 colors: {
@@ -762,132 +780,35 @@ export default function AddEditProperty({
                 justifyContent: 'space-around',
               }}>
               <TouchableOpacity onPress={() => cancelAddType()}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width * 0.045,
-                    color: '#25AAE1ec',
-                    width: width * 0.16,
-                    textAlign: 'center',
-                  }}>
-                  Cancel
-                </Text>
+                <Text style={styles.addTypeButtons}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => doneAddType('Utility', true)}
                 disabled={addUtility ? false : true}>
                 <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width * 0.045,
-                    color: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                    width: width * 0.16,
-                    textAlign: 'center',
-                  }}>
+                  style={[
+                    styles.addTypeButtons,
+                    {
+                      color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                    },
+                  ]}>
                   Add
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         ) : addNewType && showAddType == 'Manufacturer' ? (
-          // this.state.addNewUType ? (
-          //   <View>
-          //     <View>
-          //       <Text
-          //         style={{
-          //           fontSize: width * 0.03,
-          //           color: '#3E4A4F',
-          //           textTransform: 'capitalize',
-          //           fontFamily: Fonts.ComfortaaRegular,
-          //           marginBottom: width * 0.01,
-          //           fontWeight: 'bold',
-          //         }}>
-          //         Add New {this.state.showAddType} Type
-          //       </Text>
-          //     </View>
-          //     <TextInput
-          //       placeholder={'Type New Utility Type Name'}
-          //       value={this.state.addUtility}
-          //       style={{
-          //         width: width * 0.8,
-          //         justifyContent: 'flex-end',
-          //         fontSize: width * 0.036,
-          //       }}
-          //       mode={'outlined'}
-          //       theme={{
-          //         colors: {
-          //           text: '#25AAE1ec',
-          //           primary: '#25AAE1ec',
-          //           selectionColor: 'red',
-          //         },
-          //       }}
-          //       onChangeText={(text) => {
-          //         this.setState({addUtility: text});
-          //       }}
-          //     />
-          //     <View
-          //       style={{
-          //         flexDirection: 'row',
-          //         justifyContent: 'space-around',
-          //       }}>
-          //       <TouchableOpacity onPress={() => this.cancelAddUType()}>
-          //         <Text
-          //           style={{
-          //             fontWeight: 'bold',
-          //             fontSize: width * 0.045,
-          //             color: '#25AAE1ec',
-          //             width: width * 0.16,
-          //             textAlign: 'center',
-          //           }}>
-          //           Cancel
-          //         </Text>
-          //       </TouchableOpacity>
-          //       <TouchableOpacity
-          //         onPress={() => this.doneAddType('Utility', false)}
-          //         disabled={this.state.addUtility ? false : true}>
-          //         <Text
-          //           style={{
-          //             fontWeight: 'bold',
-          //             fontSize: width * 0.045,
-          //             color: this.state.addUtility ? '#25AAE1ec' : '#d0d0d0',
-          //             width: width * 0.16,
-          //             textAlign: 'center',
-          //           }}>
-          //           Add
-          //         </Text>
-          //       </TouchableOpacity>
-          //     </View>
-          //   </View>
-          // ) : (
-          <View
-            style={{
-              width: '100%',
-              zIndex: 2,
-              alignSelf: 'center',
-              alignItems: 'center',
-            }}>
+          addNewUType ? (
             <View>
               <View>
-                <Text
-                  style={{
-                    fontSize: width * 0.03,
-                    color: '#3E4A4F',
-                    textTransform: 'capitalize',
-                    fontFamily: Fonts.ComfortaaRegular,
-                    marginBottom: width * 0.01,
-                    fontWeight: 'bold',
-                  }}>
-                  Add New {showAddType}
+                <Text style={styles.addTypeHeading}>
+                  Add New {showAddType} Type
                 </Text>
               </View>
               <TextInput
-                placeholder={'Type New Manufacturer Name'}
-                value={addManufacturer}
-                style={{
-                  width: width * 0.8,
-                  justifyContent: 'flex-end',
-                  fontSize: width * 0.036,
-                }}
+                placeholder={'Type New Utility Type Name'}
+                value={addUtility}
+                style={styles.addTypeTextInput}
                 mode={'outlined'}
                 theme={{
                   colors: {
@@ -897,181 +818,159 @@ export default function AddEditProperty({
                   },
                 }}
                 onChangeText={(text) => {
-                  setAddManufacturer(text);
+                  setAddUtility(text);
                 }}
               />
-              <View>
-                <Text
-                  style={{
-                    fontSize: width * 0.03,
-                    color: '#3E4A4F',
-                    textTransform: 'capitalize',
-                    fontFamily: Fonts.ComfortaaRegular,
-                    marginVertical: width * 0.02,
-                    fontWeight: 'bold',
-                  }}>
-                  Select Utility Type
-                </Text>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'flex-start',
-                  }}>
-                  <SearchableDropDown
-                    multi={true}
-                    selectedItems={selectAddManuUtil}
-                    onItemSelect={(item) => {
-                      console.log('Test', item);
-                      AddTypes(item, 'Manu Utility');
-                    }}
-                    containerStyle={{
-                      paddingBottom: width * 0.02,
-                      width: width * 0.7,
-                    }}
-                    itemStyle={{
-                      padding: width * 0.027,
-                      backgroundColor: 'rgb(247, 247, 247)',
-                      borderColor: '#bbb',
-                      borderWidth: width * 0.0015,
-                      borderRadius: width * 0.015,
-                    }}
-                    itemTextStyle={{color: '#222'}}
-                    itemsContainerStyle={{
-                      maxHeight: height * 0.08,
-                    }}
-                    // items={item.data}
-                    items={utilTypes}
-                    onRemoveItem={(item, index) => {
-                      const items = selectAddManuUtil.filter(
-                        (sitem) => sitem.id !== item.id,
-                      );
-                      setSelectAddManuUtil(items);
-                    }}
-                    resetValue={false}
-                    textInputProps={{
-                      placeholder: 'Add Utility Type',
-                      underlineColorAndroid: 'transparent',
-                      style: {
-                        padding: width * 0.027,
-                        margin: 0,
-                        borderTopLeftRadius: width * 0.015,
-                        borderBottomLeftRadius: width * 0.015,
-                        borderColor: 'black',
-                        height: width * 0.13,
-                        backgroundColor: '#F6F6F6',
-                        borderTopWidth: width * 0.0019,
-                        borderLeftWidth: width * 0.0019,
-                        borderBottomWidth: width * 0.0019,
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                <TouchableOpacity onPress={() => cancelAddUType()}>
+                  <Text style={styles.addTypeButtons}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => doneAddType('Utility', false)}
+                  disabled={addUtility ? false : true}>
+                  <Text
+                    style={[
+                      styles.addTypeButtons,
+                      {
+                        color: addUtility ? '#25AAE1ec' : '#d0d0d0',
                       },
-                      // onTextChange: (text) => {
-                      //   onChangeManufacturer(text, index);
-                      // },
-                      // value: setTimeout(() => item.select, 200),
-                      // defaultValue: item.select,
-                    }}
-                    listProps={{
-                      nestedScrollEnabled: true,
-                    }}
-                  />
-                  <TouchableOpacity
-                    style={{
-                      width: width * 0.1,
-                      backgroundColor: '#25AAE199',
-                      borderTopRightRadius: width * 0.015,
-                      borderBottomRightRadius: width * 0.015,
-                      borderTopWidth: width * 0.0019,
-                      borderRightWidth: width * 0.0019,
-                      borderBottomWidth: width * 0.0019,
-                      height: width * 0.13,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                    onPress={() => this.showAddUNewType()}>
-                    <Icon size={width * 0.06} color="#fff" name={'add'} />
-                  </TouchableOpacity>
+                    ]}>
+                    Add
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                width: '100%',
+                zIndex: 2,
+                alignSelf: 'center',
+                alignItems: 'center',
+              }}>
+              <View>
+                <View>
+                  <Text style={styles.addTypeHeading}>
+                    Add New {showAddType}
+                  </Text>
+                </View>
+                <TextInput
+                  placeholder={'Type New Manufacturer Name'}
+                  value={addManufacturer}
+                  style={styles.addTypeTextInput}
+                  mode={'outlined'}
+                  theme={{
+                    colors: {
+                      text: '#25AAE1ec',
+                      primary: '#25AAE1ec',
+                      selectionColor: 'red',
+                    },
+                  }}
+                  onChangeText={(text) => {
+                    setAddManufacturer(text);
+                  }}
+                />
+                <View>
+                  <Text style={styles.addTypeHeading}>Select Utility Type</Text>
                 </View>
                 <View>
-                  <FlatList
-                    data={selectAddManuUtil}
-                    // extraData={selectedTypes.current}
-                    style={{height: width * 0.15, width: width * 0.8}}
-                    horizontal
-                    renderItem={({item}) => (
-                      <>
-                        <View
-                          style={{
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            flexDirection: 'row',
-                            padding: 5,
-                            height: width * 0.1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Text style={{color: 'black'}}>{item.name}</Text>
-                          <TouchableOpacity
-                            onPress={() => {
-                              const items = selectAddManuUtil.filter(
-                                (sitem) => sitem.id !== item.id,
-                              );
-                              setSelectAddManuUtil(items);
-                            }}>
-                            <Icon name="close" size={width * 0.05} />
-                          </TouchableOpacity>
-                        </View>
-                        <View style={{width: 5}} />
-                      </>
-                    )}
-                  />
                   <View
                     style={{
-                      height: width * 0.15,
                       flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      marginVertical: height * 0.01,
+                      alignItems: 'flex-start',
                     }}>
-                    <TouchableOpacity onPress={() => cancelAddType()}>
-                      <Text
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: width * 0.045,
-                          color: '#25AAE1ec',
-                          width: width * 0.16,
-                          textAlign: 'center',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
+                    <SearchableDropDown
+                      multi={true}
+                      selectedItems={selectAddManuUtil}
+                      onItemSelect={(item) => {
+                        console.log('Test', item);
+                        AddTypes(item);
+                      }}
+                      containerStyle={styles.dropDownContainer}
+                      itemStyle={styles.dropDownItems}
+                      itemTextStyle={styles.dropDownItemText}
+                      itemsContainerStyle={styles.dropDownItemContainer}
+                      items={utilTypes}
+                      onRemoveItem={(item, index) => {
+                        const items = selectAddManuUtil.filter(
+                          (sitem) => sitem.id !== item.id,
+                        );
+                        setSelectAddManuUtil(items);
+                      }}
+                      resetValue={false}
+                      textInputProps={{
+                        placeholder: 'Add Utility Type',
+                        underlineColorAndroid: 'transparent',
+                        style: styles.dropDownTextInput,
+                      }}
+                      listProps={{
+                        nestedScrollEnabled: true,
+                      }}
+                    />
                     <TouchableOpacity
-                      onPress={() => this.doneAddType('Manufacturer')}
-                      disabled={
-                        addManufacturer && selectAddManuUtil.length > 0
-                          ? false
-                          : true
-                      }>
-                      <Text
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: width * 0.045,
-                          color:
-                            addManufacturer && selectAddManuUtil.length > 0
-                              ? '#25AAE1ec'
-                              : '#d0d0d0',
-                          width: width * 0.16,
-                          textAlign: 'center',
-                        }}>
-                        Add
-                      </Text>
+                      style={styles.addNewButton}
+                      onPress={() => showAddUNewType('Utility Type')}>
+                      <Icon size={width * 0.06} color="#fff" name={'add'} />
                     </TouchableOpacity>
+                  </View>
+                  <View>
+                    <FlatList
+                      data={selectAddManuUtil}
+                      style={{height: width * 0.15, width: width * 0.8}}
+                      horizontal
+                      renderItem={({item}) => (
+                        <>
+                          <View style={styles.utilListContainer}>
+                            <Text style={{color: 'black'}}>{item.name}</Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                const items = selectAddManuUtil.filter(
+                                  (sitem) => sitem.id !== item.id,
+                                );
+                                setSelectAddManuUtil(items);
+                              }}>
+                              <Icon name="close" size={width * 0.05} />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={{width: 5}} />
+                        </>
+                      )}
+                    />
+                    <View style={styles.addManuBtnContainer}>
+                      <TouchableOpacity onPress={() => cancelAddType()}>
+                        <Text style={styles.addTypeButtons}>Cancel</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => doneAddType('Manufacturer')}
+                        disabled={
+                          addManufacturer && selectAddManuUtil.length > 0
+                            ? false
+                            : true
+                        }>
+                        <Text
+                          style={[
+                            styles.addTypeButtons,
+                            {
+                              color:
+                                addManufacturer && selectAddManuUtil.length > 0
+                                  ? '#25AAE1ec'
+                                  : '#d0d0d0',
+                            },
+                          ]}>
+                          Add
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </View>
             </View>
-          </View>
+          )
         ) : (
-          // )
           <View>
             {utilAndManu?.map((item, index) => {
               return (
@@ -1085,40 +984,18 @@ export default function AddEditProperty({
                   <Text style={styles.meterDesciptionHeading}>
                     {item.name}*
                   </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'flex-start',
-                    }}>
+                  <View style={styles.mainDropDownView}>
                     <SearchableDropDown
                       onItemSelect={(item) => {
                         getData(item, index);
                       }}
-                      containerStyle={{
-                        paddingBottom: width * 0.02,
-                        width: width * 0.7,
-                      }}
-                      itemStyle={{
-                        padding: width * 0.027,
-                        backgroundColor: 'rgb(247, 247, 247)',
-                        borderColor: '#bbb',
-                        borderWidth: width * 0.0015,
-                        borderRadius: width * 0.015,
-                        zIndex: 99,
-                      }}
-                      itemTextStyle={{color: '#222'}}
-                      itemsContainerStyle={{
-                        maxHeight: height * 0.08,
-                      }}
+                      containerStyle={styles.dropDownContainer}
+                      itemStyle={styles.dropDownItems}
+                      itemTextStyle={styles.dropDownItemText}
+                      itemsContainerStyle={styles.dropDownItemContainer}
                       items={item.data}
                       resetValue={false}
                       textInputProps={{
-                        // editable:
-                        //   index == 2
-                        //     ? deviceData[1].selectId
-                        //       ? true
-                        //       : false
-                        //     : true,
                         placeholder:
                           index == 1
                             ? utilAndManu[0].selectId
@@ -1126,19 +1003,7 @@ export default function AddEditProperty({
                               : 'First Select Utility Type'
                             : index == 0 && 'Select Utility Type',
                         underlineColorAndroid: 'transparent',
-                        style: {
-                          padding: width * 0.027,
-                          margin: 0,
-                          borderTopLeftRadius: width * 0.015,
-                          borderBottomLeftRadius: width * 0.015,
-                          borderColor: item.error ? '#A3001B' : 'black',
-                          height: width * 0.13,
-                          backgroundColor: '#F6F6F6',
-                          borderTopWidth: width * 0.0019,
-                          borderLeftWidth: width * 0.0019,
-                          borderBottomWidth: width * 0.0019,
-                          zIndex: 0,
-                        },
+                        style: styles.dropDownTextInput,
                         onTextChange: (text) => {
                           onChangeUtilAndManu(text, index);
                         },
@@ -1150,50 +1015,17 @@ export default function AddEditProperty({
                       }}
                     />
                     <TouchableOpacity
-                      style={{
-                        width: width * 0.1,
-                        backgroundColor: '#25AAE199',
-                        borderTopRightRadius: width * 0.015,
-                        borderBottomRightRadius: width * 0.015,
-                        borderTopWidth: width * 0.0019,
-                        borderRightWidth: width * 0.0019,
-                        borderBottomWidth: width * 0.0019,
-                        height: width * 0.13,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
+                      style={styles.addNewButton}
                       onPress={() => showAddNewType(item.name)}>
                       <Icon size={width * 0.06} color="#fff" name={'add'} />
                     </TouchableOpacity>
                   </View>
-                  {/* {this.state.loadManus ? (
-                    <ActivityIndicator size={'large'} color="#25AAE1ec" />
-                  ) : (
-                  )} */}
                 </View>
               );
             })}
-
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'space-around',
-                flexDirection: 'row',
-                // backgroundColor: 'pink',
-                marginTop: 8,
-              }}>
+            <View style={styles.bottomBtnContainer}>
               <TouchableOpacity onPress={() => cancelManu(flag)}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width * 0.045,
-                    color: '#25AAE1ec',
-                    width: width * 0.16,
-                    textAlign: 'center',
-                  }}>
-                  Cancel
-                </Text>
+                <Text style={styles.addTypeButtons}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1211,17 +1043,16 @@ export default function AddEditProperty({
                     : true
                 }>
                 <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width * 0.045,
-                    color:
-                      utilAndManu[0].selectId !== '' &&
-                      utilAndManu[1].selectId !== ''
-                        ? '#25AAE1ec'
-                        : 'grey',
-                    width: width * 0.16,
-                    textAlign: 'center',
-                  }}>
+                  style={[
+                    styles.addTypeButtons,
+                    {
+                      color:
+                        utilAndManu[0].selectId !== '' &&
+                        utilAndManu[1].selectId !== ''
+                          ? '#25AAE1ec'
+                          : 'grey',
+                    },
+                  ]}>
                   {flag == 'add' ? 'Add' : 'Edit'}
                 </Text>
               </TouchableOpacity>
@@ -1271,10 +1102,10 @@ export default function AddEditProperty({
   };
 
   const doneAddType = async (val, temp) => {
-    console.log('Show Add Type', this.state.showAddType);
-    if (this.state.showAddType == 'Utility Type' || val == 'Utility') {
+    console.log('Show Add Type', showAddType);
+    if (showAddType == 'Utility Type' || val == 'Utility') {
       let data = {
-        name: this.state.addUtility,
+        name: addUtility,
       };
       if (temp) {
         setLoadingState(true);
@@ -1287,16 +1118,7 @@ export default function AddEditProperty({
       );
       if (UtilityResponse?.data?.bool) {
         console.log('datachecckk-->>', UtilityResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
+        animate();
         if (!temp) {
           this.setState({
             showAddType: 'Manufacturer',
@@ -1317,10 +1139,7 @@ export default function AddEditProperty({
         setLoadingState(false);
         setLoadingStateDev(false);
       }
-    } else if (
-      this.state.showAddType == 'Manufacturer' ||
-      val == 'Manufacturer'
-    ) {
+    } else if (showAddType == 'Manufacturer' || val == 'Manufacturer') {
       console.log('chala');
       let utilIds = [];
       for (let i = 0; i < selectAddManuUtil?.length; i++) {
@@ -1338,16 +1157,7 @@ export default function AddEditProperty({
       if (ManufacturersResponse?.data?.bool) {
         // this.setState({loadManufacturers: true});
         console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
+        animate();
         this.getToken();
         cancelAddType();
         setLoadingStateDev(false);
@@ -1369,7 +1179,7 @@ export default function AddEditProperty({
           statusBarTranslucent={true}
           style={{
             margin: 0,
-            // bottom: avoidKeyboard ? width * 0.45 : 0,
+            bottom: avoidKeyboard ? width * 0.45 : 0,
           }}
           isVisible={modalVisible}>
           {selectLocation ? (
@@ -1492,8 +1302,7 @@ export default function AddEditProperty({
                         {type == 'Add' ? 'New' : 'Edit'} Property
                       </Text>
                       <Pressable
-                        onPress={closeModal}
-                        // onPress={this.clearInputs}
+                        onPress={clearInputs}
                         android_ripple={{
                           color: 'black',
                           borderless: true,
@@ -1652,7 +1461,6 @@ export default function AddEditProperty({
                             ]}>
                             <SearchableDropDown
                               onItemSelect={(item) => {
-                                // setOwnerId(item.id);
                                 setUnitType(item.name);
                               }}
                               containerStyle={styles.dropDownFullContainer}
@@ -1690,7 +1498,6 @@ export default function AddEditProperty({
                             ]}>
                             <SearchableDropDown
                               onItemSelect={(item) => {
-                                // setOwnerId(item.id);
                                 setClasses(item.name);
                               }}
                               containerStyle={styles.dropDownFullContainer}
@@ -1867,16 +1674,7 @@ export default function AddEditProperty({
                           ))}
                           <TouchableOpacity
                             onPress={() => {
-                              LayoutAnimation.configureNext({
-                                duration: 300,
-                                create: {
-                                  type: LayoutAnimation.Types.easeInEaseOut,
-                                  property: LayoutAnimation.Properties.opacity,
-                                },
-                                update: {
-                                  type: LayoutAnimation.Types.easeInEaseOut,
-                                },
-                              });
+                              animate();
                               setAddUnitMix(true);
                             }}
                             style={styles.addNewRowBtn}>
@@ -1914,12 +1712,10 @@ export default function AddEditProperty({
                           <>
                             <View
                               style={{
-                                // height: height * 0.25,
                                 width: '100%',
                                 alignSelf: 'center',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                // justifyContent: 'center',
                                 zIndex: 2,
                                 height: dropDownShow[2].value
                                   ? showAddManufacturer || showEditManufacturer
@@ -1929,7 +1725,6 @@ export default function AddEditProperty({
                                     : height * 0.15
                                   : height * 0.0,
                                 overflow: 'hidden',
-                                // backgroundColor: 'tomato',
                               }}>
                               {!showAddManufacturer && !showEditManufacturer && (
                                 <View style={{paddingVertical: 10}}>
@@ -2045,10 +1840,6 @@ export default function AddEditProperty({
                           onItemSelect={(item) => {
                             setOwnerId(item.id);
                             setOwnerName(item.name);
-                            // this.setState({
-                            //   CustomerName: item.id,
-                            //   ownerName: item.name,
-                            // });
                           }}
                           containerStyle={styles.dropDownFullContainer}
                           itemStyle={styles.dropDownItems}

@@ -14,6 +14,7 @@ import CheckBox from '@react-native-community/checkbox';
 //Packages
 
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-simple-toast';
 import Modal from 'react-native-modal';
 import Home from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -37,6 +38,8 @@ export default function AddbuildingModal({
   modalName,
   lastUnitName,
   buildData,
+  unitCount,
+  unitActualCount,
 }) {
   const [meterListArray, setMeterListArray] = useState([]);
   const [state, setState] = useState({
@@ -186,6 +189,11 @@ export default function AddbuildingModal({
   };
 
   const newBuilding = () => {
+    const unitsTotal = state.unitsArray.length + unitActualCount;
+    if (unitsTotal > unitCount) {
+      Toast.show(`Unit add limit is ${unitCount}`, Toast.SHORT);
+      return;
+    }
     if (state.buildName === '') {
       setError((oldState) => ({
         ...oldState,

@@ -316,4 +316,34 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bottomBtnContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+
+  addManuBtnContainer: {
+    height: width * 0.15,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: height * 0.01,
+  },
+  utilListContainer: {
+    borderWidth: 1,
+    borderRadius: 8,
+    flexDirection: 'row',
+    padding: 5,
+    height: width * 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  utilAndManuSectionContainer: {
+    width: '100%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+    overflow: 'hidden',
+  },
 });
