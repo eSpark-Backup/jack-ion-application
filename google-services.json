@@ -1,91 +1,33 @@
 {
   "project_info": {
-    "project_number": "642578188990",
-    "project_id": "cloud-messaging-00",
-    "storage_bucket": "cloud-messaging-00.appspot.com"
+    "project_number": "306249590561",
+    "project_id": "ion-meter",
+    "storage_bucket": "ion-meter.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:642578188990:android:972fa728aca47f76d56cef",
+        "mobilesdk_app_id": "1:306249590561:android:a21a539fa606bfee054060",
         "android_client_info": {
-          "package_name": "com.checking"
+          "package_name": "com.ionenergy.ionmeter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "642578188990-qp0k452kim9rigo9tdm59k6ro6pprvc4.apps.googleusercontent.com",
+          "client_id": "306249590561-lef764ii93pajht6nthnjbav5ksu6m0r.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC5Kpn2T4u1hfDQL_Pxi5OFGogoBb4QZ3s"
+          "current_key": "AIzaSyDVKKOdiPpSkxdoVEgSlW6dq8VHwsVdS0w"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "642578188990-qp0k452kim9rigo9tdm59k6ro6pprvc4.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:642578188990:android:5cb9cca13228ee04d56cef",
-        "android_client_info": {
-          "package_name": "com.myapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "642578188990-qp0k452kim9rigo9tdm59k6ro6pprvc4.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC5Kpn2T4u1hfDQL_Pxi5OFGogoBb4QZ3s"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "642578188990-qp0k452kim9rigo9tdm59k6ro6pprvc4.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:642578188990:android:9aae5b0703db82e4d56cef",
-        "android_client_info": {
-          "package_name": "com.online_tasbeeh"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "642578188990-qp0k452kim9rigo9tdm59k6ro6pprvc4.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC5Kpn2T4u1hfDQL_Pxi5OFGogoBb4QZ3s"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "642578188990-qp0k452kim9rigo9tdm59k6ro6pprvc4.apps.googleusercontent.com",
+              "client_id": "306249590561-lef764ii93pajht6nthnjbav5ksu6m0r.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

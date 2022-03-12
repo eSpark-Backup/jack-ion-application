@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* checkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* checkingTests.m */; };
+		00E356F31AD99517003FC87E /* IonMeterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IonMeterTests.m */; };
 		0D2BCE62A1B54729BAAE6FDA /* Baloo2-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A56BFEF24C614514811A1912 /* Baloo2-Regular.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -17,7 +17,7 @@
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* checkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* checkingTests.m */; };
+		2DCD954D1E0B4F2C00145EB5 /* IonMeterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IonMeterTests.m */; };
 		4497C098BAE04984AD34B38F /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4D800BFD423463B89F883BF /* Comfortaa-Regular.ttf */; };
 		487EB33B4FCD4CCC81C1B202 /* Hind-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E22B95B4A76F46A9A0F44939 /* Hind-Regular.ttf */; };
 		4F4836D6F8624CDE908DF1DE /* Aladin-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4A53E02370C437292ECF5E5 /* Aladin-Regular.ttf */; };
@@ -27,20 +27,20 @@
 		71F7F35B030640AB85ABDF5B /* Comfortaa-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C09584A3DB247EF8213D098 /* Comfortaa-VariableFont_wght.ttf */; };
 		728A2A00E9CE4F9D8377421B /* WorkSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E960D004536248E2B5736A2A /* WorkSans-Regular.ttf */; };
 		7324A8ED12D04A07B7A8D9D9 /* Tabitha.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 697F89CED8DD4C27926EE49E /* Tabitha.ttf */; };
-		7AEFE9FF7A870F9DD9CDA770 /* libPods-checking-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 312DDA6985344522398083B7 /* libPods-checking-tvOS.a */; };
+		7AEFE9FF7A870F9DD9CDA770 /* libPods-IonMeter-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 312DDA6985344522398083B7 /* libPods-IonMeter-tvOS.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		97157B80F4316271D4A2D407 /* libPods-checking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D74598BA950DB912842CF8C3 /* libPods-checking.a */; };
+		97157B80F4316271D4A2D407 /* libPods-IonMeter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D74598BA950DB912842CF8C3 /* libPods-IonMeter.a */; };
 		9EF46CFFF61D49B4B995A85E /* WorkSans-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CEF5C5934EB484B82C6A4EB /* WorkSans-Italic-VariableFont_wght.ttf */; };
 		A8C7D62A88644B188EF2574A /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 084324BD60CE46328EA895D7 /* Montserrat-Medium.ttf */; };
 		AE32B38816C24CCDB4BD4420 /* MeriendaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9F5BCCAC9954405B4E67A71 /* MeriendaOne-Regular.ttf */; };
-		AE49D547075CF2F063AAF15E /* libPods-checking-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F5BAC12D3F2B1955503B76 /* libPods-checking-tvOSTests.a */; };
+		AE49D547075CF2F063AAF15E /* libPods-IonMeter-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F5BAC12D3F2B1955503B76 /* libPods-IonMeter-tvOSTests.a */; };
 		B03D54688E494D7DB6E51461 /* BalooChettan2-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1620E044E4704D859DFC2F98 /* BalooChettan2-Bold.ttf */; };
 		BF802765AE364B90A0FB99DE /* OxygenMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4684BD2532F435D91C48151 /* OxygenMono-Regular.ttf */; };
 		CA3405942F9E4359BCB7E49C /* NotoSansJP-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2848495D9644BAFBC59B8DE /* NotoSansJP-Bold.otf */; };
 		D1A9722A800C45009ACBA31D /* NotoSansJP-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 509AA2DD4CFD41F0AE546741 /* NotoSansJP-Medium.otf */; };
 		D4FF78B181C44820BF2F0CE8 /* Handlee-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D3E1605BA6048769FA2602A /* Handlee-Regular.ttf */; };
 		DD771D1BC41E422DB2E84116 /* NotoSansJP-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 05E91DD6D25C486DB73A8245 /* NotoSansJP-Thin.otf */; };
-		F2F8C2279D9D9CE413B8C8FF /* libPods-checking-checkingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F31CBA79992B86DEE15A83C1 /* libPods-checking-checkingTests.a */; };
+		F2F8C2279D9D9CE413B8C8FF /* libPods-IonMeter-IonMeterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F31CBA79992B86DEE15A83C1 /* libPods-IonMeter-IonMeterTests.a */; };
 		FBEC16A152AE4454B3353E4D /* BalsamiqSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B5B27BF99CCA408A886678AB /* BalsamiqSans-Regular.ttf */; };
 		FDD36EBBA059473FA2BB1FAD /* NotoSansJP-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 16790719DE9140C59772D790 /* NotoSansJP-Regular.otf */; };
 /* End PBXBuildFile section */
@@ -51,58 +51,58 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = checking;
+			remoteInfo = IonMeter;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "checking-tvOS";
+			remoteInfo = "IonMeter-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* checkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* IonMeterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IonMeterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* checkingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = checkingTests.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* IonMeterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IonMeterTests.m; sourceTree = "<group>"; };
 		03E0A830546C4157B3879508 /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBold.ttf"; path = "../src/assets/fonts/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
 		05E91DD6D25C486DB73A8245 /* NotoSansJP-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Thin.otf"; path = "../scr/assets/fonts/NotoSansJP-Thin.otf"; sourceTree = "<group>"; };
 		084324BD60CE46328EA895D7 /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../scr/assets/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
-		0988800A55F5997351D3084E /* Pods-checking-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-checking-tvOSTests/Pods-checking-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		0988800A55F5997351D3084E /* Pods-IonMeter-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-IonMeter-tvOSTests/Pods-IonMeter-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		0EDC3BC333D34A22AB8E8F84 /* WorkSans-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "WorkSans-VariableFont_wght.ttf"; path = "../scr/assets/fonts/WorkSans-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* checking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checking.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = checking/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = checking/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = checking/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = checking/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = checking/main.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* IonMeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IonMeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = IonMeter/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = IonMeter/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = IonMeter/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = IonMeter/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = IonMeter/main.m; sourceTree = "<group>"; };
 		1620E044E4704D859DFC2F98 /* BalooChettan2-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooChettan2-Bold.ttf"; path = "../scr/assets/fonts/BalooChettan2-Bold.ttf"; sourceTree = "<group>"; };
 		16790719DE9140C59772D790 /* NotoSansJP-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Regular.otf"; path = "../scr/assets/fonts/NotoSansJP-Regular.otf"; sourceTree = "<group>"; };
-		1B34EC6AFAA02AA5E2B11EA8 /* Pods-checking-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-checking-tvOSTests/Pods-checking-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1B34EC6AFAA02AA5E2B11EA8 /* Pods-IonMeter-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-IonMeter-tvOSTests/Pods-IonMeter-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		1BFE829599244A4B9C6381FB /* NotoSansJP-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Medium.otf"; path = "../src/assets/fonts/NotoSansJP-Medium.otf"; sourceTree = "<group>"; };
 		205C73D03AF14E61BF314C8B /* NotoSansJP-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Regular.otf"; path = "../src/assets/fonts/NotoSansJP-Regular.otf"; sourceTree = "<group>"; };
 		2C09584A3DB247EF8213D098 /* Comfortaa-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Comfortaa-VariableFont_wght.ttf"; path = "../scr/assets/fonts/Comfortaa-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* checking-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "checking-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* checking-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "checking-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D006451C7 /* IonMeter-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IonMeter-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* IonMeter-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IonMeter-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DB4A78469D4DDB842094CC /* Aladin-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Aladin-Regular.ttf"; path = "../src/assets/fonts/Aladin-Regular.ttf"; sourceTree = "<group>"; };
-		312DDA6985344522398083B7 /* libPods-checking-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-checking-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		312DDA6985344522398083B7 /* libPods-IonMeter-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IonMeter-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3336C126AF5E4282BEEF7B80 /* FiraCode-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FiraCode-VariableFont_wght.ttf"; path = "../src/assets/fonts/FiraCode-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		3BBCFB21674543C79F507CC2 /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBold.ttf"; path = "../scr/assets/fonts/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
-		3C0E9BC7F603E7D3B7ED76A5 /* Pods-checking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking.release.xcconfig"; path = "Target Support Files/Pods-checking/Pods-checking.release.xcconfig"; sourceTree = "<group>"; };
+		3C0E9BC7F603E7D3B7ED76A5 /* Pods-IonMeter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter.release.xcconfig"; path = "Target Support Files/Pods-IonMeter/Pods-IonMeter.release.xcconfig"; sourceTree = "<group>"; };
 		3D3E1605BA6048769FA2602A /* Handlee-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Handlee-Regular.ttf"; path = "../scr/assets/fonts/Handlee-Regular.ttf"; sourceTree = "<group>"; };
 		4CEF5C5934EB484B82C6A4EB /* WorkSans-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "WorkSans-Italic-VariableFont_wght.ttf"; path = "../scr/assets/fonts/WorkSans-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		509AA2DD4CFD41F0AE546741 /* NotoSansJP-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Medium.otf"; path = "../scr/assets/fonts/NotoSansJP-Medium.otf"; sourceTree = "<group>"; };
-		549DBC6D85B148BE620A5BBF /* Pods-checking-checkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking-checkingTests.debug.xcconfig"; path = "Target Support Files/Pods-checking-checkingTests/Pods-checking-checkingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		549DBC6D85B148BE620A5BBF /* Pods-IonMeter-IonMeterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-IonMeterTests.debug.xcconfig"; path = "Target Support Files/Pods-IonMeter-IonMeterTests/Pods-IonMeter-IonMeterTests.debug.xcconfig"; sourceTree = "<group>"; };
 		58544E0A95774AE49333D0F3 /* BalooChettan2-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooChettan2-Bold.ttf"; path = "../src/assets/fonts/BalooChettan2-Bold.ttf"; sourceTree = "<group>"; };
 		5AA2D21766154F63830DAC31 /* NotoSansJP-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Bold.otf"; path = "../src/assets/fonts/NotoSansJP-Bold.otf"; sourceTree = "<group>"; };
 		5CD29DCEDCA149B0BAC5BBB9 /* FiraCode-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FiraCode-VariableFont_wght.ttf"; path = "../scr/assets/fonts/FiraCode-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		6165CADB93666E7E70B11D49 /* Pods-checking-checkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking-checkingTests.release.xcconfig"; path = "Target Support Files/Pods-checking-checkingTests/Pods-checking-checkingTests.release.xcconfig"; sourceTree = "<group>"; };
+		6165CADB93666E7E70B11D49 /* Pods-IonMeter-IonMeterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-IonMeterTests.release.xcconfig"; path = "Target Support Files/Pods-IonMeter-IonMeterTests/Pods-IonMeter-IonMeterTests.release.xcconfig"; sourceTree = "<group>"; };
 		697F89CED8DD4C27926EE49E /* Tabitha.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Tabitha.ttf; path = ../scr/assets/fonts/Tabitha.ttf; sourceTree = "<group>"; };
-		79D015DF4B94145ECD8086F2 /* Pods-checking-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-checking-tvOS/Pods-checking-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = checking/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		837D96D3EAC869A6BB5BC033 /* Pods-checking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking.debug.xcconfig"; path = "Target Support Files/Pods-checking/Pods-checking.debug.xcconfig"; sourceTree = "<group>"; };
+		79D015DF4B94145ECD8086F2 /* Pods-IonMeter-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-IonMeter-tvOS/Pods-IonMeter-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = IonMeter/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		837D96D3EAC869A6BB5BC033 /* Pods-IonMeter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter.debug.xcconfig"; path = "Target Support Files/Pods-IonMeter/Pods-IonMeter.debug.xcconfig"; sourceTree = "<group>"; };
 		9721348D736744898AC0AB61 /* MeriendaOne-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MeriendaOne-Regular.ttf"; path = "../src/assets/fonts/MeriendaOne-Regular.ttf"; sourceTree = "<group>"; };
 		994E20DB48EC4AA990DB246C /* Tabitha.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Tabitha.ttf; path = ../src/assets/fonts/Tabitha.ttf; sourceTree = "<group>"; };
 		A4684BD2532F435D91C48151 /* OxygenMono-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OxygenMono-Regular.ttf"; path = "../scr/assets/fonts/OxygenMono-Regular.ttf"; sourceTree = "<group>"; };
@@ -110,15 +110,15 @@
 		A56BFEF24C614514811A1912 /* Baloo2-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Baloo2-Regular.ttf"; path = "../scr/assets/fonts/Baloo2-Regular.ttf"; sourceTree = "<group>"; };
 		ABD3D8B7E13F45EAB0DA8115 /* OxygenMono-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OxygenMono-Regular.ttf"; path = "../src/assets/fonts/OxygenMono-Regular.ttf"; sourceTree = "<group>"; };
 		B12F887A90FA440588F98BBB /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../src/assets/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
-		B17CD22796064A02749D5E31 /* Pods-checking-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-checking-tvOS.release.xcconfig"; path = "Target Support Files/Pods-checking-tvOS/Pods-checking-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		B1F5BAC12D3F2B1955503B76 /* libPods-checking-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-checking-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B17CD22796064A02749D5E31 /* Pods-IonMeter-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-tvOS.release.xcconfig"; path = "Target Support Files/Pods-IonMeter-tvOS/Pods-IonMeter-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		B1F5BAC12D3F2B1955503B76 /* libPods-IonMeter-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IonMeter-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B27BF99CCA408A886678AB /* BalsamiqSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalsamiqSans-Regular.ttf"; path = "../scr/assets/fonts/BalsamiqSans-Regular.ttf"; sourceTree = "<group>"; };
 		B95FF66E44ED43D0AAB1D7C3 /* Baloo2-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Baloo2-Regular.ttf"; path = "../src/assets/fonts/Baloo2-Regular.ttf"; sourceTree = "<group>"; };
 		BD4F36A439FA4764AAB3000E /* Handlee-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Handlee-Regular.ttf"; path = "../src/assets/fonts/Handlee-Regular.ttf"; sourceTree = "<group>"; };
 		C2848495D9644BAFBC59B8DE /* NotoSansJP-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Bold.otf"; path = "../scr/assets/fonts/NotoSansJP-Bold.otf"; sourceTree = "<group>"; };
 		C68C5A6A81564EE8BE007EC0 /* Xerox Serif Narrow Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Xerox Serif Narrow Bold.ttf"; path = "../src/assets/fonts/Xerox Serif Narrow Bold.ttf"; sourceTree = "<group>"; };
 		D292A095007A466CA2F05737 /* Comfortaa-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Comfortaa-VariableFont_wght.ttf"; path = "../src/assets/fonts/Comfortaa-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		D74598BA950DB912842CF8C3 /* libPods-checking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-checking.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D74598BA950DB912842CF8C3 /* libPods-IonMeter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IonMeter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB74F12D6DF3477299EC7683 /* NotoSansJP-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Thin.otf"; path = "../src/assets/fonts/NotoSansJP-Thin.otf"; sourceTree = "<group>"; };
 		E22B95B4A76F46A9A0F44939 /* Hind-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Hind-Regular.ttf"; path = "../scr/assets/fonts/Hind-Regular.ttf"; sourceTree = "<group>"; };
 		E42F14B68964425B97C0F357 /* Xerox Serif Narrow Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Xerox Serif Narrow Bold.ttf"; path = "../scr/assets/fonts/Xerox Serif Narrow Bold.ttf"; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 		E9F5BCCAC9954405B4E67A71 /* MeriendaOne-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MeriendaOne-Regular.ttf"; path = "../scr/assets/fonts/MeriendaOne-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F31CBA79992B86DEE15A83C1 /* libPods-checking-checkingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-checking-checkingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F31CBA79992B86DEE15A83C1 /* libPods-IonMeter-IonMeterTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IonMeter-IonMeterTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F459F7298EB446B68D41AA01 /* BalooChettan2-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooChettan2-Regular.ttf"; path = "../src/assets/fonts/BalooChettan2-Regular.ttf"; sourceTree = "<group>"; };
 		F4A53E02370C437292ECF5E5 /* Aladin-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Aladin-Regular.ttf"; path = "../scr/assets/fonts/Aladin-Regular.ttf"; sourceTree = "<group>"; };
 		FCCF43EB4D0F4010B09A6C1A /* BalooChettan2-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooChettan2-Regular.ttf"; path = "../scr/assets/fonts/BalooChettan2-Regular.ttf"; sourceTree = "<group>"; };
@@ -137,7 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2F8C2279D9D9CE413B8C8FF /* libPods-checking-checkingTests.a in Frameworks */,
+				F2F8C2279D9D9CE413B8C8FF /* libPods-IonMeter-IonMeterTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97157B80F4316271D4A2D407 /* libPods-checking.a in Frameworks */,
+				97157B80F4316271D4A2D407 /* libPods-IonMeter.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +153,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7AEFE9FF7A870F9DD9CDA770 /* libPods-checking-tvOS.a in Frameworks */,
+				7AEFE9FF7A870F9DD9CDA770 /* libPods-IonMeter-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,20 +161,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE49D547075CF2F063AAF15E /* libPods-checking-tvOSTests.a in Frameworks */,
+				AE49D547075CF2F063AAF15E /* libPods-IonMeter-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* checkingTests */ = {
+		00E356EF1AD99517003FC87E /* IonMeterTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* checkingTests.m */,
+				00E356F21AD99517003FC87E /* IonMeterTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = checkingTests;
+			path = IonMeterTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -235,19 +235,19 @@
 		10E4E7D47A4C085087614E85 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				837D96D3EAC869A6BB5BC033 /* Pods-checking.debug.xcconfig */,
-				3C0E9BC7F603E7D3B7ED76A5 /* Pods-checking.release.xcconfig */,
-				549DBC6D85B148BE620A5BBF /* Pods-checking-checkingTests.debug.xcconfig */,
-				6165CADB93666E7E70B11D49 /* Pods-checking-checkingTests.release.xcconfig */,
-				79D015DF4B94145ECD8086F2 /* Pods-checking-tvOS.debug.xcconfig */,
-				B17CD22796064A02749D5E31 /* Pods-checking-tvOS.release.xcconfig */,
-				1B34EC6AFAA02AA5E2B11EA8 /* Pods-checking-tvOSTests.debug.xcconfig */,
-				0988800A55F5997351D3084E /* Pods-checking-tvOSTests.release.xcconfig */,
+				837D96D3EAC869A6BB5BC033 /* Pods-IonMeter.debug.xcconfig */,
+				3C0E9BC7F603E7D3B7ED76A5 /* Pods-IonMeter.release.xcconfig */,
+				549DBC6D85B148BE620A5BBF /* Pods-IonMeter-IonMeterTests.debug.xcconfig */,
+				6165CADB93666E7E70B11D49 /* Pods-IonMeter-IonMeterTests.release.xcconfig */,
+				79D015DF4B94145ECD8086F2 /* Pods-IonMeter-tvOS.debug.xcconfig */,
+				B17CD22796064A02749D5E31 /* Pods-IonMeter-tvOS.release.xcconfig */,
+				1B34EC6AFAA02AA5E2B11EA8 /* Pods-IonMeter-tvOSTests.debug.xcconfig */,
+				0988800A55F5997351D3084E /* Pods-IonMeter-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* checking */ = {
+		13B07FAE1A68108700A75B9A /* IonMeter */ = {
 			isa = PBXGroup;
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -258,7 +258,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = checking;
+			name = IonMeter;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -266,10 +266,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				D74598BA950DB912842CF8C3 /* libPods-checking.a */,
-				F31CBA79992B86DEE15A83C1 /* libPods-checking-checkingTests.a */,
-				312DDA6985344522398083B7 /* libPods-checking-tvOS.a */,
-				B1F5BAC12D3F2B1955503B76 /* libPods-checking-tvOSTests.a */,
+				D74598BA950DB912842CF8C3 /* libPods-IonMeter.a */,
+				F31CBA79992B86DEE15A83C1 /* libPods-IonMeter-IonMeterTests.a */,
+				312DDA6985344522398083B7 /* libPods-IonMeter-tvOS.a */,
+				B1F5BAC12D3F2B1955503B76 /* libPods-IonMeter-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -284,9 +284,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* checking */,
+				13B07FAE1A68108700A75B9A /* IonMeter */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* checkingTests */,
+				00E356EF1AD99517003FC87E /* IonMeterTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				0D77F6F87DD64518ABD320B1 /* Resources */,
@@ -300,10 +300,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* checking.app */,
-				00E356EE1AD99517003FC87E /* checkingTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* checking-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* checking-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* IonMeter.app */,
+				00E356EE1AD99517003FC87E /* IonMeterTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* IonMeter-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* IonMeter-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -311,9 +311,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* checkingTests */ = {
+		00E356ED1AD99517003FC87E /* IonMeterTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "checkingTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "IonMeterTests" */;
 			buildPhases = (
 				9990C316EFB5DA927204E322 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -326,14 +326,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = checkingTests;
-			productName = checkingTests;
-			productReference = 00E356EE1AD99517003FC87E /* checkingTests.xctest */;
+			name = IonMeterTests;
+			productName = IonMeterTests;
+			productReference = 00E356EE1AD99517003FC87E /* IonMeterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* checking */ = {
+		13B07F861A680F5B00A75B9A /* IonMeter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "checking" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "IonMeter" */;
 			buildPhases = (
 				E9E131706A58F46E6A0DE452 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -348,14 +348,14 @@
 			);
 			dependencies = (
 			);
-			name = checking;
-			productName = checking;
-			productReference = 13B07F961A680F5B00A75B9A /* checking.app */;
+			name = IonMeter;
+			productName = IonMeter;
+			productReference = 13B07F961A680F5B00A75B9A /* IonMeter.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* checking-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* IonMeter-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "checking-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "IonMeter-tvOS" */;
 			buildPhases = (
 				3697DB070B032E7C40C4D9D9 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -368,14 +368,14 @@
 			);
 			dependencies = (
 			);
-			name = "checking-tvOS";
-			productName = "checking-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* checking-tvOS.app */;
+			name = "IonMeter-tvOS";
+			productName = "IonMeter-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* IonMeter-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* checking-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* IonMeter-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "checking-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "IonMeter-tvOSTests" */;
 			buildPhases = (
 				7400886E5BB9A45E6687DDF5 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -387,9 +387,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "checking-tvOSTests";
-			productName = "checking-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* checking-tvOSTests.xctest */;
+			name = "IonMeter-tvOSTests";
+			productName = "IonMeter-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* IonMeter-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -422,7 +422,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "checking" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "IonMeter" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -435,10 +435,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* checking */,
-				00E356ED1AD99517003FC87E /* checkingTests */,
-				2D02E47A1E0B4A5D006451C7 /* checking-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* checking-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* IonMeter */,
+				00E356ED1AD99517003FC87E /* IonMeterTests */,
+				2D02E47A1E0B4A5D006451C7 /* IonMeter-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* IonMeter-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -544,7 +544,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-checking-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-IonMeter-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -557,7 +557,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-checking-checkingTests/Pods-checking-checkingTests-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-IonMeter-IonMeterTests/Pods-IonMeter-IonMeterTests-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
@@ -600,7 +600,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-checking-checkingTests/Pods-checking-checkingTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IonMeter-IonMeterTests/Pods-IonMeter-IonMeterTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		735894DDAE1494D7B85E1D68 /* [CP] Copy Pods Resources */ = {
@@ -609,7 +609,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-checking/Pods-checking-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-IonMeter/Pods-IonMeter-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
@@ -652,7 +652,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-checking/Pods-checking-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IonMeter/Pods-IonMeter-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7400886E5BB9A45E6687DDF5 /* [CP] Check Pods Manifest.lock */ = {
@@ -670,7 +670,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-checking-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-IonMeter-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -705,7 +705,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-checking-checkingTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-IonMeter-IonMeterTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -727,7 +727,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-checking-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-IonMeter-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -779,7 +779,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* checkingTests.m in Sources */,
+				00E356F31AD99517003FC87E /* IonMeterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -805,7 +805,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* checkingTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* IonMeterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,12 +814,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* checking */;
+			target = 13B07F861A680F5B00A75B9A /* IonMeter */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* checking-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* IonMeter-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -827,7 +827,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 549DBC6D85B148BE620A5BBF /* Pods-checking-checkingTests.debug.xcconfig */;
+			baseConfigurationReference = 549DBC6D85B148BE620A5BBF /* Pods-IonMeter-IonMeterTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = T79PT33JYU;
@@ -835,7 +835,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = checkingTests/Info.plist;
+				INFOPLIST_FILE = IonMeterTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -845,18 +845,18 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checking.app/checking";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IonMeter.app/IonMeter";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6165CADB93666E7E70B11D49 /* Pods-checking-checkingTests.release.xcconfig */;
+			baseConfigurationReference = 6165CADB93666E7E70B11D49 /* Pods-IonMeter-IonMeterTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = T79PT33JYU;
-				INFOPLIST_FILE = checkingTests/Info.plist;
+				INFOPLIST_FILE = IonMeterTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -866,28 +866,28 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checking.app/checking";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IonMeter.app/IonMeter";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 837D96D3EAC869A6BB5BC033 /* Pods-checking.debug.xcconfig */;
+			baseConfigurationReference = 837D96D3EAC869A6BB5BC033 /* Pods-IonMeter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T79PT33JYU;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = checking/Info.plist;
+				INFOPLIST_FILE = IonMeter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = checking;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ionenergy.ionmeter;
+				PRODUCT_NAME = IonMeter;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -896,21 +896,21 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3C0E9BC7F603E7D3B7ED76A5 /* Pods-checking.release.xcconfig */;
+			baseConfigurationReference = 3C0E9BC7F603E7D3B7ED76A5 /* Pods-IonMeter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T79PT33JYU;
-				INFOPLIST_FILE = checking/Info.plist;
+				INFOPLIST_FILE = IonMeter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = checking;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ionenergy.ionmeter;
+				PRODUCT_NAME = IonMeter;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -918,7 +918,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79D015DF4B94145ECD8086F2 /* Pods-checking-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 79D015DF4B94145ECD8086F2 /* Pods-IonMeter-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -930,14 +930,14 @@
 				DEVELOPMENT_TEAM = T79PT33JYU;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "checking-tvOS/Info.plist";
+				INFOPLIST_FILE = "IonMeter-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.checking-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ionenergy.ionmeter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -947,7 +947,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B17CD22796064A02749D5E31 /* Pods-checking-tvOS.release.xcconfig */;
+			baseConfigurationReference = B17CD22796064A02749D5E31 /* Pods-IonMeter-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -959,14 +959,14 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = T79PT33JYU;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "checking-tvOS/Info.plist";
+				INFOPLIST_FILE = "IonMeter-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.checking-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ionenergy.ionmeter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -976,7 +976,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B34EC6AFAA02AA5E2B11EA8 /* Pods-checking-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 1B34EC6AFAA02AA5E2B11EA8 /* Pods-IonMeter-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -987,24 +987,24 @@
 				DEVELOPMENT_TEAM = T79PT33JYU;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "checking-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "IonMeter-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.checking-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.IonMeter-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checking-tvOS.app/checking-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IonMeter-tvOS.app/IonMeter-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Debug;
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0988800A55F5997351D3084E /* Pods-checking-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 0988800A55F5997351D3084E /* Pods-IonMeter-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1015,17 +1015,17 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = T79PT33JYU;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "checking-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "IonMeter-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.checking-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.IonMeter-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checking-tvOS.app/checking-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IonMeter-tvOS.app/IonMeter-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Release;
@@ -1148,7 +1148,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "checkingTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "IonMeterTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -1157,7 +1157,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "checking" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "IonMeter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -1166,7 +1166,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "checking-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "IonMeter-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -1175,7 +1175,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "checking-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "IonMeter-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -1184,7 +1184,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "checking" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "IonMeter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

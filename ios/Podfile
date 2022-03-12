@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'checking' do
+target 'IonMeter' do
   config = use_native_modules!
   permissions_path = '../node_modules/react-native-permissions/ios'
   rn_maps_path = '../node_modules/react-native-maps'
@@ -33,7 +33,7 @@ target 'checking' do
   pod 'Permission-Reminders', :path => "#{permissions_path}/Reminders"
 
 
-  target 'checkingTests' do
+  target 'IonMeterTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -49,10 +49,10 @@ target 'checking' do
   # end
 end
 
-target 'checking-tvOS' do
-  # Pods for checking-tvOS
+target 'IonMeter-tvOS' do
+  # Pods for IonMeter-tvOS
 
-  target 'checking-tvOSTests' do
+  target 'IonMeter-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
