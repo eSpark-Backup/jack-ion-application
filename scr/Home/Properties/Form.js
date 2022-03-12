@@ -2955,7 +2955,7 @@ export default class Splash extends React.Component {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     this.getToken();
-    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
+    Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -3376,7 +3376,7 @@ export default class Splash extends React.Component {
                     <GooglePlacesAutocomplete
                       placeholder="Address"
                       query={{
-                        key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                        key: 'AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A',
                         language: 'en', // language of the results
                       }}
                       fetchDetails={true}

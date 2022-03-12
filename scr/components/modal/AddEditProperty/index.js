@@ -544,7 +544,7 @@ export default function AddEditProperty({
     setShowEditManufacturer(true);
   };
 
-  addProperty = async () => {
+  const addProperty = async () => {
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
@@ -1073,28 +1073,12 @@ export default function AddEditProperty({
       <View style={{flexDirection: 'row'}}>
         <TouchableOpacity
           onPress={() => openEditManu(item, index)}
-          style={{
-            backgroundColor: '#fff',
-            borderWidth: 2,
-            borderColor: '#787878',
-            height: width * 0.1,
-            width: width * 0.7,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 8,
-          }}>
+          style={styles.manufacturersArrItem}>
           <Text style={{color: '#787878'}}>{item.name}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => DeleteManufacture(item)}
-          style={{
-            borderWidth: 2,
-            borderColor: '#787878',
-            width: width * 0.1,
-            height: width * 0.1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          style={styles.manufacturersArrItemDel}>
           <MaterialCommunityIcon name="delete" size={width * 0.08} />
         </TouchableOpacity>
       </View>
@@ -1210,7 +1194,7 @@ export default function AddEditProperty({
                   <GooglePlacesAutocomplete
                     placeholder="Address"
                     query={{
-                      key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                      key: 'AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A',
                       language: 'en', // language of the results
                     }}
                     fetchDetails={true}
@@ -1243,7 +1227,7 @@ export default function AddEditProperty({
                   />
                 </TouchableOpacity>
 
-                {markers.length > 0 || currLocate.length > 0 ? (
+                {markers.length > 0 || currLocate ? (
                   <View style={styles.loactionPinContainer}>
                     <Icon
                       size={width * 0.12}
@@ -1252,38 +1236,41 @@ export default function AddEditProperty({
                     />
                   </View>
                 ) : null}
-                {markers.length > 0 || currLocate.length > 0 ? (
-                  <MapView
-                    style={styles.mapView}
-                    region={{
-                      latitude: lat,
-                      longitude: long,
-                      latitudeDelta: latDelta,
-                      longitudeDelta: longDelta,
-                    }}
-                    zoomEnabled={true}
-                    provider={PROVIDER_GOOGLE}
-                    showsUserLocation={true}
-                    showsMyLocationButton={false}
-                    onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}
-                    // onPress={(e) => this.getLocation(e)}
-                  >
-                    <Circle
-                      center={{
-                        latitude: lat,
-                        longitude: long,
-                      }}
-                      ref={circleRef}
-                      onLayout={() =>
-                        circleRef.current.setNativeProps({
-                          strokeColor: 'rgba(12,170,225,1)',
-                          fillColor: 'rgba(12,170,225,0.3)',
-                        })
-                      }
-                      radius={radialDis * 1000}
-                    />
-                  </MapView>
-                ) : null}
+                {markers.length > 0 || currLocate
+                  ? (console.log('CURRLOCATE', currLocate),
+                    (
+                      <MapView
+                        style={styles.mapView}
+                        region={{
+                          latitude: lat == 0 ? currLocate.lat : lat,
+                          longitude: long == 0 ? currLocate.lng : long,
+                          latitudeDelta: latDelta,
+                          longitudeDelta: longDelta,
+                        }}
+                        zoomEnabled={true}
+                        provider={PROVIDER_GOOGLE}
+                        showsUserLocation={true}
+                        showsMyLocationButton={false}
+                        onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}
+                        // onPress={(e) => this.getLocation(e)}
+                      >
+                        <Circle
+                          center={{
+                            latitude: lat == 0 ? currLocate.lat : lat,
+                            longitude: long == 0 ? currLocate.lng : long,
+                          }}
+                          ref={circleRef}
+                          onLayout={() =>
+                            circleRef.current.setNativeProps({
+                              strokeColor: 'rgba(12,170,225,1)',
+                              fillColor: 'rgba(12,170,225,0.3)',
+                            })
+                          }
+                          radius={radialDis * 1000}
+                        />
+                      </MapView>
+                    ))
+                  : null}
               </View>
             </View>
           ) : (
@@ -1949,11 +1936,11 @@ export default function AddEditProperty({
                   <View style={styles.boxHeader}>
                     <View style={styles.bottonContainer}>
                       <FAB
-                        onPress={this.addProperty}
+                        onPress={addProperty}
                         style={styles.submitBotton}
                         color="white"
                         icon="check"
-                        label={'Add property'}
+                        label={type == 'Add' ? 'Add property' : 'Edit Property'}
                       />
                     </View>
                   </View>

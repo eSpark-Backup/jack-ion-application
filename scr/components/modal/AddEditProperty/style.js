@@ -346,4 +346,22 @@ export default styles = StyleSheet.create({
     zIndex: 2,
     overflow: 'hidden',
   },
+  manufacturersArrItem: {
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#787878',
+    height: width * 0.1,
+    width: width * 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  manufacturersArrItemDel: {
+    borderWidth: 2,
+    borderColor: '#787878',
+    width: width * 0.1,
+    height: width * 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

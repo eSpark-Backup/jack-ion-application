@@ -15,6 +15,7 @@ import {
   ToastAndroid,
   Image,
   LayoutAnimation,
+  PermissionsAndroid,
 } from 'react-native';
 
 //Packages
@@ -46,6 +47,13 @@ import ContextProp from '../Context/propContext';
 import {TextInput, FAB, HelperText} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
+import {
+  check,
+  openSettings,
+  PERMISSIONS,
+  request,
+  RESULTS,
+} from 'react-native-permissions';
 
 // Components
 import styles from './style';
@@ -56,6 +64,7 @@ import {create} from 'apisauce';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
+import SystemSetting from 'react-native-system-setting';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
@@ -90,6 +99,7 @@ export default class Splash extends React.Component {
     super();
     this.state = {
       isModalVisible: false,
+      isEditPropVisible: false,
       points: 80,
       isLoading: false,
       addNewType: false,
@@ -112,6 +122,7 @@ export default class Splash extends React.Component {
       lat: 0,
       long: 0,
       markers: [],
+      propMarkers: [],
       error: {
         property: '',
         property_id: '',
@@ -134,7 +145,7 @@ export default class Splash extends React.Component {
 
   async componentDidMount() {
     this.getToken();
-    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
+    Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     const propertyData = this.props.navigation.state.params.item.item;
     this.getMetersLocation(propertyData?.id);
     console.log('Property Data', propertyData);
@@ -200,6 +211,10 @@ export default class Splash extends React.Component {
     console.log('Meters Location', metersLocation?.data?.data);
     if (metersLocation?.data?.bool) {
       this.setState({markers: metersLocation?.data?.data, isLoading: false});
+      let index = metersLocation?.data?.data.length - 1;
+      this.setState({
+        propMarkers: metersLocation?.data?.data[index]?.property?.position,
+      });
     }
   };
 
@@ -209,6 +224,107 @@ export default class Splash extends React.Component {
 
   toggleModal = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
+  };
+
+  enableLocation = async () => {
+    const location = await SystemSetting.isLocationEnabled();
+    console.log('GPS', location);
+    // this.getToken();
+    // Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
+    if (!location) {
+      Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: this.turnLocationOn,
+        },
+      ]);
+    } else {
+      // Geolocation.getCurrentPosition(
+      //   (position) => {
+      //     var lat = parseFloat(position.coords.latitude);
+      //     var long = parseFloat(position.coords.longitude);
+      //     // this.setState({lat: lat, long: long});
+      //     Geocoder.from({
+      //       latitude: lat,
+      //       longitude: long,
+      //     })
+      //       .then((json) => {
+      //         var locationName = json.results[0].formatted_address;
+      //         console.log('LOACTION NAME', locationName);
+      //         // this.fetchAddressData(locationName);
+      //         this.setState({
+      //           locationBtn: locationName,
+      //         });
+      //       })
+      //       .catch((error) => console.warn(error));
+      //   },
+      //   (error) => console.log('geo locations', error),
+      //   {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      // );
+      if (Platform.OS == 'ios') {
+        request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          .then((result) => {
+            if (result == RESULTS.GRANTED) {
+              this.checkLocation(true);
+            } else {
+              this.checkLocation(false);
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
+      if (Platform.OS == 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            this.checkLocation(true);
+          } else {
+            this.checkLocation(false);
+          }
+        } catch (err) {
+          alert(err);
+        }
+      }
+    }
+  };
+
+  checkLocation = async (locationAccess) => {
+    if (locationAccess) {
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
+      this.setState({isEditPropVisible: true});
+      // this._renderMap();
+    } else {
+      Alert.alert(
+        `You don't have access for the Location`,
+        `To Change the permission Open Settings`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open Settings',
+            onPress: openSettings,
+          },
+        ],
+      );
+    }
   };
 
   toggleModalEditProp = () => {
@@ -229,10 +345,19 @@ export default class Splash extends React.Component {
     }));
   };
 
+  onEditSucces = () => {
+    this.setState({
+      isLoading: true,
+      isEditPropVisible: false,
+      isLoading: false,
+    });
+  };
+
   onCancel = () => {
     this.setState({
       listData: this.props.navigation.state.params.item.item,
       isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
+      isEditPropVisible: false,
     });
     this.setState((prevState) => ({
       ...prevState,
@@ -767,7 +892,14 @@ export default class Splash extends React.Component {
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
         <CustumStatusBar />
         <View style={styles.container}>
-          <AddEditProperty />
+          <AddEditProperty
+            modalVisible={this.state.isEditPropVisible}
+            closeModal={this.onCancel}
+            currLocate={this.state.propMarkers}
+            currAddr={this.state.locationBtn}
+            addedSuccessfully={this.onEditSucces}
+            type={'Edit'}
+          />
           {this.state.isLoading && <Loader />}
           <Modal
             animationIn="slideInLeft"
@@ -983,7 +1115,7 @@ export default class Splash extends React.Component {
                 </Text>
                 <Pressable
                   style={styles.clientDataEdit}
-                  onPress={() => this.toggleModalEditProp()}
+                  onPress={() => this.enableLocation()}
                   android_ripple={{
                     color: 'white',
                     radius: width * 0.1,
@@ -2065,23 +2197,6 @@ export default class Splash extends React.Component {
                     <TextInput
                       value={this.state.listData?.contact_name}
                       placeholder="Contact Name"
-                      onChangeText={(text) => console.log(text)}
-                      editable={false}
-                      style={styles.contactInput}
-                    />
-                  </View>
-                  <View style={styles.contactInfoContainer}>
-                    <View style={styles.contactInfoInner}>
-                      <Icon
-                        name="local-offer"
-                        size={height * 0.04}
-                        color="white"
-                        maxOpacity={0.5}
-                      />
-                    </View>
-                    <TextInput
-                      value={this.state.listData?.contact_title}
-                      placeholder="Title/Job Description"
                       onChangeText={(text) => console.log(text)}
                       editable={false}
                       style={styles.contactInput}

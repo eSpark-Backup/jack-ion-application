@@ -68,7 +68,7 @@ export default class Splash extends Component {
       filterWork: false,
       noInternet: false,
       locationBtn: '',
-      markers: [],
+      markers: {},
     };
 
     if (Platform.OS === 'android') {
@@ -167,14 +167,10 @@ export default class Splash extends Component {
         // this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
 
         this.setState({
-          markers: [
-            {
-              coordinate: {
-                latitude: lat,
-                longitude: long,
-              },
-            },
-          ],
+          markers: {
+            lat: lat,
+            lng: long,
+          },
         });
         console.log('What we Get', this.state.markers);
         this.setState({isAddPropVisible: true});
@@ -188,7 +184,7 @@ export default class Splash extends Component {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     // this.getToken();
-    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
+    Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
