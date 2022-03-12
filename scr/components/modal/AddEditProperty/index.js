@@ -49,6 +49,7 @@ export default function AddEditProperty({
   currAddr,
   currLocate,
   addedSuccessfully,
+  propertyData,
 }) {
   const {width, height} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
@@ -83,7 +84,6 @@ export default function AddEditProperty({
   const [longDelta, setLongDelta] = useState(LONGITUDE_DELTA);
   const [radialDis, setRadialDis] = useState(0.1);
   const [locationBtn, setLocationBtn] = useState('');
-  const [markers, setMarkers] = useState(currLocate);
   const [CustomId, setCustomId] = useState('');
   const [unitTypeList, setUnitTypeList] = useState([{id: 1, name: 'br'}]);
   const [classesList, setClassesList] = useState([{id: 1, name: 'br'}]);
@@ -146,7 +146,40 @@ export default function AddEditProperty({
     {value: false},
   ]);
 
-  useEffect(() => {
+  useEffect(async () => {
+    console.log('PROPERTY DATA', propertyData);
+    console.log('PROPERTY Unit_Count', propertyData.unit_count);
+    if (propertyData) {
+      const Manufactures = propertyData.utility_manufacturers;
+
+      for (let i = 0; i < Manufactures.length; i++) {
+        let newArr = [...manufacturersArray];
+        newArr.push({
+          name: Manufactures[i].manufacturer.name,
+          manu_Id: Manufactures[i].manufacturer.id,
+          utility_type: Manufactures[i].utility_type.name,
+          utility_type_id: Manufactures[i].utility_type.id,
+        });
+        setManufacturersArray(newArr);
+      }
+
+      setName(propertyData.name);
+      setStreet(propertyData.street);
+      setCity(propertyData.city);
+      setState(propertyData.st);
+      setZipCode(propertyData.zipcode);
+      setCustomId(propertyData.custom_id);
+      setOwnerId(propertyData.owner_id);
+      setUnitMix(propertyData.unit_mixes);
+      setUnitCount(propertyData.unit_count.toString());
+      setRadialDis(propertyData.radial_dist);
+      setContactName(propertyData.contact_name);
+      setContactPhone(propertyData.contact_phone);
+      setContactEmail(propertyData.contact_email);
+      setLat(propertyData.latitude);
+      setLong(propertyData.longitude);
+      setLocationSelected(true);
+    }
     callApi();
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -632,17 +665,32 @@ export default function AddEditProperty({
       };
 
       console.log('PROPDATA', propData);
-      api.post('/property/add', propData).then((res) => {
-        console.log(res.data);
-        if (res?.data?.bool) {
-          // this.checkData();
+      if (type == 'Add') {
+        api.post('/property/add', propData).then((res) => {
+          console.log(res.data);
+          if (res?.data?.bool) {
+            // this.checkData();
+            addedSuccessfully();
+            clearInputs();
+            console.log('PROPERTY RUNNINg');
+          } else {
+            Alert.alert('Error', res?.data?.message);
+          }
+        });
+      } else {
+        const response = await api.patch(
+          `/property/update/${propertyData.id}`,
+          propData,
+        );
+        console.log(response?.data);
+        this.setState({isLoading: false});
+        if (response?.data?.bool) {
           addedSuccessfully();
-          clearInputs();
-          console.log('PROPERTY RUNNINg');
         } else {
-          Alert.alert('Error', res?.data?.message);
+          Alert.alert('Error', response?.data?.message);
         }
-      });
+      }
+
       setBtnLoading(false);
       // this.setState(
       //   Object.assign(this.state.info, {
@@ -1227,7 +1275,7 @@ export default function AddEditProperty({
                   />
                 </TouchableOpacity>
 
-                {markers.length > 0 || currLocate ? (
+                {currLocate ? (
                   <View style={styles.loactionPinContainer}>
                     <Icon
                       size={width * 0.12}
@@ -1236,7 +1284,7 @@ export default function AddEditProperty({
                     />
                   </View>
                 ) : null}
-                {markers.length > 0 || currLocate
+                {currLocate
                   ? (console.log('CURRLOCATE', currLocate),
                     (
                       <MapView
