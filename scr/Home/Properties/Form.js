@@ -4756,24 +4756,6 @@ export default class Splash extends React.Component {
                                   underlineColorAndroid: 'transparent',
                                   style: {
                                     padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                    zIndex: 99,
-                                  },
-                                }}
-                                itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={{
-                                  maxHeight: height * 0.08,
-                                }}
-                                items={this.state.manageCompList}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Management Company',
-                                  underlineColorAndroid: 'transparent',
-                                  style: {
-                                    padding: width * 0.027,
                                     margin: 0,
                                     borderTopLeftRadius: width * 0.015,
                                     borderBottomLeftRadius: width * 0.015,
