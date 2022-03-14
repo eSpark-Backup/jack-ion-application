@@ -146,22 +146,27 @@ export default function AddEditProperty({
     {value: false},
   ]);
 
-  useEffect(async () => {
-    console.log('PROPERTY DATA', propertyData);
-    console.log('PROPERTY Unit_Count', propertyData.unit_count);
+  useEffect(() => {
+    console.log('CurrLocate', currLocate.lat);
     if (propertyData) {
+      console.log('PROPERTY DATA', propertyData);
+      console.log(
+        'utility_manufacturers DATA',
+        propertyData.utility_manufacturers,
+      );
       const Manufactures = propertyData.utility_manufacturers;
 
-      for (let i = 0; i < Manufactures.length; i++) {
-        let newArr = [...manufacturersArray];
+      let newArr = [...manufacturersArray];
+      for (let i = 0; i < Manufactures?.length; i++) {
         newArr.push({
           name: Manufactures[i].manufacturer.name,
-          manu_Id: Manufactures[i].manufacturer.id,
+          manufacturer_id: Manufactures[i].manufacturer.id,
           utility_type: Manufactures[i].utility_type.name,
           utility_type_id: Manufactures[i].utility_type.id,
         });
-        setManufacturersArray(newArr);
+        console.log('newArr Batao', newArr);
       }
+      setManufacturersArray(newArr);
 
       setName(propertyData.name);
       setStreet(propertyData.street);
@@ -170,6 +175,7 @@ export default function AddEditProperty({
       setZipCode(propertyData.zipcode);
       setCustomId(propertyData.custom_id);
       setOwnerId(propertyData.owner_id);
+      setOwnerName(propertyData.owner);
       setUnitMix(propertyData.unit_mixes);
       setUnitCount(propertyData.unit_count.toString());
       setRadialDis(propertyData.radial_dist);
@@ -180,6 +186,7 @@ export default function AddEditProperty({
       setLong(propertyData.longitude);
       setLocationSelected(true);
     }
+    console.log('AGAY BRHA');
     callApi();
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -381,7 +388,7 @@ export default function AddEditProperty({
 
     newArr.push({
       name: utilAndManu[1].select,
-      manu_Id: utilAndManu[1].selectId,
+      manufacturer_id: utilAndManu[1].selectId,
       utility_type: utilAndManu[0].select,
       utility_type_id: utilAndManu[0].selectId,
     });
@@ -407,7 +414,7 @@ export default function AddEditProperty({
     let newArr = [...manufacturersArray];
 
     newArr[currentManuIndex].name = utilAndManu[1].select;
-    newArr[currentManuIndex].manu_Id = utilAndManu[1].selectId;
+    newArr[currentManuIndex].manufacturer_id = utilAndManu[1].selectId;
     newArr[currentManuIndex].utility_type = utilAndManu[0].select;
     newArr[currentManuIndex].utility_type_id = utilAndManu[0].selectId;
     setManufacturersArray(newArr);
@@ -435,13 +442,13 @@ export default function AddEditProperty({
     manuData = ManufacturersResponse?.data?.data;
 
     const items = manufacturersArray.filter(
-      (sitem) => sitem.manu_Id !== item.manu_Id,
+      (sitem) => sitem.manufacturer_id !== item.manufacturer_id,
     );
 
     console.log('ITEMS', items);
 
     let result = manuData.filter(
-      (o1) => !items.some((o2) => o1.id === o2.manu_Id),
+      (o1) => !items.some((o2) => o1.id === o2.manufacturer_id),
     );
 
     console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
@@ -483,7 +490,7 @@ export default function AddEditProperty({
   const fetchAddressData = (searchdata) => {
     console.log('SEARCH STR', searchdata);
     const searchStr = ',';
-    var searchStrLen = searchStr.length;
+    var searchStrLen = searchStr?.length;
     var startIndex = 0,
       index,
       indices = [];
@@ -578,13 +585,15 @@ export default function AddEditProperty({
   };
 
   const addProperty = async () => {
+    setBtnLoading(true);
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
     const selectUtilIds = [];
+
     const selectManuIds = [];
-    setBtnLoading(true);
+    const utilAndManuIds = [];
     // this.setState({btnLoading: true});
     if (!Name) {
       setError((oldState) => ({
@@ -615,7 +624,7 @@ export default function AddEditProperty({
       }));
     }
 
-    if (manufacturersArray.length < 1) {
+    if (manufacturersArray?.length < 1) {
       setError((oldState) => ({
         ...oldState,
         utilType: 'Please select Manufacturer',
@@ -625,8 +634,12 @@ export default function AddEditProperty({
       return;
     } else {
       for (let i = 0; i < manufacturersArray?.length; i++) {
-        selectUtilIds.push(manufacturersArray[i].utility_type_id);
-        selectManuIds.push(manufacturersArray[i].manu_Id);
+        utilAndManuIds.push({
+          manufacturer_id: manufacturersArray[i].manufacturer_id,
+          utility_type_id: manufacturersArray[i].utility_type_id,
+        });
+        // selectUtilIds.push(manufacturersArray[i].utility_type_id);
+        // selectManuIds.push(manufacturersArray[i].manufacturer_id);
       }
       console.log('SELECTED UTILITY IDs', selectUtilIds);
       setError((oldState) => ({
@@ -655,9 +668,10 @@ export default function AddEditProperty({
         contact_name: contactName,
         contact_phone: contactPhone,
         contact_email: contactEmail,
-        manufacturer_id: selectManuIds,
-        utility_type_id: selectUtilIds,
+        // manufacturer_id: selectManuIds,
+        // utility_type_id: selectUtilIds,
         unit_count: unitCount,
+        utility_manufacturers: utilAndManuIds,
         unit_mixes: unitMix,
         radial_dist: Number(radialDis),
         latitude: lat,
@@ -683,9 +697,9 @@ export default function AddEditProperty({
           propData,
         );
         console.log(response?.data);
-        this.setState({isLoading: false});
         if (response?.data?.bool) {
           addedSuccessfully();
+          clearInputs();
         } else {
           Alert.alert('Error', response?.data?.message);
         }
@@ -741,6 +755,8 @@ export default function AddEditProperty({
     setContactName('');
     setContactPhone('');
     setContactEmail('');
+    setUnitCount('');
+    setUnitMix([]);
     setLocationSelected(false);
     setLat(null);
     setLong(null);
@@ -995,7 +1011,7 @@ export default function AddEditProperty({
                       <TouchableOpacity
                         onPress={() => doneAddType('Manufacturer')}
                         disabled={
-                          addManufacturer && selectAddManuUtil.length > 0
+                          addManufacturer && selectAddManuUtil?.length > 0
                             ? false
                             : true
                         }>
@@ -1004,7 +1020,7 @@ export default function AddEditProperty({
                             styles.addTypeButtons,
                             {
                               color:
-                                addManufacturer && selectAddManuUtil.length > 0
+                                addManufacturer && selectAddManuUtil?.length > 0
                                   ? '#25AAE1ec'
                                   : '#d0d0d0',
                             },
@@ -1200,7 +1216,6 @@ export default function AddEditProperty({
     }
   };
 
-  console.log('UNIT MIX ARRAY', unitMix);
   return (
     <View>
       <KeyboardAvoidingView behavior="height">
@@ -1755,7 +1770,7 @@ export default function AddEditProperty({
                                 height: dropDownShow[2].value
                                   ? showAddManufacturer || showEditManufacturer
                                     ? height * 0.5
-                                    : manufacturersArray.length > 0
+                                    : manufacturersArray?.length > 0
                                     ? height * 0.25
                                     : height * 0.15
                                   : height * 0.0,
@@ -1770,7 +1785,7 @@ export default function AddEditProperty({
                                       color={'#25AAE1ec'}
                                     />
                                   ) : (
-                                    manufacturersArray.length > 0 && (
+                                    manufacturersArray?.length > 0 && (
                                       <FlatList
                                         data={manufacturersArray}
                                         renderItem={renderManufacturerList}
@@ -1989,6 +2004,7 @@ export default function AddEditProperty({
                         color="white"
                         icon="check"
                         label={type == 'Add' ? 'Add property' : 'Edit Property'}
+                        loading={btnLoading}
                       />
                     </View>
                   </View>

@@ -272,6 +272,14 @@ class GlobalState extends React.Component {
     }
   };
 
+  loadLoader = () => {
+    this.setState({isLoading: true});
+  };
+
+  stopLoader = () => {
+    this.setState({isLoading: false});
+  };
+
   clearSearchList = () => {
     this.setState({searchList: []});
   };
@@ -314,6 +322,8 @@ class GlobalState extends React.Component {
             clearSearchList: this.clearSearchList,
             loadMoreData: this.loadMoreData,
             loadSearchData: this.loadSearchData,
+            loadLoader: this.loadLoader,
+            stopLoader: this.stopLoader,
             updateBuilding: this.updateBuilding,
             updateBiller: this.updateBiller,
             updateFilterSerial: this.updateFilterSerial,
