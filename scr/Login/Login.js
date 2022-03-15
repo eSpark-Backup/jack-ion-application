@@ -109,28 +109,13 @@ export default class Login extends Component {
             <Image
               source={require('../../Images/loogo.png')}
               resizeMode="contain"
-              style={{
-                width: width * 0.3,
-                height: height * 0.15,
-              }}
+              style={styles.logoImg}
             />
           </View>
           <View style={{marginBottom: height * 0.05}}>
-            <Text
-              style={{
-                fontSize: height * 0.025,
-                fontFamily: Fonts.Montserrat,
-              }}>
+            <Text style={styles.titleText}>
               Sign In into
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: height * 0.035,
-                  color: '#35AFE2',
-                }}>
-                {' '}
-                ION
-              </Text>
+              <Text style={styles.highlightText}> ION</Text>
             </Text>
           </View>
           <Formik
@@ -162,7 +147,13 @@ export default class Login extends Component {
             }) => (
               <>
                 <View style={styles.textInputContainer}>
-                  <Input
+                  <User
+                    name="user"
+                    color="#06012B"
+                    size={width * 0.035}
+                    style={{padding: 5}}
+                  />
+                  <TextInput
                     value={values.email}
                     keyboardType="email-address"
                     placeholder="Enter Email"
@@ -171,43 +162,24 @@ export default class Login extends Component {
                     onChangeText={handleChange('email')}
                     onChange={() => this.setState({errName: '', errPass: ''})}
                     onBlur={() => setFieldTouched('email')}
-                    leftIcon={
-                      <User
-                        name="user"
-                        color="#06012B"
-                        size={height * 0.029}
-                        style={{marginBottom: height * 0.005}}
-                      />
-                    }
-                    inputContainerStyle={{
-                      borderColor: 'transparent',
-                    }}
-                    style={{
-                      fontSize: height * 0.02,
-                      fontFamily: Fonts.Montserrat,
-                      marginBottom: height * 0.005,
-                      borderColor: 'transparent',
-                    }}
+                    style={styles.input}
                   />
                 </View>
-                <View
-                  style={{
-                    width: width * 0.75,
-                    height: width * 0.06,
-                    // marginBottom: height * 0.02,
-                    alignItems: 'flex-start',
-                    paddingLeft: width * 0.025,
-                  }}>
+                <View style={styles.errorView}>
                   {touched.email && (
                     <Text style={{color: '#A3001B'}}>
                       {errors.email || this.state.errName}
                     </Text>
-                    // ) : (
-                    //   <View style={{height: width * 0.02}} />
                   )}
                 </View>
-                <View style={[styles.textInputContainer]}>
-                  <Input
+                <View style={styles.textInputContainer}>
+                  <Key
+                    name="key"
+                    color="#06012B"
+                    size={width * 0.035}
+                    style={{padding: 5}}
+                  />
+                  <TextInput
                     value={values.password}
                     secureTextEntry
                     placeholder="Enter Password"
@@ -216,34 +188,10 @@ export default class Login extends Component {
                     onChange={() => this.setState({errPass: '', errName: ''})}
                     onBlur={() => setFieldTouched('password')}
                     placeholderTextColor="#5B5B61"
-                    leftIcon={
-                      <Key
-                        name="key"
-                        color="#06012B"
-                        size={height * 0.029}
-                        style={{marginBottom: height * 0.005}}
-                      />
-                    }
-                    style={{
-                      fontSize: height * 0.02,
-                      fontFamily: Fonts.Montserrat,
-                      marginBottom: height * 0.005,
-                      borderColor: 'transparent',
-                    }}
-                    inputContainerStyle={{
-                      borderColor: 'transparent',
-                    }}
+                    style={styles.input}
                   />
                 </View>
-                <View
-                  style={{
-                    width: width * 0.75,
-                    height: width * 0.06,
-                    // marginBottom: height * 0.05,
-                    alignItems: 'flex-start',
-                    paddingLeft: width * 0.025,
-                    // marginLeft: width * 0.15,
-                  }}>
+                <View style={styles.errorView}>
                   {touched.password && (
                     <Text
                       style={{
@@ -251,8 +199,6 @@ export default class Login extends Component {
                       }}>
                       {errors.password || this.state.errPass}
                     </Text>
-                    // ) : (
-                    //   <View style={{height: height * 0.02}} />
                   )}
                 </View>
                 <TouchableOpacity
@@ -263,14 +209,7 @@ export default class Login extends Component {
                     {this.state.isLoading ? (
                       <ActivityIndicator size="small" color="#ffffff" />
                     ) : (
-                      <Text
-                        style={{
-                          fontSize: height * 0.022,
-                          color: '#fff',
-                          fontFamily: Fonts.Montserrat,
-                        }}>
-                        Login
-                      </Text>
+                      <Text style={styles.btnText}>Login</Text>
                     )}
                   </View>
                 </TouchableOpacity>
@@ -300,12 +239,7 @@ export default class Login extends Component {
                 }, 100);
               }}>
               <View style={{width: width * 0.75, alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: height * 0.022,
-                    fontFamily: Fonts.Montserrat,
-                    textAlign: 'center',
-                  }}>
+                <Text style={styles.bottomText}>
                   Not a Member Yet? Contact Administrator
                 </Text>
               </View>
