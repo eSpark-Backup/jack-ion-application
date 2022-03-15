@@ -66,13 +66,13 @@ export default function AddbuildingModal({
       ...oldState,
       newUnit: lastUnitName == undefined ? 'Unit-0' : lastUnitName,
       buildName:
-        type == 'Multyple'
+        type == 'Multiple'
           ? buildData.buildingName == undefined
             ? ''
             : buildData.buildingName
           : '',
       buildDescription:
-        type == 'Multyple'
+        type == 'Multiple'
           ? buildData.buildDes == undefined
             ? ''
             : buildData.buildDes
@@ -190,10 +190,7 @@ export default function AddbuildingModal({
 
   const newBuilding = () => {
     const unitsTotal = state.unitsArray.length + unitActualCount;
-    if (unitsTotal > unitCount) {
-      Toast.show(`Unit add limit is ${unitCount}`, Toast.SHORT);
-      return;
-    }
+
     if (state.buildName === '') {
       setError((oldState) => ({
         ...oldState,
@@ -217,6 +214,11 @@ export default function AddbuildingModal({
         ...oldState,
         units: '',
       }));
+    }
+    if (unitsTotal > unitCount) {
+      Toast.show(`Unit add limit is ${unitCount}`, Toast.SHORT);
+      return;
+    } else {
       var loopData = [];
       var i;
       for (i = 0; i < state.unitsArray.length; i++) {
@@ -225,7 +227,7 @@ export default function AddbuildingModal({
         });
       }
       // console.log('looppdata--->',loopData)
-      if (type == 'Multyple') {
+      if (type == 'Multiple') {
         handleAddbuildingApi({
           building_id: buildData.buildId,
           units: loopData,
@@ -244,7 +246,7 @@ export default function AddbuildingModal({
 
   const handleAddbuildingApi = async (data) => {
     // console.log('check data-->', data)
-    if (type == 'Multyple') {
+    if (type == 'Multiple') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-multiple-units`,
         data,
@@ -319,7 +321,7 @@ export default function AddbuildingModal({
                   <TextInput
                     placeholder="Building Name"
                     value={state.buildName}
-                    disabled={type == 'Multyple' ? true : false}
+                    disabled={type == 'Multiple' ? true : false}
                     error={error.buildingName}
                     onChangeText={(text) => {
                       setError((oldState) => ({
@@ -454,7 +456,9 @@ export default function AddbuildingModal({
                   <TouchableOpacity onPress={newBuilding}>
                     <View style={styles.submitBotton}>
                       <Plus name="plus" color="white" size={18} />
-                      <Text style={{color: 'white'}}>Add Building</Text>
+                      <Text style={{color: 'white'}}>
+                        {type == 'Multiple' ? 'Add' : 'Add Building'}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 </View>

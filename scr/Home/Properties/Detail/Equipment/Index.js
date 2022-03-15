@@ -52,6 +52,8 @@ export default class Splash extends Component {
     super();
     this.state = {
       changed: false,
+      unitCount: null,
+      unitActualCount: null,
       flag: true,
       meterId: 0,
       loader: true,
@@ -131,8 +133,17 @@ export default class Splash extends Component {
 
   checkData = async () => {
     this.setState({filterWork: false, loader: true, loaderBuildings: true});
+    const PropertyID = this.props.navigation.state.params.item.item.id;
+    const PropRes = await this.api.get(`/property/${PropertyID}`);
+    this.setState({
+      unitCount: PropRes?.data?.data?.property?.unit_count,
+      unitActualCount: PropRes?.data?.data?.property.unit_actual_count,
+    });
+    console.log('PROPID', PropertyID);
+    console.log('PROPRES', PropRes?.data?.data?.property);
+
     const response = await this.api.post(
-      `/property/equipment/building/all-buildings/${this.props.navigation.state.params.item.item.id}`,
+      `/property/equipment/building/all-buildings/${PropertyID}`,
     );
     // console.log('Check response buildings--->', response);
     if (response?.ok == true) {
@@ -312,12 +323,12 @@ export default class Splash extends Component {
         this.toggleModalBuild();
       }, 450);
       this.setState({addMenuVisible: false});
-      this.setState({buildingModalType: 'Multyple'});
+      this.setState({buildingModalType: 'Multiple'});
     }
     if (Platform.OS == 'android') {
       this.toggleModalBuild();
       this.setState({addMenuVisible: false});
-      this.setState({buildingModalType: 'Multyple'});
+      this.setState({buildingModalType: 'Multiple'});
     }
   };
   selectAndCloseAddBuild = () => {
@@ -914,12 +925,9 @@ export default class Splash extends Component {
   render() {
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
-    const unitCount = this.props.navigation.state.params.item.item.unit_count;
-    const unitActualCount = this.props.navigation.state.params.item.item
-      .unit_actual_count;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
-    console.log('ACTUAL UNIT COUNT', unitActualCount);
+    console.log('ACTUAL UNIT COUNT', this.state.unitActualCount);
     return (
       <>
         <View style={styles.container}>
@@ -1064,20 +1072,22 @@ export default class Splash extends Component {
                           styles.dropDown,
                           {
                             borderColor:
-                              unitCount == this.state.realData.length
+                              this.state.unitActualCount == this.state.unitCount
                                 ? '#817e7e80'
                                 : '#3E4A4F',
                           },
                         ]}
                         disabled={
-                          unitCount == this.state.realData.length ? true : false
+                          this.state.unitActualCount == this.state.unitCount
+                            ? true
+                            : false
                         }
                         onPress={() => this.setState({addMenuVisible: true})}>
                         <Feather
                           name="plus"
                           size={height * 0.025}
                           color={
-                            unitCount == this.state.realData.length
+                            this.state.unitActualCount == this.state.unitCount
                               ? '#817e7e80'
                               : '#3E4A4F'
                           }
@@ -1087,7 +1097,8 @@ export default class Splash extends Component {
                             styles.dropDownText,
                             {
                               color:
-                                unitCount == this.state.realData.length
+                                this.state.unitActualCount ==
+                                this.state.unitCount
                                   ? '#817e7e80'
                                   : '#3E4A4F',
                             },
@@ -1098,7 +1109,7 @@ export default class Splash extends Component {
                           name="chevron-down"
                           size={height * 0.02}
                           color={
-                            unitCount == this.state.realData.length
+                            this.state.unitActualCount == this.state.unitCount
                               ? '#817e7e80'
                               : '#3E4A4F'
                           }
@@ -1265,8 +1276,8 @@ export default class Splash extends Component {
                 // }}
               />
               <AddBuilding
-                unitCount={unitCount}
-                unitActualCount={unitActualCount}
+                unitCount={this.state.unitCount}
+                unitActualCount={this.state.unitActualCount}
                 modalVisible={this.state.isModalBuildVisible}
                 type={this.state.buildingModalType}
                 modalName={

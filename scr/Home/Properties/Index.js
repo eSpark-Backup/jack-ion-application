@@ -173,6 +173,7 @@ export default class Splash extends Component {
           },
         });
         console.log('What we Get', this.state.markers);
+        this.context.stopLoader();
         this.setState({isAddPropVisible: true});
       },
       (error) => console.log('geo location', error),
@@ -181,11 +182,13 @@ export default class Splash extends Component {
   };
 
   enableLocation = async () => {
+    this.context.loadLoader();
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     // this.getToken();
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
+      this.context.stopLoader();
       Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
         {
           text: 'Cancel',
@@ -264,6 +267,7 @@ export default class Splash extends Component {
 
       this._renderMap();
     } else {
+      this.context.stopLoader();
       Alert.alert(
         `You don't have access for the Location`,
         `To Change the permission Open Settings`,

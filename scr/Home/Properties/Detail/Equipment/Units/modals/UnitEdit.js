@@ -766,7 +766,7 @@ export default function UnitEdit({
       `/property/default-meter-device/${propertyId}`,
     );
 
-    console.log('Default Unit Data--->', defaultUnitData.ok);
+    // console.log('Default Unit Data--->', defaultUnitData.ok);
     if (defaultUnitData.ok) {
       // console.log(
       //   clc.cyanBright(
@@ -775,7 +775,7 @@ export default function UnitEdit({
       //   ),
       // );
       const some = defaultUnitData?.data?.data?.default_meter_device;
-      console.log('Some Default Unit Data--->', some);
+      // console.log('Some Default Unit Data--->', some);
       // console.log(
       //   'Some Default Unit Data--->',
       //   some?.devices[0]?.model_nos[0]?.model_no,
@@ -877,7 +877,7 @@ export default function UnitEdit({
     let UtilArray = [...selectUtil];
     let ManuArray = [...defaultManuLis];
     // console.log('Utility DATA', UtilArray);
-    console.log('SLIDE DATA', ManuArray);
+
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);
@@ -886,7 +886,6 @@ export default function UnitEdit({
         if (manuItem?.utility_type[0]?.name != undefined) {
           if (item.name == manuItem?.utility_type[0]?.name) {
             let listSlide = [...slide1]; // copying the old datas array
-            console.log('MANUITEM BATA', manuItem.devices[0].model_nos);
             listSlide[0].data.push(manuItem);
             listSlide[1].data = manuItem.devices;
             const modelNos = manuItem.devices[0].model_nos.map((item) => {

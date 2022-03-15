@@ -356,7 +356,7 @@ export default class Splash extends React.Component {
   onCancel = () => {
     this.setState({
       listData: this.props.navigation.state.params.item.item,
-      isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
+      // isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
       isEditPropVisible: false,
     });
     this.setState((prevState) => ({
@@ -897,6 +897,7 @@ export default class Splash extends React.Component {
             closeModal={this.onCancel}
             currLocate={this.state.propMarkers}
             currAddr={this.state.locationBtn}
+            propertyData={this.props.navigation.state.params.item.item}
             addedSuccessfully={this.onEditSucces}
             type={'Edit'}
           />
