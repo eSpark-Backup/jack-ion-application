@@ -98,6 +98,8 @@ export default class Splash extends React.Component {
   constructor() {
     super();
     this.state = {
+      propertyData: null,
+      propertyflag: false,
       isModalVisible: false,
       isEditPropVisible: false,
       points: 80,
@@ -144,26 +146,49 @@ export default class Splash extends React.Component {
   }
 
   async componentDidMount() {
+    this.setState({isLoading: true});
     this.getToken();
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
+    const token = await EncryptedStorage.getItem('user_token');
+    console.log('Get Token', token);
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
     const propertyData = this.props.navigation.state.params.item.item;
+    this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
-    console.log('Property Data', propertyData);
+    console.log('Property Data', propertyData?.data?.data?.property);
+
+    console.log(
+      'LIST DATA >>>>>',
+      this.props.navigation.state.params.item.item,
+    );
+  }
+
+  getPropertyDetails = async (id) => {
+    this.setState({isLoading: true});
+    const propertyRes = await api.get(`/property/${id}`);
+
+    console.log('PROPERTYRES', propertyRes?.data?.data?.property);
+
+    const currPropData = propertyRes?.data?.data?.property;
 
     this.setState({
-      propertyId: propertyData?.id,
-      listData: propertyData,
-      lat: propertyData.latitude,
-      long: propertyData.longitude,
-      BillingCompany: propertyData?.billing_company,
-      BillingCompanyId: propertyData?.billing_company_id,
-      managementCompany: propertyData?.management_company,
-      managementCompanyId: propertyData?.management_company_id,
-      customId: propertyData.custom_id,
+      propertyData: currPropData,
+      propertyId: currPropData?.id,
+      listData: currPropData,
+      lat: currPropData.latitude,
+      long: currPropData.longitude,
+      BillingCompany: currPropData?.billing_company,
+      BillingCompanyId: currPropData?.billing_company_id,
+      managementCompany: currPropData?.management_company,
+      managementCompanyId: currPropData?.management_company_id,
+      customId: currPropData.custom_id,
+      isLoading: false,
     });
 
-    var lat = parseFloat(propertyData.latitude);
-    var long = parseFloat(propertyData.longitude);
+    var lat = parseFloat(currPropData.latitude);
+    var long = parseFloat(currPropData.longitude);
     Geocoder.from({
       latitude: lat,
       longitude: long,
@@ -176,12 +201,7 @@ export default class Splash extends React.Component {
         });
       })
       .catch((error) => console.warn(error));
-
-    console.log(
-      'LIST DATA >>>>>',
-      this.props.navigation.state.params.item.item,
-    );
-  }
+  };
 
   getToken = async () => {
     this.context.getBillingCompany();
@@ -307,8 +327,15 @@ export default class Splash extends React.Component {
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      this.setState({isEditPropVisible: true});
-      // this._renderMap();
+      // this.getPropertyDetails(this.state.propertyId);
+      const propertyRes = await api.get(`/property/${this.state.propertyId}`);
+      console.log('PROPERTYRES', propertyRes?.data?.data?.property);
+
+      this.setState({propertyData: propertyRes?.data?.data?.property});
+
+      if (propertyRes?.data?.bool) {
+        this.setState({isEditPropVisible: true, propertyflag: true});
+      }
     } else {
       Alert.alert(
         `You don't have access for the Location`,
@@ -346,9 +373,10 @@ export default class Splash extends React.Component {
   };
 
   onEditSucces = () => {
+    this.getPropertyDetails(this.state.propertyId);
     this.setState({
-      isLoading: true,
       isEditPropVisible: false,
+      isLoading: true,
       isLoading: false,
     });
   };
@@ -886,6 +914,11 @@ export default class Splash extends React.Component {
     this.setState({open: false});
   };
 
+  toggleflag = () => {
+    console.log('TOGGLEFLAG');
+    this.setState({propertyflag: false});
+  };
+
   render() {
     return (
       <>
@@ -897,9 +930,15 @@ export default class Splash extends React.Component {
             closeModal={this.onCancel}
             currLocate={this.state.propMarkers}
             currAddr={this.state.locationBtn}
-            propertyData={this.props.navigation.state.params.item.item}
+            propertyData={
+              this.state.propertyData == null
+                ? this.props.navigation.state.params.item.item
+                : this.state.propertyData
+            }
             addedSuccessfully={this.onEditSucces}
             type={'Edit'}
+            flag={this.state.propertyflag}
+            toggleflag={this.toggleflag}
           />
           {this.state.isLoading && <Loader />}
           <Modal
@@ -1057,6 +1096,12 @@ export default class Splash extends React.Component {
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
+                  latitude: parseFloat(this.state.lat),
+                  longitude: parseFloat(this.state.long),
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
+                }}
+                region={{
                   latitude: parseFloat(this.state.lat),
                   longitude: parseFloat(this.state.long),
                   latitudeDelta: LATITUDE_DELTA,
@@ -2178,7 +2223,8 @@ export default class Splash extends React.Component {
                   <View style={styles.infoViewInner}>
                     <Folder name="folder" size={width * 0.06} />
                     <Text style={styles.dataFieldText}>
-                      {this.state.listData.custom_id == null
+                      {this.state.listData.custom_id == null ||
+                      this.state.listData.custom_id == ''
                         ? '--'
                         : this.state.listData.custom_id}
                     </Text>

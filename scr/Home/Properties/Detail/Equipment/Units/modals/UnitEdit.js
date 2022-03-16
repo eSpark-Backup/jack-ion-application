@@ -5209,6 +5209,7 @@ export default function UnitEdit({
                         meterListData.length > 0 &&
                         meterListData?.map((item, index) => (
                           <TouchableOpacity
+                            disabled={true}
                             onPress={() => {
                               LayoutAnimation.configureNext({
                                 duration: 300,

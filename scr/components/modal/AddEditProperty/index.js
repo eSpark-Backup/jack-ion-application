@@ -50,6 +50,8 @@ export default function AddEditProperty({
   currLocate,
   addedSuccessfully,
   propertyData,
+  flag,
+  toggleflag,
 }) {
   const {width, height} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
@@ -103,6 +105,7 @@ export default function AddEditProperty({
   const [contactPhone, setContactPhone] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [Name, setName] = useState('');
+  const [propertyFlag, setPropertyFlag] = useState(false);
   const [Street, setStreet] = useState('');
   const [City, setCity] = useState('');
   const [State, setState] = useState('');
@@ -148,44 +151,7 @@ export default function AddEditProperty({
 
   useEffect(() => {
     console.log('CurrLocate', currLocate.lat);
-    if (propertyData) {
-      console.log('PROPERTY DATA', propertyData);
-      console.log(
-        'utility_manufacturers DATA',
-        propertyData.utility_manufacturers,
-      );
-      const Manufactures = propertyData.utility_manufacturers;
 
-      let newArr = [...manufacturersArray];
-      for (let i = 0; i < Manufactures?.length; i++) {
-        newArr.push({
-          name: Manufactures[i].manufacturer.name,
-          manufacturer_id: Manufactures[i].manufacturer.id,
-          utility_type: Manufactures[i].utility_type.name,
-          utility_type_id: Manufactures[i].utility_type.id,
-        });
-        console.log('newArr Batao', newArr);
-      }
-      setManufacturersArray(newArr);
-
-      setName(propertyData.name);
-      setStreet(propertyData.street);
-      setCity(propertyData.city);
-      setState(propertyData.st);
-      setZipCode(propertyData.zipcode);
-      setCustomId(propertyData.custom_id);
-      setOwnerId(propertyData.owner_id);
-      setOwnerName(propertyData.owner);
-      setUnitMix(propertyData.unit_mixes);
-      setUnitCount(propertyData.unit_count.toString());
-      setRadialDis(propertyData.radial_dist);
-      setContactName(propertyData.contact_name);
-      setContactPhone(propertyData.contact_phone);
-      setContactEmail(propertyData.contact_email);
-      setLat(propertyData.latitude);
-      setLong(propertyData.longitude);
-      setLocationSelected(true);
-    }
     console.log('AGAY BRHA');
     callApi();
     this.keyboardDidShowListener = Keyboard.addListener(
@@ -201,6 +167,51 @@ export default function AddEditProperty({
       this.keyboardDidHideListener.remove();
     };
   }, []);
+
+  if (flag && !propertyFlag) {
+    console.log('flag true');
+    if (propertyData) {
+      console.log('PROPERTY DATA', propertyData);
+      console.log(
+        'utility_manufacturers DATA',
+        propertyData.utility_manufacturers,
+      );
+      const Manufactures = propertyData.utility_manufacturers;
+
+      let newArr = [...manufacturersArray];
+      for (let i = 0; i < Manufactures?.length; i++) {
+        newArr.push({
+          id: Manufactures[i].id,
+          name: Manufactures[i].manufacturer.name,
+          manufacturer_id: Manufactures[i].manufacturer.id,
+          utility_type: Manufactures[i].utility_type.name,
+          utility_type_id: Manufactures[i].utility_type.id,
+        });
+        console.log('newArr Batao', newArr);
+      }
+      setManufacturersArray(newArr);
+
+      setName(propertyData?.name);
+      setStreet(propertyData?.street);
+      setCity(propertyData?.city);
+      setState(propertyData?.st);
+      setZipCode(propertyData?.zipcode);
+      setCustomId(propertyData?.custom_id);
+      setOwnerId(propertyData?.owner_id);
+      setOwnerName(propertyData?.owner);
+      setUnitMix(propertyData?.unit_mixes);
+      setUnitCount(propertyData?.unit_count?.toString());
+      setRadialDis(propertyData?.radial_dist);
+      setContactName(propertyData?.contact_name);
+      setContactPhone(propertyData?.contact_phone);
+      setContactEmail(propertyData?.contact_email);
+      setLat(propertyData?.latitude);
+      setLong(propertyData?.longitude);
+      setLocationSelected(true);
+    }
+    setPropertyFlag(true);
+    toggleflag();
+  }
 
   const _keyboardDidShow = () => {
     animate();
@@ -334,6 +345,16 @@ export default function AddEditProperty({
     clearUnitMixData();
   };
 
+  const deleteRow = async (index, id) => {
+    if (type == 'Edit') {
+      const delUnitMix = await api.delete(`/property/unit-mix/unitMix/${id}`);
+      console.log('DELUNITMIX', delUnitMix);
+    }
+    let arr = [...unitMix];
+    arr.splice(index, 1);
+    setUnitMix(arr);
+  };
+
   const getRowData = (item, index) => {
     setUnitMixFlag(true);
     setSqft(item.square_feets);
@@ -412,7 +433,9 @@ export default function AddEditProperty({
     animate();
 
     let newArr = [...manufacturersArray];
-
+    if (manufacturersArray[currentManuIndex]?.id) {
+      newArr[currentManuIndex].id = manufacturersArray[currentManuIndex]?.id;
+    }
     newArr[currentManuIndex].name = utilAndManu[1].select;
     newArr[currentManuIndex].manufacturer_id = utilAndManu[1].selectId;
     newArr[currentManuIndex].utility_type = utilAndManu[0].select;
@@ -598,10 +621,11 @@ export default function AddEditProperty({
     if (!Name) {
       setError((oldState) => ({
         ...oldState,
-        property: 'Invalid Property',
+        property: 'Invalid Property Name',
       }));
 
-      Toast.show('Invalid Property', Toast.SHORT);
+      Toast.show('Invalid Property Name', Toast.SHORT);
+      setBtnLoading(false);
       return;
     } else {
       setError((oldState) => ({
@@ -616,6 +640,7 @@ export default function AddEditProperty({
       }));
 
       Toast.show('Invalid Street', Toast.SHORT);
+      setBtnLoading(false);
       return;
     } else {
       setError((oldState) => ({
@@ -631,15 +656,27 @@ export default function AddEditProperty({
       }));
 
       Toast.show('Please select a Utility Type', Toast.SHORT);
+      setBtnLoading(false);
       return;
     } else {
+      console.log('MANUFACTURERS ARRAY', manufacturersArray);
+
       for (let i = 0; i < manufacturersArray?.length; i++) {
-        utilAndManuIds.push({
-          manufacturer_id: manufacturersArray[i].manufacturer_id,
-          utility_type_id: manufacturersArray[i].utility_type_id,
-        });
-        // selectUtilIds.push(manufacturersArray[i].utility_type_id);
-        // selectManuIds.push(manufacturersArray[i].manufacturer_id);
+        if (type == 'Add') {
+          utilAndManuIds.push({
+            manufacturer_id: manufacturersArray[i].manufacturer_id,
+            utility_type_id: manufacturersArray[i].utility_type_id,
+          });
+        } else {
+          console.log('ELSE CHALA');
+
+          utilAndManuIds.push({
+            id: manufacturersArray[i].id ?? null,
+            manufacturer_name: manufacturersArray[i].manufacturer_id,
+            manufacturer_id: manufacturersArray[i].manufacturer_id,
+            utility_type_id: manufacturersArray[i].utility_type_id,
+          });
+        }
       }
       console.log('SELECTED UTILITY IDs', selectUtilIds);
       setError((oldState) => ({
@@ -651,6 +688,7 @@ export default function AddEditProperty({
 
     if (!locationSelected) {
       Alert.alert('Location Required', 'Please Select Property Location');
+      setBtnLoading(false);
       return;
     } else {
       setSelectLocation(false);
@@ -687,6 +725,7 @@ export default function AddEditProperty({
             addedSuccessfully();
             clearInputs();
             console.log('PROPERTY RUNNINg');
+            setBtnLoading(false);
           } else {
             Alert.alert('Error', res?.data?.message);
           }
@@ -700,12 +739,12 @@ export default function AddEditProperty({
         if (response?.data?.bool) {
           addedSuccessfully();
           clearInputs();
+          setBtnLoading(false);
         } else {
           Alert.alert('Error', response?.data?.message);
         }
       }
 
-      setBtnLoading(false);
       // this.setState(
       //   Object.assign(this.state.info, {
       //     propName: this.state.Name,
@@ -772,38 +811,7 @@ export default function AddEditProperty({
       {value: false},
       {value: false},
     ]);
-
-    // this.setState({
-    //   Name: '',
-    //   Street: '',
-    //   State: '',
-    //   City: '',
-    //   ZipCode: '',
-    //   CustomId: '',
-    //   CustomerName: '',
-    //   customerjobDes: '',
-    //   customerPhone: '',
-    //   customerEmail: '',
-    //   error: '',
-    //   locationSelected: false,
-    //   locationBtn: 'Select Location',
-    //   lat: null,
-    //   long: null,
-    //   selectMeter: '',
-    //   selectMeters: [],
-    //   selectedMetersId: [],
-    //   selectUtil: [],
-    //   manufacturersArray: [],
-    //   selectDevices: [],
-    //   ownerName: '',
-
-    //   addNewType: false,
-    //   productD: '',
-    //   manuFlag: false,
-    //   avoidKey: false,
-    //   showAddManufacturer: false,
-    //   showEditManufacturer: false,
-    // });
+    setPropertyFlag(true);
   };
 
   const deviceTypeInfoComponent = (flag) => {
@@ -1095,10 +1103,7 @@ export default function AddEditProperty({
                 onPress={() =>
                   flag == 'add'
                     ? addManufacturers()
-                    : editManufacturers(
-                        utilAndManu[1].select,
-                        utilAndManu[1].selectId,
-                      )
+                    : editManufacturers(utilAndManu[1].select)
                 }
                 disabled={
                   utilAndManu[0].selectId !== '' &&
@@ -1709,11 +1714,7 @@ export default function AddEditProperty({
                                 </View>
                               </TouchableOpacity>
                               <TouchableOpacity
-                                onPress={() => {
-                                  let arr = [...unitMix];
-                                  arr.splice(index, 1);
-                                  setUnitMix(arr);
-                                }}
+                                onPress={() => deleteRow(index, item?.id)}
                                 style={styles.unitMixRemoveBtn}>
                                 <MaterialCommunityIcon
                                   name="delete"
