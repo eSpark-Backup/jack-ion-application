@@ -72,6 +72,7 @@ import MapView, {
 } from 'react-native-maps';
 import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
+import ImageResizer from 'react-native-image-resizer';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -748,6 +749,22 @@ export default function UnitEdit({
         lastUnitData: '',
       }));
     }
+  };
+
+  const ImageResizing = () => {
+    ImageResizer.createResizedImage(filePath, 512, 512, 'png', 50, 0)
+      .then((response) => {
+        console.log('reponse size..........', response.size);
+        // response.uri is the URI of the new image that can now be displayed, uploaded...
+        // response.path is the path of the new image
+        // response.name is the name of the new image with the extension
+        // response.size is the size of the new image
+      })
+      .catch((err) => {
+        // Oops, something went wrong. Check that the filename is correct and
+        // inspect err to get more details.
+        console.log('Error', err);
+      });
   };
 
   const callApi = async () => {
