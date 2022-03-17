@@ -373,12 +373,12 @@ export default class Splash extends React.Component {
   };
 
   onEditSucces = () => {
-    this.getPropertyDetails(this.state.propertyId);
     this.setState({
       isEditPropVisible: false,
       isLoading: true,
       isLoading: false,
     });
+    this.getPropertyDetails(this.state.propertyId);
   };
 
   onCancel = () => {

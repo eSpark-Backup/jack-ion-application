@@ -317,7 +317,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottomBtnContainer: {
-    flex: 1,
+    height: width * 0.3,
     alignItems: 'center',
     justifyContent: 'space-around',
     flexDirection: 'row',

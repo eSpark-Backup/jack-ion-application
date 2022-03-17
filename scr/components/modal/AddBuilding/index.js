@@ -196,6 +196,7 @@ export default function AddbuildingModal({
         ...oldState,
         buildingName: 'Invalid Building Name',
       }));
+      Toast.show('Invalid Building Name', Toast.SHORT);
       return;
     } else {
       setError((oldState) => ({
@@ -208,6 +209,7 @@ export default function AddbuildingModal({
         ...oldState,
         units: 'Empty units',
       }));
+      Toast.show('Empty Units', Toast.SHORT);
       return;
     } else {
       setError((oldState) => ({

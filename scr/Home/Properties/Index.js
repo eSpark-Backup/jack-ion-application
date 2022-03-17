@@ -87,9 +87,9 @@ export default class Splash extends Component {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
       console.log('isInternetReachable?', state.isInternetReachable);
-
       this.setState({noInternet: !state.isInternetReachable});
       if (state.isConnected) {
+        this.closeAddProp();
         console.log('True chala');
         this.setState({loadScreen: true});
         this.context.checkData();

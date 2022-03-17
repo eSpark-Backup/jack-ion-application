@@ -821,7 +821,7 @@ export default function UnitEdit({
 
       setUtilLength(utilityIds.length);
       setUtilTypes(some?.utility_type_name);
-      console.log('what is ', some?.utility_type_name);
+      // console.log('what is ', some?.utility_type_name);
       const filterRes = utilityRes.filter((item1) =>
         utilityIds.some((item2) => item1.id == item2),
       );
@@ -904,12 +904,17 @@ export default function UnitEdit({
           if (item.name == manuItem?.utility_type[0]?.name) {
             let listSlide = [...slide1]; // copying the old datas array
             listSlide[0].data.push(manuItem);
-            listSlide[1].data = manuItem.devices;
-            const modelNos = manuItem.devices[0].model_nos.map((item) => {
-              const {model_no: name, ...rest} = item;
-              return {name, ...rest};
-            });
-            listSlide[2].data = modelNos;
+            if (manuItem.devices.length > 0) {
+              listSlide[1].data = manuItem.devices;
+              if (manuItem.devices[0].model_nos.length > 0) {
+                const modelNos = manuItem.devices[0].model_nos.map((item) => {
+                  const {model_no: name, ...rest} = item;
+                  return {name, ...rest};
+                });
+
+                listSlide[2].data = modelNos;
+              }
+            }
             setSlide1(listSlide);
           }
         }
@@ -920,23 +925,28 @@ export default function UnitEdit({
 
     //? Some thing wrong with this code -----------
 
-    const filterDevices = defaultDevices.filter(
-      (item) => item.manufacturer_id === slide1[0].data[0]?.id,
-    );
-    setDefaultInfoData(filterDevices);
-    // console.log('Filter Devices', filterDevices);
+    if (defaultDevices.length > 0) {
+      const filterDevices = defaultDevices.filter(
+        (item) => item.manufacturer_id === slide1[0].data[0]?.id,
+      );
+      setDefaultInfoData(filterDevices);
+      let listSlide = [...slide1]; // copying the old datas array
+      listSlide[0].select = filterDevices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+      listSlide[1].select = filterDevices[0]?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[1].selectId = filterDevices[0]?.id; // replace e.target.value with whatever you want to change it to
+      listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+      listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
+      setProductNo(filterDevices[0]?.product_desc);
+      setSlide1(listSlide);
+    } else {
+      let listSlide = [...slide1]; // copying the old datas array
+      listSlide[0].select = slide1[0].data[0]?.name; // replace e.target.value with whatever you want to change it to
+      listSlide[0].selectId = slide1[0].data[0]?.id; // replace e.target.value with whatever you want to change it to
+      setSlide1(listSlide);
+    }
 
     //? -------------------------------------------
-
-    let listSlide = [...slide1]; // copying the old datas array
-    listSlide[0].select = filterDevices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
-    listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-    listSlide[1].select = filterDevices[0]?.name; // replace e.target.value with whatever you want to change it to
-    listSlide[1].selectId = filterDevices[0]?.id; // replace e.target.value with whatever you want to change it to
-    listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-    listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
-    setProductNo(filterDevices[0]?.product_desc);
-    setSlide1(listSlide);
   };
 
   const getdefaultDeviceData = (val) => {
@@ -1114,7 +1124,8 @@ export default function UnitEdit({
 
     // console.log('Meter Data 1', meterData[0].reasons);
     // console.log('Meter Data 2', meterData[1].reasons);
-    // console.log('data--->', data);
+    console.log('data--->', data);
+    console.log('data.device--->', data.meters[0].device);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -1384,12 +1395,12 @@ export default function UnitEdit({
 
   const updateData = () => {
     const reasonBase64s = [];
-    const selectUtilIds = [];
+    let selectUtilId;
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
     }
     for (let i = 0; i < selectUtil?.length; i++) {
-      selectUtilIds.push(selectUtil[i].id);
+      selectUtilId = selectUtil[i].id;
     }
     var meterArray = [...meterListData]; // copying the old datas array
     meterArray.push({
@@ -1412,7 +1423,7 @@ export default function UnitEdit({
       attachedTo_name: attachedTo,
       thumbnail: filePath,
       installation_status: installationStatus,
-      utility_type_id: selectUtilIds,
+      utility_type_id: selectUtilId,
       reasons: [
         {
           options_reason_id: reasonId,
@@ -1458,7 +1469,6 @@ export default function UnitEdit({
       loopData.push({
         // meter_id: item.meter_id, check later
         device_serial_number: item.device_serial_number,
-        meter_serial_number: item.meter_serial_number,
         device_id: item.device_id,
         device: item.device,
         model_no_id: item.model_no_id,
@@ -1468,7 +1478,7 @@ export default function UnitEdit({
         defaultLatitude: item.defaultLatitude,
         defaultLongitude: item.defaultLongitude,
         attachedTo_id: item.attachedTo_id,
-        thumbnail: `data:image/jpeg;base64,${imageBase64}`,
+        thumbnail: imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : '',
         utility_type_id: item.utility_type_id,
         installation_status: Number(item.installation_status),
         ...(item.installation_status == 2 &&
@@ -4856,9 +4866,7 @@ export default function UnitEdit({
                                       slide2[1].value &&
                                       attachedToId != null
                                     ? '#25AAE1ec'
-                                    : sliderNumber == 3 &&
-                                      filePath != '' &&
-                                      filePath != null
+                                    : sliderNumber == 3
                                     ? '#25AAE1ec'
                                     : sliderNumber == 4 &&
                                       lat != undefined &&
@@ -4889,9 +4897,7 @@ export default function UnitEdit({
                                   slide2[1].value &&
                                   attachedToId != null
                                 ? false
-                                : sliderNumber == 3 &&
-                                  filePath != '' &&
-                                  filePath != null
+                                : sliderNumber == 3
                                 ? false
                                 : sliderNumber == 4 &&
                                   lat != undefined &&

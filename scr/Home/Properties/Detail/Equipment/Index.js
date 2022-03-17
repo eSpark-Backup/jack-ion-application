@@ -398,9 +398,14 @@ export default class Splash extends Component {
 
   deleteUnit = async (id) => {
     console.log('ID', id);
+    this.setState({loader: true});
     const response = await this.api.delete(`/property/equipment/unit/${id}`);
-    alert(response?.data?.message);
-    this.checkData();
+    if (response?.data?.bool) {
+      alert(response?.data?.message);
+      this.checkData();
+    } else {
+      this.setState({loader: false});
+    }
   };
 
   confirmDelete = (id) => {
@@ -927,7 +932,6 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
-    console.log('ACTUAL UNIT COUNT', this.state.unitActualCount);
     return (
       <>
         <View style={styles.container}>

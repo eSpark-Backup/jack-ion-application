@@ -78,6 +78,7 @@ export default function AddEditProperty({
   const [manufacturersArray, setManufacturersArray] = useState([]);
   const [currentManuIndex, setCurrentManuIndex] = useState(null);
   const [avoidKeyboard, setAvoidKeyboard] = useState(false);
+  const [avoidMargin, setAvoidMargin] = useState(0);
   const [selectLocation, setSelectLocation] = useState(false);
   const [locationSelected, setLocationSelected] = useState(false);
   const [lat, setLat] = useState(0);
@@ -215,11 +216,14 @@ export default function AddEditProperty({
 
   const _keyboardDidShow = () => {
     animate();
-    dropDownShow[2].value
-      ? setAvoidKeyboard(true)
-      : dropDownShow[3].value
-      ? setAvoidKeyboard(true)
-      : null;
+    console.log('KEYBORD SHOW');
+    if (dropDownShow[2].value) {
+      setAvoidMargin(0.35);
+      setAvoidKeyboard(true);
+    } else if (dropDownShow[3].value) {
+      setAvoidMargin(0.45);
+      setAvoidKeyboard(true);
+    }
   };
 
   const _keyboardDidHide = () => {
@@ -347,6 +351,10 @@ export default function AddEditProperty({
 
   const deleteRow = async (index, id) => {
     if (type == 'Edit') {
+      const token = await EncryptedStorage.getItem('user_token');
+      if (token != null) {
+        api.setHeader('Authorization', 'Bearer ' + token);
+      }
       const delUnitMix = await api.delete(`/property/unit-mix/unitMix/${id}`);
       console.log('DELUNITMIX', delUnitMix);
     }
@@ -721,6 +729,7 @@ export default function AddEditProperty({
         api.post('/property/add', propData).then((res) => {
           console.log(res.data);
           if (res?.data?.bool) {
+            console.log(res.data);
             // this.checkData();
             addedSuccessfully();
             clearInputs();
@@ -737,6 +746,7 @@ export default function AddEditProperty({
         );
         console.log(response?.data);
         if (response?.data?.bool) {
+          console.log(response.data);
           addedSuccessfully();
           clearInputs();
           setBtnLoading(false);
@@ -811,7 +821,7 @@ export default function AddEditProperty({
       {value: false},
       {value: false},
     ]);
-    setPropertyFlag(true);
+    setPropertyFlag(false);
   };
 
   const deviceTypeInfoComponent = (flag) => {
@@ -820,7 +830,7 @@ export default function AddEditProperty({
         style={[
           styles.utilAndManuSectionContainer,
           {
-            height: dropDownShow[2].value ? height * 0.5 : height * 0.0,
+            height: dropDownShow[2].value ? width * 0.65 : width * 0.0,
           },
         ]}>
         {addNewType && showAddType == 'Utility Type' ? (
@@ -1231,7 +1241,7 @@ export default function AddEditProperty({
           statusBarTranslucent={true}
           style={{
             margin: 0,
-            bottom: avoidKeyboard ? width * 0.45 : 0,
+            bottom: avoidKeyboard ? width * avoidMargin : 0,
           }}
           isVisible={modalVisible}>
           {selectLocation ? (
@@ -1473,7 +1483,25 @@ export default function AddEditProperty({
                         />
                       </TouchableOpacity>
                       {addUnitMix ? (
-                        <View>
+                        <View
+                          style={{
+                            height: dropDownShow[1].value
+                              ? 'auto'
+                              : width * 0.0,
+                          }}>
+                          <View>
+                            <Text
+                              style={[
+                                styles.addTypeHeading,
+                                {
+                                  marginLeft: width * 0.04,
+                                  marginBottom: 0,
+                                  fontWeight: 'bold',
+                                },
+                              ]}>
+                              Square Feets
+                            </Text>
+                          </View>
                           <View
                             style={[
                               styles.inputContainer,
@@ -1502,6 +1530,19 @@ export default function AddEditProperty({
                                 },
                               }}
                             />
+                          </View>
+                          <View>
+                            <Text
+                              style={[
+                                styles.addTypeHeading,
+                                {
+                                  marginLeft: width * 0.04,
+                                  marginBottom: 0,
+                                  fontWeight: 'bold',
+                                },
+                              ]}>
+                              Unit Types
+                            </Text>
                           </View>
                           <View
                             style={[
@@ -1540,6 +1581,19 @@ export default function AddEditProperty({
                               }}
                             />
                           </View>
+                          <View>
+                            <Text
+                              style={[
+                                styles.addTypeHeading,
+                                {
+                                  marginLeft: width * 0.04,
+                                  marginBottom: 0,
+                                  fontWeight: 'bold',
+                                },
+                              ]}>
+                              Classes
+                            </Text>
+                          </View>
                           <View
                             style={[
                               styles.inputContainer,
@@ -1577,6 +1631,19 @@ export default function AddEditProperty({
                               }}
                             />
                           </View>
+                          <View>
+                            <Text
+                              style={[
+                                styles.addTypeHeading,
+                                {
+                                  marginLeft: width * 0.04,
+                                  marginBottom: 0,
+                                  fontWeight: 'bold',
+                                },
+                              ]}>
+                              Bedrooms
+                            </Text>
+                          </View>
                           <View
                             style={[
                               styles.inputContainer,
@@ -1594,6 +1661,16 @@ export default function AddEditProperty({
                               keyboardType="decimal-pad"
                               onChangeText={(text) => {
                                 setBedrooms(text);
+                              }}
+                              onFocus={() => {
+                                animate();
+                                setAvoidKeyboard(true);
+                                setAvoidMargin(0.25);
+                              }}
+                              onBlur={() => {
+                                animate();
+                                setAvoidMargin(0);
+                                setAvoidKeyboard(false);
                               }}
                               mode={'outlined'}
                               theme={{
@@ -1770,11 +1847,11 @@ export default function AddEditProperty({
                                 zIndex: 2,
                                 height: dropDownShow[2].value
                                   ? showAddManufacturer || showEditManufacturer
-                                    ? height * 0.5
+                                    ? width * 0.65
                                     : manufacturersArray?.length > 0
-                                    ? height * 0.25
-                                    : height * 0.15
-                                  : height * 0.0,
+                                    ? 'auto'
+                                    : width * 0.2
+                                  : width * 0.0,
                                 overflow: 'hidden',
                               }}>
                               {!showAddManufacturer && !showEditManufacturer && (
