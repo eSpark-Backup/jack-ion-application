@@ -932,6 +932,8 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
+    console.log('unit count', this.state.unitCount);
+    console.log('unit actual count', this.state.unitActualCount);
     return (
       <>
         <View style={styles.container}>
@@ -1076,13 +1078,13 @@ export default class Splash extends Component {
                           styles.dropDown,
                           {
                             borderColor:
-                              this.state.unitActualCount == this.state.unitCount
+                              this.state.unitActualCount >= this.state.unitCount
                                 ? '#817e7e80'
                                 : '#3E4A4F',
                           },
                         ]}
                         disabled={
-                          this.state.unitActualCount == this.state.unitCount
+                          this.state.unitActualCount >= this.state.unitCount
                             ? true
                             : false
                         }
@@ -1091,7 +1093,7 @@ export default class Splash extends Component {
                           name="plus"
                           size={height * 0.025}
                           color={
-                            this.state.unitActualCount == this.state.unitCount
+                            this.state.unitActualCount >= this.state.unitCount
                               ? '#817e7e80'
                               : '#3E4A4F'
                           }
@@ -1101,7 +1103,7 @@ export default class Splash extends Component {
                             styles.dropDownText,
                             {
                               color:
-                                this.state.unitActualCount ==
+                                this.state.unitActualCount >=
                                 this.state.unitCount
                                   ? '#817e7e80'
                                   : '#3E4A4F',
@@ -1113,7 +1115,7 @@ export default class Splash extends Component {
                           name="chevron-down"
                           size={height * 0.02}
                           color={
-                            this.state.unitActualCount == this.state.unitCount
+                            this.state.unitActualCount >= this.state.unitCount
                               ? '#817e7e80'
                               : '#3E4A4F'
                           }

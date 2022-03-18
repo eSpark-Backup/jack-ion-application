@@ -249,7 +249,7 @@ export default styles = StyleSheet.create({
   },
   dropDownFullContainer: {
     paddingVertical: width * 0.02,
-    width: '100%',
+    width: '99%',
   },
   dropDownFullTextInput: {
     padding: width * 0.027,

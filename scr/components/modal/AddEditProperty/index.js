@@ -357,10 +357,16 @@ export default function AddEditProperty({
       }
       const delUnitMix = await api.delete(`/property/unit-mix/unitMix/${id}`);
       console.log('DELUNITMIX', delUnitMix);
+      if (delUnitMix?.data?.bool) {
+        let arr = [...unitMix];
+        arr.splice(index, 1);
+        setUnitMix(arr);
+      }
+    } else {
+      let arr = [...unitMix];
+      arr.splice(index, 1);
+      setUnitMix(arr);
     }
-    let arr = [...unitMix];
-    arr.splice(index, 1);
-    setUnitMix(arr);
   };
 
   const getRowData = (item, index) => {
@@ -468,6 +474,8 @@ export default function AddEditProperty({
     );
     console.log('ManufacturersResponse', ManufacturersResponse?.data);
     animate();
+    const delManu = await api.delete(`/property/pivot/${item.id}`);
+    console.log('DELMANU', delManu);
 
     let manuData = [...allManuList];
     manuData = ManufacturersResponse?.data?.data;
@@ -726,19 +734,18 @@ export default function AddEditProperty({
 
       console.log('PROPDATA', propData);
       if (type == 'Add') {
-        api.post('/property/add', propData).then((res) => {
+        const res = await api.post(`/property/add`, propData);
+        console.log(res.data);
+        if (res?.data?.bool) {
           console.log(res.data);
-          if (res?.data?.bool) {
-            console.log(res.data);
-            // this.checkData();
-            addedSuccessfully();
-            clearInputs();
-            console.log('PROPERTY RUNNINg');
-            setBtnLoading(false);
-          } else {
-            Alert.alert('Error', res?.data?.message);
-          }
-        });
+          addedSuccessfully();
+          clearInputs();
+          console.log('PROPERTY RUNNINg');
+          setBtnLoading(false);
+          Alert.alert('Success', 'Property Added Successfully');
+        } else {
+          Alert.alert('Error', res?.data?.message);
+        }
       } else {
         const response = await api.patch(
           `/property/update/${propertyData.id}`,
@@ -750,6 +757,7 @@ export default function AddEditProperty({
           addedSuccessfully();
           clearInputs();
           setBtnLoading(false);
+          Alert.alert('Success', response?.data?.message);
         } else {
           Alert.alert('Error', response?.data?.message);
         }

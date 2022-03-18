@@ -72,7 +72,6 @@ import MapView, {
 } from 'react-native-maps';
 import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
-import ImageResizer from 'react-native-image-resizer';
 
 const {width, height} = Dimensions.get('window');
 const api = create({baseURL: Base_URL});
@@ -751,22 +750,6 @@ export default function UnitEdit({
     }
   };
 
-  const ImageResizing = () => {
-    ImageResizer.createResizedImage(filePath, 512, 512, 'png', 50, 0)
-      .then((response) => {
-        console.log('reponse size..........', response.size);
-        // response.uri is the URI of the new image that can now be displayed, uploaded...
-        // response.path is the path of the new image
-        // response.name is the name of the new image with the extension
-        // response.size is the size of the new image
-      })
-      .catch((err) => {
-        // Oops, something went wrong. Check that the filename is correct and
-        // inspect err to get more details.
-        console.log('Error', err);
-      });
-  };
-
   const callApi = async () => {
     setReasons([]);
     setLoadManufacturers(true);
@@ -783,7 +766,7 @@ export default function UnitEdit({
       `/property/default-meter-device/${propertyId}`,
     );
 
-    // console.log('Default Unit Data--->', defaultUnitData.ok);
+    console.log('Default Unit Data--->', defaultUnitData.ok);
     if (defaultUnitData.ok) {
       // console.log(
       //   clc.cyanBright(
@@ -792,7 +775,7 @@ export default function UnitEdit({
       //   ),
       // );
       const some = defaultUnitData?.data?.data?.default_meter_device;
-      // console.log('Some Default Unit Data--->', some);
+      console.log('Some Default Unit Data--->', some);
       // console.log(
       //   'Some Default Unit Data--->',
       //   some?.devices[0]?.model_nos[0]?.model_no,
@@ -821,7 +804,7 @@ export default function UnitEdit({
 
       setUtilLength(utilityIds.length);
       setUtilTypes(some?.utility_type_name);
-      // console.log('what is ', some?.utility_type_name);
+      console.log('what is ', some?.utility_type_name);
       const filterRes = utilityRes.filter((item1) =>
         utilityIds.some((item2) => item1.id == item2),
       );
@@ -894,7 +877,7 @@ export default function UnitEdit({
     let UtilArray = [...selectUtil];
     let ManuArray = [...defaultManuLis];
     // console.log('Utility DATA', UtilArray);
-
+    console.log('SLIDE DATA', ManuArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);
@@ -903,18 +886,14 @@ export default function UnitEdit({
         if (manuItem?.utility_type[0]?.name != undefined) {
           if (item.name == manuItem?.utility_type[0]?.name) {
             let listSlide = [...slide1]; // copying the old datas array
+            console.log('MANUITEM BATA', manuItem.devices[0].model_nos);
             listSlide[0].data.push(manuItem);
-            if (manuItem.devices.length > 0) {
-              listSlide[1].data = manuItem.devices;
-              if (manuItem.devices[0].model_nos.length > 0) {
-                const modelNos = manuItem.devices[0].model_nos.map((item) => {
-                  const {model_no: name, ...rest} = item;
-                  return {name, ...rest};
-                });
-
-                listSlide[2].data = modelNos;
-              }
-            }
+            listSlide[1].data = manuItem.devices;
+            const modelNos = manuItem.devices[0].model_nos.map((item) => {
+              const {model_no: name, ...rest} = item;
+              return {name, ...rest};
+            });
+            listSlide[2].data = modelNos;
             setSlide1(listSlide);
           }
         }
@@ -925,28 +904,23 @@ export default function UnitEdit({
 
     //? Some thing wrong with this code -----------
 
-    if (defaultDevices.length > 0) {
-      const filterDevices = defaultDevices.filter(
-        (item) => item.manufacturer_id === slide1[0].data[0]?.id,
-      );
-      setDefaultInfoData(filterDevices);
-      let listSlide = [...slide1]; // copying the old datas array
-      listSlide[0].select = filterDevices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
-      listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-      listSlide[1].select = filterDevices[0]?.name; // replace e.target.value with whatever you want to change it to
-      listSlide[1].selectId = filterDevices[0]?.id; // replace e.target.value with whatever you want to change it to
-      listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-      listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
-      setProductNo(filterDevices[0]?.product_desc);
-      setSlide1(listSlide);
-    } else {
-      let listSlide = [...slide1]; // copying the old datas array
-      listSlide[0].select = slide1[0].data[0]?.name; // replace e.target.value with whatever you want to change it to
-      listSlide[0].selectId = slide1[0].data[0]?.id; // replace e.target.value with whatever you want to change it to
-      setSlide1(listSlide);
-    }
+    const filterDevices = defaultDevices.filter(
+      (item) => item.manufacturer_id === slide1[0].data[0]?.id,
+    );
+    setDefaultInfoData(filterDevices);
+    // console.log('Filter Devices', filterDevices);
 
     //? -------------------------------------------
+
+    let listSlide = [...slide1]; // copying the old datas array
+    listSlide[0].select = filterDevices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
+    listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
+    listSlide[1].select = filterDevices[0]?.name; // replace e.target.value with whatever you want to change it to
+    listSlide[1].selectId = filterDevices[0]?.id; // replace e.target.value with whatever you want to change it to
+    listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+    listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
+    setProductNo(filterDevices[0]?.product_desc);
+    setSlide1(listSlide);
   };
 
   const getdefaultDeviceData = (val) => {
@@ -1124,8 +1098,7 @@ export default function UnitEdit({
 
     // console.log('Meter Data 1', meterData[0].reasons);
     // console.log('Meter Data 2', meterData[1].reasons);
-    console.log('data--->', data);
-    console.log('data.device--->', data.meters[0].device);
+    // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -1395,12 +1368,12 @@ export default function UnitEdit({
 
   const updateData = () => {
     const reasonBase64s = [];
-    let selectUtilId;
+    const selectUtilIds = [];
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
     }
     for (let i = 0; i < selectUtil?.length; i++) {
-      selectUtilId = selectUtil[i].id;
+      selectUtilIds.push(selectUtil[i].id);
     }
     var meterArray = [...meterListData]; // copying the old datas array
     meterArray.push({
@@ -1423,7 +1396,7 @@ export default function UnitEdit({
       attachedTo_name: attachedTo,
       thumbnail: filePath,
       installation_status: installationStatus,
-      utility_type_id: selectUtilId,
+      utility_type_id: selectUtilIds,
       reasons: [
         {
           options_reason_id: reasonId,
@@ -1469,6 +1442,7 @@ export default function UnitEdit({
       loopData.push({
         // meter_id: item.meter_id, check later
         device_serial_number: item.device_serial_number,
+        meter_serial_number: item.meter_serial_number,
         device_id: item.device_id,
         device: item.device,
         model_no_id: item.model_no_id,
@@ -1478,7 +1452,7 @@ export default function UnitEdit({
         defaultLatitude: item.defaultLatitude,
         defaultLongitude: item.defaultLongitude,
         attachedTo_id: item.attachedTo_id,
-        thumbnail: imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : '',
+        thumbnail: `data:image/jpeg;base64,${imageBase64}`,
         utility_type_id: item.utility_type_id,
         installation_status: Number(item.installation_status),
         ...(item.installation_status == 2 &&
@@ -4866,7 +4840,9 @@ export default function UnitEdit({
                                       slide2[1].value &&
                                       attachedToId != null
                                     ? '#25AAE1ec'
-                                    : sliderNumber == 3
+                                    : sliderNumber == 3 &&
+                                      filePath != '' &&
+                                      filePath != null
                                     ? '#25AAE1ec'
                                     : sliderNumber == 4 &&
                                       lat != undefined &&
@@ -4897,7 +4873,9 @@ export default function UnitEdit({
                                   slide2[1].value &&
                                   attachedToId != null
                                 ? false
-                                : sliderNumber == 3
+                                : sliderNumber == 3 &&
+                                  filePath != '' &&
+                                  filePath != null
                                 ? false
                                 : sliderNumber == 4 &&
                                   lat != undefined &&
@@ -5215,7 +5193,6 @@ export default function UnitEdit({
                         meterListData.length > 0 &&
                         meterListData?.map((item, index) => (
                           <TouchableOpacity
-                            disabled={true}
                             onPress={() => {
                               LayoutAnimation.configureNext({
                                 duration: 300,
