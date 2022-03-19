@@ -932,8 +932,7 @@ export default class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const {loader, loaderBuildings, meterTypeInputs} = this.state;
-    console.log('unit count', this.state.unitCount);
-    console.log('unit actual count', this.state.unitActualCount);
+
     return (
       <>
         <View style={styles.container}>
