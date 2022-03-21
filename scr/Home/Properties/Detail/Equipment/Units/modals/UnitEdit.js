@@ -101,8 +101,9 @@ export default function UnitEdit({
   const [meterListData, setMeterListData] = useState([]);
   const inputRef = useRef(null);
   const [defaultMeterValues, setDefaultMeterValues] = useState(false);
-  const [defaultDeviceValues, setDefaultDeviceValues] = useState(false);
+  const [defaultDeviceValues, setDefaultDeviceValues] = useState('');
   const [defaultData, setDefaultData] = useState([]);
+  const [defaultUtilityType, setDefaultUtilityType] = useState([]);
   const [defaultInfoData, setDefaultInfoData] = useState([]);
   const [defaultScreen, setDefaultScreen] = useState(false);
   const [radialDis, setRadialDis] = useState(100);
@@ -137,6 +138,7 @@ export default function UnitEdit({
   const [defaultManuLis, setDefaultManuLis] = useState([]);
   const [productNo, setProductNo] = useState('');
   const [addModelNo, setAddModelNo] = useState('');
+  const [modelArr, setModelArr] = useState([]);
   const [addProductNo, setAddProductNo] = useState('');
   const [scroll, setScroll] = useState(false);
   const [slide1, setSlide1] = useState([
@@ -166,22 +168,22 @@ export default function UnitEdit({
     },
   ]);
   const [addDevice, setAddDevice] = useState([
+    // {
+    //   id: 0,
+    //   select: '',
+    //   selectId: '',
+    //   name: 'Manufacturer',
+    //   data: [],
+    // },
     {
       id: 0,
-      select: '',
-      selectId: '',
-      name: 'Manufacturer',
-      data: [],
-    },
-    {
-      id: 1,
       selectId: '',
       select: '',
       name: 'Device Type',
       data: [],
     },
     {
-      id: 2,
+      id: 1,
       selectId: '',
       select: '',
       name: 'New Device',
@@ -359,15 +361,24 @@ export default function UnitEdit({
     }
   };
 
-  const AddTypes = (item) => {
-    console.log('ADD CHALA', item);
-    setSelectedUtil(item.name);
-    setSelectedUtilId(item.id);
-    const items = selectUtil;
-    items.push(item);
-    // selectedTypes.current = items;
+  const AddTypes = (item, type) => {
+    if (type == 'Models') {
+      console.log('ADD CHALA', item);
+      const items = [...modelArr];
+      items.push(item);
+      setModelArr(items);
+      setAddModelNo('');
+      // this.setState({modelArr: items, modelNo: ''});
+    } else {
+      console.log('ADD CHALA', item);
+      setSelectedUtil(item.name);
+      setSelectedUtilId(item.id);
+      const items = selectUtil;
+      items.push(item);
+      // selectedTypes.current = items;
 
-    setSelectUtil(items);
+      setSelectUtil(items);
+    }
   };
 
   const checkLocation = async (locationAccess) => {
@@ -764,48 +775,19 @@ export default function UnitEdit({
     );
 
     if (defaultUnitData.ok) {
-      // console.log(
-      //   clc.cyanBright(
-      //     'WE Got Default Data',
-      //     JSON.stringify(defaultUnitData?.data?.data),
-      //   ),
-      // );
       const some = defaultUnitData?.data?.data?.default_meter_device;
-      // console.log('Some Default Unit Data--->', some);
-      // console.log(
-      //   'Some Default Unit Data--->',
-      //   some?.devices[0]?.model_nos[0]?.model_no,
-      // );
+
       setSelectedUtil(some.utility_type_name[0].name);
       setSelectedUtilId(some.utility_type_name[0].id);
 
       helperDefaultData.current = some;
-      // let listSlide = [...slide1]; // copying the old datas array
-      // listSlide[0].select = some?.devices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
-      // listSlide[0].selectId = some?.devices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-      // listSlide[1].select = some?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
-      // listSlide[1].selectId = some?.devices[0]?.id; // replace e.target.value with whatever you want to change it to
-      // listSlide[2].select = some?.devices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-      // listSlide[2].selectId = some?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
-      // setProductNo(some?.devices[0]?.product_desc);
-      // setSlide1(listSlide);
-      // setNewMeter((oldState) => ({ check later
-      //   ...oldState,
-      //   id: some?.meter_id[0],
-      //   name: some?.meter_name[0]?.name,
-      // }));
 
       const utilityIds = some?.utility_type_id;
       const utilityRes = some?.utility_type_name;
       setDefaultData(some);
 
       setUtilLength(utilityIds.length);
-      // setUtilTypes(some?.utility_type_name);
-      // const filterRes = utilityRes.filter((item1) =>
-      //   utilityIds.some((item2) => item1.id == item2),
-      // );
-      // console.log(' UTILITY RES', filterRes);
-      // setSelectUtil(filterRes);
+      setDefaultUtilityType(some?.utility_type_name);
 
       const defaultDis =
         defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
@@ -857,14 +839,14 @@ export default function UnitEdit({
     //   DefaultManufacturersResponse?.data?.data?.default_meter_device.manufacturers;
     // listSlide[0].data = ManufacturersResponse?.data?.data;
     // setSlide1(listSlide);
-    let deviceDataManufacturer = [...addDevice]; // copying the old datas array
-    deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
-    setAddDevice(deviceDataManufacturer);
+    // let deviceDataManufacturer = [...addDevice]; // copying the old datas array
+    // deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
+    // setAddDevice(deviceDataManufacturer);
     const DeviceTypesResponse = await api.get(
       '/property/equipment/device-type/all',
     );
     let deviceData = [...addDevice]; // copying the old datas array
-    deviceData[1].data = DeviceTypesResponse?.data?.data;
+    deviceData[0].data = DeviceTypesResponse?.data?.data;
     setAddDevice(deviceData);
     const AttachedToResponse = await api.get(
       '/property/equipment/attached_to/attach',
@@ -884,7 +866,7 @@ export default function UnitEdit({
 
     // xxx
 
-    let UtilArray = [...utilTypes];
+    let UtilArray = [...defaultUtilityType];
     let ManuArray = [...defaultManuLis];
     // console.log('Utility DATA', UtilArray);
     // console.log('SLIDE DATA', ManuArray);
@@ -932,14 +914,14 @@ export default function UnitEdit({
       listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
       setProductNo(filterDevices[0]?.product_desc);
       setSlide1(listSlide);
+      setLoadManufacturers(false);
     } else {
       let listSlide = [...slide1]; // copying the old datas array
       listSlide[0].select = slide1[0].data[0]?.name; // replace e.target.value with whatever you want to change it to
       listSlide[0].selectId = slide1[0].data[0]?.id; // replace e.target.value with whatever you want to change it to
       setSlide1(listSlide);
+      setLoadManufacturers(false);
     }
-
-    setLoadManufacturers(false);
   };
 
   const getdefaultDeviceData = (val) => {
@@ -995,29 +977,29 @@ export default function UnitEdit({
   const getDevice = async (some, index) => {
     console.log('get devices--->', some?.id);
     console.log('get devices--->', some);
-    const deviceResponse = await api.get(
-      `/property/equipment/device/all/${some?.id}`,
-    );
-    const defaultDeviceResponse = await api.get(
-      `/property/default-meter-device/${propertyId}`,
-    );
+    // const deviceResponse = await api.get(
+    //   `/property/equipment/device/all/${some?.id}`,
+    // );
+    // const defaultDeviceResponse = await api.get(
+    //   `/property/default-meter-device/${propertyId}`,
+    // );
 
     // console.log(
     //   'Default Meter Devices',
     //   defaultDeviceResponse?.data?.data?.default_meter_device.devices,
     // );
-    const DefaultDevices =
-      defaultDeviceResponse?.data?.data?.default_meter_device.manufacturers[0]
-        .devices;
+    // const DefaultDevices =
+    //   defaultDeviceResponse?.data?.data?.default_meter_device.manufacturers[0]
+    //     .devices;
 
-    const filterDevices = DefaultDevices.filter(
-      (item) => item.manufacturer_id === some?.id,
-    );
+    // const filterDevices = DefaultDevices.filter(
+    //   (item) => item.manufacturer_id === some?.id,
+    // );
 
-    setState((oldState) => ({
-      ...oldState,
-      devicesData: deviceResponse?.data?.data,
-    }));
+    // setState((oldState) => ({
+    //   ...oldState,
+    //   devicesData: deviceResponse?.data?.data,
+    // }));
     // setState((oldState) => ({
     //   ...oldState,
     //   devicesData:
@@ -1028,7 +1010,7 @@ export default function UnitEdit({
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
     if (index == 0) {
-      listSlide[1].data = filterDevices;
+      listSlide[1].data = some.devices;
       // listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
       listSlide[2].selectId = '';
@@ -1897,6 +1879,7 @@ export default function UnitEdit({
     setAddTypeInput(false);
     setAddNewType(false);
     setShowAddType('');
+    setDefaultUtilityType('');
     setDefaultDeviceValues(false);
     setDefaultMeterValues(false);
     setNewMeterFlag(true);
@@ -2100,11 +2083,11 @@ export default function UnitEdit({
     } else {
       //* FIXME: Device Adding
       let data = {
-        name: addDevice[2].select,
-        manufacturer_id: addDevice[0].selectId,
-        device_type_id: addDevice[1].selectId,
-        model_no: addModelNo,
-        product_no: addProductNo,
+        name: addDevice[1].select,
+        manufacturer_id: slide1[0].selectId,
+        device_type_id: addDevice[0].selectId,
+        model_nos: modelArr,
+        product_desc: addProductNo,
       };
       const DeviceTypesResponse = await api.post(
         '/property/equipment/device/add',
@@ -2122,8 +2105,8 @@ export default function UnitEdit({
             type: LayoutAnimation.Types.easeInEaseOut,
           },
         });
-        callApi();
         cancelAddNewType();
+        callApi();
       } else {
         alert(DeviceTypesResponse?.data?.message);
       }
@@ -2156,8 +2139,8 @@ export default function UnitEdit({
     deviceData[0].selectId = '';
     deviceData[1].select = '';
     deviceData[1].selectId = '';
-    deviceData[2].select = '';
-    deviceData[2].selectId = '';
+    // deviceData[2].select = '';
+    // deviceData[2].selectId = '';
     setAddDevice(deviceData);
     setAddManufacturer('');
     setAddUtility('');
@@ -2301,7 +2284,7 @@ export default function UnitEdit({
             contentContainerStyle={{backgroundColor: '#fff'}}
             style={{
               flex: 1,
-              marginBottom: scroll ? 125 : 0,
+              marginBottom: scroll ? 150 : 0,
               backgroundColor: '#fff',
             }}>
             {showAddMeterSlider ? (
@@ -2845,7 +2828,7 @@ export default function UnitEdit({
                             top: -5,
                           },
                         ]}>
-                        {sliderNumber == 1
+                        {sliderNumber == 1 && showAddType == ''
                           ? 'Utility Type & Device Info'
                           : sliderNumber == 2
                           ? 'Single Point of Entry'
@@ -2855,7 +2838,7 @@ export default function UnitEdit({
                           ? 'Location'
                           : sliderNumber == 5
                           ? 'Install'
-                          : 'Utility Type & Device Info'}
+                          : ''}
                       </Text>
                     </View>
                     <View style={{height: 5}} />
@@ -2892,14 +2875,14 @@ export default function UnitEdit({
                             }}>
                             {!typeLoader ? (
                               <>
-                                <View
-                                  style={{
-                                    width: width * 0.8,
-                                  }}>
-                                  <Text style={styles.meterDesciptionHeading}>
-                                    Utility Type*
-                                  </Text>
-                                  {showAddType !== 'Utility' ? (
+                                {!showAddType ? (
+                                  <View
+                                    style={{
+                                      width: width * 0.8,
+                                    }}>
+                                    <Text style={styles.meterDesciptionHeading}>
+                                      Utility Type*
+                                    </Text>
                                     <View
                                       pointerEvents={'auto'}
                                       style={{
@@ -2985,151 +2968,8 @@ export default function UnitEdit({
                                         }}
                                       />
                                     </View>
-                                  ) : (
-                                    <View>
-                                      {showAddType == 'Utility' && (
-                                        <View>
-                                          <View>
-                                            <Text
-                                              style={[
-                                                styles.meterDesciptionHeading,
-                                                {fontWeight: 'bold'},
-                                              ]}>
-                                              New {showAddType} Type
-                                            </Text>
-                                          </View>
-                                          <TextInput
-                                            placeholder={'Type new utility'}
-                                            value={addUtility}
-                                            style={styles.meterInput}
-                                            mode={'outlined'}
-                                            theme={{
-                                              colors: {
-                                                text: '#25AAE1ec',
-                                                primary: '#25AAE1ec',
-                                                selectionColor: 'red',
-                                              },
-                                            }}
-                                            onChangeText={(text) => {
-                                              setAddUtility(text);
-                                            }}
-                                          />
-                                          <View
-                                            style={{
-                                              flexDirection: 'row',
-                                              justifyContent: 'space-around',
-                                              alignItems: 'center',
-                                            }}>
-                                            <TouchableOpacity
-                                              onPress={() =>
-                                                setShowAddType(false)
-                                              }>
-                                              <Text
-                                                style={{
-                                                  fontWeight: 'bold',
-                                                  fontSize: width * 0.045,
-                                                  color: '#25AAE1ec',
-                                                  width: width * 0.17,
-                                                  textAlign: 'center',
-                                                }}>
-                                                Cancel
-                                              </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                              onPress={doneAddType}
-                                              disabled={
-                                                showAddType == 'Manufacturer' &&
-                                                addManufacturer
-                                                  ? false
-                                                  : showAddType !=
-                                                      'Manufacturer' &&
-                                                    addDevice[0].selectId &&
-                                                    addDevice[1].selectId &&
-                                                    addDevice[2].select
-                                                  ? false
-                                                  : showAddType == 'Utility' &&
-                                                    addUtility
-                                                  ? false
-                                                  : showAddType ==
-                                                      'Attached To' &&
-                                                    addAttached
-                                                  ? false
-                                                  : true
-                                              }>
-                                              <Text
-                                                style={{
-                                                  fontWeight: 'bold',
-                                                  fontSize: width * 0.045,
-                                                  color:
-                                                    showAddType ==
-                                                      'Manufacturer' &&
-                                                    addManufacturer
-                                                      ? '#25AAE1ec'
-                                                      : showAddType !=
-                                                          'Manufacturer' &&
-                                                        addDevice[0].selectId &&
-                                                        addDevice[1].selectId &&
-                                                        addDevice[2].select
-                                                      ? '#25AAE1ec'
-                                                      : showAddType ==
-                                                          'Utility' &&
-                                                        addUtility
-                                                      ? '#25AAE1ec'
-                                                      : showAddType ==
-                                                          'Attached To' &&
-                                                        addAttached
-                                                      ? '#25AAE1ec'
-                                                      : '#D0D0D0',
-                                                  width: width * 0.15,
-                                                  textAlign: 'center',
-                                                }}>
-                                                Add
-                                              </Text>
-                                            </TouchableOpacity>
-                                          </View>
-                                        </View>
-                                      )}
-                                    </View>
-                                  )}
-                                  {/* <View>
-                                    <FlatList
-                                      data={selectUtil}
-                                      // extraData={selectedTypes.current}
-                                      horizontal
-                                      renderItem={({item}) => (
-                                        <View
-                                          style={{
-                                            borderWidth: 1,
-                                            borderRadius: 8,
-                                            flexDirection: 'row',
-                                            padding: 5,
-                                            margin: 5,
-                                            height: width * 0.1,
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                          }}>
-                                          <Text style={{color: 'black'}}>
-                                            {item.name}
-                                          </Text>
-                                          <TouchableOpacity
-                                            disabled={defaultMeterValues}
-                                            onPress={() => {
-                                              const items = selectUtil.filter(
-                                                (sitem) => sitem.id !== item.id,
-                                              );
-                                              setSelectUtil(items);
-                                              removeSelections(items);
-                                            }}>
-                                            <Icon
-                                              name="close"
-                                              size={width * 0.05}
-                                            />
-                                          </TouchableOpacity>
-                                        </View>
-                                      )}
-                                    />
-                                  </View> */}
-                                </View>
+                                  </View>
+                                ) : null}
                                 {/* <View
                                   style={{
                                     alignItems: 'flex-end',
@@ -3179,7 +3019,7 @@ export default function UnitEdit({
                                         containerStyle={{
                                           paddingBottom: width * 0.02,
                                           width:
-                                            index == 2
+                                            index > 0
                                               ? width * 0.7
                                               : width * 0.8,
                                         }}
@@ -3241,17 +3081,11 @@ export default function UnitEdit({
                                             borderLeftWidth: width * 0.0019,
                                             borderBottomWidth: width * 0.0019,
                                             borderRightWidth:
-                                              index == 0 || index == 1
-                                                ? width * 0.0019
-                                                : 0,
+                                              index == 0 ? width * 0.0019 : 0,
                                             borderTopRightRadius:
-                                              index == 0 || index == 1
-                                                ? width * 0.015
-                                                : 0,
+                                              index == 0 ? width * 0.015 : 0,
                                             borderBottomRightRadius:
-                                              index == 0 || index == 1
-                                                ? width * 0.015
-                                                : 0,
+                                              index == 0 ? width * 0.015 : 0,
                                           },
                                           onTextChange: (text) => {
                                             onChangeManufacturer(text, index);
@@ -3270,12 +3104,15 @@ export default function UnitEdit({
                                           nestedScrollEnabled: true,
                                         }}
                                       />
-                                      {index == 2 && (
+                                      {index > 0 && (
                                         <TouchableOpacity
                                           style={{
                                             width: width * 0.1,
                                             backgroundColor:
-                                              slide1[1].data.length > 0
+                                              index == 1 && slide1[0].selectId
+                                                ? '#25AAE199'
+                                                : index == 2 &&
+                                                  slide1[1].data.length > 0
                                                 ? '#25AAE199'
                                                 : '#D0D0D0',
                                             borderTopRightRadius: width * 0.015,
@@ -3289,7 +3126,10 @@ export default function UnitEdit({
                                             alignItems: 'center',
                                           }}
                                           disabled={
-                                            slide1[1].data.length > 0
+                                            index == 1 && slide1[0].selectId
+                                              ? false
+                                              : index == 2 &&
+                                                slide1[1].data.length > 0
                                               ? false
                                               : true
                                           }
@@ -3508,7 +3348,7 @@ export default function UnitEdit({
                                                 {item.name}
                                               </Text>
                                             </View>
-                                            {index < 2 ? (
+                                            {index < 1 ? (
                                               <SearchableDropdown
                                                 onItemSelect={(items) => {
                                                   getNewDeviceData(
@@ -3521,40 +3361,39 @@ export default function UnitEdit({
                                                 }}
                                                 itemStyle={{
                                                   padding: width * 0.027,
-                                                  backgroundColor: '#fff',
+                                                  backgroundColor:
+                                                    'rgb(247, 247, 247)',
                                                   borderColor: '#bbb',
                                                   borderWidth: width * 0.0015,
                                                   borderRadius: width * 0.015,
-                                                  margin: width * 0.005,
                                                 }}
-                                                itemTextStyle={{
-                                                  color: '#222',
-                                                }}
+                                                itemTextStyle={{color: '#222'}}
                                                 itemsContainerStyle={
-                                                  Platform.OS == 'android'
-                                                    ? {
-                                                        height: width * 0.2,
-                                                        zIndex: 1,
-                                                        position: 'absolute',
-                                                        width: width * 0.8,
-                                                        top: width * 0.1,
-                                                        flex: 1,
-                                                        zIndex: 20,
-                                                        backgroundColor:
-                                                          'white',
-                                                        elevation: width * 0.01,
-                                                        shadowColor: '#000',
-                                                        shadowOffset: {
-                                                          width: 0,
-                                                          height: 2,
-                                                        },
-                                                        shadowOpacity: 0.25,
-                                                        shadowRadius: 3.84,
-                                                      }
-                                                    : {
-                                                        height: width * 0.2,
-                                                        zIndex: 1,
-                                                      }
+                                                  {maxHeight: height * 0.08}
+                                                  // Platform.OS == 'android'
+                                                  //   ? {
+                                                  //       height: width * 0.2,
+                                                  //       zIndex: 1,
+                                                  //       position: 'absolute',
+                                                  //       width: width * 0.8,
+                                                  //       top: width * 0.1,
+                                                  //       flex: 1,
+                                                  //       zIndex: 20,
+                                                  //       backgroundColor:
+                                                  //         'white',
+                                                  //       elevation: width * 0.01,
+                                                  //       shadowColor: '#000',
+                                                  //       shadowOffset: {
+                                                  //         width: 0,
+                                                  //         height: 2,
+                                                  //       },
+                                                  //       shadowOpacity: 0.25,
+                                                  //       shadowRadius: 3.84,
+                                                  //     }
+                                                  //   : {
+                                                  //       height: width * 0.2,
+                                                  //       zIndex: 1,
+                                                  //     }
                                                 }
                                                 items={item.data}
                                                 resetValue={false}
@@ -3622,38 +3461,140 @@ export default function UnitEdit({
                                                       Model Number*
                                                     </Text>
                                                   </View>
-                                                  <TextInput
-                                                    placeholder="Type Model Number"
-                                                    value={addModelNo}
-                                                    // showSoftInputOnFocus={false}
-                                                    style={styles.meterInput}
-                                                    onSubmitEditing={
-                                                      Keyboard.dismiss
-                                                    }
-                                                    mode={'outlined'}
-                                                    theme={{
-                                                      colors: {
-                                                        text: '#25AAE1ec',
-                                                        primary: '#25AAE1ec',
-                                                        selectionColor: 'red',
-                                                      },
-                                                    }}
-                                                    onFocus={() => {
-                                                      console.log(
-                                                        'Focusing Model number',
-                                                      );
-                                                      setVerticalOffs(-60);
-                                                    }}
-                                                    // onBlur={() => {
-                                                    //   console.log(
-                                                    //     'Blurring Model number',
-                                                    //   );
-                                                    //   setVerticalOffs(-180);
-                                                    // }}
-                                                    onChangeText={(text) => {
-                                                      setAddModelNo(text);
-                                                    }}
-                                                  />
+                                                  <View
+                                                    style={{
+                                                      flexDirection: 'row',
+                                                      width: width * 0.8,
+                                                      justifyContent:
+                                                        'space-between',
+                                                      height: width * 0.15,
+                                                    }}>
+                                                    <TextInput
+                                                      placeholder="Type Model Number"
+                                                      value={addModelNo}
+                                                      // showSoftInputOnFocus={false}
+                                                      style={[
+                                                        styles.meterInput,
+                                                        {
+                                                          width: width * 0.6,
+                                                          height: width * 0.145,
+                                                        },
+                                                      ]}
+                                                      onSubmitEditing={
+                                                        Keyboard.dismiss
+                                                      }
+                                                      mode={'outlined'}
+                                                      theme={{
+                                                        colors: {
+                                                          text: '#25AAE1ec',
+                                                          primary: '#25AAE1ec',
+                                                          selectionColor: 'red',
+                                                        },
+                                                      }}
+                                                      onFocus={() => {
+                                                        console.log(
+                                                          'Focusing Model number',
+                                                        );
+                                                        setVerticalOffs(-60);
+                                                      }}
+                                                      // onBlur={() => {
+                                                      //   console.log(
+                                                      //     'Blurring Model number',
+                                                      //   );
+                                                      //   setVerticalOffs(-180);
+                                                      // }}
+                                                      onChangeText={(text) => {
+                                                        setAddModelNo(text);
+                                                      }}
+                                                    />
+                                                    <TouchableOpacity
+                                                      style={{
+                                                        // backgroundColor: '#25AAE1ec',
+                                                        width: width * 0.14,
+                                                        height: width * 0.15,
+                                                        borderWidth: 2,
+                                                        borderRadius: 5,
+                                                        alignSelf: 'flex-end',
+                                                        borderColor:
+                                                          '#25AAE1ec',
+                                                        justifyContent:
+                                                          'center',
+                                                        alignItems: 'center',
+                                                      }}
+                                                      onPress={() =>
+                                                        AddTypes(
+                                                          addModelNo,
+                                                          'Models',
+                                                        )
+                                                      }>
+                                                      <Icon
+                                                        size={width * 0.1}
+                                                        color="#25AAE1ec"
+                                                        name={'add'}
+                                                      />
+                                                    </TouchableOpacity>
+                                                  </View>
+                                                  {modelArr.length > 0 && (
+                                                    <FlatList
+                                                      data={modelArr}
+                                                      horizontal
+                                                      style={{
+                                                        width: width * 0.8,
+                                                        marginVertical:
+                                                          width * 0.02,
+                                                      }}
+                                                      showsHorizontalScrollIndicator={
+                                                        false
+                                                      }
+                                                      renderItem={({item}) => (
+                                                        <>
+                                                          <View
+                                                            style={{
+                                                              borderWidth: 1,
+                                                              borderRadius: 8,
+                                                              flexDirection:
+                                                                'row',
+                                                              padding: 5,
+                                                              // margin: 5,
+                                                              height:
+                                                                width * 0.1,
+                                                              alignItems:
+                                                                'center',
+                                                              justifyContent:
+                                                                'center',
+                                                            }}>
+                                                            <Text
+                                                              style={{
+                                                                color: 'black',
+                                                              }}>
+                                                              {item}
+                                                            </Text>
+                                                            <TouchableOpacity
+                                                              onPress={() => {
+                                                                const items = modelArr.filter(
+                                                                  (sitem) =>
+                                                                    sitem !==
+                                                                    item,
+                                                                );
+                                                                setModelArr(
+                                                                  items,
+                                                                );
+                                                              }}>
+                                                              <Icon
+                                                                name="close"
+                                                                size={
+                                                                  width * 0.05
+                                                                }
+                                                              />
+                                                            </TouchableOpacity>
+                                                          </View>
+                                                          <View
+                                                            style={{width: 5}}
+                                                          />
+                                                        </>
+                                                      )}
+                                                    />
+                                                  )}
                                                 </View>
                                                 <View>
                                                   <View>
@@ -3728,9 +3669,11 @@ export default function UnitEdit({
                                               ? false
                                               : showAddType != 'Manufacturer' &&
                                                 addDevice[0].selectId &&
-                                                addDevice[1].selectId &&
-                                                addDevice[2].select
-                                              ? false
+                                                addDevice[1].select &&
+                                                modelArr.length > 0 &&
+                                                addProductNo != ''
+                                              ? // && addDevice[2].select
+                                                false
                                               : showAddType == 'Utility' &&
                                                 addUtility
                                               ? false
@@ -3750,8 +3693,9 @@ export default function UnitEdit({
                                                   : showAddType !=
                                                       'Manufacturer' &&
                                                     addDevice[0].selectId &&
-                                                    addDevice[1].selectId &&
-                                                    addDevice[2].select
+                                                    addDevice[1].select &&
+                                                    modelArr.length > 0 &&
+                                                    addProductNo != ''
                                                   ? '#25AAE1ec'
                                                   : showAddType == 'Utility' &&
                                                     addUtility
