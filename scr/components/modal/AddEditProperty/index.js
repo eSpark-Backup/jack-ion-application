@@ -744,6 +744,7 @@ export default function AddEditProperty({
           setBtnLoading(false);
           Alert.alert('Success', 'Property Added Successfully');
         } else {
+          setBtnLoading(false);
           Alert.alert('Error', res?.data?.message);
         }
       } else {
@@ -759,6 +760,7 @@ export default function AddEditProperty({
           setBtnLoading(false);
           Alert.alert('Success', response?.data?.message);
         } else {
+          setBtnLoading(false);
           Alert.alert('Error', response?.data?.message);
         }
       }
@@ -1286,6 +1288,11 @@ export default function AddEditProperty({
                     fetchDetails={true}
                     enablePoweredByContainer={false}
                     disableScroll={false}
+                    // textInputProps={{
+                    //   onFocus: () => {
+
+                    //   }
+                    // }}
                     onPress={(data, details) => {
                       catchLocation(details.geometry.location);
                       console.log('DETAILS', details);
@@ -1810,12 +1817,15 @@ export default function AddEditProperty({
                           ))}
                           <TouchableOpacity
                             onPress={() => {
-                              animate();
-                              setAddUnitMix(true);
+                              // animate();
+                              // setAddUnitMix(true);
+                              alert(
+                                'option disabled because of changes in APIs',
+                              );
                             }}
                             style={styles.addNewRowBtn}>
                             <Text style={{color: '#25AAE1ec'}}>
-                              Add New Rows
+                              Add New Rows (Work in Progress)
                             </Text>
                           </TouchableOpacity>
                         </View>

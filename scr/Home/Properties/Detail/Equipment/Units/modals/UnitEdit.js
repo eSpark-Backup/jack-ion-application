@@ -103,7 +103,6 @@ export default function UnitEdit({
   const [defaultMeterValues, setDefaultMeterValues] = useState(false);
   const [defaultDeviceValues, setDefaultDeviceValues] = useState('');
   const [defaultData, setDefaultData] = useState([]);
-  const [defaultUtilityType, setDefaultUtilityType] = useState([]);
   const [defaultInfoData, setDefaultInfoData] = useState([]);
   const [defaultScreen, setDefaultScreen] = useState(false);
   const [radialDis, setRadialDis] = useState(100);
@@ -774,6 +773,8 @@ export default function UnitEdit({
       `/property/default-meter-device/${propertyId}`,
     );
 
+    let defaultUtilityType = [];
+
     if (defaultUnitData.ok) {
       const some = defaultUnitData?.data?.data?.default_meter_device;
 
@@ -787,7 +788,7 @@ export default function UnitEdit({
       setDefaultData(some);
 
       setUtilLength(utilityIds.length);
-      setDefaultUtilityType(some?.utility_type_name);
+      defaultUtilityType = some?.utility_type_name;
 
       const defaultDis =
         defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
@@ -809,7 +810,6 @@ export default function UnitEdit({
 
     let manufacturers = [];
     let utilities = [];
-    let data = [];
 
     propManus.map((item) => {
       manufacturers.push(item.manufacturer);
@@ -857,10 +857,6 @@ export default function UnitEdit({
       '/property/equipment/unit/option-reasons/all',
     );
 
-    // let reasonArr = reasoneResponce?.data?.data;
-    // const uniqueArr = [
-    //   ...new Map(reasonArr?.map((v) => [v.options_reason_id, v])).values(),
-    // ];
     setReasons(reasoneResponce?.data?.data);
     // console.log('reasons_________', reasoneResponce?.data?.data);
 
@@ -1879,7 +1875,6 @@ export default function UnitEdit({
     setAddTypeInput(false);
     setAddNewType(false);
     setShowAddType('');
-    setDefaultUtilityType('');
     setDefaultDeviceValues(false);
     setDefaultMeterValues(false);
     setNewMeterFlag(true);
@@ -4830,9 +4825,7 @@ export default function UnitEdit({
                                       slide2[1].value &&
                                       attachedToId != null
                                     ? '#25AAE1ec'
-                                    : sliderNumber == 3 &&
-                                      filePath != '' &&
-                                      filePath != null
+                                    : sliderNumber == 3
                                     ? '#25AAE1ec'
                                     : sliderNumber == 4 &&
                                       lat != undefined &&
@@ -4863,9 +4856,7 @@ export default function UnitEdit({
                                   slide2[1].value &&
                                   attachedToId != null
                                 ? false
-                                : sliderNumber == 3 &&
-                                  filePath != '' &&
-                                  filePath != null
+                                : sliderNumber == 3
                                 ? false
                                 : sliderNumber == 4 &&
                                   lat != undefined &&
@@ -5183,6 +5174,7 @@ export default function UnitEdit({
                         meterListData.length > 0 &&
                         meterListData?.map((item, index) => (
                           <TouchableOpacity
+                            disabled={true}
                             onPress={() => {
                               LayoutAnimation.configureNext({
                                 duration: 300,
@@ -5607,6 +5599,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#fff',
+    marginVertical: width * 0.04,
   },
   reasonFileContainer: {
     flex: 1,
