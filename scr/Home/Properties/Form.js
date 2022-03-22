@@ -2957,13 +2957,13 @@ export default class Splash extends React.Component {
     this.getToken();
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
-      Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
+      Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
           text: 'Cancel',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Turn On Location',
           onPress: this.turnLocationOn,
         },
       ]);

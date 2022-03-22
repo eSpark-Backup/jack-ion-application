@@ -54,6 +54,7 @@ import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustumStatusBar from '../components/StatusBar';
+import Toast from 'react-native-simple-toast';
 const {width, height} = Dimensions.get('window');
 
 class Tools extends Component {
@@ -397,7 +398,7 @@ class Tools extends Component {
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
-                onPress={() => console.log('helo')}>
+                onPress={() => Toast.show('Work in Progess')}>
                 <Image
                   source={require('../../Images/profileBack.jpg')}
                   style={styles.toolImage}
@@ -431,7 +432,7 @@ class Tools extends Component {
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
-                onPress={() => console.log('helo')}>
+                onPress={() => Toast.show('Work in Progess')}>
                 <Image
                   source={require('../../Images/profileBack.jpg')}
                   style={styles.toolImage}

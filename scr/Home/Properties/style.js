@@ -126,7 +126,7 @@ export default styles = StyleSheet.create({
     height: height * 1,
     justifyContent: 'flex-start',
     left: '-5%',
-    // top: '-2.5%',
+    top: '-2.5%',
   },
   searchModalInner: {
     width: width * 1,
@@ -195,10 +195,10 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.025,
     color: '#001522',
-    textShadowOffset: {
-      width: width * 0.002,
-      height: height * 0.002,
-    },
+    // textShadowOffset: {
+    //   width: width * 0.002,
+    //   height: height * 0.002,
+    // },
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },
@@ -210,10 +210,10 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.035,
     color: '#001522',
-    textShadowOffset: {
-      width: width * 0.002,
-      height: height * 0.002,
-    },
+    // textShadowOffset: {
+    //   width: width * 0.002,
+    //   height: height * 0.002,
+    // },
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },

@@ -201,6 +201,12 @@ export default class Splash extends Component {
                     latitudeDelta: 10,
                     longitudeDelta: 30,
                   }}
+                  region={{
+                    latitude: 39.0902,
+                    longitude: -102.0,
+                    latitudeDelta: 10,
+                    longitudeDelta: 30,
+                  }}
                   zoomEnabled={true}
                   provider={PROVIDER_GOOGLE}
                   showsUserLocation={true}

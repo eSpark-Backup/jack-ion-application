@@ -106,6 +106,7 @@ export default styles = StyleSheet.create({
   // },
   boxInner: {
     // flex: 1,
+    width: width * 0.8,
     backgroundColor: '#F5F5F5',
     borderRadius: width * 0.02,
     elevation: width * 0.02,

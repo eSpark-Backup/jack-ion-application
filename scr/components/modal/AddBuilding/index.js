@@ -9,6 +9,7 @@ import {
   ScrollView,
   FlatList,
   Keyboard,
+  LogBox,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 //Packages
@@ -61,6 +62,10 @@ export default function AddbuildingModal({
     }
     getLoopOfUnits();
   };
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, []);
+
   useEffect(() => {
     setState((oldState) => ({
       ...oldState,

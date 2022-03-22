@@ -189,13 +189,13 @@ export default class Splash extends Component {
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
       this.context.stopLoader();
-      Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
+      Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
           text: 'Cancel',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Turn On Location',
           onPress: this.turnLocationOn,
         },
       ]);

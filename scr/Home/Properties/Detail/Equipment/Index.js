@@ -13,6 +13,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  LogBox,
 } from 'react-native';
 //Packages
 import Menu from 'react-native-vector-icons/Entypo';
@@ -101,6 +102,7 @@ export default class Splash extends Component {
   }
 
   componentDidMount() {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
@@ -844,7 +846,7 @@ export default class Splash extends Component {
     const unitResponse = await this.api.get(
       `/property/equipment/meter/all-meters`,
     );
-    console.log('Check meter add--->', unitResponse?.data?.data);
+    // console.log('Check meter add--->', unitResponse?.data?.data);
     this.setState({getUtilities: unitResponse?.data?.data});
   };
 
@@ -1190,6 +1192,17 @@ export default class Splash extends Component {
                       </MenuItem>
                     ))}
                   </MenuT>
+                  {!loader &&
+                    this.state.unitActualCount >= this.state.unitCount && (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontSize: width * 0.032,
+                          color: '#ff0000ff',
+                        }}>
+                        Unit Count Limit Exceed
+                      </Text>
+                    )}
                 </View>
 
                 {/* Top Lists */}

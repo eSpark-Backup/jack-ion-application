@@ -19,6 +19,7 @@ import {
   LogBox,
   Alert,
   Platform,
+  Switch,
 } from 'react-native';
 
 //Packages
@@ -179,20 +180,25 @@ export default class Splash extends Component {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
         );
+        console.log('kia hai granted camera ka', granted);
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          this.setState({hasCameraAccess: true});
+          if (this.state.hasCameraAccess) {
+            this._openAppSetting();
+          } else {
+            this.setState({hasCameraAccess: true});
+          }
           // console.log('Access',)
-          Alert.alert(
-            "You've access for the Camera",
-            'To Change the Permission Open Settings',
-            [
-              {text: 'Ok', style: 'cancel'},
-              {
-                text: 'Open Settings',
-                onPress: () => this._openAppSetting(),
-              },
-            ],
-          );
+          // Alert.alert(
+          //   "You've access for the Camera",
+          //   'To Change the Permission Open Settings',
+          //   [
+          //     {text: 'Ok', style: 'cancel'},
+          //     {
+          //       text: 'Open Settings',
+          //       onPress: () => this._openAppSetting(),
+          //     },
+          //   ],
+          // );
         } else {
           this.setState({hasCameraAccess: false});
           alert("You don't have access for the Camera");
@@ -232,6 +238,7 @@ export default class Splash extends Component {
       alert(err);
     }
   };
+
   hasCameraPermission = async () => {
     if (Platform.OS == 'android') {
       try {
@@ -401,11 +408,12 @@ export default class Splash extends Component {
                   Scan equipment and take photos
                 </Text>
               </View>
-              <ToggleSwitch
-                isOn={this.state.hasCameraAccess}
-                onColor="#25AAE1"
-                offColor="lightgray"
-                onToggle={this.requestCameraPermission}
+              <Switch
+                trackColor={{false: 'lightgray', true: '#25AAE1'}}
+                thumbColor={'#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={this.requestCameraPermission}
+                value={this.state.hasCameraAccess}
               />
             </View>
             <View style={style.containerInner}>
@@ -415,14 +423,15 @@ export default class Splash extends Component {
                   Upload profile and property photos
                 </Text>
               </View>
-              <ToggleSwitch
-                isOn={this.state.hasStorageAccess}
-                onColor="#25AAE1"
-                offColor="lightgray"
-                onToggle={this.requestStoragePermission}
+              <Switch
+                trackColor={{false: 'lightgray', true: '#25AAE1'}}
+                thumbColor={'#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={this.requestStoragePermission}
+                value={this.state.hasStorageAccess}
               />
             </View>
-            <View style={style.containerInner}>
+            {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>Cloud Scanner</Text>
                 <Text style={style.sideHeadingItems}>
@@ -435,8 +444,8 @@ export default class Splash extends Component {
                 offColor="lightgray"
                 onToggle={(isOn) => console.log('changed to : ', isOn)}
               />
-            </View>
-            <View style={style.containerInner}>
+            </View> */}
+            {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>
                   Barcode Scanner Sounds
@@ -451,8 +460,8 @@ export default class Splash extends Component {
                 offColor="lightgray"
                 onToggle={(isOn) => console.log('changed to : ', isOn)}
               />
-            </View>
-            <View style={style.containerInner}>
+            </View> */}
+            {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>BLE Radio</Text>
                 <Text style={style.sideHeadingItems}>
@@ -465,8 +474,8 @@ export default class Splash extends Component {
                 offColor="lightgray"
                 onToggle={this.toggleBluetooth}
               />
-            </View>
-            <View style={style.containerInner}>
+            </View> */}
+            {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>
                   BLE Proximity Scanner
@@ -481,8 +490,8 @@ export default class Splash extends Component {
                 offColor="lightgray"
                 onToggle={(isOn) => console.log('changed to : ', isOn)}
               />
-            </View>
-            <View style={style.containerReset}>
+            </View> */}
+            {/* <View style={style.containerReset}>
               <Reset
                 name="rotate-3d-variant"
                 size={height * 0.035}
@@ -490,8 +499,8 @@ export default class Splash extends Component {
                 color="white"
               />
               <Text style={style.mainHeadiingReset}>Reset</Text>
-            </View>
-            <View style={style.containerInner}>
+            </View> */}
+            {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>Reset Slides</Text>
                 <Text style={style.sideHeadingItems}>
@@ -499,8 +508,8 @@ export default class Splash extends Component {
                 </Text>
               </View>
               <Arrow name="keyboard-arrow-right" size={height * 0.04} />
-            </View>
-            <View style={style.containerInner}>
+            </View> */}
+            {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>Reset All Settings</Text>
                 <Text style={style.sideHeadingItems}>
@@ -508,7 +517,7 @@ export default class Splash extends Component {
                 </Text>
               </View>
               <Arrow name="keyboard-arrow-right" size={height * 0.04} />
-            </View>
+            </View> */}
             <View style={style.containerReset}>
               <Logout
                 name="logout"
@@ -520,10 +529,19 @@ export default class Splash extends Component {
             </View>
             <TouchableOpacity
               onPress={() => {
-                this.removeToken();
-                this.setLoggedOut();
+                Alert.alert('Log Out', 'Are you sure you want to Logout', [
+                  {text: 'No', style: 'cancel'},
+                  {
+                    text: 'Log Out',
+                    onPress: () => {
+                      this.removeToken();
+                      this.setLoggedOut();
+                      this.props.navigation.replace('Login');
+                    },
+                  },
+                ]);
+
                 // this.props.navigation.popToTop();
-                this.props.navigation.replace('Login');
               }}>
               <View style={style.containerInner}>
                 <View>
@@ -535,7 +553,7 @@ export default class Splash extends Component {
                 <Arrow name="keyboard-arrow-right" size={height * 0.04} />
               </View>
             </TouchableOpacity>
-            <View
+            {/* <View
               style={{
                 // height: height * 0.09,
                 width: '100%',
@@ -557,7 +575,7 @@ export default class Splash extends Component {
                   App Version: 1.0.0
                 </Text>
               </View>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>

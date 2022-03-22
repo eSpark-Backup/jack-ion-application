@@ -21,6 +21,7 @@ import {
   Switch,
   Keyboard,
   TouchableWithoutFeedback,
+  LogBox,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Modal from 'react-native-modal';
@@ -319,13 +320,13 @@ export default function UnitEdit({
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     if (!location) {
-      Alert.alert('Enable Loaction', 'Kindly TurnOn Location to Add Meter', [
+      Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
           text: 'Cancel',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Turn On Location',
           onPress: turnLocationOn,
         },
       ]);
@@ -547,6 +548,8 @@ export default function UnitEdit({
   // }, []);
   useEffect(() => {
     console.log(clc.xterm(80)('AYA PROPERTY ID', propertyId));
+    LogBox.ignoreLogs(['Warning: Failed prop type: Invalid prop']);
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     if (type == 'meterDirect' || type == 'addMeterDirect') {
       let newArr = [...slide2]; // copying the old datas array
       newArr[0].value = unitDetails?.unit?.meterSerial; // replace e.target.value with whatever you want to change it to
@@ -2826,13 +2829,13 @@ export default function UnitEdit({
                         {sliderNumber == 1 && showAddType == ''
                           ? 'Utility Type & Device Info'
                           : sliderNumber == 2
-                          ? 'Single Point of Entry'
+                          ? 'Attached To'
                           : sliderNumber == 3
-                          ? 'Image'
+                          ? 'Installation Image'
                           : sliderNumber == 4
-                          ? 'Location'
+                          ? 'GPS Location of Install'
                           : sliderNumber == 5
-                          ? 'Install'
+                          ? 'Install Status'
                           : ''}
                       </Text>
                     </View>

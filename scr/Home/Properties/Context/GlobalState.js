@@ -176,10 +176,10 @@ class GlobalState extends React.Component {
   getBillingCompany = async () => {
     this.setState({isLoading: true});
     const response = await this.api?.get('/property/billing-company/all');
-    console.log(
-      'Check billing company response',
-      response?.data?.data?.billingCompany,
-    );
+    // console.log(
+    //   'Check billing company response',
+    //   response?.data?.data?.billingCompany,
+    // );
     this.setState({
       itemList: response?.data?.data?.billingCompany,
       isLoading: false,
