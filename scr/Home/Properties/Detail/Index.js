@@ -2291,7 +2291,7 @@ export default class Splash extends React.Component {
                     <Text
                       style={[
                         styles.dataFieldText,
-                        {width: null, textAlign: 'left'},
+                        {width: width * 0.4, textAlign: 'left'},
                       ]}>
                       Manufacturer:
                     </Text>
