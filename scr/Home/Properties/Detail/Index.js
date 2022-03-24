@@ -109,6 +109,8 @@ export default class Splash extends React.Component {
       propertyId: null,
       loadingStateManage: false,
       listData: {},
+      utilTypes: [],
+      manus: [],
       ownerData: [],
       locationBtn: '',
       addBilling: '',
@@ -172,6 +174,20 @@ export default class Splash extends React.Component {
     console.log('PROPERTYRES', propertyRes?.data?.data?.property);
 
     const currPropData = propertyRes?.data?.data?.property;
+    const utilityManufacturersArr =
+      propertyRes?.data?.data?.property?.utility_manufacturers;
+
+    let utilTypes = [];
+    let manus = [];
+    utilityManufacturersArr.filter((item) => {
+      utilTypes.push(item.utility_type.name);
+      manus.push(item.manufacturer.name);
+    });
+
+    this.setState({utilTypes, manus});
+
+    console.log('UTILITY TYPES', utilTypes);
+    console.log('MANUFACTURERS', manus);
 
     this.setState({
       propertyData: currPropData,
@@ -972,7 +988,7 @@ export default class Splash extends React.Component {
                       color="#7575ff"
                       style={styles.drawerBtnIcon}
                     />
-                    <Text style={styles.drawerbtn}>Profile</Text>
+                    <Text style={styles.drawerbtn}>Details</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.naviagateToEquip()}>
@@ -1080,7 +1096,7 @@ export default class Splash extends React.Component {
                   color="white"
                   style={{top: height * 0.002}}
                 />
-                <Text style={styles.mainHeadiing}>Profile</Text>
+                <Text style={styles.mainHeadiing}>Details</Text>
               </View>
             </View>
           </View>
@@ -2230,6 +2246,82 @@ export default class Splash extends React.Component {
                     </Text>
                   </View>
                 </View>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>Other Details</Text>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      Unit Count:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.3, textAlign: 'auto'},
+                      ]}>
+                      {this.state.listData.unit_count == null ||
+                      this.state.listData.unit_count == ''
+                        ? '--'
+                        : this.state.listData.unit_count}
+                    </Text>
+                  </View>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      Utility Type:
+                    </Text>
+                    <View style={{flexDirection: 'row'}}>
+                      {this.state.utilTypes.map((item) => (
+                        <Text
+                          style={[
+                            styles.dataFieldText,
+                            {width: null, textAlign: 'auto'},
+                          ]}>
+                          {item == null || item == '' ? '--' : item}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: null, textAlign: 'left'},
+                      ]}>
+                      Manufacturer:
+                    </Text>
+                    <View style={{flexDirection: 'row'}}>
+                      {this.state.manus.map((item) => (
+                        <Text
+                          style={[
+                            styles.dataFieldText,
+                            {width: null, textAlign: 'auto'},
+                          ]}>
+                          {item == null || item == '' ? '--' : item}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>
+                    Owner/Developer Name
+                  </Text>
+                  <View style={styles.infoViewInner}>
+                    <Folder name="folder" size={width * 0.06} />
+                    <Text style={styles.dataFieldText}>
+                      {this.state.listData.owner == null ||
+                      this.state.listData.owner == ''
+                        ? '--'
+                        : this.state.listData.owner}
+                    </Text>
+                  </View>
+                </View>
                 <View style={styles.contactViewContainer}>
                   <Text style={styles.dataFieldHeadings}>Contact Info</Text>
                   <View style={styles.contactInfoContainer}>
@@ -2284,28 +2376,7 @@ export default class Splash extends React.Component {
                     />
                   </View>
                 </View>
-                <View style={style.footerContainer}>
-                  <TouchableOpacity style={style.commentBottonContainer}>
-                    <View style={style.commentBottonInner}>
-                      <Message
-                        name="message-circle"
-                        size={height * 0.03}
-                        color="purple"
-                      />
-                      <Text style={style.commentBottonText}>Comments(0)</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={style.commentBottonContainer}>
-                    <View style={style.commentBottonInner}>
-                      <Docs
-                        name="document-text-outline"
-                        size={height * 0.03}
-                        style={{color: 'purple', top: 2}}
-                      />
-                      <Text style={style.commentBottonText}>Docs(0)</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
+
                 <View style={styles.barViewContainer}>
                   <View style={styles.barView}>
                     <AnimatedCircularProgress
@@ -2325,67 +2396,6 @@ export default class Splash extends React.Component {
                       )}
                     </AnimatedCircularProgress>
                   </View>
-                  {/* <View style={styles.barView}>
-                    <AnimatedCircularProgress
-                      size={height * 0.2}
-                      width={height * 0.035}
-                      backgroundWidth={height * 0.035}
-                      fill={this.state.points}
-                      tintColor="#09BAF2"
-                      backgroundColor="#3d5875"
-                      arcSweepAngle={360}
-                      rotation={0}
-                      lineCap="butt">
-                      {(fill) => (
-                        <Text style={styles.barText}>
-                          Repeater {'\n'} {Math.round((100 * fill) / 100)} %
-                        </Text>
-                      )}
-                    </AnimatedCircularProgress>
-                  </View> */}
-                </View>
-                <View style={{height: height * 0.45}}>
-                  <VictoryChart
-                    style={{height: height * 0.1}}
-                    domainPadding={{x: 20}}
-                    animate={{duration: 500}}>
-                    <VictoryBar
-                      data={dataBar2.actual}
-                      style={{data: {fill: 'tomato', height: height * 0.01}}}
-                      // labels={({ datum }) => datum.y}
-                      animate={{
-                        // duration: 2000,
-                        onLoad: {
-                          duration: 1500,
-                          before: () => ({
-                            _y: 1,
-                            // _x: 1,
-                            fill: 'yellow',
-                            label: 'BYE',
-                          }),
-                          after: () => ({
-                            _y: 15,
-                            _x: 1,
-                            fill: 'yellow',
-                            // label: "HI"
-                          }),
-                        },
-                      }}
-                    />
-                    <VictoryAxis />
-                  </VictoryChart>
-                  <VictoryLegend
-                    x={Dimensions.get('screen').width / 2 - 70}
-                    orientation="horizontal"
-                    data={[
-                      {
-                        name: 'Check In History',
-                        symbol: {
-                          fill: 'tomato',
-                        },
-                      },
-                    ]}
-                  />
                 </View>
               </View>
             </View>

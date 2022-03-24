@@ -1,22 +1,13 @@
 import React, {Component} from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  ActivityIndicator,
-  StatusBar,
   Dimensions,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
   LayoutAnimation,
   UIManager,
-  TextInput,
-  Button,
   Platform,
+  Linking,
+  TouchableOpacity,
 } from 'react-native';
 
 import Search from 'react-native-vector-icons/EvilIcons';
@@ -94,7 +85,7 @@ export default class Splash extends Component {
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
-        <View style={styles.headerContainer}>
+        {/* <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
@@ -120,18 +111,39 @@ export default class Splash extends Component {
               />
             </View>
           </View>
-        </View>
+        </View> */}
         <View style={styles.headingContainer}>
           <View style={[styles.headingInner]}>
-            <Help
-              name="help-circle"
-              size={width * 0.07}
-              color="white"
+            <TouchableOpacity
+              onPress={() => this.props.navigation.goBack()}
               style={{
-                marginRight: width * 0.01,
-              }}
-            />
-            <Text style={styles.mainHeadiing}>Support</Text>
+                width: width * 0.15,
+                height: height * 0.06,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Back
+                size={width * 0.08}
+                color="white"
+                name="keyboard-backspace"
+              />
+            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: width * 0.2,
+              }}>
+              <Help
+                name="help-circle"
+                size={width * 0.07}
+                color="white"
+                style={{
+                  marginRight: width * 0.01,
+                }}
+              />
+              <Text style={styles.mainHeadiing}>Support</Text>
+            </View>
           </View>
         </View>
         <View style={{flex: 1}}>
@@ -151,12 +163,22 @@ export default class Splash extends Component {
               </Text>
             </View>
             <View>
-              <View style={styles.insideBottonView}>
+              <TouchableOpacity
+                style={[styles.insideBottonView, {flexDirection: 'row'}]}
+                onPress={() => {
+                  Linking.openURL(`tel:844 538 8203`);
+                }}>
+                <Phone
+                  name="phone"
+                  size={width * 0.07}
+                  style={{
+                    marginHorizontal: width * 0.01,
+                  }}
+                />
                 <Text style={{fontSize: width * 0.09, color: 'purple'}}>
-                  <Phone name="phone" size={width * 0.07} />
-                  844.538.8203
+                  844-538-8203
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.insideBottonView}>
               <Text
@@ -168,10 +190,24 @@ export default class Splash extends Component {
                 }}>
                 or send us an email
               </Text>
-              <Text style={styles.emailText}>
-                <Email name="mail" size={width * 0.05} />
-                jackhowell@ionenergysolutions.com
-              </Text>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() =>
+                  Linking.openURL('mailto:jackhowell@ionenergysolutions.com')
+                }>
+                <Email
+                  name="mail"
+                  size={width * 0.05}
+                  style={{marginHorizontal: width * 0.01}}
+                />
+                <Text style={styles.emailText}>
+                  jackhowell@ionenergysolutions.com
+                </Text>
+              </TouchableOpacity>
             </View>
             {/* <Button onPress={() => { RNBeep.beep() }} title="Beep Success"></Button>
             <Button onPress={() => { RNBeep.beep(false) }} title="Beep Fail"></Button>

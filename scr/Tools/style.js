@@ -73,9 +73,9 @@ export default styles = StyleSheet.create({
     padding: width * 0.01,
   },
   toolContainer: {
-    height: height * .9,
+    height: height * 0.9,
     width: width * 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
   },
   toolButton: {

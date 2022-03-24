@@ -106,7 +106,9 @@ export default class Splash extends Component {
         offset: 0,
         billing: this.state.biller,
         search: this.context.filterPropName,
+        location: this.context.filterLocation,
       };
+      console.log('Filter data', data);
       this.context.filterData(data);
       this.props.close();
       this.props.filterWork();
@@ -127,6 +129,7 @@ export default class Splash extends Component {
     this.props.close();
     this.setState({biller: ''});
     this.context.updateFilterProperty('');
+    this.context.updateFilterLocation('');
   };
 
   resetFilter = () => {
@@ -353,6 +356,16 @@ export default class Splash extends Component {
                             value={this.context.filterPropName}
                             onChangeText={(e) =>
                               this.context.updateFilterProperty(e)
+                            }
+                          />
+                        </View>
+                        <View style={styles.inputFilterView}>
+                          <Text style={styles.filterListText}>Location:</Text>
+                          <TextInput
+                            style={styles.filterInputs}
+                            value={this.context.filterLocation}
+                            onChangeText={(e) =>
+                              this.context.updateFilterLocation(e)
                             }
                           />
                         </View>

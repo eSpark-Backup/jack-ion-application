@@ -1035,7 +1035,7 @@ export default class Splash extends Component {
             <View style={styles.mainDataContainer}>
               <View style={styles.mainData}>
                 <View style={styles.dropDownContainer}>
-                  <MenuT
+                  {/* <MenuT
                     visible={this.state.fileMenuVisible}
                     anchor={
                       <TouchableOpacity
@@ -1069,7 +1069,7 @@ export default class Splash extends Component {
                         </MenuItem>
                       </View>
                     ))}
-                  </MenuT>
+                  </MenuT> */}
 
                   <MenuT
                     visible={this.state.addMenuVisible}

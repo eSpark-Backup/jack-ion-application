@@ -58,16 +58,16 @@ export default styles = StyleSheet.create({
   },
   headingInner: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
     elevation: width * 0.01,
     flexDirection: 'row',
   },
   mainHeadiing: {
-    fontFamily: Fonts.Montserrat,
-    fontSize: width * 0.07,
+    fontFamily: Fonts.BalsamiqSansRegular,
+    fontSize: width * 0.065,
     color: 'white',
+    textAlign: 'center',
   },
   barView: {
     alignItems: 'center',

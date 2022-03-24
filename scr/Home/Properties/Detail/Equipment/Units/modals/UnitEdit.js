@@ -2824,6 +2824,8 @@ export default function UnitEdit({
                             fontSize: width * 0.045,
                             height: width * 0.2,
                             top: -5,
+                            textTransform:
+                              sliderNumber == 4 ? 'none' : 'capitalize',
                           },
                         ]}>
                         {sliderNumber == 1 && showAddType == ''

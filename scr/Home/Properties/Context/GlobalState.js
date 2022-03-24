@@ -64,6 +64,7 @@ class GlobalState extends React.Component {
       offset: this.state.offset,
       billing: this.state.filterDataName,
       search: this.state.filterPropName,
+      search: this.state.filterLocation,
     };
     const response = await this.api.post('/property/all', data);
     // console.log('respone property===>', response.data.data);
@@ -118,6 +119,7 @@ class GlobalState extends React.Component {
   state = {
     filterDataName: '',
     filterPropName: '',
+    filterLocation: '',
     token: null,
     isLoading: true,
     searchLoading: false,
@@ -295,6 +297,10 @@ class GlobalState extends React.Component {
     this.setState({filterPropName: e});
   };
 
+  updateFilterLocation = (e) => {
+    this.setState({filterLocation: e});
+  };
+
   render() {
     return (
       <>
@@ -310,6 +316,7 @@ class GlobalState extends React.Component {
             biller: this.state.biller,
             filterSerial: this.state.filterSerial,
             filterPropName: this.state.filterPropName,
+            filterLocation: this.state.filterLocation,
             filterWork: this.state.filterWork,
             addProp: this.addProp,
             checkData: this.checkData,
@@ -328,6 +335,7 @@ class GlobalState extends React.Component {
             updateBiller: this.updateBiller,
             updateFilterSerial: this.updateFilterSerial,
             updateFilterProperty: this.updateFilterProperty,
+            updateFilterLocation: this.updateFilterLocation,
           }}>
           {this.props.children}
         </Context.Provider>

@@ -254,7 +254,7 @@ export default styles = StyleSheet.create({
   },
   dropDownContainer: {
     paddingHorizontal: width * 0.03,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     borderRightWidth: width * 0.001,
     width: width * 0.4,
   },

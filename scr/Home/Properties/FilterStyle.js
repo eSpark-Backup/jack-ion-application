@@ -169,6 +169,7 @@ export default styles = StyleSheet.create({
     padding: height * 0.02,
     elevation: 1,
     marginVertical: height * 0.001,
+    marginHorizontal: width * 0.1,
   },
   scannerContainer: {
     flex: 1,

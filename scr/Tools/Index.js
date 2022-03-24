@@ -217,10 +217,11 @@ class Tools extends Component {
           console.log('Access');
         } else {
           this.setState({hasAccess: false});
-          Alert.alert(
-            "You don't have access for the Camera",
-            'Kindly TurnOn Camera Permission from Settings to use Scanner',
-          );
+          this.props.navigation.navigate('Settings');
+          // Alert.alert(
+          //   "You don't have access for the Camera",
+          //   'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          // );
           console.log('Denied');
         }
         return granted;
@@ -240,10 +241,11 @@ class Tools extends Component {
           }
           if (result == RESULTS.DENIED) {
             this.setState({hasAccess: false});
-            Alert.alert(
-              "You don't have access for the Camera",
-              'Kindly TurnOn Camera Permission from Settings to use Scanner',
-            );
+            this.props.navigation.navigate('Settings');
+            // Alert.alert(
+            //   "You don't have access for the Camera",
+            //   'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            // );
             console.log('Denied');
           }
           if (result == RESULTS.BLOCKED) {
@@ -392,7 +394,7 @@ class Tools extends Component {
             </View>
           </View> */}
           <View style={styles.toolContainer}>
-            <Animated.View
+            {/* <Animated.View
               style={{
                 transform: [{scale: springValue}],
               }}>
@@ -408,7 +410,7 @@ class Tools extends Component {
                   <Text style={styles.toolName}>Direct Connect</Text>
                 </View>
               </TouchableOpacity>
-            </Animated.View>
+            </Animated.View> */}
             <Animated.View
               style={{
                 transform: [{scale: springValue}],
@@ -426,7 +428,7 @@ class Tools extends Component {
                 </View>
               </TouchableOpacity>
             </Animated.View>
-            <Animated.View
+            {/* <Animated.View
               style={{
                 transform: [{scale: springValue}],
               }}>
@@ -442,7 +444,7 @@ class Tools extends Component {
                   <Text style={styles.toolName}>Test Connect</Text>
                 </View>
               </TouchableOpacity>
-            </Animated.View>
+            </Animated.View> */}
           </View>
         </View>
       </View>

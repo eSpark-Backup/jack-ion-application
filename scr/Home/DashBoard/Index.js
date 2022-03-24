@@ -1,20 +1,12 @@
 import React, {Component} from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  ActivityIndicator,
-  StatusBar,
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  FlatList,
   LayoutAnimation,
   UIManager,
-  TextInput,
   Platform,
 } from 'react-native';
 import Menu from 'react-native-vector-icons/Entypo';
@@ -23,16 +15,25 @@ import Location from 'react-native-vector-icons/EvilIcons';
 import Down from 'react-native-vector-icons/AntDesign';
 import RightHand from 'react-native-vector-icons/MaterialCommunityIcons';
 import Recently from 'react-native-vector-icons/AntDesign';
-import Search from 'react-native-vector-icons/EvilIcons';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
 import Dashboard from 'react-native-vector-icons/MaterialCommunityIcons';
 import TabIcon from 'react-native-vector-icons/AntDesign';
-import Back from 'react-native-vector-icons/MaterialIcons';
 import Home from 'react-native-vector-icons/Feather';
-import ToggleSwitch from 'toggle-switch-react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {create} from 'apisauce';
+import Base_Url from '../../api/WebServices';
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryLegend,
+  VictoryAxis,
+  VictoryPie,
+} from 'victory-native';
 
 //Packages
-import DropDownItem from 'react-native-drop-down-item';
+import * as Progress from 'react-native-progress';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import LinearGradient from 'react-native-linear-gradient';
 import MapView, {
@@ -47,6 +48,8 @@ import Geolocation from '@react-native-community/geolocation';
 import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../../components/StatusBar';
+import {yellow} from 'cli-color';
+import Svg from 'react-native-svg';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -70,6 +73,10 @@ export default class Splash extends Component {
       lat: 0,
       long: 0,
       markers: [],
+      totalProperties: 0,
+      totalUnits: 0,
+      totalDevices: 0,
+      recentProps: false,
       initialPosition: {
         latitude: 37.78825,
         longitude: -122.4324,
@@ -119,9 +126,28 @@ export default class Splash extends Component {
       {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
     );
   };
-  componentDidMount() {
+  async componentDidMount() {
     console.log('What we Get', this.props.navigation);
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      // console.log('token aya', token);
+      this.setState({token: token});
+      this.api = create({
+        baseURL: Base_Url,
+        headers: {Authorization: 'Bearer ' + token},
+      });
 
+      const cardRes = await this.api.get(`/dashboard/cards`);
+      if (cardRes?.data?.bool) {
+        this.setState({
+          totalProperties: cardRes?.data?.data?.property?.total_properties,
+        });
+        this.setState({totalUnits: cardRes?.data?.data?.units?.total_units});
+        this.setState({
+          totalDevices: cardRes?.data?.data?.devices?.total_devices,
+        });
+      }
+    }
     this._renderMap();
   }
 
@@ -133,6 +159,10 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     this.setState({nearby: !this.state.nearby, nearDown: !this.state.nearDown});
   };
+  changeLayoutRecent = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    this.setState({recentProps: !this.state.recentProps});
+  };
   render() {
     // this._renderMap();
     let upDownMeter;
@@ -143,7 +173,7 @@ export default class Splash extends Component {
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
-        <View style={styles.headerContainer}>
+        {/* <View style={styles.headerContainer}>
           <View style={styles.headerInner}>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
@@ -169,7 +199,7 @@ export default class Splash extends Component {
               />
             </View>
           </View>
-        </View>
+        </View> */}
         <View style={styles.headingContainer}>
           <View style={styles.headingInner}>
             <Dashboard
@@ -187,145 +217,90 @@ export default class Splash extends Component {
                 width: width * 1,
                 height: height * 0.5,
                 backgroundColor: 'white',
-                elevation: width * 0.02,
+                // elevation: width * 0.02,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              {this.state.markers.length > 0 ? (
-                <MapView
-                  style={styles.map}
-                  // scrollEnabled={false}
-                  initialRegion={{
-                    latitude: 39.0902,
-                    longitude: -102.0,
-                    latitudeDelta: 10,
-                    longitudeDelta: 30,
-                  }}
-                  region={{
-                    latitude: 39.0902,
-                    longitude: -102.0,
-                    latitudeDelta: 10,
-                    longitudeDelta: 30,
-                  }}
-                  zoomEnabled={true}
-                  provider={PROVIDER_GOOGLE}
-                  showsUserLocation={true}
-                  showsMyLocationButton={true}
-                  onRegionChange={(e) => this.moveMarker(e)}
-                  onPress={(e) => this.getLocation(e)}>
-                  <Marker
+              <MapView
+                style={styles.map}
+                // scrollEnabled={false}
+                initialRegion={{
+                  latitude: 39.0902,
+                  longitude: -102.0,
+                  latitudeDelta: 10,
+                  longitudeDelta: 30,
+                }}
+                zoomEnabled={true}
+                provider={PROVIDER_GOOGLE}
+                showsUserLocation={true}
+                showsMyLocationButton={true}
+                onRegionChange={(e) => this.moveMarker(e)}
+                onPress={(e) => this.getLocation(e)}>
+                {/* <Marker
                     coordinate={this.state.markers[0].coordinate}
                     title={'Your Location'}
                     draggable
-                  />
-                </MapView>
-              ) : null}
+                  /> */}
+              </MapView>
             </View>
-            <View style={styles.barView}>
-              <AnimatedCircularProgress
-                size={width * 0.65}
-                width={width * 0.11}
-                backgroundWidth={width * 0.11}
-                fill={this.state.points}
-                tintColor="#09BAF2"
-                backgroundColor="#3d5875"
-                arcSweepAngle={360}
-                rotation={0}
-                lineCap="butt">
-                {(fill) => (
-                  <Text style={styles.barText}>
-                    Property Status {'\n'} {Math.round((100 * fill) / 100)} %
-                  </Text>
-                )}
-              </AnimatedCircularProgress>
-            </View>
-            <View style={styles.onlineOfflineView}>
-              <View style={styles.onlineView} />
-              <Text style={styles.onlineText}>Online</Text>
-              <View style={styles.offlineView} />
-              <Text style={styles.offlineText}>Offline</Text>
-            </View>
-            {/* <FlatList
-              style={{ marginTop: height * .01 }}
-              data={this.state.dateList}
-              renderItem={this._renderMyList}
-            /> */}
+
             <View>
               <TouchableOpacity
                 style={styles.mainBotton}
                 activeOpacity={0.8}
-                onPress={this.changeLayoutMeter}>
-                <Camera name="camera" size={width * 0.08} />
-                <Text style={styles.mainBottonText}>Meter Reader</Text>
-                <Down name={upDownMeter} size={width * 0.05} />
-              </TouchableOpacity>
-              <View
-                style={{
-                  height: !this.state.meter ? null : 0,
-                  overflow: 'hidden',
-                }}>
-                <View style={styles.insideBottonView}>
-                  <TouchableOpacity onPress={() => console.log('hello')}>
-                    <LinearGradient
-                      colors={['#09BAF2', '#115b72', '#0d3744']}
-                      style={styles.meterReaderBotton}
-                      start={{x: 0.1, y: 1}}
-                      end={{x: 1.5, y: 3}}>
-                      <RightHand
-                        name={'hand-pointing-right'}
-                        size={width * 0.05}
-                        color="white"
-                        style={styles.rightHandIcon}
-                      />
-                      <Text style={styles.meterBottonText}>
-                        Meter Reader Section
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <TouchableOpacity
-                style={styles.mainBotton}
-                activeOpacity={0.8}
-                onPress={this.changeLayoutNearby}>
-                <Location name="location" size={width * 0.08} />
-                <Text style={styles.mainBottonText}>Nearby Properties</Text>
-                <Down name={upDownNearby} size={width * 0.05} />
-              </TouchableOpacity>
-              <View
-                style={{
-                  height: this.state.nearby ? null : 0,
-                  overflow: 'hidden',
-                }}>
-                <View style={styles.insideBottonView}>
-                  <Text
-                    style={{
-                      fontSize: width * 0.04,
-                      color: 'black',
-                      fontFamily: Fonts.BalooChettan2,
-                    }}>
-                    No nearby Properties
-                  </Text>
-                </View>
-              </View>
-              <TouchableOpacity
-                style={styles.mainBotton}
-                activeOpacity={0.8}
-                onPress={this.changeLayoutNearby}>
+                onPress={this.changeLayoutRecent}>
                 <Recently
                   name="clockcircleo"
                   size={width * 0.06}
                   style={{left: width * 0.01}}
                 />
-                <Text style={styles.mainBottonText}>Recently View</Text>
+                <Text style={styles.mainBottonText}>
+                  Recently Viewed Properties
+                </Text>
                 <Down name={upDownNearby} size={width * 0.05} />
               </TouchableOpacity>
               <View
                 style={{
-                  height: this.state.nearby ? null : 0,
+                  height: this.state.recentProps ? null : 0,
                   overflow: 'hidden',
                 }}>
-                <View style={styles.insideBottonView}></View>
+                <View style={styles.insideBottonView}>
+                  {/* <Text
+                    style={{
+                      fontSize: width * 0.04,
+                      color: 'black',
+                      fontFamily: Fonts.BalooChettan2,
+                    }}>
+                    No Recent Properties
+                  </Text> */}
+                  {/* <FlatList
+                    style={{marginTop: height * 0.01}}
+                    data={this.state.dateList}
+                    renderItem={this._renderMyList}
+                  /> */}
+                </View>
+              </View>
+              <View style={styles.barView}>
+                <VictoryPie
+                  width={300}
+                  height={300}
+                  innerRadius={70}
+                  labelRadius={80}
+                  data={[
+                    {x: 1, y: 1},
+                    {x: 22, y: 22},
+                  ]}
+                  colorScale={['#175CA1', '#DCDCDC']}
+                  style={{
+                    labels: {fill: 'white', fontWeight: 'bold'},
+                  }}
+                />
+              </View>
+              <View style={styles.onlineOfflineView}>
+                <View style={styles.onlineView} />
+                <Text style={styles.onlineText}>Online</Text>
+                <View style={styles.offlineView} />
+                <Text style={styles.offlineText}>Not Installed</Text>
               </View>
               <View
                 style={{
@@ -355,79 +330,88 @@ export default class Splash extends Component {
                 <View
                   style={{
                     paddingTop: width * 0.1,
-                    //  flexDirection:"column",
-                    //  justifyContent: "center"
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
                   <View
                     style={{
                       height: height * 0.09,
-                      width: width * 0.95,
-                      justifyContent: 'space-evenly',
-                      // alignItems: 'center',
+                      width: width * 0.5,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       flexDirection: 'row',
-                      marginBottom: height * 0.015,
+                      marginVertical: height * 0.015,
                     }}>
-                    <View>
-                      <Home name="home" size={width * 0.2} />
+                    <View style={{width: width * 0.15}}>
+                      <MaterialCommunityIcon
+                        name="home-city-outline"
+                        size={width * 0.12}
+                      />
                     </View>
-                    <View>
+                    <View style={{width: width * 0.25}}>
                       <Text
                         style={{
-                          fontSize: width * 0.08,
+                          fontSize: width * 0.06,
                           fontWeight: 'bold',
                           color: 'purple',
                         }}>
-                        10
+                        {this.state.totalProperties}
                       </Text>
-                      <Text style={{fontSize: width * 0.06}}>Properties</Text>
+                      <Text style={{fontSize: width * 0.05}}>Properties</Text>
                     </View>
                   </View>
                   <View
                     style={{
                       height: height * 0.09,
-                      width: width * 0.95,
-                      justifyContent: 'space-evenly',
-                      // alignItems: 'center',
+                      width: width * 0.5,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       flexDirection: 'row',
-                      marginBottom: height * 0.015,
+                      marginVertical: height * 0.015,
                     }}>
-                    <View>
-                      <Home name="home" size={width * 0.2} />
+                    <View style={{width: width * 0.15}}>
+                      <Ionicon name="md-business-outline" size={width * 0.12} />
                     </View>
-                    <View style={{marginRight: 50}}>
+                    <View
+                      style={{
+                        width: width * 0.25,
+                      }}>
                       <Text
                         style={{
-                          fontSize: width * 0.08,
+                          fontSize: width * 0.06,
                           fontWeight: 'bold',
                           color: 'purple',
                         }}>
-                        641
+                        {this.state.totalUnits}
                       </Text>
-                      <Text style={{fontSize: width * 0.06}}>Units</Text>
+                      <Text style={{fontSize: width * 0.05}}>Units</Text>
                     </View>
                   </View>
                   <View
                     style={{
                       height: height * 0.09,
-                      width: width * 0.95,
-                      justifyContent: 'space-evenly',
-                      // alignItems: 'center',
+                      width: width * 0.5,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       flexDirection: 'row',
-                      marginBottom: height * 0.015,
+                      marginVertical: height * 0.015,
                     }}>
-                    <View>
-                      <Home name="home" size={width * 0.2} />
+                    <View style={{width: width * 0.15}}>
+                      <FeatherIcon name="cast" size={width * 0.12} />
                     </View>
-                    <View style={{marginRight: 20}}>
+                    <View
+                      style={{
+                        width: width * 0.25,
+                      }}>
                       <Text
                         style={{
-                          fontSize: width * 0.08,
+                          fontSize: width * 0.06,
                           fontWeight: 'bold',
                           color: 'purple',
                         }}>
-                        473
+                        {this.state.totalDevices}
                       </Text>
-                      <Text style={{fontSize: width * 0.06}}>Devices</Text>
+                      <Text style={{fontSize: width * 0.05}}>Devices</Text>
                     </View>
                   </View>
                 </View>
