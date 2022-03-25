@@ -158,14 +158,14 @@ export default function UnitEdit({
       name: 'Device',
       data: [],
     },
-    {
-      id: 2,
-      selectId: '',
-      select: '',
-      error: '',
-      name: 'Model Number',
-      data: [],
-    },
+    // {
+    //   id: 2,
+    //   selectId: '',
+    //   select: '',
+    //   error: '',
+    //   name: 'Model Number',
+    //   data: [],
+    // },
   ]);
   const [addDevice, setAddDevice] = useState([
     // {
@@ -571,23 +571,12 @@ export default function UnitEdit({
 
   useEffect(() => {
     if (sliderNumber == 5) {
-      // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
       setDoneAnimation(true);
       setTimeout(() => {
         setDoneAnimation(false);
       }, 5000);
     }
   }, [sliderNumber]);
-
-  const addMeterInNewArray = (value) => {
-    // setMeterMenuVisible(false);
-    // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setNewMeter((oldState) => ({
-      ...oldState,
-      id: value.id,
-      name: value.name,
-    }));
-  };
 
   //!----------->
 
@@ -722,18 +711,19 @@ export default function UnitEdit({
     if (index == 0) {
       listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = '';
-      listSlide[2].select = '';
+      // listSlide[2].select = '';
       listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+      // listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
-    } else if (index == 1) {
-      listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
-      listSlide[2].select = '';
-      listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
+      // listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
     }
+    // else if (index == 1) {
+    //   listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+    //   listSlide[2].select = '';
+    //   listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
+    // }
 
     setSlide1(listSlide);
   };
@@ -886,7 +876,7 @@ export default function UnitEdit({
                   const {model_no: name, ...rest} = item;
                   return {name, ...rest};
                 });
-                listSlide[2].data = modelNos;
+                // listSlide[2].data = modelNos;
               }
             }
             setSlide1(listSlide);
@@ -909,8 +899,8 @@ export default function UnitEdit({
       listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = filterDevices[0]?.name; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = filterDevices[0]?.id; // replace e.target.value with whatever you want to change it to
-      listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-      listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
+      // listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+      // listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
       setProductNo(filterDevices[0]?.product_desc);
       setSlide1(listSlide);
       setLoadManufacturers(false);
@@ -931,8 +921,8 @@ export default function UnitEdit({
     listSlide[0].selectId = defaultInfoData[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
     listSlide[1].select = defaultInfoData[0]?.name; // replace e.target.value with whatever you want to change it to
     listSlide[1].selectId = defaultInfoData[0]?.id; // replace e.target.value with whatever you want to change it to
-    listSlide[2].select = defaultInfoData[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-    listSlide[2].selectId = defaultInfoData[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
+    // listSlide[2].select = defaultInfoData[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+    // listSlide[2].selectId = defaultInfoData[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
     setProductNo(defaultInfoData[0]?.product_desc);
     setSlide1(listSlide);
     // }
@@ -1012,9 +1002,9 @@ export default function UnitEdit({
       listSlide[1].data = some.devices;
       // listSlide[1].data = deviceResponse?.data?.data;
       listSlide[1].selectId = '';
-      listSlide[2].selectId = '';
+      // listSlide[2].selectId = '';
       listSlide[1].select = '';
-      listSlide[2].select = '';
+      // listSlide[2].select = '';
     }
     if (index == 1) {
       const product_desc = some?.product_desc;
@@ -1023,9 +1013,9 @@ export default function UnitEdit({
         const {model_no: name, ...rest} = item;
         return {name, ...rest};
       });
-      listSlide[2].data = modelNos;
-      listSlide[2].selectId = '';
-      listSlide[2].select = '';
+      // listSlide[2].data = modelNos;
+      // listSlide[2].selectId = '';
+      // listSlide[2].select = '';
       // this.setState((prevState) => ({
       //   error: {
       //     // object that we want to update
@@ -1201,56 +1191,31 @@ export default function UnitEdit({
             listSlide2[1].select = manuItem?.devices[0]?.name; // replace e.target.value with whatever you want to change it to
             listSlide2[1].selectId = manuItem?.devices[0]?.id;
             listSlide2[1].data = manuItem?.devices;
-            listSlide2[2].select = manuItem?.devices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-            listSlide2[2].selectId = manuItem?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
+            // listSlide2[2].select = manuItem?.devices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
+            // listSlide2[2].selectId = manuItem?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
             const modelNos = manuItem.devices[0].model_nos.map((item) => {
               const {model_no: name, ...rest} = item;
               return {name, ...rest};
             });
-            listSlide2[2].data = modelNos;
+            // listSlide2[2].data = modelNos;
             setProductNo(manuItem?.devices[0]?.product_desc);
           } else {
             listSlide2[1].select = ''; // replace e.target.value with whatever you want to change it to
             listSlide2[1].selectId = '';
             listSlide2[1].data = [];
-            listSlide2[2].select = ''; // replace e.target.value with whatever you want to change it to
-            listSlide2[2].selectId = ''; // replace e.target.value with whatever you want to change it to
-            listSlide2[2].data = [];
+            // listSlide2[2].select = ''; // replace e.target.value with whatever you want to change it to
+            // listSlide2[2].selectId = ''; // replace e.target.value with whatever you want to change it to
+            // listSlide2[2].data = [];
             setProductNo('');
           }
           setSlide1(listSlide2);
         }
       }
     });
-
-    // const defaultDevices = defaultData[0].manufacturer[0].devices;
-    // if (defaultDevices.length > 0) {
-    //   const filterDevices = defaultDevices.filter((item, index) => {
-    //     console.log('item.manufacturer_id', item.manufacturer_id);
-    //     console.log('slide1[0].data[0]?.id', slide1[0].data[0]?.id);
-    //     item.manufacturer_id === slide1[0].data[0]?.id;
-    //   });
-    //   console.log('filterDevices', filterDevices);
-    //   setDefaultInfoData(filterDevices);
-    //   let listSlide = [...slide1]; // copying the old datas array
-    //   listSlide[0].select = filterDevices[0]?.manufacturer; // replace e.target.value with whatever you want to change it to
-    //   listSlide[0].selectId = filterDevices[0]?.manufacturer_id; // replace e.target.value with whatever you want to change it to
-    //   listSlide[1].select = filterDevices[0]?.name; // replace e.target.value with whatever you want to change it to
-    //   listSlide[1].selectId = filterDevices[0]?.id; // replace e.target.value with whatever you want to change it to
-    //   listSlide[2].select = filterDevices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
-    //   listSlide[2].selectId = filterDevices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
-    //   setProductNo(filterDevices[0]?.product_desc);
-    //   setSlide1(listSlide);
-    // } else {
-    //   let listSlide = [...slide1]; // copying the old datas array
-    //   listSlide[0].select = slide1[0].data[0]?.name; // replace e.target.value with whatever you want to change it to
-    //   listSlide[0].selectId = slide1[0].data[0]?.id; // replace e.target.value with whatever you want to change it to
-    //   setSlide1(listSlide);
-    // }
   };
 
   const changeSlider = () => {
-    if (sliderNumber == 2 && meterAddingId == '') {
+    if (sliderNumber == 2) {
       setCheckSerial(true);
       checkingSerial();
     } else if (sliderNumber == 4) {
@@ -1381,13 +1346,10 @@ export default function UnitEdit({
 
   const updateData = () => {
     const reasonBase64s = [];
-    const selectUtilIds = [];
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
     }
-    for (let i = 0; i < selectUtil?.length; i++) {
-      selectUtilIds.push(selectUtil[i].id);
-    }
+
     var meterArray = [...meterListData]; // copying the old datas array
     meterArray.push({
       device: {
@@ -1396,7 +1358,7 @@ export default function UnitEdit({
       },
       // meter_id: [newMeter.id], check later
       // meter_name: [{id: newMeter.id, name: newMeter.name}],
-      model_no_id: slide1[2].selectId,
+      // model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
       // meter_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
@@ -1409,7 +1371,7 @@ export default function UnitEdit({
       attachedTo_name: attachedTo,
       thumbnail: filePath,
       installation_status: installationStatus,
-      utility_type_id: selectUtilIds,
+      utility_type_id: selectedUtilId,
       reasons: [
         {
           options_reason_id: reasonId,
@@ -1514,79 +1476,6 @@ export default function UnitEdit({
     }
   };
 
-  const renderSlide2 = ({item}) => {
-    return (
-      <View
-        style={{
-          width: width * 0.9,
-          alignItems: 'center',
-        }}
-        key={item?.id}>
-        <TouchableOpacity
-          style={{
-            height: width * 0.12,
-            width: width * 0.8,
-            // elevation: width * 0.005,
-            elevation: 2,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 1.41,
-            backgroundColor: 'white',
-            paddingHorizontal: width * 0.01,
-            borderRadius: width * 0.007,
-            marginVertical: width * 0.01,
-            justifyContent: 'center',
-          }}
-          onPress={() => addMeterInNewArray(item)}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            {/* <Drop name={item.icon} size={15} color="#3E89BF" /> */}
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={typeSwitcher(item.name)}
-                style={styles.untiDetailImage}
-              />
-              <Text
-                style={{
-                  fontSize: width * 0.05,
-                  fontFamily: Fonts.Montserrat,
-                  textTransform: 'capitalize',
-                }}>
-                {item.name}
-              </Text>
-            </View>
-            {item.id == newMeter.id ? (
-              <Iconi
-                name="radio-button-on"
-                size={width * 0.05}
-                color="#25AAE1ec"
-              />
-            ) : (
-              <Iconi
-                name="radio-button-off"
-                size={width * 0.05}
-                color="black"
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   const renderSlide3 = ({item, index}) => {
     // console.log('index check slider 3 ---> ',index)
     if (index == 1 && item.value == null) {
@@ -1627,7 +1516,7 @@ export default function UnitEdit({
               : onChangeMultipleField(text, index)
           }
           disabled={
-            meterAddingId && index != 2
+            index != 2
               ? true
               : (index == 0 && type == 'meterDirect') ||
                 type == 'addMeterDirect'
@@ -2151,27 +2040,14 @@ export default function UnitEdit({
     setAddModelNumber('');
   };
 
-  const getMeterData = (data, index) => {
+  const getMeterData = async (data, index) => {
+    setLoadManufacturers(true);
     console.log('DATA', data);
-    // if (data.reasons.length > 0) {
-    //   setReasonText(data.reasons.name);
-    //   setReasonId(data.reasons.options_reason_id);
-    //   setReasonDes(data.reasons.text_reason);
-    // }x
+
     setDefaultMeterValues(false);
     setDefaultDeviceValues(false);
+    setNewMeterFlag(false);
     setReasonArr(data.reasons);
-    // setMeterAddingId(data.meter_id);
-    // let arr1 = {
-    //   id: data.meter_id,
-    //   name: data.meter_name,
-    // };
-    // let arr2 = [...state.meterList];
-    // arr2.push(arr1);
-    // setState((oldState) => ({
-    //   ...oldState,
-    //   meterList: arr2,
-    // }));
     setLat(data.latitude);
     setLong(data.longitude);
     setProductNo(data.device.product_desc);
@@ -2187,31 +2063,46 @@ export default function UnitEdit({
     }
     setFilePath(data.thumbnail);
     setReasonPath([]);
-    setSelectUtil(data.utility_type_name);
-    slide1?.map((item, index) => {
-      let newArr = [...slide1];
-      newArr[index].data = [];
-      newArr[0].select = data.device.manufacturer;
-      newArr[1].select = data.device.name;
-      newArr[2].select = data.model_no.model_no;
-      newArr[0].selectId = data.device.manufacturer_id;
-      newArr[1].selectId = data.id;
-      newArr[2].selectId = data.model_no.id;
+    setSelectedUtilId(data.utility_type_id);
+    utilTypes.filter((item) => {
+      if (item.id == data.utility_type_id) {
+        setSelectedUtil(item.name);
+      }
     });
-    slide2?.map((item, index) => {
-      let newArr = [...slide2];
-      newArr[0].value = data.device_serial_number;
-      newArr[1].value = data.initial_meter_reading;
-      // newArr[2].value = data.meter_serial_number;
-    });
+
+    let newArr = [...slide2];
+    newArr[0].value = data.device_serial_number;
+    newArr[1].value = data.initial_meter_reading;
+
+    let deviceData = [...slide1];
+    deviceData[0].selectId = data.device.manufacturer_id;
+    deviceData[1].selectId = data.device_id;
+    const manuData = await api.get(`/property/equipment/manufacturer/all`);
+    let manuLis = [];
+    if (manuData.data.bool) {
+      manuLis = manuData.data.data;
+
+      manuLis?.filter((item) => {
+        if (item.id == data.device.manufacturer_id) {
+          deviceData[0].select = item.name;
+          item.devices.filter((devItem) => {
+            if (devItem.id == data.device_id) {
+              deviceData[1].select = devItem.name;
+            }
+          });
+        }
+      });
+      setLoadManufacturers(false);
+    }
+    // setLoadManufacturers(false);
+    setShowAddMeterSlider(false);
+
     // setNewMeter((oldState) => ({
     //   ...oldState,
     //   id: data?.meter_name[0]?.id,
     //   name: data?.meter_name[0]?.name,
     //   number: index + 1,
     // }));
-    setNewMeterFlag(false);
-    setShowAddMeterSlider(false);
   };
 
   const slideBacker = () => {
@@ -2278,7 +2169,15 @@ export default function UnitEdit({
           <KeyboardAwareScrollView
             keyboardShouldPersistTaps={'handled'}
             showsVerticalScrollIndicator={false}
-            scrollEnabled={sliderNumber == 1 ? true : false}
+            scrollEnabled={
+              sliderNumber == 1
+                ? true
+                : sliderNumber == 2
+                ? true
+                : showAddType == 'Device'
+                ? true
+                : false
+            }
             contentContainerStyle={{backgroundColor: '#fff'}}
             style={{
               flex: 1,
@@ -2767,7 +2666,7 @@ export default function UnitEdit({
                           styles.meterDesciptionHeading,
                           {fontSize: width * 0.045, fontWeight: 'bold'},
                         ]}>
-                        Meter Number{' '}
+                        Meter-
                         {newMeterFlag
                           ? meterListData.length + 1
                           : newMeter.number}
@@ -2890,8 +2789,6 @@ export default function UnitEdit({
                                         alignItems: 'flex-start',
                                       }}>
                                       <SearchableDropdown
-                                        // multi={true}
-                                        // selectedItems={selectUtil}
                                         onItemSelect={(item, index) => {
                                           // getDevice(item, index);
                                           console.log('Test', item);
@@ -5179,7 +5076,7 @@ export default function UnitEdit({
                         meterListData.length > 0 &&
                         meterListData?.map((item, index) => (
                           <TouchableOpacity
-                            disabled={true}
+                            // disabled={true}
                             onPress={() => {
                               LayoutAnimation.configureNext({
                                 duration: 300,
@@ -5222,7 +5119,7 @@ export default function UnitEdit({
                                 {marginBottom: 0},
                               ]}>
                               {/* {item.meter_name[0].name} */}
-                              Meter {index + 1}
+                              Meter-{index + 1}
                             </Text>
                           </TouchableOpacity>
                         ))
