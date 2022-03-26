@@ -234,6 +234,8 @@ export default function UnitEdit({
   const [reasons, setReasons] = useState([]);
   const [reasonArr, setReasonArr] = useState([]);
   const [meterAddingId, setMeterAddingId] = useState('');
+  const [devEdit, setDevEdit] = useState(false);
+  const [existingDev, setExistingDev] = useState(false);
   const [reasonId, setReasonId] = useState(null);
   const [reasonDes, setReasonDes] = useState('');
   const [reasonText, setReasonText] = useState('');
@@ -263,7 +265,7 @@ export default function UnitEdit({
     manufacturersData: [],
     devicesData: [],
     lastUnitData: '',
-    meterList: [],
+
     checkIndex: 0,
   });
   const [newMeter, setNewMeter] = useState({
@@ -470,77 +472,20 @@ export default function UnitEdit({
     }
   };
 
-  const getToken = async () => {
-    setMeterListLoader(true);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-    const res = await api.get('/property/equipment/meter/all-meters');
-
-    let arr1 = res.data?.data;
-    let arr2 = meterTypes;
-    // console.log('arr1--->', arr1);
-    // console.log('arr2--->', arr2);
-    // console.log('antiIntersection arr1--->', arr1);
-    // console.log('antiIntersection arr2--->', arr2);
-
-    // const antiIntersection = arr1.filter(
-    //   (item1) => !arr2.some((item2) => item1.id == item2.meter_id),
-    // );
-
-    // // console.log('antiIntersection--->', antiIntersection);
-    setState((oldState) => ({
-      ...oldState,
-      // meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
-      meterList: arr1,
-    }));
-    setMeterListLoader(false);
-  };
-
   useUpdateEffect(async () => {
     if (type == 'add' || type == 'addMeterDirect') {
       setLoadMeters(false);
     } else {
       setLoadMeters(true);
     }
-    if (flag) {
-      getToken();
-    }
+
     callApi();
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-    const res = await api.get('/property/equipment/meter/all-meters');
-    // let arr1 = res.data?.data;
-    let arr1 = res.data?.data;
+
     let arr2 = meterTypes;
 
-    // console.log('antiIntersection USEEFFECT arr1--->', arr1);
-    // console.log('antiIntersection USEEFFECT arr2--->', arr2);
-
     if (arr2.length > 0) {
-      // const Intersection = arr2.filter((item1) =>
-      //   arr1.some(
-      //     (item2, index) => item1?.meter_id == item2.id,
-      //     // console.log('ITEM MATCH', index, item1?.meter_id[index], item2.id),
-      //   ),
-      // );
-
-      // let arr3 = unitDetails?.unit?.unit_meter;
-      // console.log('Intersection--->>>>', Intersection);
-      // console.log('arr3--->>>>', arr3);
-      // var getMeter = Intersection.filter((item1) =>
-      //   arr3.some((item2) => item1.meter_id == item2.meter_id),
-      // );
-      // console.log('Get Meter Information---->>', getMeter);
       setMeterListData(arr2);
-      // if (getMeter.length) {
-
-      // }
     }
-    setLoadMeters(false);
   }, [modalVisible]);
 
   // useEffect(() => {
@@ -711,19 +656,11 @@ export default function UnitEdit({
     if (index == 0) {
       listSlide[index].select = e; // replace e.target.value with whatever you want to change it to
       listSlide[1].select = '';
-      // listSlide[2].select = '';
       listSlide[0].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].selectId = ''; // replace e.target.value with whatever you want to change it to
-      // listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
       listSlide[0].error = ''; // replace e.target.value with whatever you want to change it to
       listSlide[1].error = ''; // replace e.target.value with whatever you want to change it to
-      // listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
     }
-    // else if (index == 1) {
-    //   listSlide[2].selectId = ''; // replace e.target.value with whatever you want to change it to
-    //   listSlide[2].select = '';
-    //   listSlide[2].error = ''; // replace e.target.value with whatever you want to change it to
-    // }
 
     setSlide1(listSlide);
   };
@@ -757,10 +694,6 @@ export default function UnitEdit({
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
-    // const utilRes = await api.get('/property/equipment/utility-type');
-    // console.log('utilRes--->', utilRes?.data?.data);
-    // setUtilTypes(utilRes?.data?.data);
-    // const utilityRes = utilRes?.data?.data;
 
     const defaultUnitData = await api.get(
       `/property/default-meter-device/${propertyId}`,
@@ -812,29 +745,6 @@ export default function UnitEdit({
     setDefaultManuLis(manufacturers);
     setUtilTypes(utilities);
 
-    const ManufacturersResponse = await api.get(
-      '/property/equipment/manufacturer/all',
-    );
-
-    // console.log(
-    //   'Default Meter Manufacturers',
-    //   DefaultManufacturersResponse?.data?.data?.default_meter_device
-    //     .manufacturers,
-    // );
-
-    // setState((oldState) => ({
-    //   ...oldState,
-    //   manufacturersData: ManufacturersResponse?.data?.data,
-    // }));
-
-    // let listSlide = [...slide1]; // copying the old datas array
-    // listSlide[0].data =
-    //   DefaultManufacturersResponse?.data?.data?.default_meter_device.manufacturers;
-    // listSlide[0].data = ManufacturersResponse?.data?.data;
-    // setSlide1(listSlide);
-    // let deviceDataManufacturer = [...addDevice]; // copying the old datas array
-    // deviceDataManufacturer[0].data = ManufacturersResponse?.data?.data;
-    // setAddDevice(deviceDataManufacturer);
     const DeviceTypesResponse = await api.get(
       '/property/equipment/device-type/all',
     );
@@ -885,11 +795,12 @@ export default function UnitEdit({
       });
     });
     const defaultDevices = helperDefaultData.current.manufacturers[0].devices;
-    // console.log('default Devices', defaultDevices);
 
     //? Some thing wrong with this code -----------
 
+    console.log('devEdit', devEdit);
     if (defaultDevices.length > 0) {
+      console.log('existingDev', existingDev);
       const filterDevices = defaultDevices.filter(
         (item) => item.manufacturer_id === slide1[0].data[0]?.id,
       );
@@ -904,12 +815,14 @@ export default function UnitEdit({
       setProductNo(filterDevices[0]?.product_desc);
       setSlide1(listSlide);
       setLoadManufacturers(false);
-    } else {
+      setLoadMeters(false);
+    } else if (!defaultDevices.length > 0) {
       let listSlide = [...slide1]; // copying the old datas array
       listSlide[0].select = slide1[0].data[0]?.name; // replace e.target.value with whatever you want to change it to
       listSlide[0].selectId = slide1[0].data[0]?.id; // replace e.target.value with whatever you want to change it to
       setSlide1(listSlide);
       setLoadManufacturers(false);
+      setLoadMeters(false);
     }
   };
 
@@ -1215,7 +1128,7 @@ export default function UnitEdit({
   };
 
   const changeSlider = () => {
-    if (sliderNumber == 2) {
+    if (!devEdit && sliderNumber == 2) {
       setCheckSerial(true);
       checkingSerial();
     } else if (sliderNumber == 4) {
@@ -1326,11 +1239,7 @@ export default function UnitEdit({
 
     // console.log('meterArray------>', meterArray);
     setStatusAnimation(false);
-    // const newList = state.meterList.filter((item) => item.id != newMeter.id);
-    // setState((oldState) => ({
-    //   ...oldState,
-    //   meterList: newList,
-    // }));
+
     setShowAddMeterSlider(false);
   };
 
@@ -1498,8 +1407,24 @@ export default function UnitEdit({
             index == 0 &&
             (type == 'meterDirect' || type == 'addMeterDirect' ? null : (
               <TextInput.Icon
+                disabled={
+                  devEdit
+                    ? true
+                    : (index == 0 && type == 'meterDirect') ||
+                      type == 'addMeterDirect'
+                    ? true
+                    : false
+                }
                 name={() => (
                   <TouchableOpacity
+                    disabled={
+                      devEdit
+                        ? true
+                        : (index == 0 && type == 'meterDirect') ||
+                          type == 'addMeterDirect'
+                        ? true
+                        : false
+                    }
                     onPress={() => toggleScanner(index)}
                     style={{zIndex: 1}}>
                     <Scanner name="scan" size={width * 0.06} />
@@ -1516,7 +1441,7 @@ export default function UnitEdit({
               : onChangeMultipleField(text, index)
           }
           disabled={
-            index != 2
+            devEdit
               ? true
               : (index == 0 && type == 'meterDirect') ||
                 type == 'addMeterDirect'
@@ -1805,18 +1730,8 @@ export default function UnitEdit({
       name: '',
     }));
     setLoadMeters(false);
+    setDevEdit(false);
     setShowAddMeterSlider(false);
-    if (meterAddingId) {
-      let removeMeterLIst = state.meterList.filter(
-        (item) => item.id != newMeter.id,
-      );
-      setState((oldState) => ({
-        ...oldState,
-        meterList: removeMeterLIst,
-      }));
-      console.log('removeMeterLIst-->', removeMeterLIst);
-    }
-    setMeterAddingId('');
   };
 
   const showAddNewType = (value) => {
@@ -1903,7 +1818,6 @@ export default function UnitEdit({
           },
         });
         setLoadingState(false);
-        getToken();
         cancelAddNewType();
       } else {
         alert(ModelNumberResponse?.data?.message);
@@ -2041,9 +1955,14 @@ export default function UnitEdit({
   };
 
   const getMeterData = async (data, index) => {
+    if (data.id) {
+      console.log('DATA.ID', data.id);
+      setDevEdit(true);
+    } else {
+      setExistingDev(true);
+    }
     setLoadManufacturers(true);
     console.log('DATA', data);
-
     setDefaultMeterValues(false);
     setDefaultDeviceValues(false);
     setNewMeterFlag(false);
@@ -2095,7 +2014,7 @@ export default function UnitEdit({
       setLoadManufacturers(false);
     }
     // setLoadManufacturers(false);
-    setShowAddMeterSlider(false);
+    // setShowAddMeterSlider(false);
 
     // setNewMeter((oldState) => ({
     //   ...oldState,
@@ -2113,41 +2032,8 @@ export default function UnitEdit({
 
   const [verticalOffs, setVerticalOffs] = useState(-400);
 
-  const AddNewMeterType = async () => {
-    setTypeLoader(true);
-    setAddTypeInput(false);
-    setNewMeterType('');
-    setLoadingState(true);
-    let data = {
-      name: newMeterType,
-    };
-    console.log('New Meter Type', data);
-    const addres = await api.post('/property/equipment/meter/add-meter', data);
-    if (addres?.data?.bool) {
-      const res = await api.get('/property/equipment/meter/all-meters');
-      let arr1 = res.data?.data;
-      let arr2 = meterTypes;
-      // console.log('arr1--->', arr1);
-      // console.log('arr2--->', arr2);
+  console.log('LAT LONG', lat, long);
 
-      const antiIntersection = arr1.filter(
-        (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
-      );
-      console.log('antiIntersection--->', antiIntersection);
-      setState((oldState) => ({
-        ...oldState,
-        meterList: antiIntersection.sort((a, b) => (a.name > b.name ? 1 : -1)),
-      }));
-      setTypeLoader(false);
-      setLoadingState(false);
-    } else {
-      alert('Add Meter Failed');
-      setTypeLoader(false);
-      setLoadingState(false);
-    }
-  };
-  // console.log('Slide @ means IMR value', typeof slide2[1].value);
-  // console.log('Slide @ means IMR value type', slide2[1].value);
   return (
     <View>
       <Modal
@@ -5180,49 +5066,33 @@ export default function UnitEdit({
                             />
                           </TouchableOpacity>
                         )
-                      ) : !meterListLoader ? (
-                        state.meterList.length ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              callApi();
-                              enableLocation();
-                            }}
-                            style={{
-                              // flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              zIndex: 1,
-                            }}>
-                            {/*//todo: Button for meter */}
-                            <Text
-                              style={{
-                                fontSize: height * 0.04,
-                                color: '#25AAE1ec',
-                              }}>
-                              Add Meter
-                            </Text>
-                            <IconX
-                              name="plus-circle"
-                              type="feather"
-                              size={width * 0.1}
-                              color={'#25AAE1ec'}
-                            />
-                          </TouchableOpacity>
-                        ) : (
-                          <View style={{marginLeft: width * 0.02}}>
-                            <Text
-                              style={{
-                                fontSize: height * 0.04,
-                                color: '#25AAE1ec',
-                              }}>
-                              No Meters
-                            </Text>
-                          </View>
-                        )
                       ) : (
-                        <View style={{marginBottom: width * 0.05}}>
-                          <DotsLoader color="#25AAE1ec" />
-                        </View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            callApi();
+                            enableLocation();
+                          }}
+                          style={{
+                            // flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            zIndex: 1,
+                          }}>
+                          {/*//todo: Button for meter */}
+                          <Text
+                            style={{
+                              fontSize: height * 0.04,
+                              color: '#25AAE1ec',
+                            }}>
+                            Add Meter
+                          </Text>
+                          <IconX
+                            name="plus-circle"
+                            type="feather"
+                            size={width * 0.1}
+                            color={'#25AAE1ec'}
+                          />
+                        </TouchableOpacity>
                       )}
                     </View>
                   </View>

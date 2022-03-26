@@ -460,7 +460,8 @@ export default class RedirectMeter extends Component {
     this.setState({
       unitModal: true,
       unitModalType: 'addMeterDirect',
-      meterTypesList: this.state.meterList,
+      meterTypesList: [],
+      // meterTypesList: this.state.meterList,
     });
     this.setState((prevState) => ({
       ...prevState,
