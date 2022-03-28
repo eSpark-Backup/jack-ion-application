@@ -126,8 +126,6 @@ export default function UnitEdit({
   const [selectLocation, setSelectLocation] = useState(false);
   const [statusAnimation, setStatusAnimation] = useState(false);
   const [loadingState, setLoadingState] = useState(false);
-  const [iniLat, setIniLat] = useState(0);
-  const [iniLong, setIniLong] = useState(0);
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [latDelta, setLatDelta] = useState(LATITUDE_DELTA);
@@ -225,6 +223,7 @@ export default function UnitEdit({
   const [selectUtil, setSelectUtil] = useState([]);
   const [selectedUtil, setSelectedUtil] = useState('');
   const [selectedUtilId, setSelectedUtilId] = useState(null);
+  const [selectedDevId, setSelectedDevId] = useState(null);
   const [utilTypes, setUtilTypes] = useState([]);
   const [utilLength, setUtilLength] = useState(0);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -318,7 +317,7 @@ export default function UnitEdit({
     }, 4000);
   };
 
-  const enableLocation = async () => {
+  const enableLocation = async (oldPos) => {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
     if (!location) {
@@ -337,7 +336,7 @@ export default function UnitEdit({
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
           .then((result) => {
             if (result == RESULTS.GRANTED) {
-              checkLocation(true);
+              checkLocation(true, oldPos);
             } else {
               checkLocation(false);
             }
@@ -352,7 +351,7 @@ export default function UnitEdit({
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            checkLocation(true);
+            checkLocation(true, oldPos);
           } else {
             checkLocation(false);
           }
@@ -383,7 +382,7 @@ export default function UnitEdit({
     }
   };
 
-  const checkLocation = async (locationAccess) => {
+  const checkLocation = async (locationAccess, oldPos) => {
     if (locationAccess) {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -397,7 +396,7 @@ export default function UnitEdit({
       });
 
       setShowAddMeterSlider(true);
-      _renderMap();
+      _renderMap(oldPos);
     } else {
       Alert.alert(
         `You don't have access for the Location`,
@@ -533,25 +532,38 @@ export default function UnitEdit({
     }));
     if (Platform.OS == 'android') {
       try {
-        const granted = await PermissionsAndroid.check(
+        const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
         );
-        if (granted === true) {
-          setState((oldState) => ({
-            ...oldState,
-            isScannerVisible: true,
-            hasAccess: true,
-            scan: true,
-          }));
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          if (state.hasAccess) {
+            setState((oldState) => ({
+              ...oldState,
+              isScannerVisible: true,
+              hasAccess: true,
+              scan: true,
+            }));
+          } else {
+            setState((oldState) => ({
+              ...oldState,
+              hasAccess: true,
+            }));
+          }
+          // setState((oldState) => ({
+          //   ...oldState,
+          //   isScannerVisible: true,
+          //   hasAccess: true,
+          //   scan: true,
+          // }));
         } else {
           setState((oldState) => ({
             ...oldState,
             hasAccess: false,
           }));
-          Alert.alert(
-            "You don't have access for the Camera",
-            'Kindly TurnOn Camera Permission from Settings to use Scanner',
-          );
+          // Alert.alert(
+          //   "You don't have access for the Camera",
+          //   'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          // );
         }
         return granted;
       } catch (err) {
@@ -687,7 +699,7 @@ export default function UnitEdit({
     }
   };
 
-  const callApi = async () => {
+  const callApi = async (oldDev) => {
     setReasons([]);
     setLoadManufacturers(true);
     const token = await EncryptedStorage.getItem('user_token');
@@ -799,7 +811,7 @@ export default function UnitEdit({
     //? Some thing wrong with this code -----------
 
     console.log('devEdit', devEdit);
-    if (defaultDevices.length > 0) {
+    if (defaultDevices.length > 0 && !oldDev) {
       console.log('existingDev', existingDev);
       const filterDevices = defaultDevices.filter(
         (item) => item.manufacturer_id === slide1[0].data[0]?.id,
@@ -1005,7 +1017,7 @@ export default function UnitEdit({
 
     // console.log('Meter Data 1', meterData[0].reasons);
     // console.log('Meter Data 2', meterData[1].reasons);
-    // console.log('data--->', data);
+    console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await api.post(
         `/property/equipment/unit/add-unit`,
@@ -1231,9 +1243,7 @@ export default function UnitEdit({
       },
     });
     setShowAddType(false);
-    const addMeter = meterListData.filter(
-      (item) => item.meter_id != meterAddingId,
-    );
+    const addMeter = meterListData.filter((item) => item.id != selectedDevId);
     setMeterListData(addMeter);
     setLetsFinish(true);
 
@@ -1265,11 +1275,12 @@ export default function UnitEdit({
         manufacturer_id: slide1[0].selectId,
         product_desc: productNo,
       },
-      // meter_id: [newMeter.id], check later
+
+      id: devEdit ? selectedDevId : null,
+
       // meter_name: [{id: newMeter.id, name: newMeter.name}],
       // model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
-      // meter_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
       initial_meter_reading: slide2[1].value,
       latitude: lat,
@@ -1326,17 +1337,16 @@ export default function UnitEdit({
       loopData.push({
         // meter_id: item.meter_id, check later
         device_serial_number: item.device_serial_number,
-        meter_serial_number: item.meter_serial_number,
         device_id: item.device_id,
         device: item.device,
         model_no_id: item.model_no_id,
         initial_meter_reading: item.initial_meter_reading,
         latitude: item.latitude,
         longitude: item.longitude,
-        defaultLatitude: item.defaultLatitude,
-        defaultLongitude: item.defaultLongitude,
+        defaultLatitude: propertyLat,
+        defaultLongitude: propertyLong,
         attachedTo_id: item.attachedTo_id,
-        thumbnail: `data:image/jpeg;base64,${imageBase64}`,
+        thumbnail: imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : null,
         utility_type_id: item.utility_type_id,
         installation_status: Number(item.installation_status),
         ...(item.installation_status == 2 &&
@@ -1508,7 +1518,7 @@ export default function UnitEdit({
     setSelectLocation(true);
   };
 
-  const _renderMap = () => {
+  const _renderMap = (oldPos) => {
     Geolocation.getCurrentPosition(
       (position) => {
         console.log('Positon Batao', position);
@@ -1516,10 +1526,11 @@ export default function UnitEdit({
         // var long = parseFloat(position.coords.longitude);
         var lat = parseFloat(propertyLat);
         var long = parseFloat(propertyLong);
-        setIniLat(lat);
-        setIniLong(long);
-        setLat(lat);
-        setLong(long);
+
+        if (!oldPos) {
+          setLat(lat);
+          setLong(long);
+        }
 
         // this.setState({initialPosition: initialRegion});
         // console.log('What we Get', this.state.initialPosition);
@@ -1711,6 +1722,7 @@ export default function UnitEdit({
     setAddModelNo('');
     setAddProductNo('');
     setSelectUtil([]);
+    setSelectedDevId(null);
     setDefaultScreen(false);
     slide1?.map((item, index) => {
       let newArr = [...slide1];
@@ -1955,11 +1967,14 @@ export default function UnitEdit({
   };
 
   const getMeterData = async (data, index) => {
+    callApi(true);
     if (data.id) {
       console.log('DATA.ID', data.id);
       setDevEdit(true);
+      setSelectedDevId(data.id);
     } else {
       setExistingDev(true);
+      setSelectedDevId(null);
     }
     setLoadManufacturers(true);
     console.log('DATA', data);
@@ -2013,6 +2028,7 @@ export default function UnitEdit({
       });
       setLoadManufacturers(false);
     }
+
     // setLoadManufacturers(false);
     // setShowAddMeterSlider(false);
 
@@ -2031,8 +2047,6 @@ export default function UnitEdit({
   };
 
   const [verticalOffs, setVerticalOffs] = useState(-400);
-
-  console.log('LAT LONG', lat, long);
 
   return (
     <View>
@@ -3751,7 +3765,7 @@ export default function UnitEdit({
                                   }}
                                   itemTextStyle={{color: '#222'}}
                                   itemsContainerStyle={{
-                                    maxHeight: height * 0.08,
+                                    maxHeight: width * 0.25,
                                   }}
                                   // items={item.data}
                                   items={attachedToData}
@@ -4329,26 +4343,19 @@ export default function UnitEdit({
                                 }}
                                 itemStyle={{
                                   padding: width * 0.027,
-                                  backgroundColor: '#fff',
+                                  backgroundColor: 'rgb(247, 247, 247)',
                                   borderColor: '#bbb',
                                   borderWidth: width * 0.0015,
                                   borderRadius: width * 0.015,
-                                  margin: width * 0.005,
+                                  // padding: width * 0.027,
+                                  // backgroundColor: '#fff',
+                                  // borderColor: '#bbb',
+                                  // borderWidth: width * 0.0015,
+                                  // borderRadius: width * 0.015,
+                                  // margin: width * 0.005,
                                 }}
                                 itemTextStyle={{color: '#222'}}
-                                itemsContainerStyle={
-                                  Platform.OS == 'android'
-                                    ? {
-                                        maxHeight: width * 0.15,
-                                        position: 'absolute',
-                                        width: width * 0.8,
-                                        top: width * 0.15,
-                                        zIndex: 11,
-                                        backgroundColor: 'white',
-                                        elevation: width * 0.01,
-                                      }
-                                    : {maxHeight: width * 0.15}
-                                }
+                                itemsContainerStyle={{maxHeight: width * 0.25}}
                                 items={reasons}
                                 resetValue={false}
                                 textInputProps={{
@@ -4977,7 +4984,7 @@ export default function UnitEdit({
                                 // setShowAddMeterSlider(true),
                                 // setDefaultScreen(true),
                                 getMeterData(item, index);
-                              enableLocation();
+                              enableLocation(true);
                             }}
                             style={{
                               flexDirection: 'row',

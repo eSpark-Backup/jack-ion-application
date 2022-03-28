@@ -76,6 +76,8 @@ export default class Splash extends Component {
       totalProperties: 0,
       totalUnits: 0,
       totalDevices: 0,
+      onlineProps: 0,
+      offlineProps: 0,
       recentProps: false,
       initialPosition: {
         latitude: 37.78825,
@@ -137,13 +139,19 @@ export default class Splash extends Component {
         headers: {Authorization: 'Bearer ' + token},
       });
 
+      const chartRes = await this.api.get(`/dashboard/property-status-chart`);
+      if (chartRes?.data?.bool) {
+        this.setState({
+          onlineProps: chartRes?.data?.data?.property_status[0],
+          offlineProps: chartRes?.data?.data?.property_status[1],
+        });
+      }
+
       const cardRes = await this.api.get(`/dashboard/cards`);
       if (cardRes?.data?.bool) {
         this.setState({
           totalProperties: cardRes?.data?.data?.property?.total_properties,
-        });
-        this.setState({totalUnits: cardRes?.data?.data?.units?.total_units});
-        this.setState({
+          totalUnits: cardRes?.data?.data?.units?.total_units,
           totalDevices: cardRes?.data?.data?.devices?.total_devices,
         });
       }
@@ -164,12 +172,12 @@ export default class Splash extends Component {
     this.setState({recentProps: !this.state.recentProps});
   };
   render() {
+    const {onlineProps, offlineProps} = this.state;
     // this._renderMap();
     let upDownMeter;
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
     let upDownNearby;
     !this.state.nearDown ? (upDownNearby = 'down') : (upDownNearby = 'up');
-
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
@@ -202,12 +210,21 @@ export default class Splash extends Component {
         </View> */}
         <View style={styles.headingContainer}>
           <View style={styles.headingInner}>
-            <Dashboard
-              name="view-dashboard-outline"
-              size={width * 0.07}
+            <MaterialCommunityIcon
+              name="arrow-left"
+              size={height * 0.04}
               color="white"
+              style={{right: 90}}
+              onPress={() => this.props.navigation.goBack()}
             />
-            <Text style={styles.mainHeadiing}>Dashboard</Text>
+            <View style={{flexDirection: 'row', right: 15}}>
+              <Dashboard
+                name="view-dashboard-outline"
+                size={width * 0.07}
+                color="white"
+              />
+              <Text style={styles.mainHeadiing}>Dashboard</Text>
+            </View>
           </View>
         </View>
         <View style={{flex: 1}}>
@@ -282,17 +299,21 @@ export default class Splash extends Component {
               </View>
               <View style={styles.barView}>
                 <VictoryPie
-                  width={300}
-                  height={300}
-                  innerRadius={70}
-                  labelRadius={80}
+                  width={width * 0.75}
+                  height={width * 0.75}
+                  innerRadius={width * 0.35}
+                  labelRadius={width * 0.28}
                   data={[
-                    {x: 1, y: 1},
-                    {x: 22, y: 22},
+                    {x: onlineProps, y: onlineProps},
+                    {x: offlineProps, y: offlineProps},
                   ]}
                   colorScale={['#175CA1', '#DCDCDC']}
                   style={{
-                    labels: {fill: 'white', fontWeight: 'bold'},
+                    labels: {
+                      fill: 'white',
+                      fontWeight: 'bold',
+                      alignItems: 'center',
+                    },
                   }}
                 />
               </View>
@@ -345,10 +366,10 @@ export default class Splash extends Component {
                     <View style={{width: width * 0.15}}>
                       <MaterialCommunityIcon
                         name="home-city-outline"
-                        size={width * 0.12}
+                        size={width * 0.15}
                       />
                     </View>
-                    <View style={{width: width * 0.25}}>
+                    <View style={{width: width * 0.28}}>
                       <Text
                         style={{
                           fontSize: width * 0.06,
@@ -370,11 +391,11 @@ export default class Splash extends Component {
                       marginVertical: height * 0.015,
                     }}>
                     <View style={{width: width * 0.15}}>
-                      <Ionicon name="md-business-outline" size={width * 0.12} />
+                      <Ionicon name="md-business-outline" size={width * 0.15} />
                     </View>
                     <View
                       style={{
-                        width: width * 0.25,
+                        width: width * 0.28,
                       }}>
                       <Text
                         style={{
@@ -397,11 +418,11 @@ export default class Splash extends Component {
                       marginVertical: height * 0.015,
                     }}>
                     <View style={{width: width * 0.15}}>
-                      <FeatherIcon name="cast" size={width * 0.12} />
+                      <FeatherIcon name="cast" size={width * 0.15} />
                     </View>
                     <View
                       style={{
-                        width: width * 0.25,
+                        width: width * 0.28,
                       }}>
                       <Text
                         style={{

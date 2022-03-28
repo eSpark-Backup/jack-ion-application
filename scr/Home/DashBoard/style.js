@@ -74,15 +74,15 @@ export default styles = StyleSheet.create({
     height: height * 0.5,
   },
   barView: {
-    height: height * 0.36,
-    width: height * 0.36,
+    height: width * 0.66,
+    width: width * 0.66,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
     marginTop: height * 0.02,
-    backgroundColor: 'white',
-    borderRadius: width * 0.6,
-    elevation: height * 0.01,
+    // backgroundColor: 'white',
+    // borderRadius: width * 0.6,
+    // elevation: width * 0.01,
   },
   barText: {
     textAlign: 'center',
@@ -99,8 +99,8 @@ export default styles = StyleSheet.create({
   },
   onlineView: {
     width: width * 0.035,
-    height: height * 0.02,
-    borderRadius: width * 1,
+    height: width * 0.035,
+    borderRadius: 100,
     backgroundColor: '#175CA1',
   },
   onlineText: {
@@ -111,8 +111,8 @@ export default styles = StyleSheet.create({
   },
   offlineView: {
     width: width * 0.035,
-    height: height * 0.02,
-    borderRadius: width * 1,
+    height: width * 0.035,
+    borderRadius: 100,
     backgroundColor: '#DCDCDC',
   },
   offlineText: {

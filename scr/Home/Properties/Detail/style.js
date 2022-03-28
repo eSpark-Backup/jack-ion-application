@@ -213,12 +213,13 @@ export default styles = StyleSheet.create({
   barView: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: height * 0.23,
-    width: height * 0.23,
-    backgroundColor: 'white',
-    borderRadius: width * 0.6,
+    alignSelf: 'center',
+    height: width * 0.66,
+    width: width * 0.66,
+    // backgroundColor: 'white',
+    // borderRadius: width * 0.6,
     marginTop: height * 0.02,
-    elevation: height * 0.01,
+    // elevation: height * 0.01,
   },
   barText: {
     textAlign: 'center',

@@ -41,6 +41,7 @@ import {
   VictoryBar,
   VictoryLegend,
   VictoryAxis,
+  VictoryPie,
 } from 'victory-native';
 import SearchableDropDown from 'react-native-searchable-dropdown';
 import ContextProp from '../Context/propContext';
@@ -103,6 +104,8 @@ export default class Splash extends React.Component {
       isModalVisible: false,
       isEditPropVisible: false,
       points: 80,
+      onlineUnits: 0,
+      offlineUnits: 0,
       isLoading: false,
       addNewType: false,
       showAddType: '',
@@ -169,8 +172,16 @@ export default class Splash extends React.Component {
 
   getPropertyDetails = async (id) => {
     this.setState({isLoading: true});
-    const propertyRes = await api.get(`/property/${id}`);
+    const transceiverRes = await api.get(`/property/transceivers${id}`);
 
+    if (transceiverRes?.data?.bool) {
+      this.setState({
+        onlineUnits: transceiverRes?.data?.data?.transceivers[0],
+        offlineUnits: transceiverRes?.data?.data?.transceivers[1],
+      });
+    }
+
+    const propertyRes = await api.get(`/property/${id}`);
     console.log('PROPERTYRES', propertyRes?.data?.data?.property);
 
     const currPropData = propertyRes?.data?.data?.property;
@@ -936,6 +947,7 @@ export default class Splash extends React.Component {
   };
 
   render() {
+    const {onlineUnits, offlineUnits} = this.state;
     return (
       <>
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
@@ -2275,17 +2287,24 @@ export default class Splash extends React.Component {
                       ]}>
                       Utility Type:
                     </Text>
-                    <View style={{flexDirection: 'row'}}>
-                      {this.state.utilTypes.map((item) => (
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={{flexDirection: 'row'}}>
+                      {this.state.utilTypes.map((item, index) => (
                         <Text
                           style={[
                             styles.dataFieldText,
                             {width: null, textAlign: 'auto'},
                           ]}>
-                          {item == null || item == '' ? '--' : item}
+                          {item == null || item == ''
+                            ? '--'
+                            : this.state.utilTypes.length - 1 == index
+                            ? item
+                            : item + ', '}
                         </Text>
                       ))}
-                    </View>
+                    </ScrollView>
                   </View>
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
                     <Text
@@ -2295,17 +2314,24 @@ export default class Splash extends React.Component {
                       ]}>
                       Manufacturer:
                     </Text>
-                    <View style={{flexDirection: 'row'}}>
-                      {this.state.manus.map((item) => (
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={{flexDirection: 'row'}}>
+                      {this.state.manus.map((item, index) => (
                         <Text
                           style={[
                             styles.dataFieldText,
                             {width: null, textAlign: 'auto'},
                           ]}>
-                          {item == null || item == '' ? '--' : item}
+                          {item == null || item == ''
+                            ? '--'
+                            : this.state.manus.length - 1 == index
+                            ? item
+                            : item + ', '}
                         </Text>
                       ))}
-                    </View>
+                    </ScrollView>
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
@@ -2379,7 +2405,25 @@ export default class Splash extends React.Component {
 
                 <View style={styles.barViewContainer}>
                   <View style={styles.barView}>
-                    <AnimatedCircularProgress
+                    <VictoryPie
+                      width={width * 0.75}
+                      height={width * 0.75}
+                      innerRadius={width * 0.35}
+                      labelRadius={width * 0.28}
+                      data={[
+                        {x: onlineUnits, y: onlineUnits},
+                        {x: offlineUnits, y: offlineUnits},
+                      ]}
+                      colorScale={['#175CA1', '#DCDCDC']}
+                      style={{
+                        labels: {
+                          fill: 'white',
+                          fontWeight: 'bold',
+                          alignItems: 'center',
+                        },
+                      }}
+                    />
+                    {/* <AnimatedCircularProgress
                       size={height * 0.2}
                       width={height * 0.035}
                       backgroundWidth={height * 0.035}
@@ -2394,7 +2438,7 @@ export default class Splash extends React.Component {
                           Transceiver {'\n'} {Math.round((100 * fill) / 100)} %
                         </Text>
                       )}
-                    </AnimatedCircularProgress>
+                    </AnimatedCircularProgress> */}
                   </View>
                 </View>
               </View>

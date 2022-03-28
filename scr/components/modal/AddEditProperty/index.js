@@ -307,10 +307,11 @@ export default function AddEditProperty({
 
       let temp = [];
       let listSlide2 = [...utilAndManu]; // copying the old datas array
-
+      listSlide2[1].data = [];
       allManu.map((manuItem) => {
         if (manuItem?.utility_type[0]?.name != undefined) {
           if (some.name == manuItem?.utility_type[0]?.name) {
+            console.log('CHALA TRUE');
             temp.push(manuItem);
             listSlide2[1].data = temp;
             setUtilAndManu(listSlide2);
@@ -840,7 +841,7 @@ export default function AddEditProperty({
         style={[
           styles.utilAndManuSectionContainer,
           {
-            height: dropDownShow[2].value ? width * 0.65 : width * 0.0,
+            height: dropDownShow[2].value ? width * 0.7 : width * 0.0,
           },
         ]}>
         {addNewType && showAddType == 'Utility Type' ? (
@@ -1091,7 +1092,9 @@ export default function AddEditProperty({
                         placeholder:
                           index == 1
                             ? utilAndManu[0].selectId
-                              ? 'Select Manufacturer'
+                              ? utilAndManu[1].data.length > 0
+                                ? 'Select Manufacturer'
+                                : 'No Manufacturer'
                               : 'First Select Utility Type'
                             : index == 0 && 'Select Utility Type',
                         underlineColorAndroid: 'transparent',
@@ -1126,8 +1129,8 @@ export default function AddEditProperty({
                     : editManufacturers(utilAndManu[1].select)
                 }
                 disabled={
-                  utilAndManu[0].selectId !== '' &&
-                  utilAndManu[1].selectId !== ''
+                  utilAndManu[0]?.selectId !== '' &&
+                  utilAndManu[1]?.selectId !== ''
                     ? false
                     : true
                 }>
@@ -1136,8 +1139,8 @@ export default function AddEditProperty({
                     styles.addTypeButtons,
                     {
                       color:
-                        utilAndManu[0].selectId !== '' &&
-                        utilAndManu[1].selectId !== ''
+                        utilAndManu[0]?.selectId !== '' &&
+                        utilAndManu[1]?.selectId !== ''
                           ? '#25AAE1ec'
                           : 'grey',
                     },
@@ -1176,6 +1179,10 @@ export default function AddEditProperty({
 
   const doneAddType = async (val, temp) => {
     console.log('Show Add Type', showAddType);
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      api.setHeader('Authorization', 'Bearer ' + token);
+    }
     if (showAddType == 'Utility Type' || val == 'Utility') {
       let data = {
         name: addUtility,
@@ -1203,9 +1210,10 @@ export default function AddEditProperty({
           cancelAddType();
         }
 
+        // this.getToken();
+        callApi();
         setLoadingState(false);
         setLoadingStateDev(false);
-        this.getToken();
         alert(UtilityResponse?.data?.message);
       } else {
         alert(UtilityResponse?.data?.message);
@@ -1231,7 +1239,8 @@ export default function AddEditProperty({
         // this.setState({loadManufacturers: true});
         console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
         animate();
-        this.getToken();
+        // this.getToken();
+        callApi();
         cancelAddType();
         setLoadingStateDev(false);
       } else {
@@ -1865,7 +1874,7 @@ export default function AddEditProperty({
                                 zIndex: 2,
                                 height: dropDownShow[2].value
                                   ? showAddManufacturer || showEditManufacturer
-                                    ? width * 0.65
+                                    ? width * 0.7
                                     : manufacturersArray?.length > 0
                                     ? 'auto'
                                     : width * 0.2
