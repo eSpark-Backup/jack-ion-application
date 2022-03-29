@@ -214,7 +214,7 @@ export default class Splash extends Component {
               name="arrow-left"
               size={height * 0.04}
               color="white"
-              style={{right: 90}}
+              style={{right: 75}}
               onPress={() => this.props.navigation.goBack()}
             />
             <View style={{flexDirection: 'row', right: 15}}>

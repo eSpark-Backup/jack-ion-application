@@ -34,6 +34,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {create} from 'apisauce';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-simple-toast';
+import NumericInput from 'react-native-numeric-input';
 
 //Component
 import styles from './style';
@@ -88,8 +89,6 @@ export default function AddEditProperty({
   const [radialDis, setRadialDis] = useState(0.1);
   const [locationBtn, setLocationBtn] = useState('');
   const [CustomId, setCustomId] = useState('');
-  const [unitTypeList, setUnitTypeList] = useState([{id: 1, name: 'br'}]);
-  const [classesList, setClassesList] = useState([{id: 1, name: 'br'}]);
   const [unitCount, setUnitCount] = useState('');
   const [unitMix, setUnitMix] = useState([]);
   const [sqft, setSqft] = useState('');
@@ -111,6 +110,7 @@ export default function AddEditProperty({
   const [City, setCity] = useState('');
   const [State, setState] = useState('');
   const [ZipCode, setZipCode] = useState('');
+
   const [utilAndManu, setUtilAndManu] = useState([
     {
       id: 0,
@@ -122,7 +122,7 @@ export default function AddEditProperty({
       data: [],
     },
     {
-      id: 0,
+      id: 1,
       select: '',
       selectId: '',
       error: '',
@@ -130,6 +130,53 @@ export default function AddEditProperty({
       data: [],
     },
   ]);
+  const [unitMixes, setUnitMixes] = useState([
+    {
+      id: 1,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'BR',
+      value: 0,
+    },
+    {
+      id: 2,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'BA',
+      value: 0,
+    },
+    {
+      id: 3,
+      select: '',
+      selectId: '',
+      error: '',
+      name: '# Units',
+      value: 0,
+    },
+    {
+      id: 4,
+      select: '',
+      selectId: '',
+      error: '',
+      name: 'Gal/Unit/Day',
+      value: 0,
+    },
+    // {
+    //   id: 5,
+    //   select: '',
+    //   selectId: '',
+    //   error: '',
+    //   name: 'Total/Gal/Day',
+    //   value: '',
+    // },
+  ]);
+  const [totalGalDay, setTotalGalDay] = useState(
+    (unitMixes[2].value * unitMixes[3].value).toString(),
+  );
+  const [sumNoOfUnit, setSumNoOfUnit] = useState(0);
+  const [sumTotalGalDay, setSumTotalGalDay] = useState(0);
   const [error, setError] = useState({
     property: '',
     meterId: '',
@@ -330,22 +377,41 @@ export default function AddEditProperty({
   const AddNewRow = () => {
     let arr = [...unitMix];
     let data = {
-      square_feets: sqft,
-      unit_type: unitType,
-      classes: classes,
-      bedrooms: bedrooms,
+      br: unitMixes[0].value,
+      ba: unitMixes[1].value,
+      no_of_units: unitMixes[2].value,
+      gud: unitMixes[3].value,
     };
     arr.push(data);
+    setSumNoOfUnit(sumNoOfUnit + unitMixes[2].value);
+    setSumTotalGalDay(sumTotalGalDay + totalGalDay);
+    arr.filter;
     setUnitMix(arr);
     clearUnitMixData();
   };
 
   const editOldRow = () => {
     let editArr = [...unitMix];
-    editArr[unitMixIndex].square_feets = sqft;
-    editArr[unitMixIndex].unit_type = unitType;
-    editArr[unitMixIndex].classes = classes;
-    editArr[unitMixIndex].bedrooms = bedrooms;
+
+    const SumNOU = unitMixes[2].value - editArr[unitMixIndex].no_of_units;
+    const SumTGD =
+      totalGalDay -
+      editArr[unitMixIndex].no_of_units * editArr[unitMixIndex].gud;
+    if (SumNOU > 0) {
+      setSumNoOfUnit(sumNoOfUnit + SumNOU);
+    } else if (SumNOU < 0) {
+      setSumNoOfUnit(sumNoOfUnit + SumNOU);
+    }
+    if (SumTGD > 0) {
+      setSumTotalGalDay(sumTotalGalDay + SumTGD);
+    } else if (SumTGD < 0) {
+      setSumTotalGalDay(sumTotalGalDay + SumTGD);
+    }
+    editArr[unitMixIndex].br = unitMixes[0].value;
+    editArr[unitMixIndex].ba = unitMixes[1].value;
+    editArr[unitMixIndex].no_of_units = unitMixes[2].value;
+    editArr[unitMixIndex].gud = unitMixes[3].value;
+
     setUnitMix(editArr);
     clearUnitMixData();
   };
@@ -364,6 +430,10 @@ export default function AddEditProperty({
         setUnitMix(arr);
       }
     } else {
+      setSumTotalGalDay(
+        sumTotalGalDay - unitMix[index].no_of_units * unitMix[index].gud,
+      );
+      setSumNoOfUnit(sumNoOfUnit - unitMix[index].no_of_units);
       let arr = [...unitMix];
       arr.splice(index, 1);
       setUnitMix(arr);
@@ -372,6 +442,13 @@ export default function AddEditProperty({
 
   const getRowData = (item, index) => {
     setUnitMixFlag(true);
+    let uniMx = [...unitMixes];
+    uniMx[0].value = item.br;
+    uniMx[1].value = item.ba;
+    uniMx[2].value = item.no_of_units;
+    uniMx[3].value = item.gud;
+    setTotalGalDay(item.no_of_units * item.gud);
+    setUnitMixes(uniMx);
     setSqft(item.square_feets);
     setUnitType(item.unit_type);
     setClasses(item.classes);
@@ -386,6 +463,13 @@ export default function AddEditProperty({
     setUnitType('');
     setClasses('');
     setBedrooms('');
+    setTotalGalDay(0);
+    let uniMx = [...unitMixes];
+    uniMx[0].value = 0;
+    uniMx[1].value = 0;
+    uniMx[2].value = 0;
+    uniMx[3].value = 0;
+    setUnitMixes(uniMx);
     setUnitMixIndex(null);
     setUnitMixFlag(false);
     setAddUnitMix(false);
@@ -395,6 +479,7 @@ export default function AddEditProperty({
     setAddNewType(false);
     setShowAddManufacturer(false);
     setShowEditManufacturer(false);
+    setAddUnitMix(false);
     animate();
     dropDownShow.map((item, index) => {
       if (index == indexx) {
@@ -817,6 +902,8 @@ export default function AddEditProperty({
     setContactEmail('');
     setUnitCount('');
     setUnitMix([]);
+    setSumNoOfUnit(0);
+    setSumTotalGalDay(0);
     setLocationSelected(false);
     setLat(null);
     setLong(null);
@@ -832,6 +919,18 @@ export default function AddEditProperty({
       {value: false},
       {value: false},
     ]);
+    setError({
+      property: '',
+      meterId: '',
+      utilType: '',
+      deviceId: '',
+      street: '',
+      city: '',
+      zipcode: '',
+      st: '',
+      modelNos: '',
+      devIdsArr: '',
+    });
     setPropertyFlag(false);
   };
 
@@ -841,7 +940,7 @@ export default function AddEditProperty({
         style={[
           styles.utilAndManuSectionContainer,
           {
-            height: dropDownShow[2].value ? width * 0.7 : width * 0.0,
+            height: dropDownShow[2].value ? width * 0.7 : 0,
           },
         ]}>
         {addNewType && showAddType == 'Utility Type' ? (
@@ -1434,9 +1533,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[0].value
-                              ? width * 0.18
-                              : width * 0.0,
+                            height: dropDownShow[0].value ? width * 0.18 : 0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -1471,9 +1568,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[0].value
-                              ? width * 0.18
-                              : width * 0.0,
+                            height: dropDownShow[0].value ? width * 0.18 : 0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -1509,42 +1604,85 @@ export default function AddEditProperty({
                       {addUnitMix ? (
                         <View
                           style={{
-                            height: dropDownShow[1].value
-                              ? 'auto'
-                              : width * 0.0,
+                            height: dropDownShow[1].value ? 'auto' : 0,
+                            marginBottom: width * 0.05,
                           }}>
-                          <View>
+                          <FlatList
+                            data={unitMixes}
+                            numColumns={2}
+                            renderItem={({item, index}) => (
+                              <View style={{marginHorizontal: width * 0.05}}>
+                                <Text
+                                  style={[
+                                    styles.addTypeHeading,
+                                    {
+                                      textTransform:
+                                        index < 2 ? 'none' : 'capitalize',
+                                      marginBottom: 0,
+                                      fontWeight: 'bold',
+                                      textAlign: index > 3 ? 'center' : 'left',
+                                    },
+                                  ]}>
+                                  {item.name}
+                                </Text>
+                                <NumericInput
+                                  value={item.value}
+                                  onChange={(value) => {
+                                    let device = [...unitMixes];
+                                    device[index].value = value;
+                                    setUnitMixes(device);
+                                    if (index > 1) {
+                                      setTotalGalDay(
+                                        unitMixes[2].value * unitMixes[3].value,
+                                      );
+                                    }
+                                  }}
+                                  onLimitReached={(isMax, msg) =>
+                                    console.log(isMax, msg)
+                                  }
+                                  totalWidth={width * 0.35}
+                                  totalHeight={width * 0.1}
+                                  iconSize={25}
+                                  step={1}
+                                  minValue={0}
+                                  valueType="real"
+                                  rounded
+                                  textColor="#B0228C"
+                                  iconStyle={{color: '#000'}}
+                                  rightButtonBackgroundColor="#eee"
+                                  leftButtonBackgroundColor="#eee"
+                                />
+                              </View>
+                            )}
+                          />
+                          <View
+                            style={{
+                              width: width * 0.9,
+                              height: dropDownShow[1].value ? 'auto' : 0,
+                              alignItems: 'center',
+                              overflow: 'hidden',
+                            }}>
                             <Text
                               style={[
                                 styles.addTypeHeading,
                                 {
-                                  marginLeft: width * 0.04,
                                   marginBottom: 0,
                                   fontWeight: 'bold',
                                 },
                               ]}>
-                              Square Feets
+                              Total/Gal/Day
                             </Text>
-                          </View>
-                          <View
-                            style={[
-                              styles.inputContainer,
-                              {
-                                height: dropDownShow[1].value
-                                  ? width * 0.18
-                                  : width * 0.0,
-                                overflow: 'hidden',
-                                // marginBottom: width * 0.015,
-                              },
-                            ]}>
                             <TextInput
-                              placeholder="Square Feet"
-                              style={styles.input}
-                              value={sqft}
-                              keyboardType="decimal-pad"
-                              onChangeText={(text) => {
-                                setSqft(text);
-                              }}
+                              dense
+                              editable={false}
+                              style={[
+                                styles.input,
+                                {
+                                  width: width * 0.35,
+                                  height: 'auto',
+                                },
+                              ]}
+                              value={totalGalDay.toString()}
                               mode={'outlined'}
                               theme={{
                                 colors: {
@@ -1555,164 +1693,12 @@ export default function AddEditProperty({
                               }}
                             />
                           </View>
-                          <View>
-                            <Text
-                              style={[
-                                styles.addTypeHeading,
-                                {
-                                  marginLeft: width * 0.04,
-                                  marginBottom: 0,
-                                  fontWeight: 'bold',
-                                },
-                              ]}>
-                              Unit Types
-                            </Text>
-                          </View>
-                          <View
-                            style={[
-                              styles.inputContainer,
-                              {
-                                height: dropDownShow[1].value
-                                  ? 'auto'
-                                  : width * 0.0,
-                                overflow: 'hidden',
-                                justifyContent: 'center',
-                              },
-                            ]}>
-                            <SearchableDropDown
-                              onItemSelect={(item) => {
-                                setUnitType(item.name);
-                              }}
-                              containerStyle={styles.dropDownFullContainer}
-                              itemStyle={styles.dropDownItems}
-                              itemTextStyle={styles.dropDownItemText}
-                              itemsContainerStyle={styles.dropDownItemContainer}
-                              items={unitTypeList}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Unit Types',
-                                underlineColorAndroid: 'transparent',
-                                placeholderTextColor: '#777',
-                                style: styles.dropDownFullTextInput,
-                                onTextChange: (text) => {
-                                  setUnitType(text);
-                                },
-                                value: setTimeout(() => unitType, 200),
-                                defaultValue: unitType,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                          </View>
-                          <View>
-                            <Text
-                              style={[
-                                styles.addTypeHeading,
-                                {
-                                  marginLeft: width * 0.04,
-                                  marginBottom: 0,
-                                  fontWeight: 'bold',
-                                },
-                              ]}>
-                              Classes
-                            </Text>
-                          </View>
-                          <View
-                            style={[
-                              styles.inputContainer,
-                              {
-                                height: dropDownShow[1].value
-                                  ? 'auto'
-                                  : width * 0.0,
-                                overflow: 'hidden',
-                                justifyContent: 'center',
-                              },
-                            ]}>
-                            <SearchableDropDown
-                              onItemSelect={(item) => {
-                                setClasses(item.name);
-                              }}
-                              containerStyle={styles.dropDownFullContainer}
-                              itemStyle={styles.dropDownItems}
-                              itemTextStyle={styles.dropDownItemText}
-                              itemsContainerStyle={styles.dropDownItemContainer}
-                              items={classesList}
-                              resetValue={false}
-                              textInputProps={{
-                                placeholder: 'Classes',
-                                underlineColorAndroid: 'transparent',
-                                placeholderTextColor: '#777',
-                                style: styles.dropDownFullTextInput,
-                                onTextChange: (text) => {
-                                  setClasses(text);
-                                },
-                                value: setTimeout(() => classes, 200),
-                                defaultValue: classes,
-                              }}
-                              listProps={{
-                                nestedScrollEnabled: true,
-                              }}
-                            />
-                          </View>
-                          <View>
-                            <Text
-                              style={[
-                                styles.addTypeHeading,
-                                {
-                                  marginLeft: width * 0.04,
-                                  marginBottom: 0,
-                                  fontWeight: 'bold',
-                                },
-                              ]}>
-                              Bedrooms
-                            </Text>
-                          </View>
-                          <View
-                            style={[
-                              styles.inputContainer,
-                              {
-                                height: dropDownShow[1].value
-                                  ? width * 0.18
-                                  : width * 0.0,
-                                overflow: 'hidden',
-                              },
-                            ]}>
-                            <TextInput
-                              placeholder="Bedrooms"
-                              style={styles.input}
-                              value={bedrooms}
-                              keyboardType="decimal-pad"
-                              onChangeText={(text) => {
-                                setBedrooms(text);
-                              }}
-                              onFocus={() => {
-                                animate();
-                                setAvoidKeyboard(true);
-                                setAvoidMargin(0.25);
-                              }}
-                              onBlur={() => {
-                                animate();
-                                setAvoidMargin(0);
-                                setAvoidKeyboard(false);
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
-                            />
-                          </View>
+
                           <View
                             style={[
                               styles.unitMixButtonContainer,
                               {
-                                height: dropDownShow[1].value
-                                  ? 'auto'
-                                  : width * 0.0,
+                                height: dropDownShow[1].value ? 'auto' : 0,
                               },
                             ]}>
                             <TouchableOpacity onPress={clearUnitMixData}>
@@ -1722,16 +1708,7 @@ export default function AddEditProperty({
                             </TouchableOpacity>
                             <TouchableOpacity
                               onPress={unitMixFlag ? editOldRow : AddNewRow}>
-                              <Text
-                                style={[
-                                  styles.unitMixButtonText,
-                                  {
-                                    color:
-                                      sqft && unitType && classes && bedrooms
-                                        ? '#25AAE1ec'
-                                        : '#d0d0d0',
-                                  },
-                                ]}>
+                              <Text style={[styles.unitMixButtonText]}>
                                 {unitMixFlag ? 'Edit' : 'Add'}
                               </Text>
                             </TouchableOpacity>
@@ -1742,9 +1719,10 @@ export default function AddEditProperty({
                           style={[
                             styles.unitCountAndMixContainer,
                             {
-                              height: dropDownShow[1].value
-                                ? 'auto'
-                                : width * 0.0,
+                              height: dropDownShow[1].value ? 'auto' : 0,
+                              marginBottom: dropDownShow[1].value
+                                ? width * 0.05
+                                : 0,
                             },
                           ]}>
                           <View
@@ -1753,7 +1731,7 @@ export default function AddEditProperty({
                               {
                                 height: dropDownShow[1].value
                                   ? width * 0.18
-                                  : width * 0.0,
+                                  : 0,
                                 overflow: 'hidden',
                                 marginBottom: width * 0.015,
                               },
@@ -1783,34 +1761,18 @@ export default function AddEditProperty({
                                 onPress={() => getRowData(item, index)}>
                                 <View style={styles.unitMixDataContainer}>
                                   <Text style={styles.unitMixDataHeading}>
-                                    Sq. Ft
+                                    # of Units
                                   </Text>
                                   <Text style={styles.unitMixDataValues}>
-                                    {item.square_feets}
+                                    {item.no_of_units}
                                   </Text>
                                 </View>
                                 <View style={styles.unitMixDataContainer}>
                                   <Text style={styles.unitMixDataHeading}>
-                                    Unit Type
+                                    Total/Gal/Day
                                   </Text>
                                   <Text style={styles.unitMixDataValues}>
-                                    {item.unit_type}
-                                  </Text>
-                                </View>
-                                <View style={styles.unitMixDataContainer}>
-                                  <Text style={styles.unitMixDataHeading}>
-                                    Classes
-                                  </Text>
-                                  <Text style={styles.unitMixDataValues}>
-                                    {item.classes}
-                                  </Text>
-                                </View>
-                                <View style={styles.unitMixDataContainer}>
-                                  <Text style={styles.unitMixDataHeading}>
-                                    Bedrooms
-                                  </Text>
-                                  <Text style={styles.unitMixDataValues}>
-                                    {item.bedrooms}
+                                    {item.no_of_units * item.gud}
                                   </Text>
                                 </View>
                               </TouchableOpacity>
@@ -1824,17 +1786,55 @@ export default function AddEditProperty({
                               </TouchableOpacity>
                             </View>
                           ))}
+                          <View
+                            style={{
+                              backgroundColor: '#fff',
+                              borderTopWidth: 2,
+                              borderColor: '#787878',
+                              height: width * 0.12,
+                              width: width * 0.8,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginBottom: 8,
+                            }}
+                            onPress={() => getRowData(item, index)}>
+                            <View style={styles.unitMixDataContainer}>
+                              <Text style={styles.unitMixDataHeading}>
+                                Sum # Units
+                              </Text>
+                              <Text style={styles.unitMixDataValues}>
+                                {sumNoOfUnit}
+                              </Text>
+                            </View>
+                            <View style={styles.unitMixDataContainer}>
+                              <Text style={styles.unitMixDataHeading}>
+                                Sum Total/Gal/Day
+                              </Text>
+                              <Text style={styles.unitMixDataValues}>
+                                {sumTotalGalDay}
+                              </Text>
+                            </View>
+                            <View style={styles.unitMixDataContainer}>
+                              <Text style={styles.unitMixDataHeading}>ADC</Text>
+                              <Text style={styles.unitMixDataValues}>
+                                {sumNoOfUnit > 0
+                                  ? Math.round(sumTotalGalDay / sumNoOfUnit)
+                                  : 0}
+                              </Text>
+                            </View>
+                          </View>
                           <TouchableOpacity
                             onPress={() => {
-                              // animate();
-                              // setAddUnitMix(true);
-                              alert(
-                                'option disabled because of changes in APIs',
-                              );
+                              animate();
+                              setAddUnitMix(true);
+                              // alert(
+                              //   'option disabled because of changes in APIs',
+                              // );
                             }}
                             style={styles.addNewRowBtn}>
                             <Text style={{color: '#25AAE1ec'}}>
-                              Add New Rows (Work in Progress)
+                              Add New Rows
                             </Text>
                           </TouchableOpacity>
                         </View>
@@ -1878,7 +1878,7 @@ export default function AddEditProperty({
                                     : manufacturersArray?.length > 0
                                     ? 'auto'
                                     : width * 0.2
-                                  : width * 0.0,
+                                  : 0,
                                 overflow: 'hidden',
                               }}>
                               {!showAddManufacturer && !showEditManufacturer && (
@@ -1956,9 +1956,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[3].value
-                              ? width * 0.18
-                              : width * 0.0,
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -1983,9 +1981,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[3].value
-                              ? 'auto'
-                              : width * 0.0,
+                            height: dropDownShow[3].value ? 'auto' : 0,
 
                             overflow: 'hidden',
                             justifyContent: 'center',
@@ -2021,9 +2017,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[3].value
-                              ? width * 0.18
-                              : width * 0.0,
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -2048,9 +2042,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[3].value
-                              ? width * 0.18
-                              : width * 0.0,
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
                             overflow: 'hidden',
                           },
                         ]}>
@@ -2075,9 +2067,7 @@ export default function AddEditProperty({
                         style={[
                           styles.inputContainer,
                           {
-                            height: dropDownShow[3].value
-                              ? width * 0.18
-                              : width * 0.0,
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
                             overflow: 'hidden',
                           },
                         ]}>

@@ -74,7 +74,7 @@ export default styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    fontSize: height * 0.018,
+    fontSize: width * 0.04,
   },
   loactionSelectionMainView: {alignItems: 'center', justifyContent: 'center'},
   loactionSelectionInnerView: {
@@ -270,7 +270,7 @@ export default styles = StyleSheet.create({
     width: width * 0.7,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     marginBottom: 8,
   },
   unitMixRemoveBtn: {
