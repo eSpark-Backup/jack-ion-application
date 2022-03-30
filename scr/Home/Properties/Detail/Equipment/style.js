@@ -144,8 +144,9 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     borderTopLeftRadius: width * 0.01,
     borderTopRightRadius: width * 0.01,
+
+    borderWidth: 1,
     // borderRadius: width * 0.01,
-    borderWidth: width * 0.001,
   },
   infoTopViewInner: {
     flex: 1,

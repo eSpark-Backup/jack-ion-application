@@ -76,6 +76,7 @@ export default class Splash extends Component {
     }
   }
   async componentDidMount() {
+    console.log('this.context.isLoading', this.context);
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });

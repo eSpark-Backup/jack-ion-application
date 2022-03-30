@@ -18,6 +18,7 @@ import {
   KeyboardAvoidingView,
   FlatList,
   Keyboard,
+  LogBox,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -199,7 +200,7 @@ export default function AddEditProperty({
 
   useEffect(() => {
     console.log('CurrLocate', currLocate.lat);
-
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     console.log('AGAY BRHA');
     callApi();
     this.keyboardDidShowListener = Keyboard.addListener(
@@ -256,6 +257,18 @@ export default function AddEditProperty({
       setLat(propertyData?.latitude);
       setLong(propertyData?.longitude);
       setLocationSelected(true);
+      let uMdata = propertyData?.unit_mixes;
+      let tGD = 0;
+      let nOU = 0;
+      for (let i = 0; i < uMdata.length; i++) {
+        const singleTGD = uMdata[i].no_of_units * uMdata[i].gud;
+        nOU = nOU + Number(uMdata[i].no_of_units);
+        tGD = tGD + Number(singleTGD);
+      }
+      console.log('NOU', nOU);
+      console.log('TGD', tGD);
+      setSumNoOfUnit(nOU);
+      setSumTotalGalDay(tGD);
     }
     setPropertyFlag(true);
     toggleflag();
@@ -823,9 +836,8 @@ export default function AddEditProperty({
         const res = await api.post(`/property/add`, propData);
         console.log(res.data);
         if (res?.data?.bool) {
-          console.log(res.data);
-          addedSuccessfully();
           clearInputs();
+          addedSuccessfully();
           console.log('PROPERTY RUNNINg');
           setBtnLoading(false);
           Alert.alert('Success', 'Property Added Successfully');
@@ -840,9 +852,8 @@ export default function AddEditProperty({
         );
         console.log(response?.data);
         if (response?.data?.bool) {
-          console.log(response.data);
-          addedSuccessfully();
           clearInputs();
+          addedSuccessfully();
           setBtnLoading(false);
           Alert.alert('Success', response?.data?.message);
         } else {
@@ -1611,7 +1622,11 @@ export default function AddEditProperty({
                             data={unitMixes}
                             numColumns={2}
                             renderItem={({item, index}) => (
-                              <View style={{marginHorizontal: width * 0.05}}>
+                              <View
+                                style={{
+                                  marginHorizontal: width * 0.05,
+                                  marginVertical: width * 0.02,
+                                }}>
                                 <Text
                                   style={[
                                     styles.addTypeHeading,
@@ -1658,6 +1673,7 @@ export default function AddEditProperty({
                           <View
                             style={{
                               width: width * 0.9,
+                              marginVertical: width * 0.02,
                               height: dropDownShow[1].value ? 'auto' : 0,
                               alignItems: 'center',
                               overflow: 'hidden',
@@ -1679,7 +1695,6 @@ export default function AddEditProperty({
                                 styles.input,
                                 {
                                   width: width * 0.35,
-                                  height: 'auto',
                                 },
                               ]}
                               value={totalGalDay.toString()}

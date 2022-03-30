@@ -1340,6 +1340,7 @@ export default function UnitEdit({
         device_id: item.device_id,
         device: item.device,
         model_no_id: item.model_no_id,
+        unit_mix_id: 34,
         initial_meter_reading: item.initial_meter_reading,
         latitude: item.latitude,
         longitude: item.longitude,
@@ -5277,7 +5278,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   meterDesciptionHeading: {
-    fontSize: width * 0.03,
+    fontSize: width * 0.04,
     color: '#3E4A4F',
     textTransform: 'capitalize',
     fontFamily: Fonts.ComfortaaRegular,

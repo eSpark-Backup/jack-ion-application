@@ -128,6 +128,7 @@ export default class Splash extends Component {
       {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
     );
   };
+
   async componentDidMount() {
     console.log('What we Get', this.props.navigation);
     const token = await EncryptedStorage.getItem('user_token');
@@ -177,7 +178,7 @@ export default class Splash extends Component {
     let upDownMeter;
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
     let upDownNearby;
-    !this.state.nearDown ? (upDownNearby = 'down') : (upDownNearby = 'up');
+    !this.state.recentProps ? (upDownNearby = 'down') : (upDownNearby = 'up');
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
@@ -296,6 +297,68 @@ export default class Splash extends Component {
                     renderItem={this._renderMyList}
                   /> */}
                 </View>
+              </View>
+
+              <View style={styles.mainDataContainer}>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>Property</Text>
+                  <View style={styles.infoViewInner}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      Total:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      27
+                    </Text>
+                  </View>
+                  <View style={styles.infoViewInner}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      This Week:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      2
+                    </Text>
+                  </View>
+                  <View style={styles.infoViewInner}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      Percentage:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      8%
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>Buildings</Text>
+                  <View style={styles.infoViewInner}></View>
+                </View>
+              </View>
+
+              <View style={{width: width * 1, alignItems: 'center'}}>
+                <Text style={{fontSize: width * 0.05}}>Property Status</Text>
               </View>
               <View style={styles.barView}>
                 <VictoryPie
