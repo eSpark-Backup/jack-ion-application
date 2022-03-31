@@ -28,6 +28,7 @@ import ContextProp from './Context/propContext';
 import clc from 'cli-color';
 import CustumStatusBar from '../../components/StatusBar';
 import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Components
 import Add from './Form';
@@ -108,8 +109,28 @@ export default class Splash extends Component {
     this.setState({showFilter: true});
   };
 
-  jumpToDetail = ({prop, item}) => {
+  addToRecent = async (item) => {
+    const recentPropIds = await AsyncStorage.getItem('@recent_Props');
+    console.log('RECENTPROPIDS', recentPropIds);
+    if (recentPropIds == null) {
+      let ids = [];
+      ids.push(item.id);
+      const jsonIds = JSON.stringify(ids);
+      await AsyncStorage.setItem('@recent_Props', jsonIds);
+    } else {
+      const parsedIds =
+        recentPropIds != null ? JSON.parse(recentPropIds) : null;
+      let ids = [...parsedIds];
+      console.log('IDS', ids);
+      ids.push(item.id);
+      const jsonIds = JSON.stringify(ids);
+      await AsyncStorage.setItem('@recent_Props', jsonIds);
+    }
+  };
+
+  jumpToDetail = async ({prop, item}) => {
     this.props.navigation.navigate('Detail', {item});
+    this.addToRecent(prop.item);
     this.selectedProp(prop);
     this.setState({showSearch: false});
   };
@@ -119,6 +140,7 @@ export default class Splash extends Component {
   };
   jumpToEquip = ({prop, item}) => {
     this.props.navigation.navigate('Equip', {item});
+    this.addToRecent(prop.item);
     this.selectedProp(prop);
   };
 
@@ -342,8 +364,8 @@ export default class Splash extends Component {
       !this.state.stopLoader
     ) {
       this.setState({stopLoader: true});
-      // console.log(clc.green('agayayaaa_____'));
       this.setState({Loading: false});
+      // console.log(clc.green('agayayaaa_____'));
     }
     return (
       <View

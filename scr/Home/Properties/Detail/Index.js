@@ -155,7 +155,6 @@ export default class Splash extends React.Component {
     this.getToken();
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     const token = await EncryptedStorage.getItem('user_token');
-    console.log('Get Token', token);
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
@@ -172,9 +171,17 @@ export default class Splash extends React.Component {
 
   getPropertyDetails = async (id) => {
     this.setState({isLoading: true});
-    const transceiverRes = await api.get(`/property/transceivers${id}`);
+    const transceiverRes = await api.get(`/property/transceivers/${id}`);
 
     if (transceiverRes?.data?.bool) {
+      console.log(
+        'transceiverRes',
+        transceiverRes?.data?.data?.transceivers[0],
+      );
+      console.log(
+        'transceiverRes',
+        transceiverRes?.data?.data?.transceivers[1],
+      );
       this.setState({
         onlineUnits: transceiverRes?.data?.data?.transceivers[0],
         offlineUnits: transceiverRes?.data?.data?.transceivers[1],
@@ -1389,8 +1396,8 @@ export default class Splash extends React.Component {
                       innerRadius={width * 0.35}
                       labelRadius={width * 0.28}
                       data={[
-                        {x: 1, y: 1},
-                        {x: 22, y: 22},
+                        {x: onlineUnits, y: onlineUnits},
+                        {x: offlineUnits, y: offlineUnits},
                       ]}
                       colorScale={['#175CA1', '#DCDCDC']}
                       style={{
