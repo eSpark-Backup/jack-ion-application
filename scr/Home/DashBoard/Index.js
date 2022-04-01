@@ -344,13 +344,14 @@ export default class Splash extends Component {
                 initialRegion={{
                   latitude: 39.0902,
                   longitude: -102.0,
-                  latitudeDelta: 1,
-                  longitudeDelta: 20000,
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: -2000,
                 }}
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
-                showsUserLocation={true}
-                showsMyLocationButton={true}>
+                // showsUserLocation={true}
+                // showsMyLocationButton={true}
+              >
                 {this.state.markers.length > 0 &&
                   this.state.markers.map((marker) => (
                     <Marker

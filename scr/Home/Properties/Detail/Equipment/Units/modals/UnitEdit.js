@@ -484,7 +484,6 @@ export default function UnitEdit({
     callApi();
 
     let arr2 = meterTypes;
-    console.log('METERTYPES', meterTypes);
 
     if (arr2.length > 0) {
       setMeterListData(arr2);
@@ -1021,9 +1020,9 @@ export default function UnitEdit({
       meters: meterData,
     };
 
-    console.log('Meter Data 1', unitDetails?.unit?.id);
+    // console.log('Meter Data 1', unitDetails?.unit?.id);
     // console.log('Meter Data 2', meterData[1].reasons);
-    console.log('data--->', data);
+    // console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       console.log('ADD CHALA');
       const unitResponse = await api.post(
@@ -1035,25 +1034,24 @@ export default function UnitEdit({
         setIsActivityLoader(false);
         alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
-        console.log('datachecckk-->>', unitResponse?.data?.data);
+        // console.log('datachecckk-->>', unitResponse?.data?.data);
       } else {
         setIsActivityLoader(false);
         console.log('ADD RESPONSE FALSE MILA');
         alert(unitResponse?.data?.message);
       }
-      console.log('Add unit response', unitResponse?.data);
+      // console.log('Add unit response', unitResponse?.data);
     } else {
       console.log('EDIT CHALA');
       const unitResponse = await api.patch(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
       );
-      console.log('datachecckk-->>', unitResponse?.data?.data);
-      console.log(
-        'Unitmeterchecckk-->>',
-        unitResponse?.data?.data?.unit?.unit_meter,
-      );
-      console.log('update data check-->>', unitResponse?.data);
+      // console.log(
+      //   'Unitmeterchecckk-->>',
+      //   unitResponse?.data?.data?.unit?.unit_meter,
+      // );
+      // console.log('update data check-->>', unitResponse?.data);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         setIsActivityLoader(false);
@@ -1285,7 +1283,7 @@ export default function UnitEdit({
       },
 
       id: devEdit ? selectedDevId : null,
-
+      unit_mix_id: unitMixId,
       // meter_name: [{id: newMeter.id, name: newMeter.name}],
       // model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
@@ -1562,6 +1560,9 @@ export default function UnitEdit({
         skipBackup: true,
         path: 'images',
       },
+      maxWidth: 500,
+      maxHeight: 500,
+      quality: 0.5,
       includeBase64: true,
     };
     ImagePicker.launchCamera(options, (res) => {
@@ -1650,6 +1651,9 @@ export default function UnitEdit({
         skipBackup: true,
         path: 'images',
       },
+      maxWidth: 500,
+      maxHeight: 500,
+      quality: 0.5,
       includeBase64: true,
     };
 
@@ -1711,6 +1715,7 @@ export default function UnitEdit({
     setAddTypeInput(false);
     setAddNewType(false);
     setShowAddType('');
+    setUnitMixId(null);
     setDefaultDeviceValues(false);
     setDefaultMeterValues(false);
     setNewMeterFlag(true);
@@ -1989,6 +1994,7 @@ export default function UnitEdit({
     setDefaultMeterValues(false);
     setDefaultDeviceValues(false);
     setNewMeterFlag(false);
+    setUnitMixId(data.unit_mix_id);
     setReasonArr(data.reasons);
     setLat(data.latitude);
     setLong(data.longitude);
@@ -4038,17 +4044,24 @@ export default function UnitEdit({
                       </TouchableOpacity>
 
                       {filePath != '' && filePath != null && (
-                        <Image
-                          resizeMode="cover"
-                          // resizeMethod="scale"
-                          style={{
-                            flex: 1,
-                            width: width * 0.7,
-                            height: width * 0.35,
-                            marginVertical: 5,
-                          }}
-                          source={{uri: filePath}}
-                        />
+                        <View>
+                          <TouchableOpacity
+                            style={styles.installImageRemove}
+                            onPress={() => setFilePath('')}>
+                            <Iconi name="close-circle" size={width * 0.08} />
+                          </TouchableOpacity>
+                          <Image
+                            resizeMode="cover"
+                            // resizeMethod="scale"
+                            style={{
+                              flex: 1,
+                              width: width * 0.7,
+                              height: width * 0.35,
+                              marginVertical: 5,
+                            }}
+                            source={{uri: filePath}}
+                          />
+                        </View>
                       )}
                     </View>
                   ) : // <View style={styles.container}>
@@ -4700,6 +4713,8 @@ export default function UnitEdit({
                                   selectedUtil &&
                                   selectedUtilId != null
                                     ? '#25AAE1ec'
+                                    : sliderNumber == 2 && unitMixId != null
+                                    ? '#25AAE1ec'
                                     : sliderNumber == 3 &&
                                       slide2[0].value &&
                                       slide2[1].value &&
@@ -4730,6 +4745,8 @@ export default function UnitEdit({
                               slide1[1].selectId &&
                               selectedUtil &&
                               selectedUtilId != null
+                                ? false
+                                : sliderNumber == 2 && unitMixId != null
                                 ? false
                                 : sliderNumber == 3 &&
                                   slide2[0].value &&
@@ -5450,6 +5467,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#25AAE1ec',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  installImageRemove: {
+    width: width * 0.08,
+    position: 'absolute',
+    top: width * 0.015,
+    right: 0,
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   untiDetailImage: {
     height: width * 0.05,

@@ -66,6 +66,7 @@ import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
+import Svg from 'react-native-svg';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
@@ -1021,7 +1022,7 @@ export default class Splash extends React.Component {
                     <Text style={styles.drawerbtn}>Units</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.naviagateToChart()}>
+                {/* <TouchableOpacity onPress={() => this.naviagateToChart()}>
                   <View style={styles.drawerContent}>
                     <Chart
                       name="pie-chart"
@@ -1031,7 +1032,7 @@ export default class Splash extends React.Component {
                     />
                     <Text style={styles.drawerbtn}>Charts</Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <TouchableOpacity
                 style={{bottom: height * 0.05}}
@@ -1127,7 +1128,7 @@ export default class Splash extends React.Component {
             <View style={styles.bodyContainer}>
               <MapView
                 style={styles.map}
-                scrollEnabled={false}
+                // scrollEnabled={false}
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
@@ -1390,6 +1391,7 @@ export default class Splash extends React.Component {
 
                 <View style={styles.barViewContainer}>
                   <View style={styles.barView}>
+                    <Text style={{position: 'absolute'}}>Tranceiver</Text>
                     <VictoryPie
                       width={width * 0.75}
                       height={width * 0.75}
@@ -1408,23 +1410,13 @@ export default class Splash extends React.Component {
                         },
                       }}
                     />
-                    {/* <AnimatedCircularProgress
-                      size={height * 0.2}
-                      width={height * 0.035}
-                      backgroundWidth={height * 0.035}
-                      fill={this.state.points}
-                      tintColor="#09BAF2"
-                      backgroundColor="#3d5875"
-                      arcSweepAngle={360}
-                      rotation={0}
-                      lineCap="butt">
-                      {(fill) => (
-                        <Text style={styles.barText}>
-                          Transceiver {'\n'} {Math.round((100 * fill) / 100)} %
-                        </Text>
-                      )}
-                    </AnimatedCircularProgress> */}
                   </View>
+                </View>
+                <View style={styles.onlineOfflineView}>
+                  <View style={styles.onlineView} />
+                  <Text style={styles.onlineText}>Online</Text>
+                  <View style={styles.offlineView} />
+                  <Text style={styles.offlineText}>Not Installed</Text>
                 </View>
               </View>
             </View>

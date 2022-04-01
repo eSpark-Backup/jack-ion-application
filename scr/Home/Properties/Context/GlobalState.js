@@ -64,7 +64,7 @@ class GlobalState extends React.Component {
       offset: this.state.offset,
       billing: this.state.filterDataName,
       search: this.state.filterPropName,
-      search: this.state.filterLocation,
+      location: this.state.filterLocation,
     };
     const response = await this.api.post('/property/all', data);
     // console.log('respone property===>', response.data.data);

@@ -75,7 +75,7 @@ export default class DrawerModal extends Component {
                   color="#7575ff"
                   style={{marginRight: width * 0.02}}
                 />
-                <Text style={styles.drawerbtn}>Profile</Text>
+                <Text style={styles.drawerbtn}>Details</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
@@ -89,7 +89,7 @@ export default class DrawerModal extends Component {
                 <Text style={styles.drawerbtn}>Units</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={naviagateToChart}>
+            {/* <TouchableOpacity onPress={naviagateToChart}>
               <View style={styles.drawerContent}>
                 <Chart
                   name="pie-chart"
@@ -99,7 +99,7 @@ export default class DrawerModal extends Component {
                 />
                 <Text style={styles.drawerbtn}>Charts</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <TouchableOpacity
             style={{bottom: height * 0.05}}

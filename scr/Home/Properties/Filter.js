@@ -260,6 +260,16 @@ export default class Splash extends Component {
     }
   };
 
+  closeModal = () => {
+    if (this.context.filterWork) {
+      this.props.close();
+    } else {
+      this.props.close();
+      this.context.updateFilterProperty('');
+      this.context.updateFilterLocation('');
+    }
+  };
+
   render() {
     const {scan} = this.state;
     const {
@@ -327,7 +337,7 @@ export default class Splash extends Component {
                     leftComponent={{
                       text: 'Close',
                       style: {fontSize: width * 0.05, color: '#000'},
-                      onPress: close,
+                      onPress: this.closeModal,
                     }}
                     centerComponent={
                       <View style={styles.headerCenter}>
@@ -446,9 +456,22 @@ export default class Splash extends Component {
                         marginVertical: height * 0.015,
                       }}>
                       <TouchableOpacity
+                        disabled={
+                          (this.props.type == 'Properties' &&
+                            this.context.filterPropName) ||
+                          this.context.filterLocation
+                            ? false
+                            : true
+                        }
                         style={{
                           ...styles.filterUtility,
-                          backgroundColor: '#25aae1',
+
+                          backgroundColor:
+                            (this.props.type == 'Properties' &&
+                              this.context.filterPropName) ||
+                            this.context.filterLocation
+                              ? '#25aae1'
+                              : '#bbb',
                         }}
                         onPress={this.filter}>
                         <Text style={{color: '#fff'}}>Filter</Text>

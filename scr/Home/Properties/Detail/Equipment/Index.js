@@ -403,6 +403,7 @@ export default class Splash extends Component {
     this.setState({loader: true});
     const response = await this.api.delete(`/property/equipment/unit/${id}`);
     if (response?.data?.bool) {
+      this.setState({currUnitIndex: null});
       alert(response?.data?.message);
       this.checkData();
     } else {

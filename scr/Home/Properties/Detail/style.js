@@ -218,7 +218,7 @@ export default styles = StyleSheet.create({
     width: width * 0.66,
     // backgroundColor: 'white',
     // borderRadius: width * 0.6,
-    marginTop: height * 0.02,
+    marginVertical: height * 0.02,
     // elevation: height * 0.01,
   },
   barText: {
@@ -401,5 +401,35 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: width * 0.03,
     marginVertical: height * 0.005,
+  },
+  onlineOfflineView: {
+    flexDirection: 'row',
+    width: width * 1,
+    height: height * 0.05,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  onlineView: {
+    width: width * 0.035,
+    height: width * 0.035,
+    borderRadius: 100,
+    backgroundColor: '#175CA1',
+  },
+  onlineText: {
+    fontSize: width * 0.03,
+    color: '#2D2A2B',
+    fontFamily: Fonts.Montserrat,
+    marginRight: width * 0.03,
+  },
+  offlineView: {
+    width: width * 0.035,
+    height: width * 0.035,
+    borderRadius: 100,
+    backgroundColor: '#DCDCDC',
+  },
+  offlineText: {
+    fontSize: width * 0.03,
+    color: '#2D2A2B',
+    fontFamily: Fonts.Montserrat,
   },
 });
