@@ -199,7 +199,7 @@ export default function AddEditProperty({
   ]);
 
   useEffect(() => {
-    console.log('CurrLocate', currLocate.lat);
+    console.log('CurrLocate', currLocate);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     console.log('AGAY BRHA');
     callApi();
@@ -312,6 +312,8 @@ export default function AddEditProperty({
     utilArr[0].data = utilRes?.data?.data;
     setUtilAndManu(utilArr);
     setUtilTypes(utilRes?.data?.data);
+    setLoadingState(false);
+    setLoadingStateDev(false);
   };
 
   const onChangeUtilAndManu = (e, index) => {
@@ -1322,8 +1324,7 @@ export default function AddEditProperty({
 
         // this.getToken();
         callApi();
-        setLoadingState(false);
-        setLoadingStateDev(false);
+
         alert(UtilityResponse?.data?.message);
       } else {
         alert(UtilityResponse?.data?.message);
@@ -1439,7 +1440,7 @@ export default function AddEditProperty({
                   />
                 </TouchableOpacity>
 
-                {currLocate ? (
+                {currLocate != null ? (
                   <View style={styles.loactionPinContainer}>
                     <Icon
                       size={width * 0.12}
@@ -1448,7 +1449,7 @@ export default function AddEditProperty({
                     />
                   </View>
                 ) : null}
-                {currLocate
+                {currLocate != null
                   ? (console.log('CURRLOCATE', currLocate),
                     (
                       <MapView

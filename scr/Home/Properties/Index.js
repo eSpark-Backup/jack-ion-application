@@ -69,7 +69,7 @@ export default class Splash extends Component {
       filterWork: false,
       noInternet: false,
       locationBtn: '',
-      markers: {},
+      markers: null,
     };
 
     if (Platform.OS === 'android') {
@@ -189,15 +189,19 @@ export default class Splash extends Component {
         var long = parseFloat(position.coords.longitude);
         // this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
 
-        this.setState({
-          markers: {
-            lat: lat,
-            lng: long,
+        this.setState(
+          {
+            markers: {
+              lat: lat,
+              lng: long,
+            },
           },
-        });
+          () => {
+            this.context.stopLoader();
+            this.setState({isAddPropVisible: true});
+          },
+        );
         console.log('What we Get', this.state.markers);
-        this.context.stopLoader();
-        this.setState({isAddPropVisible: true});
       },
       (error) => console.log('geo location', error),
       {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},

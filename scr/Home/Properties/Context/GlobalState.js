@@ -111,7 +111,7 @@ class GlobalState extends React.Component {
       this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
-      Alert.alert('Error', 'Network Issues');
+      Alert.alert('Error', response.data.message);
       this.setState({isLoading: false});
     }
   };

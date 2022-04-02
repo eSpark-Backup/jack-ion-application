@@ -51,7 +51,7 @@ export default styles = StyleSheet.create({
   },
   headingContainer: {
     width: width * 1,
-    height: height * 0.07,
+    height: width * 0.12,
   },
   headingInner: {
     flex: 1,
@@ -63,8 +63,13 @@ export default styles = StyleSheet.create({
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.04,
+    fontSize: width * 0.06,
     color: 'white',
+    marginLeft: width * 0.01,
+  },
+  menuButton: {
+    left: width * 0.03,
+    position: 'absolute',
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',

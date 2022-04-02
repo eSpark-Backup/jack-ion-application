@@ -31,6 +31,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import ContextProp from './Context/propContext';
 import {create} from 'apisauce';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import SearchableDropDown from 'react-native-searchable-dropdown';
 
 const {width, height} = Dimensions.get('window');
 let api;
@@ -57,10 +58,17 @@ export default class Splash extends Component {
     };
   }
   getUtilityType = (type, index) => {
-    this.setState({
-      selectedType: type,
-      utilityIndex: index === this.state.utilityIndex ? null : index,
-    });
+    if (index === this.state.utilityIndex) {
+      this.setState({
+        selectedType: '',
+        utilityIndex: null,
+      });
+    } else {
+      this.setState({
+        selectedType: type,
+        utilityIndex: index,
+      });
+    }
   };
 
   getBillingCompany = () => {
@@ -267,6 +275,8 @@ export default class Splash extends Component {
       this.props.close();
       this.context.updateFilterProperty('');
       this.context.updateFilterLocation('');
+      this.context.updateFilterSerial('');
+      this.setState({selectedType: ''});
     }
   };
 
@@ -323,6 +333,7 @@ export default class Splash extends Component {
         </Modal>
         {/*Filter Modal*/}
         <Modal
+          avoidKeyboard={true}
           animationIn="slideInDown"
           animationOut="slideOutUp"
           statusBarTranslucent={true}
@@ -399,13 +410,14 @@ export default class Splash extends Component {
                             <TextInput
                               style={styles.filterInputs}
                               value={this.context.filterSerial}
+                              placeholder={'Serial Number'}
                               onChangeText={(e) =>
                                 this.context.updateFilterSerial(e)
                               }
                             />
                             <TouchableOpacity
                               onPress={() => this.toggleScanner()}>
-                              <Scanner name="scan" size={20} />
+                              <Scanner name="scan" size={width * 0.05} />
                             </TouchableOpacity>
                           </View>
                         </View>
@@ -417,6 +429,26 @@ export default class Splash extends Component {
                           <Text style={styles.filterListText}>
                             Utility Types:
                           </Text>
+                          {/* <SearchableDropDown
+                            onItemSelect={(item) => {
+                              this.setState({selectedType: item.name});
+                            }}
+                            containerStyle={styles.dropDownFullContainer}
+                            itemStyle={styles.dropDownItems}
+                            itemTextStyle={styles.dropDownItemText}
+                            itemsContainerStyle={styles.dropDownItemContainer}
+                            items={utilityTypes}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: 'Search Utility',
+                              underlineColorAndroid: 'transparent',
+                              style: styles.dropDownFullTextInput,
+                              value: this.state.selectedType,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          /> */}
                           {utilityTypes.length ? (
                             <FlatList
                               horizontal
@@ -461,6 +493,10 @@ export default class Splash extends Component {
                             this.context.filterPropName) ||
                           this.context.filterLocation
                             ? false
+                            : (this.props.type == 'Units' &&
+                                this.context.filterSerial) ||
+                              this.state.selectedType != ''
+                            ? false
                             : true
                         }
                         style={{
@@ -470,6 +506,10 @@ export default class Splash extends Component {
                             (this.props.type == 'Properties' &&
                               this.context.filterPropName) ||
                             this.context.filterLocation
+                              ? '#25aae1'
+                              : (this.props.type == 'Units' &&
+                                  this.context.filterSerial) ||
+                                this.state.selectedType != ''
                               ? '#25aae1'
                               : '#bbb',
                         }}

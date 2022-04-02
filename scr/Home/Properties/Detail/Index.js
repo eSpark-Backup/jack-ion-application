@@ -43,6 +43,7 @@ import {
   VictoryAxis,
   VictoryPie,
 } from 'victory-native';
+import Drawer from '../../../components/modal/Drawer/index';
 import SearchableDropDown from 'react-native-searchable-dropdown';
 import ContextProp from '../Context/propContext';
 import {TextInput, FAB, HelperText} from 'react-native-paper';
@@ -977,7 +978,15 @@ export default class Splash extends React.Component {
             toggleflag={this.toggleflag}
           />
           {this.state.isLoading && <Loader />}
-          <Modal
+          <Drawer
+            isVisible={this.state.isModalVisible}
+            onCancel={this.toggleModal}
+            naviagateToDetail={this.naviagateToDetail}
+            naviagateToEquip={this.naviagateToEquip}
+            naviagateToChart={this.naviagateToChart}
+            naviagateToSupport={this.naviagateToSupport}
+          />
+          {/* <Modal
             animationIn="slideInLeft"
             animationOut="slideOutLeft"
             isVisible={this.state.isModalVisible}
@@ -1022,7 +1031,7 @@ export default class Splash extends React.Component {
                     <Text style={styles.drawerbtn}>Units</Text>
                   </View>
                 </TouchableOpacity>
-                {/* <TouchableOpacity onPress={() => this.naviagateToChart()}>
+                <TouchableOpacity onPress={() => this.naviagateToChart()}>
                   <View style={styles.drawerContent}>
                     <Chart
                       name="pie-chart"
@@ -1032,7 +1041,7 @@ export default class Splash extends React.Component {
                     />
                     <Text style={styles.drawerbtn}>Charts</Text>
                   </View>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={{bottom: height * 0.05}}
@@ -1061,7 +1070,7 @@ export default class Splash extends React.Component {
                 </View>
               </TouchableOpacity>
             </View>
-          </Modal>
+          </Modal> */}
           <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
@@ -1104,20 +1113,19 @@ export default class Splash extends React.Component {
             <View style={styles.headingInner}>
               <Menu
                 name="menu"
-                size={height * 0.04}
+                size={width * 0.07}
                 color="white"
-                style={{right: 90}}
+                style={styles.menuButton}
                 onPress={this.toggleModal}
               />
-              <View style={{flexDirection: 'row', right: 15}}>
-                <Detail
-                  name="account-details-outline"
-                  size={height * 0.05}
-                  color="white"
-                  style={{top: height * 0.002}}
-                />
-                <Text style={styles.mainHeadiing}>Details</Text>
-              </View>
+              <Detail
+                name="account-details-outline"
+                size={width * 0.08}
+                color="white"
+                style={{top: height * 0.002}}
+              />
+              <Text style={styles.mainHeadiing}>Details</Text>
+              {/* </View> */}
             </View>
           </View>
           <ScrollView
@@ -1391,7 +1399,11 @@ export default class Splash extends React.Component {
 
                 <View style={styles.barViewContainer}>
                   <View style={styles.barView}>
-                    <Text style={{position: 'absolute'}}>Tranceiver</Text>
+                    <Text style={{position: 'absolute'}}>
+                      {onlineUnits == 0 && offlineUnits == 0
+                        ? 'No Transceiver'
+                        : 'Transceiver'}
+                    </Text>
                     <VictoryPie
                       width={width * 0.75}
                       height={width * 0.75}

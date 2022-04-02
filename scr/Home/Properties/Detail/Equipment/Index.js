@@ -474,6 +474,11 @@ export default class Splash extends Component {
                   unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
                 borderBottomRightRadius:
                   unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
+                borderBottomWidth:
+                  unit.index === this.state.currUnitIndex &&
+                  unit?.item?.unit_meter?.length < 1
+                    ? 0
+                    : 1,
               },
             ]}>
             <View style={styles.infoViewInner}>
@@ -551,8 +556,8 @@ export default class Splash extends Component {
                   backgroundColor: 'white',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  borderLeftWidth: width * 0.001,
-                  borderRightWidth: width * 0.001,
+                  borderLeftWidth: 1,
+                  borderRightWidth: 1,
                 }}>
                 {unit?.item?.unit_meter?.map((item, index) => (
                   <View
@@ -1014,7 +1019,7 @@ export default class Splash extends Component {
                 name="menu"
                 size={width * 0.08}
                 color="white"
-                style={{position: 'absolute', left: width * 0.02}}
+                style={{position: 'absolute', left: width * 0.03}}
                 onPress={this.toggleModal}
               />
               <View

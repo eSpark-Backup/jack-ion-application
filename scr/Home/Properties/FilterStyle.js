@@ -157,10 +157,10 @@ export default styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 1,
     marginVertical: height * 0.001,
-    paddingHorizontal: height * 0.02,
+    paddingHorizontal: width * 0.02,
   },
   filterInputs: {
-    width: '55%',
+    width: width * 0.38,
     textTransform: 'capitalize',
   },
   filterUtility: {
@@ -170,6 +170,33 @@ export default styles = StyleSheet.create({
     elevation: 1,
     marginVertical: height * 0.001,
     marginHorizontal: width * 0.1,
+  },
+  dropDownFullContainer: {
+    paddingVertical: width * 0.02,
+    width: width * 0.5,
+  },
+  dropDownItems: {
+    padding: width * 0.027,
+    backgroundColor: 'rgb(247, 247, 247)',
+    borderColor: '#bbb',
+    borderWidth: width * 0.0015,
+    borderRadius: width * 0.015,
+    zIndex: 99,
+  },
+  dropDownItemText: {color: '#222'},
+  dropDownItemContainer: {
+    height: width * 0.2,
+    zIndex: 1,
+    position: 'absolute',
+    width: width * 0.5,
+    top: width * 0.1,
+    flex: 1,
+  },
+  dropDownFullTextInput: {
+    padding: width * 0.027,
+    margin: 0,
+    height: width * 0.13,
+    zIndex: 0,
   },
   scannerContainer: {
     flex: 1,
