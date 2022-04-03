@@ -114,7 +114,7 @@ class Splash extends Component {
     let tokenfcm = {
       fcm_token: fcmToken,
     };
-    let res = await this.api.post('/user/set-fcm-token', tokenfcm);
+    await this.api.post('/user/set-fcm-token', tokenfcm);
     // console.log('FCM TOKEN RES>>>>>>', res?.data);
   }
 
