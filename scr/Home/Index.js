@@ -12,7 +12,7 @@ import {
   BackHandler,
   Platform,
 } from 'react-native';
-import TabIcon from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
 import {withNavigation} from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
@@ -30,7 +30,7 @@ class Splash extends Component {
   static navigationOptions = {
     title: 'Home',
     tabBarIcon: ({tintColor}) => (
-      <TabIcon name="home" color={tintColor} size={height * 0.04} />
+      <AntDesign name="home" color={tintColor} size={height * 0.04} />
     ),
   };
 

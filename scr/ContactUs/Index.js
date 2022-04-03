@@ -10,20 +10,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import Search from 'react-native-vector-icons/EvilIcons';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
-// import Dashboard from 'react-native-vector-icons/MaterialCommunityIcons';
 import Help from 'react-native-vector-icons/Feather';
 import Phone from 'react-native-vector-icons/Feather';
 import Email from 'react-native-vector-icons/Feather';
 import TabIcon from 'react-native-vector-icons/MaterialIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import RNBeep from 'react-native-a-beep';
-
-//Packages
-import DropDownItem from 'react-native-drop-down-item';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import LinearGradient from 'react-native-linear-gradient';
 
 // Components
 import {Fonts} from '../utils/fonts';
@@ -85,33 +77,7 @@ export default class Splash extends Component {
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
-        {/* <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={styles.menuView}>
-              <Back
-                size={width * 0.08}
-                color="white"
-                name="keyboard-backspace"
-              />
-            </TouchableOpacity>
-            <View style={styles.searchView}>
-              <Search
-                name="search"
-                size={width * 0.08}
-                style={{marginLeft: width * 0.05}}
-                color="white"
-              />
-              <TextInput
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
-              />
-            </View>
-          </View>
-        </View> */}
+
         <View style={styles.headingContainer}>
           <View style={[styles.headingInner]}>
             <TouchableOpacity

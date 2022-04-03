@@ -10,48 +10,25 @@ import {
   Platform,
   FlatList,
 } from 'react-native';
-import Menu from 'react-native-vector-icons/Entypo';
-import Camera from 'react-native-vector-icons/EvilIcons';
-import Location from 'react-native-vector-icons/EvilIcons';
-import Down from 'react-native-vector-icons/AntDesign';
-import RightHand from 'react-native-vector-icons/MaterialCommunityIcons';
-import Recently from 'react-native-vector-icons/AntDesign';
-import Dashboard from 'react-native-vector-icons/MaterialCommunityIcons';
-import TabIcon from 'react-native-vector-icons/AntDesign';
-import Home from 'react-native-vector-icons/Feather';
+
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {create} from 'apisauce';
 import Base_Url from '../../api/WebServices';
-import {
-  VictoryChart,
-  VictoryBar,
-  VictoryLegend,
-  VictoryAxis,
-  VictoryPie,
-} from 'victory-native';
+import {VictoryPie} from 'victory-native';
 
 //Packages
-import * as Progress from 'react-native-progress';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import LinearGradient from 'react-native-linear-gradient';
-import MapView, {
-  PROVIDER_GOOGLE,
-  AnimatedRegion,
-  Marker,
-  MarkerAnimated,
-} from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 
 // Components
 import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../../components/StatusBar';
-import {yellow} from 'cli-color';
-import Svg from 'react-native-svg';
 import TextTicker from 'react-native-text-ticker';
 import Loader from '../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -65,7 +42,7 @@ export default class Splash extends Component {
   static navigationOptions = {
     title: 'Home',
     tabBarIcon: ({tintColor}) => (
-      <TabIcon name="home" color={tintColor} size={height * 0.04} />
+      <AntDesign name="home" color={tintColor} size={height * 0.04} />
     ),
   };
   constructor() {
@@ -199,7 +176,7 @@ export default class Splash extends Component {
         <TouchableOpacity
           style={styles.propButton}
           onPress={() => this.selectedProp(prop)}>
-          <MaterialCommunityIcon
+          <MaterialCommunityIcons
             name="home-city-outline"
             size={width * 0.09}
             color="#115b72"
@@ -310,7 +287,7 @@ export default class Splash extends Component {
         {Platform.OS == 'ios' && <CustumStatusBar />}
         <View style={styles.headingContainer}>
           <View style={styles.headingInner}>
-            <MaterialCommunityIcon
+            <MaterialCommunityIcons
               name="arrow-left"
               size={height * 0.04}
               color="white"
@@ -318,7 +295,7 @@ export default class Splash extends Component {
               onPress={() => this.props.navigation.goBack()}
             />
             <View style={{flexDirection: 'row', right: 15}}>
-              <Dashboard
+              <MaterialCommunityIcons
                 name="view-dashboard-outline"
                 size={width * 0.07}
                 color="white"
@@ -371,7 +348,7 @@ export default class Splash extends Component {
                 style={styles.mainBotton}
                 activeOpacity={0.8}
                 onPress={this.changeLayoutRecent}>
-                <Recently
+                <AntDesign
                   name="clockcircleo"
                   size={width * 0.06}
                   style={{left: width * 0.01}}
@@ -379,7 +356,7 @@ export default class Splash extends Component {
                 <Text style={styles.mainBottonText}>
                   Recently Viewed Properties
                 </Text>
-                <Down name={upDownNearby} size={width * 0.05} />
+                <AntDesign name={upDownNearby} size={width * 0.05} />
               </TouchableOpacity>
               <View
                 style={{
@@ -606,7 +583,7 @@ export default class Splash extends Component {
                       marginVertical: height * 0.015,
                     }}>
                     <View style={{width: width * 0.15}}>
-                      <MaterialCommunityIcon
+                      <MaterialCommunityIcons
                         name="home-city-outline"
                         size={width * 0.15}
                       />

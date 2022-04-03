@@ -11,7 +11,6 @@ import {
   Pressable,
   Alert,
   Platform,
-  ActivityIndicator,
   ToastAndroid,
   Image,
   LayoutAnimation,
@@ -19,7 +18,6 @@ import {
 } from 'react-native';
 
 //Packages
-import Iconi from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Menu from 'react-native-vector-icons/Entypo';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,27 +25,13 @@ import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-import Modal from 'react-native-modal';
 import Folder from 'react-native-vector-icons/Feather';
-import Equip from 'react-native-vector-icons/Feather';
-import Chart from 'react-native-vector-icons/Feather';
-import Message from 'react-native-vector-icons/Feather';
-import Docs from 'react-native-vector-icons/Ionicons';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {
-  VictoryChart,
-  VictoryBar,
-  VictoryLegend,
-  VictoryAxis,
-  VictoryPie,
-} from 'victory-native';
+import {VictoryPie} from 'victory-native';
 import Drawer from '../../../components/modal/Drawer/index';
-import SearchableDropDown from 'react-native-searchable-dropdown';
 import ContextProp from '../Context/propContext';
 import {TextInput, FAB, HelperText} from 'react-native-paper';
-import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import {
   check,
@@ -59,7 +43,6 @@ import {
 
 // Components
 import styles from './style';
-import style from './style';
 import {Fonts} from '../../../utils/fonts';
 import Base_URL from '../../../api/WebServices';
 import {create} from 'apisauce';
@@ -67,33 +50,11 @@ import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
-import Svg from 'react-native-svg';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const dataBar2 = {
-  actual: [
-    null,
-    {x: 'MON', y: 11},
-    {x: 'TUE', y: 15},
-    {x: 'WED', y: 18},
-    {x: 'THU', y: 1},
-    {x: 'FRI', y: 5},
-    {x: 'SAT', y: 2},
-    {x: 'SUN', y: 3},
-  ],
-  planned: [
-    null,
-    {x: 'MON', y: 12},
-    {x: 'TUE', y: 10},
-    {x: 'WED', y: 13},
-    {x: 'THU', y: 1},
-    {x: 'FRI', y: 5},
-    {x: 'SAT', y: 2},
-    {x: 'SUN', y: 8},
-  ],
-};
+
 const api = create({baseURL: Base_URL});
 
 export default class Splash extends React.Component {
@@ -299,28 +260,6 @@ export default class Splash extends React.Component {
         },
       ]);
     } else {
-      // Geolocation.getCurrentPosition(
-      //   (position) => {
-      //     var lat = parseFloat(position.coords.latitude);
-      //     var long = parseFloat(position.coords.longitude);
-      //     // this.setState({lat: lat, long: long});
-      //     Geocoder.from({
-      //       latitude: lat,
-      //       longitude: long,
-      //     })
-      //       .then((json) => {
-      //         var locationName = json.results[0].formatted_address;
-      //         console.log('LOACTION NAME', locationName);
-      //         // this.fetchAddressData(locationName);
-      //         this.setState({
-      //           locationBtn: locationName,
-      //         });
-      //       })
-      //       .catch((error) => console.warn(error));
-      //   },
-      //   (error) => console.log('geo locations', error),
-      //   {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
-      // );
       if (Platform.OS == 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
           .then((result) => {
@@ -986,91 +925,7 @@ export default class Splash extends React.Component {
             naviagateToChart={this.naviagateToChart}
             naviagateToSupport={this.naviagateToSupport}
           />
-          {/* <Modal
-            animationIn="slideInLeft"
-            animationOut="slideOutLeft"
-            isVisible={this.state.isModalVisible}
-            swipeDirection="left"
-            onSwipeStart={() => this.toggleModal()}
-            onBackdropPress={() => this.toggleModal()}
-            backdropColor="black"
-            statusBarTranslucent
-            style={styles.sideModalContainer}>
-            <CustumStatusBar backColor />
-            <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
-            <View style={styles.drawerMainContainer}>
-              <View>
-                <Menu
-                  name="menu"
-                  size={height * 0.05}
-                  color="white"
-                  onPress={() => this.toggleModal()}
-                  style={{backgroundColor: '#35afe2'}}
-                />
-              </View>
-              <View style={styles.drawerContentContainer}>
-                <TouchableOpacity onPress={() => this.naviagateToDetail()}>
-                  <View style={styles.drawerContent}>
-                    <Detail
-                      name="account-details-outline"
-                      size={height * 0.035}
-                      color="#7575ff"
-                      style={styles.drawerBtnIcon}
-                    />
-                    <Text style={styles.drawerbtn}>Details</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.naviagateToEquip()}>
-                  <View style={styles.drawerContent}>
-                    <Equip
-                      name="rss"
-                      size={height * 0.035}
-                      color="#ff9f71"
-                      style={styles.drawerBtnIcon}
-                    />
-                    <Text style={styles.drawerbtn}>Units</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.naviagateToChart()}>
-                  <View style={styles.drawerContent}>
-                    <Chart
-                      name="pie-chart"
-                      size={height * 0.035}
-                      color="#009349"
-                      style={styles.drawerBtnIcon}
-                    />
-                    <Text style={styles.drawerbtn}>Charts</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={{bottom: height * 0.05}}
-                onPress={this.naviagateToSupport}>
-                <View
-                  style={[
-                    styles.drawerBottom,
-                    {
-                      flexDirection: 'row',
-                      // alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingBottom: height * 0.015,
-                      marginBottom: height * 0.01,
-                    },
-                  ]}>
-                  <Detail
-                    name="help-circle-outline"
-                    size={height * 0.035}
-                    color="#35afe2"
-                    style={{
-                      ...styles.drawerBtnIcon,
-                      bottom: Platform.OS == 'ios' ? 2 : null,
-                    }}
-                  />
-                  <Text style={styles.drawerbtn}>Support</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </Modal> */}
+
           <StatusBar hidden backgroundColor="white" barStyle="dark-content" />
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>

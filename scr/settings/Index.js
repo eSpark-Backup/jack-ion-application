@@ -1,20 +1,10 @@
 import React, {Component, version} from 'react';
 
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  ActivityIndicator,
-  StatusBar,
   Dimensions,
-  TextInput,
-  Animated,
   ScrollView,
-  LayoutAnimation,
-  UIManager,
   PermissionsAndroid,
   LogBox,
   Alert,
@@ -23,21 +13,13 @@ import {
 } from 'react-native';
 
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
-import Menu from 'react-native-vector-icons/Entypo';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
-import Search from 'react-native-vector-icons/EvilIcons';
-import Properties from 'react-native-vector-icons/FontAwesome5';
 import Settings from 'react-native-vector-icons/Feather';
 import Reset from 'react-native-vector-icons/MaterialCommunityIcons';
 import Logout from 'react-native-vector-icons/SimpleLineIcons';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
-import ToggleSwitch from 'toggle-switch-react-native';
 import TabIcon from 'react-native-vector-icons/MaterialIcons';
-import Back from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
 import CustumStatusBar from '../components/StatusBar';
-import Modal from 'react-native-modal';
 import {
   check,
   PERMISSIONS,
@@ -50,7 +32,6 @@ import {
 import {Fonts} from '../utils/fonts';
 
 import styles from './style';
-import {Ellipse} from 'react-native-svg';
 import style from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -101,9 +82,6 @@ export default class Splash extends Component {
       blueOpt: false,
       onOff: '',
     };
-    if (Platform.OS === 'android') {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
   }
 
   _openAppSetting = async () => {
@@ -337,55 +315,14 @@ export default class Splash extends Component {
     this.checkBluetooth();
     this.hasStoragePermission();
   }
-  // _start = () => {
-  //   Animated.timing(this.state.fadeValue, {
-  //     toValue: 1,
-  //     duration: 1000
-  //   }).start();
-  // };
-  toggleModal = () => {
-    this.setState({isVisible: !this.state.isVisible});
-  };
 
   render() {
-    let {animatedValue} = this.state;
     // this.checkBluetooth();
 
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar backColor />}
 
-        {/* <Image
-            source={require('../../Images/profileBack.jpg')}
-            style={styles.backgroundImage}
-          /> */}
-        {/* <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={styles.menuView}>
-              <Back
-                size={width * 0.08}
-                color="white"
-                name="keyboard-backspace"
-              />
-            </TouchableOpacity>
-            <View style={styles.searchView}>
-              <Search
-                name="search"
-                size={height * 0.04}
-                style={{marginLeft: width * 0.05}}
-                color="white"
-              />
-              <TextInput
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
-              />
-            </View>
-          </View>
-        </View> */}
         <View style={styles.headingContainer}>
           <View style={styles.headingInner}>
             <Settings
@@ -438,7 +375,7 @@ export default class Splash extends Component {
                   Scan barcode into websites
                 </Text>
               </View>
-              <ToggleSwitch
+              <Switch
                 isOn={this.state.hasCameraAccess}
                 onColor="#25AAE1"
                 offColor="lightgray"
@@ -454,7 +391,7 @@ export default class Splash extends Component {
                   Sounds indicating barcode scan
                 </Text>
               </View>
-              <ToggleSwitch
+              <Switch
                 isOn={false}
                 onColor="#25AAE1"
                 offColor="lightgray"
@@ -468,7 +405,7 @@ export default class Splash extends Component {
                   Using to Direct-Connect to equipment
                 </Text>
               </View>
-              <ToggleSwitch
+              <Switch
                 isOn={this.state.blueOpt}
                 onColor="#25AAE1"
                 offColor="lightgray"
@@ -484,7 +421,7 @@ export default class Splash extends Component {
                   Show nearby Direct-Connect equipment
                 </Text>
               </View>
-              <ToggleSwitch
+              <Switch
                 isOn={false}
                 onColor="#25AAE1"
                 offColor="lightgray"
