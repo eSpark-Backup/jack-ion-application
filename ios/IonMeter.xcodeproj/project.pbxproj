@@ -21,6 +21,7 @@
 		4497C098BAE04984AD34B38F /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4D800BFD423463B89F883BF /* Comfortaa-Regular.ttf */; };
 		487EB33B4FCD4CCC81C1B202 /* Hind-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E22B95B4A76F46A9A0F44939 /* Hind-Regular.ttf */; };
 		4F4836D6F8624CDE908DF1DE /* Aladin-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4A53E02370C437292ECF5E5 /* Aladin-Regular.ttf */; };
+		55DACA5A27FC240300F67A07 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 55DACA5927FC240300F67A07 /* GoogleService-Info.plist */; };
 		5BA00615C7F8489CAA6994A6 /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3BBCFB21674543C79F507CC2 /* Montserrat-SemiBold.ttf */; };
 		5FD94594E03340AAA7D6BD6A /* WorkSans-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EDC3BC333D34A22AB8E8F84 /* WorkSans-VariableFont_wght.ttf */; };
 		6E1E51B76CE647149C3F1A54 /* FiraCode-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5CD29DCEDCA149B0BAC5BBB9 /* FiraCode-VariableFont_wght.ttf */; };
@@ -75,7 +76,7 @@
 		13B07F961A680F5B00A75B9A /* IonMeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IonMeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = IonMeter/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = IonMeter/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = IonMeter/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = IonMeter/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = IonMeter/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = IonMeter/main.m; sourceTree = "<group>"; };
 		1620E044E4704D859DFC2F98 /* BalooChettan2-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooChettan2-Bold.ttf"; path = "../scr/assets/fonts/BalooChettan2-Bold.ttf"; sourceTree = "<group>"; };
@@ -95,6 +96,8 @@
 		4CEF5C5934EB484B82C6A4EB /* WorkSans-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "WorkSans-Italic-VariableFont_wght.ttf"; path = "../scr/assets/fonts/WorkSans-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		509AA2DD4CFD41F0AE546741 /* NotoSansJP-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Medium.otf"; path = "../scr/assets/fonts/NotoSansJP-Medium.otf"; sourceTree = "<group>"; };
 		549DBC6D85B148BE620A5BBF /* Pods-IonMeter-IonMeterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IonMeter-IonMeterTests.debug.xcconfig"; path = "Target Support Files/Pods-IonMeter-IonMeterTests/Pods-IonMeter-IonMeterTests.debug.xcconfig"; sourceTree = "<group>"; };
+		556665A027FAE02000BC79C7 /* IonMeter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = IonMeter.entitlements; path = IonMeter/IonMeter.entitlements; sourceTree = "<group>"; };
+		55DACA5927FC240300F67A07 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		58544E0A95774AE49333D0F3 /* BalooChettan2-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooChettan2-Bold.ttf"; path = "../src/assets/fonts/BalooChettan2-Bold.ttf"; sourceTree = "<group>"; };
 		5AA2D21766154F63830DAC31 /* NotoSansJP-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansJP-Bold.otf"; path = "../src/assets/fonts/NotoSansJP-Bold.otf"; sourceTree = "<group>"; };
 		5CD29DCEDCA149B0BAC5BBB9 /* FiraCode-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FiraCode-VariableFont_wght.ttf"; path = "../scr/assets/fonts/FiraCode-VariableFont_wght.ttf"; sourceTree = "<group>"; };
@@ -250,6 +253,8 @@
 		13B07FAE1A68108700A75B9A /* IonMeter */ = {
 			isa = PBXGroup;
 			children = (
+				55DACA5927FC240300F67A07 /* GoogleService-Info.plist */,
+				556665A027FAE02000BC79C7 /* IonMeter.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -468,6 +473,7 @@
 				A8C7D62A88644B188EF2574A /* Montserrat-Medium.ttf in Resources */,
 				5BA00615C7F8489CAA6994A6 /* Montserrat-SemiBold.ttf in Resources */,
 				CA3405942F9E4359BCB7E49C /* NotoSansJP-Bold.otf in Resources */,
+				55DACA5A27FC240300F67A07 /* GoogleService-Info.plist in Resources */,
 				D1A9722A800C45009ACBA31D /* NotoSansJP-Medium.otf in Resources */,
 				FDD36EBBA059473FA2BB1FAD /* NotoSansJP-Regular.otf in Resources */,
 				DD771D1BC41E422DB2E84116 /* NotoSansJP-Thin.otf in Resources */,
@@ -875,7 +881,9 @@
 			baseConfigurationReference = 837D96D3EAC869A6BB5BC033 /* Pods-IonMeter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = IonMeter/IonMeter.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X3XXLRP958;
 				ENABLE_BITCODE = NO;
@@ -899,7 +907,9 @@
 			baseConfigurationReference = 3C0E9BC7F603E7D3B7ED76A5 /* Pods-IonMeter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = IonMeter/IonMeter.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X3XXLRP958;
 				INFOPLIST_FILE = IonMeter/Info.plist;

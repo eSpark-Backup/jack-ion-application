@@ -220,7 +220,7 @@ class Tools extends Component {
           this.props.navigation.navigate('Settings');
           // Alert.alert(
           //   "You don't have access for the Camera",
-          //   'Kindly TurnOn Camera Permission from Settings to use Scanner',
+          //   'Kindly TurnOn Camera Permission to Access Camera',
           // );
           console.log('Denied');
         }
@@ -242,17 +242,17 @@ class Tools extends Component {
           if (result == RESULTS.DENIED) {
             this.setState({hasAccess: false});
             this.props.navigation.navigate('Settings');
-            // Alert.alert(
-            //   "You don't have access for the Camera",
-            //   'Kindly TurnOn Camera Permission from Settings to use Scanner',
-            // );
+            Alert.alert(
+              "You don't have access for the Camera",
+              'Kindly TurnOn Camera Permission to Access Camera',
+            );
             console.log('Denied');
           }
           if (result == RESULTS.BLOCKED) {
-            this.setState({hasAccess: false});
+            this.props.navigation.navigate('Settings');
             Alert.alert(
               "You don't have access for the Camera",
-              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+              'Kindly TurnOn Camera Permission to Access Camera',
             );
             console.log('Denied');
           }

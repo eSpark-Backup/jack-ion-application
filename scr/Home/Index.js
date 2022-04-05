@@ -23,6 +23,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 let fcmToken = '';
 // Components
 import styles from './style';
+import {PERMISSIONS, request} from 'react-native-permissions';
 
 const {width, height} = Dimensions.get('window');
 class Splash extends Component {
@@ -45,23 +46,27 @@ class Splash extends Component {
   }
 
   async requestLocationPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      //   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      //     // console.log('Access',)
-      //     // alert("You've access for the Location");
-      //   } else {
-      //     // alert("You don't have access for the Location");
-      //     // console.log('Denied',)
-      //   }
-    } catch (err) {
-      alert(err);
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+      } catch (err) {
+        alert(err);
+      }
+    }
+    if (Platform.OS == 'ios') {
+      request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        .then((result) => {
+          console.log('kia hai result location ka', result);
+        })
+        .catch((e) => {
+          alert(err);
+        });
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
@@ -76,6 +81,23 @@ class Splash extends Component {
         this.showNotifications(remoteMessage);
       });
       return unsubscribe;
+    } else {
+      console.log('status:', authStatus);
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+        this.onAppBootstrap();
+        this.createChannels();
+        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+          // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+          this.showNotifications(remoteMessage);
+        });
+        return unsubscribe;
+      }
     }
   }
 

@@ -127,22 +127,27 @@ export default class Splash extends Component {
         .then((result) => {
           console.log('kia hai result camera ka', result);
           if (result == RESULTS.GRANTED) {
-            this.setState({hasCameraAccess: true});
+            if (this.state.hasCameraAccess) {
+              this._openAppSetting();
+            } else {
+              this.setState({hasCameraAccess: true});
+            }
+            // this.setState({hasCameraAccess: true});
 
-            Alert.alert(
-              "You've access for the Camera",
-              'To Change the Permission Open Settings',
-              [
-                {text: 'Ok', style: 'cancel'},
-                {
-                  text: 'Open Settings',
-                  onPress: () =>
-                    openSettings().catch(() =>
-                      console.warn('cannot open settings!'),
-                    ),
-                },
-              ],
-            );
+            // Alert.alert(
+            //   "You've access for the Camera",
+            //   'To Change the Permission Open Settings',
+            //   [
+            //     {text: 'Ok', style: 'cancel'},
+            //     {
+            //       text: 'Open Settings',
+            //       onPress: () =>
+            //         openSettings().catch(() =>
+            //           console.warn('cannot open settings!'),
+            //         ),
+            //     },
+            //   ],
+            // );
           } else {
             this.setState({hasCameraAccess: false});
             alert("You don't have access for the Camera");

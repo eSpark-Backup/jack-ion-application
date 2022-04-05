@@ -327,8 +327,6 @@ PODS:
     - React-Core
   - react-native-image-picker (4.3.0):
     - React-Core
-  - react-native-image-resizer (1.4.5):
-    - React-Core
   - react-native-maps (0.29.4):
     - React-Core
   - react-native-netinfo (7.1.4):
@@ -413,12 +411,10 @@ PODS:
     - React-perflogger (= 0.64.0)
   - ReactNativeART (1.2.0):
     - React
-  - RNCAsyncStorage (1.15.6):
+  - RNCAsyncStorage (1.17.2):
     - React-Core
   - RNCCheckbox (0.5.9):
     - React-Core
-  - RNCMaskedView (0.1.10):
-    - React
   - RNCPushNotificationIOS (1.10.1):
     - React-Core
   - RNFBApp (13.0.1):
@@ -512,7 +508,6 @@ DEPENDENCIES:
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
-  - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -535,7 +530,6 @@ DEPENDENCIES:
   - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
-  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
@@ -636,8 +630,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
-  react-native-image-resizer:
-    :path: "../node_modules/react-native-image-resizer"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
@@ -682,8 +674,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCCheckbox:
     :path: "../node_modules/@react-native-community/checkbox"
-  RNCMaskedView:
-    :path: "../node_modules/@react-native-community/masked-view"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
   RNFBApp:
@@ -757,7 +747,6 @@ SPEC CHECKSUMS:
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-google-maps: 34517207071d54f3bc23c68752bbec0217bfc79e
   react-native-image-picker: 869530859570f2af86ae57bc48886a5e2367a825
-  react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-maps: a421fe6aeb74279597c4ea9598f25796108e2d89
   react-native-netinfo: c9b0719bce3b436cd30a3c879fd59de3f6d72476
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
@@ -778,9 +767,8 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: cad74a1eaa53ee6e7a3620231939d8fe2c6afcf0
   ReactCommon: cfe2b7fd20e0dbd2d1185cd7d8f99633fbc5ff05
   ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
-  RNCAsyncStorage: b7c6564ce662366dd44d0189456183ef7eda2d4d
+  RNCAsyncStorage: 303e413908008375ebec268aed419e4b23f61527
   RNCCheckbox: 6369808337432cdbd5025d62ceced2480b4c51df
-  RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
   RNFBApp: dda844e7084b590eb3d9bec1b2115cabbe4bc40e
   RNFBMessaging: 037ec36b58b6f68e9b2ae83c189eb388eaf48822

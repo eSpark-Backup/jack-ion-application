@@ -118,6 +118,7 @@ export default function UnitEdit({
   const [imageBase64, setImageBase64] = useState('');
   const [reasonBase64, setReasonBase64] = useState('');
   const [meterData, setMeterData] = useState([]);
+  const [selectedMeter, setSelectedMeter] = useState(1);
   const [addTypeInput, setAddTypeInput] = useState(false);
   const [letsFinish, setLetsFinish] = useState(false);
   const [letsUpdateMeterData, setLetsUpdateMeterData] = useState(false);
@@ -1021,7 +1022,7 @@ export default function UnitEdit({
 
     // console.log('Meter Data 1', unitDetails?.unit?.id);
     // console.log('Meter Data 2', meterData[1].reasons);
-    // console.log('data--->', data);
+    console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       console.log('ADD CHALA');
       const unitResponse = await api.post(
@@ -1036,7 +1037,8 @@ export default function UnitEdit({
         // console.log('datachecckk-->>', unitResponse?.data?.data);
       } else {
         setIsActivityLoader(false);
-        console.log('ADD RESPONSE FALSE MILA');
+        console.log('EDIT RESPONSE FALSE MILA');
+        console.log(unitResponse?.data);
         alert(unitResponse?.data?.message);
       }
       // console.log('Add unit response', unitResponse?.data);
@@ -1349,7 +1351,8 @@ export default function UnitEdit({
         longitude: item.longitude,
         defaultLatitude: propertyLat,
         defaultLongitude: propertyLong,
-        id: item.id,
+        ...(item.id != null && {id: item.id}),
+        // id: item.id,
         attachedTo_id: item.attachedTo_id,
         thumbnail: imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : null,
         utility_type_id: item.utility_type_id,
@@ -1980,6 +1983,7 @@ export default function UnitEdit({
 
   const getMeterData = async (data, index) => {
     callApi(true);
+    setSelectedMeter(index + 1);
     if (data.id) {
       console.log('DATA.ID', data.id);
       setDevEdit(true);
@@ -2582,7 +2586,7 @@ export default function UnitEdit({
                         Meter-
                         {newMeterFlag
                           ? meterListData.length + 1
-                          : newMeter.number}
+                          : selectedMeter}
                       </Text>
                     </View>
                     {sliderNumber < 6 ? (
@@ -4309,6 +4313,7 @@ export default function UnitEdit({
                                 longitudeDelta: longDelta,
                               }}
                               zoomEnabled={true}
+                              minZoomLevel={17}
                               provider={PROVIDER_GOOGLE}
                               showsUserLocation={true}
                               showsMyLocationButton={false}
@@ -5174,6 +5179,8 @@ export default function UnitEdit({
                             />
                           </TouchableOpacity>
                         )
+                      ) : loadManufacturers ? (
+                        <DotsLoader color="#25AAE1ec" />
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
