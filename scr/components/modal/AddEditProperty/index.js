@@ -1771,7 +1771,7 @@ export default function AddEditProperty({
                             />
                           </View>
                           {unitMix.map((item, index) => (
-                            <View style={{flexDirection: 'row'}}>
+                            <View key={index} style={{flexDirection: 'row'}}>
                               <TouchableOpacity
                                 style={styles.unitMixData}
                                 onPress={() => getRowData(item, index)}>

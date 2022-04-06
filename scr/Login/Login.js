@@ -75,7 +75,6 @@ export default class Login extends Component {
       email,
       password,
     });
-    console.log('yaa', response); //? this has token
     console.log(response.ok);
     if (!response.ok) {
       this.setState({

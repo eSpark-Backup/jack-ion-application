@@ -124,7 +124,6 @@ export default class Splash extends React.Component {
     const propertyData = this.props.navigation.state.params.item.item;
     this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
-    console.log('Property Data', propertyData?.data?.data?.property);
 
     console.log(
       'LIST DATA >>>>>',
@@ -137,17 +136,11 @@ export default class Splash extends React.Component {
     const transceiverRes = await api.get(`/property/transceivers/${id}`);
 
     if (transceiverRes?.data?.bool) {
-      console.log(
-        'transceiverRes',
-        transceiverRes?.data?.data?.transceivers[0],
-      );
-      console.log(
-        'transceiverRes',
-        transceiverRes?.data?.data?.transceivers[1],
-      );
+      console.log('transceiverRes', transceiverRes?.data?.data?.installs[0]);
+      console.log('transceiverRes', transceiverRes?.data?.data?.installs[1]);
       this.setState({
-        onlineUnits: transceiverRes?.data?.data?.transceivers[0],
-        offlineUnits: transceiverRes?.data?.data?.transceivers[1],
+        onlineUnits: transceiverRes?.data?.data?.installs[0],
+        offlineUnits: transceiverRes?.data?.data?.installs[1],
       });
     }
 
@@ -204,7 +197,6 @@ export default class Splash extends React.Component {
     this.context.getBillingCompany();
     this.context.getManagementCompany();
     const token = await EncryptedStorage.getItem('user_token');
-    console.log('Get Token', token);
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
@@ -217,7 +209,6 @@ export default class Splash extends React.Component {
 
   getMetersLocation = async (propertyId) => {
     const token = await EncryptedStorage.getItem('user_token');
-    console.log('Get Token', token);
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);
     }
@@ -901,7 +892,7 @@ export default class Splash extends React.Component {
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
         <CustumStatusBar />
         <View style={styles.container}>
-          <AddEditProperty
+          {/* <AddEditProperty
             modalVisible={this.state.isEditPropVisible}
             closeModal={this.onCancel}
             currLocate={this.state.propMarkers}
@@ -915,7 +906,7 @@ export default class Splash extends React.Component {
             type={'Edit'}
             flag={this.state.propertyflag}
             toggleflag={this.toggleflag}
-          />
+          /> */}
           {this.state.isLoading && <Loader />}
           <Drawer
             isVisible={this.state.isModalVisible}

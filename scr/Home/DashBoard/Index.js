@@ -19,6 +19,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {create} from 'apisauce';
 import Base_Url from '../../api/WebServices';
+import APIS from '../../api/SeviceApi';
 import {VictoryPie} from 'victory-native';
 
 //Packages
@@ -32,6 +33,7 @@ import CustumStatusBar from '../../components/StatusBar';
 import TextTicker from 'react-native-text-ticker';
 import Loader from '../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from '../../api/SeviceApi';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -85,67 +87,59 @@ export default class Splash extends Component {
   }
 
   async componentDidMount() {
-    console.log('What we Get', this.props.navigation);
+    // console.log('What we Get', this.props.navigation);
     this.setState({loadData: true});
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
-      // console.log('token aya', token);
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_Url,
-        headers: {Authorization: 'Bearer ' + token},
+      API.setHeader('Authorization', 'Bearer ' + token);
+    }
+
+    const recentPropIds = await AsyncStorage.getItem('@recent_Props');
+    const parsedIds = recentPropIds != null ? JSON.parse(recentPropIds) : [];
+
+    let data = {
+      ids: parsedIds,
+    };
+
+    const RVPRes = await API.post(`/dashboard/recent-view-properties`, data);
+
+    if (RVPRes.data?.bool) {
+      this.setState({
+        recentProperties: RVPRes?.data?.data,
       });
+    }
 
-      const recentPropIds = await AsyncStorage.getItem('@recent_Props');
-      const parsedIds = recentPropIds != null ? JSON.parse(recentPropIds) : [];
+    const chartRes = await API.get(`/dashboard/property-status-chart`);
+    if (chartRes?.data?.bool) {
+      this.setState({
+        onlineProps: chartRes?.data?.data?.property_status[0],
+        offlineProps: chartRes?.data?.data?.property_status[1],
+      });
+    }
 
-      let data = {
-        ids: parsedIds,
-      };
-
-      const RVPRes = await this.api.post(
-        `/dashboard/recent-view-properties`,
-        data,
-      );
-
-      if (RVPRes) {
-        this.setState({
-          recentProperties: RVPRes?.data?.data,
-        });
-      }
-
-      const chartRes = await this.api.get(`/dashboard/property-status-chart`);
-      if (chartRes?.data?.bool) {
-        this.setState({
-          onlineProps: chartRes?.data?.data?.property_status[0],
-          offlineProps: chartRes?.data?.data?.property_status[1],
-        });
-      }
-
-      const cardRes = await this.api.get(`/dashboard/cards`);
-      if (cardRes?.data?.bool) {
-        this.setState({
-          totalProperties: cardRes?.data?.data?.property?.total_properties,
-          propertiesThisWeek:
-            cardRes?.data?.data?.property?.current_week_properties,
-          propertiesPercent: cardRes?.data?.data?.property?.percentage_growth,
-          totalBuildings: cardRes?.data?.data?.building?.total_buildings,
-          buildingsThisWeek:
-            cardRes?.data?.data?.building?.current_week_buildings,
-          buildingsPercent: cardRes?.data?.data?.building?.percentage_growth,
-          totalMeters: cardRes?.data?.data?.meter?.total_Meters,
-          metersThisWeek: cardRes?.data?.data?.meter?.current_week_Meters,
-          metersPercent: cardRes?.data?.data?.meter?.percentage_growth,
-          totalUnits: cardRes?.data?.data?.units?.total_units,
-          totalDevices: cardRes?.data?.data?.devices?.total_devices,
-          markers: cardRes?.data?.data?.property_locations,
-          loadData: false,
-        });
-      } else {
-        this.setState({
-          loadData: false,
-        });
-      }
+    const cardRes = await API.get(`/dashboard/cards`);
+    if (cardRes?.data?.bool) {
+      this.setState({
+        totalProperties: cardRes?.data?.data?.property?.total_properties,
+        propertiesThisWeek:
+          cardRes?.data?.data?.property?.current_week_properties,
+        propertiesPercent: cardRes?.data?.data?.property?.percentage_growth,
+        totalBuildings: cardRes?.data?.data?.building?.total_buildings,
+        buildingsThisWeek:
+          cardRes?.data?.data?.building?.current_week_buildings,
+        buildingsPercent: cardRes?.data?.data?.building?.percentage_growth,
+        totalMeters: cardRes?.data?.data?.meter?.total_Meters,
+        metersThisWeek: cardRes?.data?.data?.meter?.current_week_Meters,
+        metersPercent: cardRes?.data?.data?.meter?.percentage_growth,
+        totalUnits: cardRes?.data?.data?.units?.total_units,
+        totalDevices: cardRes?.data?.data?.devices?.total_devices,
+        markers: cardRes?.data?.data?.property_locations,
+        loadData: false,
+      });
+    } else {
+      this.setState({
+        loadData: false,
+      });
     }
   }
 
