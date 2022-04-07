@@ -18,10 +18,7 @@ import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import {View as MotiView} from 'moti';
-import {create} from 'apisauce';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Base_Url from '../../../../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../../components/Loader';
 import {Svg, G} from 'react-native-svg';
 
@@ -43,11 +40,8 @@ import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
 import style from './style';
+import API from '../../../../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
-
-const api = create({
-  baseURL: Base_Url,
-});
 
 export const MyToolTip = (value, position) => {
   return (
@@ -308,7 +302,7 @@ const App = ({navigation}) => {
   }, []);
 
   const getUnitDetail = async () => {
-    const res = await api.get(`/property/equipment/unit/${testId}`);
+    const res = await API.get(`/property/equipment/unit/${testId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     if (res.data?.bool) {
       // setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
@@ -376,7 +370,7 @@ const App = ({navigation}) => {
 
     // console.log('Body Object', data);
 
-    const chartRes = await api.post(
+    const chartRes = await API.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
@@ -538,20 +532,14 @@ const App = ({navigation}) => {
   // }
 
   const getMeterTypes = async () => {
-    const res = await api.get('/property/equipment/meter/all-meters');
+    const res = await API.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
     // console.log('All Meters', res.data?.data);
   };
 
   const getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      // this.setState({token: token});
-      api.setHeader('Authorization', 'Bearer ' + token);
-      getUnitDetail();
-      getMeterTypes();
-    }
+    getUnitDetail();
+    getMeterTypes();
   };
 
   const iconSize = width * 0.08;
@@ -833,7 +821,7 @@ const App = ({navigation}) => {
         end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
       };
 
-      const chartRes = await api.post(
+      const chartRes = await API.post(
         `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
         date,
       );
@@ -898,7 +886,7 @@ const App = ({navigation}) => {
     ]);
   };
   const deleteUnit = async () => {
-    const response = await api.delete(`/property/equipment/unit/${testId}`);
+    const response = await API.delete(`/property/equipment/unit/${testId}`);
     alert(response?.data?.message);
     navigation.goBack();
   };
@@ -914,7 +902,7 @@ const App = ({navigation}) => {
 
   const deleteMeter = async () => {
     setDangerView(!dangerView);
-    const response = await api.delete(
+    const response = await API.delete(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     getToken();

@@ -3,7 +3,6 @@ import React, {Component, version} from 'react';
 import {
   Text,
   View,
-  StatusBar,
   Dimensions,
   TouchableOpacity,
   LayoutAnimation,
@@ -77,7 +76,6 @@ export default class Splash extends Component {
     }
   }
   async componentDidMount() {
-    console.log('this.context.isLoading', this.context);
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
@@ -212,7 +210,6 @@ export default class Splash extends Component {
     this.context.loadLoader();
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
-    // this.getToken();
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
       this.context.stopLoader();
@@ -677,12 +674,10 @@ export default class Splash extends Component {
             ) : null}
           </View>
           <View style={styles.propertyList}>
-            {this.context.propList.length < 1 && !this.context.isLoading ? (
-              this.state.noInternet ? (
-                <Text>Check Your Internet Connection</Text>
-              ) : (
-                <Text>No Properties to Show</Text>
-              )
+            {this.state.noInternet ? (
+              <Text>Check Your Internet Connection</Text>
+            ) : this.context.propList.length < 1 && !this.context.isLoading ? (
+              <Text>No Properties to Show</Text>
             ) : (
               <FlatList
                 data={this.context.propList}

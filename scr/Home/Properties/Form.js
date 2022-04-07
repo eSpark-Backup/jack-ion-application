@@ -2821,8 +2821,6 @@ export default class Splash extends React.Component {
   getToken = async () => {
     // setMeterListLoader(true);
     // this.setState({loadManufacturers: true, loadMeters: true});
-    this.context.getBillingCompany();
-    this.context.getManagementCompany();
     const token = await EncryptedStorage.getItem('user_token');
     if (token != null) {
       api.setHeader('Authorization', 'Bearer ' + token);

@@ -44,18 +44,15 @@ import {
 // Components
 import styles from './style';
 import {Fonts} from '../../../utils/fonts';
-import Base_URL from '../../../api/WebServices';
-import {create} from 'apisauce';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
+import API from '../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-const api = create({baseURL: Base_URL});
 
 export default class Splash extends React.Component {
   static contextType = ContextProp;
@@ -89,6 +86,7 @@ export default class Splash extends React.Component {
       companies: false,
       companiesLoader: false,
       selectLocation: false,
+      selectAddManuUtil: [],
       lat: 0,
       long: 0,
       markers: [],
@@ -115,12 +113,8 @@ export default class Splash extends React.Component {
 
   async componentDidMount() {
     this.setState({isLoading: true});
-    this.getToken();
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
+
     const propertyData = this.props.navigation.state.params.item.item;
     this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
@@ -133,7 +127,7 @@ export default class Splash extends React.Component {
 
   getPropertyDetails = async (id) => {
     this.setState({isLoading: true});
-    const transceiverRes = await api.get(`/property/transceivers/${id}`);
+    const transceiverRes = await API.get(`/property/transceivers/${id}`);
 
     if (transceiverRes?.data?.bool) {
       console.log('transceiverRes', transceiverRes?.data?.data?.installs[0]);
@@ -144,7 +138,7 @@ export default class Splash extends React.Component {
       });
     }
 
-    const propertyRes = await api.get(`/property/${id}`);
+    const propertyRes = await API.get(`/property/${id}`);
     console.log('PROPERTYRES', propertyRes?.data?.data?.property);
 
     const currPropData = propertyRes?.data?.data?.property;
@@ -184,7 +178,6 @@ export default class Splash extends React.Component {
       longitude: long,
     })
       .then((json) => {
-        console.log('JSON', json.results[0]);
         var locationName = json.results[0].formatted_address;
         this.setState({
           locationBtn: locationName,
@@ -193,33 +186,15 @@ export default class Splash extends React.Component {
       .catch((error) => console.warn(error));
   };
 
-  getToken = async () => {
-    this.context.getBillingCompany();
-    this.context.getManagementCompany();
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-
-    const ownerRes = await api.get('/property/owner/own');
-
-    console.log('ownerRes--->', ownerRes?.data?.data);
-    this.setState({ownerData: ownerRes?.data?.data});
-  };
-
   getMetersLocation = async (propertyId) => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
     this.setState({isLoading: true});
-    const metersLocation = await api.get(
+    const metersLocation = await API.get(
       `/property/location-meters/${propertyId}`,
     );
     console.log('Meters Location', metersLocation?.data?.data);
     if (metersLocation?.data?.bool) {
       this.setState({markers: metersLocation?.data?.data, isLoading: false});
-      let index = metersLocation?.data?.data.length - 1;
+      let index = metersLocation?.data?.data?.length - 1;
       this.setState({
         propMarkers: metersLocation?.data?.data[index]?.property?.position,
       });
@@ -237,8 +212,6 @@ export default class Splash extends React.Component {
   enableLocation = async () => {
     const location = await SystemSetting.isLocationEnabled();
     console.log('GPS', location);
-    // this.getToken();
-    // Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -294,7 +267,7 @@ export default class Splash extends React.Component {
         },
       });
       // this.getPropertyDetails(this.state.propertyId);
-      const propertyRes = await api.get(`/property/${this.state.propertyId}`);
+      const propertyRes = await API.get(`/property/${this.state.propertyId}`);
       console.log('PROPERTYRES', propertyRes?.data?.data?.property);
 
       this.setState({propertyData: propertyRes?.data?.data?.property});
@@ -320,24 +293,6 @@ export default class Splash extends React.Component {
     }
   };
 
-  toggleModalEditProp = () => {
-    this.setState({
-      isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
-    });
-    this.context.getBillingCompany();
-    this.context.getManagementCompany();
-    this.setState((prevState) => ({
-      ...prevState,
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        property: '',
-        property_id: '',
-        street: '', // update the value of specific key
-      },
-    }));
-  };
-
   onEditSucces = () => {
     this.setState({
       isEditPropVisible: false,
@@ -350,7 +305,6 @@ export default class Splash extends React.Component {
   onCancel = () => {
     this.setState({
       listData: this.props.navigation.state.params.item.item,
-      // isModalAdEditPropVisible: !this.state.isModalAdEditPropVisible,
       isEditPropVisible: false,
     });
     this.setState((prevState) => ({
@@ -364,167 +318,6 @@ export default class Splash extends React.Component {
         street: '', // update the value of specific key
       },
     }));
-  };
-
-  cancelAddType = () => {
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
-    // let deviceData = [...this.state.addDevice]; // copying the old datas array
-    // deviceData[0].select = '';
-    // deviceData[0].selectId = '';
-    // deviceData[1].select = '';
-    // deviceData[1].selectId = '';
-    // deviceData[2].select = '';
-    // deviceData[2].selectId = '';
-    this.setState({
-      addNewType: false,
-      showAddType: '',
-      addBilling: '',
-      addManagement: '',
-      // addManufacturer: '',
-      // addUtility: '',
-      // addMeter: '',
-      // addDevice: deviceData,
-      // devicesArray: [],
-      // modelArr: [],
-      // selectedDevice: {},
-      // addModelNumber: '',
-      // productNo: '',
-      // modelNo: '',
-    });
-  };
-
-  editProp = async () => {
-    if (this.state?.listData?.name === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          property: 'Invalid Property', // update the value of specific key
-        },
-      }));
-      ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          property: false, // update the value of specific key
-        },
-      }));
-    }
-    // if (this.state?.listData?.property_id === '') {
-    //   this.setState((prevState) => ({
-    //     ...prevState,
-    //     error: {
-    //       // object that we want to update
-    //       ...prevState.error, // keep all other key-value pairs
-    //       property_id: 'Invalid Custom ID', // update the value of specific key
-    //     },
-    //   }));
-    //   ToastAndroid.show('Invalid Property', ToastAndroid.SHORT);
-
-    //   return;
-    // } else {
-    //   this.setState((prevState) => ({
-    //     ...prevState,
-    //     error: {
-    //       // object that we want to update
-    //       ...prevState.error, // keep all other key-value pairs
-    //       property_id: false, // update the value of specific key
-    //     },
-    //   }));
-    // }
-    if (this.state.BillingCompanyId == null) {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          billingId: 'Please select Billing ID', // update the value of specific key
-        },
-      }));
-      ToastAndroid.show('Please Select Billing Company', ToastAndroid.SHORT);
-      return;
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          billingId: false, // update the value of specific key
-        },
-      }));
-    }
-    if (this.state?.listData?.street === '') {
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          street: 'Invalid Street Name', // update the value of specific key
-        },
-      }));
-      ToastAndroid.show('Invalid Street', ToastAndroid.SHORT);
-
-      return;
-    } else {
-      this.setState({isLoading: true});
-      this.setState((prevState) => ({
-        ...prevState,
-        error: {
-          // object that we want to update
-          ...prevState.error, // keep all other key-value pairs
-          street: false, // update the value of specific key
-        },
-      }));
-      const data = {
-        property_id: this.state.customId,
-        zipcode: this.state.listData.zipcode,
-        name: this.state.listData.name,
-        street: this.state.listData.street,
-        city: this.state.listData.city,
-        billing_company_id: this.state.BillingCompanyId,
-        management_company: this.state.managementCompany,
-        billing_company: this.state.BillingCompany,
-        management_company_id: this.state.managementCompanyId,
-        contact_name: this.state.listData.contact_name,
-        contact_title: this.state.listData.contact_title,
-        contact_phone: this.state.listData.contact_phone,
-        contact_email: this.state.listData.contact_email,
-        // maintainance_email: null,
-        // maintainance_name: null,
-        // maintainance_phone_number: null,
-        // maintainance_superviser_contact: null,
-        // maintainance_superviser_email: null,
-        // maintainance_superviser_name: null,
-        // office_contact_number: null,
-      };
-
-      const response = await api.patch(
-        `/property/update/${this.state?.listData?.id}`,
-        data,
-      );
-
-      console.log(response?.data);
-      this.setState({isLoading: false});
-      if (response?.data?.bool) {
-        this.toggleModalEditProp();
-      } else {
-        Alert.alert('Error', response?.data?.message);
-      }
-    }
   };
 
   naviagateToEquip = () => {
@@ -553,333 +346,6 @@ export default class Splash extends React.Component {
     this.props.navigation.navigate('Support');
   };
 
-  showMoreFn = (indexx) => {
-    // this.setState({
-    //   addNewType: false,
-    //   // showEditManufacturer: false,
-    //   // showAddManufacturer: false,
-    // });
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
-    this.state.dropDownShow.map((item, index) => {
-      if (index == indexx) {
-        let dropDownShow = [...this.state.dropDownShow];
-        console.log('el --->', dropDownShow[index]);
-        // let dropDownShow = [...this.state.dropDownShow];
-        // let index = markers.findIndex(el => console.log('el--->',el));
-        // dropDownShow[index] = { ...dropDownShow[index], key: false };
-        dropDownShow[index].value = true;
-        this.setState({dropDownShow});
-      } else {
-        let dropDownShow = [...this.state.dropDownShow];
-        console.log('el --->', dropDownShow[index]);
-        // let dropDownShow = [...this.state.dropDownShow];
-        // let index = markers.findIndex(el => console.log('el--->',el));
-        // dropDownShow[index] = { ...dropDownShow[index], key: false };
-        dropDownShow[index].value = false;
-        this.setState({dropDownShow});
-      }
-    });
-  };
-
-  selectMeterLocation = async () => {
-    console.log('Location ka batao', await SystemSetting.isLocationEnabled());
-    this.setState({selectLocation: true});
-  };
-
-  handleDropDownData = (value) => {
-    if (this.state.companies) {
-      this.setState({BillingCompany: value.name, BillingCompanyId: value.id});
-    } else {
-      this.setState({
-        managementCompany: value.manager_name,
-        managementCompanyId: value.id,
-      });
-    }
-    this.setState({open: !this.state.open});
-    this.setState((prevState) => ({
-      error: {
-        // object that we want to update
-        ...prevState.error, // keep all other key-value pairs
-        billingId: '',
-      },
-    }));
-  };
-  doneAddType = async (val, temp) => {
-    console.log('Show Add Type', this.state.showAddType);
-    if (this.state.showAddType == 'Utility' || val == 'Utility') {
-      let data = {
-        name: this.state.addUtility,
-      };
-      if (temp) {
-        this.setState({loadingState: true});
-      } else {
-        this.setState({loadingStateDev: true});
-      }
-      const UtilityResponse = await api.post(
-        '/property/equipment/utility-type',
-        data,
-      );
-      if (UtilityResponse?.data?.bool) {
-        console.log('datachecckk-->>', UtilityResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        if (!temp) {
-          this.setState({
-            showAddType: 'Manufacturer',
-            addNewType: true,
-            addNewUType: false,
-            addUtility: '',
-          });
-        } else {
-          this.cancelAddType();
-        }
-        this.setState({loadingState: false, loadingStateDev: false});
-        this.getToken();
-        alert(UtilityResponse?.data?.message);
-      } else {
-        alert(UtilityResponse?.data?.message);
-        this.setState({loadingState: false, loadingStateDev: false});
-      }
-    } else if (
-      this.state.showAddType == 'Manufacturer' ||
-      val == 'Manufacturer'
-    ) {
-      console.log('chala');
-      let utilIds = [];
-      for (let i = 0; i < this.state.selectAddManuUtil?.length; i++) {
-        utilIds.push(this.state.selectAddManuUtil[i].id);
-      }
-      let data = {
-        name: this.state.addManufacturer,
-        utility_type_id: utilIds,
-      };
-      this.setState({loadingStateDev: true});
-      const ManufacturersResponse = await api.post(
-        '/property/equipment/manufacturer/add',
-        data,
-      );
-      if (ManufacturersResponse?.data?.bool) {
-        // this.setState({loadManufacturers: true});
-        console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingStateDev: false});
-      } else {
-        alert(ManufacturersResponse?.data?.message);
-        this.setState({loadingStateDev: false});
-      }
-    } else if (
-      this.state.showAddType == 'Model Number' ||
-      val == 'Model Number'
-    ) {
-      let data = {
-        model_no: this.state.addModelNumber,
-        device_id: this.state.selectedDevice?.id,
-      };
-      this.setState({loadingStateDev: true});
-      const ModelNumberResponse = await api.post(
-        '/property/equipment/model-number/number',
-        data,
-      );
-      if (ModelNumberResponse?.data?.bool) {
-        console.log('datachecckk-->>', ModelNumberResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingStateDev: false});
-      } else {
-        alert(ModelNumberResponse?.data?.message);
-        this.setState({loadingStateDev: false});
-      }
-    } else if (this.state.showAddType == 'Meter' || val == 'Meter') {
-      let data = {
-        name: this.state.addMeter,
-      };
-      this.setState({loadingState: true});
-      const MeterResponse = await api.post(
-        '/property/equipment/meter/add-meter',
-        data,
-      );
-      if (MeterResponse?.data?.bool) {
-        console.log('datachecckk-->>', MeterResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingState: false});
-        alert(MeterResponse?.data?.message);
-      } else {
-        this.setState({loadingState: false});
-        alert(MeterResponse?.data?.message);
-      }
-    } else if (this.state.showAddType == 'Billing' || val == 'Billing') {
-      let data = {
-        name: this.state.addBilling,
-      };
-      this.setState({loadingStateBill: true});
-      const BillingResponse = await api.post(
-        '/property/billing-company/add',
-        data,
-      );
-      if (BillingResponse?.data?.bool) {
-        console.log('datachecckk-->>', BillingResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingStateBill: false});
-        alert(BillingResponse?.data?.message);
-      } else {
-        this.setState({loadingStateBill: false});
-        alert(BillingResponse?.data?.message);
-      }
-    } else if (this.state.showAddType == 'Management' || val == 'Management') {
-      let data = {
-        manager_name: this.state.addManagement,
-      };
-      console.log('Management Company data -->>', data);
-      this.setState({loadingStateManage: true});
-      const ManagementResponse = await api.post(
-        '/property/management-company/add',
-        data,
-      );
-      console.log('Management Company-->>', ManagementResponse?.data?.data);
-      if (ManagementResponse?.data?.bool) {
-        console.log('datachecckk-->>', ManagementResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-
-        this.setState({loadingStateManage: false});
-        alert(ManagementResponse?.data?.message);
-      } else {
-        this.setState({loadingStateManage: false});
-        alert(ManagementResponse?.data?.message);
-      }
-    } else {
-      this.setState({modelArr: []});
-      let data = {
-        name: this.state.addDevice[2].select,
-        manufacturer_id: this.state.addDevice[0].selectId,
-        device_type_id: this.state.addDevice[1].selectId,
-        model_nos: this.state.modelArr,
-        product_desc: this.state.productNo,
-      };
-      this.setState({loadingStateDev: true});
-      const DeviceTypesResponse = await api.post(
-        '/property/equipment/device/add',
-        data,
-      );
-      if (DeviceTypesResponse?.data?.bool) {
-        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
-        LayoutAnimation.configureNext({
-          duration: 300,
-          create: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-            property: LayoutAnimation.Properties.opacity,
-          },
-          update: {
-            type: LayoutAnimation.Types.easeInEaseOut,
-          },
-        });
-        this.getToken();
-        this.cancelAddType();
-        this.setState({loadingStateDev: false});
-        alert(DeviceTypesR4esponse?.data?.message);
-      } else {
-        this.setState({loadingStateDev: false});
-        alert(DeviceTypesResponse?.data?.message);
-      }
-    }
-  };
-
-  showAddNewType = (value) => {
-    LayoutAnimation.configureNext({
-      duration: 300,
-      create: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-      },
-    });
-    this.setState({addNewType: true});
-    this.setState({showAddType: value}, () => {
-      if (value == 'Model Number') {
-        this.setState({enableDevice: false});
-        console.log('Model Number Adding------');
-        this.getAllDevices();
-      }
-    });
-  };
-
-  handleCloseDropDown = () => {
-    this.setState({BillingCompany: 'BILLING COMPANY'});
-    this.setState({open: false});
-  };
-
   toggleflag = () => {
     console.log('TOGGLEFLAG');
     this.setState({propertyflag: false});
@@ -892,7 +358,7 @@ export default class Splash extends React.Component {
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
         <CustumStatusBar />
         <View style={styles.container}>
-          {/* <AddEditProperty
+          <AddEditProperty
             modalVisible={this.state.isEditPropVisible}
             closeModal={this.onCancel}
             currLocate={this.state.propMarkers}
@@ -906,7 +372,7 @@ export default class Splash extends React.Component {
             type={'Edit'}
             flag={this.state.propertyflag}
             toggleflag={this.toggleflag}
-          /> */}
+          />
           {this.state.isLoading && <Loader />}
           <Drawer
             isVisible={this.state.isModalVisible}
@@ -1009,7 +475,7 @@ export default class Splash extends React.Component {
                   draggable
                 />
 
-                {this.state.markers.length > 0 &&
+                {this.state.markers?.length > 0 &&
                   this.state.markers.map(
                     (marker) =>
                       marker?.position?.lat && (
@@ -1139,7 +605,7 @@ export default class Splash extends React.Component {
                           ]}>
                           {item == null || item == ''
                             ? '--'
-                            : this.state.utilTypes.length - 1 == index
+                            : this.state.utilTypes?.length - 1 == index
                             ? item
                             : item + ', '}
                         </Text>
@@ -1166,7 +632,7 @@ export default class Splash extends React.Component {
                           ]}>
                           {item == null || item == ''
                             ? '--'
-                            : this.state.manus.length - 1 == index
+                            : this.state.manus?.length - 1 == index
                             ? item
                             : item + ', '}
                         </Text>

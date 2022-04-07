@@ -21,20 +21,16 @@ import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import {DotsLoader} from 'react-native-indicator';
-import Base_URL from '../../../scr/api/WebServices';
 import Modal from 'react-native-modal';
 import {Header} from 'react-native-elements';
 import SplashScreen from 'react-native-splash-screen';
 import styles from './FilterStyle';
 import {RadioButton} from 'react-native-paper';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import ContextProp from './Context/propContext';
-import {create} from 'apisauce';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import SearchableDropDown from 'react-native-searchable-dropdown';
 
 const {width, height} = Dimensions.get('window');
-let api;
 
 export default class Splash extends Component {
   static contextType = ContextProp;

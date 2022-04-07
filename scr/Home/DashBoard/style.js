@@ -130,8 +130,16 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     margin: width * 0.02,
     borderRadius: 4,
-    elevation: width * 0.003,
     borderWidth: 1,
+    backgroundColor: 'white',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   mainDataContainer: {
     width: width * 1,
@@ -140,12 +148,19 @@ export default styles = StyleSheet.create({
   },
   infoViewContainer: {
     width: width * 0.9,
-    elevation: width * 0.03,
+    elevation: 5,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: height * 0.02,
     borderRadius: width * 0.05,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   dataFieldHeadings: {
     fontSize: width * 0.05,

@@ -17,13 +17,12 @@ import SplashScreen from 'react-native-splash-screen';
 import {withNavigation} from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
-import {create} from 'apisauce';
-import Base_URL from '../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
 let fcmToken = '';
 // Components
 import styles from './style';
 import {PERMISSIONS, request} from 'react-native-permissions';
+import API from '../api/SeviceApi';
 
 const {width, height} = Dimensions.get('window');
 class Splash extends Component {
@@ -67,6 +66,10 @@ class Splash extends Component {
   }
 
   async componentDidMount() {
+    const token = await EncryptedStorage.getItem('user_token');
+    if (token != null) {
+      API.setHeader('Authorization', 'Bearer ' + token);
+    }
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
@@ -125,18 +128,11 @@ class Splash extends Component {
     fcmToken = await messaging().getToken();
 
     console.log('TOKEN_______sss', fcmToken);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-    }
+
     let tokenfcm = {
       fcm_token: fcmToken,
     };
-    await this.api.post('/user/set-fcm-token', tokenfcm);
+    await API.post('/user/set-fcm-token', tokenfcm);
     // console.log('FCM TOKEN RES>>>>>>', res?.data);
   }
 

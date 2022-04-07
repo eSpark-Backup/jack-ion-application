@@ -1,14 +1,11 @@
 import React from 'react';
 import Context from './propContext';
-import {create} from 'apisauce';
-import Base_URL from '../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {Alert} from 'react-native';
+import API from '../../../api/SeviceApi';
 
 class GlobalState extends React.Component {
   componentDidMount() {
-    this.getToken();
     NetInfo.fetch().then((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
@@ -17,18 +14,6 @@ class GlobalState extends React.Component {
         : this.setState({isLoading: true});
     });
   }
-
-  getToken = async () => {
-    console.log('Get Token');
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-    }
-  };
 
   clearData = () => {
     this.setState({propList: []});
@@ -41,7 +26,7 @@ class GlobalState extends React.Component {
     let data = {
       offset: 0,
     };
-    const response = await this.api.post('/property/all', data);
+    const response = await API.post('/property/all', data);
     // console.log('respone property===>', response.data.data.properties);
     this.setState({
       offset: response?.data?.data?.offset,
@@ -66,7 +51,7 @@ class GlobalState extends React.Component {
       search: this.state.filterPropName,
       location: this.state.filterLocation,
     };
-    const response = await this.api.post('/property/all', data);
+    const response = await API.post('/property/all', data);
     // console.log('respone property===>', response.data.data);
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
@@ -99,7 +84,7 @@ class GlobalState extends React.Component {
 
   filterData = async (sort) => {
     this.setState({biller: sort.billing, filterWork: true, isLoading: true});
-    const response = await this.api.post('/property/all', sort);
+    const response = await API.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
       this.setState({
@@ -165,7 +150,7 @@ class GlobalState extends React.Component {
       contact_email: info.propContactEmail,
     };
     console.log('data--->', data);
-    this.api.post('/property/add', data).then((res) => {
+    API.post('/property/add', data).then((res) => {
       console.log(res.data);
       if (res?.data?.bool) {
         this.checkData();
@@ -177,20 +162,19 @@ class GlobalState extends React.Component {
 
   getBillingCompany = async () => {
     this.setState({isLoading: true});
-    const response = await this.api?.get('/property/billing-company/all');
+    const response = await API.get('/property/billing-company/all');
     // console.log(
     //   'Check billing company response',
     //   response?.data?.data?.billingCompany,
     // );
     this.setState({
       itemList: response?.data?.data?.billingCompany,
-      isLoading: false,
     });
   };
 
   getManagementCompany = async () => {
     this.setState({isLoading: true});
-    const response = await this.api?.get('/property/management-company/all');
+    const response = await API.get('/property/management-company/all');
     console.log(
       'Check management company response',
       response?.data?.data?.managementCompany,
@@ -219,7 +203,7 @@ class GlobalState extends React.Component {
 
     if (e) {
       this.setState({searchLoading: true});
-      const response = await this.api.post('/property/all', data);
+      const response = await API.post('/property/all', data);
       // console.log('Search property===>', response);
       this.setState({searchOffset: response?.data?.data?.offset});
       if (response?.data?.bool) {
@@ -243,7 +227,7 @@ class GlobalState extends React.Component {
     };
     if (this.state.loadFor) {
       this.setState({searchLoading: true});
-      const response = await this.api.post('/property/all', prop);
+      const response = await API.post('/property/all', prop);
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
         if (
@@ -320,7 +304,6 @@ class GlobalState extends React.Component {
             filterWork: this.state.filterWork,
             addProp: this.addProp,
             checkData: this.checkData,
-            getToken: this.getToken,
             getBillingCompany: this.getBillingCompany,
             getManagementCompany: this.getManagementCompany,
             clearData: this.clearData,

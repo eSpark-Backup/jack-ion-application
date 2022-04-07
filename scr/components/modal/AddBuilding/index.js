@@ -14,21 +14,17 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 //Packages
 
-import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-simple-toast';
 import Modal from 'react-native-modal';
 import Home from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
-import {create} from 'apisauce';
-import Base_URL from '../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 // Components
 
 import styles from './style';
+import API from '../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
-const api = create({baseURL: Base_URL});
 
 export default function AddbuildingModal({
   modalVisible,
@@ -55,11 +51,6 @@ export default function AddbuildingModal({
     buildingName: '',
   });
   const getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      console.log('It Worked', token);
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
     getLoopOfUnits();
   };
   useEffect(() => {
@@ -254,7 +245,7 @@ export default function AddbuildingModal({
   const handleAddbuildingApi = async (data) => {
     // console.log('check data-->', data)
     if (type == 'Multiple') {
-      const unitResponse = await api.post(
+      const unitResponse = await API.post(
         `/property/equipment/unit/add-multiple-units`,
         data,
       );
@@ -266,7 +257,7 @@ export default function AddbuildingModal({
         alert(unitResponse?.data?.message);
       }
     } else {
-      const unitResponse = await api.post(
+      const unitResponse = await API.post(
         `/property/equipment/building/add-building`,
         data,
       );

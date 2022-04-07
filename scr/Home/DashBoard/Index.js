@@ -17,9 +17,6 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {create} from 'apisauce';
-import Base_Url from '../../api/WebServices';
-import APIS from '../../api/SeviceApi';
 import {VictoryPie} from 'victory-native';
 
 //Packages
@@ -37,7 +34,7 @@ import API from '../../api/SeviceApi';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 12.75;
+const LATITUDE_DELTA = 70.0322;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default class Splash extends Component {
@@ -89,10 +86,6 @@ export default class Splash extends Component {
   async componentDidMount() {
     // console.log('What we Get', this.props.navigation);
     this.setState({loadData: true});
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      API.setHeader('Authorization', 'Bearer ' + token);
-    }
 
     const recentPropIds = await AsyncStorage.getItem('@recent_Props');
     const parsedIds = recentPropIds != null ? JSON.parse(recentPropIds) : [];
@@ -316,7 +309,7 @@ export default class Splash extends Component {
                   latitude: 39.0902,
                   longitude: -102.0,
                   latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: -2000,
+                  longitudeDelta: LONGITUDE_DELTA,
                 }}
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}

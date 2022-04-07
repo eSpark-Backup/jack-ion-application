@@ -25,10 +25,7 @@ import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
 import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
-import Base_URL from '../../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import TextTicker from 'react-native-text-ticker';
-import {create} from 'apisauce';
 import UpdateModal from '../../../../components/modal/UpdateModal';
 import {Header, Button, Icon as Iconx} from 'react-native-elements';
 import AddBuilding from '../../../../components/modal/AddBuilding/index';
@@ -44,6 +41,7 @@ import EditUnit from './Units/modals/UnitEdit';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustumStatusBar from '../../../../components/StatusBar';
+import API from '../../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
 let buildListViewRef;
 
@@ -106,7 +104,6 @@ export default class Splash extends Component {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.onFocusFunction();
     });
-    // this.getToken();
   }
 
   onFocusFunction = () => {
@@ -116,16 +113,7 @@ export default class Splash extends Component {
   };
 
   getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-      this.checkData();
-    }
+    this.checkData();
   };
   get_filterVal = async (serial, meterId) => {
     // console.log('Devce serial', serial, meterId);
@@ -136,7 +124,7 @@ export default class Splash extends Component {
   checkData = async () => {
     this.setState({filterWork: false, loader: true, loaderBuildings: true});
     const PropertyID = this.props.navigation.state.params.item.item.id;
-    const PropRes = await this.api.get(`/property/${PropertyID}`);
+    const PropRes = await API.get(`/property/${PropertyID}`);
     this.setState({
       unitCount: PropRes?.data?.data?.property?.unit_count,
       unitActualCount: PropRes?.data?.data?.property.unit_actual_count,
@@ -144,7 +132,7 @@ export default class Splash extends Component {
     console.log('PROPID', PropertyID);
     console.log('PROPRES', PropRes?.data?.data?.property);
 
-    const response = await this.api.post(
+    const response = await API.post(
       `/property/equipment/building/all-buildings/${PropertyID}`,
     );
     // console.log('Check response buildings--->', response);
@@ -161,7 +149,7 @@ export default class Splash extends Component {
         const data = {
           building_id: response?.data?.data[0].id,
         };
-        const unitResponse = await this.api.post(
+        const unitResponse = await API.post(
           `/property/equipment/unit/all-units`,
           data,
         );
@@ -219,7 +207,7 @@ export default class Splash extends Component {
     if (serial) {
       this.setState({loader: true});
 
-      const unitResponse = await this.api.post(
+      const unitResponse = await API.post(
         `/property/equipment/unit/all-units`,
         data,
       );
@@ -234,7 +222,7 @@ export default class Splash extends Component {
       }
     } else {
       this.setState({loader: true});
-      const unitResponse = await this.api.post(
+      const unitResponse = await API.post(
         `/property/equipment/unit/all-units`,
         data,
       );
@@ -259,7 +247,7 @@ export default class Splash extends Component {
     };
     if (e) {
       this.setState({searchLoading: true});
-      const unitResponse = await this.api.post(
+      const unitResponse = await API.post(
         `/property/equipment/unit/all-units`,
         data,
       );
@@ -401,7 +389,7 @@ export default class Splash extends Component {
   deleteUnit = async (id) => {
     console.log('ID', id);
     this.setState({loader: true});
-    const response = await this.api.delete(`/property/equipment/unit/${id}`);
+    const response = await API.delete(`/property/equipment/unit/${id}`);
     if (response?.data?.bool) {
       this.setState({currUnitIndex: null});
       alert(response?.data?.message);
@@ -442,7 +430,7 @@ export default class Splash extends Component {
 
   _openEditUnit = async (unitId) => {
     console.log('Unit ID', unitId);
-    const res = await this.api.get(`/property/equipment/unit/${unitId}`);
+    const res = await API.get(`/property/equipment/unit/${unitId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     this.setState({
       currUnitIndex: null,
@@ -800,7 +788,7 @@ export default class Splash extends Component {
     const data = {
       building_id: build.item.id,
     };
-    const unitResponse = await this.api.post(
+    const unitResponse = await API.post(
       `/property/equipment/unit/all-units`,
       data,
     );
@@ -849,9 +837,7 @@ export default class Splash extends Component {
   openFilter = async () => {
     this.context.getBillingCompany();
     this.setState({showFilter: true});
-    const unitResponse = await this.api.get(
-      `/property/equipment/meter/all-meters`,
-    );
+    const unitResponse = await API.get(`/property/equipment/meter/all-meters`);
     // console.log('Check meter add--->', unitResponse?.data?.data);
     this.setState({getUtilities: unitResponse?.data?.data});
   };
@@ -913,7 +899,7 @@ export default class Splash extends Component {
     console.log('updateBuilding');
 
     if (edit) {
-      const response = await this.api.patch(
+      const response = await API.patch(
         `/property/equipment/building/update-building/${id}`,
         params,
       );
@@ -924,9 +910,7 @@ export default class Splash extends Component {
         alert(response?.data?.message);
       }
     } else {
-      const response = await this.api.delete(
-        `/property/equipment/building/${id}`,
-      );
+      const response = await API.delete(`/property/equipment/building/${id}`);
       console.log('Check response', response?.data);
 
       if (response?.data?.bool) {

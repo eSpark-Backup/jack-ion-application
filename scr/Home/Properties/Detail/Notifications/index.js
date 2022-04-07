@@ -11,19 +11,14 @@ import {
 
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {create} from 'apisauce';
-import EncryptedStorage from 'react-native-encrypted-storage';
-// import {Menu, Divider} from 'react-native-paper';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 
 // Components
-import {Fonts} from '../../../../utils/fonts';
-import Base_URL from '../../../../api/WebServices';
 import styles from './style';
 import CustumStatusBar from '../../../../components/StatusBar';
 import Loader from '../../../../components/Loader';
+import API from '../../../../api/SeviceApi';
 
-const api = create({baseURL: Base_URL});
 const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
@@ -43,12 +38,7 @@ export default class Splash extends Component {
     }
   }
   async componentDidMount() {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-    const notificationsRes = await api.post(
+    const notificationsRes = await API.post(
       '/property/equipment/meter/notification-show',
     );
 
@@ -63,12 +53,7 @@ export default class Splash extends Component {
   notificationFilterApi = async (code) => {
     this.setState({LoaderState: true});
     if (code) {
-      const token = await EncryptedStorage.getItem('user_token');
-      if (token != null) {
-        // console.log('token aya', token);
-        api.setHeader('Authorization', 'Bearer ' + token);
-      }
-      const notificationsRes = await api.post(
+      const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
         {code: code},
       );
@@ -80,12 +65,7 @@ export default class Splash extends Component {
 
       this.setState({LoaderState: false});
     } else {
-      const token = await EncryptedStorage.getItem('user_token');
-      if (token != null) {
-        // console.log('token aya', token);
-        api.setHeader('Authorization', 'Bearer ' + token);
-      }
-      const notificationsRes = await api.post(
+      const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
       );
 

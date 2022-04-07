@@ -17,19 +17,16 @@ import Key from 'react-native-vector-icons/FontAwesome5';
 import styles from './style';
 import {Input} from 'react-native-elements';
 import {Fonts} from '../utils/fonts';
-import {create} from 'apisauce';
 import {Formik} from 'formik';
-import Base_URL from '../api/WebServices';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NetInfo from '@react-native-community/netinfo';
+import API from '../api/SeviceApi';
 
 const {width, height} = Dimensions.get('window');
 
 const clc = require('cli-color');
-
-const api = create({baseURL: Base_URL});
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label('Email'),
@@ -71,7 +68,7 @@ export default class Login extends Component {
 
   _checkCredentials = async (email, password) => {
     this.setState({isLoading: true});
-    const response = await api.post('/auth/login', {
+    const response = await API.post('/auth/login', {
       email,
       password,
     });

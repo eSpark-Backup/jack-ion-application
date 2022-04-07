@@ -18,9 +18,6 @@ import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import {View as MotiView} from 'moti';
-import {create} from 'apisauce';
-import Base_Url from '../../../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -38,11 +35,8 @@ import {
 import styles from './style';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
+import API from '../../../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
-
-const api = create({
-  baseURL: Base_Url,
-});
 
 const App = ({navigation}) => {
   const scrollViewRef = useRef();
@@ -243,7 +237,7 @@ const App = ({navigation}) => {
   }, []);
 
   const getUnitDetail = async () => {
-    const res = await api.get(`/property/equipment/unit/${testId}`);
+    const res = await API.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     console.log('Kia ha Meter INfo Data', meterInfo);
@@ -259,7 +253,7 @@ const App = ({navigation}) => {
 
     setLoadChartData(true);
 
-    const chartRes = await api.post(
+    const chartRes = await API.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
@@ -397,20 +391,16 @@ const App = ({navigation}) => {
   };
 
   const getMeterTypes = async () => {
-    const res = await api.get('/property/equipment/meter/all-meters');
+    const res = await API.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
     console.log('All Meters', res.data?.data);
   };
 
   const getToken = async () => {
     setLoading(true);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      console.log('token aya', token);
-      api.setHeader('Authorization', 'Bearer ' + token);
-      getUnitDetail();
-      getMeterTypes();
-    }
+
+    getUnitDetail();
+    getMeterTypes();
   };
 
   const testChartData = [
@@ -677,7 +667,7 @@ const App = ({navigation}) => {
     ]);
   };
   const deleteMeter = async () => {
-    const response = await api.delete(
+    const response = await API.delete(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     alert(response?.data?.message);

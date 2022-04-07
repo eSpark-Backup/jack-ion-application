@@ -31,8 +31,6 @@ import MapView, {PROVIDER_GOOGLE, Circle} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import SystemSetting from 'react-native-system-setting';
 import SearchableDropDown from 'react-native-searchable-dropdown';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {create} from 'apisauce';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-simple-toast';
 import NumericInput from 'react-native-numeric-input';
@@ -40,9 +38,8 @@ import NumericInput from 'react-native-numeric-input';
 //Component
 import styles from './style';
 import {Fonts} from '../../../utils/fonts';
-import Base_URL from '../../../api/WebServices';
-import style from './style';
 import clc from 'cli-color';
+import API from '../../../api/SeviceApi';
 
 export default function AddEditProperty({
   modalVisible,
@@ -60,7 +57,6 @@ export default function AddEditProperty({
   const LATITUDE_DELTA = 0.0322;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   const circleRef = useRef(null);
-  const api = create({baseURL: Base_URL});
 
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
   const [btnLoading, setBtnLoading] = useState(false);
@@ -260,7 +256,7 @@ export default function AddEditProperty({
       let uMdata = propertyData?.unit_mixes;
       let tGD = 0;
       let nOU = 0;
-      for (let i = 0; i < uMdata.length; i++) {
+      for (let i = 0; i < uMdata?.length; i++) {
         const singleTGD = uMdata[i].no_of_units * uMdata[i].gud;
         nOU = nOU + Number(uMdata[i].no_of_units);
         tGD = tGD + Number(singleTGD);
@@ -292,21 +288,16 @@ export default function AddEditProperty({
   };
 
   const callApi = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-
-    const ownerRes = await api.get('/property/owner/own');
+    const ownerRes = await API.get('/property/owner/own');
 
     console.log('ownerRes--->', ownerRes?.data?.data);
     setOwnerData(ownerRes?.data?.data);
 
-    const manuResponse = await api.get('/property/equipment/manufacturer/all');
+    const manuResponse = await API.get('/property/equipment/manufacturer/all');
 
     setAllManuList(manuResponse?.data?.data);
 
-    const utilRes = await api.get('/property/equipment/utility-type');
+    const utilRes = await API.get('/property/equipment/utility-type');
 
     let utilArr = [...utilAndManu];
     utilArr[0].data = utilRes?.data?.data;
@@ -433,11 +424,7 @@ export default function AddEditProperty({
 
   const deleteRow = async (index, id) => {
     if (type == 'Edit') {
-      const token = await EncryptedStorage.getItem('user_token');
-      if (token != null) {
-        api.setHeader('Authorization', 'Bearer ' + token);
-      }
-      const delUnitMix = await api.delete(`/property/unit-mix/unitMix/${id}`);
+      const delUnitMix = await API.delete(`/property/unit-mix/unitMix/${id}`);
       console.log('DELUNITMIX', delUnitMix);
       if (delUnitMix?.data?.bool) {
         let arr = [...unitMix];
@@ -566,16 +553,12 @@ export default function AddEditProperty({
   };
 
   const checkManufacture = async (item) => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-    const ManufacturersResponse = await api.get(
+    const ManufacturersResponse = await API.get(
       '/property/equipment/manufacturer/all',
     );
     console.log('ManufacturersResponse', ManufacturersResponse?.data);
     animate();
-    const delManu = await api.delete(`/property/pivot/${item.id}`);
+    const delManu = await API.delete(`/property/pivot/${item.id}`);
     console.log('DELMANU', delManu);
 
     let manuData = [...allManuList];
@@ -726,10 +709,7 @@ export default function AddEditProperty({
 
   const addProperty = async () => {
     setBtnLoading(true);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
+
     const selectUtilIds = [];
 
     const selectManuIds = [];
@@ -835,7 +815,7 @@ export default function AddEditProperty({
 
       console.log('PROPDATA', propData);
       if (type == 'Add') {
-        const res = await api.post(`/property/add`, propData);
+        const res = await API.post(`/property/add`, propData);
         console.log(res.data);
         if (res?.data?.bool) {
           clearInputs();
@@ -848,7 +828,7 @@ export default function AddEditProperty({
           Alert.alert('Error', res?.data?.message);
         }
       } else {
-        const response = await api.patch(
+        const response = await API.patch(
           `/property/update/${propertyData.id}`,
           propData,
         );
@@ -1204,7 +1184,7 @@ export default function AddEditProperty({
                         placeholder:
                           index == 1
                             ? utilAndManu[0].selectId
-                              ? utilAndManu[1].data.length > 0
+                              ? utilAndManu[1].data?.length > 0
                                 ? 'Select Manufacturer'
                                 : 'No Manufacturer'
                               : 'First Select Utility Type'
@@ -1291,10 +1271,7 @@ export default function AddEditProperty({
 
   const doneAddType = async (val, temp) => {
     console.log('Show Add Type', showAddType);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
+
     if (showAddType == 'Utility Type' || val == 'Utility') {
       let data = {
         name: addUtility,
@@ -1304,7 +1281,7 @@ export default function AddEditProperty({
       } else {
         setLoadingStateDev(true);
       }
-      const UtilityResponse = await api.post(
+      const UtilityResponse = await API.post(
         '/property/equipment/utility-type',
         data,
       );
@@ -1342,7 +1319,7 @@ export default function AddEditProperty({
         utility_type_id: utilIds,
       };
       setLoadingStateDev(true);
-      const ManufacturersResponse = await api.post(
+      const ManufacturersResponse = await API.post(
         '/property/equipment/manufacturer/add',
         data,
       );

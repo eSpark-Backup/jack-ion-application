@@ -41,9 +41,6 @@ import PropIcon from '../../../../../../../Images/proplocation.png';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/MaterialIcons';
-import {create} from 'apisauce';
-import Base_URL from '../../../../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
@@ -73,9 +70,9 @@ import MapView, {
 } from 'react-native-maps';
 import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
+import API from '../../../../../../api/SeviceApi';
 
 const {width, height} = Dimensions.get('window');
-const api = create({baseURL: Base_URL});
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -705,12 +702,8 @@ export default function UnitEdit({
   const callApi = async (oldDev) => {
     setReasons([]);
     setLoadManufacturers(true);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
 
-    const defaultUnitData = await api.get(
+    const defaultUnitData = await API.get(
       `/property/default-meter-device/${propertyId}`,
     );
 
@@ -745,7 +738,7 @@ export default function UnitEdit({
       // );
     }
 
-    const propertyData = await api.get(`/property/${propertyId}`);
+    const propertyData = await API.get(`/property/${propertyId}`);
 
     setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
     console.log('UNITMIXES');
@@ -762,18 +755,18 @@ export default function UnitEdit({
     setDefaultManuLis(manufacturers);
     setUtilTypes(utilities);
 
-    const DeviceTypesResponse = await api.get(
+    const DeviceTypesResponse = await API.get(
       '/property/equipment/device-type/all',
     );
     let deviceData = [...addDevice]; // copying the old datas array
     deviceData[0].data = DeviceTypesResponse?.data?.data;
     setAddDevice(deviceData);
-    const AttachedToResponse = await api.get(
+    const AttachedToResponse = await API.get(
       '/property/equipment/attached_to/attach',
     );
     // console.log('AttachedToResponse_________', AttachedToResponse?.data?.data);
     setAttachedToData(AttachedToResponse?.data?.data);
-    const reasoneResponce = await api.get(
+    const reasoneResponce = await API.get(
       '/property/equipment/unit/option-reasons/all',
     );
 
@@ -879,11 +872,8 @@ export default function UnitEdit({
 
   const getAllDevices = async () => {
     console.log('get all Devices-->>>');
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
-    const devicesResponse = await api.get(`/property/equipment/device/all`);
+
+    const devicesResponse = await API.get(`/property/equipment/device/all`);
     if (devicesResponse.ok) {
       console.log('cha;a', devicesResponse?.data?.data);
       setDevicesArray(devicesResponse?.data?.data);
@@ -896,10 +886,10 @@ export default function UnitEdit({
   const getDevice = async (some, index) => {
     console.log('get devices--->', some?.id);
     console.log('get devices--->', some);
-    // const deviceResponse = await api.get(
+    // const deviceResponse = await API.get(
     //   `/property/equipment/device/all/${some?.id}`,
     // );
-    // const defaultDeviceResponse = await api.get(
+    // const defaultDeviceResponse = await API.get(
     //   `/property/default-meter-device/${propertyId}`,
     // );
 
@@ -1025,7 +1015,7 @@ export default function UnitEdit({
     console.log('data--->', data);
     if (type == 'add' || type == 'addMeterDirect') {
       console.log('ADD CHALA');
-      const unitResponse = await api.post(
+      const unitResponse = await API.post(
         `/property/equipment/unit/add-unit`,
         data,
       );
@@ -1044,7 +1034,7 @@ export default function UnitEdit({
       // console.log('Add unit response', unitResponse?.data);
     } else {
       console.log('EDIT CHALA');
-      const unitResponse = await api.patch(
+      const unitResponse = await API.patch(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
       );
@@ -1076,7 +1066,7 @@ export default function UnitEdit({
     let data = {
       device_serial_number: slide2[0].value,
     };
-    const SerialResponse = await api.post(
+    const SerialResponse = await API.post(
       '/property/equipment/unit/get-meter-info',
       data,
     );
@@ -1800,7 +1790,7 @@ export default function UnitEdit({
       let data = {
         name: addManufacturer,
       };
-      const ManufacturersResponse = await api.post(
+      const ManufacturersResponse = await API.post(
         '/property/equipment/manufacturer/add',
         data,
       );
@@ -1828,7 +1818,7 @@ export default function UnitEdit({
         device_id: selectedDevice?.id,
       };
       setLoadingState(true);
-      const ModelNumberResponse = await api.post(
+      const ModelNumberResponse = await API.post(
         '/property/equipment/model-number/number',
         data,
       );
@@ -1855,7 +1845,7 @@ export default function UnitEdit({
         name: addUtility,
       };
       setLoadingState(true);
-      const UtilityResponse = await api.post(
+      const UtilityResponse = await API.post(
         '/property/equipment/utility-type',
         data,
       );
@@ -1884,7 +1874,7 @@ export default function UnitEdit({
         name: addAttached,
       };
       setLoadingState(true);
-      const AttachedToResponse = await api.post(
+      const AttachedToResponse = await API.post(
         '/property/equipment/attached_to/attach',
         data,
       );
@@ -1917,7 +1907,7 @@ export default function UnitEdit({
         model_nos: modelArr,
         product_desc: addProductNo,
       };
-      const DeviceTypesResponse = await api.post(
+      const DeviceTypesResponse = await API.post(
         '/property/equipment/device/add',
         data,
       );
@@ -2028,7 +2018,7 @@ export default function UnitEdit({
     let deviceData = [...slide1];
     deviceData[0].selectId = data.device.manufacturer_id;
     deviceData[1].selectId = data.device_id;
-    const manuData = await api.get(`/property/equipment/manufacturer/all`);
+    const manuData = await API.get(`/property/equipment/manufacturer/all`);
     let manuLis = [];
     if (manuData.data.bool) {
       manuLis = manuData.data.data;
