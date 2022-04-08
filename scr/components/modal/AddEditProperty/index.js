@@ -424,7 +424,7 @@ export default function AddEditProperty({
 
   const deleteRow = async (index, id) => {
     if (type == 'Edit') {
-      const delUnitMix = await API.delete(`/property/unit-mix/unitMix/${id}`);
+      const delUnitMix = await API.post(`/property/unit-mix/unitMix/${id}`);
       console.log('DELUNITMIX', delUnitMix);
       if (delUnitMix?.data?.bool) {
         let arr = [...unitMix];
@@ -486,12 +486,10 @@ export default function AddEditProperty({
     dropDownShow.map((item, index) => {
       if (index == indexx) {
         let dropDownVal = [...dropDownShow];
-        console.log('el --->', dropDownVal[index]);
         dropDownVal[index].value = true;
         setDropDownShow(dropDownVal);
       } else {
         let dropDownVal = [...dropDownShow];
-        console.log('el --->', dropDownVal[index]);
         dropDownVal[index].value = false;
         setDropDownShow(dropDownVal);
       }
@@ -558,7 +556,7 @@ export default function AddEditProperty({
     );
     console.log('ManufacturersResponse', ManufacturersResponse?.data);
     animate();
-    const delManu = await API.delete(`/property/pivot/${item.id}`);
+    const delManu = await API.post(`/property/pivot/${item.id}`);
     console.log('DELMANU', delManu);
 
     let manuData = [...allManuList];
@@ -828,14 +826,15 @@ export default function AddEditProperty({
           Alert.alert('Error', res?.data?.message);
         }
       } else {
-        const response = await API.patch(
+        const response = await API.post(
           `/property/update/${propertyData.id}`,
           propData,
         );
         console.log(response?.data);
+        closeModal();
         if (response?.data?.bool) {
-          clearInputs();
           addedSuccessfully();
+          clearInputs();
           setBtnLoading(false);
           Alert.alert('Success', response?.data?.message);
         } else {

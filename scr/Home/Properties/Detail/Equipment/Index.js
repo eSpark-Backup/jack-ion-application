@@ -389,7 +389,7 @@ export default class Splash extends Component {
   deleteUnit = async (id) => {
     console.log('ID', id);
     this.setState({loader: true});
-    const response = await API.delete(`/property/equipment/unit/${id}`);
+    const response = await API.post(`/property/equipment/unit/${id}`);
     if (response?.data?.bool) {
       this.setState({currUnitIndex: null});
       alert(response?.data?.message);
@@ -899,7 +899,7 @@ export default class Splash extends Component {
     console.log('updateBuilding');
 
     if (edit) {
-      const response = await API.patch(
+      const response = await API.post(
         `/property/equipment/building/update-building/${id}`,
         params,
       );
@@ -910,7 +910,7 @@ export default class Splash extends Component {
         alert(response?.data?.message);
       }
     } else {
-      const response = await API.delete(`/property/equipment/building/${id}`);
+      const response = await API.post(`/property/equipment/building/${id}`);
       console.log('Check response', response?.data);
 
       if (response?.data?.bool) {

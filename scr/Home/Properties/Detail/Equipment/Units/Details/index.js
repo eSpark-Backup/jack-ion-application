@@ -886,7 +886,7 @@ const App = ({navigation}) => {
     ]);
   };
   const deleteUnit = async () => {
-    const response = await API.delete(`/property/equipment/unit/${testId}`);
+    const response = await API.post(`/property/equipment/unit/${testId}`);
     alert(response?.data?.message);
     navigation.goBack();
   };
@@ -902,7 +902,7 @@ const App = ({navigation}) => {
 
   const deleteMeter = async () => {
     setDangerView(!dangerView);
-    const response = await API.delete(
+    const response = await API.post(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     getToken();

@@ -667,7 +667,7 @@ const App = ({navigation}) => {
     ]);
   };
   const deleteMeter = async () => {
-    const response = await API.delete(
+    const response = await API.post(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     alert(response?.data?.message);

@@ -1034,7 +1034,7 @@ export default function UnitEdit({
       // console.log('Add unit response', unitResponse?.data);
     } else {
       console.log('EDIT CHALA');
-      const unitResponse = await API.patch(
+      const unitResponse = await API.post(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
       );
