@@ -1,4 +1,4 @@
-import React, {Component, version} from 'react';
+import React, {Component} from 'react';
 
 import {
   Text,
@@ -119,10 +119,15 @@ export default class Splash extends Component {
       const parsedIds =
         recentPropIds != null ? JSON.parse(recentPropIds) : null;
       let ids = [...parsedIds];
-      console.log('IDS', ids);
-      ids.push(item.id);
-      const jsonIds = JSON.stringify(ids);
-      await AsyncStorage.setItem('@recent_Props', jsonIds);
+      let found = ids.includes(item.id);
+      if (!found) {
+        if (ids.length > 9) {
+          ids.shift();
+        }
+        ids.push(item.id);
+        const jsonIds = JSON.stringify(ids);
+        await AsyncStorage.setItem('@recent_Props', jsonIds);
+      }
     }
   };
 

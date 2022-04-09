@@ -504,11 +504,13 @@ export default class Splash extends Component {
                 <Text style={{fontSize: width * 0.05}}>Property Status</Text>
               </View>
               <View style={styles.barView}>
+                <Text style={{position: 'absolute'}}>Property Status</Text>
                 <VictoryPie
                   width={width * 0.75}
                   height={width * 0.75}
                   innerRadius={width * 0.35}
                   labelRadius={width * 0.28}
+                  padAngle={1}
                   data={[
                     {x: onlineProps, y: onlineProps},
                     {x: offlineProps, y: offlineProps},

@@ -709,38 +709,37 @@ export default class Splash extends React.Component {
                   </View>
                 </View>
 
-                <View style={styles.barViewContainer}>
-                  <View style={styles.barView}>
-                    <Text style={{position: 'absolute'}}>
-                      {onlineUnits == 0 && offlineUnits == 0
-                        ? 'No Transceiver'
-                        : 'Transceiver'}
-                    </Text>
-                    <VictoryPie
-                      width={width * 0.75}
-                      height={width * 0.75}
-                      innerRadius={width * 0.35}
-                      labelRadius={width * 0.28}
-                      data={[
-                        {x: onlineUnits, y: onlineUnits},
-                        {x: offlineUnits, y: offlineUnits},
-                      ]}
-                      colorScale={['#175CA1', '#DCDCDC']}
-                      style={{
-                        labels: {
-                          fill: 'white',
-                          fontWeight: 'bold',
-                          alignItems: 'center',
-                        },
-                      }}
-                    />
-                  </View>
+                <View style={styles.barView}>
+                  <Text style={{position: 'absolute'}}>
+                    {onlineUnits == 0 && offlineUnits == 0
+                      ? 'No Installations'
+                      : 'Installation'}
+                  </Text>
+                  <VictoryPie
+                    width={width * 0.75}
+                    height={width * 0.75}
+                    innerRadius={width * 0.35}
+                    labelRadius={width * 0.28}
+                    padAngle={1}
+                    data={[
+                      {x: onlineUnits, y: onlineUnits},
+                      {x: offlineUnits, y: offlineUnits},
+                    ]}
+                    colorScale={['#175CA1', '#ff1414']}
+                    style={{
+                      labels: {
+                        fill: 'white',
+                        fontWeight: 'bold',
+                        alignItems: 'center',
+                      },
+                    }}
+                  />
                 </View>
                 <View style={styles.onlineOfflineView}>
                   <View style={styles.onlineView} />
-                  <Text style={styles.onlineText}>Online</Text>
+                  <Text style={styles.onlineText}>Complete</Text>
                   <View style={styles.offlineView} />
-                  <Text style={styles.offlineText}>Not Installed</Text>
+                  <Text style={styles.offlineText}>Incomplete</Text>
                 </View>
               </View>
             </View>

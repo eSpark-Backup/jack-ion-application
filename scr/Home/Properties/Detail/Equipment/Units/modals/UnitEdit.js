@@ -94,6 +94,7 @@ export default function UnitEdit({
   unitDetails,
   unitsArray,
   openModal,
+  unitMixesId,
   type,
 }) {
   const [meterListData, setMeterListData] = useState([]);
@@ -221,6 +222,7 @@ export default function UnitEdit({
   const [selectUtil, setSelectUtil] = useState([]);
   const [unitMix, setUnitMix] = useState([]);
   const [unitMixId, setUnitMixId] = useState(null);
+  const [selectedUnitMix, setSelectedUnitMix] = useState('');
   const [selectedUtil, setSelectedUtil] = useState('');
   const [selectedUtilId, setSelectedUtilId] = useState(null);
   const [selectedDevId, setSelectedDevId] = useState(null);
@@ -296,6 +298,7 @@ export default function UnitEdit({
   });
   const [error, setError] = useState({
     errorUnits: '',
+    errorUnitMix: '',
   });
 
   const verticalOffset = useRef(-180);
@@ -690,6 +693,7 @@ export default function UnitEdit({
       ...oldState,
       errorUnits: '',
     }));
+    setUnitMix([]);
     closeModal();
     if (type == 'addMeterDirect' || type == 'add') {
       setState((oldState) => ({
@@ -739,9 +743,21 @@ export default function UnitEdit({
     }
 
     const propertyData = await API.get(`/property/${propertyId}`);
-
-    setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
+    const Mixes = propertyData?.data?.data?.property?.unit_mixes;
+    const unitMixes = Mixes.map((item) => {
+      const {select_option: name, ...rest} = item;
+      return {name, ...rest};
+    });
+    setUnitMix(unitMixes);
+    // setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
+    setUnitMixId(unitMixesId);
+    unitMixes?.map((item) => {
+      if (item.id == unitMixesId) {
+        setSelectedUnitMix(item.name);
+      }
+    });
     console.log('UNITMIXES');
+
     const propManus = propertyData?.data?.data.property.utility_manufacturers;
 
     let manufacturers = [];
@@ -993,6 +1009,18 @@ export default function UnitEdit({
       setError((oldState) => ({
         ...oldState,
         errorUnits: '',
+      }));
+    }
+    if (unitMixId == null) {
+      setError((oldState) => ({
+        ...oldState,
+        errorUnitMix: 'Please select Unit Mix',
+      }));
+      return;
+    } else {
+      setError((oldState) => ({
+        ...oldState,
+        errorUnitMix: '',
       }));
     }
     if (
@@ -1708,6 +1736,7 @@ export default function UnitEdit({
     setAddNewType(false);
     setShowAddType('');
     setUnitMixId(null);
+    setSelectedUnitMix('');
     setDefaultDeviceValues(false);
     setDefaultMeterValues(false);
     setNewMeterFlag(true);
@@ -1988,6 +2017,11 @@ export default function UnitEdit({
     setDefaultDeviceValues(false);
     setNewMeterFlag(false);
     setUnitMixId(data.unit_mix_id);
+    unitMix?.map((item) => {
+      if (item.id == data.unit_mix_id) {
+        setSelectedUnitMix(item.name);
+      }
+    });
     setReasonArr(data.reasons);
     setLat(data.latitude);
     setLong(data.longitude);
@@ -5034,6 +5068,61 @@ export default function UnitEdit({
                       {error.errorUnits ? (
                         <HelperText type="error" visible={error.errorUnits}>
                           {error.errorUnits}
+                        </HelperText>
+                      ) : null}
+                    </View>
+                    <View style={styles.desciptionContainer}>
+                      <Text style={styles.desciptionHeading}>UNIT MIX*</Text>
+                    </View>
+                    <View style={[styles.inputContainer]}>
+                      <SearchableDropdown
+                        onItemSelect={(item) => {
+                          setSelectedUnitMix(item.name);
+                          setUnitMixId(item.id);
+                        }}
+                        containerStyle={{
+                          marginVertical: width * 0.02,
+                        }}
+                        itemStyle={{
+                          padding: width * 0.027,
+                          backgroundColor: '#fff',
+                          borderColor: '#bbb',
+                          borderWidth: width * 0.0015,
+                          borderRadius: width * 0.015,
+                          margin: width * 0.005,
+                        }}
+                        itemTextStyle={{color: '#222'}}
+                        itemsContainerStyle={{height: width * 0.2, zIndex: 1}}
+                        items={unitMix}
+                        resetValue={false}
+                        textInputProps={{
+                          placeholder: 'Select Unit Mix',
+                          underlineColorAndroid: 'transparent',
+                          dense: true,
+                          style: {
+                            width: width * 0.8,
+                            padding: width * 0.027,
+                            margin: 0,
+                            borderRadius: width * 0.015,
+                            height: width * 0.13,
+                            backgroundColor: '#F6F6F6',
+                            borderWidth: width * 0.0019,
+                          },
+                          onTextChange: (text) => {
+                            console.log(text);
+                          },
+                          value: setTimeout(() => selectedUnitMix, 200),
+                          defaultValue: selectedUnitMix,
+                        }}
+                        listProps={{
+                          nestedScrollEnabled: true,
+                        }}
+                      />
+                    </View>
+                    <View style={{width: '80%'}}>
+                      {error.errorUnitMix ? (
+                        <HelperText type="error" visible={error.errorUnitMix}>
+                          {error.errorUnitMix}
                         </HelperText>
                       ) : null}
                     </View>

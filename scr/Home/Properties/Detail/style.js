@@ -221,10 +221,7 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     height: width * 0.66,
     width: width * 0.66,
-    // backgroundColor: 'white',
-    // borderRadius: width * 0.6,
-    marginVertical: height * 0.02,
-    // elevation: height * 0.01,
+    marginVertical: width * 0.08,
   },
   barText: {
     textAlign: 'center',
@@ -410,7 +407,6 @@ export default styles = StyleSheet.create({
   onlineOfflineView: {
     flexDirection: 'row',
     width: width * 1,
-    height: height * 0.05,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -430,7 +426,7 @@ export default styles = StyleSheet.create({
     width: width * 0.035,
     height: width * 0.035,
     borderRadius: 100,
-    backgroundColor: '#DCDCDC',
+    backgroundColor: '#ff1414',
   },
   offlineText: {
     fontSize: width * 0.03,

@@ -51,6 +51,7 @@ export default class Splash extends Component {
     super();
     this.state = {
       changed: false,
+      unitMixesId: '',
       unitCount: null,
       unitActualCount: null,
       flag: true,
@@ -432,6 +433,7 @@ export default class Splash extends Component {
     console.log('Unit ID', unitId);
     const res = await API.get(`/property/equipment/unit/${unitId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
+    this.setState({unitMixesId: res.data?.data?.unit?.unit_mix_id});
     this.setState({
       currUnitIndex: null,
       unitMeters: res.data?.data?.unit?.unit_meter,
@@ -1279,6 +1281,7 @@ export default class Splash extends Component {
                 buildingName={this.state.buildingData.name}
                 buildingId={this.state.editBuildId}
                 unitDetails={this.state.unitDatax.data}
+                unitMixesId={this.state.unitMixesId}
                 // handleEditUnit={() => {
                 //   this.setState({isEditUnitModalVisible: false});
                 // }}

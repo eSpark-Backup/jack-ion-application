@@ -79,10 +79,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: height * 0.02,
-    // backgroundColor: 'white',
-    // borderRadius: width * 0.6,
-    // elevation: width * 0.01,
+    marginVertical: width * 0.06,
   },
   barText: {
     textAlign: 'center',
@@ -93,7 +90,6 @@ export default styles = StyleSheet.create({
   onlineOfflineView: {
     flexDirection: 'row',
     width: width * 1,
-    height: height * 0.05,
     justifyContent: 'center',
     alignItems: 'center',
   },
