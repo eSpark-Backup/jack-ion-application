@@ -87,6 +87,7 @@ export default function AddEditProperty({
   const [locationBtn, setLocationBtn] = useState('');
   const [CustomId, setCustomId] = useState('');
   const [unitCount, setUnitCount] = useState('');
+  const [actualUnitCount, setActualUnitCount] = useState('');
   const [unitMix, setUnitMix] = useState([]);
   const [sqft, setSqft] = useState('');
   const [unitType, setUnitType] = useState('');
@@ -246,6 +247,7 @@ export default function AddEditProperty({
       setOwnerName(propertyData?.owner);
       setUnitMix(propertyData?.unit_mixes);
       setUnitCount(propertyData?.unit_count?.toString());
+      setActualUnitCount(propertyData?.unit_actual_count);
       setRadialDis(propertyData?.radial_dist);
       setContactName(propertyData?.contact_name);
       setContactPhone(propertyData?.contact_phone);
@@ -706,8 +708,6 @@ export default function AddEditProperty({
   };
 
   const addProperty = async () => {
-    setBtnLoading(true);
-
     const selectUtilIds = [];
 
     const selectManuIds = [];
@@ -720,7 +720,6 @@ export default function AddEditProperty({
       }));
 
       Toast.show('Invalid Property Name', Toast.SHORT);
-      setBtnLoading(false);
       return;
     } else {
       setError((oldState) => ({
@@ -735,7 +734,6 @@ export default function AddEditProperty({
       }));
 
       Toast.show('Invalid Street', Toast.SHORT);
-      setBtnLoading(false);
       return;
     } else {
       setError((oldState) => ({
@@ -751,7 +749,6 @@ export default function AddEditProperty({
       }));
 
       Toast.show('Please select a Utility Type', Toast.SHORT);
-      setBtnLoading(false);
       return;
     } else {
       console.log('MANUFACTURERS ARRAY', manufacturersArray);
@@ -779,14 +776,21 @@ export default function AddEditProperty({
         utilType: '',
       }));
     }
+    if (type != 'Add' && unitCount < actualUnitCount) {
+      Toast.show(
+        'You have already added units greater than Unit Count',
+        Toast.SHORT,
+      );
+      return;
+    }
     //! -------------------------+++
 
     if (!locationSelected) {
       Alert.alert('Location Required', 'Please Select Property Location');
-      setBtnLoading(false);
       return;
     } else {
       setSelectLocation(false);
+      setBtnLoading(true);
 
       // console.log('Before', this.state.info.propName);
       // const info = { ...this.state.info, propName: 'Good HAI' }

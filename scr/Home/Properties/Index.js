@@ -41,6 +41,7 @@ import AddEditProperty from '../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {
   check,
   openSettings,
@@ -472,7 +473,7 @@ export default class Splash extends Component {
       <>
         <CustumStatusBar />
         <View style={styles.container}>
-          {this.context.isLoading && <Loader />}
+          {/* {this.context.isLoading && <Loader />} */}
           <AddEditProperty
             modalVisible={this.state.isAddPropVisible}
             closeModal={this.closeAddProp}
@@ -681,6 +682,86 @@ export default class Splash extends Component {
           <View style={styles.propertyList}>
             {this.state.noInternet ? (
               <Text>Check Your Internet Connection</Text>
+            ) : this.context.isLoading ? (
+              <View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+                <View style={styles.skeletonMainContainer}>
+                  <SkeletonPlaceholder>
+                    <View style={styles.skeletonInnerContainer}>
+                      <View style={styles.skeletonIcon} />
+                      <View>
+                        <View style={styles.skeletonTitle} />
+                        <View style={styles.skeletonDescription} />
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+              </View>
             ) : this.context.propList.length < 1 && !this.context.isLoading ? (
               <Text>No Properties to Show</Text>
             ) : (

@@ -226,4 +226,29 @@ export default styles = StyleSheet.create({
     top: height * -0.01,
     overflow: 'hidden',
   },
+  skeletonMainContainer: {
+    width: width * 0.9,
+    marginVertical: width * 0.034,
+  },
+  skeletonInnerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  skeletonIcon: {
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: 4,
+    marginRight: 20,
+  },
+  skeletonTitle: {
+    width: width * 0.6,
+    height: width * 0.07,
+    borderRadius: 4,
+  },
+  skeletonDescription: {
+    marginTop: width * 0.03,
+    width: width * 0.5,
+    height: width * 0.05,
+    borderRadius: 4,
+  },
 });

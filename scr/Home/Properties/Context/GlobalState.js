@@ -36,7 +36,7 @@ class GlobalState extends React.Component {
       this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
-      Alert.alert('Error', 'Network Issues');
+      Alert.alert(response?.data?.message);
       this.setState({isLoading: false});
     }
   };
@@ -77,7 +77,7 @@ class GlobalState extends React.Component {
         this.setState({listLoader: false});
       }
     } else {
-      Alert.alert('Error', 'Network Issues');
+      Alert.alert(response?.data?.message);
       this.setState({listLoader: false});
     }
   };
@@ -211,7 +211,7 @@ class GlobalState extends React.Component {
         // console.log('Search property===>', response.data.data.properties);
         this.setState({searchLoading: false});
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert(response?.data?.message);
         this.setState({searchLoading: false});
       }
     } else {
@@ -250,7 +250,7 @@ class GlobalState extends React.Component {
           }
         }, 3000);
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert(response?.data?.message);
         this.setState({searchLoading: false});
       }
     } else {

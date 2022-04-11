@@ -517,7 +517,7 @@ export default function UnitEdit({
   }, [meterTypes, unitDetails, modalVisible]);
 
   useEffect(() => {
-    if (sliderNumber == 6) {
+    if (sliderNumber == 5) {
       setDoneAnimation(true);
       setTimeout(() => {
         setDoneAnimation(false);
@@ -1165,10 +1165,10 @@ export default function UnitEdit({
   };
 
   const changeSlider = () => {
-    if (!devEdit && sliderNumber == 3) {
+    if (!devEdit && sliderNumber == 2) {
       setCheckSerial(true);
       checkingSerial();
-    } else if (sliderNumber == 5) {
+    } else if (sliderNumber == 4) {
       var dis = getDistance(
         {
           latitude: propertyLat,
@@ -2113,7 +2113,7 @@ export default function UnitEdit({
             scrollEnabled={
               sliderNumber == 1
                 ? true
-                : sliderNumber == 3
+                : sliderNumber == 2
                 ? true
                 : showAddType == 'Device'
                 ? true
@@ -2176,7 +2176,7 @@ export default function UnitEdit({
                     <Icon
                       size={width * 0.07}
                       color="#fff"
-                      name={sliderNumber == 6 ? 'check' : 'navigate-next'}
+                      name={sliderNumber == 5 ? 'check' : 'navigate-next'}
                     />
                   </TouchableOpacity>
                   {markers.length > 0 && (
@@ -2665,20 +2665,18 @@ export default function UnitEdit({
                             height: width * 0.2,
                             top: -5,
                             textTransform:
-                              sliderNumber == 5 ? 'none' : 'capitalize',
+                              sliderNumber == 4 ? 'none' : 'capitalize',
                           },
                         ]}>
                         {sliderNumber == 1 && showAddType == ''
                           ? 'Utility Type & Device Info'
                           : sliderNumber == 2
-                          ? 'Unit Mix'
-                          : sliderNumber == 3
                           ? 'Attached To'
-                          : sliderNumber == 4
+                          : sliderNumber == 3
                           ? 'Installation Image'
-                          : sliderNumber == 5
+                          : sliderNumber == 4
                           ? 'GPS Location of Install'
-                          : sliderNumber == 6
+                          : sliderNumber == 5
                           ? 'Install Status'
                           : ''}
                       </Text>
@@ -3752,81 +3750,6 @@ export default function UnitEdit({
                     <View
                       style={{
                         flex: 1,
-                        height: height * 0.8,
-                        paddingVertical: width * 0.1,
-                      }}>
-                      {unitMix?.map((item) => (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                          }}>
-                          <TouchableOpacity
-                            onPress={() => setUnitMixId(item.id)}
-                            style={styles.unitMixSideBtns}>
-                            <View style={styles.unitMixDataContainer}>
-                              <Text style={styles.unitMixDataHeading}>
-                                Select
-                              </Text>
-                              <Iconi
-                                name={
-                                  unitMixId == item.id
-                                    ? 'radio-button-on'
-                                    : 'radio-button-off'
-                                }
-                                size={width * 0.05}
-                                color="#25AAE1ec"
-                              />
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={styles.unitMixData}
-                            onPress={() => getRowData(item, index)}>
-                            <View style={styles.unitMixDataContainer}>
-                              <Text style={styles.unitMixDataHeading}>BR</Text>
-                              <Text style={styles.unitMixDataValues}>
-                                {item.br}
-                              </Text>
-                            </View>
-                            <View style={styles.unitMixDataContainer}>
-                              <Text style={styles.unitMixDataHeading}>BA</Text>
-                              <Text style={styles.unitMixDataValues}>
-                                {item.ba}
-                              </Text>
-                            </View>
-                            <View style={styles.unitMixDataContainer}>
-                              <Text style={styles.unitMixDataHeading}>
-                                # Units
-                              </Text>
-                              <Text style={styles.unitMixDataValues}>
-                                {item.no_of_units}
-                              </Text>
-                            </View>
-                            <View style={styles.unitMixDataContainer}>
-                              <Text style={styles.unitMixDataHeading}>
-                                G/U/D
-                              </Text>
-                              <Text style={styles.unitMixDataValues}>
-                                {item.gud}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={styles.unitMixSideBtns}>
-                            <View style={styles.unitMixDataContainer}>
-                              <Text style={styles.unitMixDataHeading}>
-                                T/G/D
-                              </Text>
-                              <Text style={styles.unitMixDataValues}>
-                                {item.no_of_units * item.gud}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                      ))}
-                    </View>
-                  ) : sliderNumber == 3 ? (
-                    <View
-                      style={{
-                        flex: 1,
                         height: width * 0.8,
                         width: width * 0.9,
                         alignItems: 'center',
@@ -4040,7 +3963,7 @@ export default function UnitEdit({
                         </View>
                       )}
                     </View>
-                  ) : sliderNumber == 4 ? (
+                  ) : sliderNumber == 3 ? (
                     <View style={styles.container}>
                       <TouchableOpacity
                         onPress={requestCameraPermission}
@@ -4238,7 +4161,7 @@ export default function UnitEdit({
                   //     ) : null}
                   //   </View>
                   // </View>
-                  sliderNumber == 5 ? (
+                  sliderNumber == 4 ? (
                     <View style={styles.container}>
                       <View
                         style={{
@@ -4387,7 +4310,7 @@ export default function UnitEdit({
                         ) : null}
                       </View>
                     </View>
-                  ) : sliderNumber == 6 ? (
+                  ) : sliderNumber == 5 ? (
                     doneAnimation ? (
                       <Image
                         resizeMode="contain"
@@ -4741,22 +4664,20 @@ export default function UnitEdit({
                                   selectedUtil &&
                                   selectedUtilId != null
                                     ? '#25AAE1ec'
-                                    : sliderNumber == 2 && unitMixId != null
-                                    ? '#25AAE1ec'
-                                    : sliderNumber == 3 &&
+                                    : sliderNumber == 2 &&
                                       slide2[0].value &&
                                       slide2[1].value &&
                                       attachedToId != null
                                     ? '#25AAE1ec'
-                                    : sliderNumber == 4
+                                    : sliderNumber == 3
                                     ? '#25AAE1ec'
-                                    : sliderNumber == 5 &&
+                                    : sliderNumber == 4 &&
                                       lat != undefined &&
                                       long != undefined
                                     ? '#25AAE1ec'
-                                    : (sliderNumber == 6 &&
+                                    : (sliderNumber == 5 &&
                                         installationStatus == 1) ||
-                                      (sliderNumber == 6 &&
+                                      (sliderNumber == 5 &&
                                         installationStatus == 2 &&
                                         reasonId &&
                                         reasonDes)
@@ -4765,7 +4686,7 @@ export default function UnitEdit({
                               },
                             ]}
                             onPress={
-                              sliderNumber == 6 ? finishSlider : changeSlider
+                              sliderNumber == 5 ? finishSlider : changeSlider
                             }
                             disabled={
                               sliderNumber == 1 &&
@@ -4774,22 +4695,20 @@ export default function UnitEdit({
                               selectedUtil &&
                               selectedUtilId != null
                                 ? false
-                                : sliderNumber == 2 && unitMixId != null
-                                ? false
-                                : sliderNumber == 3 &&
+                                : sliderNumber == 2 &&
                                   slide2[0].value &&
                                   slide2[1].value &&
                                   attachedToId != null
                                 ? false
-                                : sliderNumber == 4
+                                : sliderNumber == 3
                                 ? false
-                                : sliderNumber == 5 &&
+                                : sliderNumber == 4 &&
                                   lat != undefined &&
                                   long != undefined
                                 ? false
-                                : (sliderNumber == 6 &&
+                                : (sliderNumber == 5 &&
                                     installationStatus == 1) ||
-                                  (sliderNumber == 6 &&
+                                  (sliderNumber == 5 &&
                                     installationStatus == 2 &&
                                     reasonId &&
                                     reasonDes)
@@ -4800,7 +4719,7 @@ export default function UnitEdit({
                               size={width * 0.07}
                               color="#fff"
                               name={
-                                sliderNumber == 6 ? 'check' : 'navigate-next'
+                                sliderNumber == 5 ? 'check' : 'navigate-next'
                               }
                             />
                           </TouchableOpacity>
