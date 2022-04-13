@@ -56,10 +56,11 @@ export default class Login extends Component {
     }
   };
 
-  storeToken = async (token) => {
+  storeToken = async (token, userRole) => {
     try {
       await EncryptedStorage.setItem('user_token', token);
       await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('user_role', userRole);
       console.log('Stored Token Success', clc.xterm(216)(token));
     } catch (e) {
       console.log('Store Token Failed', e);
@@ -72,15 +73,17 @@ export default class Login extends Component {
       email,
       password,
     });
-    console.log(response.ok);
+    console.log('RESPONSE BATA', response);
     if (!response.ok) {
+      alert(response?.data?.message);
       this.setState({
-        errName: '*Incorrect Username',
-        errPass: '*Incorrect Password',
         isLoading: false,
       });
     } else if (response?.ok) {
-      this.storeToken(response.data.data.token); //todo: Token Saved at this point
+      this.storeToken(
+        response.data.data.token,
+        response.data.data.user.role_id,
+      ); //todo: Token Saved at this point
       this.props.navigation.navigate('Home');
       this.setState({
         errName: '',

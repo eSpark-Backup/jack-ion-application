@@ -654,6 +654,91 @@ export default class Splash extends React.Component {
                     </Text>
                   </View>
                 </View>
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>Unit Mixes</Text>
+                  <View
+                    style={{
+                      width: width * 0.8,
+                      justifyContent: 'space-around',
+                      flexDirection: 'row',
+                      marginBottom: width * 0.01,
+                    }}>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>BR</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>BA</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text># Units</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>G/U/D</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>T/G/D</Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      width: width * 0.8,
+                      justifyContent: 'space-around',
+                      flexDirection: 'row',
+                      marginBottom: height * 0.02,
+                      borderWidth: 1,
+                    }}>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>2</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>5</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>2</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>4</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>8</Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      width: width * 0.8,
+                      justifyContent: 'space-around',
+                      flexDirection: 'row',
+                      marginBottom: height * 0.02,
+                      borderWidth: 1,
+                    }}>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>2</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>5</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>2</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>4</Text>
+                    </View>
+                    <View style={{width: width * 0.14, alignItems: 'center'}}>
+                      <Text>8</Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      width: width * 0.8,
+                      justifyContent: 'space-around',
+                      flexDirection: 'row',
+                      marginBottom: height * 0.02,
+                    }}>
+                    <Text>Sum # Units</Text>
+                    <Text>Sum T/G/D</Text>
+                    <Text>ADC</Text>
+                  </View>
+                </View>
                 <View style={styles.contactViewContainer}>
                   <Text style={styles.dataFieldHeadings}>Contact Info</Text>
                   <View style={styles.contactInfoContainer}>

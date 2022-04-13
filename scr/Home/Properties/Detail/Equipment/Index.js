@@ -42,6 +42,7 @@ import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustumStatusBar from '../../../../components/StatusBar';
 import API from '../../../../api/SeviceApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const {width, height} = Dimensions.get('window');
 let buildListViewRef;
 
@@ -78,6 +79,7 @@ export default class Splash extends Component {
       fileMenuVisible: false,
       addMenuVisible: false,
       currUnitIndex: null,
+      userRole: null,
       FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
       AddArray: [
         {name: 'Add a Unit', func: this.selectAndCloseAdd},
@@ -137,6 +139,10 @@ export default class Splash extends Component {
       `/property/equipment/building/all-buildings/${PropertyID}`,
     );
     // console.log('Check response buildings--->', response);
+    const role = await AsyncStorage.getItem('user_role');
+    console.log('ROLE', role);
+    this.setState({userRole: role});
+
     if (response?.ok == true) {
       this.setState({dataBuild: response?.data?.data});
       this.setState({loaderBuildings: false});
@@ -433,6 +439,7 @@ export default class Splash extends Component {
     console.log('Unit ID', unitId);
     const res = await API.get(`/property/equipment/unit/${unitId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
+
     this.setState({unitMixesId: res.data?.data?.unit?.unit_mix_id});
     this.setState({
       currUnitIndex: null,
@@ -1254,6 +1261,7 @@ export default class Splash extends Component {
                   this.setState({isModalUnitVisible: false});
                 }}
                 unitsArray={this.state.realData}
+                userRole={this.state.userRole}
               />
               {/*
               //! for edit unit
@@ -1282,6 +1290,7 @@ export default class Splash extends Component {
                 buildingId={this.state.editBuildId}
                 unitDetails={this.state.unitDatax.data}
                 unitMixesId={this.state.unitMixesId}
+                userRole={this.state.userRole}
                 // handleEditUnit={() => {
                 //   this.setState({isEditUnitModalVisible: false});
                 // }}

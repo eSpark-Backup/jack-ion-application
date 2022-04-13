@@ -2,11 +2,9 @@ import React, {useState, useEffect, useRef, useReducer} from 'react';
 import {
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Pressable,
   Dimensions,
   LayoutAnimation,
@@ -17,10 +15,8 @@ import {
   Image,
   Linking,
   ActivityIndicator,
-  ToastAndroid,
   Switch,
   Keyboard,
-  TouchableWithoutFeedback,
   LogBox,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -96,6 +92,7 @@ export default function UnitEdit({
   openModal,
   unitMixesId,
   type,
+  userRole,
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const inputRef = useRef(null);
@@ -694,6 +691,8 @@ export default function UnitEdit({
       errorUnits: '',
     }));
     setUnitMix([]);
+    setUnitMixId(null);
+    setSelectedUnitMix('');
     closeModal();
     if (type == 'addMeterDirect' || type == 'add') {
       setState((oldState) => ({
@@ -1735,8 +1734,7 @@ export default function UnitEdit({
     setAddTypeInput(false);
     setAddNewType(false);
     setShowAddType('');
-    setUnitMixId(null);
-    setSelectedUnitMix('');
+
     setDefaultDeviceValues(false);
     setDefaultMeterValues(false);
     setNewMeterFlag(true);
@@ -4686,7 +4684,11 @@ export default function UnitEdit({
                               },
                             ]}
                             onPress={
-                              sliderNumber == 5 ? finishSlider : changeSlider
+                              userRole == 5
+                                ? finishSlider
+                                : sliderNumber == 5
+                                ? finishSlider
+                                : changeSlider
                             }
                             disabled={
                               sliderNumber == 1 &&

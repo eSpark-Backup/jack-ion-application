@@ -597,13 +597,13 @@ const App = ({navigation}) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.model_no?.device?.manufacturer ?? 'N/A',
+        rightText: unitMeter?.device?.manufacturer ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
       {
         leftText: 'Device',
-        rightText: unitMeter?.model_no?.device?.name ?? 'N/A',
+        rightText: unitMeter?.device?.name ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
@@ -626,7 +626,7 @@ const App = ({navigation}) => {
       //   type: 'feather',
       // },
       {
-        leftText: 'Meter Serial',
+        leftText: 'Device Serial',
         rightText: unitMeter?.device_serial_number ?? 'N/A',
         leftIcon: 'barcode-outline',
         leftType: 'ionicon',
@@ -660,9 +660,9 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.model_no?.device?.manufacturer +
+              unitMeter?.device?.manufacturer +
               ' (' +
-              unitMeter?.model_no?.device?.name +
+              unitMeter?.device?.name +
               ')',
             rightIcon: 'chevron-down',
             type: 'feather',
@@ -672,7 +672,7 @@ const App = ({navigation}) => {
     ]);
     setRemoteReaderData([
       {
-        title: unitMeter?.model_no?.device?.device_type,
+        title: unitMeter?.device?.device_type,
         img: require('../../../../../../../Images/remote-reader.png'),
         data: [
           {
@@ -684,7 +684,7 @@ const App = ({navigation}) => {
           },
           {
             leftName: 'Status',
-            rightIcon2: 'check',
+            rightIcon2: unitMeter?.installation_status == 1 ? 'check' : 'x',
             rightIcon: 'chevron-down',
             rightName:
               unitMeter?.installation_status == 1
@@ -717,7 +717,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: unitMeter?.model_no?.device?.name ?? 'N/A',
+            rightName: unitMeter?.device?.name ?? 'N/A',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -938,7 +938,6 @@ const App = ({navigation}) => {
                   style={[
                     styles.listText,
                     {
-                      textTransform: 'capitalize',
                       color: index == 1 ? typeColor(item.rightName) : '#000',
                     },
                   ]}>
@@ -985,7 +984,6 @@ const App = ({navigation}) => {
                 style={[
                   styles.listText,
                   {
-                    textTransform: 'capitalize',
                     color: index == 1 ? typeColor(item.rightName) : '#000',
                   },
                 ]}>
@@ -1179,7 +1177,6 @@ const App = ({navigation}) => {
                         styles.listText,
                         {
                           textAlign: 'right',
-                          textTransform: 'capitalize',
                         },
                       ]}>
                       {item.rightName}
@@ -1232,10 +1229,7 @@ const App = ({navigation}) => {
                 }}
               />
             ) : (
-              <Text
-                style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
-                {item.rightText}
-              </Text>
+              <Text style={styles.listInnerText}>{item.rightText}</Text>
             )}
           </View>
         </View>
@@ -1259,9 +1253,7 @@ const App = ({navigation}) => {
             )}
           </View>
           <View style={styles.flexRow}>
-            <Text style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
-              {item.rightText}
-            </Text>
+            <Text style={styles.listInnerText}>{item.rightText}</Text>
           </View>
         </View>
       </View>
@@ -1418,7 +1410,6 @@ const App = ({navigation}) => {
           <View style={styles.dangerView}>
             <Button
               onPress={confirmUnitDelete}
-              titleStyle={{textTransform: 'capitalize'}}
               title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
               buttonStyle={{backgroundColor: '#e24b4b'}}
             />
@@ -1653,13 +1644,7 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text
-                      style={[
-                        styles.sectionText,
-                        {textTransform: 'capitalize'},
-                      ]}>
-                      {title}
-                    </Text>
+                    <Text style={styles.sectionText}>{title}</Text>
                     <Image source={img} style={styles.sectionImgStyle} />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
@@ -1690,15 +1675,7 @@ const App = ({navigation}) => {
                 renderSectionHeader={({section: {title, img}}) => (
                   <>
                     <View style={styles.sectionTitle}>
-                      <Text
-                        style={[
-                          styles.sectionText,
-                          {
-                            textTransform: 'capitalize',
-                          },
-                        ]}>
-                        {title}
-                      </Text>
+                      <Text style={styles.sectionText}>{title}</Text>
                     </View>
                     <Divider style={styles.sectionTitleDivider} />
                   </>
@@ -1718,14 +1695,8 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text
-                      style={[
-                        styles.sectionText,
-                        {
-                          textTransform: 'capitalize',
-                        },
-                      ]}>
-                      {unitMeter?.model_no?.device?.name ?? 'N/A'}
+                    <Text style={styles.sectionText}>
+                      {unitMeter?.device?.name ?? 'N/A'}
                     </Text>
                     <Image
                       source={img}
@@ -1942,15 +1913,11 @@ const App = ({navigation}) => {
                 <View style={styles.dangerView}>
                   <Button
                     onPress={confirmDelete}
-                    titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${
-                      unitMeter?.model_no?.device?.name ?? 'N/A'
-                    }`}
+                    title={`Delete ${unitMeter?.device?.name ?? 'N/A'}`}
                     buttonStyle={styles.dangerBtn}
                   />
                   <Button
                     onPress={confirmUnitDelete}
-                    titleStyle={{textTransform: 'capitalize'}}
                     title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
                     buttonStyle={styles.dangerBtn}
                   />
@@ -2007,7 +1974,7 @@ const App = ({navigation}) => {
                           textAlignVertical: 'center',
                         },
                       ]}>
-                      {item?.model_no?.device?.name ?? 'N/A'}
+                      {item?.device?.name ?? 'N/A'}
                     </Text>
                   </View>
                 </TouchableOpacity>

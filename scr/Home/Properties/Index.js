@@ -13,6 +13,8 @@ import {
   Alert,
   PermissionsAndroid,
   Linking,
+  ScrollView,
+  FlatList,
 } from 'react-native';
 
 //Packages
@@ -33,7 +35,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Add from './Form';
 import {Fonts} from '../../utils/fonts';
 import styles from './style';
-import {FlatList} from 'react-native-gesture-handler';
 import Loader from '../../components/Loader';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
@@ -70,6 +71,16 @@ export default class Splash extends Component {
       noInternet: false,
       locationBtn: '',
       markers: null,
+      shimmers: [
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
+      ],
     };
 
     if (Platform.OS === 'android') {
@@ -365,6 +376,24 @@ export default class Splash extends Component {
     </TouchableOpacity>
   );
 
+  renderShimmers = (item) => (
+    <View key={item.id} style={styles.skeletonMainContainer}>
+      <SkeletonPlaceholder>
+        <View style={styles.skeletonInnerContainer}>
+          <View style={styles.skeletonIcon} />
+          <View>
+            <View style={styles.skeletonTitle} />
+            <View style={styles.skeletonDescription} />
+          </View>
+          <View style={styles.skeletonEquipsContainer}>
+            <View style={styles.skeletonBuilds} />
+            <View style={styles.skeletonUnits} />
+          </View>
+        </View>
+      </SkeletonPlaceholder>
+    </View>
+  );
+
   _renderPropList = (prop) => {
     if (
       prop.index == this.context.propList.length - 1 &&
@@ -482,60 +511,6 @@ export default class Splash extends Component {
             addedSuccessfully={this.onFocusFunction}
             type={'Add'}
           />
-          {/* <StatusBar hidden backgroundColor="white" barStyle="dark-content" /> */}
-          {/* <View style={styles.headerContainer}>
-            <View style={styles.headerInner}>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.goBack()}
-                style={styles.menuView}>
-                <MaterialIcon
-                  size={width * 0.08}
-                  color="white"
-                  name="keyboard-backspace"
-                />
-              </TouchableOpacity>
-              <View style={styles.searchView}>
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.searchButton}
-                  onPress={this.openAndClear}>
-                  <EvilIcon
-                    name="search"
-                    size={height * 0.04}
-                    style={{ marginLeft: width * 0.05 }}
-                    color="white"
-                  />
-                  <TextInput
-                    disabled={true}
-                    underlineColor="transparent"
-                    dense={true}
-                    placeholderTextColor="white"
-                    placeholder="Search"
-                    style={styles.search}
-                    onChangeText={(e) => this.context.searchProperties(e)}
-                    theme={{
-                      colors: {
-                        text: 'white',
-                        primary: '#25dAE1',
-                        selectionColor: 'transparent',
-                        background: 'transparent',
-                      },
-                    }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={this.openFilter}
-                  style={styles.filterButton}>
-                  <MaterialCommunityIcon
-                    name="filter-outline"
-                    color={this.state.filterWork ? '#25AAE1ec' : 'black'}
-                    size={20}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View> */}
-
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
               <TouchableOpacity
@@ -683,85 +658,11 @@ export default class Splash extends Component {
             {this.state.noInternet ? (
               <Text>Check Your Internet Connection</Text>
             ) : this.context.isLoading ? (
-              <View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-                <View style={styles.skeletonMainContainer}>
-                  <SkeletonPlaceholder>
-                    <View style={styles.skeletonInnerContainer}>
-                      <View style={styles.skeletonIcon} />
-                      <View>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonDescription} />
-                      </View>
-                    </View>
-                  </SkeletonPlaceholder>
-                </View>
-              </View>
+              <ScrollView
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}>
+                {this.state.shimmers.map((item) => this.renderShimmers(item))}
+              </ScrollView>
             ) : this.context.propList.length < 1 && !this.context.isLoading ? (
               <Text>No Properties to Show</Text>
             ) : (
