@@ -124,6 +124,48 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
     width: width * 0.75,
   },
+  unitMixesHeadContainer: {
+    width: width * 0.85,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginBottom: width * 0.01,
+  },
+  unitMixesHeads: {
+    width: width * 0.14,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  unitMixesValuesContainer: {
+    width: '100%',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginBottom: height * 0.01,
+    paddingVertical: width * 0.005,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  unitMixesValues: {
+    width: width * 0.14,
+    textAlign: 'center',
+  },
+  sumUnitMixes: {
+    width: width * 0.8,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  sumUnitMixesHead: {
+    width: width * 0.25,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  sumUnitMixesValuesView: {
+    borderTopWidth: 1,
+    width: '90%',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    paddingVertical: width * 0.02,
+  },
   contactViewContainer: {
     width: width * 0.9,
     justifyContent: 'center',

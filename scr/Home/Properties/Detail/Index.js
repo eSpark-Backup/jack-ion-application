@@ -87,6 +87,9 @@ export default class Splash extends React.Component {
       companiesLoader: false,
       selectLocation: false,
       selectAddManuUtil: [],
+      unitMixes: [],
+      sumNoOfUnits: 0,
+      sumTotalGalDay: 0,
       lat: 0,
       long: 0,
       markers: [],
@@ -157,6 +160,16 @@ export default class Splash extends React.Component {
     console.log('UTILITY TYPES', utilTypes);
     console.log('MANUFACTURERS', manus);
 
+    let uMdata = currPropData.unit_mixes;
+    let nOU = 0;
+    let tGD = 0;
+
+    for (let i = 0; i < uMdata?.length; i++) {
+      const singleTGD = uMdata[i].no_of_units * uMdata[i].gud;
+      nOU = nOU + Number(uMdata[i].no_of_units);
+      tGD = tGD + Number(singleTGD);
+    }
+
     this.setState({
       propertyData: currPropData,
       propertyId: currPropData?.id,
@@ -169,6 +182,9 @@ export default class Splash extends React.Component {
       managementCompanyId: currPropData?.management_company_id,
       customId: currPropData.custom_id,
       isLoading: false,
+      unitMixes: currPropData.unit_mixes,
+      sumNoOfUnits: nOU,
+      sumTotalGalDay: tGD,
     });
 
     var lat = parseFloat(currPropData.latitude);
@@ -655,88 +671,81 @@ export default class Splash extends React.Component {
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>
+                    Meter Count & Installation Status
+                  </Text>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}>
+                      Meter Count:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.3, textAlign: 'auto'},
+                      ]}>
+                      3
+                    </Text>
+                  </View>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <Text style={[styles.dataFieldText, {textAlign: 'left'}]}>
+                      Complete Installations:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.3, textAlign: 'auto'},
+                      ]}>
+                      2/3
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.infoViewContainer}>
                   <Text style={styles.dataFieldHeadings}>Unit Mixes</Text>
-                  <View
-                    style={{
-                      width: width * 0.8,
-                      justifyContent: 'space-around',
-                      flexDirection: 'row',
-                      marginBottom: width * 0.01,
-                    }}>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>BR</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>BA</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text># Units</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>G/U/D</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>T/G/D</Text>
-                    </View>
+                  <View style={styles.unitMixesHeadContainer}>
+                    <Text style={styles.unitMixesHeads}>#</Text>
+                    <Text style={styles.unitMixesHeads}>BR</Text>
+                    <Text style={styles.unitMixesHeads}>BA</Text>
+                    <Text style={styles.unitMixesHeads}># Units</Text>
+                    <Text style={styles.unitMixesHeads}>G/U/D</Text>
+                    <Text style={styles.unitMixesHeads}>T/G/D</Text>
                   </View>
-                  <View
-                    style={{
-                      width: width * 0.8,
-                      justifyContent: 'space-around',
-                      flexDirection: 'row',
-                      marginBottom: height * 0.02,
-                      borderWidth: 1,
-                    }}>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>2</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>5</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>2</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>4</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>8</Text>
-                    </View>
+                  <ScrollView
+                    nestedScrollEnabled
+                    style={{width: width * 0.85, height: width * 0.2}}>
+                    {this.state.unitMixes.map((item, index) => (
+                      <View style={styles.unitMixesValuesContainer}>
+                        <Text style={styles.unitMixesHeads}>{index + 1}</Text>
+                        <Text style={styles.unitMixesValues}>{item.br}</Text>
+                        <Text style={styles.unitMixesValues}>{item.ba}</Text>
+                        <Text style={styles.unitMixesValues}>
+                          {item.no_of_units}
+                        </Text>
+                        <Text style={styles.unitMixesValues}>{item.gud}</Text>
+                        <Text style={styles.unitMixesValues}>
+                          {item.no_of_units * item.gud}
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                  <View style={styles.sumUnitMixes}>
+                    <Text style={styles.sumUnitMixesHead}>Sum # Units</Text>
+                    <Text style={styles.sumUnitMixesHead}>Sum T/G/D</Text>
+                    <Text style={styles.sumUnitMixesHead}>ADC</Text>
                   </View>
-                  <View
-                    style={{
-                      width: width * 0.8,
-                      justifyContent: 'space-around',
-                      flexDirection: 'row',
-                      marginBottom: height * 0.02,
-                      borderWidth: 1,
-                    }}>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>2</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>5</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>2</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>4</Text>
-                    </View>
-                    <View style={{width: width * 0.14, alignItems: 'center'}}>
-                      <Text>8</Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: width * 0.8,
-                      justifyContent: 'space-around',
-                      flexDirection: 'row',
-                      marginBottom: height * 0.02,
-                    }}>
-                    <Text>Sum # Units</Text>
-                    <Text>Sum T/G/D</Text>
-                    <Text>ADC</Text>
+                  <View style={styles.sumUnitMixesValuesView}>
+                    <Text>{this.state.sumNoOfUnits}</Text>
+                    <Text>{this.state.sumTotalGalDay}</Text>
+                    <Text>
+                      {this.state.sumNoOfUnits > 0
+                        ? Math.round(
+                            this.state.sumTotalGalDay / this.state.sumNoOfUnits,
+                          )
+                        : 0}
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.contactViewContainer}>
