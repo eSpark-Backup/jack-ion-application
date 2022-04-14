@@ -90,6 +90,8 @@ export default class Splash extends React.Component {
       unitMixes: [],
       sumNoOfUnits: 0,
       sumTotalGalDay: 0,
+      meterCount: 0,
+      installStatus: 0,
       lat: 0,
       long: 0,
       markers: [],
@@ -185,6 +187,11 @@ export default class Splash extends React.Component {
       unitMixes: currPropData.unit_mixes,
       sumNoOfUnits: nOU,
       sumTotalGalDay: tGD,
+      meterCount: currPropData.unit_mixes[0].meters.count,
+      installStatus:
+        currPropData.unit_mixes[0].meters.complete +
+        '/' +
+        currPropData.unit_mixes[0].meters.count,
     });
 
     var lat = parseFloat(currPropData.latitude);
@@ -687,7 +694,7 @@ export default class Splash extends React.Component {
                         styles.dataFieldText,
                         {width: width * 0.3, textAlign: 'auto'},
                       ]}>
-                      3
+                      {this.state.meterCount}
                     </Text>
                   </View>
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
@@ -699,7 +706,7 @@ export default class Splash extends React.Component {
                         styles.dataFieldText,
                         {width: width * 0.3, textAlign: 'auto'},
                       ]}>
-                      2/3
+                      {this.state.installStatus}
                     </Text>
                   </View>
                 </View>
