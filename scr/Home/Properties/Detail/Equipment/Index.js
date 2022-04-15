@@ -27,7 +27,7 @@ import Modal from 'react-native-modal';
 import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import UpdateModal from '../../../../components/modal/UpdateModal';
-import {Header, Button, Icon as Iconx} from 'react-native-elements';
+import {Icon as Iconx} from 'react-native-elements';
 import AddBuilding from '../../../../components/modal/AddBuilding/index';
 import Drawer from '../../../../components/modal/Drawer/index';
 
@@ -39,10 +39,10 @@ import Filter from '../../Filter';
 import {ActivityIndicator} from 'react-native';
 import EditUnit from './Units/modals/UnitEdit';
 import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import CustumStatusBar from '../../../../components/StatusBar';
 import API from '../../../../api/SeviceApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const {width, height} = Dimensions.get('window');
 let buildListViewRef;
 
@@ -1206,8 +1206,34 @@ export default class Splash extends Component {
 
                 {/* Top Lists */}
                 {loaderBuildings ? (
-                  <View style={{width: width * 0.55, justifyContent: 'center'}}>
-                    <ActivityIndicator size="large" color="black" />
+                  <View
+                    style={{
+                      height: width * 0.22,
+                      justifyContent: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    <SkeletonPlaceholder>
+                      <View
+                        style={{
+                          width: width * 0.3,
+                          height: width * 0.22,
+                          borderRadius: width * 0.01,
+                          borderWidth: width * 0.001,
+                          marginLeft: width * 0.02,
+                        }}
+                      />
+                    </SkeletonPlaceholder>
+                    <SkeletonPlaceholder>
+                      <View
+                        style={{
+                          width: width * 0.3,
+                          height: width * 0.22,
+                          borderRadius: width * 0.01,
+                          borderWidth: width * 0.001,
+                          marginLeft: width * 0.02,
+                        }}
+                      />
+                    </SkeletonPlaceholder>
                   </View>
                 ) : this.state.dataBuild.length == 0 ? (
                   <View style={{width: width * 0.55, justifyContent: 'center'}}>
@@ -1392,8 +1418,24 @@ export default class Splash extends Component {
                 </Modal>
               ) : null}
               {loader ? (
-                <View style={{width: width * 0.55, justifyContent: 'center'}}>
-                  <ActivityIndicator size="large" color="black" />
+                <View
+                  style={{
+                    width: width * 1,
+                    alignItems: 'center',
+                    marginVertical: height * 0.01,
+                  }}>
+                  <View style={styles.infoViewContainer}>
+                    <SkeletonPlaceholder>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          paddingHorizontal: width * 0.01,
+                        }}></View>
+                    </SkeletonPlaceholder>
+                  </View>
                 </View>
               ) : this.state.realData.length == 0 ? (
                 <View style={{width: width * 0.55, justifyContent: 'center'}}>

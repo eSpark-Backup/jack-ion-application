@@ -96,6 +96,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingVertical: width * 0.02,
+    width: width * 1,
   },
   searchModalContainer: {
     elevation: width * 0.005,
