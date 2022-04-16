@@ -121,6 +121,7 @@ class GlobalState extends React.Component {
     searchList: [],
     propList: [],
     filterWork: false,
+    loadData: true,
   };
 
   addProp = async (info) => {
@@ -266,6 +267,15 @@ class GlobalState extends React.Component {
     this.setState({isLoading: false});
   };
 
+  dontLoad = () => {
+    this.setState({loadData: false});
+  };
+
+  doLoad = () => {
+    console.log('LOAD KO TRUE KARO');
+    this.setState({loadData: true});
+  };
+
   clearSearchList = () => {
     this.setState({searchList: []});
   };
@@ -286,6 +296,8 @@ class GlobalState extends React.Component {
   };
 
   render() {
+    console.log('LOADDATA GLOBALSTATE', this.state.loadData);
+
     return (
       <>
         <Context.Provider
@@ -311,9 +323,12 @@ class GlobalState extends React.Component {
             searchProperties: this.searchProperties,
             clearSearchList: this.clearSearchList,
             loadMoreData: this.loadMoreData,
+            loadData: this.state.loadData,
             loadSearchData: this.loadSearchData,
             loadLoader: this.loadLoader,
             stopLoader: this.stopLoader,
+            dontLoad: this.dontLoad,
+            doLoad: this.doLoad,
             updateBuilding: this.updateBuilding,
             updateBiller: this.updateBiller,
             updateFilterSerial: this.updateFilterSerial,

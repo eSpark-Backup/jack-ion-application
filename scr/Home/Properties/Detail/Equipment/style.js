@@ -143,11 +143,6 @@ export default styles = StyleSheet.create({
     height: width * 0.16,
     backgroundColor: 'white',
     justifyContent: 'center',
-    borderTopLeftRadius: width * 0.01,
-    borderTopRightRadius: width * 0.01,
-
-    borderWidth: 1,
-    // borderRadius: width * 0.01,
   },
   infoTopViewInner: {
     flex: 1,
@@ -286,5 +281,43 @@ export default styles = StyleSheet.create({
   },
   dropDownListText: {
     fontSize: 14,
+  },
+  skeletonContainer: {
+    width: width * 0.9,
+    justifyContent: 'center',
+    borderRadius: width * 0.01,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    paddingVertical: width * 0.037,
+    marginVertical: height * 0.01,
+  },
+  skeletonInnerContainer: {
+    width: width * 0.9,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: width * 0.02,
+  },
+  skeletonNameAndIcon: {
+    width: width * 0.25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  skeletonIcon: {
+    width: width * 0.08,
+    height: width * 0.08,
+    borderRadius: 4,
+  },
+  skeletonName: {
+    width: width * 0.15,
+    height: width * 0.06,
+    borderRadius: 4,
+  },
+  skeletonDevice: {
+    width: width * 0.29,
+    height: width * 0.07,
+    borderRadius: 4,
+    marginRight: width * 0.01,
   },
 });

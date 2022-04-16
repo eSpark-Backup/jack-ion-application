@@ -297,6 +297,7 @@ export default class Splash extends React.Component {
 
       if (propertyRes?.data?.bool) {
         this.setState({isEditPropVisible: true, propertyflag: true});
+        this.context.doLoad();
       }
     } else {
       Alert.alert(

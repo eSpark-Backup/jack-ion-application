@@ -89,7 +89,13 @@ export default class Splash extends Component {
   }
   async componentDidMount() {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      this.onFocusFunction();
+      console.log('LOADDATA', this.context.loadData);
+      if (this.context.loadData) {
+        this.onFocusFunction();
+      } else {
+        this.context.stopLoader();
+        // this.context.doLoad();
+      }
     });
   }
 
@@ -110,6 +116,7 @@ export default class Splash extends Component {
         console.log('False chala');
         this.setState({loadScreen: true});
       }
+      this.context.dontLoad();
     });
     unsubscribe();
   };

@@ -95,6 +95,16 @@ export default class Splash extends Component {
       unitMeters: [],
       unitDatax: [],
       isEditUnitModalVisible: false,
+      shimmers: [
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
+      ],
     };
 
     if (Platform.OS === 'android') {
@@ -123,6 +133,20 @@ export default class Splash extends Component {
     this.setState({showFilter: false});
     this.filerUnits(serial, meterId);
   };
+
+  renderShimmers = (item) => (
+    <SkeletonPlaceholder>
+      <View key={item.id} style={styles.skeletonContainer}>
+        <View style={styles.skeletonInnerContainer}>
+          <View style={styles.skeletonNameAndIcon}>
+            <View style={styles.skeletonIcon} />
+            <View style={styles.skeletonName} />
+          </View>
+          <View style={styles.skeletonDevice} />
+        </View>
+      </View>
+    </SkeletonPlaceholder>
+  );
 
   checkData = async () => {
     this.setState({filterWork: false, loader: true, loaderBuildings: true});
@@ -366,6 +390,8 @@ export default class Splash extends Component {
       currUnitIndex:
         unit.index === this.state.currUnitIndex ? null : unit.index,
     });
+    console.log('UNIT', unit?.item?.unit_meter?.length);
+    console.log('UNIT INDEX', unit.index === this.state.currUnitIndex);
   };
 
   goToDetails = (unit) => {
@@ -467,15 +493,18 @@ export default class Splash extends Component {
             style={[
               styles.infoViewContainer,
               {
-                borderBottomLeftRadius:
-                  unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
-                borderBottomRightRadius:
-                  unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
+                borderTopWidth: 1,
+                borderLeftWidth: 1,
+                borderRightWidth: 1,
                 borderBottomWidth:
                   unit.index === this.state.currUnitIndex &&
                   unit?.item?.unit_meter?.length < 1
                     ? 0
                     : 1,
+                borderBottomLeftRadius:
+                  unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
+                borderBottomRightRadius:
+                  unit.index === this.state.currUnitIndex ? 0 : width * 0.01,
               },
             ]}>
             <View style={styles.infoViewInner}>
@@ -1422,20 +1451,8 @@ export default class Splash extends Component {
                   style={{
                     width: width * 1,
                     alignItems: 'center',
-                    marginVertical: height * 0.01,
                   }}>
-                  <View style={styles.infoViewContainer}>
-                    <SkeletonPlaceholder>
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          paddingHorizontal: width * 0.01,
-                        }}></View>
-                    </SkeletonPlaceholder>
-                  </View>
+                  {this.state.shimmers.map((item) => this.renderShimmers(item))}
                 </View>
               ) : this.state.realData.length == 0 ? (
                 <View style={{width: width * 0.55, justifyContent: 'center'}}>
