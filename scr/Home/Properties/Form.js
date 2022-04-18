@@ -2840,7 +2840,6 @@ export default class Splash extends React.Component {
 
     const ownerRes = await api.get('/property/owner/own');
 
-    console.log('ownerRes--->', ownerRes?.data?.data);
     this.setState({ownerData: ownerRes?.data?.data});
 
     const DeviceTypesResponse = await api.get(

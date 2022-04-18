@@ -56,14 +56,46 @@ export default class Login extends Component {
     }
   };
 
-  storeToken = async (token, userRole) => {
+  storeToken = async (token, userRole, userId) => {
     try {
       await EncryptedStorage.setItem('user_token', token);
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('user_role', userRole);
+      await AsyncStorage.setItem('user_id', userId.toString());
       console.log('Stored Token Success', clc.xterm(216)(token));
     } catch (e) {
       console.log('Store Token Failed', e);
+    }
+  };
+  storeUserData = async (userdata, userId) => {
+    const userData = await AsyncStorage.getItem('users_data');
+    const gotUserData = JSON.parse(userData);
+    let userDataUpdated = [];
+    try {
+      let index = -1;
+      if (gotUserData != null) {
+        index = gotUserData
+          .map((e) => {
+            return e.id;
+          })
+          .indexOf(userId);
+        userDataUpdated = [...gotUserData];
+      }
+      console.log('INDEX', index);
+
+      console.log('userDataUpdated', userDataUpdated);
+
+      let data = {
+        id: userdata.id,
+        recent_properties:
+          index > -1 ? gotUserData[index].recent_properties : [],
+      };
+
+      index > -1 ? (userDataUpdated[index] = data) : userDataUpdated.push(data);
+      const jsonData = JSON.stringify(userDataUpdated);
+      await AsyncStorage.setItem('users_data', jsonData);
+    } catch (e) {
+      console.log('Store Data Failed', e);
     }
   };
 
@@ -73,16 +105,17 @@ export default class Login extends Component {
       email,
       password,
     });
-    console.log('RESPONSE BATA', response);
     if (!response.ok) {
       alert(response?.data?.message);
       this.setState({
         isLoading: false,
       });
     } else if (response?.ok) {
+      this.storeUserData(response.data.data.user, response.data.data.user.id); //todo: Token Saved at this point
       this.storeToken(
         response.data.data.token,
         response.data.data.user.role_id,
+        response.data.data.user.id,
       ); //todo: Token Saved at this point
       this.props.navigation.navigate('Home');
       this.setState({

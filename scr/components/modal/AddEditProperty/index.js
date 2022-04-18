@@ -292,7 +292,6 @@ export default function AddEditProperty({
   const callApi = async () => {
     const ownerRes = await API.get('/property/owner/own');
 
-    console.log('ownerRes--->', ownerRes?.data?.data);
     setOwnerData(ownerRes?.data?.data);
 
     const manuResponse = await API.get('/property/equipment/manufacturer/all');

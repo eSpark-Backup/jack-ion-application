@@ -127,26 +127,25 @@ export default class Splash extends Component {
   };
 
   addToRecent = async (item) => {
-    const recentPropIds = await AsyncStorage.getItem('@recent_Props');
-    console.log('RECENTPROPIDS', recentPropIds);
-    if (recentPropIds == null) {
-      let ids = [];
-      ids.push(item.id);
-      const jsonIds = JSON.stringify(ids);
-      await AsyncStorage.setItem('@recent_Props', jsonIds);
-    } else {
-      const parsedIds =
-        recentPropIds != null ? JSON.parse(recentPropIds) : null;
-      let ids = [...parsedIds];
-      let found = ids.includes(item.id);
-      if (!found) {
-        if (ids.length > 9) {
-          ids.shift();
-        }
-        ids.push(item.id);
-        const jsonIds = JSON.stringify(ids);
-        await AsyncStorage.setItem('@recent_Props', jsonIds);
+    const userDataUnParsed = await AsyncStorage.getItem('users_data');
+    const userId = await AsyncStorage.getItem('user_id');
+    const userData = JSON.parse(userDataUnParsed);
+    let index = userData
+      .map((e) => {
+        return e.id;
+      })
+      .indexOf(Number(userId));
+    let ids = [...userData[index].recent_properties];
+    let found = ids.includes(item.id);
+    if (!found) {
+      if (ids.length > 9) {
+        ids.shift();
       }
+      ids.push(item.id);
+      const userDataUpdated = [...userData];
+      userDataUpdated[index].recent_properties = ids;
+      const jsonData = JSON.stringify(userDataUpdated);
+      await AsyncStorage.setItem('users_data', jsonData);
     }
   };
 

@@ -123,11 +123,6 @@ export default class Splash extends React.Component {
     const propertyData = this.props.navigation.state.params.item.item;
     this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
-
-    console.log(
-      'LIST DATA >>>>>',
-      this.props.navigation.state.params.item.item,
-    );
   }
 
   getPropertyDetails = async (id) => {
@@ -135,8 +130,6 @@ export default class Splash extends React.Component {
     const transceiverRes = await API.get(`/property/transceivers/${id}`);
 
     if (transceiverRes?.data?.bool) {
-      console.log('transceiverRes', transceiverRes?.data?.data?.installs[0]);
-      console.log('transceiverRes', transceiverRes?.data?.data?.installs[1]);
       this.setState({
         onlineUnits: transceiverRes?.data?.data?.installs[0],
         offlineUnits: transceiverRes?.data?.data?.installs[1],
@@ -144,7 +137,6 @@ export default class Splash extends React.Component {
     }
 
     const propertyRes = await API.get(`/property/${id}`);
-    console.log('PROPERTYRES', propertyRes?.data?.data?.property);
 
     const currPropData = propertyRes?.data?.data?.property;
     const utilityManufacturersArr =
@@ -214,7 +206,6 @@ export default class Splash extends React.Component {
     const metersLocation = await API.get(
       `/property/location-meters/${propertyId}`,
     );
-    console.log('Meters Location', metersLocation?.data?.data);
     if (metersLocation?.data?.bool) {
       this.setState({markers: metersLocation?.data?.data, isLoading: false});
       let index = metersLocation?.data?.data?.length - 1;
@@ -291,7 +282,6 @@ export default class Splash extends React.Component {
       });
       // this.getPropertyDetails(this.state.propertyId);
       const propertyRes = await API.get(`/property/${this.state.propertyId}`);
-      console.log('PROPERTYRES', propertyRes?.data?.data?.property);
 
       this.setState({propertyData: propertyRes?.data?.data?.property});
 
@@ -501,9 +491,10 @@ export default class Splash extends React.Component {
 
                 {this.state.markers?.length > 0 &&
                   this.state.markers.map(
-                    (marker) =>
+                    (marker, index) =>
                       marker?.position?.lat && (
                         <Marker
+                          key={index}
                           coordinate={{
                             latitude: marker?.position?.lat,
                             longitude: marker?.position?.lng,

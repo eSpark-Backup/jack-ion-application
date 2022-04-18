@@ -86,12 +86,17 @@ export default class Splash extends Component {
   async componentDidMount() {
     // console.log('What we Get', this.props.navigation);
     this.setState({loadData: true});
-
-    const recentPropIds = await AsyncStorage.getItem('@recent_Props');
-    const parsedIds = recentPropIds != null ? JSON.parse(recentPropIds) : [];
-
+    const userDataUnParsed = await AsyncStorage.getItem('users_data');
+    const userId = await AsyncStorage.getItem('user_id');
+    const userData = JSON.parse(userDataUnParsed);
+    console.log('USERDATA', userData);
+    let index = userData
+      .map((e) => {
+        return e.id;
+      })
+      .indexOf(Number(userId));
     let data = {
-      ids: parsedIds,
+      ids: userData[index].recent_properties,
     };
 
     const RVPRes = await API.post(`/dashboard/recent-view-properties`, data);
