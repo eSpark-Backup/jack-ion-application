@@ -17,7 +17,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {VictoryPie} from 'victory-native';
+import {VictoryArea, VictoryAxis, VictoryPie} from 'victory-native';
 
 //Packages
 import LinearGradient from 'react-native-linear-gradient';
@@ -31,6 +31,7 @@ import TextTicker from 'react-native-text-ticker';
 import Loader from '../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../api/SeviceApi';
+import Svg, {G} from 'react-native-svg';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -71,6 +72,8 @@ export default class Splash extends Component {
       offlineProps: 0,
       recentProps: false,
       recentProperties: [],
+      newProperties: [],
+      totProperties: [],
       initialPosition: {
         latitude: 37.78825,
         longitude: -122.4324,
@@ -104,6 +107,16 @@ export default class Splash extends Component {
     if (RVPRes.data?.bool) {
       this.setState({
         recentProperties: RVPRes?.data?.data,
+      });
+    }
+    const PortfolioRes = await API.get(`/dashboard/portfolio-chart`);
+
+    console.log('ProtfolioRes New', PortfolioRes?.data?.data?.new);
+    console.log('ProtfolioRes New', PortfolioRes?.data?.data?.total);
+    if (PortfolioRes.data?.bool) {
+      this.setState({
+        newProperties: PortfolioRes?.data?.data?.new,
+        totProperties: PortfolioRes?.data?.data?.total,
       });
     }
 
@@ -256,6 +269,8 @@ export default class Splash extends Component {
       onlineProps,
       offlineProps,
       totalProperties,
+      totProperties,
+      newProperties,
       propertiesPercent,
       propertiesThisWeek,
       totalBuildings,
@@ -536,6 +551,69 @@ export default class Splash extends Component {
                 <View style={styles.offlineView} />
                 <Text style={styles.offlineText}>Not Installed</Text>
               </View>
+              <View style={styles.portfolioHeading}>
+                <Text style={{fontSize: width * 0.05}}>Portfolio Growth</Text>
+              </View>
+              <View style={{alignItems: 'center'}}>
+                {newProperties.length > 0 && (
+                  <Svg
+                    style={{
+                      background: 'red',
+                      width: width,
+                      height: height * 0.34,
+                      fontFamily: "'Fira Sans', sans-serif",
+                    }}>
+                    <G>
+                      <VictoryAxis
+                        dependentAxis
+                        domain={[0, 25]}
+                        offsetX={50}
+                        orientation="left"
+                        standalone={false}
+                        style={{
+                          axis: {strokeWidth: 1},
+                        }}
+                      />
+                      <View style={{position: 'absolute'}}>
+                        <VictoryArea
+                          data={totProperties}
+                          style={{data: {fill: '#DCDCDC'}}}
+                        />
+                      </View>
+                      <View style={{position: 'absolute'}}>
+                        <VictoryArea
+                          data={newProperties}
+                          style={{data: {fill: '#5a17b299'}}}
+                        />
+                      </View>
+                      <VictoryAxis
+                        dependentAxis
+                        domain={[0, 28]}
+                        orientation="right"
+                        standalone={false}
+                        style={{
+                          axis: {strokeWidth: 1},
+                        }}
+                      />
+                      <VictoryAxis
+                        standalone={false}
+                        style={{
+                          axis: {stroke: 'black', strokeWidth: 1},
+                          tickLabels: {
+                            fill: 'transparent',
+                          },
+                        }}
+                      />
+                    </G>
+                  </Svg>
+                )}
+              </View>
+              <View style={styles.onlineOfflineView}>
+                <View style={styles.onlineView} />
+                <Text style={styles.onlineText}>New Properties</Text>
+                <View style={styles.offlineView} />
+                <Text style={styles.offlineText}>Total Properties</Text>
+              </View>
               <View
                 style={{
                   flexDirection: 'column',
@@ -559,7 +637,7 @@ export default class Splash extends Component {
                     color: '#2D2A2B',
                     fontFamily: Fonts.BalooChettan2,
                   }}>
-                  Currently Servicing
+                  Currently Serving
                 </Text>
                 <View
                   style={{

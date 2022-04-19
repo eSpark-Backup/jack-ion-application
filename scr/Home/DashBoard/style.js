@@ -116,6 +116,12 @@ export default styles = StyleSheet.create({
     color: '#2D2A2B',
     fontFamily: Fonts.Montserrat,
   },
+  portfolioHeading: {
+    width: width * 1,
+    alignItems: 'center',
+    marginTop: width * 0.1,
+  },
+
   mainBotton: {
     flexDirection: 'row',
     height: height * 0.08,

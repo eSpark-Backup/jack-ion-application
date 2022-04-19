@@ -36,6 +36,7 @@ import {Fonts} from '../../../../../../utils/fonts';
 import PropIcon from '../../../../../../../Images/proplocation.png';
 import Drop from 'react-native-vector-icons/Ionicons';
 import Scanner from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Delete from 'react-native-vector-icons/MaterialIcons';
 import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
@@ -218,6 +219,7 @@ export default function UnitEdit({
 
   const [selectUtil, setSelectUtil] = useState([]);
   const [unitMix, setUnitMix] = useState([]);
+  const [unitMixIcon, setUnitMixIcon] = useState(false);
   const [unitMixId, setUnitMixId] = useState(null);
   const [selectedUnitMix, setSelectedUnitMix] = useState('');
   const [selectedUtil, setSelectedUtil] = useState('');
@@ -4995,6 +4997,27 @@ export default function UnitEdit({
                     <View style={styles.desciptionContainer}>
                       <Text style={styles.desciptionHeading}>UNIT MIX*</Text>
                     </View>
+                    <View style={{zIndex: 1}}>
+                      {unitMixIcon ? (
+                        <FontAwesome
+                          name="chevron-up"
+                          style={{
+                            position: 'absolute',
+                            left: width * 0.3,
+                            top: width * 0.07,
+                          }}
+                        />
+                      ) : (
+                        <FontAwesome
+                          name="chevron-down"
+                          style={{
+                            position: 'absolute',
+                            left: width * 0.3,
+                            top: width * 0.07,
+                          }}
+                        />
+                      )}
+                    </View>
                     <View style={[styles.inputContainer]}>
                       <SearchableDropdown
                         onItemSelect={(item) => {
@@ -5016,10 +5039,13 @@ export default function UnitEdit({
                         itemsContainerStyle={{height: width * 0.2, zIndex: 1}}
                         items={unitMix}
                         resetValue={false}
+                        onFocus={true}
                         textInputProps={{
                           placeholder: 'Select Unit Mix',
                           underlineColorAndroid: 'transparent',
                           dense: true,
+                          onBlur: () => setUnitMixIcon(false),
+                          onFocus: () => setUnitMixIcon(true),
                           style: {
                             width: width * 0.8,
                             padding: width * 0.027,
