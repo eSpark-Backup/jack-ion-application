@@ -43,6 +43,7 @@ import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import Searchable_DropDown from '../../../../../../components/SearchableDropdown/index';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
 import {Icon as IconX} from 'react-native-elements';
 import {
@@ -68,6 +69,7 @@ import MapView, {
 import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
 import API from '../../../../../../api/SeviceApi';
+import SearchableDropDown from 'react-native-searchable-dropdown';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -3012,27 +3014,79 @@ export default function UnitEdit({
                                         Product Desc*
                                       </Text>
                                     </View>
-                                    <TextInput
-                                      placeholder="Type Product Description"
-                                      value={
-                                        productNo?.length > 24
-                                          ? productNo.slice(0, 24) + '...'
-                                          : productNo
-                                      }
-                                      selection
-                                      dense={true}
-                                      editable={false}
-                                      // showSoftInputOnFocus={false}
-                                      style={[styles.input, {width: '100%'}]}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
-                                    />
+                                    <View style={{flexDirection: 'row'}}>
+                                      <View
+                                        style={{
+                                          paddingBottom: width * 0.02,
+                                          width: width * 0.4,
+                                        }}>
+                                        <TextInput
+                                          placeholder="Type Product Description"
+                                          value={
+                                            productNo?.length > 24
+                                              ? productNo.slice(0, 24) + '...'
+                                              : productNo
+                                          }
+                                          selection
+                                          selectionColor={'#25AAE1ec'}
+                                          underlineColor="transparent"
+                                          activeUnderlineColor="transparent"
+                                          // dense={true}
+                                          // editable={false}
+                                          // showSoftInputOnFocus={false}
+
+                                          style={{
+                                            width: width * 0.4,
+                                            margin: 0,
+                                            borderRadius: width * 0.015,
+                                            backgroundColor: '#F6F6F6',
+                                            borderWidth: width * 0.0019,
+                                            height: width * 0.13,
+                                          }}
+                                          mode={'flat'}
+                                          theme={{
+                                            colors: {
+                                              text: '#25AAE1ec',
+                                              primary: '#25AAE1ec',
+                                              selectionColor: 'red',
+                                            },
+                                          }}
+                                        />
+                                      </View>
+                                      <SearchableDropDown
+                                        containerStyle={{
+                                          paddingBottom: width * 0.02,
+                                          width: width * 0.4,
+                                        }}
+                                        itemStyle={{
+                                          padding: width * 0.027,
+                                          backgroundColor: 'rgb(247, 247, 247)',
+                                          borderColor: '#bbb',
+                                          borderWidth: width * 0.0015,
+                                          borderRadius: width * 0.015,
+                                        }}
+                                        itemTextStyle={{color: '#222'}}
+                                        itemsContainerStyle={{
+                                          maxHeight: height * 0.08,
+                                        }}
+                                        resetValue={false}
+                                        textInputProps={{
+                                          underlineColorAndroid: 'transparent',
+                                          style: {
+                                            margin: 0,
+                                            borderRadius: 5,
+                                            height: width * 0.13,
+                                            backgroundColor: '#F6F6F6',
+                                            borderWidth: width * 0.0019,
+                                          },
+
+                                          defaultValue: '',
+                                        }}
+                                        listProps={{
+                                          nestedScrollEnabled: true,
+                                        }}
+                                      />
+                                    </View>
                                   </View>
                                   {/* <View
                                     style={{
@@ -4998,7 +5052,7 @@ export default function UnitEdit({
                       <Text style={styles.desciptionHeading}>UNIT MIX*</Text>
                     </View>
                     <View style={{zIndex: 1}}>
-                      {unitMixIcon ? (
+                      {/* {unitMixIcon ? (
                         <FontAwesome
                           name="chevron-up"
                           style={{
@@ -5016,10 +5070,10 @@ export default function UnitEdit({
                             top: width * 0.07,
                           }}
                         />
-                      )}
+                      )} */}
                     </View>
                     <View style={[styles.inputContainer]}>
-                      <SearchableDropdown
+                      <Searchable_DropDown
                         onItemSelect={(item) => {
                           setSelectedUnitMix(item.name);
                           setUnitMixId(item.id);
@@ -5036,7 +5090,9 @@ export default function UnitEdit({
                           margin: width * 0.005,
                         }}
                         itemTextStyle={{color: '#222'}}
-                        itemsContainerStyle={{height: width * 0.2, zIndex: 1}}
+                        itemsContainerStyle={{
+                          maxHeight: width * 0.25,
+                        }}
                         items={unitMix}
                         resetValue={false}
                         onFocus={true}
@@ -5044,14 +5100,14 @@ export default function UnitEdit({
                           placeholder: 'Select Unit Mix',
                           underlineColorAndroid: 'transparent',
                           dense: true,
+                          trueIcon: 'chevron-up',
+                          falseIcon: 'chevron-down',
                           onBlur: () => setUnitMixIcon(false),
                           onFocus: () => setUnitMixIcon(true),
                           style: {
                             width: width * 0.8,
-                            padding: width * 0.027,
                             margin: 0,
                             borderRadius: width * 0.015,
-                            height: width * 0.13,
                             backgroundColor: '#F6F6F6',
                             borderWidth: width * 0.0019,
                           },
