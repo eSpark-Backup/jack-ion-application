@@ -43,7 +43,8 @@ import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-import Searchable_DropDown from '../../../../../../components/SearchableDropdown/index';
+import Searchable_Dropdown from '../../../../../../components/SearchableDropdown/index';
+import Text_Input from '../../../../../../components/TextInput';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
 import {Icon as IconX} from 'react-native-elements';
 import {
@@ -1436,10 +1437,9 @@ export default function UnitEdit({
         <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
           {item.name + (index < 3 ? '*' : '')}
         </Text>
-        <TextInput
+        <Text_Input
           placeholder={item.name}
           value={index == 1 && item.value == null ? '0' : item.value}
-          dense={true}
           keyboardType={index == 1 ? 'numeric' : 'default'}
           error={item.error}
           right={
@@ -1488,16 +1488,6 @@ export default function UnitEdit({
               : false
           }
           style={styles.meterInput}
-          mode={'outlined'}
-          // numberOfLines={index == 2 ? 3 : 1}
-          // multiline={index == 2 ? true : false}
-          theme={{
-            colors: {
-              text: '#25AAE1ec',
-              primary: '#25AAE1ec',
-              selectionColor: 'red',
-            },
-          }}
         />
       </View>
     );
@@ -1510,10 +1500,9 @@ export default function UnitEdit({
         <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
           {item.name}
         </Text>
-        <TextInput
+        <Text_Input
           placeholder={item.name}
           value={item.value}
-          dense={true}
           keyboardType={index == 1 ? 'numeric' : 'default'}
           error={item.error}
           onChangeText={(text) =>
@@ -1527,16 +1516,6 @@ export default function UnitEdit({
             type == 'meterDirect' || type == 'addMeterDirect' ? true : false
           }
           style={styles.meterInput}
-          mode={'outlined'}
-          // numberOfLines={index == 2 ? 3 : 1}
-          // multiline={index == 2 ? true : false}
-          theme={{
-            colors: {
-              text: '#25AAE1ec',
-              primary: '#25AAE1ec',
-              selectionColor: 'red',
-            },
-          }}
         />
       </View>
     );
@@ -2320,18 +2299,10 @@ export default function UnitEdit({
                             New {showAddType}
                           </Text>
                         </View>
-                        <TextInput
+                        <Text_Input
                           placeholder={'Type new manufacturer'}
                           value={addManufacturer}
                           style={styles.meterInput}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
                           onChangeText={(text) => {
                             setAddManufacturer(text);
                           }}
@@ -2354,7 +2325,7 @@ export default function UnitEdit({
                                 </Text>
                               </View>
                               {index < 2 ? (
-                                <SearchableDropdown
+                                <Searchable_Dropdown
                                   onItemSelect={(items) => {
                                     getNewDeviceData(items, index);
                                   }}
@@ -2397,6 +2368,8 @@ export default function UnitEdit({
                                   textInputProps={{
                                     placeholder: item.name,
                                     underlineColorAndroid: 'transparent',
+                                    trueIcon: 'chevron-up',
+                                    falseIcon: 'chevron-down',
                                     style: {
                                       padding: width * 0.027,
                                       margin: 0,
@@ -2417,19 +2390,10 @@ export default function UnitEdit({
                                 />
                               ) : (
                                 <View>
-                                  <TextInput
+                                  <Text_Input
                                     placeholder={'Type new Device'}
                                     value={item.select}
                                     style={styles.meterInput}
-                                    mode={'outlined'}
-                                    theme={{
-                                      colors: {
-                                        text: '#25AAE1ec',
-                                        primary: '#25AAE1ec',
-                                        selectionColor: 'red',
-                                        zIndex: 10,
-                                      },
-                                    }}
                                     onChangeText={(text) => {
                                       onChangeNewDevice(text, index);
                                     }}
@@ -2441,19 +2405,10 @@ export default function UnitEdit({
                                         Model Number* (Bekkar hai)
                                       </Text>
                                     </View>
-                                    <TextInput
+                                    <Text_Input
                                       placeholder="Type Model Number"
                                       value={addModelNo}
-                                      // showSoftInputOnFocus={false}
                                       style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
                                       onChangeText={(text) => {
                                         setAddModelNo(text);
                                       }}
@@ -2466,19 +2421,10 @@ export default function UnitEdit({
                                         Product Description*
                                       </Text>
                                     </View>
-                                    <TextInput
+                                    <Text_Input
                                       placeholder="Type Product Description"
                                       value={addProductNo}
-                                      // showSoftInputOnFocus={false}
                                       style={styles.meterInput}
-                                      mode={'outlined'}
-                                      theme={{
-                                        colors: {
-                                          text: '#25AAE1ec',
-                                          primary: '#25AAE1ec',
-                                          selectionColor: 'red',
-                                        },
-                                      }}
                                       onChangeText={(text) => {
                                         setAddProductNo(text);
                                       }}
@@ -2497,18 +2443,10 @@ export default function UnitEdit({
                             New {showAddType} Type
                           </Text>
                         </View>
-                        <TextInput
-                          placeholder={'Type new utility'}
+                        <Text_Input
+                          placeholder="Type new utility"
                           value={addUtility}
                           style={styles.meterInput}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
                           onChangeText={(text) => {
                             setAddUtility(text);
                           }}
@@ -2522,18 +2460,10 @@ export default function UnitEdit({
                             Add New {showAddType}
                           </Text>
                         </View>
-                        <TextInput
+                        <Text_Input
                           placeholder={'Type new Attached To'}
                           value={addAttached}
                           style={styles.meterInput}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
                           onChangeText={(text) => {
                             setAddAttached(text);
                           }}
@@ -2731,7 +2661,7 @@ export default function UnitEdit({
                                         flexDirection: 'row',
                                         alignItems: 'flex-start',
                                       }}>
-                                      <SearchableDropdown
+                                      <Searchable_Dropdown
                                         onItemSelect={(item, index) => {
                                           // getDevice(item, index);
                                           console.log('Test', item);
@@ -2740,7 +2670,6 @@ export default function UnitEdit({
                                           doSome(item, index);
                                         }}
                                         containerStyle={{
-                                          paddingBottom: width * 0.02,
                                           width: width * 0.8,
                                         }}
                                         itemStyle={{
@@ -2754,29 +2683,14 @@ export default function UnitEdit({
                                         itemsContainerStyle={{
                                           maxHeight: height * 0.08,
                                         }}
-                                        // items={item.data}
                                         items={utilTypes}
-                                        // onRemoveItem={(item, index) => {
-                                        //   const items = selectUtil.filter(
-                                        //     (sitem) => sitem.id !== item.id,
-                                        //   );
-                                        //   // selectedTypes.current = items;
-                                        //   setSelectUtil(items);
-                                        // }}
                                         resetValue={false}
                                         textInputProps={{
-                                          // editable:
-                                          //   selectUtil.length == utilLength
-                                          //     ? false
-                                          //     : !defaultMeterValues,
-                                          placeholder:
-                                            // selectUtil.length == utilLength
-                                            //   ? 'Adding Limit Reached'
-                                            //   :
-                                            'Add Utility Type',
+                                          placeholder: 'Add Utility Type',
                                           underlineColorAndroid: 'transparent',
+                                          trueIcon: 'chevron-up',
+                                          falseIcon: 'chevron-down',
                                           style: {
-                                            padding: width * 0.027,
                                             margin: 0,
                                             borderTopLeftRadius: width * 0.015,
                                             borderBottomLeftRadius:
@@ -2852,7 +2766,7 @@ export default function UnitEdit({
                                         flexDirection: 'row',
                                         alignItems: 'flex-start',
                                       }}>
-                                      <SearchableDropdown
+                                      <Searchable_Dropdown
                                         onItemSelect={(item) => {
                                           getDevice(item, index);
                                         }}
@@ -2906,8 +2820,9 @@ export default function UnitEdit({
                                                 : 'First Select Device'
                                               : item.name,
                                           underlineColorAndroid: 'transparent',
+                                          trueIcon: 'chevron-up',
+                                          falseIcon: 'chevron-down',
                                           style: {
-                                            padding: width * 0.027,
                                             margin: 0,
                                             borderTopLeftRadius: width * 0.015,
                                             borderBottomLeftRadius:
@@ -2961,7 +2876,7 @@ export default function UnitEdit({
                                             borderTopWidth: width * 0.0019,
                                             borderRightWidth: width * 0.0019,
                                             borderBottomWidth: width * 0.0019,
-                                            height: width * 0.13,
+                                            height: width * 0.134,
                                             justifyContent: 'center',
                                             alignItems: 'center',
                                           }}
@@ -3015,75 +2930,16 @@ export default function UnitEdit({
                                       </Text>
                                     </View>
                                     <View style={{flexDirection: 'row'}}>
-                                      <View
+                                      <Text_Input
+                                        placeholder="Type Product Description"
+                                        value={
+                                          productNo?.length > 24
+                                            ? productNo.slice(0, 24) + '...'
+                                            : productNo
+                                        }
+                                        editable={false}
                                         style={{
-                                          paddingBottom: width * 0.02,
-                                          width: width * 0.4,
-                                        }}>
-                                        <TextInput
-                                          placeholder="Type Product Description"
-                                          value={
-                                            productNo?.length > 24
-                                              ? productNo.slice(0, 24) + '...'
-                                              : productNo
-                                          }
-                                          selection
-                                          selectionColor={'#25AAE1ec'}
-                                          underlineColor="transparent"
-                                          activeUnderlineColor="transparent"
-                                          // dense={true}
-                                          // editable={false}
-                                          // showSoftInputOnFocus={false}
-
-                                          style={{
-                                            width: width * 0.4,
-                                            margin: 0,
-                                            borderRadius: width * 0.015,
-                                            backgroundColor: '#F6F6F6',
-                                            borderWidth: width * 0.0019,
-                                            height: width * 0.13,
-                                          }}
-                                          mode={'flat'}
-                                          theme={{
-                                            colors: {
-                                              text: '#25AAE1ec',
-                                              primary: '#25AAE1ec',
-                                              selectionColor: 'red',
-                                            },
-                                          }}
-                                        />
-                                      </View>
-                                      <SearchableDropDown
-                                        containerStyle={{
-                                          paddingBottom: width * 0.02,
-                                          width: width * 0.4,
-                                        }}
-                                        itemStyle={{
-                                          padding: width * 0.027,
-                                          backgroundColor: 'rgb(247, 247, 247)',
-                                          borderColor: '#bbb',
-                                          borderWidth: width * 0.0015,
-                                          borderRadius: width * 0.015,
-                                        }}
-                                        itemTextStyle={{color: '#222'}}
-                                        itemsContainerStyle={{
-                                          maxHeight: height * 0.08,
-                                        }}
-                                        resetValue={false}
-                                        textInputProps={{
-                                          underlineColorAndroid: 'transparent',
-                                          style: {
-                                            margin: 0,
-                                            borderRadius: 5,
-                                            height: width * 0.13,
-                                            backgroundColor: '#F6F6F6',
-                                            borderWidth: width * 0.0019,
-                                          },
-
-                                          defaultValue: '',
-                                        }}
-                                        listProps={{
-                                          nestedScrollEnabled: true,
+                                          width: width * 0.8,
                                         }}
                                       />
                                     </View>
@@ -3122,18 +2978,10 @@ export default function UnitEdit({
                                           New {showAddType}
                                         </Text>
                                       </View>
-                                      <TextInput
+                                      <Text_Input
                                         placeholder={'Type new manufacturer'}
                                         value={addManufacturer}
                                         style={styles.meterInput}
-                                        mode={'outlined'}
-                                        theme={{
-                                          colors: {
-                                            text: '#25AAE1ec',
-                                            primary: '#25AAE1ec',
-                                            selectionColor: 'red',
-                                          },
-                                        }}
                                         onChangeText={(text) => {
                                           setAddManufacturer(text);
                                         }}
@@ -3241,7 +3089,7 @@ export default function UnitEdit({
                                               </Text>
                                             </View>
                                             {index < 1 ? (
-                                              <SearchableDropdown
+                                              <Searchable_Dropdown
                                                 onItemSelect={(items) => {
                                                   getNewDeviceData(
                                                     items,
@@ -3293,6 +3141,8 @@ export default function UnitEdit({
                                                   placeholder: item.name,
                                                   underlineColorAndroid:
                                                     'transparent',
+                                                  trueIcon: 'chevron-up',
+                                                  falseIcon: 'chevron-down',
                                                   style: {
                                                     padding: width * 0.027,
                                                     margin: 0,
@@ -3322,21 +3172,12 @@ export default function UnitEdit({
                                                 {/*
                                             //! Ye New Device Adding ka hai
                                              */}
-                                                <TextInput
+                                                <Text_Input
                                                   placeholder={
                                                     'Type New Device Name'
                                                   }
                                                   value={item.select}
                                                   style={styles.meterInput}
-                                                  mode={'outlined'}
-                                                  theme={{
-                                                    colors: {
-                                                      text: '#25AAE1ec',
-                                                      primary: '#25AAE1ec',
-                                                      selectionColor: 'red',
-                                                      zIndex: 10,
-                                                    },
-                                                  }}
                                                   onChangeText={(text) => {
                                                     onChangeNewDevice(
                                                       text,
@@ -3361,10 +3202,9 @@ export default function UnitEdit({
                                                         'space-between',
                                                       height: width * 0.15,
                                                     }}>
-                                                    <TextInput
+                                                    <Text_Input
                                                       placeholder="Type Model Number"
                                                       value={addModelNo}
-                                                      // showSoftInputOnFocus={false}
                                                       style={[
                                                         styles.meterInput,
                                                         {
@@ -3375,26 +3215,12 @@ export default function UnitEdit({
                                                       onSubmitEditing={
                                                         Keyboard.dismiss
                                                       }
-                                                      mode={'outlined'}
-                                                      theme={{
-                                                        colors: {
-                                                          text: '#25AAE1ec',
-                                                          primary: '#25AAE1ec',
-                                                          selectionColor: 'red',
-                                                        },
-                                                      }}
                                                       onFocus={() => {
                                                         console.log(
                                                           'Focusing Model number',
                                                         );
                                                         setVerticalOffs(-60);
                                                       }}
-                                                      // onBlur={() => {
-                                                      //   console.log(
-                                                      //     'Blurring Model number',
-                                                      //   );
-                                                      //   setVerticalOffs(-180);
-                                                      // }}
                                                       onChangeText={(text) => {
                                                         setAddModelNo(text);
                                                       }}
@@ -3497,22 +3323,13 @@ export default function UnitEdit({
                                                       Product Description*
                                                     </Text>
                                                   </View>
-                                                  <TextInput
+                                                  <Text_Input
                                                     placeholder="Type Product Description"
                                                     value={addProductNo}
-                                                    // showSoftInputOnFocus={false}
                                                     style={styles.meterInput}
-                                                    mode={'outlined'}
                                                     onSubmitEditing={
                                                       Keyboard.dismiss
                                                     }
-                                                    theme={{
-                                                      colors: {
-                                                        text: '#25AAE1ec',
-                                                        primary: '#25AAE1ec',
-                                                        selectionColor: 'red',
-                                                      },
-                                                    }}
                                                     onChangeText={(text) => {
                                                       setAddProductNo(text);
                                                     }}
@@ -3522,12 +3339,6 @@ export default function UnitEdit({
                                                       );
                                                       setVerticalOffs(-60);
                                                     }}
-                                                    // onBlur={() => {
-                                                    //   console.log(
-                                                    //     'Blurring Product Desc',
-                                                    //   );
-                                                    //   setVerticalOffs(-180);
-                                                    // }}
                                                   />
                                                 </View>
                                               </View>
@@ -3637,7 +3448,7 @@ export default function UnitEdit({
                                                 Select Device
                                               </Text>
                                             </View>
-                                            <SearchableDropdown
+                                            <Searchable_Dropdown
                                               onItemSelect={(item) => {
                                                 // this.getNewDeviceData(items, index);
                                                 setSelectedDevice(item);
@@ -3687,6 +3498,8 @@ export default function UnitEdit({
                                                 placeholder: 'Select Device',
                                                 underlineColorAndroid:
                                                   'transparent',
+                                                trueIcon: 'chevron-up',
+                                                falseIcon: 'chevron-down',
                                                 style: {
                                                   padding: width * 0.027,
                                                   margin: 0,
@@ -3726,23 +3539,13 @@ export default function UnitEdit({
                                               Add New {showAddType}
                                             </Text>
                                           </View>
-                                          <TextInput
-                                            placeholder={
-                                              'Type New Model Number'
-                                            }
+                                          <Text_Input
+                                            placeholder="Type New Model Number"
                                             value={addModelNumber}
                                             style={{
                                               width: width * 0.8,
                                               justifyContent: 'flex-end',
                                               fontSize: width * 0.036,
-                                            }}
-                                            mode={'outlined'}
-                                            theme={{
-                                              colors: {
-                                                text: '#25AAE1ec',
-                                                primary: '#25AAE1ec',
-                                                selectionColor: 'red',
-                                              },
                                             }}
                                             onChangeText={(text) => {
                                               setAddModelNumber(text);
@@ -3808,7 +3611,6 @@ export default function UnitEdit({
                         width: width * 0.9,
                         alignItems: 'center',
                         justifyContent: 'flex-start',
-                        // backgroundColor: 'pink',
                       }}>
                       {loadingState ? (
                         <ActivityIndicator
@@ -3822,17 +3624,10 @@ export default function UnitEdit({
                           {showAddType !== 'Attached To' ? (
                             <View
                               style={{
-                                flex: 20,
-                                height: width * 0.25,
+                                flex: 22,
                                 width: width * 0.8,
-                                // backgroundColor: 'yellow',
-                                // bottom: '20%',
                               }}>
-                              <Text
-                                style={[
-                                  styles.meterDesciptionHeading,
-                                  {top: width * 0.01},
-                                ]}>
+                              <Text style={[styles.meterDesciptionHeading]}>
                                 Attached To*
                               </Text>
                               <View
@@ -3841,14 +3636,13 @@ export default function UnitEdit({
                                   flexDirection: 'row',
                                   alignItems: 'flex-start',
                                 }}>
-                                <SearchableDropdown
+                                <Searchable_Dropdown
                                   onItemSelect={(item) => {
                                     // getDevice(item, index);
                                     setAttachedToId(item.id);
                                     setAttachedTo(item.name);
                                   }}
                                   containerStyle={{
-                                    paddingBottom: width * 0.02,
                                     width: width * 0.7,
                                   }}
                                   itemStyle={{
@@ -3868,11 +3662,14 @@ export default function UnitEdit({
                                   textInputProps={{
                                     placeholder: 'Select Attached To',
                                     underlineColorAndroid: 'transparent',
+                                    trueIcon: 'chevron-up',
+                                    falseIcon: 'chevron-down',
                                     style: {
-                                      padding: width * 0.027,
                                       margin: 0,
                                       borderTopLeftRadius: width * 0.015,
                                       borderBottomLeftRadius: width * 0.015,
+                                      borderTopRigthRadius: 0,
+                                      borderBottomRightRadius: 0,
                                       borderColor: 'black',
                                       height: width * 0.13,
                                       backgroundColor: '#F6F6F6',
@@ -3903,7 +3700,7 @@ export default function UnitEdit({
                                     borderTopWidth: width * 0.0019,
                                     borderRightWidth: width * 0.0019,
                                     borderBottomWidth: width * 0.0019,
-                                    height: width * 0.13,
+                                    height: width * 0.134,
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                   }}
@@ -3929,18 +3726,10 @@ export default function UnitEdit({
                                       Add New {showAddType}
                                     </Text>
                                   </View>
-                                  <TextInput
+                                  <Text_Input
                                     placeholder={'Type new Attached To'}
                                     value={addAttached}
                                     style={styles.meterInput}
-                                    mode={'outlined'}
-                                    theme={{
-                                      colors: {
-                                        text: '#25AAE1ec',
-                                        primary: '#25AAE1ec',
-                                        selectionColor: 'red',
-                                      },
-                                    }}
                                     onChangeText={(text) => {
                                       setAddAttached(text);
                                     }}
@@ -4436,7 +4225,7 @@ export default function UnitEdit({
                                 ]}>
                                 Reason*
                               </Text>
-                              <SearchableDropdown
+                              <Searchable_Dropdown
                                 onItemSelect={(item) => {
                                   setReasonText(item.name);
                                   setReasonId(item.id);
@@ -4464,8 +4253,9 @@ export default function UnitEdit({
                                 textInputProps={{
                                   placeholder: 'Select Reasons',
                                   underlineColorAndroid: 'transparent',
+                                  trueIcon: 'chevron-up',
+                                  falseIcon: 'chevron-down',
                                   style: {
-                                    padding: width * 0.027,
                                     margin: 0,
                                     borderRadius: width * 0.015,
                                     height: width * 0.13,
@@ -4489,19 +4279,10 @@ export default function UnitEdit({
                                 ]}>
                                 Reason Description*
                               </Text>
-                              <TextInput
+                              <Text_Input
                                 placeholder="Describe Your Reason"
                                 value={reasonDes}
                                 style={styles.meterInput}
-                                mode={'outlined'}
-                                theme={{
-                                  colors: {
-                                    text: '#25AAE1ec',
-                                    primary: '#25AAE1ec',
-                                    selectionColor: 'red',
-                                    zIndex: 10,
-                                  },
-                                }}
                                 onChangeText={(text) => {
                                   setReasonDes(text);
                                 }}
@@ -4978,33 +4759,30 @@ export default function UnitEdit({
                       />
                       <Text style={styles.desciptionHeading}>BUILDING*</Text>
                     </View>
-                    <View style={styles.inputContainer}>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        {marginVertical: width * 0.02},
+                      ]}>
                       {/* //todo: This is Drop down picker */}
-                      <TextInput
+                      <Text_Input
                         placeholder="Building Name"
                         value={buildingName}
-                        dense={true}
                         editable={false}
-                        // showSoftInputOnFocus={false}
                         style={styles.input}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
-                        }}
                       />
                     </View>
                     <View style={styles.desciptionContainer}>
                       <Text style={styles.desciptionHeading}>UNIT*</Text>
                     </View>
-                    <View style={[styles.inputContainer]}>
-                      <TextInput
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        {marginVertical: width * 0.02},
+                      ]}>
+                      <Text_Input
                         placeholder="Unit Name"
                         value={state.lastUnitData}
-                        dense={true}
                         onChangeText={(text) => {
                           LayoutAnimation.configureNext({
                             duration: 300,
@@ -5031,14 +4809,6 @@ export default function UnitEdit({
                         disabled={type == 'meterDirect' ? true : false}
                         style={styles.input}
                         error={error.errorUnits}
-                        mode={'outlined'}
-                        theme={{
-                          colors: {
-                            text: '#25AAE1ec',
-                            primary: '#25AAE1ec',
-                            selectionColor: 'red',
-                          },
-                        }}
                       />
                     </View>
                     <View style={{width: '80%'}}>
@@ -5073,7 +4843,7 @@ export default function UnitEdit({
                       )} */}
                     </View>
                     <View style={[styles.inputContainer]}>
-                      <Searchable_DropDown
+                      <Searchable_Dropdown
                         onItemSelect={(item) => {
                           setSelectedUnitMix(item.name);
                           setUnitMixId(item.id);
@@ -5099,7 +4869,6 @@ export default function UnitEdit({
                         textInputProps={{
                           placeholder: 'Select Unit Mix',
                           underlineColorAndroid: 'transparent',
-                          dense: true,
                           trueIcon: 'chevron-up',
                           falseIcon: 'chevron-down',
                           onBlur: () => setUnitMixIcon(false),
@@ -5107,6 +4876,7 @@ export default function UnitEdit({
                           style: {
                             width: width * 0.8,
                             margin: 0,
+                            height: width * 0.13,
                             borderRadius: width * 0.015,
                             backgroundColor: '#F6F6F6',
                             borderWidth: width * 0.0019,

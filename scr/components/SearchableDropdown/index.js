@@ -175,7 +175,8 @@ export default class SearchableDropDown extends Component {
       },
       () => {
         if (this.state.focus) {
-          this.props.textInputProps.onFocus();
+          this.props.textInputProps.onFocus &&
+            this.props.textInputProps.onFocus();
           this.setState({
             focus: true,
             item: defaultItemValue,
@@ -256,14 +257,17 @@ export default class SearchableDropDown extends Component {
         activeUnderlineColor="transparent"
         selectionColor={'#25AAE1ec'}
         right={
-          <TextInput.Icon
-            name={
-              this.state.focus
-                ? this.props.textInputProps.trueIcon
-                : this.props.textInputProps.falseIcon
-            }
-            onPress={this.toggleDropdown}
-          />
+          this.props.items &&
+          this.props.items.length > 0 && (
+            <TextInput.Icon
+              name={
+                this.state.focus
+                  ? this.props.textInputProps.trueIcon
+                  : this.props.textInputProps.falseIcon
+              }
+              onPress={this.toggleDropdown}
+            />
+          )
         }
         {...textInputProps}
         onFocus={(e) => {

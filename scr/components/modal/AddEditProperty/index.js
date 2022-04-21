@@ -381,20 +381,36 @@ export default function AddEditProperty({
     setUtilAndManu(listSlide);
   };
 
+  const AddRow = () => {
+    if (unitCount) {
+      animate();
+      setAddUnitMix(true);
+    } else {
+      Toast.show('Please add Unit Count first', Toast.SHORT);
+    }
+  };
+
   const AddNewRow = () => {
-    let arr = [...unitMix];
-    let data = {
-      br: unitMixes[0].value,
-      ba: unitMixes[1].value,
-      no_of_units: unitMixes[2].value,
-      gud: unitMixes[3].value,
-    };
-    arr.push(data);
-    setSumNoOfUnit(sumNoOfUnit + unitMixes[2].value);
-    setSumTotalGalDay(sumTotalGalDay + totalGalDay);
-    arr.filter;
-    setUnitMix(arr);
-    clearUnitMixData();
+    if (
+      unitMixes[2].value > Number(unitCount) ||
+      sumNoOfUnit + unitMixes[2].value > Number(unitCount)
+    ) {
+      Toast.show('Can add unit more than unit count', Toast.SHORT);
+    } else {
+      let arr = [...unitMix];
+      let data = {
+        br: unitMixes[0].value,
+        ba: unitMixes[1].value,
+        no_of_units: unitMixes[2].value,
+        gud: unitMixes[3].value,
+      };
+      arr.push(data);
+      setSumNoOfUnit(sumNoOfUnit + unitMixes[2].value);
+      setSumTotalGalDay(sumTotalGalDay + totalGalDay);
+      arr.filter;
+      setUnitMix(arr);
+      clearUnitMixData();
+    }
   };
 
   const editOldRow = () => {
@@ -1237,6 +1253,11 @@ export default function AddEditProperty({
                         utilAndManu[1]?.selectId !== ''
                           ? '#25AAE1ec'
                           : 'grey',
+                      borderColor:
+                        utilAndManu[0]?.selectId !== '' &&
+                        utilAndManu[1]?.selectId !== ''
+                          ? '#25AAE1ec'
+                          : 'grey',
                     },
                   ]}>
                   {flag == 'add' ? 'Add' : 'Edit'}
@@ -1703,7 +1724,7 @@ export default function AddEditProperty({
                             </TouchableOpacity>
                             <TouchableOpacity
                               onPress={unitMixFlag ? editOldRow : AddNewRow}>
-                              <Text style={[styles.unitMixButtonText]}>
+                              <Text style={styles.unitMixButtonText}>
                                 {unitMixFlag ? 'Edit' : 'Add'}
                               </Text>
                             </TouchableOpacity>
@@ -1820,13 +1841,7 @@ export default function AddEditProperty({
                             </View>
                           </View>
                           <TouchableOpacity
-                            onPress={() => {
-                              animate();
-                              setAddUnitMix(true);
-                              // alert(
-                              //   'option disabled because of changes in APIs',
-                              // );
-                            }}
+                            onPress={AddRow}
                             style={styles.addNewRowBtn}>
                             <Text style={{color: '#25AAE1ec'}}>
                               Add New Rows
