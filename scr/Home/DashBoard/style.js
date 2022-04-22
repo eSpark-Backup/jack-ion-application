@@ -154,8 +154,8 @@ export default styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: height * 0.02,
-    borderRadius: width * 0.05,
+    marginBottom: height * 0.04,
+    borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -184,6 +184,28 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: height * 0.02,
   },
+
+  infoViewLogo: {
+    backgroundColor: '#232323',
+    width: width * 0.15,
+    height: width * 0.15,
+    position: 'absolute',
+    borderRadius: 10,
+    top: -10,
+    left: 20,
+  },
+  infoUpperView: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: width * 0.04,
+  },
+  infoLowerView: {
+    width: '100%',
+    borderTopWidth: 1,
+    padding: width * 0.04,
+  },
+
   propButton: {
     height: height * 0.09,
     width: width * 0.9,

@@ -3,17 +3,12 @@ import React, {useEffect, useReducer, useRef, useState} from 'react';
 import {
   Text,
   View,
-  StatusBar,
   Dimensions,
   ScrollView,
   TouchableOpacity,
-  UIManager,
   Pressable,
   Alert,
-  Platform,
   ActivityIndicator,
-  ToastAndroid,
-  Image,
   LayoutAnimation,
   KeyboardAvoidingView,
   FlatList,
@@ -30,16 +25,17 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import MapView, {PROVIDER_GOOGLE, Circle} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import SystemSetting from 'react-native-system-setting';
-import SearchableDropDown from 'react-native-searchable-dropdown';
+
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-simple-toast';
 import NumericInput from 'react-native-numeric-input';
 
 //Component
 import styles from './style';
-import {Fonts} from '../../../utils/fonts';
 import clc from 'cli-color';
 import API from '../../../api/SeviceApi';
+import Text_Input from '../../../components/TextInput/index';
+import Searchable_Dropdown from '../../../components/SearchableDropdown/index';
 
 export default function AddEditProperty({
   modalVisible,
@@ -116,7 +112,8 @@ export default function AddEditProperty({
       selectId: '',
       error: '',
       name: 'Utility Type',
-      placeholder: 'Select Utilty Type',
+      icon1: 'chevron-up',
+      icon2: 'chevron-down',
       data: [],
     },
     {
@@ -125,6 +122,8 @@ export default function AddEditProperty({
       selectId: '',
       error: '',
       name: 'Manufacturer',
+      icon1: 'chevron-up',
+      icon2: 'chevron-down',
       data: [],
     },
   ]);
@@ -961,18 +960,11 @@ export default function AddEditProperty({
                 Add New {showAddType} Type
               </Text>
             </View>
-            <TextInput
+            <Text_Input
               placeholder={'Type New Utility Type Name'}
               value={addUtility}
+              hide={!dropDownShow[2].value}
               style={styles.addTypeTextInput}
-              mode={'outlined'}
-              theme={{
-                colors: {
-                  text: '#25AAE1ec',
-                  primary: '#25AAE1ec',
-                  selectionColor: 'red',
-                },
-              }}
               onChangeText={(text) => {
                 setAddUtility(text);
               }}
@@ -981,6 +973,7 @@ export default function AddEditProperty({
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-around',
+                marginTop: width * 0.1,
               }}>
               <TouchableOpacity onPress={() => cancelAddType()}>
                 <Text style={styles.addTypeButtons}>Cancel</Text>
@@ -1008,18 +1001,11 @@ export default function AddEditProperty({
                   Add New {showAddType} Type
                 </Text>
               </View>
-              <TextInput
+              <Text_Input
                 placeholder={'Type New Utility Type Name'}
                 value={addUtility}
+                hide={!dropDownShow[2].value}
                 style={styles.addTypeTextInput}
-                mode={'outlined'}
-                theme={{
-                  colors: {
-                    text: '#25AAE1ec',
-                    primary: '#25AAE1ec',
-                    selectionColor: 'red',
-                  },
-                }}
                 onChangeText={(text) => {
                   setAddUtility(text);
                 }}
@@ -1028,6 +1014,7 @@ export default function AddEditProperty({
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-around',
+                  marginTop: width * 0.1,
                 }}>
                 <TouchableOpacity onPress={() => cancelAddUType()}>
                   <Text style={styles.addTypeButtons}>Cancel</Text>
@@ -1040,6 +1027,7 @@ export default function AddEditProperty({
                       styles.addTypeButtons,
                       {
                         color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                        borderColor: addUtility ? '#25AAE1ec' : '#d0d0d0',
                       },
                     ]}>
                     Add
@@ -1061,18 +1049,11 @@ export default function AddEditProperty({
                     Add New {showAddType}
                   </Text>
                 </View>
-                <TextInput
+                <Text_Input
                   placeholder={'Type New Manufacturer Name'}
+                  hide={!dropDownShow[2].value}
                   value={addManufacturer}
                   style={styles.addTypeTextInput}
-                  mode={'outlined'}
-                  theme={{
-                    colors: {
-                      text: '#25AAE1ec',
-                      primary: '#25AAE1ec',
-                      selectionColor: 'red',
-                    },
-                  }}
                   onChangeText={(text) => {
                     setAddManufacturer(text);
                   }}
@@ -1086,7 +1067,7 @@ export default function AddEditProperty({
                       flexDirection: 'row',
                       alignItems: 'flex-start',
                     }}>
-                    <SearchableDropDown
+                    <Searchable_Dropdown
                       multi={true}
                       selectedItems={selectAddManuUtil}
                       onItemSelect={(item) => {
@@ -1106,6 +1087,8 @@ export default function AddEditProperty({
                       }}
                       resetValue={false}
                       textInputProps={{
+                        trueIcon: 'chevron-up',
+                        falseIcon: 'chevron-down',
                         placeholder: 'Add Utility Type',
                         underlineColorAndroid: 'transparent',
                         style: styles.dropDownTextInput,
@@ -1162,6 +1145,10 @@ export default function AddEditProperty({
                                 addManufacturer && selectAddManuUtil?.length > 0
                                   ? '#25AAE1ec'
                                   : '#d0d0d0',
+                              borderColor:
+                                addManufacturer && selectAddManuUtil?.length > 0
+                                  ? '#25AAE1ec'
+                                  : '#d0d0d0',
                             },
                           ]}>
                           Add
@@ -1188,7 +1175,7 @@ export default function AddEditProperty({
                     {item.name}*
                   </Text>
                   <View style={styles.mainDropDownView}>
-                    <SearchableDropDown
+                    <Searchable_Dropdown
                       onItemSelect={(item) => {
                         getData(item, index);
                       }}
@@ -1199,6 +1186,8 @@ export default function AddEditProperty({
                       items={item.data}
                       resetValue={false}
                       textInputProps={{
+                        trueIcon: item.icon1,
+                        falseIcon: item.icon2,
                         placeholder:
                           index == 1
                             ? utilAndManu[0].selectId
@@ -1207,7 +1196,6 @@ export default function AddEditProperty({
                                 : 'No Manufacturer'
                               : 'First Select Utility Type'
                             : index == 0 && 'Select Utility Type',
-                        underlineColorAndroid: 'transparent',
                         style: styles.dropDownTextInput,
                         onTextChange: (text) => {
                           onChangeUtilAndManu(text, index);
@@ -1252,12 +1240,12 @@ export default function AddEditProperty({
                         utilAndManu[0]?.selectId !== '' &&
                         utilAndManu[1]?.selectId !== ''
                           ? '#25AAE1ec'
-                          : 'grey',
+                          : '#d0d0d0',
                       borderColor:
                         utilAndManu[0]?.selectId !== '' &&
                         utilAndManu[1]?.selectId !== ''
                           ? '#25AAE1ec'
-                          : 'grey',
+                          : '#d0d0d0',
                     },
                   ]}>
                   {flag == 'add' ? 'Add' : 'Edit'}
@@ -1549,9 +1537,10 @@ export default function AddEditProperty({
                             overflow: 'hidden',
                           },
                         ]}>
-                        <TextInput
+                        <Text_Input
                           placeholder="Enter Property Name*"
                           value={Name}
+                          hide={!dropDownShow[0].value}
                           onChangeText={(text) => {
                             setName(text);
                             setError((oldState) => ({
@@ -1560,15 +1549,7 @@ export default function AddEditProperty({
                             }));
                           }}
                           error={error.property}
-                          style={[styles.input, {width: '99%'}]}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
+                          style={{...styles.input, width: '99.99%'}}
                         />
                       </View>
                       {error.property ? (
@@ -1689,24 +1670,12 @@ export default function AddEditProperty({
                               ]}>
                               Total/Gal/Day
                             </Text>
-                            <TextInput
+                            <Text_Input
                               dense
                               editable={false}
-                              style={[
-                                styles.input,
-                                {
-                                  width: width * 0.35,
-                                },
-                              ]}
+                              hide={!dropDownShow[1].value}
+                              style={{...styles.input, width: width * 0.35}}
                               value={totalGalDay.toString()}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
-                              }}
                             />
                           </View>
 
@@ -1752,21 +1721,14 @@ export default function AddEditProperty({
                                 marginBottom: width * 0.015,
                               },
                             ]}>
-                            <TextInput
+                            <Text_Input
                               placeholder="Unit Count"
                               style={styles.input}
                               value={unitCount}
+                              hide={!dropDownShow[1].value}
                               keyboardType="decimal-pad"
                               onChangeText={(text) => {
                                 setUnitCount(text);
-                              }}
-                              mode={'outlined'}
-                              theme={{
-                                colors: {
-                                  text: '#25AAE1ec',
-                                  primary: '#25AAE1ec',
-                                  selectionColor: 'red',
-                                },
                               }}
                             />
                           </View>
@@ -1963,27 +1925,18 @@ export default function AddEditProperty({
                         />
                       </TouchableOpacity>
                       <View
-                        style={[
-                          styles.inputContainer,
-                          {
-                            height: dropDownShow[3].value ? width * 0.18 : 0,
-                            overflow: 'hidden',
-                          },
-                        ]}>
-                        <TextInput
+                        style={{
+                          ...styles.inputContainer,
+                          height: dropDownShow[3].value ? width * 0.18 : 0,
+                          overflow: 'hidden',
+                        }}>
+                        <Text_Input
                           placeholder="Company Specific ID"
                           style={styles.input}
+                          hide={!dropDownShow[3].value}
                           value={CustomId}
                           onChangeText={(text) => {
                             setCustomId(text);
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
                           }}
                         />
                       </View>
@@ -1994,11 +1947,11 @@ export default function AddEditProperty({
                             height: dropDownShow[3].value ? 'auto' : 0,
 
                             overflow: 'hidden',
-                            justifyContent: 'center',
                           },
                         ]}>
-                        <SearchableDropDown
+                        <Searchable_Dropdown
                           onItemSelect={(item) => {
+                            e;
                             setOwnerId(item.id);
                             setOwnerName(item.name);
                           }}
@@ -2011,6 +1964,8 @@ export default function AddEditProperty({
                           textInputProps={{
                             placeholder: 'Owner or Developer Name',
                             underlineColorAndroid: 'transparent',
+                            trueIcon: 'chevron-up',
+                            falseIcon: 'chevron-down',
                             style: styles.dropDownFullTextInput,
                             onTextChange: (text) => {
                               setOwnerName(text);
@@ -2031,21 +1986,14 @@ export default function AddEditProperty({
                             overflow: 'hidden',
                           },
                         ]}>
-                        <TextInput
+                        <Text_Input
                           placeholder="Contact Name"
                           style={styles.input}
+                          hide={!dropDownShow[3].value}
                           value={contactName}
                           onChangeText={(text) => {
                             setContactName(text);
                           }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
                         />
                       </View>
                       <View
@@ -2056,21 +2004,14 @@ export default function AddEditProperty({
                             overflow: 'hidden',
                           },
                         ]}>
-                        <TextInput
+                        <Text_Input
                           placeholder="Contact Phone"
                           style={styles.input}
+                          hide={!dropDownShow[3].value}
                           value={contactPhone}
                           onChangeText={(text) => {
                             setContactPhone(text);
                           }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
-                          }}
                         />
                       </View>
                       <View
@@ -2081,20 +2022,13 @@ export default function AddEditProperty({
                             overflow: 'hidden',
                           },
                         ]}>
-                        <TextInput
+                        <Text_Input
                           placeholder="Email"
                           style={styles.input}
+                          hide={!dropDownShow[3].value}
                           value={contactEmail}
                           onChangeText={(text) => {
                             setContactEmail(text);
-                          }}
-                          mode={'outlined'}
-                          theme={{
-                            colors: {
-                              text: '#25AAE1ec',
-                              primary: '#25AAE1ec',
-                              selectionColor: 'red',
-                            },
                           }}
                         />
                       </View>

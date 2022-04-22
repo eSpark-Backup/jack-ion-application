@@ -16,7 +16,7 @@ export default (props) => {
         margin: 0,
         borderRadius: width * 0.015,
         backgroundColor: '#F6F6F6',
-        borderWidth: width * 0.0019,
+        borderWidth: props.hide ? 0 : width * 0.0019,
         height: props.dense ? null : width * 0.13,
         ...props.style,
       }}

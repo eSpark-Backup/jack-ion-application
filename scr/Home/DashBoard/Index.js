@@ -391,131 +391,59 @@ export default class Splash extends Component {
               </View>
 
               <View style={styles.mainDataContainer}>
-                <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>Property</Text>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      Total:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>
-                      {totalProperties}
-                    </Text>
+                <View style={{...styles.infoViewContainer}}>
+                  <View style={styles.infoViewLogo} />
+                  <View style={styles.infoUpperView}>
+                    <View style={{alignItems: 'flex-end'}}>
+                      <Text style={{fontSize: width * 0.05}}>Property</Text>
+                      <Text
+                        style={{fontSize: width * 0.06, fontWeight: 'bold'}}>
+                        {totalProperties}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      This Week:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>
-                      {propertiesThisWeek}
-                    </Text>
-                  </View>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      Percentage:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>
-                      {propertiesPercent}%
+                  <View style={styles.infoLowerView}>
+                    <Text style={{fontSize: width * 0.05}}>
+                      {propertiesPercent}% | {propertiesThisWeek} This Week
                     </Text>
                   </View>
                 </View>
-                <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>Buildings</Text>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      Total:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>{totalBuildings}</Text>
+                <View style={{...styles.infoViewContainer}}>
+                  <View
+                    style={{...styles.infoViewLogo, backgroundColor: '#4ba64f'}}
+                  />
+                  <View style={styles.infoUpperView}>
+                    <View style={{alignItems: 'flex-end'}}>
+                      <Text style={{fontSize: width * 0.05}}>Buildings</Text>
+                      <Text
+                        style={{fontSize: width * 0.06, fontWeight: 'bold'}}>
+                        {totalBuildings}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      This Week:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>
-                      {buildingsThisWeek}
-                    </Text>
-                  </View>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      Percentage:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>
-                      {buildingsPercent}%
+                  <View style={styles.infoLowerView}>
+                    <Text style={{fontSize: width * 0.05}}>
+                      {buildingsPercent}% | {buildingsThisWeek} This Week
                     </Text>
                   </View>
                 </View>
-                <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>Meters</Text>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      Total:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>{totalMeters}</Text>
+                <View style={{...styles.infoViewContainer}}>
+                  <View
+                    style={{...styles.infoViewLogo, backgroundColor: '#227ce9'}}
+                  />
+                  <View style={styles.infoUpperView}>
+                    <View style={{alignItems: 'flex-end'}}>
+                      <Text style={{fontSize: width * 0.05}}>Meters</Text>
+                      <Text
+                        style={{fontSize: width * 0.06, fontWeight: 'bold'}}>
+                        {totalMeters}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      This Week:
+                  <View style={styles.infoLowerView}>
+                    <Text style={{fontSize: width * 0.05}}>
+                      {metersPercent}% | {metersThisWeek} This Week
                     </Text>
-                    <Text style={[styles.dataFieldText]}>{metersThisWeek}</Text>
-                  </View>
-                  <View style={styles.infoViewInner}>
-                    <Text
-                      style={[
-                        styles.dataFieldText,
-                        {
-                          textAlign: 'left',
-                        },
-                      ]}>
-                      Percentage:
-                    </Text>
-                    <Text style={[styles.dataFieldText]}>{metersPercent}%</Text>
                   </View>
                 </View>
               </View>

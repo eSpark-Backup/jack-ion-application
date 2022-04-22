@@ -67,7 +67,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#25AAE1ec',
   },
   inputContainer: {
-    flex: 1,
+    // flex: 1,
     width: '90%',
     alignSelf: 'center',
     alignItems: 'center',
@@ -227,7 +227,6 @@ export default styles = StyleSheet.create({
   },
   dropDownItemText: {color: '#222'},
   dropDownTextInput: {
-    padding: width * 0.027,
     margin: 0,
     borderTopLeftRadius: width * 0.015,
     borderBottomLeftRadius: width * 0.015,
@@ -238,6 +237,9 @@ export default styles = StyleSheet.create({
     borderLeftWidth: width * 0.0019,
     borderBottomWidth: width * 0.0019,
     zIndex: 0,
+    borderRightWidth: 0,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
   },
   addNewButton: {
     width: width * 0.1,
@@ -247,16 +249,15 @@ export default styles = StyleSheet.create({
     borderTopWidth: width * 0.0019,
     borderRightWidth: width * 0.0019,
     borderBottomWidth: width * 0.0019,
-    height: width * 0.13,
+    height: width * 0.134,
     justifyContent: 'center',
     alignItems: 'center',
   },
   dropDownFullContainer: {
-    paddingVertical: width * 0.02,
-    width: '99%',
+    paddingBottom: width * 0.05,
+    width: '100%',
   },
   dropDownFullTextInput: {
-    padding: width * 0.027,
     margin: 0,
     borderRadius: 5,
     borderColor: 'black',

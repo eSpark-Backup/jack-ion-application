@@ -204,18 +204,12 @@ export default function UnitEdit({
       name: 'Initial Meter Reading',
       value: '0',
     },
-    // {
-    //   id: 2,
-    //   error: '',
-    //   name: 'Meter Serial Number',
-    //   value: '',
-    // },
-    // {
-    //   id: 2,
-    //   error: '',
-    //   name: 'Attached To',
-    //   value: '',
-    // },
+    {
+      id: 2,
+      error: '',
+      name: 'Attached To',
+      value: '',
+    },
   ]);
 
   const helperDefaultData = useRef([]);
@@ -1435,60 +1429,249 @@ export default function UnitEdit({
     return (
       <View style={{width: width * 0.8}} key={item.id}>
         <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
-          {item.name + (index < 3 ? '*' : '')}
+          {index < 2 && item.name + '*'}
         </Text>
-        <Text_Input
-          placeholder={item.name}
-          value={index == 1 && item.value == null ? '0' : item.value}
-          keyboardType={index == 1 ? 'numeric' : 'default'}
-          error={item.error}
-          right={
-            index == 0 &&
-            (type == 'meterDirect' || type == 'addMeterDirect' ? null : (
-              <TextInput.Icon
-                disabled={
-                  devEdit
-                    ? true
-                    : (index == 0 && type == 'meterDirect') ||
-                      type == 'addMeterDirect'
-                    ? true
-                    : false
-                }
-                name={() => (
-                  <TouchableOpacity
-                    disabled={
-                      devEdit
-                        ? true
-                        : (index == 0 && type == 'meterDirect') ||
-                          type == 'addMeterDirect'
-                        ? true
-                        : false
-                    }
-                    onPress={() => toggleScanner(index)}
-                    style={{zIndex: 1}}>
-                    <Scanner name="scan" size={width * 0.06} />
-                  </TouchableOpacity>
-                )}
-              />
-            ))
-          }
-          onChangeText={(text) =>
-            index == 0
-              ? type == 'meterDirect' || type == 'addMeterDirect'
-                ? null
+        {index < 2 && (
+          <Text_Input
+            placeholder={item.name}
+            value={index == 1 && item.value == null ? '0' : item.value}
+            keyboardType={index == 1 ? 'numeric' : 'default'}
+            error={item.error}
+            right={
+              index == 0 &&
+              (type == 'meterDirect' || type == 'addMeterDirect' ? null : (
+                <TextInput.Icon
+                  disabled={
+                    devEdit
+                      ? true
+                      : (index == 0 && type == 'meterDirect') ||
+                        type == 'addMeterDirect'
+                      ? true
+                      : false
+                  }
+                  name={() => (
+                    <TouchableOpacity
+                      disabled={
+                        devEdit
+                          ? true
+                          : (index == 0 && type == 'meterDirect') ||
+                            type == 'addMeterDirect'
+                          ? true
+                          : false
+                      }
+                      onPress={() => toggleScanner(index)}
+                      style={{zIndex: 1}}>
+                      <Scanner name="scan" size={width * 0.06} />
+                    </TouchableOpacity>
+                  )}
+                />
+              ))
+            }
+            onChangeText={(text) =>
+              index == 0
+                ? type == 'meterDirect' || type == 'addMeterDirect'
+                  ? null
+                  : onChangeMultipleField(text, index)
                 : onChangeMultipleField(text, index)
-              : onChangeMultipleField(text, index)
-          }
-          disabled={
-            devEdit
-              ? true
-              : (index == 0 && type == 'meterDirect') ||
-                type == 'addMeterDirect'
-              ? true
-              : false
-          }
-          style={styles.meterInput}
-        />
+            }
+            disabled={
+              devEdit
+                ? true
+                : (index == 0 && type == 'meterDirect') ||
+                  type == 'addMeterDirect'
+                ? true
+                : false
+            }
+            style={{
+              ...styles.meterInput,
+              marginVertical: width * 0.02,
+            }}
+          />
+        )}
+        {index == 2 && showAddType !== 'Attached To' ? (
+          <View>
+            <Text style={[styles.meterDesciptionHeading]}>Attached To*</Text>
+            <View
+              pointerEvents={'auto'}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                marginVertical: width * 0.02,
+              }}>
+              <Searchable_Dropdown
+                onItemSelect={(item) => {
+                  // getDevice(item, index);
+                  setAttachedToId(item.id);
+                  setAttachedTo(item.name);
+                }}
+                containerStyle={{
+                  width: width * 0.7,
+                }}
+                itemStyle={{
+                  padding: width * 0.027,
+                  backgroundColor: 'rgb(247, 247, 247)',
+                  borderColor: '#bbb',
+                  borderWidth: width * 0.0015,
+                  borderRadius: width * 0.015,
+                }}
+                itemTextStyle={{color: '#222'}}
+                itemsContainerStyle={{
+                  maxHeight: width * 0.25,
+                }}
+                // items={item.data}
+                items={attachedToData}
+                resetValue={false}
+                textInputProps={{
+                  placeholder: 'Select Attached To',
+                  underlineColorAndroid: 'transparent',
+                  trueIcon: 'chevron-up',
+                  falseIcon: 'chevron-down',
+                  style: {
+                    margin: 0,
+                    borderTopLeftRadius: width * 0.015,
+                    borderBottomLeftRadius: width * 0.015,
+                    borderTopRigthRadius: 0,
+                    borderBottomRightRadius: 0,
+                    borderColor: 'black',
+                    height: width * 0.13,
+                    backgroundColor: '#F6F6F6',
+                    borderTopWidth: width * 0.0019,
+                    borderLeftWidth: width * 0.0019,
+                    borderBottomWidth: width * 0.0019,
+                    borderRightWidth: 0,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                  },
+                  onTextChange: (text) => {
+                    onChangeAttachedTo(text);
+                  },
+                  // onFocus: () => {
+                  //   setVerticalOffs(-180);
+                  //   console.log('chala onFoucs');
+                  // },
+                  value: setTimeout(() => attachedTo, 200),
+                  defaultValue: attachedTo,
+                }}
+                listProps={{
+                  nestedScrollEnabled: true,
+                }}
+              />
+              <TouchableOpacity
+                style={{
+                  width: width * 0.1,
+                  backgroundColor: '#25AAE199',
+                  borderTopRightRadius: width * 0.015,
+                  borderBottomRightRadius: width * 0.015,
+                  borderTopWidth: width * 0.0019,
+                  borderRightWidth: width * 0.0019,
+                  borderBottomWidth: width * 0.0019,
+                  height: width * 0.134,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => showAddNewType('Attached To')}>
+                <Icon size={width * 0.06} color="#fff" name={'add'} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          index == 2 && (
+            <View>
+              <View>
+                <Text style={styles.meterDesciptionHeading}>
+                  Add New {showAddType}
+                </Text>
+              </View>
+              <Text_Input
+                placeholder={'Type new Attached To'}
+                value={addAttached}
+                style={{...styles.meterInput, marginVertical: width * 0.02}}
+                onChangeText={(text) => {
+                  setAddAttached(text);
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                  marginTop: width * 0.03,
+                }}>
+                <TouchableOpacity onPress={cancelAddNewType}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: '#25AAE1ec',
+                      width: width * 0.2,
+                      textAlign: 'center',
+                      borderWidth: 2,
+                      borderColor: '#25AAE1ec',
+                      borderRadius: 5,
+                      padding: 3,
+                    }}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={doneAddType}
+                  disabled={
+                    showAddType == 'Manufacturer' && addManufacturer
+                      ? false
+                      : showAddType != 'Manufacturer' &&
+                        addDevice[0].selectId &&
+                        addDevice[1].selectId &&
+                        addDevice[2].select
+                      ? false
+                      : showAddType == 'Utility' && addUtility
+                      ? false
+                      : showAddType == 'Attached To' && addAttached
+                      ? false
+                      : true
+                  }>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color:
+                        showAddType == 'Manufacturer' && addManufacturer
+                          ? '#25AAE1ec'
+                          : showAddType != 'Manufacturer' &&
+                            addDevice[0].selectId &&
+                            addDevice[1].selectId &&
+                            addDevice[2].select
+                          ? '#25AAE1ec'
+                          : showAddType == 'Utility' && addUtility
+                          ? '#25AAE1ec'
+                          : showAddType == 'Attached To' && addAttached
+                          ? '#25AAE1ec'
+                          : '#D0D0D0',
+                      width: width * 0.15,
+                      borderWidth: 2,
+                      borderColor:
+                        showAddType == 'Manufacturer' && addManufacturer
+                          ? '#25AAE1ec'
+                          : showAddType != 'Manufacturer' &&
+                            addDevice[0].selectId &&
+                            addDevice[1].selectId &&
+                            addDevice[2].select
+                          ? '#25AAE1ec'
+                          : showAddType == 'Utility' && addUtility
+                          ? '#25AAE1ec'
+                          : showAddType == 'Attached To' && addAttached
+                          ? '#25AAE1ec'
+                          : '#D0D0D0',
+                      borderRadius: 5,
+                      padding: 3,
+                      textAlign: 'center',
+                    }}>
+                    Add
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        )}
       </View>
     );
   };
@@ -2371,7 +2554,6 @@ export default function UnitEdit({
                                     trueIcon: 'chevron-up',
                                     falseIcon: 'chevron-down',
                                     style: {
-                                      padding: width * 0.027,
                                       margin: 0,
                                       borderRadius: width * 0.015,
                                       height: width * 0.13,
@@ -3097,7 +3279,7 @@ export default function UnitEdit({
                                                   );
                                                 }}
                                                 containerStyle={{
-                                                  paddingBottom: width * 0.02,
+                                                  marginVertical: width * 0.02,
                                                 }}
                                                 itemStyle={{
                                                   padding: width * 0.027,
@@ -3144,7 +3326,6 @@ export default function UnitEdit({
                                                   trueIcon: 'chevron-up',
                                                   falseIcon: 'chevron-down',
                                                   style: {
-                                                    padding: width * 0.027,
                                                     margin: 0,
                                                     borderRadius: width * 0.015,
                                                     height: width * 0.13,
@@ -3177,7 +3358,11 @@ export default function UnitEdit({
                                                     'Type New Device Name'
                                                   }
                                                   value={item.select}
-                                                  style={styles.meterInput}
+                                                  style={{
+                                                    ...styles.meterInput,
+                                                    marginVertical:
+                                                      width * 0.02,
+                                                  }}
                                                   onChangeText={(text) => {
                                                     onChangeNewDevice(
                                                       text,
@@ -3200,18 +3385,16 @@ export default function UnitEdit({
                                                       width: width * 0.8,
                                                       justifyContent:
                                                         'space-between',
-                                                      height: width * 0.15,
+                                                      marginVertical:
+                                                        width * 0.02,
                                                     }}>
                                                     <Text_Input
                                                       placeholder="Type Model Number"
                                                       value={addModelNo}
-                                                      style={[
-                                                        styles.meterInput,
-                                                        {
-                                                          width: width * 0.6,
-                                                          height: width * 0.145,
-                                                        },
-                                                      ]}
+                                                      style={{
+                                                        ...styles.meterInput,
+                                                        width: width * 0.6,
+                                                      }}
                                                       onSubmitEditing={
                                                         Keyboard.dismiss
                                                       }
@@ -3229,7 +3412,7 @@ export default function UnitEdit({
                                                       style={{
                                                         // backgroundColor: '#25AAE1ec',
                                                         width: width * 0.14,
-                                                        height: width * 0.15,
+                                                        height: width * 0.13,
                                                         borderWidth: 2,
                                                         borderRadius: 5,
                                                         alignSelf: 'flex-end',
@@ -3326,7 +3509,11 @@ export default function UnitEdit({
                                                   <Text_Input
                                                     placeholder="Type Product Description"
                                                     value={addProductNo}
-                                                    style={styles.meterInput}
+                                                    style={{
+                                                      ...styles.meterInput,
+                                                      marginVertical:
+                                                        width * 0.02,
+                                                    }}
                                                     onSubmitEditing={
                                                       Keyboard.dismiss
                                                     }
@@ -3350,6 +3537,7 @@ export default function UnitEdit({
                                           flexDirection: 'row',
                                           justifyContent: 'space-around',
                                           alignItems: 'center',
+                                          marginTop: width * 0.05,
                                         }}>
                                         <TouchableOpacity
                                           onPress={cancelAddNewType}>
@@ -3358,8 +3546,12 @@ export default function UnitEdit({
                                               fontWeight: 'bold',
                                               fontSize: width * 0.045,
                                               color: '#25AAE1ec',
-                                              width: width * 0.17,
+                                              width: width * 0.2,
                                               textAlign: 'center',
+                                              borderColor: '#25AAE1ec',
+                                              borderWidth: 2,
+                                              padding: 3,
+                                              borderRadius: 5,
                                             }}>
                                             Cancel
                                           </Text>
@@ -3408,8 +3600,30 @@ export default function UnitEdit({
                                                     addAttached
                                                   ? '#25AAE1ec'
                                                   : '#D0D0D0',
+                                              borderColor:
+                                                showAddType == 'Manufacturer' &&
+                                                addManufacturer
+                                                  ? '#25AAE1ec'
+                                                  : showAddType !=
+                                                      'Manufacturer' &&
+                                                    addDevice[0].selectId &&
+                                                    addDevice[1].select &&
+                                                    modelArr.length > 0 &&
+                                                    addProductNo != ''
+                                                  ? '#25AAE1ec'
+                                                  : showAddType == 'Utility' &&
+                                                    addUtility
+                                                  ? '#25AAE1ec'
+                                                  : showAddType ==
+                                                      'Attached To' &&
+                                                    addAttached
+                                                  ? '#25AAE1ec'
+                                                  : '#D0D0D0',
                                               width: width * 0.15,
                                               textAlign: 'center',
+                                              borderWidth: 2,
+                                              padding: 3,
+                                              borderRadius: 5,
                                             }}>
                                             Add
                                           </Text>
@@ -3621,7 +3835,7 @@ export default function UnitEdit({
                       ) : (
                         <View>
                           <FlatList data={slide2} renderItem={renderSlide3} />
-                          {showAddType !== 'Attached To' ? (
+                          {/* {showAddType !== 'Attached To' ? (
                             <View
                               style={{
                                 flex: 22,
@@ -3676,6 +3890,9 @@ export default function UnitEdit({
                                       borderTopWidth: width * 0.0019,
                                       borderLeftWidth: width * 0.0019,
                                       borderBottomWidth: width * 0.0019,
+                                      borderRightWidth: 0,
+                                      borderTopRightRadius: 0,
+                                      borderBottomRightRadius: 0,
                                     },
                                     onTextChange: (text) => {
                                       onChangeAttachedTo(text);
@@ -3802,7 +4019,7 @@ export default function UnitEdit({
                                 </View>
                               )}
                             </View>
-                          )}
+                          )} */}
                         </View>
                       )}
                     </View>
@@ -4218,11 +4435,7 @@ export default function UnitEdit({
                               style={{
                                 width: width * 0.8,
                               }}>
-                              <Text
-                                style={[
-                                  styles.meterDesciptionHeading,
-                                  {marginBottom: 0},
-                                ]}>
+                              <Text style={styles.meterDesciptionHeading}>
                                 Reason*
                               </Text>
                               <Searchable_Dropdown
@@ -4231,7 +4444,7 @@ export default function UnitEdit({
                                   setReasonId(item.id);
                                 }}
                                 containerStyle={{
-                                  paddingBottom: width * 0.02,
+                                  marginVertical: width * 0.02,
                                 }}
                                 itemStyle={{
                                   padding: width * 0.027,
@@ -4272,17 +4485,16 @@ export default function UnitEdit({
                                   nestedScrollEnabled: true,
                                 }}
                               />
-                              <Text
-                                style={[
-                                  styles.meterDesciptionHeading,
-                                  {marginBottom: 0},
-                                ]}>
+                              <Text style={styles.meterDesciptionHeading}>
                                 Reason Description*
                               </Text>
                               <Text_Input
                                 placeholder="Describe Your Reason"
                                 value={reasonDes}
-                                style={styles.meterInput}
+                                style={{
+                                  ...styles.meterInput,
+                                  marginVertical: width * 0.02,
+                                }}
                                 onChangeText={(text) => {
                                   setReasonDes(text);
                                 }}
@@ -5014,6 +5226,10 @@ export default function UnitEdit({
                               justifyContent: 'flex-start',
                               alignItems: 'center',
                               zIndex: 1,
+                              borderWidth: 2,
+                              borderRadius: 5,
+                              borderColor: '#25AAE1ec',
+                              padding: 3,
                             }}>
                             {/*//todo: Button for meter */}
                             <Text
@@ -5023,12 +5239,6 @@ export default function UnitEdit({
                               }}>
                               Add Meter
                             </Text>
-                            <IconX
-                              name="plus-circle"
-                              type="feather"
-                              size={width * 0.1}
-                              color={'#25AAE1ec'}
-                            />
                           </TouchableOpacity>
                         )
                       ) : loadManufacturers ? (
@@ -5044,6 +5254,10 @@ export default function UnitEdit({
                             justifyContent: 'flex-start',
                             alignItems: 'center',
                             zIndex: 1,
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderColor: '#25AAE1ec',
+                            padding: 3,
                           }}>
                           {/*//todo: Button for meter */}
                           <Text
@@ -5053,12 +5267,6 @@ export default function UnitEdit({
                             }}>
                             Add Meter
                           </Text>
-                          <IconX
-                            name="plus-circle"
-                            type="feather"
-                            size={width * 0.1}
-                            color={'#25AAE1ec'}
-                          />
                         </TouchableOpacity>
                       )}
                     </View>
@@ -5241,7 +5449,6 @@ const styles = StyleSheet.create({
     color: '#3E4A4F',
     textTransform: 'capitalize',
     fontFamily: Fonts.ComfortaaRegular,
-    marginBottom: width * 0.01,
   },
   meterInputContainer: {
     width: width * 0.8,
