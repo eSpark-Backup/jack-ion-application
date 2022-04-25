@@ -209,9 +209,9 @@ export default styles = StyleSheet.create({
   mainDropDownView: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    marginVertical: width * 0.02,
   },
   dropDownContainer: {
-    paddingBottom: width * 0.02,
     width: width * 0.7,
   },
   dropDownItems: {
@@ -223,7 +223,7 @@ export default styles = StyleSheet.create({
     zIndex: 99,
   },
   dropDownItemContainer: {
-    maxHeight: height * 0.08,
+    maxHeight: height * 0.12,
   },
   dropDownItemText: {color: '#222'},
   dropDownTextInput: {

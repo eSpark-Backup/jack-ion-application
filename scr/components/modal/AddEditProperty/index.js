@@ -390,11 +390,18 @@ export default function AddEditProperty({
   };
 
   const AddNewRow = () => {
-    if (
+    if (unitMixes[2].value < 1) {
+      Toast.show('No of Units required', Toast.SHORT);
+    } else if (unitMixes[2].value > 0 && unitMixes[3].value < 1) {
+      Toast.show('Gal/Unit/Day required', Toast.SHORT);
+    } else if (
       unitMixes[2].value > Number(unitCount) ||
       sumNoOfUnit + unitMixes[2].value > Number(unitCount)
     ) {
-      Toast.show('Can add unit more than unit count', Toast.SHORT);
+      Toast.show(
+        'Total # Units should be less than or equal to Unit Count',
+        Toast.SHORT,
+      );
     } else {
       let arr = [...unitMix];
       let data = {
@@ -1621,6 +1628,7 @@ export default function AddEditProperty({
                                     },
                                   ]}>
                                   {item.name}
+                                  {index == 2 || index == 3 ? '*' : ''}
                                 </Text>
                                 <NumericInput
                                   value={item.value}
@@ -1711,6 +1719,18 @@ export default function AddEditProperty({
                             },
                           ]}>
                           <View
+                            style={{
+                              height: width * 0.05,
+                              width: width * 0.8,
+                              alignSelf: 'center',
+                              alignItems: 'flex-end',
+                              flexDirection: 'row',
+                            }}>
+                            <Text style={styles.desciptionHeading}>
+                              Unit Count*
+                            </Text>
+                          </View>
+                          <View
                             style={[
                               styles.inputContainer,
                               {
@@ -1718,7 +1738,7 @@ export default function AddEditProperty({
                                   ? width * 0.18
                                   : 0,
                                 overflow: 'hidden',
-                                marginBottom: width * 0.015,
+                                marginVertical: width * 0.015,
                               },
                             ]}>
                             <Text_Input
@@ -1951,7 +1971,6 @@ export default function AddEditProperty({
                         ]}>
                         <Searchable_Dropdown
                           onItemSelect={(item) => {
-                            e;
                             setOwnerId(item.id);
                             setOwnerName(item.name);
                           }}

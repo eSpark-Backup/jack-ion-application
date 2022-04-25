@@ -175,7 +175,6 @@ export default styles = StyleSheet.create({
     width: width * 0.9,
     backgroundColor: 'white',
     elevation: width * 0.01,
-    marginVertical: height * 0.01,
     borderColor: '#115b72',
     borderWidth: width * 0.001,
     borderRadius: width * 0.008,

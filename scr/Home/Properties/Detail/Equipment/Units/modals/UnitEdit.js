@@ -508,6 +508,24 @@ export default function UnitEdit({
         ...oldState,
         lastUnitData: unitDetails?.unit?.name,
       }));
+      const propertyData = await API.get(`/property/${propertyId}`);
+
+      const Mixes = propertyData?.data?.data?.property?.unit_mixes;
+      const unitMixes = Mixes.map((item) => {
+        const {select_option: name, ...rest} = item;
+        return {name, ...rest};
+      });
+      setUnitMix(unitMixes);
+      if (type != 'add') {
+        // setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
+        setUnitMixId(unitMixesId);
+        unitMixes?.map((item) => {
+          if (item.id == unitMixesId) {
+            setSelectedUnitMix(item.name);
+          }
+        });
+        console.log('UNITMIXES');
+      }
     }
     // callApi();
   }, [meterTypes, unitDetails, modalVisible]);
@@ -741,20 +759,6 @@ export default function UnitEdit({
     }
 
     const propertyData = await API.get(`/property/${propertyId}`);
-    const Mixes = propertyData?.data?.data?.property?.unit_mixes;
-    const unitMixes = Mixes.map((item) => {
-      const {select_option: name, ...rest} = item;
-      return {name, ...rest};
-    });
-    setUnitMix(unitMixes);
-    // setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
-    setUnitMixId(unitMixesId);
-    unitMixes?.map((item) => {
-      if (item.id == unitMixesId) {
-        setSelectedUnitMix(item.name);
-      }
-    });
-    console.log('UNITMIXES');
 
     const propManus = propertyData?.data?.data.property.utility_manufacturers;
 
@@ -1033,6 +1037,7 @@ export default function UnitEdit({
       name: state.lastUnitData,
       building_id: buildingId,
       defaultRadial_dist: radialDis,
+      unit_mix_id: unitMixId,
       meters: meterData,
     };
 
@@ -1300,7 +1305,6 @@ export default function UnitEdit({
       },
 
       id: devEdit ? selectedDevId : null,
-      unit_mix_id: unitMixId,
       // meter_name: [{id: newMeter.id, name: newMeter.name}],
       // model_no_id: slide1[2].selectId,
       device_serial_number: slide2[0].value,
@@ -1361,7 +1365,6 @@ export default function UnitEdit({
         device_serial_number: item.device_serial_number,
         device_id: item.device_id,
         device: item.device,
-        unit_mix_id: unitMixId,
         initial_meter_reading: item.initial_meter_reading,
         latitude: item.latitude,
         longitude: item.longitude,
@@ -1489,10 +1492,9 @@ export default function UnitEdit({
           />
         )}
         {index == 2 && showAddType !== 'Attached To' ? (
-          <View>
+          <View style={{margin: 0}}>
             <Text style={[styles.meterDesciptionHeading]}>Attached To*</Text>
             <View
-              pointerEvents={'auto'}
               style={{
                 flexDirection: 'row',
                 alignItems: 'flex-start',
@@ -2252,6 +2254,7 @@ export default function UnitEdit({
   };
 
   const [verticalOffs, setVerticalOffs] = useState(-400);
+  console.log('Unit Mix Id', unitMixId);
 
   return (
     <View>
@@ -2842,6 +2845,7 @@ export default function UnitEdit({
                                       style={{
                                         flexDirection: 'row',
                                         alignItems: 'flex-start',
+                                        marginVertical: width * 0.015,
                                       }}>
                                       <Searchable_Dropdown
                                         onItemSelect={(item, index) => {
@@ -2947,13 +2951,13 @@ export default function UnitEdit({
                                       style={{
                                         flexDirection: 'row',
                                         alignItems: 'flex-start',
+                                        marginVertical: width * 0.015,
                                       }}>
                                       <Searchable_Dropdown
                                         onItemSelect={(item) => {
                                           getDevice(item, index);
                                         }}
                                         containerStyle={{
-                                          paddingBottom: width * 0.02,
                                           width:
                                             index > 0
                                               ? width * 0.7
@@ -3111,7 +3115,7 @@ export default function UnitEdit({
                                         Product Desc*
                                       </Text>
                                     </View>
-                                    <View style={{flexDirection: 'row'}}>
+                                    <View>
                                       <Text_Input
                                         placeholder="Type Product Description"
                                         value={
@@ -3834,192 +3838,11 @@ export default function UnitEdit({
                         />
                       ) : (
                         <View>
-                          <FlatList data={slide2} renderItem={renderSlide3} />
-                          {/* {showAddType !== 'Attached To' ? (
-                            <View
-                              style={{
-                                flex: 22,
-                                width: width * 0.8,
-                              }}>
-                              <Text style={[styles.meterDesciptionHeading]}>
-                                Attached To*
-                              </Text>
-                              <View
-                                pointerEvents={'auto'}
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'flex-start',
-                                }}>
-                                <Searchable_Dropdown
-                                  onItemSelect={(item) => {
-                                    // getDevice(item, index);
-                                    setAttachedToId(item.id);
-                                    setAttachedTo(item.name);
-                                  }}
-                                  containerStyle={{
-                                    width: width * 0.7,
-                                  }}
-                                  itemStyle={{
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
-                                    borderRadius: width * 0.015,
-                                  }}
-                                  itemTextStyle={{color: '#222'}}
-                                  itemsContainerStyle={{
-                                    maxHeight: width * 0.25,
-                                  }}
-                                  // items={item.data}
-                                  items={attachedToData}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder: 'Select Attached To',
-                                    underlineColorAndroid: 'transparent',
-                                    trueIcon: 'chevron-up',
-                                    falseIcon: 'chevron-down',
-                                    style: {
-                                      margin: 0,
-                                      borderTopLeftRadius: width * 0.015,
-                                      borderBottomLeftRadius: width * 0.015,
-                                      borderTopRigthRadius: 0,
-                                      borderBottomRightRadius: 0,
-                                      borderColor: 'black',
-                                      height: width * 0.13,
-                                      backgroundColor: '#F6F6F6',
-                                      borderTopWidth: width * 0.0019,
-                                      borderLeftWidth: width * 0.0019,
-                                      borderBottomWidth: width * 0.0019,
-                                      borderRightWidth: 0,
-                                      borderTopRightRadius: 0,
-                                      borderBottomRightRadius: 0,
-                                    },
-                                    onTextChange: (text) => {
-                                      onChangeAttachedTo(text);
-                                    },
-                                    // onFocus: () => {
-                                    //   setVerticalOffs(-180);
-                                    //   console.log('chala onFoucs');
-                                    // },
-                                    value: setTimeout(() => attachedTo, 200),
-                                    defaultValue: attachedTo,
-                                  }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
-                                  }}
-                                />
-                                <TouchableOpacity
-                                  style={{
-                                    width: width * 0.1,
-                                    backgroundColor: '#25AAE199',
-                                    borderTopRightRadius: width * 0.015,
-                                    borderBottomRightRadius: width * 0.015,
-                                    borderTopWidth: width * 0.0019,
-                                    borderRightWidth: width * 0.0019,
-                                    borderBottomWidth: width * 0.0019,
-                                    height: width * 0.134,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  onPress={() => showAddNewType('Attached To')}>
-                                  <Icon
-                                    size={width * 0.06}
-                                    color="#fff"
-                                    name={'add'}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          ) : (
-                            <View style={{flex: 20}}>
-                              {showAddType == 'Attached To' && (
-                                <View>
-                                  <View>
-                                    <Text
-                                      style={[
-                                        styles.meterDesciptionHeading,
-                                        {fontWeight: 'bold'},
-                                      ]}>
-                                      Add New {showAddType}
-                                    </Text>
-                                  </View>
-                                  <Text_Input
-                                    placeholder={'Type new Attached To'}
-                                    value={addAttached}
-                                    style={styles.meterInput}
-                                    onChangeText={(text) => {
-                                      setAddAttached(text);
-                                    }}
-                                  />
-                                  <View
-                                    style={{
-                                      flexDirection: 'row',
-                                      justifyContent: 'space-around',
-                                      alignItems: 'center',
-                                    }}>
-                                    <TouchableOpacity
-                                      onPress={cancelAddNewType}>
-                                      <Text
-                                        style={{
-                                          fontWeight: 'bold',
-                                          fontSize: width * 0.045,
-                                          color: '#25AAE1ec',
-                                          width: width * 0.17,
-                                          textAlign: 'center',
-                                        }}>
-                                        Cancel
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                      onPress={doneAddType}
-                                      disabled={
-                                        showAddType == 'Manufacturer' &&
-                                        addManufacturer
-                                          ? false
-                                          : showAddType != 'Manufacturer' &&
-                                            addDevice[0].selectId &&
-                                            addDevice[1].selectId &&
-                                            addDevice[2].select
-                                          ? false
-                                          : showAddType == 'Utility' &&
-                                            addUtility
-                                          ? false
-                                          : showAddType == 'Attached To' &&
-                                            addAttached
-                                          ? false
-                                          : true
-                                      }>
-                                      <Text
-                                        style={{
-                                          fontWeight: 'bold',
-                                          fontSize: width * 0.045,
-                                          color:
-                                            showAddType == 'Manufacturer' &&
-                                            addManufacturer
-                                              ? '#25AAE1ec'
-                                              : showAddType != 'Manufacturer' &&
-                                                addDevice[0].selectId &&
-                                                addDevice[1].selectId &&
-                                                addDevice[2].select
-                                              ? '#25AAE1ec'
-                                              : showAddType == 'Utility' &&
-                                                addUtility
-                                              ? '#25AAE1ec'
-                                              : showAddType == 'Attached To' &&
-                                                addAttached
-                                              ? '#25AAE1ec'
-                                              : '#D0D0D0',
-                                          width: width * 0.15,
-                                          textAlign: 'center',
-                                        }}>
-                                        Add
-                                      </Text>
-                                    </TouchableOpacity>
-                                  </View>
-                                </View>
-                              )}
-                            </View>
-                          )} */}
+                          <FlatList
+                            data={slide2}
+                            renderItem={renderSlide3}
+                            keyboardShouldPersistTaps="handled"
+                          />
                         </View>
                       )}
                     </View>
@@ -5160,10 +4983,12 @@ export default function UnitEdit({
                               flexDirection: 'row',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              padding: width * 0.02,
+                              padding: 8,
                               margin: width * 0.01,
                               elevation: 2,
                               backgroundColor: 'white',
+                              borderWidth: 1,
+                              borderRadius: 5,
                               shadowColor: '#000',
                               shadowOffset: {
                                 width: 0,
@@ -5179,7 +5004,11 @@ export default function UnitEdit({
                             <Text
                               style={[
                                 styles.meterDesciptionHeading,
-                                {marginBottom: 0},
+                                {
+                                  marginBottom: 0,
+                                  fontWeight: 'bold',
+                                  fontSize: width * 0.045,
+                                },
                               ]}>
                               {/* {item.meter_name[0].name} */}
                               Meter-{index + 1}
@@ -5229,12 +5058,12 @@ export default function UnitEdit({
                               borderWidth: 2,
                               borderRadius: 5,
                               borderColor: '#25AAE1ec',
-                              padding: 3,
+                              padding: 5,
                             }}>
                             {/*//todo: Button for meter */}
                             <Text
                               style={{
-                                fontSize: height * 0.04,
+                                fontSize: width * 0.07,
                                 color: '#25AAE1ec',
                               }}>
                               Add Meter
@@ -5257,12 +5086,12 @@ export default function UnitEdit({
                             borderWidth: 2,
                             borderRadius: 5,
                             borderColor: '#25AAE1ec',
-                            padding: 3,
+                            padding: 5,
                           }}>
                           {/*//todo: Button for meter */}
                           <Text
                             style={{
-                              fontSize: height * 0.04,
+                              fontSize: width * 0.07,
                               color: '#25AAE1ec',
                             }}>
                             Add Meter

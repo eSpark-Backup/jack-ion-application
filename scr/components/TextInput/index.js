@@ -8,7 +8,6 @@ export default (props) => {
   return (
     <TextInput
       {...props}
-      selection
       selectionColor={'#25AAE1ec'}
       underlineColor="transparent"
       activeUnderlineColor="transparent"

@@ -19,7 +19,8 @@ import {
 
 //Packages
 import LinearGradient from 'react-native-linear-gradient';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -32,7 +33,6 @@ import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Components
-import Add from './Form';
 import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import Loader from '../../components/Loader';
@@ -344,7 +344,7 @@ export default class Splash extends Component {
     <TouchableOpacity
       style={styles.propButton}
       onPress={() => this.jumpFromSearch({prop, item: prop})}>
-      <MaterialCommunityIcon
+      <MaterialCommunityIcons
         name="home-city-outline"
         size={width * 0.09}
         color="#115b72"
@@ -374,7 +374,7 @@ export default class Splash extends Component {
         </View>
       </View>
 
-      <MaterialCommunityIcon
+      <MaterialCommunityIcons
         name="signal-cellular-outline"
         size={height * 0.04}
         color="#115b72"
@@ -413,11 +413,18 @@ export default class Splash extends Component {
       <View
         style={{
           alignItems: 'center',
+          marginVertical: height * 0.01,
         }}>
         <TouchableOpacity
-          style={styles.propButton}
+          style={{
+            ...styles.propButton,
+            borderBottomLeftRadius:
+              prop.index === this.state.currentIndex ? 0 : width * 0.008,
+            borderBottomRightRadius:
+              prop.index === this.state.currentIndex ? 0 : width * 0.008,
+          }}
           onPress={() => this.selectedProp(prop)}>
-          <MaterialCommunityIcon
+          <MaterialCommunityIcons
             name="home-city-outline"
             size={width * 0.09}
             color="#115b72"
@@ -469,29 +476,105 @@ export default class Splash extends Component {
           </View>
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
-          <View style={styles.dropView}>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: width * 0.9,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingVertical: width * 0.01,
+              backgroundColor: '#25AAE1ec',
+              borderBottomLeftRadius: width * 0.01,
+              borderBottomRightRadius: width * 0.01,
+              borderWidth: 1,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity
+                style={{
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={() => this.jumpToDetail({prop, item: prop})}>
+                <MaterialCommunityIcons
+                  name="view-compact-outline"
+                  color="white"
+                  size={width * 0.04}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Details
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.jumpToEquip({prop, item: prop})}
+                style={{
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <MaterialIcons name="edit" color="white" size={width * 0.04} />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Equipments
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              onPress={() => this.jumpToDetail({prop, item: prop})}>
-              <LinearGradient
-                colors={['#09BAF2', '#115b72', '#0d3744']}
-                style={styles.linearGradient}
-                start={{x: 0.1, y: 1}}
-                end={{x: 1.5, y: 3}}>
-                <Text style={styles.gradienttext}>Property Profile</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.jumpToEquip({prop, item: prop})}>
-              <LinearGradient
-                colors={['#09BAF2', '#115b72', '#0d3744']}
-                style={styles.linearGradient}
-                start={{x: 0.1, y: 1}}
-                end={{x: 1.5, y: 3}}>
-                <Text style={styles.gradienttext}>Property Units</Text>
-              </LinearGradient>
+              onPress={() => this.confirmDelete(unit?.item?.id)}
+              disabled={true}
+              style={{
+                margin: width * 0.01,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <MaterialCommunityIcons
+                name="delete-outline"
+                color="white"
+                size={width * 0.04}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: Fonts.Montserrat,
+                  fontSize: width * 0.03,
+                }}>
+                Delete
+              </Text>
             </TouchableOpacity>
           </View>
-        ) : null}
+        ) : // <View style={styles.dropView}>
+        //   <TouchableOpacity
+        //     onPress={() => this.jumpToDetail({prop, item: prop})}>
+        //     <LinearGradient
+        //       colors={['#09BAF2', '#115b72', '#0d3744']}
+        //       style={styles.linearGradient}
+        //       start={{x: 0.1, y: 1}}
+        //       end={{x: 1.5, y: 3}}>
+        //       <Text style={styles.gradienttext}>Property Profile</Text>
+        //     </LinearGradient>
+        //   </TouchableOpacity>
+        //   <TouchableOpacity
+        //     onPress={() => this.jumpToEquip({prop, item: prop})}>
+        //     <LinearGradient
+        //       colors={['#09BAF2', '#115b72', '#0d3744']}
+        //       style={styles.linearGradient}
+        //       start={{x: 0.1, y: 1}}
+        //       end={{x: 1.5, y: 3}}>
+        //       <Text style={styles.gradienttext}>Property Units</Text>
+        //     </LinearGradient>
+        //   </TouchableOpacity>
+        // </View>
+        null}
       </View>
     );
   };
@@ -545,7 +628,7 @@ export default class Splash extends Component {
                 <TouchableOpacity
                   onPress={this.openFilter}
                   style={styles.filterButton}>
-                  <MaterialCommunityIcon
+                  <MaterialCommunityIcons
                     name="filter-outline"
                     color={this.state.filterWork ? '#25AAE1ec' : 'black'}
                     size={width * 0.05}
@@ -586,7 +669,7 @@ export default class Splash extends Component {
                   maxOpacity={0.5}
                 />
               </TouchableOpacity>
-              <MaterialCommunityIcon
+              <MaterialCommunityIcons
                 name="home-city-outline"
                 size={width * 0.08}
                 color="white"
@@ -635,7 +718,7 @@ export default class Splash extends Component {
                       ) : null}
                     </View>
                     <TouchableOpacity onPress={this.closeAndClear}>
-                      <MaterialCommunityIcon
+                      <MaterialCommunityIcons
                         name="close"
                         color="white"
                         size={width * 0.055}
