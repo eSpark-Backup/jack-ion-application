@@ -66,6 +66,7 @@ export default class Splash extends React.Component {
       points: 80,
       onlineUnits: 0,
       offlineUnits: 0,
+      notInstalledUnits: 0,
       isLoading: false,
       addNewType: false,
       showAddType: '',
@@ -133,6 +134,7 @@ export default class Splash extends React.Component {
       this.setState({
         onlineUnits: transceiverRes?.data?.data?.installs[0],
         offlineUnits: transceiverRes?.data?.data?.installs[1],
+        notInstalledUnits: transceiverRes?.data?.data?.installs[2],
       });
     }
 
@@ -366,7 +368,7 @@ export default class Splash extends React.Component {
   };
 
   render() {
-    const {onlineUnits, offlineUnits} = this.state;
+    const {onlineUnits, offlineUnits, notInstalledUnits} = this.state;
     return (
       <>
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
@@ -439,7 +441,7 @@ export default class Splash extends React.Component {
             <View style={styles.headingInner}>
               <Menu
                 name="menu"
-                size={width * 0.07}
+                size={width * 0.08}
                 color="white"
                 style={styles.menuButton}
                 onPress={this.toggleModal}
@@ -817,8 +819,9 @@ export default class Splash extends React.Component {
                     data={[
                       {x: onlineUnits, y: onlineUnits},
                       {x: offlineUnits, y: offlineUnits},
+                      {x: notInstalledUnits, y: notInstalledUnits},
                     ]}
-                    colorScale={['#175CA1', '#ff1414']}
+                    colorScale={['#175CA1', '#ff1414', '#dcdcdc']}
                     style={{
                       labels: {
                         fill: 'white',
@@ -829,10 +832,23 @@ export default class Splash extends React.Component {
                   />
                 </View>
                 <View style={styles.onlineOfflineView}>
-                  <View style={styles.onlineView} />
-                  <Text style={styles.onlineText}>Complete</Text>
-                  <View style={styles.offlineView} />
-                  <Text style={styles.offlineText}>Incomplete</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={styles.onlineView} />
+                    <Text style={styles.onlineText}>Complete</Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={styles.offlineView} />
+                    <Text style={styles.offlineText}>Incomplete</Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        ...styles.offlineView,
+                        backgroundColor: '#dcdcdc',
+                      }}
+                    />
+                    <Text style={styles.offlineText}>Not Installed</Text>
+                  </View>
                 </View>
               </View>
             </View>

@@ -82,13 +82,13 @@ export default styles = StyleSheet.create({
     marginTop: height * 0.015,
   },
   containerInner: {
-    height: height * 0.09,
     width: width * 0.95,
     backgroundColor: 'white',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    padding: width * 0.03,
+    paddingHorizontal: width * 0.03,
+    paddingVertical: width * 0.015,
     borderRadius: width * 0.005,
     // elevation:width * .01,
     marginBottom: height * 0.015,
@@ -96,7 +96,7 @@ export default styles = StyleSheet.create({
   },
   mainHeadiingItems: {
     fontFamily: Fonts.BalsamiqSansRegular,
-    fontSize: height * 0.028,
+    fontSize: width * 0.058,
     color: '#000000',
   },
   mainHeadiingReset: {
@@ -104,9 +104,15 @@ export default styles = StyleSheet.create({
     fontSize: height * 0.028,
     color: 'white',
   },
+  subHeading: {
+    fontFamily: Fonts.BalsamiqSansRegular,
+    fontSize: height * 0.028,
+    color: '#999',
+  },
   sideHeadingItems: {
+    width: width * 0.67,
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.017,
+    fontSize: width * 0.032,
     color: 'gray',
   },
   containerReset: {

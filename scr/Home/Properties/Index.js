@@ -50,6 +50,7 @@ import {
   request,
   RESULTS,
 } from 'react-native-permissions';
+import API from '../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
@@ -340,6 +341,30 @@ export default class Splash extends Component {
     this.setState({isAddPropVisible: false});
   };
 
+  confirmDelete = (id) => {
+    Alert.alert('Delete Property', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: () => this.deleteProperty(id)},
+    ]);
+  };
+
+  deleteProperty = async (id) => {
+    console.log('ID', id);
+    this.context.loadLoader();
+    const response = await API.post(`/property/delete/${id}`);
+    if (response?.data?.bool) {
+      this.setState({currentIndex: null});
+      alert(response?.data?.message);
+      this.context.checkData();
+      this.setState({propertyList: this.context.propList});
+    } else {
+      this.context.stopLoader();
+    }
+  };
+
   _renderSearchPropList = (prop) => (
     <TouchableOpacity
       style={styles.propButton}
@@ -414,6 +439,15 @@ export default class Splash extends Component {
         style={{
           alignItems: 'center',
           marginVertical: height * 0.01,
+          backgroundColor: 'white',
+          elevation: 5,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
         }}>
         <TouchableOpacity
           style={{
@@ -486,7 +520,7 @@ export default class Splash extends Component {
               backgroundColor: '#25AAE1ec',
               borderBottomLeftRadius: width * 0.01,
               borderBottomRightRadius: width * 0.01,
-              borderWidth: 1,
+              borderWidth: width * 0.001,
             }}>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
@@ -530,8 +564,7 @@ export default class Splash extends Component {
             </View>
 
             <TouchableOpacity
-              onPress={() => this.confirmDelete(unit?.item?.id)}
-              disabled={true}
+              onPress={() => this.confirmDelete(prop?.item?.id)}
               style={{
                 margin: width * 0.01,
                 flexDirection: 'row',

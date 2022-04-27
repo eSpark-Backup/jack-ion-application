@@ -569,7 +569,7 @@ const App = ({navigation}) => {
     for (let i = 0; i < unitMeter?.reasons?.length; i++) {
       let reasonData = unitMeter?.reasons[i];
       let data = {
-        leftName: 'Reason' + ' ' + reasonData.options_reason_id,
+        leftName: 'Reason' + ' ' + (i + 1),
         rightName: reasonData.name,
         rightIcon: 'chevron-down',
         type: 'feather',
@@ -672,7 +672,9 @@ const App = ({navigation}) => {
     ]);
     setRemoteReaderData([
       {
-        title: unitMeter?.device?.device_type,
+        title: unitMeter?.device_serial_number
+          ? unitMeter?.device?.device_type
+          : 'No Device Programmed',
         img: require('../../../../../../../Images/remote-reader.png'),
         data: [
           {
@@ -1008,71 +1010,75 @@ const App = ({navigation}) => {
 
   const renderRemoteList = ({item, index}) => {
     return (
-      <TouchableOpacity
-        disabled={item.leftName == 'Status' ? false : true}
-        onPress={() => {
-          openStatusView(), setDangerView(false);
-        }}>
-        <View style={styles.listOuter}>
-          <View style={styles.listContainer}>
-            <View style={styles.flexRow}>
-              <Text style={styles.listText}>{item.leftName}</Text>
-            </View>
-            <View style={styles.flexRow}>
-              <View style={styles.flexColoum}>
-                <View style={{flexDirection: 'row-reverse'}}>
-                  {item.rightName == null ? null : (
-                    <Text
-                      style={[
-                        styles.listText,
-                        {
-                          backgroundColor:
-                            index == 1
-                              ? unitMeter?.installation_status == 1
-                                ? '#0fc908'
-                                : '#f00'
-                              : null,
-                          color: index == 1 ? '#fff' : null,
-                          borderRadius: 5,
-                          padding: 2,
-                          fontWeight: 'bold',
-                        },
-                      ]}>
-                      {item.rightName}
+      unitMeter?.device_serial_number && (
+        <TouchableOpacity
+          disabled={item.leftName == 'Status' ? false : true}
+          onPress={() => {
+            openStatusView(), setDangerView(false);
+          }}>
+          <View style={styles.listOuter}>
+            <View style={styles.listContainer}>
+              <View style={styles.flexRow}>
+                <Text style={styles.listText}>{item.leftName}</Text>
+              </View>
+              <View style={styles.flexRow}>
+                <View style={styles.flexColoum}>
+                  <View style={{flexDirection: 'row-reverse'}}>
+                    {item.rightName == null ? null : (
+                      <Text
+                        style={[
+                          styles.listText,
+                          {
+                            backgroundColor:
+                              index == 1
+                                ? unitMeter?.installation_status == 1
+                                  ? '#0fc908'
+                                  : '#f00'
+                                : null,
+                            color: index == 1 ? '#fff' : '#000',
+                            borderRadius: 5,
+                            padding: 2,
+                            fontWeight: 'bold',
+                          },
+                        ]}>
+                        {item.rightName}
+                      </Text>
+                    )}
+                    {item.rightIcon2 == null ? null : (
+                      <Icon
+                        name={item.rightIcon2}
+                        type={item.type}
+                        size={width * 0.05}
+                        color={
+                          unitMeter?.installation_status == 1
+                            ? '#0fc908'
+                            : '#f00'
+                        }
+                        style={{marginRight: width * 0.01}}
+                      />
+                    )}
+                  </View>
+                  {item.text && (
+                    <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
+                      {item.text}
                     </Text>
                   )}
-                  {item.rightIcon2 == null ? null : (
-                    <Icon
-                      name={item.rightIcon2}
-                      type={item.type}
-                      size={width * 0.05}
-                      color={
-                        unitMeter?.installation_status == 1 ? '#0fc908' : '#f00'
-                      }
-                      style={{marginRight: width * 0.01}}
-                    />
-                  )}
                 </View>
-                {item.text && (
-                  <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
-                    {item.text}
-                  </Text>
+                {item.rightIcon == null ? null : (
+                  <Icon
+                    name={item.rightIcon}
+                    type={item.type}
+                    size={width * 0.05}
+                    color="#000"
+                    style={styles.centerIcon}
+                  />
                 )}
               </View>
-              {item.rightIcon == null ? null : (
-                <Icon
-                  name={item.rightIcon}
-                  type={item.type}
-                  size={width * 0.05}
-                  color="#000"
-                  style={styles.centerIcon}
-                />
-              )}
             </View>
+            <Divider style={styles.listDivider} />
           </View>
-          <Divider style={styles.listDivider} />
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      )
     );
   };
 
@@ -1696,7 +1702,7 @@ const App = ({navigation}) => {
                 <>
                   <View style={styles.sectionTitle}>
                     <Text style={styles.sectionText}>
-                      {unitMeter?.device?.name ?? 'N/A'}
+                      {unitMeter?.utility_type_name?.name ?? 'N/A'}
                     </Text>
                     <Image
                       source={img}
@@ -1974,7 +1980,7 @@ const App = ({navigation}) => {
                           textAlignVertical: 'center',
                         },
                       ]}>
-                      {item?.device?.name ?? 'N/A'}
+                      {item?.utility_type_name?.name ?? 'N/A'}
                     </Text>
                   </View>
                 </TouchableOpacity>

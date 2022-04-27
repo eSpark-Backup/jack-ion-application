@@ -9,6 +9,7 @@ import {
   Pressable,
   Platform,
   KeyboardAvoidingView,
+  Image,
 } from 'react-native';
 
 //Packages
@@ -54,16 +55,13 @@ export default class DrawerModal extends Component {
         statusBarTranslucent
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
-        <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
+        <View style={{backgroundColor: '#fff', height: height * 0.05}} />
         <View style={styles.drawerMainContainer}>
-          <View>
-            <Menu
-              name="menu"
-              size={height * 0.05}
-              color="white"
-              // style={{right: 90}}
-              onPress={onCancel}
-              style={{backgroundColor: '#35afe2'}}
+          <View style={{alignItems: 'center'}}>
+            <Image
+              source={require('../../../../Images/loogo.png')}
+              resizeMode="contain"
+              style={{height: width * 0.28}}
             />
           </View>
           <View style={styles.drawerContentContainer}>
@@ -86,7 +84,7 @@ export default class DrawerModal extends Component {
                   color="#ff9f71"
                   style={{marginRight: width * 0.02}}
                 />
-                <Text style={styles.drawerbtn}>Units</Text>
+                <Text style={styles.drawerbtn}>Equipments</Text>
               </View>
             </TouchableOpacity>
             {/* <TouchableOpacity onPress={naviagateToChart}>

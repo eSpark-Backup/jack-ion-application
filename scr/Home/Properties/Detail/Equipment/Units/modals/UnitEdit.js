@@ -1578,7 +1578,7 @@ export default function UnitEdit({
           </View>
         ) : (
           index == 2 && (
-            <View>
+            <View style={{borderTopWidth: 2, paddingVertical: 10}}>
               <View>
                 <Text style={styles.meterDesciptionHeading}>
                   Add New {showAddType}

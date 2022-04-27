@@ -449,7 +449,7 @@ export default styles = StyleSheet.create({
   onlineOfflineView: {
     flexDirection: 'row',
     width: width * 1,
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   onlineView: {

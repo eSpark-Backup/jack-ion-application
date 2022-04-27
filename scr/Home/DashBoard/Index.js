@@ -13,6 +13,7 @@ import {
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -69,7 +70,9 @@ export default class Splash extends Component {
       totalUnits: 0,
       totalDevices: 0,
       onlineProps: 0,
+      onlineStatic: 0,
       offlineProps: 0,
+      offlineStatic: 0,
       recentProps: false,
       recentProperties: [],
       newProperties: [],
@@ -120,17 +123,13 @@ export default class Splash extends Component {
       });
     }
 
-    const chartRes = await API.get(`/dashboard/property-status-chart`);
-    if (chartRes?.data?.bool) {
-      this.setState({
-        onlineProps: chartRes?.data?.data?.property_status[0],
-        offlineProps: chartRes?.data?.data?.property_status[1],
-      });
-    }
-
     const cardRes = await API.get(`/dashboard/cards`);
     if (cardRes?.data?.bool) {
       this.setState({
+        onlineProps: cardRes?.data?.data?.property_status[0],
+        onlineStatic: cardRes?.data?.data?.property_status[0],
+        offlineProps: cardRes?.data?.data?.property_status[1],
+        offlineStatic: cardRes?.data?.data?.property_status[1],
         totalProperties: cardRes?.data?.data?.property?.total_properties,
         propertiesThisWeek:
           cardRes?.data?.data?.property?.current_week_properties,
@@ -267,7 +266,9 @@ export default class Splash extends Component {
   render() {
     const {
       onlineProps,
+      onlineStatic,
       offlineProps,
+      offlineStatic,
       totalProperties,
       totProperties,
       newProperties,
@@ -392,7 +393,13 @@ export default class Splash extends Component {
 
               <View style={styles.mainDataContainer}>
                 <View style={{...styles.infoViewContainer}}>
-                  <View style={styles.infoViewLogo} />
+                  <View style={styles.infoViewLogo}>
+                    <MaterialCommunityIcons
+                      name="home-city-outline"
+                      size={width * 0.1}
+                      color="#fff"
+                    />
+                  </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
                       <Text style={{fontSize: width * 0.05}}>Property</Text>
@@ -410,8 +417,16 @@ export default class Splash extends Component {
                 </View>
                 <View style={{...styles.infoViewContainer}}>
                   <View
-                    style={{...styles.infoViewLogo, backgroundColor: '#4ba64f'}}
-                  />
+                    style={{
+                      ...styles.infoViewLogo,
+                      backgroundColor: '#4ba64f',
+                    }}>
+                    <Ionicon
+                      name="md-business-outline"
+                      size={width * 0.1}
+                      color="#fff"
+                    />
+                  </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
                       <Text style={{fontSize: width * 0.05}}>Buildings</Text>
@@ -429,8 +444,16 @@ export default class Splash extends Component {
                 </View>
                 <View style={{...styles.infoViewContainer}}>
                   <View
-                    style={{...styles.infoViewLogo, backgroundColor: '#227ce9'}}
-                  />
+                    style={{
+                      ...styles.infoViewLogo,
+                      backgroundColor: '#227ce9',
+                    }}>
+                    <MaterialIcons
+                      name="person"
+                      color="white"
+                      size={width * 0.1}
+                    />
+                  </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
                       <Text style={{fontSize: width * 0.05}}>Meters</Text>
@@ -458,7 +481,9 @@ export default class Splash extends Component {
                   height={width * 0.75}
                   innerRadius={width * 0.35}
                   labelRadius={width * 0.28}
+                  labels={({datum}) => Math.round(datum._x)}
                   padAngle={1}
+                  animate={{duration: 400}}
                   data={[
                     {x: onlineProps, y: onlineProps},
                     {x: offlineProps, y: offlineProps},
@@ -474,10 +499,26 @@ export default class Splash extends Component {
                 />
               </View>
               <View style={styles.onlineOfflineView}>
-                <View style={styles.onlineView} />
-                <Text style={styles.onlineText}>Online</Text>
-                <View style={styles.offlineView} />
-                <Text style={styles.offlineText}>Not Installed</Text>
+                <TouchableOpacity
+                  style={{flexDirection: 'row', padding: width * 0.01}}
+                  onPress={() => {
+                    this.setState({
+                      onlineProps: onlineProps > 0 ? 0 : onlineStatic,
+                    });
+                  }}>
+                  <View style={styles.onlineView} />
+                  <Text style={styles.onlineText}>Online</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{flexDirection: 'row', padding: width * 0.01}}
+                  onPress={() =>
+                    this.setState({
+                      offlineProps: offlineProps > 0 ? 0 : offlineStatic,
+                    })
+                  }>
+                  <View style={styles.offlineView} />
+                  <Text style={styles.offlineText}>Not Installed</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.portfolioHeading}>
                 <Text style={{fontSize: width * 0.05}}>Portfolio Growth</Text>
@@ -494,7 +535,7 @@ export default class Splash extends Component {
                     <G>
                       <VictoryAxis
                         dependentAxis
-                        domain={[0, 25]}
+                        domain={[0, newProperties[0]]}
                         offsetX={50}
                         orientation="left"
                         standalone={false}
@@ -516,7 +557,7 @@ export default class Splash extends Component {
                       </View>
                       <VictoryAxis
                         dependentAxis
-                        domain={[0, 28]}
+                        domain={[0, totProperties[1]]}
                         orientation="right"
                         standalone={false}
                         style={{
@@ -537,10 +578,14 @@ export default class Splash extends Component {
                 )}
               </View>
               <View style={styles.onlineOfflineView}>
-                <View style={styles.onlineView} />
-                <Text style={styles.onlineText}>New Properties</Text>
-                <View style={styles.offlineView} />
-                <Text style={styles.offlineText}>Total Properties</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.onlineView} />
+                  <Text style={styles.onlineText}>New Properties</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.offlineView} />
+                  <Text style={styles.offlineText}>Total Properties</Text>
+                </View>
               </View>
               <View
                 style={{
