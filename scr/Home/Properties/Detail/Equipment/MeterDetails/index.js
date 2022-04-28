@@ -43,6 +43,7 @@ const App = ({navigation}) => {
   const scrollViewRef = useRef();
 
   const [dangerView, setDangerView] = useState(false);
+  const [installStatusView, setInstallStatusView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
   const [openedStatus, setOpenedStatus] = useState(false);
@@ -239,14 +240,78 @@ const App = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
 
-  const getUnitDetail = async () => {
+  const changeStatus = async () => {
+    const UnitData = data?.data?.unit;
+    const UnitMeters = UnitData?.unit_meter;
+    const MeterIndex = UnitMeters.findIndex((i) => i.id == meterInfo.id);
+    let unitData = {...UnitData};
+
+    const defaultUnitData = await API.get(
+      `/property/default-meter-device/${UnitData.property.id}`,
+    );
+
+    const defaultDis =
+      defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
+
+    unitData.unit_meter[MeterIndex].installation_status = '1';
+    unitData.unit_meter.map((i, index) => {
+      unitData.unit_meter[index].defaultLatitude = UnitData.property.latitude;
+      unitData.unit_meter[index].defaultLongitude = UnitData.property.longitude;
+    });
+    let meters = unitData.unit_meter;
+
+    unitData.meters = meters;
+    unitData.defaultRadial_dist = defaultDis * 1000;
+
+    // unitData['meters'] = unitData['unit_meter'];
+    delete unitData['unit_meter']; // Delete old key
+
+    console.log('UNIT DATA', unitData);
+    const UpdateData = await API.post(
+      `/property/equipment/unit/update-unit/${testId}`,
+      unitData,
+    );
+    console.log('UPDATE DATA RES', UpdateData.data);
+    if (UpdateData?.data?.bool) {
+      setInstallStatusView(false);
+      setLoading(true);
+      Alert.alert('Success', 'Status Changed Successfully');
+      const meterResponse = await API.post(
+        `/property/equipment/unit/get-meter-info`,
+        {device_serial_number: meterInfo.device_serial_number},
+      );
+      console.log('meterResponse DATA RES', meterResponse?.data);
+      if (meterResponse?.data?.bool) {
+        getToken(meterResponse?.data?.data?.meterinfo);
+      }
+    }
+  };
+
+  const getUnitDetail = async (meterData) => {
     const res = await API.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
-    console.log('Kia ha Meter INfo Data', meterInfo);
-    setUnitMeter(meterInfo);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
+    console.log('Kia ha Meter INfo Data', meterInfo);
+    console.log(
+      'Kia ha Meter Index',
+      unitMeterArr.findIndex((i) => i.id == meterInfo.id),
+    );
+    if (meterData) {
+      console.log('DATA RECEIVED');
+      setUnitMeter(meterData);
+      if (meterData.installation_status == 2) {
+        setInstallStatusView(true);
+      }
+    } else {
+      console.log('DATA Not RECEIVED');
+      setUnitMeter(meterInfo);
+      if (meterInfo.installation_status == 2) {
+        setInstallStatusView(true);
+      }
+    }
+
     const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
     let data = {
@@ -399,10 +464,10 @@ const App = ({navigation}) => {
     console.log('All Meters', res.data?.data);
   };
 
-  const getToken = async () => {
+  const getToken = async (data) => {
     setLoading(true);
 
-    getUnitDetail();
+    getUnitDetail(data);
     getMeterTypes();
   };
 
@@ -1110,11 +1175,29 @@ const App = ({navigation}) => {
   } else {
     return (
       <View style={{flex: 1}}>
-        {/* <Modal isVisible>
-          <View style={{height: height * 0.5, backgroundColor: 'white'}}>
-            <Text>Installation Status</Text>
+        <Modal isVisible={installStatusView}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              alignItems: 'center',
+              borderRadius: 10,
+              paddingVertical: width * 0.02,
+            }}>
+            <Text style={{fontSize: width * 0.06}}>Installation Status</Text>
+            <Text style={{textAlign: 'center', paddingVertical: width * 0.02}}>
+              Meter not installed completely would you like to change the
+              status?
+            </Text>
+            <TouchableOpacity onPress={changeStatus} style={styles.attemptBtn}>
+              <Text style={styles.attemptText}>Attempted and installed</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setInstallStatusView(false)}
+              style={{...styles.attemptBtn, backgroundColor: 'red'}}>
+              <Text style={styles.attemptText}>Stay Incomplete</Text>
+            </TouchableOpacity>
           </View>
-        </Modal> */}
+        </Modal>
         <Header
           leftComponent={{
             text: 'Close',

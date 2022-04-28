@@ -131,4 +131,19 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: width * 0.05,
   },
+  attemptBtn: {
+    width: width * 0.5,
+    height: width * 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: width * 0.01,
+    marginVertical: width * 0.03,
+    elevation: width * 0.003,
+    backgroundColor: 'green',
+  },
+  attemptText: {
+    color: '#f5f5f5',
+    fontSize: width * 0.035,
+    fontWeight: 'bold',
+  },
 });

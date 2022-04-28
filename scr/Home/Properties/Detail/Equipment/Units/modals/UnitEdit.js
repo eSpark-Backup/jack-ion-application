@@ -4457,7 +4457,7 @@ export default function UnitEdit({
                                 {backgroundColor: '#f00'},
                               ]}>
                               <Text style={styles.attemptText}>
-                                Attempted and incomplete
+                                Attempted but incomplete
                               </Text>
                             </TouchableOpacity>
                           </View>
