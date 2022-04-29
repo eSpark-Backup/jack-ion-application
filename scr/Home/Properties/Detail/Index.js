@@ -356,6 +356,13 @@ export default class Splash extends React.Component {
       this.props.navigation.state.params,
     );
   };
+  naviagateToAlerts = () => {
+    this.toggleModal();
+    this.props.navigation.navigate(
+      'Alerts',
+      this.props.navigation.state.params,
+    );
+  };
 
   naviagateToSupport = () => {
     this.setState({isModalVisible: false});
@@ -396,6 +403,7 @@ export default class Splash extends React.Component {
             naviagateToDetail={this.naviagateToDetail}
             naviagateToEquip={this.naviagateToEquip}
             naviagateToChart={this.naviagateToChart}
+            naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
           />
 

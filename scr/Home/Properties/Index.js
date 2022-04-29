@@ -20,6 +20,7 @@ import {
 //Packages
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -162,6 +163,11 @@ export default class Splash extends Component {
   };
   jumpToEquip = ({prop, item}) => {
     this.props.navigation.navigate('Equip', {item});
+    this.addToRecent(prop.item);
+    this.selectedProp(prop);
+  };
+  jumpToAlerts = ({prop, item}) => {
+    this.props.navigation.navigate('Alerts', {item});
     this.addToRecent(prop.item);
     this.selectedProp(prop);
   };
@@ -559,6 +565,27 @@ export default class Splash extends Component {
                     fontSize: width * 0.03,
                   }}>
                   Equipments
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.jumpToAlerts({prop, item: prop})}
+                style={{
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Feather
+                  name="alert-triangle"
+                  color="white"
+                  size={width * 0.04}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Alerts
                 </Text>
               </TouchableOpacity>
             </View>

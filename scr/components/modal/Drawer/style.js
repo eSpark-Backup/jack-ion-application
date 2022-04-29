@@ -7,7 +7,7 @@ const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   modalContainer: {
-    width: width * 0.6,
+    width: width * 0.7,
     left: width * -0.05,
   },
   drawerMainContainer: {
@@ -17,7 +17,7 @@ export default styles = StyleSheet.create({
   },
   drawerContentContainer: {
     marginTop: height * -0.6,
-    width: width * 0.367,
+    width: width * 0.45,
     flexDirection: 'column',
     top: 20,
     left: 5,
@@ -28,13 +28,12 @@ export default styles = StyleSheet.create({
   drawerContent: {
     marginTop: height * 0.02,
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingBottom: height * 0.01,
     paddingTop: height * 0.01,
   },
   drawerbtn: {
-    marginBottom: height * 0.0134,
-    fontSize: height * 0.025,
+    fontSize: width * 0.06,
     color: 'black',
     fontWeight: 'normal',
   },

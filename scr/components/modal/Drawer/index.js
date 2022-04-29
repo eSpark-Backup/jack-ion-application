@@ -16,8 +16,8 @@ import {
 
 import Modal from 'react-native-modal';
 import Menu from 'react-native-vector-icons/Entypo';
-import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import Equip from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -36,6 +36,7 @@ export default class DrawerModal extends Component {
       isVisible,
       naviagateToDetail,
       naviagateToEquip,
+      naviagateToAlerts,
       naviagateToChart,
       naviagateToSupport,
       onCancel,
@@ -67,9 +68,9 @@ export default class DrawerModal extends Component {
           <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={naviagateToDetail}>
               <View style={styles.drawerContent}>
-                <Detail
+                <MaterialCommunityIcons
                   name="account-details-outline"
-                  size={height * 0.035}
+                  size={width * 0.065}
                   color="#7575ff"
                   style={{marginRight: width * 0.02}}
                 />
@@ -78,13 +79,24 @@ export default class DrawerModal extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
               <View style={styles.drawerContent}>
-                <Equip
+                <Feather
                   name="rss"
-                  size={height * 0.035}
+                  size={width * 0.065}
                   color="#ff9f71"
                   style={{marginRight: width * 0.02}}
                 />
                 <Text style={styles.drawerbtn}>Equipments</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={naviagateToAlerts}>
+              <View style={styles.drawerContent}>
+                <Feather
+                  name="alert-triangle"
+                  size={width * 0.065}
+                  color="#f00"
+                  style={{marginRight: width * 0.02}}
+                />
+                <Text style={styles.drawerbtn}>Alerts</Text>
               </View>
             </TouchableOpacity>
             {/* <TouchableOpacity onPress={naviagateToChart}>
@@ -110,7 +122,7 @@ export default class DrawerModal extends Component {
                 paddingBottom: height * 0.015,
                 marginBottom: height * 0.01,
               }}>
-              <Detail
+              <MaterialCommunityIcons
                 name="help-circle-outline"
                 size={height * 0.035}
                 color="#35afe2"

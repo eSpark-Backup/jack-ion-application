@@ -319,6 +319,13 @@ export default class Splash extends Component {
       this.props.navigation.state.params,
     );
   };
+  naviagateToAlerts = () => {
+    this.toggleModal();
+    this.props.navigation.navigate(
+      'Alerts',
+      this.props.navigation.state.params,
+    );
+  };
   naviagateToSupport = () => {
     this.setState({isModalVisible: false});
     this.props.navigation.navigate('Support');
@@ -987,6 +994,7 @@ export default class Splash extends Component {
             naviagateToDetail={this.naviagateToDetail}
             naviagateToEquip={this.naviagateToEquip}
             naviagateToChart={this.naviagateToChart}
+            naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
           />
           <View style={styles.headerContainer}>
