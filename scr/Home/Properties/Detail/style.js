@@ -166,6 +166,26 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: width * 0.02,
   },
+  tpanelHeads: {
+    width: width * 0.25,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginHorizontal: 5,
+  },
+  tpanelValuesContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: height * 0.01,
+    paddingVertical: width * 0.005,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  tpanelValues: {
+    width: width * 0.25,
+    marginHorizontal: 5,
+    textAlign: 'center',
+  },
   contactViewContainer: {
     width: width * 0.9,
     justifyContent: 'center',

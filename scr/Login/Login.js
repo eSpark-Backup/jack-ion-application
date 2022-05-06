@@ -154,8 +154,8 @@ export default class Login extends Component {
             initialValues={{
               // email: 'superadmin@email.com',
               // password: 'admin123$',
-              email: 'johndoe212@gmail.com',
-              password: 'qwertyuiop',
+              email: 'test2@gmail.com',
+              password: '}}UYLWG$q^YXe5#]',
             }}
             onSubmit={(values) => {
               console.log(values);

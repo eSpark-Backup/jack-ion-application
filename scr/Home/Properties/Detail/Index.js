@@ -89,6 +89,7 @@ export default class Splash extends React.Component {
       selectLocation: false,
       selectAddManuUtil: [],
       unitMixes: [],
+      tpanelData: [],
       sumNoOfUnits: 0,
       sumTotalGalDay: 0,
       meterCount: 0,
@@ -124,7 +125,18 @@ export default class Splash extends React.Component {
     const propertyData = this.props.navigation.state.params.item.item;
     this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
+    this.getTpanelData(propertyData?.id);
   }
+
+  getTpanelData = async (id) => {
+    const tPanelRes = await API.get(`/property/tpanel/${id}`);
+    console.log('TPANEL DATA', tPanelRes?.data?.data);
+    if (tPanelRes?.data?.bool) {
+      this.setState({
+        tpanelData: tPanelRes?.data?.data?.unit,
+      });
+    }
+  };
 
   getPropertyDetails = async (id) => {
     this.setState({isLoading: true});
@@ -756,6 +768,100 @@ export default class Splash extends React.Component {
                         : 0}
                     </Text>
                   </View>
+                </View>
+                <View
+                  style={{...styles.infoViewContainer, paddingHorizontal: 10}}>
+                  <Text style={styles.dataFieldHeadings}>Tpanel</Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View>
+                      <View
+                        style={{
+                          justifyContent: 'space-around',
+                          alignItems: 'center',
+                          flexDirection: 'row',
+                          marginBottom: width * 0.01,
+                        }}>
+                        <Text style={styles.tpanelHeads}>Device Serial</Text>
+                        <Text style={styles.tpanelHeads}>Building</Text>
+                        <Text style={styles.tpanelHeads}>Unit</Text>
+                        <Text style={styles.tpanelHeads}>Utility Type</Text>
+                        <Text style={styles.tpanelHeads}>Manufacturer</Text>
+                        <Text style={styles.tpanelHeads}>Device</Text>
+                        <Text style={styles.tpanelHeads}>Attached To</Text>
+                        <Text style={styles.tpanelHeads}>Signal Strength</Text>
+                        <Text style={styles.tpanelHeads}>Temperature</Text>
+                        <Text style={styles.tpanelHeads}>Battery</Text>
+                        <Text style={styles.tpanelHeads}>Meter Usage</Text>
+                        <Text style={styles.tpanelHeads}>Meter Reading</Text>
+                      </View>
+                      {this.state.tpanelData.map((item) => (
+                        <View style={styles.tpanelValuesContainer}>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map((i) => i.device_serial_number)}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.building}
+                          </Text>
+                          <Text style={styles.tpanelValues}>{item.name}</Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map(
+                              (i) => i.utility_type_name.name,
+                            )}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map((i) => i.manufacturer.name)}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map((i) => i.device.name)}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map((i) => i.attachedTo_name)}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map(
+                              (i) => i.meter_read.signal_strength,
+                            )}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map(
+                              (i) => i.meter_read.temperature,
+                            )}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map((i) => i.meter_read.battery)}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map(
+                              (i) => i.meter_read.meter_usage,
+                            )}
+                          </Text>
+                          <Text style={styles.tpanelValues}>
+                            {item.unit_meter.map(
+                              (i) => i.meter_read.meter_reading,
+                            )}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+                  {/* <ScrollView
+                    nestedScrollEnabled
+                    style={{width: width * 0.85, height: width * 0.2}}>
+                    {this.state.unitMixes.map((item, index) => (
+                      <View style={styles.unitMixesValuesContainer}>
+                        <Text style={styles.unitMixesHeads}>{index + 1}</Text>
+                        <Text style={styles.unitMixesValues}>{item.br}</Text>
+                        <Text style={styles.unitMixesValues}>{item.ba}</Text>
+                        <Text style={styles.unitMixesValues}>
+                          {item.no_of_units}
+                        </Text>
+                        <Text style={styles.unitMixesValues}>{item.gud}</Text>
+                        <Text style={styles.unitMixesValues}>
+                          {item.no_of_units * item.gud}
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView> */}
                 </View>
                 <View style={styles.contactViewContainer}>
                   <Text style={styles.dataFieldHeadings}>Contact Info</Text>
