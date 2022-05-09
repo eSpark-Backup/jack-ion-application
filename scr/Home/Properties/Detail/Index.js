@@ -182,22 +182,22 @@ export default class Splash extends React.Component {
       propertyData: currPropData,
       propertyId: currPropData?.id,
       listData: currPropData,
-      lat: currPropData.latitude,
-      long: currPropData.longitude,
+      lat: currPropData?.latitude,
+      long: currPropData?.longitude,
       BillingCompany: currPropData?.billing_company,
       BillingCompanyId: currPropData?.billing_company_id,
       managementCompany: currPropData?.management_company,
       managementCompanyId: currPropData?.management_company_id,
-      customId: currPropData.custom_id,
+      customId: currPropData?.custom_id,
       isLoading: false,
-      unitMixes: currPropData.unit_mixes,
+      unitMixes: currPropData?.unit_mixes,
       sumNoOfUnits: nOU,
       sumTotalGalDay: tGD,
-      meterCount: currPropData.unit_mixes[0].meters.count,
+      meterCount: currPropData?.unit_mixes[0]?.meters.count,
       installStatus:
-        currPropData.unit_mixes[0].meters.complete +
+        currPropData?.unit_mixes[0]?.meters.complete +
         '/' +
-        currPropData.unit_mixes[0].meters.count,
+        currPropData?.unit_mixes[0]?.meters.count,
     });
 
     var lat = parseFloat(currPropData.latitude);
@@ -794,54 +794,65 @@ export default class Splash extends React.Component {
                         <Text style={styles.tpanelHeads}>Meter Usage</Text>
                         <Text style={styles.tpanelHeads}>Meter Reading</Text>
                       </View>
-                      {this.state.tpanelData.map((item) => (
-                        <View style={styles.tpanelValuesContainer}>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map((i) => i.device_serial_number)}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.building}
-                          </Text>
-                          <Text style={styles.tpanelValues}>{item.name}</Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map(
-                              (i) => i.utility_type_name.name,
-                            )}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map((i) => i.manufacturer.name)}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map((i) => i.device.name)}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map((i) => i.attachedTo_name)}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map(
-                              (i) => i.meter_read.signal_strength,
-                            )}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map(
-                              (i) => i.meter_read.temperature,
-                            )}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map((i) => i.meter_read.battery)}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map(
-                              (i) => i.meter_read.meter_usage,
-                            )}
-                          </Text>
-                          <Text style={styles.tpanelValues}>
-                            {item.unit_meter.map(
-                              (i) => i.meter_read.meter_reading,
-                            )}
-                          </Text>
-                        </View>
-                      ))}
+                      {this.state.tpanelData.map(
+                        (item) =>
+                          item.unit_meter.length > 0 && (
+                            <View style={styles.tpanelValuesContainer}>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.device_serial_number,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.building}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.name}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.utility_type_name.name,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.manufacturer.name,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map((i) => i.device.name)}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map((i) => i.attachedTo_name)}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.signal_strength,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.temperature,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.battery,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.meter_usage,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.meter_reading,
+                                )}
+                              </Text>
+                            </View>
+                          ),
+                      )}
                     </View>
                   </ScrollView>
                   {/* <ScrollView

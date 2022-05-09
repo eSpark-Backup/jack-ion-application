@@ -316,6 +316,13 @@ const App = ({navigation}) => {
     // let unitData = res.data?.data?.unit?.unit_meter?.[0];
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
+    let alertData = {
+      id: unitMeter.id,
+      pid: propertyId,
+    };
+
+    const alertRes = await API.post(`/alert/recent`, alertData);
+    console.log('UNIT METER ALERT', alertRes.data);
 
     // setUnitData([
     //   {
@@ -697,6 +704,13 @@ const App = ({navigation}) => {
               ? 'As of ' + unitMeter?.time_diff
               : 'As of 5 hours ago',
           },
+          {
+            leftName: 'Recent Alert',
+            rightIcon: 'chevron-down',
+            // rightName: unitMeter?.device_serial_number ?? 'N/A',
+            type: 'feather',
+            rightIcon2: null,
+          },
         ],
       },
     ]);
@@ -742,40 +756,55 @@ const App = ({navigation}) => {
         ],
       },
     ]);
+    // setStatusInfo([
+    //   {
+    //     leftText: 'Pulses',
+    //     rightText: unitMeter?.meter_read?.meter_reading
+    //       ? unitMeter?.meter_read?.meter_reading
+    //       : 0,
+    //     icon: null,
+    //     bold: false,
+    //   },
+    //   {
+    //     leftText: 'Meter Port',
+    //     rightText: 'Port 1',
+    //     icon: 'chevron-down',
+    //     bold: true,
+    //     type: 'feather',
+    //   },
+    //   {
+    //     leftText: 'Signal Type',
+    //     rightText: 'Pulse',
+    //     icon: 'chevron-down',
+    //     bold: true,
+    //     type: 'feather',
+    //   },
+    //   {
+    //     leftText: 'Temperature',
+    //     rightText: '59 F',
+    //     icon: null,
+    //     bold: false,
+    //   },
+    //   {
+    //     leftText: 'Battery',
+    //     rightText: 'Approx.7 Years',
+    //     icon: null,
+    //     bold: false,
+    //   },
+    // ]);
     setStatusInfo([
       {
-        leftText: 'Pulses',
-        rightText: unitMeter?.meter_read?.meter_reading
-          ? unitMeter?.meter_read?.meter_reading
-          : 0,
+        leftText: 'Type',
+        rightText: 'Consumption',
         icon: null,
         bold: false,
       },
       {
-        leftText: 'Meter Port',
-        rightText: 'Port 1',
-        icon: 'chevron-down',
+        leftText: 'Opened',
+        rightText: 'May 8, 2022  15 hours ago',
+        icon: null,
         bold: true,
         type: 'feather',
-      },
-      {
-        leftText: 'Signal Type',
-        rightText: 'Pulse',
-        icon: 'chevron-down',
-        bold: true,
-        type: 'feather',
-      },
-      {
-        leftText: 'Temperature',
-        rightText: '59 F',
-        icon: null,
-        bold: false,
-      },
-      {
-        leftText: 'Battery',
-        rightText: 'Approx.7 Years',
-        icon: null,
-        bold: false,
       },
     ]);
 
@@ -1012,7 +1041,7 @@ const App = ({navigation}) => {
     return (
       unitMeter?.device_serial_number && (
         <TouchableOpacity
-          disabled={item.leftName == 'Status' ? false : true}
+          disabled={item.leftName == 'Recent Alert' ? false : true}
           onPress={() => {
             openStatusView(), setDangerView(false);
           }}>
@@ -1668,6 +1697,7 @@ const App = ({navigation}) => {
                 )}
               />
             ) : null}
+
             {/*
         //* Reasons List
         */}

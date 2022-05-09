@@ -97,10 +97,10 @@ export default styles = StyleSheet.create({
   sectionTitle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   sectionTitleDivider: {
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.01,
     marginTop: height * 0.01,
     width: width * 0.9,
     borderWidth: 0.8,
