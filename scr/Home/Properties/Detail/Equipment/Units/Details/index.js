@@ -63,6 +63,7 @@ const App = ({navigation}) => {
   const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState({});
   const [unitMeterName, setUnitMeterName] = useState('');
+  const [unitAlertData, setUnitAlertData] = useState(null);
   const [reasonsData, setReasonsData] = useState([]);
   const [reasonDataIndex, setReasonDataIndex] = useState(null);
   const [meterInfoData, setMeterInfoData] = useState([]);
@@ -316,13 +317,15 @@ const App = ({navigation}) => {
     // let unitData = res.data?.data?.unit?.unit_meter?.[0];
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
+
     let alertData = {
-      id: unitMeter.id,
+      id: res.data?.data?.unit?.unit_meter?.[0].id,
       pid: propertyId,
     };
 
     const alertRes = await API.post(`/alert/recent`, alertData);
     console.log('UNIT METER ALERT', alertRes.data);
+    setUnitAlertData(alertRes.data?.data?.alert);
 
     // setUnitData([
     //   {
@@ -795,13 +798,13 @@ const App = ({navigation}) => {
     setStatusInfo([
       {
         leftText: 'Type',
-        rightText: 'Consumption',
+        rightText: unitAlertData.alert_type.name,
         icon: null,
         bold: false,
       },
       {
         leftText: 'Opened',
-        rightText: 'May 8, 2022  15 hours ago',
+        rightText: unitAlertData.created_at + '  ' + unitAlertData.time_diff,
         icon: null,
         bold: true,
         type: 'feather',
@@ -1308,6 +1311,7 @@ const App = ({navigation}) => {
                 styles.listInnerText,
                 {
                   color: item.bold ? '#000' : '#8c8c8c',
+                  textTransform: 'capitalize',
                 },
               ]}>
               {item.rightText}

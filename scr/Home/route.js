@@ -12,6 +12,7 @@ import Support from '../ContactUs/Index';
 import Setting from '../settings/Index';
 import Filter from './Properties/Filter';
 import Alerts from '../Alerts/index';
+import Tpanel from '../Home/Properties/Detail/Tpanel/index';
 import U_Details from './Properties/Detail/Equipment/Units/Details/index';
 const {width, height} = Dimensions.get('window');
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -55,6 +56,7 @@ const RouteConfigs = {
   U_Details,
   Notifications,
   Alerts,
+  Tpanel,
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

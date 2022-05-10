@@ -143,6 +143,8 @@ export default styles = StyleSheet.create({
     height: width * 0.16,
     backgroundColor: 'white',
     justifyContent: 'center',
+    borderTopLeftRadius: width * 0.01,
+    borderTopRightRadius: width * 0.01,
   },
   infoTopViewInner: {
     flex: 1,

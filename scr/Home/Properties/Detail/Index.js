@@ -140,15 +140,6 @@ export default class Splash extends React.Component {
 
   getPropertyDetails = async (id) => {
     this.setState({isLoading: true});
-    const transceiverRes = await API.get(`/property/transceivers/${id}`);
-
-    if (transceiverRes?.data?.bool) {
-      this.setState({
-        onlineUnits: transceiverRes?.data?.data?.installs[0],
-        offlineUnits: transceiverRes?.data?.data?.installs[1],
-        notInstalledUnits: transceiverRes?.data?.data?.installs[2],
-      });
-    }
 
     const propertyRes = await API.get(`/property/${id}`);
 
@@ -179,9 +170,9 @@ export default class Splash extends React.Component {
     }
 
     this.setState({
+      listData: currPropData,
       propertyData: currPropData,
       propertyId: currPropData?.id,
-      listData: currPropData,
       lat: currPropData?.latitude,
       long: currPropData?.longitude,
       BillingCompany: currPropData?.billing_company,
@@ -199,6 +190,16 @@ export default class Splash extends React.Component {
         '/' +
         currPropData?.unit_mixes[0]?.meters.count,
     });
+
+    const transceiverRes = await API.get(`/property/transceivers/${id}`);
+
+    if (transceiverRes?.data?.bool) {
+      this.setState({
+        onlineUnits: transceiverRes?.data?.data?.installs[0],
+        offlineUnits: transceiverRes?.data?.data?.installs[1],
+        notInstalledUnits: transceiverRes?.data?.data?.installs[2],
+      });
+    }
 
     var lat = parseFloat(currPropData.latitude);
     var long = parseFloat(currPropData.longitude);
@@ -564,6 +565,120 @@ export default class Splash extends React.Component {
               </View>
 
               <View style={styles.mainDataContainer}>
+                <TouchableOpacity
+                  style={{...styles.infoViewContainer, paddingHorizontal: 10}}
+                  onPress={() =>
+                    this.props.navigation.navigate(
+                      'Tpanel',
+                      this.state.tpanelData,
+                    )
+                  }>
+                  <Text
+                    style={{...styles.dataFieldHeadings, borderBottomWidth: 0}}>
+                    Tpanel
+                  </Text>
+                  {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View>
+                      <View
+                        style={{
+                          justifyContent: 'space-around',
+                          alignItems: 'center',
+                          flexDirection: 'row',
+                          marginBottom: width * 0.01,
+                        }}>
+                        <Text style={styles.tpanelHeads}>Device Serial</Text>
+                        <Text style={styles.tpanelHeads}>Building</Text>
+                        <Text style={styles.tpanelHeads}>Unit</Text>
+                        <Text style={styles.tpanelHeads}>Utility Type</Text>
+                        <Text style={styles.tpanelHeads}>Manufacturer</Text>
+                        <Text style={styles.tpanelHeads}>Device</Text>
+                        <Text style={styles.tpanelHeads}>Attached To</Text>
+                        <Text style={styles.tpanelHeads}>Signal Strength</Text>
+                        <Text style={styles.tpanelHeads}>Temperature</Text>
+                        <Text style={styles.tpanelHeads}>Battery</Text>
+                        <Text style={styles.tpanelHeads}>Meter Usage</Text>
+                        <Text style={styles.tpanelHeads}>Meter Reading</Text>
+                      </View>
+                      {this.state.tpanelData.map(
+                        (item) =>
+                          item.unit_meter.length > 0 && (
+                            <View style={styles.tpanelValuesContainer}>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.device_serial_number,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.building}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.name}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.utility_type_name.name,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.manufacturer.name,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map((i) => i.device.name)}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map((i) => i.attachedTo_name)}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.signal_strength,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.temperature,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.battery,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.meter_usage,
+                                )}
+                              </Text>
+                              <Text style={styles.tpanelValues}>
+                                {item.unit_meter.map(
+                                  (i) => i.meter_read.meter_reading,
+                                )}
+                              </Text>
+                            </View>
+                          ),
+                      )}
+                    </View>
+                  </ScrollView> */}
+                  {/* <ScrollView
+                    nestedScrollEnabled
+                    style={{width: width * 0.85, height: width * 0.2}}>
+                    {this.state.unitMixes.map((item, index) => (
+                      <View style={styles.unitMixesValuesContainer}>
+                        <Text style={styles.unitMixesHeads}>{index + 1}</Text>
+                        <Text style={styles.unitMixesValues}>{item.br}</Text>
+                        <Text style={styles.unitMixesValues}>{item.ba}</Text>
+                        <Text style={styles.unitMixesValues}>
+                          {item.no_of_units}
+                        </Text>
+                        <Text style={styles.unitMixesValues}>{item.gud}</Text>
+                        <Text style={styles.unitMixesValues}>
+                          {item.no_of_units * item.gud}
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView> */}
+                </TouchableOpacity>
                 <View style={styles.infoViewContainer}>
                   <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
                   <View style={styles.infoViewInner}>
@@ -769,111 +884,7 @@ export default class Splash extends React.Component {
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={{...styles.infoViewContainer, paddingHorizontal: 10}}>
-                  <Text style={styles.dataFieldHeadings}>Tpanel</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    <View>
-                      <View
-                        style={{
-                          justifyContent: 'space-around',
-                          alignItems: 'center',
-                          flexDirection: 'row',
-                          marginBottom: width * 0.01,
-                        }}>
-                        <Text style={styles.tpanelHeads}>Device Serial</Text>
-                        <Text style={styles.tpanelHeads}>Building</Text>
-                        <Text style={styles.tpanelHeads}>Unit</Text>
-                        <Text style={styles.tpanelHeads}>Utility Type</Text>
-                        <Text style={styles.tpanelHeads}>Manufacturer</Text>
-                        <Text style={styles.tpanelHeads}>Device</Text>
-                        <Text style={styles.tpanelHeads}>Attached To</Text>
-                        <Text style={styles.tpanelHeads}>Signal Strength</Text>
-                        <Text style={styles.tpanelHeads}>Temperature</Text>
-                        <Text style={styles.tpanelHeads}>Battery</Text>
-                        <Text style={styles.tpanelHeads}>Meter Usage</Text>
-                        <Text style={styles.tpanelHeads}>Meter Reading</Text>
-                      </View>
-                      {this.state.tpanelData.map(
-                        (item) =>
-                          item.unit_meter.length > 0 && (
-                            <View style={styles.tpanelValuesContainer}>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.device_serial_number,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.building}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.name}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.utility_type_name.name,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.manufacturer.name,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map((i) => i.device.name)}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map((i) => i.attachedTo_name)}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.signal_strength,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.temperature,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.battery,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.meter_usage,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.meter_reading,
-                                )}
-                              </Text>
-                            </View>
-                          ),
-                      )}
-                    </View>
-                  </ScrollView>
-                  {/* <ScrollView
-                    nestedScrollEnabled
-                    style={{width: width * 0.85, height: width * 0.2}}>
-                    {this.state.unitMixes.map((item, index) => (
-                      <View style={styles.unitMixesValuesContainer}>
-                        <Text style={styles.unitMixesHeads}>{index + 1}</Text>
-                        <Text style={styles.unitMixesValues}>{item.br}</Text>
-                        <Text style={styles.unitMixesValues}>{item.ba}</Text>
-                        <Text style={styles.unitMixesValues}>
-                          {item.no_of_units}
-                        </Text>
-                        <Text style={styles.unitMixesValues}>{item.gud}</Text>
-                        <Text style={styles.unitMixesValues}>
-                          {item.no_of_units * item.gud}
-                        </Text>
-                      </View>
-                    ))}
-                  </ScrollView> */}
-                </View>
+
                 <View style={styles.contactViewContainer}>
                   <Text style={styles.dataFieldHeadings}>Contact Info</Text>
                   <View style={styles.contactInfoContainer}>
