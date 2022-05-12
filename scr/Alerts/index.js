@@ -11,6 +11,7 @@ import {
   Platform,
   Switch,
   SectionList,
+  FlatList,
 } from 'react-native';
 
 //Packages
@@ -20,6 +21,7 @@ import Logout from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
 import CustumStatusBar from '../components/StatusBar';
+import {Checkbox} from 'react-native-paper';
 
 // Components
 
@@ -28,6 +30,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Drawer from '../components/modal/Drawer';
+import API from '../api/SeviceApi';
+import Index from '../Home/Index';
 
 const {width, height} = Dimensions.get('window');
 
@@ -36,30 +40,37 @@ export default class Splash extends Component {
     super();
     this.state = {
       isModalVisible: false,
+      allAlerts: [],
       alertsType: [
         {
           title: 'Equipment Health Alerts',
           icon: 'heart',
           data: [
             {
+              alertCategory: 0,
               title: 'Tamper',
-              desc: 'Detect when someone has tampered with your equipment.',
-              value: false,
+              description:
+                'Detect when someone has tampered with your equipment.',
+              user_allowed: false,
             },
             {
+              alertCategory: 0,
               title: 'Connection',
-              desc: 'Detect when equipment goes offline.',
-              value: false,
+              description: 'Detect when equipment goes offline.',
+              user_allowed: false,
             },
             {
+              alertCategory: 0,
               title: 'Power Loss',
-              desc: 'Detect when your equipment is unplugged from power.',
-              value: false,
+              description:
+                'Detect when your equipment is unplugged from power.',
+              user_allowed: false,
             },
             {
+              alertCategory: 0,
               title: 'Battery',
-              desc: 'Detect when batteries start running slow.',
-              value: false,
+              description: 'Detect when batteries start running slow.',
+              user_allowed: false,
             },
           ],
         },
@@ -68,20 +79,24 @@ export default class Splash extends Component {
           icon: 'shield',
           data: [
             {
+              alertCategory: 1,
               title: 'Temperature',
-              desc: 'Detect when the temperature at a meter reaches.',
-              value: false,
+              description: 'Detect when the temperature at a meter reaches.',
+              user_allowed: false,
             },
             {
+              alertCategory: 1,
               title: 'Consumption',
-              desc: 'Detect unusual spike in usage such as running toilet.',
-              value: false,
+              description:
+                'Detect unusual spike in usage such as running toilet.',
+              user_allowed: false,
             },
             {
+              alertCategory: 1,
               title: 'Water Leak Sensor',
-              desc:
+              description:
                 'Detect physical water leaks utilizing the ION Energy Leak Sensor',
-              value: 'Coming Soon',
+              user_allowed: 'Coming Soon',
             },
           ],
         },
@@ -89,9 +104,52 @@ export default class Splash extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+    const propertyData = this.props.navigation.state.params.item.item;
+    const allAlertsRes = await API.get(`alert/all/${propertyData?.id}`);
+    if (allAlertsRes.data.bool) {
+      console.log('allAlertsRes', allAlertsRes.data.data);
+      this.setState({allAlerts: allAlertsRes.data.data});
+    }
+    const alertsRes = await API.get(`/alert/property/${propertyData?.id}`);
+    if (alertsRes.data.bool) {
+      const allowedIds = alertsRes.data?.data?.alert_type?.alert_type_id;
+      allowedIds.map((item) => {
+        console.log('ITEM', item);
+        const alertArray = [...this.state.alertsType];
+        item < 5
+          ? (alertArray[0].data[item - 1].user_allowed = true)
+          : (alertArray[1].data[item - 5].user_allowed = true);
+        this.setState({alertsType: alertArray});
+      });
+    }
+    console.log('alertsRes', alertsRes.data?.data?.alert_type?.alert_type_id);
   }
+
+  changeAlertStatus = async (item, index) => {
+    const alertArray = [...this.state.alertsType];
+    let currVal = alertArray[item.alertCategory].data[index].user_allowed;
+    alertArray[item.alertCategory].data[index].user_allowed = !currVal;
+    let IDs = [];
+    alertArray.map((item) => {
+      item.data.map((i, ind) => {
+        if (i.user_allowed == true) {
+          console.log('index', ind);
+          i.alertCategory < 1 ? IDs.push(ind + 1) : IDs.push(ind + 5);
+        }
+      });
+    });
+    const AlertIds = {alert_type_id: IDs};
+    const updateAlertStatus = await API.post(
+      'alert/property/update/285',
+      AlertIds,
+    );
+    console.log('updateAlertStatus', updateAlertStatus);
+    if (updateAlertStatus.data.bool) {
+      this.setState({alertsType: alertArray});
+    }
+  };
 
   toggleModal = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
@@ -148,17 +206,17 @@ export default class Splash extends Component {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginLeft: width * 0.22,
+                marginLeft: width * 0.12,
               }}>
-              <Feather
+              {/* <Feather
                 name="alert-triangle"
                 size={width * 0.07}
                 color="white"
                 style={{
                   marginRight: width * 0.01,
                 }}
-              />
-              <Text style={style.mainHeadiing}>Alerts</Text>
+              /> */}
+              <Text style={style.mainHeadiing}>Ion Energy Alerts</Text>
             </View>
           </View>
         </View>
@@ -177,7 +235,7 @@ export default class Splash extends Component {
           style={{height: height * 1, width: width * 1}}
           showsVerticalScrollIndicator={false}>
           <View style={style.containView}>
-            {/* <View style={style.containerReset}>
+            <View style={style.containerReset}>
               <Feather
                 name="alert-triangle"
                 size={height * 0.035}
@@ -185,16 +243,61 @@ export default class Splash extends Component {
                 color="white"
               />
               <Text style={style.mainHeadiingReset}>Alerts</Text>
-            </View> */}
+            </View>
+            <FlatList
+              data={this.state.allAlerts}
+              renderItem={({item}) => (
+                <View
+                  style={{
+                    ...style.containerInner,
+                    paddingHorizontal: 0,
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Checkbox
+                      status={this.state.checked ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        this.setState({checked: !this.state.checked});
+                      }}
+                    />
+                    <Text style={style.mainHeadiingItems}>
+                      {item.alert_type.name}
+                    </Text>
+                  </View>
+                  <Text style={{...style.alertsDataText}}>
+                    {item.property + '-' + item.unit}
+                  </Text>
+                  <Text
+                    style={{
+                      ...style.alertsDataText,
+                      textAlign: 'center',
+                      marginRight: 1,
+                    }}>
+                    May 08, 2022{'\n'}3 days ago
+                  </Text>
+                </View>
+              )}
+            />
+
+            <View style={style.containerReset}>
+              <Feather
+                name="settings"
+                size={height * 0.035}
+                style={{paddingRight: 5}}
+                color="white"
+              />
+              <Text style={style.mainHeadiingReset}>Settings</Text>
+            </View>
             <SectionList
               sections={this.state.alertsType}
-              renderItem={({item}) => (
+              renderItem={({item, index}) => (
                 <View style={style.containerInner}>
                   <View>
                     <Text style={style.mainHeadiingItems}>{item.title}</Text>
-                    <Text style={style.sideHeadingItems}>{item.desc}</Text>
+                    <Text style={style.sideHeadingItems}>
+                      {item.description}
+                    </Text>
                   </View>
-                  {item.value == 'Coming Soon' ? (
+                  {item.user_allowed == 'Coming Soon' ? (
                     <Text
                       style={{
                         borderWidth: 1,
@@ -217,7 +320,10 @@ export default class Splash extends Component {
                         trackColor={{false: 'lightgray', true: '#25AAE1'}}
                         thumbColor={'#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
-                        value={item.value}
+                        value={item.user_allowed}
+                        onValueChange={() =>
+                          this.changeAlertStatus(item, index)
+                        }
                       />
                       <TouchableOpacity>
                         <Feather

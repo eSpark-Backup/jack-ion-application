@@ -63,7 +63,6 @@ const App = ({navigation}) => {
   const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState({});
   const [unitMeterName, setUnitMeterName] = useState('');
-  const [unitAlertData, setUnitAlertData] = useState(null);
   const [reasonsData, setReasonsData] = useState([]);
   const [reasonDataIndex, setReasonDataIndex] = useState(null);
   const [meterInfoData, setMeterInfoData] = useState([]);
@@ -324,8 +323,26 @@ const App = ({navigation}) => {
     };
 
     const alertRes = await API.post(`/alert/recent`, alertData);
-    console.log('UNIT METER ALERT', alertRes.data);
-    setUnitAlertData(alertRes.data?.data?.alert);
+    console.log('UNIT METER ALERT', alertRes.data?.data?.alert);
+    if (alertRes?.data?.bool) {
+      const unitAlertData = alertRes.data?.data?.alert;
+      setStatusInfo([
+        {
+          leftText: 'Type',
+          rightText: unitAlertData?.alert_type?.name,
+          icon: null,
+          bold: false,
+        },
+        {
+          leftText: 'Opened',
+          rightText:
+            unitAlertData?.created_at + '  ' + unitAlertData?.time_diff,
+          icon: null,
+          bold: true,
+          type: 'feather',
+        },
+      ]);
+    }
 
     // setUnitData([
     //   {
@@ -795,21 +812,6 @@ const App = ({navigation}) => {
     //     bold: false,
     //   },
     // ]);
-    setStatusInfo([
-      {
-        leftText: 'Type',
-        rightText: unitAlertData.alert_type.name,
-        icon: null,
-        bold: false,
-      },
-      {
-        leftText: 'Opened',
-        rightText: unitAlertData.created_at + '  ' + unitAlertData.time_diff,
-        icon: null,
-        bold: true,
-        type: 'feather',
-      },
-    ]);
 
     if (data.length != 0) {
       setLoading(false);

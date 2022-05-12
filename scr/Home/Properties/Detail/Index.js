@@ -231,7 +231,7 @@ export default class Splash extends React.Component {
   };
 
   getBack = () => {
-    this.props.navigation.goBack();
+    this.props.navigation.navigate('Properties');
   };
 
   toggleModal = () => {
@@ -750,17 +750,20 @@ export default class Splash extends React.Component {
                       showsHorizontalScrollIndicator={false}
                       style={{flexDirection: 'row'}}>
                       {this.state.utilTypes.map((item, index) => (
-                        <Text
-                          style={[
-                            styles.dataFieldText,
-                            {width: null, textAlign: 'auto'},
-                          ]}>
-                          {item == null || item == ''
-                            ? '--'
-                            : this.state.utilTypes?.length - 1 == index
-                            ? item
-                            : item + ', '}
-                        </Text>
+                        <View
+                          style={{borderWidth: 1, borderRadius: 5, padding: 3}}>
+                          <Text
+                            style={[
+                              styles.dataFieldText,
+                              {width: null, textAlign: 'auto'},
+                            ]}>
+                            {item == null || item == ''
+                              ? '--'
+                              : this.state.utilTypes?.length - 1 == index
+                              ? item
+                              : item + ', '}
+                          </Text>
+                        </View>
                       ))}
                     </ScrollView>
                   </View>
@@ -777,17 +780,24 @@ export default class Splash extends React.Component {
                       showsHorizontalScrollIndicator={false}
                       style={{flexDirection: 'row'}}>
                       {this.state.manus.map((item, index) => (
-                        <Text
-                          style={[
-                            styles.dataFieldText,
-                            {width: null, textAlign: 'auto'},
-                          ]}>
-                          {item == null || item == ''
-                            ? '--'
-                            : this.state.manus?.length - 1 == index
-                            ? item
-                            : item + ', '}
-                        </Text>
+                        <View
+                          style={{
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            padding: 3,
+                          }}>
+                          <Text
+                            style={[
+                              styles.dataFieldText,
+                              {width: null, textAlign: 'auto'},
+                            ]}>
+                            {item == null || item == ''
+                              ? '--'
+                              : this.state.manus?.length - 1 == index
+                              ? item
+                              : item + ', '}
+                          </Text>
+                        </View>
                       ))}
                     </ScrollView>
                   </View>

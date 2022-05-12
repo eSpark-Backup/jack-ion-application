@@ -1,33 +1,21 @@
-import React, {Component, version} from 'react';
+import React, {Component} from 'react';
 
 import {
   Text,
   View,
   Dimensions,
   ScrollView,
-  PermissionsAndroid,
   LogBox,
-  Alert,
   Platform,
-  Switch,
-  SectionList,
 } from 'react-native';
 
 //Packages
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Logout from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SystemSetting from 'react-native-system-setting';
 import CustumStatusBar from '../../../../components/StatusBar';
 
 // Components
-
 import style from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import Drawer from '../../../../components/modal/Drawer';
 
 const {width, height} = Dimensions.get('window');
 
@@ -95,46 +83,12 @@ export default class Splash extends Component {
     this.setState({tpanelData: this.props.navigation.state.params});
   }
 
-  toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
-  };
-
-  naviagateToEquip = () => {
-    this.toggleModal();
-    this.props.navigation.navigate('Equip', this.props.navigation.state.params);
-  };
-
-  naviagateToDetail = () => {
-    this.toggleModal();
-    this.props.navigation.navigate(
-      'Detail',
-      this.props.navigation.state.params,
-    );
-  };
-
-  naviagateToAlerts = () => {
-    this.toggleModal();
-  };
-
-  naviagateToSupport = () => {
-    this.setState({isModalVisible: false});
-    this.props.navigation.navigate('Support');
-  };
-
   render() {
     console.log('PANEL DATA', this.props.navigation.state.params);
     return (
       <View style={style.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
-        <Drawer
-          isVisible={this.state.isModalVisible}
-          onCancel={this.toggleModal}
-          naviagateToDetail={this.naviagateToDetail}
-          naviagateToEquip={this.naviagateToEquip}
-          naviagateToChart={this.naviagateToChart}
-          naviagateToAlerts={this.naviagateToAlerts}
-          naviagateToSupport={this.naviagateToSupport}
-        />
+
         <View style={style.headingContainer}>
           <View style={[style.headingInner]}>
             <TouchableOpacity
@@ -155,7 +109,7 @@ export default class Splash extends Component {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginLeft: width * 0.22,
+                marginLeft: width * 0.25,
               }}>
               <Text style={style.mainHeadiing}>Tpanel</Text>
             </View>
@@ -195,42 +149,47 @@ export default class Splash extends Component {
               <Text style={style.tpanelHeads}>Meter Reading</Text>
             </View>
             <ScrollView>
-              {this.state.tpanelData.map((item) => (
-                <TouchableOpacity style={style.tpanelValuesContainer}>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.device_serial_number)}
-                  </Text>
-                  <Text style={style.tpanelValues}>{item.building}</Text>
-                  <Text style={style.tpanelValues}>{item.name}</Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.utility_type_name.name)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.manufacturer.name)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.device.name)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.attachedTo_name)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.meter_read.signal_strength)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.meter_read.temperature)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.meter_read.battery)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.meter_read.meter_usage)}
-                  </Text>
-                  <Text style={style.tpanelValues}>
-                    {item.unit_meter.map((i) => i.meter_read.meter_reading)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {this.state.tpanelData.map(
+                (item) =>
+                  item.unit_meter.length > 0 && (
+                    <TouchableOpacity style={style.tpanelValuesContainer}>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.device_serial_number)}
+                      </Text>
+                      <Text style={style.tpanelValues}>{item.building}</Text>
+                      <Text style={style.tpanelValues}>{item.name}</Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.utility_type_name.name)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.manufacturer.name)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.device.name)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.attachedTo_name)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map(
+                          (i) => i.meter_read.signal_strength,
+                        )}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.meter_read.temperature)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.meter_read.battery)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.meter_read.meter_usage)}
+                      </Text>
+                      <Text style={style.tpanelValues}>
+                        {item.unit_meter.map((i) => i.meter_read.meter_reading)}
+                      </Text>
+                    </TouchableOpacity>
+                  ),
+              )}
             </ScrollView>
           </View>
         </ScrollView>

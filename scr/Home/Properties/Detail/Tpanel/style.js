@@ -92,7 +92,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: height * 0.01,
-    paddingVertical: width * 0.005,
+    height: width * 0.12,
     borderWidth: 1,
     borderRadius: 5,
   },

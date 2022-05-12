@@ -1000,7 +1000,7 @@ export default class Splash extends Component {
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
               <TouchableOpacity
-                onPress={() => this.props.navigation.goBack()}
+                onPress={() => this.props.navigation.navigate('Properties')}
                 style={styles.menuView}>
                 <MaterialIcons
                   size={width * 0.08}
