@@ -51,7 +51,7 @@ export default styles = StyleSheet.create({
   },
   mainHeadiingItems: {
     fontFamily: Fonts.BalsamiqSansRegular,
-    fontSize: height * 0.028,
+    fontSize: height * 0.026,
     color: '#000000',
   },
   mainHeadiingReset: {
@@ -67,12 +67,18 @@ export default styles = StyleSheet.create({
   sideHeadingItems: {
     width: width * 0.67,
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.018,
+    fontSize: height * 0.014,
     color: 'gray',
+  },
+  contactOtherInfo: {
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * 0.014,
+    color: 'gray',
+    paddingHorizontal: 2,
   },
   alertsDataText: {
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.018,
+    fontSize: height * 0.014,
     color: 'gray',
   },
   containerReset: {

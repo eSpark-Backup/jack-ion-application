@@ -570,7 +570,16 @@ export default class Splash extends React.Component {
                   onPress={() =>
                     this.props.navigation.navigate(
                       'Tpanel',
-                      this.state.tpanelData,
+                      {
+                        propertyData: this.props.navigation.state.params.item
+                          .item,
+                        tpanelData: this.state.tpanelData,
+                      },
+                      // this.state.tpanelData,
+                      // {
+                      //   propertyData: this.props.navigation.state.params.item
+                      //     .item,
+                      // },
                     )
                   }>
                   <Text

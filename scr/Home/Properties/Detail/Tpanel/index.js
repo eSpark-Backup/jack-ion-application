@@ -12,6 +12,7 @@ import {
 //Packages
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustumStatusBar from '../../../../components/StatusBar';
+import EditUnit from '../Equipment/Units/modals/UnitEdit';
 
 // Components
 import style from './style';
@@ -25,6 +26,7 @@ export default class Splash extends Component {
     this.state = {
       isModalVisible: false,
       tpanelData: [],
+      propertyData: {},
       alertsType: [
         {
           title: 'Equipment Health Alerts',
@@ -80,8 +82,31 @@ export default class Splash extends Component {
 
   componentDidMount() {
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
-    this.setState({tpanelData: this.props.navigation.state.params});
+    console.log('PARAMS Data', this.props.navigation.state.params);
+    this.setState({
+      tpanelData: this.props.navigation.state.params?.tpanelData,
+      propertyData: this.props.navigation.state.params?.propertyData,
+    });
   }
+
+  goToDetails = (item) => {
+    this.props.navigation.navigate('U_Details', {
+      unitId: item.id,
+      buildingName: item.building,
+      buildingId: item.building_id,
+      propertyId: this.state.propertyData.id,
+      propertyLat: this.state.propertyData.latitude,
+      propertyLong: this.state.propertyData.longitude,
+    });
+    // console.log(
+    //   'Sub me Kch na Kch Mila Ya Nhi',
+    //   this.state.buildingData.name,
+    //   this.state.editBuildId,
+    //   this.props.navigation.state.params.item.item.id,
+    //   this.props.navigation.state.params.item.item.latitude,
+    //   this.props.navigation.state.params.item.item.longitude,
+    // );
+  };
 
   render() {
     console.log('PANEL DATA', this.props.navigation.state.params);
@@ -148,11 +173,14 @@ export default class Splash extends Component {
               <Text style={style.tpanelHeads}>Meter Usage</Text>
               <Text style={style.tpanelHeads}>Meter Reading</Text>
             </View>
+
             <ScrollView>
               {this.state.tpanelData.map(
                 (item) =>
                   item.unit_meter.length > 0 && (
-                    <TouchableOpacity style={style.tpanelValuesContainer}>
+                    <TouchableOpacity
+                      style={style.tpanelValuesContainer}
+                      onPress={() => this.goToDetails(item)}>
                       <Text style={style.tpanelValues}>
                         {item.unit_meter.map((i) => i.device_serial_number)}
                       </Text>

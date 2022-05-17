@@ -20,18 +20,19 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Logout from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
-import CustumStatusBar from '../components/StatusBar';
 import {Checkbox} from 'react-native-paper';
 
 // Components
 
 import style from './style';
+import CustumStatusBar from '../components/StatusBar';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Drawer from '../components/modal/Drawer';
 import API from '../api/SeviceApi';
 import Index from '../Home/Index';
+import Loader from '../components/Loader';
 
 const {width, height} = Dimensions.get('window');
 
@@ -39,8 +40,12 @@ export default class Splash extends Component {
   constructor() {
     super();
     this.state = {
+      loader: true,
       isModalVisible: false,
       allAlerts: [],
+      allAlertsChecked: false,
+      alertIndex: null,
+      alertSelected: false,
       alertsType: [
         {
           title: 'Equipment Health Alerts',
@@ -101,6 +106,14 @@ export default class Splash extends Component {
           ],
         },
       ],
+      alertContacts: [
+        {
+          title: 'Alerts Contacts',
+          icon: 'bell',
+          data: [],
+        },
+      ],
+      notifications: [{title: 'Alert Contacts', icon: 'bell'}],
     };
   }
 
@@ -108,15 +121,19 @@ export default class Splash extends Component {
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
     const propertyData = this.props.navigation.state.params.item.item;
     const allAlertsRes = await API.get(`alert/all/${propertyData?.id}`);
+    this.setState({loader: true});
     if (allAlertsRes.data.bool) {
-      console.log('allAlertsRes', allAlertsRes.data.data);
-      this.setState({allAlerts: allAlertsRes.data.data});
+      let allAlerts = allAlertsRes.data.data;
+      let alerts = [...allAlerts];
+      alerts.map((item, index) => {
+        alerts[index].check = false;
+      });
+      this.setState({allAlerts: alerts});
     }
     const alertsRes = await API.get(`/alert/property/${propertyData?.id}`);
     if (alertsRes.data.bool) {
       const allowedIds = alertsRes.data?.data?.alert_type?.alert_type_id;
       allowedIds.map((item) => {
-        console.log('ITEM', item);
         const alertArray = [...this.state.alertsType];
         item < 5
           ? (alertArray[0].data[item - 1].user_allowed = true)
@@ -124,7 +141,14 @@ export default class Splash extends Component {
         this.setState({alertsType: alertArray});
       });
     }
-    console.log('alertsRes', alertsRes.data?.data?.alert_type?.alert_type_id);
+    const alertContactRes = await API.get(`/alert/property/contact/all`);
+    if (alertContactRes.data.bool) {
+      const contactData = [...this.state.alertContacts];
+      contactData[0].data = alertContactRes?.data?.data;
+      this.setState({alertContacts: contactData});
+    }
+    this.setState({loader: false});
+    console.log('alertContactRes', alertContactRes?.data?.data);
   }
 
   changeAlertStatus = async (item, index) => {
@@ -181,6 +205,7 @@ export default class Splash extends Component {
     return (
       <View style={style.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
+        {this.state.loader && <Loader />}
         <Drawer
           isVisible={this.state.isModalVisible}
           onCancel={this.toggleModal}
@@ -208,29 +233,11 @@ export default class Splash extends Component {
                 alignItems: 'center',
                 marginLeft: width * 0.12,
               }}>
-              {/* <Feather
-                name="alert-triangle"
-                size={width * 0.07}
-                color="white"
-                style={{
-                  marginRight: width * 0.01,
-                }}
-              /> */}
               <Text style={style.mainHeadiing}>Ion Energy Alerts</Text>
             </View>
           </View>
         </View>
-        {/* <View style={style.headingContainer}>
-          <View style={style.headingInner}>
-            <Feather
-              name="alert-triangle"
-              size={height * 0.035}
-              style={{paddingRight: 5}}
-              color="white"
-            />
-            <Text style={style.mainHeadiing}>Alerts</Text>
-          </View>
-        </View> */}
+
         <ScrollView
           style={{height: height * 1, width: width * 1}}
           showsVerticalScrollIndicator={false}>
@@ -244,9 +251,56 @@ export default class Splash extends Component {
               />
               <Text style={style.mainHeadiingReset}>Alerts</Text>
             </View>
+            {this.state.allAlerts.length > 0 && (
+              <View
+                style={{
+                  width: width * 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 5,
+                  paddingLeft: 5,
+                }}>
+                <Checkbox
+                  status={this.state.allAlertsChecked ? 'checked' : 'unchecked'}
+                  onPress={() => {
+                    let alerts = [...this.state.allAlerts];
+                    alerts.map((item, index) => {
+                      alerts[index].check = this.state.allAlertsChecked
+                        ? false
+                        : true;
+                    });
+                    const checkValues = (obj) => obj.check === true;
+                    this.setState({
+                      alertSelected: alerts.some(checkValues),
+                    });
+                    this.setState({allAlerts: alerts});
+                    this.setState({
+                      allAlertsChecked: !this.state.allAlertsChecked,
+                    });
+                  }}
+                />
+                {this.state.alertSelected && (
+                  <TouchableOpacity
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      padding: 5,
+                    }}>
+                    <Feather
+                      name="bell-off"
+                      size={height * 0.03}
+                      style={{paddingRight: 5}}
+                    />
+                    <Text style={{}}>Dismiss Selected</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
             <FlatList
               data={this.state.allAlerts}
-              renderItem={({item}) => (
+              renderItem={({item, index}) => (
                 <View
                   style={{
                     ...style.containerInner,
@@ -254,17 +308,31 @@ export default class Splash extends Component {
                   }}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Checkbox
-                      status={this.state.checked ? 'checked' : 'unchecked'}
+                      status={item.check ? 'checked' : 'unchecked'}
                       onPress={() => {
-                        this.setState({checked: !this.state.checked});
+                        let alerts = [...this.state.allAlerts];
+                        alerts[index].check = !alerts[index].check;
+                        const checkValues = (obj) => obj.check === true;
+                        this.setState({
+                          alertSelected: alerts.some(checkValues),
+                        });
+                        this.setState({allAlerts: alerts});
+                        // this.setState({
+                        //   alertIndex:
+                        //     index === this.state.alertIndex ? null : index,
+                        // });
                       }}
                     />
-                    <Text style={style.mainHeadiingItems}>
+                    <Text
+                      style={{
+                        ...style.mainHeadiingItems,
+                        textTransform: 'capitalize',
+                      }}>
                       {item.alert_type.name}
                     </Text>
                   </View>
-                  <Text style={{...style.alertsDataText}}>
-                    {item.property + '-' + item.unit}
+                  <Text style={{...style.alertsDataText, textAlign: 'center'}}>
+                    {item.property + '\n' + item.unit}
                   </Text>
                   <Text
                     style={{
@@ -335,6 +403,66 @@ export default class Splash extends Component {
                       </TouchableOpacity>
                     </View>
                   )}
+                </View>
+              )}
+              renderSectionHeader={({section: {title, icon}}) => (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}>
+                  <Feather
+                    name={icon}
+                    size={height * 0.035}
+                    style={{paddingRight: 5}}
+                    color="#999"
+                  />
+                  <Text style={style.subHeading}>{title}</Text>
+                </View>
+              )}
+            />
+            <View style={style.containerReset}>
+              <Feather
+                name="settings"
+                size={height * 0.035}
+                style={{paddingRight: 5}}
+                color="white"
+              />
+              <Text style={style.mainHeadiingReset}>Notifications</Text>
+            </View>
+            <SectionList
+              sections={this.state.alertContacts}
+              renderItem={({item, index}) => (
+                <View style={style.containerInner}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Feather
+                      name="user"
+                      size={height * 0.04}
+                      style={{paddingRight: 5}}
+                    />
+                    <View>
+                      <Text style={style.mainHeadiingItems}>{item.name}</Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <Text style={style.contactOtherInfo}>{item.email}</Text>
+                        <Text style={style.contactOtherInfo}>{item.phone}</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <TouchableOpacity>
+                    <Feather
+                      name={'settings'}
+                      size={height * 0.035}
+                      style={{paddingRight: 5}}
+                      color="#999"
+                    />
+                  </TouchableOpacity>
                 </View>
               )}
               renderSectionHeader={({section: {title, icon}}) => (

@@ -62,7 +62,7 @@ export default class DrawerModal extends Component {
             <Image
               source={require('../../../../Images/loogo.png')}
               resizeMode="contain"
-              style={{height: width * 0.28}}
+              style={{height: height * 0.15}}
             />
           </View>
           <View style={styles.drawerContentContainer}>

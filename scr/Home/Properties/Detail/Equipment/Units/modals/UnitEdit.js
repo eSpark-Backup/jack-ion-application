@@ -42,7 +42,6 @@ import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import Back from 'react-native-vector-icons/MaterialIcons';
-import SearchableDropdown from 'react-native-searchable-dropdown';
 import Searchable_Dropdown from '../../../../../../components/SearchableDropdown/index';
 import Text_Input from '../../../../../../components/TextInput';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
@@ -70,7 +69,6 @@ import MapView, {
 import {add, color, set} from 'react-native-reanimated';
 import clc from 'cli-color';
 import API from '../../../../../../api/SeviceApi';
-import SearchableDropDown from 'react-native-searchable-dropdown';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -1271,6 +1269,8 @@ export default function UnitEdit({
       },
     });
     setShowAddType(false);
+    console.log('selectedID', selectedDevId);
+    console.log('meterlistData', meterListData);
     const addMeter = meterListData.filter((item) => item.id != selectedDevId);
     setMeterListData(addMeter);
     setLetsFinish(true);
@@ -1279,6 +1279,7 @@ export default function UnitEdit({
     setStatusAnimation(false);
 
     setShowAddMeterSlider(false);
+    alert('Meter information added succesfully');
   };
 
   useUpdateEffect(() => {
@@ -1422,7 +1423,7 @@ export default function UnitEdit({
     }
   };
 
-  const renderSlide3 = ({item, index}) => {
+  const renderSlide3 = (item, index) => {
     // console.log('index check slider 3 ---> ',index)
     if (index == 1 && item.value == null) {
       let newArr = [...slide2]; // copying the old datas array
@@ -3838,11 +3839,15 @@ export default function UnitEdit({
                         />
                       ) : (
                         <View>
-                          <FlatList
+                          {slide2.map((item, index) =>
+                            renderSlide3(item, index),
+                          )}
+                          {/* <FlatList
                             data={slide2}
                             renderItem={renderSlide3}
                             keyboardShouldPersistTaps="handled"
-                          />
+                            nestedScrollEnabled={true}
+                          /> */}
                         </View>
                       )}
                     </View>
@@ -4556,7 +4561,7 @@ export default function UnitEdit({
                               },
                             ]}
                             onPress={
-                              userRole == 5
+                              userRole == 2
                                 ? finishSlider
                                 : sliderNumber == 5
                                 ? finishSlider
@@ -5019,7 +5024,6 @@ export default function UnitEdit({
                     </View>
                     <View
                       style={{
-                        flex: 2,
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                       }}>
@@ -5058,7 +5062,7 @@ export default function UnitEdit({
                               borderWidth: 2,
                               borderRadius: 5,
                               borderColor: '#25AAE1ec',
-                              padding: 5,
+                              paddingVertical: width * 0.02,
                             }}>
                             {/*//todo: Button for meter */}
                             <Text
@@ -5086,7 +5090,8 @@ export default function UnitEdit({
                             borderWidth: 2,
                             borderRadius: 5,
                             borderColor: '#25AAE1ec',
-                            padding: 5,
+                            paddingHorizontal: width * 0.02,
+                            paddingVertical: width * 0.01,
                           }}>
                           {/*//todo: Button for meter */}
                           <Text
