@@ -97,6 +97,7 @@ export default function UnitEdit({
   userRole,
 }) {
   const [meterListData, setMeterListData] = useState([]);
+  const [editMeterIndex, setEditMeterIndex] = useState(null);
   const inputRef = useRef(null);
   const [defaultMeterValues, setDefaultMeterValues] = useState(false);
   const [defaultDeviceValues, setDefaultDeviceValues] = useState('');
@@ -1271,8 +1272,11 @@ export default function UnitEdit({
     setShowAddType(false);
     console.log('selectedID', selectedDevId);
     console.log('meterlistData', meterListData);
-    const addMeter = meterListData.filter((item) => item.id != selectedDevId);
-    setMeterListData(addMeter);
+    if (selectedDevId != null) {
+      const addMeter = meterListData.filter((item) => item.id != selectedDevId);
+      console.log('ADDMETER', addMeter);
+      setMeterListData(addMeter);
+    }
     setLetsFinish(true);
 
     // console.log('meterArray------>', meterArray);
@@ -1328,7 +1332,12 @@ export default function UnitEdit({
         },
       ],
     });
-    setMeterListData(meterArray);
+    if (editMeterIndex != null) {
+      let meterData = [...meterListData];
+      meterData[editMeterIndex] = meterArray;
+    } else {
+      setMeterListData(meterArray);
+    }
 
     setLetsFinish(false);
     setLetsUpdateMeterData(true);
@@ -1944,6 +1953,8 @@ export default function UnitEdit({
     }));
     setLoadMeters(false);
     setDevEdit(false);
+    setExistingDev(false);
+    setEditMeterIndex(null);
     setShowAddMeterSlider(false);
   };
 
@@ -2174,8 +2185,10 @@ export default function UnitEdit({
       console.log('DATA.ID', data.id);
       setDevEdit(true);
       setSelectedDevId(data.id);
+      setEditMeterIndex(index);
     } else {
       setExistingDev(true);
+      setEditMeterIndex(index);
       setSelectedDevId(null);
     }
     setLoadManufacturers(true);
@@ -2255,7 +2268,6 @@ export default function UnitEdit({
   };
 
   const [verticalOffs, setVerticalOffs] = useState(-400);
-  console.log('Unit Mix Id', unitMixId);
 
   return (
     <View>
@@ -5006,6 +5018,19 @@ export default function UnitEdit({
                                   source={typeSwitcher(item.meter_name)}
                                   style={styles.untiDetailImage}
                                 /> */}
+                            <TouchableOpacity
+                              style={{
+                                position: 'absolute',
+                                left: width * 0.2,
+                                bottom: height * 0.025,
+                                borderRadius: 50,
+                                backgroundColor: '#fff',
+                              }}>
+                              <MaterialCommunityIcon
+                                name="close-circle-outline"
+                                size={height * 0.03}
+                              />
+                            </TouchableOpacity>
                             <Text
                               style={[
                                 styles.meterDesciptionHeading,
