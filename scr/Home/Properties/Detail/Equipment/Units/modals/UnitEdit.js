@@ -1271,12 +1271,11 @@ export default function UnitEdit({
     });
     setShowAddType(false);
     console.log('selectedID', selectedDevId);
-    console.log('meterlistData', meterListData);
-    if (selectedDevId != null) {
-      const addMeter = meterListData.filter((item) => item.id != selectedDevId);
-      console.log('ADDMETER', addMeter);
-      setMeterListData(addMeter);
-    }
+    // if (selectedDevId != null) {
+    //   const addMeter = meterListData.filter((item) => item.id != selectedDevId);
+    //   console.log('ADDMETER', addMeter);
+    //   setMeterListData(addMeter);
+    // }
     setLetsFinish(true);
 
     // console.log('meterArray------>', meterArray);
@@ -1301,9 +1300,7 @@ export default function UnitEdit({
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[i]?.base64}`);
     }
-
-    var meterArray = [...meterListData]; // copying the old datas array
-    meterArray.push({
+    let meterVals = {
       device: {
         manufacturer_id: slide1[0].selectId,
         product_desc: productNo,
@@ -1331,11 +1328,16 @@ export default function UnitEdit({
           picture: reasonBase64s,
         },
       ],
-    });
+    };
+    var meterArray = [...meterListData]; // copying the old datas array
     if (editMeterIndex != null) {
+      console.log('IF CHAL', meterVals);
       let meterData = [...meterListData];
-      meterData[editMeterIndex] = meterArray;
+      meterData[editMeterIndex] = meterVals;
+      setMeterListData(meterData);
     } else {
+      meterArray.push(meterVals);
+      console.log('ELSE CHAL');
       setMeterListData(meterArray);
     }
 
@@ -1353,10 +1355,12 @@ export default function UnitEdit({
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
     }
+    console.log('METERLISTDATA BATAO', meterListData);
+    console.log('METERDATA BATAO', meterData);
     var loopData = [...meterData];
 
     meterListData?.map((item) => {
-      // console.log('Get meterData Information---->>', item.reasons);
+      console.log('Get meterData Information---->>', item.reasons);
       let newReasonArr = [...reasonArr];
       if (type != 'add' || type != 'addMeterDirect') {
         newReasonArr.push({
