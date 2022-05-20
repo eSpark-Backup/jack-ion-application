@@ -210,7 +210,7 @@ export default function UnitEdit({
       value: '',
     },
   ]);
-
+  // console.log('METERLISTDATA', meterListData);
   const helperDefaultData = useRef([]);
 
   const [selectUtil, setSelectUtil] = useState([]);
@@ -1043,6 +1043,7 @@ export default function UnitEdit({
     // console.log('Meter Data 1', unitDetails?.unit?.id);
     // console.log('Meter Data 2', meterData[1].reasons);
     console.log('data--->', data);
+    console.log('data meters--->', data.meters);
     if (type == 'add' || type == 'addMeterDirect') {
       console.log('ADD CHALA');
       const unitResponse = await API.post(
@@ -1358,9 +1359,9 @@ export default function UnitEdit({
     console.log('METERLISTDATA BATAO', meterListData);
     console.log('METERDATA BATAO', meterData);
     var loopData = [...meterData];
-
+    let meterVals = {};
     meterListData?.map((item) => {
-      console.log('Get meterData Information---->>', item.reasons);
+      console.log('Get REASONS Information---->>', item.reasons);
       let newReasonArr = [...reasonArr];
       if (type != 'add' || type != 'addMeterDirect') {
         newReasonArr.push({
@@ -1375,7 +1376,7 @@ export default function UnitEdit({
           picture: reasonBase64s,
         });
       }
-      loopData.push({
+      meterVals = {
         device_serial_number: item.device_serial_number,
         device_id: item.device_id,
         device: item.device,
@@ -1411,9 +1412,19 @@ export default function UnitEdit({
             : {
                 reasons: item.reasons == undefined ? [] : newReasonArr,
               })),
-      });
+      };
     });
-    setMeterData(loopData);
+    if (editMeterIndex != null) {
+      console.log('METER DATA IF CHALA');
+      let data = [...meterData];
+      data[editMeterIndex] = meterVals;
+      setMeterData(loopData);
+    } else {
+      console.log('METER DATA ELSE CHALA');
+      loopData.push(meterVals);
+      console.log('LOOP DATA', loopData);
+      setMeterData(loopData);
+    }
     setLetsUpdateMeterData(false);
     // console.log('oldMeterListData finishSlider----->>>>>', meterArray);
     cancelMeter();
@@ -4980,7 +4991,7 @@ export default function UnitEdit({
                       {loadMeters ? (
                         <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
                       ) : (
-                        meterListData.length > 0 &&
+                        meterListData?.length > 0 &&
                         meterListData?.map((item, index) => (
                           <TouchableOpacity
                             // disabled={true}
@@ -5023,6 +5034,32 @@ export default function UnitEdit({
                                   style={styles.untiDetailImage}
                                 /> */}
                             <TouchableOpacity
+                              onPress={() => {
+                                Alert.alert(
+                                  'Becareful',
+                                  'Are you sure to delete meter permanently',
+                                  [
+                                    {text: 'No', style: 'cancel'},
+                                    {
+                                      text: 'Yes',
+                                      onPress: async () => {
+                                        const delMeter = await API.post(
+                                          `/property/equipment/unit/unit-meter/${item.id}`,
+                                        );
+                                        if (delMeter.data.bool) {
+                                          let listArr = [...meterListData];
+                                          listArr.splice(index, 1);
+                                          setMeterListData(listArr);
+                                          reRun();
+                                        }
+                                      },
+                                    },
+                                  ],
+                                );
+                                // let listArr = [...meterListData];
+                                // listArr.splice(index, 1);
+                                // setMeterListData(listArr);
+                              }}
                               style={{
                                 position: 'absolute',
                                 left: width * 0.2,

@@ -684,7 +684,8 @@ export default class Splash extends Component {
                         styles.unitDetailSeprater,
                         {
                           borderBottomWidth:
-                            index == 0 && unit?.item?.unit_meter?.length > 1
+                            index < unit?.item?.unit_meter?.length - 1 &&
+                            unit?.item?.unit_meter?.length > 1
                               ? width * 0.004
                               : 0,
                         },

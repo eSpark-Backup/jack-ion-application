@@ -12,6 +12,7 @@ import {
   Switch,
   SectionList,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 
 //Packages
@@ -20,19 +21,20 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Logout from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SystemSetting from 'react-native-system-setting';
-import {Checkbox} from 'react-native-paper';
+// import {Checkbox} from 'react-native-paper';
+import Checkbox from '@react-native-community/checkbox';
 
 // Components
 
 import style from './style';
 import CustumStatusBar from '../components/StatusBar';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Drawer from '../components/modal/Drawer';
 import API from '../api/SeviceApi';
 import Index from '../Home/Index';
 import Loader from '../components/Loader';
+import Modal from 'react-native-modal';
 
 const {width, height} = Dimensions.get('window');
 
@@ -46,6 +48,11 @@ export default class Splash extends Component {
       allAlertsChecked: false,
       alertIndex: null,
       alertSelected: false,
+      alertDesc: '',
+      alertSettName: '',
+      settingModal: false,
+      alertSettObj: {},
+      alertSettObjInd: {},
       alertsType: [
         {
           title: 'Equipment Health Alerts',
@@ -56,12 +63,16 @@ export default class Splash extends Component {
               title: 'Tamper',
               description:
                 'Detect when someone has tampered with your equipment.',
+              detail_desc:
+                'A Tamper alert is created when someone tampers with your equipment. In most cases this is triggered if the device is physically opened.',
               user_allowed: false,
             },
             {
               alertCategory: 0,
               title: 'Connection',
               description: 'Detect when equipment goes offline.',
+              detail_desc:
+                'A Connection alert gets created when a device goes offline. NextCentury offers intelligent alerting and analytics to help identify a network problem quickly. Typically, if a device is offline, there is a good explanation somewhere else on the property. We can help point you in the right direction to quickly overcome any challenges.',
               user_allowed: false,
             },
             {
@@ -69,12 +80,16 @@ export default class Splash extends Component {
               title: 'Power Loss',
               description:
                 'Detect when your equipment is unplugged from power.',
+              detail_desc:
+                'A Power Loss alert gets created when a device is unplugged from power. This alert applies to wall-powered equipment such as Gateways and Repeaters.Someone may have mistakenly unplugged your equipment, and it simply needs to be plugged back in.',
               user_allowed: false,
             },
             {
               alertCategory: 0,
               title: 'Battery',
               description: 'Detect when batteries start running slow.',
+              detail_desc:
+                'A Low Battery alert gets created when a battery is getting close to the end of its life. NextCentury equipment has in-field replaceable batteries, and we offer easy-to-use battery replacement kits to make the process as simple as possible.',
               user_allowed: false,
             },
           ],
@@ -87,6 +102,8 @@ export default class Splash extends Component {
               alertCategory: 1,
               title: 'Temperature',
               description: 'Detect when the temperature at a meter reaches.',
+              detail_desc:
+                'A Temperature alert can help you automatically detect when a water meter is close to freezing. With this alert, you can take action to avoid potential damages from a frozen water meter. An alert is also created if the temperate at a device is outside the safe operating range for IONENERGY equipment. (Between -4°F and 131°F).',
               user_allowed: false,
             },
             {
@@ -94,6 +111,8 @@ export default class Splash extends Component {
               title: 'Consumption',
               description:
                 'Detect unusual spike in usage such as running toilet.',
+              detail_desc:
+                'IONENERGY uses cutting edge artificial intelligence to find unusual patterns in utility consumption. We are proud to provide this alert as a means for detecting sudden changes in trends that may need your attention. Our hardware and cloud-based analytics work hand-in-hand to detect even the smallest trends such as a costly running toilet.',
               user_allowed: false,
             },
             {
@@ -156,8 +175,8 @@ export default class Splash extends Component {
     let currVal = alertArray[item.alertCategory].data[index].user_allowed;
     alertArray[item.alertCategory].data[index].user_allowed = !currVal;
     let IDs = [];
-    alertArray.map((item) => {
-      item.data.map((i, ind) => {
+    alertArray.map((itm) => {
+      itm.data.map((i, ind) => {
         if (i.user_allowed == true) {
           console.log('index', ind);
           i.alertCategory < 1 ? IDs.push(ind + 1) : IDs.push(ind + 5);
@@ -202,6 +221,7 @@ export default class Splash extends Component {
   };
 
   render() {
+    const {alertSettObj, alertSettObjInd} = this.state;
     return (
       <View style={style.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
@@ -237,6 +257,87 @@ export default class Splash extends Component {
             </View>
           </View>
         </View>
+        <Modal isVisible={this.state.settingModal}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 5,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: height * 0.02,
+                marginHorizontal: width * 0.015,
+                borderBottomWidth: 1,
+              }}>
+              <Text style={style.settingModalHead}>
+                {alertSettObj.title} Alert Settings
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({settingModal: false});
+                }}>
+                <MaterialIcons size={width * 0.05} name="close" />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: width * 0.02,
+                marginVertical: height * 0.01,
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Text>Currently Turned</Text>
+                <Text
+                  style={{
+                    marginLeft: width * 0.01,
+                    color:
+                      alertSettObj?.title != undefined &&
+                      this.state.alertsType[alertSettObj.alertCategory].data[
+                        alertSettObjInd
+                      ].user_allowed
+                        ? '#25AAE1'
+                        : '#aaa',
+                  }}>
+                  {alertSettObj?.title != undefined &&
+                  this.state.alertsType[alertSettObj.alertCategory].data[
+                    alertSettObjInd
+                  ].user_allowed
+                    ? 'ON'
+                    : 'OFF'}
+                </Text>
+              </View>
+              <Switch
+                trackColor={{false: 'lightgray', true: '#25AAE1'}}
+                thumbColor={'#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                value={
+                  alertSettObj?.title != undefined &&
+                  this.state.alertsType[alertSettObj.alertCategory].data[
+                    alertSettObjInd
+                  ].user_allowed
+                }
+                onValueChange={() =>
+                  this.changeAlertStatus(alertSettObj, alertSettObjInd)
+                }
+              />
+            </View>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                paddingHorizontal: width * 0.01,
+                paddingVertical: height * 0.02,
+                marginBottom: height * 0.05,
+                marginHorizontal: width * 0.02,
+              }}>
+              <Text>{alertSettObj.detail_desc}</Text>
+            </View>
+          </View>
+        </Modal>
 
         <ScrollView
           style={{height: height * 1, width: width * 1}}
@@ -251,51 +352,81 @@ export default class Splash extends Component {
               />
               <Text style={style.mainHeadiingReset}>Alerts</Text>
             </View>
-            {this.state.allAlerts.length > 0 && (
+            {this.state.loader && this.state.allAlerts.length < 1 ? (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: height * 0.03}}>Loading Alerts</Text>
+              </View>
+            ) : this.state.allAlerts.length > 0 ? (
               <View
                 style={{
                   width: width * 1,
+                  height: height * 0.06,
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginBottom: 5,
-                  paddingLeft: 5,
+                  paddingLeft:
+                    Platform.OS == 'ios' ? width * 0.035 : width * 0.025,
                 }}>
-                <Checkbox
-                  status={this.state.allAlertsChecked ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    let alerts = [...this.state.allAlerts];
-                    alerts.map((item, index) => {
-                      alerts[index].check = this.state.allAlertsChecked
-                        ? false
-                        : true;
-                    });
-                    const checkValues = (obj) => obj.check === true;
-                    this.setState({
-                      alertSelected: alerts.some(checkValues),
-                    });
-                    this.setState({allAlerts: alerts});
-                    this.setState({
-                      allAlertsChecked: !this.state.allAlertsChecked,
-                    });
-                  }}
-                />
-                {this.state.alertSelected && (
-                  <TouchableOpacity
+                <View
+                  style={{
+                    marginRight: Platform.OS == 'ios' ? 10 : 0,
+                  }}>
+                  <Checkbox
+                    value={this.state.allAlertsChecked}
+                    onAnimationType="one-stroke"
+                    offAnimationType="one-stroke"
+                    onValueChange={() => {
+                      let alerts = [...this.state.allAlerts];
+                      alerts.map((item, index) => {
+                        alerts[index].check = this.state.allAlertsChecked
+                          ? false
+                          : true;
+                      });
+                      const checkValues = (obj) => obj.check === true;
+                      this.setState({
+                        alertSelected: alerts.some(checkValues),
+                      });
+                      this.setState({allAlerts: alerts});
+                      this.setState({
+                        allAlertsChecked: !this.state.allAlertsChecked,
+                      });
+                    }}
+                  />
+                </View>
+                <TouchableOpacity
+                  disabled={!this.state.alertSelected}
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 5,
+                    borderColor: !this.state.alertSelected ? '#aaa' : null,
+                  }}>
+                  <Feather
+                    name="bell-off"
+                    size={height * 0.03}
+                    style={{paddingRight: 5}}
+                    color={!this.state.alertSelected ? '#aaa' : '#000'}
+                  />
+                  <Text
                     style={{
-                      borderWidth: 1,
-                      borderRadius: 5,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      padding: 5,
+                      color: !this.state.alertSelected ? '#aaa' : '#000',
                     }}>
-                    <Feather
-                      name="bell-off"
-                      size={height * 0.03}
-                      style={{paddingRight: 5}}
-                    />
-                    <Text style={{}}>Dismiss Selected</Text>
-                  </TouchableOpacity>
-                )}
+                    Dismiss Selected
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Feather
+                  name="alert-triangle"
+                  size={height * 0.035}
+                  style={{paddingRight: 5}}
+                />
+                <Text style={{fontSize: height * 0.03}}>
+                  Currnetly No Alerts
+                </Text>
               </View>
             )}
             <FlatList
@@ -307,22 +438,34 @@ export default class Splash extends Component {
                     paddingHorizontal: 0,
                   }}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Checkbox
-                      status={item.check ? 'checked' : 'unchecked'}
-                      onPress={() => {
-                        let alerts = [...this.state.allAlerts];
-                        alerts[index].check = !alerts[index].check;
-                        const checkValues = (obj) => obj.check === true;
-                        this.setState({
-                          alertSelected: alerts.some(checkValues),
-                        });
-                        this.setState({allAlerts: alerts});
-                        // this.setState({
-                        //   alertIndex:
-                        //     index === this.state.alertIndex ? null : index,
-                        // });
-                      }}
-                    />
+                    <View
+                      style={{
+                        marginHorizontal: Platform.OS == 'ios' ? 5 : 0,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Checkbox
+                        value={item.check}
+                        onAnimationType="one-stroke"
+                        offAnimationType="one-stroke"
+                        onValueChange={() => {
+                          let alerts = [...this.state.allAlerts];
+                          alerts[index].check = !alerts[index].check;
+                          const checkValues = (obj) => obj.check === true;
+                          this.setState({
+                            alertSelected: alerts.some(checkValues),
+                          });
+                          if (alerts.some(checkValues) == false) {
+                            this.setState({allAlertsChecked: false});
+                          }
+                          this.setState({allAlerts: alerts});
+                          // this.setState({
+                          //   alertIndex:
+                          //     index === this.state.alertIndex ? null : index,
+                          // });
+                        }}
+                      />
+                    </View>
                     <Text
                       style={{
                         ...style.mainHeadiingItems,
@@ -393,7 +536,14 @@ export default class Splash extends Component {
                           this.changeAlertStatus(item, index)
                         }
                       />
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({
+                            settingModal: true,
+                            alertSettObj: item,
+                            alertSettObjInd: index,
+                          });
+                        }}>
                         <Feather
                           name={'settings'}
                           size={height * 0.035}

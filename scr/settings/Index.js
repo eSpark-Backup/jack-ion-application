@@ -512,7 +512,7 @@ export default class Splash extends Component {
               </View>
               <Arrow name="keyboard-arrow-right" size={height * 0.04} />
             </View> */}
-            <View style={style.containerReset}>
+            {/* <View style={style.containerReset}>
               <Feather
                 name="alert-triangle"
                 size={height * 0.035}
@@ -520,8 +520,8 @@ export default class Splash extends Component {
                 color="white"
               />
               <Text style={style.mainHeadiingReset}>Alerts</Text>
-            </View>
-            <SectionList
+            </View> */}
+            {/* <SectionList
               sections={this.state.alertsType}
               renderItem={({item}) => (
                 <View style={style.containerInner}>
@@ -583,7 +583,7 @@ export default class Splash extends Component {
                   <Text style={style.subHeading}>{title}</Text>
                 </View>
               )}
-            />
+            /> */}
 
             <View style={style.containerReset}>
               <Logout

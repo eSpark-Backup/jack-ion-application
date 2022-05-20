@@ -92,4 +92,8 @@ export default styles = StyleSheet.create({
     padding: width * 0.03,
     elevation: width * 0.01,
   },
+  settingModalHead: {
+    fontSize: width * 0.05,
+    fontFamily: Fonts.BalsamiqSansRegular,
+  },
 });
