@@ -9,9 +9,11 @@ import {
   UIManager,
   Platform,
   FlatList,
+  Alert,
 } from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -83,6 +85,8 @@ export default class Splash extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: 0.0421,
       },
+      userCurrentIndex: null,
+      userCurrentData: [],
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -101,6 +105,7 @@ export default class Splash extends Component {
         return e.id;
       })
       .indexOf(Number(userId));
+    this.setState({userCurrentIndex: index, userCurrentData: userData});
     let data = {
       ids: userData[index].recent_properties,
     };
@@ -169,11 +174,47 @@ export default class Splash extends Component {
     this.selectedProp(prop);
   };
 
+  jumpToAlerts = ({prop, item}) => {
+    this.props.navigation.navigate('Alerts', {item});
+    this.selectedProp(prop);
+  };
+
+  confirmDelete = (id, index) => {
+    Alert.alert('Delete Property', 'Are you sure you want to Delete?', [
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: () => this.deleteProperty(id, index)},
+    ]);
+  };
+
+  deleteProperty = async (id, index) => {
+    console.log('ID', id);
+    const response = await API.post(`/property/delete/${id}`);
+    console.log('response', response.data?.bool);
+    if (response?.data?.bool) {
+      console.log('Chala FUnction');
+      const userDataUpdated = [...this.state.userCurrentData];
+      let ids = [...this.state.userCurrentData[index].recent_properties];
+      ids.splice(index, 1);
+      console.log('IDS', ids);
+      userDataUpdated[this.state.userCurrentIndex].recent_properties = ids;
+      const jsonData = JSON.stringify(userDataUpdated);
+      await AsyncStorage.setItem('users_data', jsonData);
+      this.setState({currentIndex: null});
+      alert(response?.data?.message);
+      this.context.checkData();
+      this.setState({propertyList: this.context.propList});
+    }
+  };
+
   _renderProperties = (prop) => {
     return (
       <View
         style={{
           alignItems: 'center',
+          marginVertical: height * 0.01,
         }}>
         <TouchableOpacity
           style={styles.propButton}
@@ -230,26 +271,122 @@ export default class Splash extends Component {
           </View>
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
-          <View style={styles.dropView}>
+          // <View style={styles.dropView}>
+          //   <TouchableOpacity
+          //     onPress={() => this.jumpToDetail({prop, item: prop})}>
+          //     <LinearGradient
+          //       colors={['#09BAF2', '#115b72', '#0d3744']}
+          //       style={styles.linearGradient}
+          //       start={{x: 0.1, y: 1}}
+          //       end={{x: 1.5, y: 3}}>
+          //       <Text style={styles.gradienttext}>Property Profile</Text>
+          //     </LinearGradient>
+          //   </TouchableOpacity>
+          //   <TouchableOpacity
+          //     onPress={() => this.jumpToEquip({prop, item: prop})}>
+          //     <LinearGradient
+          //       colors={['#09BAF2', '#115b72', '#0d3744']}
+          //       style={styles.linearGradient}
+          //       start={{x: 0.1, y: 1}}
+          //       end={{x: 1.5, y: 3}}>
+          //       <Text style={styles.gradienttext}>Property Units</Text>
+          //     </LinearGradient>
+          //   </TouchableOpacity>
+          // </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: width * 0.9,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingVertical: width * 0.01,
+              backgroundColor: '#25AAE1ec',
+              borderBottomLeftRadius: width * 0.01,
+              borderBottomRightRadius: width * 0.01,
+              borderWidth: width * 0.001,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity
+                style={{
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={() => this.jumpToDetail({prop, item: prop})}>
+                <MaterialCommunityIcons
+                  name="view-compact-outline"
+                  color="white"
+                  size={width * 0.04}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Details
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.jumpToEquip({prop, item: prop})}
+                style={{
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <MaterialIcons name="edit" color="white" size={width * 0.04} />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Equipments
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.jumpToAlerts({prop, item: prop})}
+                style={{
+                  margin: width * 0.01,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Feather
+                  name="alert-triangle"
+                  color="white"
+                  size={width * 0.04}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: Fonts.Montserrat,
+                    fontSize: width * 0.03,
+                  }}>
+                  Alerts
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              onPress={() => this.jumpToDetail({prop, item: prop})}>
-              <LinearGradient
-                colors={['#09BAF2', '#115b72', '#0d3744']}
-                style={styles.linearGradient}
-                start={{x: 0.1, y: 1}}
-                end={{x: 1.5, y: 3}}>
-                <Text style={styles.gradienttext}>Property Profile</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.jumpToEquip({prop, item: prop})}>
-              <LinearGradient
-                colors={['#09BAF2', '#115b72', '#0d3744']}
-                style={styles.linearGradient}
-                start={{x: 0.1, y: 1}}
-                end={{x: 1.5, y: 3}}>
-                <Text style={styles.gradienttext}>Property Units</Text>
-              </LinearGradient>
+              onPress={() => this.confirmDelete(prop?.item?.id, prop.index)}
+              style={{
+                margin: width * 0.01,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <MaterialCommunityIcons
+                name="delete-outline"
+                color="white"
+                size={width * 0.04}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: Fonts.Montserrat,
+                  fontSize: width * 0.03,
+                }}>
+                Delete
+              </Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -527,7 +664,7 @@ export default class Splash extends Component {
                     style={{
                       background: 'red',
                       width: width,
-                      height: height * 0.34,
+                      height: width * 0.75,
                       fontFamily: "'Fira Sans', sans-serif",
                     }}>
                     <G>
@@ -543,12 +680,14 @@ export default class Splash extends Component {
                       />
                       <View style={{position: 'absolute'}}>
                         <VictoryArea
+                          interpolation="natural"
                           data={totProperties}
                           style={{data: {fill: '#DCDCDC'}}}
                         />
                       </View>
                       <View style={{position: 'absolute'}}>
                         <VictoryArea
+                          interpolation="catmullRom"
                           data={newProperties}
                           style={{data: {fill: '#5a17b299'}}}
                         />
@@ -575,7 +714,11 @@ export default class Splash extends Component {
                   </Svg>
                 )}
               </View>
-              <View style={styles.onlineOfflineView}>
+              <View
+                style={{
+                  ...styles.onlineOfflineView,
+                  marginVertical: height * 0.05,
+                }}>
                 <View style={{flexDirection: 'row'}}>
                   <View style={styles.onlineView} />
                   <Text style={styles.onlineText}>New Properties</Text>

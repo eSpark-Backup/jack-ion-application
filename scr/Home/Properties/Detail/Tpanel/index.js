@@ -200,20 +200,22 @@ export default class Splash extends Component {
                       </Text>
                       <Text style={style.tpanelValues}>
                         {item.unit_meter.map(
-                          (i) => i.meter_read.signal_strength,
+                          (i) => i.meter_read?.signal_strength,
                         )}
                       </Text>
                       <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read.temperature)}
+                        {item.unit_meter.map((i) => i.meter_read?.temperature)}
                       </Text>
                       <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read.battery)}
+                        {item.unit_meter.map((i) => i.meter_read?.battery)}
                       </Text>
                       <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read.meter_usage)}
+                        {item.unit_meter.map((i) => i.meter_read?.meter_usage)}
                       </Text>
                       <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read.meter_reading)}
+                        {item.unit_meter.map(
+                          (i) => i.meter_read?.meter_reading,
+                        )}
                       </Text>
                     </TouchableOpacity>
                   ),

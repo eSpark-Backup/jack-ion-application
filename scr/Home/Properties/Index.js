@@ -745,32 +745,44 @@ export default class Splash extends Component {
             {this.state.showSearch ? (
               <Modal
                 statusBarTranslucent={true}
+                animationIn={'flash'}
                 isVisible={this.state.showSearch}
                 style={styles.searchModalContainer}>
                 {Platform.OS == 'ios' && (
                   <CustumStatusBar backColor transparent />
                 )}
-                <KeyboardAvoidingView behavior="padding">
+                <KeyboardAvoidingView
+                  style={{alignItems: 'center'}}
+                  behavior="padding">
                   <View style={styles.searchModalInner}>
                     {/* <View style={styles.searchModalInput}> */}
-                    <EvilIcon name="search" size={width * 0.07} color="white" />
-                    <TextInput
-                      underlineColor="transparent"
-                      autoFocus={true}
-                      dense={true}
-                      placeholderTextColor="white"
-                      placeholder="Search"
-                      style={styles.search}
-                      onChangeText={(e) => this.context.searchProperties(e)}
-                      theme={{
-                        colors: {
-                          text: 'white',
-                          primary: '#25dAE1',
-                          selectionColor: 'transparent',
-                          background: 'transparent',
-                        },
-                      }}
-                    />
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <EvilIcon
+                        name="search"
+                        size={width * 0.07}
+                        color="white"
+                      />
+                      <TextInput
+                        selectionColor={'#fff'}
+                        underlineColor="transparent"
+                        activeUnderlineColor="transparent"
+                        autoFocus={true}
+                        dense={true}
+                        placeholderTextColor="white"
+                        placeholder="Search"
+                        mode="flat"
+                        style={styles.search}
+                        onChangeText={(e) => this.context.searchProperties(e)}
+                        theme={{
+                          colors: {
+                            text: 'white',
+                            primary: '#25dAE1',
+                            selectionColor: 'transparent',
+                            background: 'transparent',
+                          },
+                        }}
+                      />
+                    </View>
                     {/* </View> */}
                     <View style={{position: 'absolute', right: width * 0.1}}>
                       {this.context.searchLoading ? (
