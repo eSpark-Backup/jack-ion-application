@@ -13,6 +13,7 @@ import {
   SectionList,
   FlatList,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 
 //Packages
@@ -35,6 +36,7 @@ import API from '../api/SeviceApi';
 import Index from '../Home/Index';
 import Loader from '../components/Loader';
 import Modal from 'react-native-modal';
+import AlertScreenModal from '../components/modal/AlertScreenModal';
 
 const {width, height} = Dimensions.get('window');
 
@@ -51,6 +53,10 @@ export default class Splash extends Component {
       alertDesc: '',
       alertSettName: '',
       settingModal: false,
+      dismissQty: null,
+      dismissNote: '',
+      dismissModal: false,
+      alertIds: [],
       alertSettObj: {},
       alertSettObjInd: {},
       alertsType: [
@@ -220,6 +226,16 @@ export default class Splash extends Component {
     this.props.navigation.navigate('Support');
   };
 
+  dismissAlerts = async () => {
+    const propertyId = this.props.navigation.state.params.item.item.id;
+    const data = {
+      alert_id: this.state.alertIds,
+      note: this.state.dismissNote,
+      property_id: propertyId,
+    };
+    const dismissAlert = API.post;
+  };
+
   render() {
     const {alertSettObj, alertSettObjInd} = this.state;
     return (
@@ -257,87 +273,102 @@ export default class Splash extends Component {
             </View>
           </View>
         </View>
-        <Modal isVisible={this.state.settingModal}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 5,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: height * 0.02,
-                marginHorizontal: width * 0.015,
-                borderBottomWidth: 1,
-              }}>
-              <Text style={style.settingModalHead}>
-                {alertSettObj.title} Alert Settings
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.setState({settingModal: false});
-                }}>
-                <MaterialIcons size={width * 0.05} name="close" />
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: width * 0.02,
-                marginVertical: height * 0.01,
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Text>Currently Turned</Text>
+        <AlertScreenModal
+          isVisible={this.state.settingModal}
+          onClose={() => {
+            this.setState({settingModal: false});
+          }}
+          ModalHeader={alertSettObj.title + ' Alert Settings'}
+          ModalBody={
+            <>
+              <View style={style.settingsModalBody}>
+                <View style={{flexDirection: 'row'}}>
+                  <Text>Currently Turned</Text>
+                  <Text
+                    style={{
+                      marginLeft: width * 0.01,
+                      color:
+                        alertSettObj?.title != undefined &&
+                        this.state.alertsType[alertSettObj.alertCategory].data[
+                          alertSettObjInd
+                        ].user_allowed
+                          ? '#25AAE1'
+                          : '#aaa',
+                    }}>
+                    {alertSettObj?.title != undefined &&
+                    this.state.alertsType[alertSettObj.alertCategory].data[
+                      alertSettObjInd
+                    ].user_allowed
+                      ? 'ON'
+                      : 'OFF'}
+                  </Text>
+                </View>
+                <Switch
+                  trackColor={{false: 'lightgray', true: '#25AAE1'}}
+                  thumbColor={'#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  value={
+                    alertSettObj?.title != undefined &&
+                    this.state.alertsType[alertSettObj.alertCategory].data[
+                      alertSettObjInd
+                    ].user_allowed
+                  }
+                  onValueChange={() =>
+                    this.changeAlertStatus(alertSettObj, alertSettObjInd)
+                  }
+                />
+              </View>
+              <View style={style.settinbgModalBodyDesc}>
+                <Text>{alertSettObj.detail_desc}</Text>
+              </View>
+            </>
+          }
+        />
+        <AlertScreenModal
+          isVisible={this.state.dismissModal}
+          onClose={() => {
+            this.setState({dismissModal: false});
+          }}
+          ModalHeader={'Dismiss Alerts'}
+          ModalBody={
+            <>
+              <View style={style.dismissModalBody}>
                 <Text
                   style={{
-                    marginLeft: width * 0.01,
-                    color:
-                      alertSettObj?.title != undefined &&
-                      this.state.alertsType[alertSettObj.alertCategory].data[
-                        alertSettObjInd
-                      ].user_allowed
-                        ? '#25AAE1'
-                        : '#aaa',
+                    fontSize: height * 0.018,
                   }}>
-                  {alertSettObj?.title != undefined &&
-                  this.state.alertsType[alertSettObj.alertCategory].data[
-                    alertSettObjInd
-                  ].user_allowed
-                    ? 'ON'
-                    : 'OFF'}
+                  You are about to dismiss {this.state.dismissQty} alert. You
+                  may enter some notes below before continuing.
                 </Text>
+                <View style={{marginTop: height * 0.01}}>
+                  <Text style={style.dismissModalNotesHead}>Notes</Text>
+                  <TextInput
+                    multiline
+                    placeholder="Type Something"
+                    numberOfLines={3}
+                    value={this.state.dismissNote}
+                    onChangeText={(e) => this.setState({dismissNote: e})}
+                    style={style.dismissModalNotesInput}
+                  />
+                </View>
               </View>
-              <Switch
-                trackColor={{false: 'lightgray', true: '#25AAE1'}}
-                thumbColor={'#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                value={
-                  alertSettObj?.title != undefined &&
-                  this.state.alertsType[alertSettObj.alertCategory].data[
-                    alertSettObjInd
-                  ].user_allowed
-                }
-                onValueChange={() =>
-                  this.changeAlertStatus(alertSettObj, alertSettObjInd)
-                }
-              />
+            </>
+          }
+          ModalFooter={
+            <View style={style.dismissModalFooter}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({dismissModal: false, dismissNote: ''});
+                }}
+                style={style.dismissModalCancelBtn}>
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={style.dismissModalDoneBtn}>
+                <Text style={{color: 'white'}}>Dismiss Alerts</Text>
+              </TouchableOpacity>
             </View>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                paddingHorizontal: width * 0.01,
-                paddingVertical: height * 0.02,
-                marginBottom: height * 0.05,
-                marginHorizontal: width * 0.02,
-              }}>
-              <Text>{alertSettObj.detail_desc}</Text>
-            </View>
-          </View>
-        </Modal>
+          }
+        />
 
         <ScrollView
           style={{height: height * 1, width: width * 1}}
@@ -394,6 +425,21 @@ export default class Splash extends Component {
                   />
                 </View>
                 <TouchableOpacity
+                  onPress={() => {
+                    const selectedIds = [];
+                    this.state.allAlerts.map((item) => {
+                      if (item.check == true) {
+                        selectedIds.push(item.id);
+                      }
+                    });
+                    this.setState({
+                      dismissQty: selectedIds.length,
+                      dismissModal: true,
+                      alertIds: selectedIds,
+                    });
+
+                    console.log('Selected Ids', selectedIds.length);
+                  }}
                   disabled={!this.state.alertSelected}
                   style={{
                     borderWidth: 1,
@@ -455,9 +501,11 @@ export default class Splash extends Component {
                           this.setState({
                             alertSelected: alerts.some(checkValues),
                           });
-                          if (alerts.some(checkValues) == false) {
-                            this.setState({allAlertsChecked: false});
-                          }
+                          console.log(
+                            'Alerts Selected',
+                            alerts.some(checkValues),
+                          );
+                          this.setState({allAlertsChecked: false});
                           this.setState({allAlerts: alerts});
                           // this.setState({
                           //   alertIndex:

@@ -92,8 +92,46 @@ export default styles = StyleSheet.create({
     padding: width * 0.03,
     elevation: width * 0.01,
   },
-  settingModalHead: {
-    fontSize: width * 0.05,
-    fontFamily: Fonts.BalsamiqSansRegular,
+
+  settingsModalBody: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.02,
+    marginVertical: height * 0.01,
+  },
+  settinbgModalBodyDesc: {
+    paddingHorizontal: width * 0.01,
+    paddingVertical: height * 0.02,
+    marginHorizontal: width * 0.02,
+  },
+  dismissModalBody: {
+    paddingHorizontal: width * 0.01,
+    paddingVertical: height * 0.02,
+    marginHorizontal: width * 0.02,
+  },
+  dismissModalNotesHead: {
+    fontWeight: '100',
+    color: '#bbb',
+    textTransform: 'uppercase',
+    fontSize: height * 0.016,
+  },
+  dismissModalNotesInput: {
+    borderWidth: 1,
+    textAlignVertical: 'top',
+    borderRadius: 5,
+  },
+  dismissModalFooter: {flexDirection: 'row', justifyContent: 'flex-end'},
+  dismissModalCancelBtn: {
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: height * 0.01,
+    margin: height * 0.01,
+  },
+  dismissModalDoneBtn: {
+    borderRadius: 5,
+    backgroundColor: '#25AAE1',
+    padding: height * 0.01,
+    margin: height * 0.01,
   },
 });

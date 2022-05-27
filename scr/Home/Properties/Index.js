@@ -682,7 +682,9 @@ export default class Splash extends Component {
                       size={height * 0.04}
                       color="white"
                     />
-                    <Text style={{color: 'white'}}>Search</Text>
+                    <Text style={{color: 'white', paddingLeft: width * 0.035}}>
+                      Search
+                    </Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -771,7 +773,10 @@ export default class Splash extends Component {
                         placeholderTextColor="white"
                         placeholder="Search"
                         mode="flat"
-                        style={styles.search}
+                        style={{
+                          ...styles.search,
+                          height: width * 0.1,
+                        }}
                         onChangeText={(e) => this.context.searchProperties(e)}
                         theme={{
                           colors: {

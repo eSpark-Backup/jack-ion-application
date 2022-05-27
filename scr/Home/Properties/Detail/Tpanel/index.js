@@ -175,50 +175,41 @@ export default class Splash extends Component {
             </View>
 
             <ScrollView>
-              {this.state.tpanelData.map(
-                (item) =>
-                  item.unit_meter.length > 0 && (
-                    <TouchableOpacity
-                      style={style.tpanelValuesContainer}
-                      onPress={() => this.goToDetails(item)}>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.device_serial_number)}
-                      </Text>
-                      <Text style={style.tpanelValues}>{item.building}</Text>
-                      <Text style={style.tpanelValues}>{item.name}</Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.utility_type_name.name)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.manufacturer.name)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.device.name)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.attachedTo_name)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map(
-                          (i) => i.meter_read?.signal_strength,
-                        )}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read?.temperature)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read?.battery)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map((i) => i.meter_read?.meter_usage)}
-                      </Text>
-                      <Text style={style.tpanelValues}>
-                        {item.unit_meter.map(
-                          (i) => i.meter_read?.meter_reading,
-                        )}
-                      </Text>
-                    </TouchableOpacity>
-                  ),
+              {this.state.tpanelData.map((item) =>
+                item.unit_meter.map((i) => (
+                  <TouchableOpacity
+                    style={style.tpanelValuesContainer}
+                    onPress={() => this.goToDetails(item)}>
+                    <Text style={style.tpanelValues}>
+                      {i.device_serial_number}
+                    </Text>
+                    <Text style={style.tpanelValues}>{item.building}</Text>
+                    <Text style={style.tpanelValues}>{item.name}</Text>
+                    <Text style={style.tpanelValues}>
+                      {i.utility_type_name.name}
+                    </Text>
+                    <Text style={style.tpanelValues}>
+                      {i.manufacturer.name}
+                    </Text>
+                    <Text style={style.tpanelValues}>{i.device.name}</Text>
+                    <Text style={style.tpanelValues}>{i.attachedTo_name}</Text>
+                    <Text style={style.tpanelValues}>
+                      {i.meter_read?.signal_strength}
+                    </Text>
+                    <Text style={style.tpanelValues}>
+                      {i.meter_read?.temperature}
+                    </Text>
+                    <Text style={style.tpanelValues}>
+                      {i.meter_read?.battery}
+                    </Text>
+                    <Text style={style.tpanelValues}>
+                      {i.meter_read?.meter_usage}
+                    </Text>
+                    <Text style={style.tpanelValues}>
+                      {i.meter_read?.meter_reading}
+                    </Text>
+                  </TouchableOpacity>
+                )),
               )}
             </ScrollView>
           </View>

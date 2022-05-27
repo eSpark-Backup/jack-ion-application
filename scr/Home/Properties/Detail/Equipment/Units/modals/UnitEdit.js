@@ -1456,9 +1456,11 @@ export default function UnitEdit({
     }
     return (
       <View style={{width: width * 0.8}} key={item.id}>
-        <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
-          {index < 2 && item.name + '*'}
-        </Text>
+        {index < 2 && (
+          <Text style={[styles.meterDesciptionHeading, {top: width * 0.01}]}>
+            {item.name}
+          </Text>
+        )}
         {index < 2 && (
           <Text_Input
             placeholder={item.name}
