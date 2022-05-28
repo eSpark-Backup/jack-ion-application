@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -18,18 +18,18 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import RNBeep from 'react-native-a-beep';
 
 // Components
-import {Fonts} from '../utils/fonts';
+import { Fonts } from '../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../components/StatusBar';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const IC_ARR_DOWN = require('../../Images/down.png');
 const IC_ARR_UP = require('../../Images/up.png');
 
 export default class Splash extends Component {
   static navigationOptions = {
     title: 'Support',
-    tabBarIcon: ({tintColor}) => (
+    tabBarIcon: ({ tintColor }) => (
       <TabIcon name="contact-mail" color={tintColor} size={width * 0.05} />
     ),
   };
@@ -62,11 +62,11 @@ export default class Splash extends Component {
   // )
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({meter: !this.state.meter, meterDown: !this.state.meterDown});
+    this.setState({ meter: !this.state.meter, meterDown: !this.state.meterDown });
   };
   changeLayoutNearby = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({nearby: !this.state.nearby, nearDown: !this.state.nearDown});
+    this.setState({ nearby: !this.state.nearby, nearDown: !this.state.nearDown });
   };
   render() {
     let upDownMeter;
@@ -112,7 +112,7 @@ export default class Splash extends Component {
             </View>
           </View>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {/* <View style={styles.onlineOfflineView}>
             <View style={styles.onlineView} />
             <Text style={styles.onlineText}>Contact Us</Text>
@@ -130,7 +130,7 @@ export default class Splash extends Component {
             </View>
             <View>
               <TouchableOpacity
-                style={[styles.insideBottonView, {flexDirection: 'row'}]}
+                style={[styles.insideBottonView, { flexDirection: 'row' }]}
                 onPress={() => {
                   Linking.openURL(`tel:844 538 8203`);
                 }}>
@@ -141,7 +141,7 @@ export default class Splash extends Component {
                     marginHorizontal: width * 0.01,
                   }}
                 />
-                <Text style={{fontSize: width * 0.09, color: 'purple'}}>
+                <Text style={{ fontSize: width * 0.09, }}>
                   844-538-8203
                 </Text>
               </TouchableOpacity>
@@ -168,7 +168,7 @@ export default class Splash extends Component {
                 <Email
                   name="mail"
                   size={width * 0.05}
-                  style={{marginHorizontal: width * 0.01}}
+                  style={{ marginHorizontal: width * 0.01 }}
                 />
                 <Text style={styles.emailText}>
                   jackhowell@ionenergysolutions.com

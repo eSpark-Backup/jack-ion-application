@@ -1,10 +1,10 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../scr/utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../scr/utils/fonts';
 
 //Packages
 
 //Files
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -142,6 +142,5 @@ export default styles = StyleSheet.create({
   },
   emailText: {
     fontSize: width * 0.05,
-    color: 'purple',
   },
 });

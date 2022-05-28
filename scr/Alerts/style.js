@@ -1,10 +1,10 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../scr/utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../scr/utils/fonts';
 
 //Packages
 
 //Files
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -34,7 +34,7 @@ export default styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: height * 0.015,
+    marginVertical: height * 0.015,
   },
   containerInner: {
     width: width * 0.95,
@@ -121,17 +121,59 @@ export default styles = StyleSheet.create({
     textAlignVertical: 'top',
     borderRadius: 5,
   },
-  dismissModalFooter: {flexDirection: 'row', justifyContent: 'flex-end'},
+  dismissModalFooter: { flexDirection: 'row', justifyContent: 'flex-end' },
   dismissModalCancelBtn: {
     borderWidth: 1,
     borderRadius: 5,
     padding: height * 0.01,
-    margin: height * 0.01,
+    marginHorizontal: height * 0.01,
   },
   dismissModalDoneBtn: {
     borderRadius: 5,
     backgroundColor: '#25AAE1',
     padding: height * 0.01,
-    margin: height * 0.01,
+    marginHorizontal: height * 0.01,
+  },
+  newContactBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: '#25AAE1',
+    padding: height * 0.01,
+    marginHorizontal: height * 0.01,
+  },
+  contactInfoContainer: {
+    width: width * 0.9,
+    height: height * 0.044,
+    marginVertical: height * .01,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contactInfoInner: {
+    height: height * 0.044,
+    width: width * 0.14,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#25AAE1ec',
+    left: width * 0.03,
+    position: 'absolute',
+    borderTopLeftRadius: width * 0.01,
+    borderBottomLeftRadius: width * 0.01,
+  },
+  contactInput: {
+    height: height * 0.043,
+    width: width * 0.7,
+    fontSize: height * 0.02,
+    borderTopWidth: width * 0.001,
+    borderBottomWidth: width * 0.001,
+    borderRightWidth: width * 0.001,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderLeftWidth: 0,
+    position: 'absolute',
+    left: width * 0.17,
+    backgroundColor: 'white',
   },
 });
