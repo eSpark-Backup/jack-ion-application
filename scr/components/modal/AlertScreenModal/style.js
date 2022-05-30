@@ -15,9 +15,11 @@ export default styles = StyleSheet.create({
     padding: height * 0.02,
     marginHorizontal: width * 0.015,
     borderBottomWidth: 1,
+    borderColor: '#e4e4e4',
   },
   modalFooter: {
     borderTopWidth: 1,
+    borderColor: '#e4e4e4',
     paddingHorizontal: width * 0.01,
     paddingVertical: height * 0.02,
     marginHorizontal: width * 0.02,
