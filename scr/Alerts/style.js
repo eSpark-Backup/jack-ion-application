@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 import {Fonts} from '../../scr/utils/fonts';
 
 //Packages
@@ -53,6 +53,7 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.BalsamiqSansRegular,
     fontSize: height * 0.026,
     color: '#000000',
+    textTransform: 'capitalize',
   },
   mainHeadiingReset: {
     fontFamily: Fonts.BalsamiqSansRegular,
@@ -91,6 +92,23 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     padding: width * 0.03,
     elevation: width * 0.01,
+  },
+
+  selectAllBtnContainer: {
+    width: width * 1,
+    height: height * 0.06,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    paddingLeft: Platform.OS == 'ios' ? width * 0.035 : width * 0.025,
+  },
+
+  dismissBtn: {
+    borderWidth: 1,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
   },
 
   settingsModalBody: {
