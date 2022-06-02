@@ -22,14 +22,26 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     flexDirection: 'row',
   },
+  drawerMenuBtn: {
+    width: width * 0.15,
+    height: height * 0.06,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   settingIcon: {
     padding: width * 0.01,
+  },
+  mainHeadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: width * 0.12,
   },
   mainHeadiing: {
     fontFamily: Fonts.BalsamiqSansRegular,
     fontSize: width * 0.065,
     color: 'white',
   },
+  loadingText: {fontSize: height * 0.03},
   containView: {
     flex: 1,
     justifyContent: 'center',
@@ -48,6 +60,15 @@ export default styles = StyleSheet.create({
     // elevation:width * .01,
     marginBottom: height * 0.015,
     elevation: width * 0.01,
+  },
+  alertsContentContainer: {flexDirection: 'row', alignItems: 'center'},
+  allAlertsCheckBoxContainer: {
+    marginRight: Platform.OS == 'ios' ? 10 : 0,
+  },
+  alertsCheckBoxContainer: {
+    marginHorizontal: Platform.OS == 'ios' ? 5 : 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   mainHeadiingItems: {
     fontFamily: Fonts.BalsamiqSansRegular,
@@ -81,6 +102,7 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.014,
     color: 'gray',
+    textAlign: 'center',
   },
   containerReset: {
     height: height * 0.08,
@@ -123,6 +145,27 @@ export default styles = StyleSheet.create({
     paddingVertical: height * 0.02,
     marginHorizontal: width * 0.02,
   },
+
+  settingsComingSoon: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 1,
+    color: '#999',
+    borderColor: '#999',
+    textAlign: 'center',
+  },
+  settingsContentContainer: {
+    flexDirection: 'row',
+    width: width * 0.25,
+    justifyContent: 'space-around',
+  },
+
+  subHeadContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   dismissModalBody: {
     paddingHorizontal: width * 0.01,
     paddingVertical: height * 0.02,
@@ -160,6 +203,7 @@ export default styles = StyleSheet.create({
     padding: height * 0.01,
     marginHorizontal: height * 0.01,
   },
+  newContactBtnText: {color: 'white', fontSize: height * 0.024},
   contactInfoContainer: {
     width: width * 0.85,
     // height: width * 0.095,
@@ -200,4 +244,51 @@ export default styles = StyleSheet.create({
     // left: width * 0.17,
     backgroundColor: 'white',
   },
+  advanceBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: width * 0.86,
+    marginVertical: height * 0.02,
+  },
+  advanceBtnText: {
+    fontSize: width * 0.03,
+    color: '#25AAE1',
+    fontWeight: 'bold',
+  },
+  contactAlertTypeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: height * 0.02,
+  },
+  contactAlertTypeInner: {
+    alignItems: 'flex-start',
+  },
+  contactAlertHeadContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#999',
+  },
+  contactAlertTypeHeadText: {color: '#999'},
+
+  contactAlertTypeCheckBoxContainer: {
+    width: width * 0.05,
+    height: width * 0.05,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: height * 0.01,
+  },
+  contactAlertTypeCheckBox: {
+    transform: [{scaleX: width * 0.0018}, {scaleY: width * 0.0018}],
+  },
+  contactAlertTypeContent: {
+    fontSize: width * 0.035,
+    fontFamily: Fonts.BalsamiqSansRegular,
+    textTransform: 'capitalize',
+  },
+  noteContainer: {width: width * 0.85},
+  messageText: {
+    fontSize: width * 0.03,
+  },
+  viewAlignment: {flexDirection: 'row', alignItems: 'center'},
 });

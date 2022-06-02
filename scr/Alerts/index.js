@@ -5,9 +5,7 @@ import {
   View,
   Dimensions,
   ScrollView,
-  PermissionsAndroid,
   LogBox,
-  Alert,
   Platform,
   Switch,
   SectionList,
@@ -27,15 +25,10 @@ import Text_Input from '../components/TextInput/index';
 
 import style from './style';
 import CustumStatusBar from '../components/StatusBar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Drawer from '../components/modal/Drawer';
 import API from '../api/SeviceApi';
-import Index from '../Home/Index';
 import Loader from '../components/Loader';
-import Modal from 'react-native-modal';
 import AlertScreenModal from '../components/modal/AlertScreenModal';
-import {Fonts} from '../utils/fonts';
 
 const {width, height} = Dimensions.get('window');
 
@@ -64,77 +57,16 @@ export default class Splash extends Component {
       contactName: '',
       contactEmail: '',
       contactPhone: '',
-      alertsTypes: [],
       alertsType: [
         {
           title: 'Equipment Health Alerts',
           icon: 'heart',
-          data: [
-            // {
-            //   alertCategory: 0,
-            //   title: 'Tamper',
-            //   description:
-            //     'Detect when someone has tampered with your equipment.',
-            //   detail_desc:
-            //     'A Tamper alert is created when someone tampers with your equipment. In most cases this is triggered if the device is physically opened.',
-            //   user_allowed: false,
-            // },
-            // {
-            //   alertCategory: 0,
-            //   title: 'Connection',
-            //   description: 'Detect when equipment goes offline.',
-            //   detail_desc:
-            //     'A Connection alert gets created when a device goes offline. NextCentury offers intelligent alerting and analytics to help identify a network problem quickly. Typically, if a device is offline, there is a good explanation somewhere else on the property. We can help point you in the right direction to quickly overcome any challenges.',
-            //   user_allowed: false,
-            // },
-            // {
-            //   alertCategory: 0,
-            //   title: 'Power Loss',
-            //   description:
-            //     'Detect when your equipment is unplugged from power.',
-            //   detail_desc:
-            //     'A Power Loss alert gets created when a device is unplugged from power. This alert applies to wall-powered equipment such as Gateways and Repeaters.Someone may have mistakenly unplugged your equipment, and it simply needs to be plugged back in.',
-            //   user_allowed: false,
-            // },
-            // {
-            //   alertCategory: 0,
-            //   title: 'Battery',
-            //   description: 'Detect when batteries start running slow.',
-            //   detail_desc:
-            //     'A Low Battery alert gets created when a battery is getting close to the end of its life. NextCentury equipment has in-field replaceable batteries, and we offer easy-to-use battery replacement kits to make the process as simple as possible.',
-            //   user_allowed: false,
-            // },
-          ],
+          data: [],
         },
         {
           title: 'Smart Security Alerts',
           icon: 'shield',
-          data: [
-            // {
-            //   alertCategory: 1,
-            //   title: 'Temperature',
-            //   description: 'Detect when the temperature at a meter reaches.',
-            //   detail_desc:
-            //     'A Temperature alert can help you automatically detect when a water meter is close to freezing. With this alert, you can take action to avoid potential damages from a frozen water meter. An alert is also created if the temperate at a device is outside the safe operating range for IONENERGY equipment. (Between -4°F and 131°F).',
-            //   user_allowed: false,
-            // },
-            // {
-            //   alertCategory: 1,
-            //   title: 'Consumption',
-            //   description:
-            //     'Detect unusual spike in usage such as running toilet.',
-            //   detail_desc:
-            //     'IONENERGY uses cutting edge artificial intelligence to find unusual patterns in utility consumption. We are proud to provide this alert as a means for detecting sudden changes in trends that may need your attention. Our hardware and cloud-based analytics work hand-in-hand to detect even the smallest trends such as a costly running toilet.',
-            //   user_allowed: false,
-            // },
-            // {
-            //   alertCategory: 1,
-            //   title: 'Water Leak Sensor',
-            //   description:
-            //     'Detect physical water leaks utilizing the ION Energy Leak Sensor',
-            //   user_allowed: 'Coming Soon',
-            // },
-          ],
+          data: [],
         },
       ],
       alertContacts: [
@@ -163,7 +95,6 @@ export default class Splash extends Component {
       alert(alertContactRes.data.message);
       this.setState({loader: false});
     }
-    this.setState({loader: false});
     console.log('alertContactRes', alertContactRes?.data?.data);
   }
 
@@ -183,13 +114,20 @@ export default class Splash extends Component {
     }
   };
 
+  changeContactAlerts = (index, ind) => {
+    let updateArr = [...this.state.alertsType];
+    const prevData = updateArr[index].data[ind].contact_alerts;
+    updateArr[index].data[ind].contact_alerts = !prevData;
+    this.setState({alertsType: updateArr});
+  };
+
   fetchAlertsTypes = async () => {
     const allAlertTypes = await API.get('/alert/type/all');
-    console.log('alert types', allAlertTypes.data.data);
     if (allAlertTypes.data.bool) {
       let APIAlerts = allAlertTypes.data.data;
       let typeOfAlerts = [...this.state.alertsType];
       APIAlerts.map((item) => (item.user_allowed = false));
+      APIAlerts.map((item) => (item.contact_alerts = true));
       typeOfAlerts[0].data = [];
       typeOfAlerts[1].data = [];
       APIAlerts.map((item) =>
@@ -218,6 +156,7 @@ export default class Splash extends Component {
           : (alertArray[1].data[item - 5].user_allowed = true);
         this.setState({alertsType: alertArray});
       });
+      this.setState({loader: false});
     } else {
       this.setState({loader: false});
       alert(alertsRes.data.message);
@@ -225,6 +164,7 @@ export default class Splash extends Component {
   };
 
   changeAlertStatus = async (item, index) => {
+    this.setState({loader: true});
     const propertyData = this.props.navigation.state.params.item.item;
     const alertArray = [...this.state.alertsType];
     const arrInd = item.parent == 1 ? 0 : 1;
@@ -239,7 +179,6 @@ export default class Splash extends Component {
       });
     });
     const AlertIds = {alert_type_id: IDs};
-    console.log('IDS', AlertIds);
     const updateAlertStatus = await API.post(
       `alert/property/update/${propertyData?.id}`,
       AlertIds,
@@ -247,7 +186,49 @@ export default class Splash extends Component {
     console.log('UPDATE API DATA', updateAlertStatus.data.data);
     if (updateAlertStatus.data.bool) {
       this.fetchAlertSettings();
+      this.setState({loader: false});
     }
+  };
+
+  addContact = async () => {
+    const propertyData = this.props.navigation.state.params.item.item;
+    const alertArray = [...this.state.alertsType];
+    let IDs = [];
+    alertArray.map((itm) => {
+      itm.data.map((i, ind) => {
+        if (i.contact_alerts == true) {
+          i.parent < 2 ? IDs.push(ind + 1) : IDs.push(ind + 5);
+        }
+      });
+    });
+    this.setState({loader: true});
+    let contactData = {
+      name: this.state.contactName,
+      email: this.state.contactEmail,
+      phone: this.state.contactPhone,
+      property_id: propertyData?.id,
+      alert_type: IDs,
+    };
+    const contactInfo = await API.post(
+      '/alert/property/contact/add',
+      contactData,
+    );
+    if (contactInfo.data.bool) {
+      this.setState({loader: false});
+      alertArray[0].data.map((item) => (item.contact_alerts = true));
+      alertArray[1].data.map((item) => (item.contact_alerts = true));
+      this.setState({alertsType: alertArray, contactModal: false});
+    } else {
+      this.setState({loader: false});
+      alert(contactInfo.data.message);
+    }
+  };
+
+  cancelContact = () => {
+    this.setState({contactModal: false});
+    const alertArray = [...this.state.alertsType];
+    alertArray[0].data.map((item) => (item.contact_alerts = true));
+    alertArray[1].data.map((item) => (item.contact_alerts = true));
   };
 
   toggleModal = () => {
@@ -315,7 +296,6 @@ export default class Splash extends Component {
       note: this.state.dismissNote,
       property_id: propertyId,
     };
-    console.log('DATA', data);
     const dismissAlert = await API.post('/alert/dismiss/add', data);
     console.log('RESPONSE', dismissAlert.data);
     if (dismissAlert.data.bool) {
@@ -334,14 +314,20 @@ export default class Splash extends Component {
       alertSettObjInd,
       contactName,
       contactEmail,
-      contactPhone,
+      isModalVisible,
+      alertsType,
+      allAlerts,
+      allAlertsChecked,
+      alertSelected,
+      showAdvanceSett,
+      loader,
     } = this.state;
     return (
       <View style={style.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
-        {this.state.loader && <Loader />}
+        {loader && <Loader />}
         <Drawer
-          isVisible={this.state.isModalVisible}
+          isVisible={isModalVisible}
           onCancel={this.toggleModal}
           naviagateToDetail={this.naviagateToDetail}
           naviagateToEquip={this.naviagateToEquip}
@@ -353,20 +339,10 @@ export default class Splash extends Component {
           <View style={[style.headingInner]}>
             <TouchableOpacity
               onPress={this.toggleModal}
-              style={{
-                width: width * 0.15,
-                height: height * 0.06,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+              style={style.drawerMenuBtn}>
               <MaterialIcons size={width * 0.08} color="white" name="menu" />
             </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: width * 0.12,
-              }}>
+            <View style={style.mainHeadingContainer}>
               <Text style={style.mainHeadiing}>Ion Energy Alerts</Text>
             </View>
           </View>
@@ -387,16 +363,15 @@ export default class Splash extends Component {
                       marginLeft: width * 0.01,
                       color:
                         alertSettObj?.name != undefined &&
-                        this.state.alertsType[alertSettObj.alertCategory].data[
+                        this.state.alertsType[alertSettObj.parent - 1].data[
                           alertSettObjInd
                         ].user_allowed
                           ? '#25AAE1'
                           : '#aaa',
                     }}>
                     {alertSettObj?.name != undefined &&
-                    this.state.alertsType[alertSettObj.alertCategory].data[
-                      alertSettObjInd
-                    ].user_allowed
+                    alertsType[alertSettObj.parent - 1].data[alertSettObjInd]
+                      .user_allowed
                       ? 'ON'
                       : 'OFF'}
                   </Text>
@@ -407,9 +382,8 @@ export default class Splash extends Component {
                   ios_backgroundColor="#3e3e3e"
                   value={
                     alertSettObj?.name != undefined &&
-                    this.state.alertsType[alertSettObj.alertCategory].data[
-                      alertSettObjInd
-                    ].user_allowed
+                    alertsType[alertSettObj.parent - 1].data[alertSettObjInd]
+                      .user_allowed
                   }
                   onValueChange={() =>
                     this.changeAlertStatus(alertSettObj, alertSettObjInd)
@@ -417,7 +391,7 @@ export default class Splash extends Component {
                 />
               </View>
               <View style={style.settinbgModalBodyDesc}>
-                <Text>{alertSettObj.detail_desc}</Text>
+                <Text>{alertSettObj.detail}</Text>
               </View>
             </>
           }
@@ -487,7 +461,6 @@ export default class Splash extends Component {
                   />
                 </View>
                 <Text_Input
-                  // value={this.state.listData?.contact_name}
                   placeholder="Contact Name"
                   style={style.contactInput}
                   onChangeText={(text) => this.setState({contactName: text})}
@@ -503,7 +476,6 @@ export default class Splash extends Component {
                   />
                 </View>
                 <Text_Input
-                  // value={this.state.listData?.contact_email}
                   placeholder="Email"
                   style={style.contactInput}
                   onChangeText={(text) => this.setState({contactEmail: text})}
@@ -519,189 +491,113 @@ export default class Splash extends Component {
                   />
                 </View>
                 <Text_Input
-                  // value={this.state.listData?.contact_phone}
                   placeholder="Phone(optional)"
                   style={style.contactInput}
                   onChangeText={(text) => this.setState({contactPhone: text})}
                 />
               </View>
-              <View style={{width: width * 0.85}}>
-                <Text style={{fontSize: width * 0.03}}>
+              <View style={style.noteContainer}>
+                <Text style={style.messageText}>
                   Note: Phone will only be used for texting time-critical alerts
                 </Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
                   LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
-                  this.setState({showAdvanceSett: !this.state.showAdvanceSett});
+                  this.setState({showAdvanceSett: !showAdvanceSett});
                 }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  width: width * 0.86,
-                  marginVertical: height * 0.02,
-                }}>
-                <Text
-                  style={{
-                    fontSize: width * 0.03,
-                    color: '#25AAE1',
-                    fontWeight: 'bold',
-                  }}>
-                  {this.state.showAdvanceSett ? 'Hide' : 'Show'} Advance
-                  Settings
+                style={style.advanceBtn}>
+                <Text style={style.advanceBtnText}>
+                  {showAdvanceSett ? 'Hide' : 'Show'} Advance Settings
                 </Text>
                 <Feather
-                  name={
-                    this.state.showAdvanceSett ? 'chevron-up' : 'chevron-down'
-                  }
+                  name={showAdvanceSett ? 'chevron-up' : 'chevron-down'}
                   size={height * 0.02}
                   color="#25AAE1"
                   maxOpacity={0.5}
                 />
               </TouchableOpacity>
-              {this.state.showAdvanceSett && (
+              {showAdvanceSett && (
                 <View>
-                  <Text
-                    style={{
-                      fontSize: width * 0.03,
-                    }}>
+                  <Text style={style.messageText}>
                     Select which alert notifications you would like this contact
                     to receive:
                   </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      marginVertical: height * 0.02,
-                    }}>
-                    <View
-                      style={{
-                        alignItems: 'flex-start',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          borderBottomWidth: 1,
-                          borderBottomColor: '#999',
-                        }}>
+                  <View style={style.contactAlertTypeContainer}>
+                    <View style={style.contactAlertTypeInner}>
+                      <View style={style.contactAlertHeadContainer}>
                         <Feather
                           name={'heart'}
                           size={height * 0.02}
                           color="#999"
                           maxOpacity={0.5}
                         />
-                        <Text style={{color: '#999'}}>Equipment Health</Text>
+                        <Text style={style.contactAlertTypeHeadText}>
+                          Equipment Health
+                        </Text>
                       </View>
-                      {this.state.alertsType.map(
+                      {alertsType.map(
                         (item, index) =>
                           index == 0 &&
-                          item.data.map((i) => (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
+                          item.data.map((i, ind) => (
+                            <View style={style.viewAlignment}>
                               <View
-                                style={{
-                                  width: width * 0.05,
-                                  height: width * 0.05,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  marginVertical: height * 0.01,
-                                }}>
+                                style={style.contactAlertTypeCheckBoxContainer}>
                                 <Checkbox
-                                  value={this.state.testAlert}
+                                  value={i.contact_alerts}
                                   onAnimationType="one-stroke"
                                   offAnimationType="one-stroke"
                                   tintColors={{true: '#25AAE1'}}
-                                  style={{
-                                    transform: [
-                                      {scaleX: width * 0.0018},
-                                      {scaleY: width * 0.0018},
-                                    ],
-                                  }}
+                                  style={style.contactAlertTypeCheckBox}
                                   onValueChange={() =>
-                                    this.setState({
-                                      testAlert: !this.state.testAlert,
-                                    })
+                                    this.changeContactAlerts(index, ind)
                                   }
                                 />
                               </View>
-                              <Text
-                                style={{
-                                  fontSize: width * 0.035,
-                                  fontFamily: Fonts.BalsamiqSansRegular,
-                                }}>
-                                {i.title}
+                              <Text style={style.contactAlertTypeContent}>
+                                {i.name}
                               </Text>
                             </View>
                           )),
                       )}
                     </View>
-                    <View
-                      style={{
-                        alignItems: 'flex-start',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          borderBottomWidth: 1,
-                          borderBottomColor: '#999',
-                        }}>
+                    <View style={style.contactAlertTypeInner}>
+                      <View style={style.contactAlertHeadContainer}>
                         <Feather
                           name={'shield'}
                           size={height * 0.02}
                           color="#999"
                           maxOpacity={0.5}
                         />
-                        <Text style={{color: '#999'}}>Smart Security</Text>
+                        <Text style={style.contactAlertTypeHeadText}>
+                          Smart Security
+                        </Text>
                       </View>
-                      {this.state.alertsType.map(
+                      {alertsType.map(
                         (item, index) =>
                           index == 1 &&
                           item.data.map((i, ind) => (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                              }}>
+                            <View style={style.viewAlignment}>
                               <View
-                                style={{
-                                  width: width * 0.05,
-                                  height: width * 0.05,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  marginVertical: height * 0.01,
-                                }}>
+                                style={style.contactAlertTypeCheckBoxContainer}>
                                 <Checkbox
                                   disabled={ind > 1 ? true : false}
-                                  value={ind > 1 ? false : this.state.testAlert}
+                                  value={ind > 1 ? false : i.contact_alerts}
                                   onAnimationType="one-stroke"
                                   offAnimationType="one-stroke"
                                   tintColors={{true: '#25AAE1'}}
-                                  style={{
-                                    transform: [
-                                      {scaleX: width * 0.0018},
-                                      {scaleY: width * 0.0018},
-                                    ],
-                                  }}
+                                  style={style.contactAlertTypeCheckBox}
                                   onValueChange={() =>
-                                    this.setState({
-                                      testAlert: !this.state.testAlert,
-                                    })
+                                    this.changeContactAlerts(index, ind)
                                   }
                                 />
                               </View>
                               <Text
                                 style={{
-                                  fontSize: width * 0.035,
+                                  ...style.contactAlertTypeContent,
                                   color: ind > 1 && '#999',
-                                  fontFamily: Fonts.BalsamiqSansRegular,
                                 }}>
-                                {i.title}
+                                {i.name}
                               </Text>
                             </View>
                           )),
@@ -715,13 +611,13 @@ export default class Splash extends Component {
           ModalFooter={
             <View style={style.dismissModalFooter}>
               <TouchableOpacity
-                onPress={() => {
-                  this.setState({contactModal: false});
-                }}
+                onPress={this.cancelContact}
                 style={style.dismissModalCancelBtn}>
                 <Text>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                onPress={this.addContact}
+                disabled={!contactName || (!contactEmail && true)}
                 style={{
                   ...style.dismissModalDoneBtn,
                   backgroundColor:
@@ -734,7 +630,7 @@ export default class Splash extends Component {
         />
 
         <ScrollView
-          style={{height: height * 1, width: width * 1}}
+          style={style.container}
           showsVerticalScrollIndicator={false}>
           <View style={style.containView}>
             <View style={style.containerReset}>
@@ -746,18 +642,15 @@ export default class Splash extends Component {
               />
               <Text style={style.mainHeadiingReset}>Alerts</Text>
             </View>
-            {this.state.loader && this.state.allAlerts.length < 1 ? (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{fontSize: height * 0.03}}>Loading Alerts</Text>
+            {loader && allAlerts.length < 1 ? (
+              <View style={style.viewAlignment}>
+                <Text style={style.loadingText}>Loading Alerts</Text>
               </View>
-            ) : this.state.allAlerts.length > 0 ? (
+            ) : allAlerts.length > 0 ? (
               <View style={style.selectAllBtnContainer}>
-                <View
-                  style={{
-                    marginRight: Platform.OS == 'ios' ? 10 : 0,
-                  }}>
+                <View style={style.allAlertsCheckBoxContainer}>
                   <Checkbox
-                    value={this.state.allAlertsChecked}
+                    value={allAlertsChecked}
                     onAnimationType="one-stroke"
                     offAnimationType="one-stroke"
                     onValueChange={this.checkAllAlert}
@@ -765,27 +658,27 @@ export default class Splash extends Component {
                 </View>
                 <TouchableOpacity
                   onPress={this.checkAlert}
-                  disabled={!this.state.alertSelected}
+                  disabled={!alertSelected}
                   style={{
                     ...style.dismissBtn,
-                    borderColor: !this.state.alertSelected ? '#aaa' : null,
+                    borderColor: !alertSelected ? '#aaa' : null,
                   }}>
                   <Feather
                     name="bell-off"
                     size={height * 0.03}
                     style={{paddingRight: 5}}
-                    color={!this.state.alertSelected ? '#aaa' : '#000'}
+                    color={!alertSelected ? '#aaa' : '#000'}
                   />
                   <Text
                     style={{
-                      color: !this.state.alertSelected ? '#aaa' : '#000',
+                      color: !alertSelected ? '#aaa' : '#000',
                     }}>
                     Dismiss Selected
                   </Text>
                 </TouchableOpacity>
               </View>
             ) : (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={style.viewAlignment}>
                 <Feather
                   name="alert-triangle"
                   size={height * 0.035}
@@ -797,7 +690,7 @@ export default class Splash extends Component {
               </View>
             )}
             <FlatList
-              data={this.state.allAlerts}
+              data={allAlerts}
               renderItem={({item, index}) =>
                 !item.dismiss && (
                   <View
@@ -805,19 +698,14 @@ export default class Splash extends Component {
                       ...style.containerInner,
                       paddingHorizontal: 0,
                     }}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <View
-                        style={{
-                          marginHorizontal: Platform.OS == 'ios' ? 5 : 0,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
+                    <View style={style.alertsContentContainer}>
+                      <View style={style.alertsCheckBoxContainer}>
                         <Checkbox
                           value={item.check}
                           onAnimationType="one-stroke"
                           offAnimationType="one-stroke"
                           onValueChange={() => {
-                            let alerts = [...this.state.allAlerts];
+                            let alerts = [...allAlerts];
                             alerts[index].check = !alerts[index].check;
                             const checkValues = (obj) => obj.check === true;
                             this.setState({
@@ -836,14 +724,12 @@ export default class Splash extends Component {
                         {item.alert_type.name}
                       </Text>
                     </View>
-                    <Text
-                      style={{...style.alertsDataText, textAlign: 'center'}}>
+                    <Text style={style.alertsDataText}>
                       {item.property + '\n' + item.unit}
                     </Text>
                     <Text
                       style={{
                         ...style.alertsDataText,
-                        textAlign: 'center',
                         marginRight: 1,
                       }}>
                       May 08, 2022{'\n'}3 days ago
@@ -863,7 +749,7 @@ export default class Splash extends Component {
               <Text style={style.mainHeadiingReset}>Settings</Text>
             </View>
             <SectionList
-              sections={this.state.alertsType}
+              sections={alertsType}
               renderItem={({item, index}) => (
                 <View style={style.containerInner}>
                   <View>
@@ -873,24 +759,9 @@ export default class Splash extends Component {
                     </Text>
                   </View>
                   {item.status == 2 ? (
-                    <Text
-                      style={{
-                        borderWidth: 1,
-                        borderRadius: 10,
-                        padding: 1,
-                        color: '#999',
-                        borderColor: '#999',
-                        textAlign: 'center',
-                      }}>
-                      Coming Soon
-                    </Text>
+                    <Text style={style.settingsComingSoon}>Coming Soon</Text>
                   ) : (
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        width: width * 0.25,
-                        justifyContent: 'space-around',
-                      }}>
+                    <View style={style.settingsContentContainer}>
                       <Switch
                         trackColor={{false: 'lightgray', true: '#25AAE1'}}
                         thumbColor={'#f4f3f4'}
@@ -920,13 +791,7 @@ export default class Splash extends Component {
                 </View>
               )}
               renderSectionHeader={({section: {title, icon}}) => (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 10,
-                  }}>
+                <View style={style.subHeadContainer}>
                   <Feather
                     name={icon}
                     size={height * 0.035}
@@ -948,9 +813,9 @@ export default class Splash extends Component {
             </View>
             <SectionList
               sections={this.state.alertContacts}
-              renderItem={({item, index}) => (
+              renderItem={({item}) => (
                 <View style={style.containerInner}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={style.viewAlignment}>
                     <Feather
                       name="user"
                       size={height * 0.04}
@@ -958,11 +823,7 @@ export default class Splash extends Component {
                     />
                     <View>
                       <Text style={style.mainHeadiingItems}>{item.name}</Text>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}>
+                      <View style={style.viewAlignment}>
                         <Text style={style.contactOtherInfo}>{item.email}</Text>
                         <Text style={style.contactOtherInfo}>{item.phone}</Text>
                       </View>
@@ -980,13 +841,7 @@ export default class Splash extends Component {
                 </View>
               )}
               renderSectionHeader={({section: {title, icon}}) => (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 10,
-                  }}>
+                <View style={style.subHeadContainer}>
                   <Feather
                     name={icon}
                     size={height * 0.035}
@@ -1001,9 +856,7 @@ export default class Splash extends Component {
               onPress={() => this.setState({contactModal: true})}
               style={style.newContactBtn}>
               <Feather name="plus" size={height * 0.024} color="#fff" />
-              <Text style={{color: 'white', fontSize: height * 0.024}}>
-                Add New Contact
-              </Text>
+              <Text style={style.newContactBtnText}>Add New Contact</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
