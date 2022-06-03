@@ -4985,7 +4985,7 @@ export default function UnitEdit({
                           flexDirection: 'row',
                           // height: width * 0.15,
                           justifyContent: 'space-around',
-                          alignItems: 'flex-start',
+                          alignItems: 'center',
                           flexWrap: 'wrap',
                           padding: 5,
                         },
@@ -5064,14 +5064,15 @@ export default function UnitEdit({
                               }}
                               style={{
                                 position: 'absolute',
-                                left: width * 0.2,
-                                bottom: height * 0.025,
+                                left: 65,
+                                bottom: 25,
                                 borderRadius: 50,
+                                zIndex: 1,
                                 backgroundColor: '#fff',
                               }}>
                               <MaterialCommunityIcon
                                 name="close-circle-outline"
-                                size={height * 0.03}
+                                size={width * 0.07}
                               />
                             </TouchableOpacity>
                             <Text
@@ -5089,37 +5090,65 @@ export default function UnitEdit({
                           </TouchableOpacity>
                         ))
                       )}
-                    </View>
-                    <View
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'flex-end',
-                      }}>
-                      {type == 'addMeterDirect' || type == 'meterDirect' ? (
-                        meterData.length == 1 ? (
-                          <View style={{marginLeft: width * 0.02}}>
-                            <Text
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'flex-end',
+                        }}>
+                        {type == 'addMeterDirect' || type == 'meterDirect' ? (
+                          meterData.length == 1 ? (
+                            <View style={{marginLeft: width * 0.02}}>
+                              <Text
+                                style={{
+                                  fontSize: height * 0.04,
+                                  color: '#25AAE1ec',
+                                }}>
+                                No Meters
+                              </Text>
+                            </View>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() => {
+                                LayoutAnimation.configureNext({
+                                  duration: 300,
+                                  create: {
+                                    type: LayoutAnimation.Types.easeInEaseOut,
+                                    property:
+                                      LayoutAnimation.Properties.opacity,
+                                  },
+                                  update: {
+                                    type: LayoutAnimation.Types.easeInEaseOut,
+                                  },
+                                }),
+                                  callApi();
+                                enableLocation();
+                              }}
                               style={{
-                                fontSize: height * 0.04,
-                                color: '#25AAE1ec',
+                                // flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                zIndex: 1,
+                                borderWidth: 2,
+                                borderRadius: 5,
+                                borderColor: '#25AAE1ec',
+                                paddingVertical: width * 0.01,
                               }}>
-                              No Meters
-                            </Text>
-                          </View>
+                              {/*//todo: Button for meter */}
+                              <Text
+                                style={{
+                                  fontSize: width * 0.06,
+                                  color: '#25AAE1ec',
+                                }}>
+                                Add Meter
+                              </Text>
+                            </TouchableOpacity>
+                          )
+                        ) : loadManufacturers ? (
+                          <DotsLoader color="#25AAE1ec" />
                         ) : (
                           <TouchableOpacity
                             onPress={() => {
-                              LayoutAnimation.configureNext({
-                                duration: 300,
-                                create: {
-                                  type: LayoutAnimation.Types.easeInEaseOut,
-                                  property: LayoutAnimation.Properties.opacity,
-                                },
-                                update: {
-                                  type: LayoutAnimation.Types.easeInEaseOut,
-                                },
-                              }),
-                                callApi();
+                              callApi();
                               enableLocation();
                             }}
                             style={{
@@ -5130,47 +5159,20 @@ export default function UnitEdit({
                               borderWidth: 2,
                               borderRadius: 5,
                               borderColor: '#25AAE1ec',
-                              paddingVertical: width * 0.02,
+                              paddingHorizontal: width * 0.02,
+                              paddingVertical: width * 0.01,
                             }}>
                             {/*//todo: Button for meter */}
                             <Text
                               style={{
-                                fontSize: width * 0.07,
+                                fontSize: width * 0.06,
                                 color: '#25AAE1ec',
                               }}>
                               Add Meter
                             </Text>
                           </TouchableOpacity>
-                        )
-                      ) : loadManufacturers ? (
-                        <DotsLoader color="#25AAE1ec" />
-                      ) : (
-                        <TouchableOpacity
-                          onPress={() => {
-                            callApi();
-                            enableLocation();
-                          }}
-                          style={{
-                            // flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            zIndex: 1,
-                            borderWidth: 2,
-                            borderRadius: 5,
-                            borderColor: '#25AAE1ec',
-                            paddingHorizontal: width * 0.02,
-                            paddingVertical: width * 0.01,
-                          }}>
-                          {/*//todo: Button for meter */}
-                          <Text
-                            style={{
-                              fontSize: width * 0.07,
-                              color: '#25AAE1ec',
-                            }}>
-                            Add Meter
-                          </Text>
-                        </TouchableOpacity>
-                      )}
+                        )}
+                      </View>
                     </View>
                   </View>
                   {/* Box Footer */}
