@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -15,16 +15,17 @@ import {
 import User from 'react-native-vector-icons/FontAwesome';
 import Key from 'react-native-vector-icons/FontAwesome5';
 import styles from './style';
-import {Input} from 'react-native-elements';
-import {Fonts} from '../utils/fonts';
-import {Formik} from 'formik';
+import { Input } from 'react-native-elements';
+import { Fonts } from '../utils/fonts';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NetInfo from '@react-native-community/netinfo';
 import API from '../api/SeviceApi';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const clc = require('cli-color');
 
@@ -100,7 +101,7 @@ export default class Login extends Component {
   };
 
   _checkCredentials = async (email, password) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const response = await API.post('/auth/login', {
       email,
       password,
@@ -135,8 +136,15 @@ export default class Login extends Component {
 
   render() {
     return (
-      <>
-        <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAwareScrollView style={styles.container}
+        keyboardShouldPersistTaps={'handled'}
+        scrollEnabled={true}>
+        <View style={{
+          flex: 1,
+          height: height * .8,
+          alignItems: "center",
+          justifyContent: 'center'
+        }} >
           <View style={styles.logoContainer}>
             <Image
               source={require('../../Images/loogo.png')}
@@ -144,7 +152,7 @@ export default class Login extends Component {
               style={styles.logoImg}
             />
           </View>
-          <View style={{marginBottom: height * 0.05}}>
+          <View style={{ marginBottom: height * 0.05 }}>
             <Text style={styles.titleText}>
               Sign In into
               <Text style={styles.highlightText}> ION</Text>
@@ -152,8 +160,6 @@ export default class Login extends Component {
           </View>
           <Formik
             initialValues={{
-              // email: 'superadmin@email.com',
-              // password: 'admin123$',
               email: 'test2@gmail.com',
               password: '}}UYLWG$q^YXe5#]',
             }}
@@ -185,7 +191,7 @@ export default class Login extends Component {
                     name="user"
                     color="#06012B"
                     size={width * 0.035}
-                    style={{padding: 5}}
+                    style={{ padding: 5 }}
                   />
                   <TextInput
                     value={values.email}
@@ -194,14 +200,14 @@ export default class Login extends Component {
                     placeholderTextColor="#5B5B61"
                     underlineColorAndroid="transparent"
                     onChangeText={handleChange('email')}
-                    onChange={() => this.setState({errName: '', errPass: ''})}
+                    onChange={() => this.setState({ errName: '', errPass: '' })}
                     onBlur={() => setFieldTouched('email')}
                     style={styles.input}
                   />
                 </View>
                 <View style={styles.errorView}>
                   {touched.email && (
-                    <Text style={{color: '#A3001B'}}>
+                    <Text style={{ color: '#A3001B' }}>
                       {errors.email || this.state.errName}
                     </Text>
                   )}
@@ -211,7 +217,7 @@ export default class Login extends Component {
                     name="key"
                     color="#06012B"
                     size={width * 0.035}
-                    style={{padding: 5}}
+                    style={{ padding: 5 }}
                   />
                   <TextInput
                     value={values.password}
@@ -219,7 +225,7 @@ export default class Login extends Component {
                     placeholder="Enter Password"
                     underlineColorAndroid="transparent"
                     onChangeText={handleChange('password')}
-                    onChange={() => this.setState({errPass: '', errName: ''})}
+                    onChange={() => this.setState({ errPass: '', errName: '' })}
                     onBlur={() => setFieldTouched('password')}
                     placeholderTextColor="#5B5B61"
                     style={styles.input}
@@ -236,7 +242,7 @@ export default class Login extends Component {
                   )}
                 </View>
                 <TouchableOpacity
-                  style={{marginTop: width * 0.05}}
+                  style={{ marginTop: width * 0.05 }}
                   activeOpacity={0.8}
                   onPress={handleSubmit}>
                   <View style={styles.buttonContainer}>
@@ -250,43 +256,31 @@ export default class Login extends Component {
               </>
             )}
           </Formik>
-          <View style={{marginLeft: width * 0.35, marginTop: height * 0.01}}>
-            {/* <TouchableOpacity
-              disabled
-              onPress={() => Alert.alert('In Progress')}>
-              <Text
-                style={{
-                  fontSize: height * 0.02,
-                  fontFamily: Fonts.Montserrat,
-                }}>
-                Forgot Password?
-              </Text>
-            </TouchableOpacity> */}
-          </View>
-          <View style={{marginTop: height * 0.05}}>
+
+          <View style={{ marginTop: height * 0.05 }}>
             <TouchableOpacity
               disabled
               onPress={() => {
                 this.props.navigation.navigate('SignUp');
                 setTimeout(() => {
-                  this.setState({errName: '', errPass: ''});
+                  this.setState({ errName: '', errPass: '' });
                 }, 100);
               }}>
-              <View style={{width: width * 0.75, alignItems: 'center'}}>
+              <View style={{ width: width * 0.75, alignItems: 'center' }}>
                 <Text style={styles.bottomText}>
                   Not a Member Yet? Contact Administrator
                 </Text>
               </View>
             </TouchableOpacity>
           </View>
-          <StatusBar
-            hidden
-            backgroundColor="#155AAA"
-            barStyle="default"
-            showHideTransition={'fade'}
-          />
-        </KeyboardAvoidingView>
-      </>
+        </View>
+        {/* <StatusBar
+          hidden
+          backgroundColor="#155AAA"
+          barStyle="default"
+          showHideTransition={'fade'}
+        /> */}
+      </KeyboardAwareScrollView>
     );
   }
 }

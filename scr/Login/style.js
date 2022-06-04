@@ -1,15 +1,14 @@
 import React from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../utils/fonts';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
+    // marginBottom: 120
   },
   logoContainer: {
     marginBottom: height * 0.04,
