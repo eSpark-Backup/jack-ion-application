@@ -20,9 +20,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Checkbox from '@react-native-community/checkbox';
 import Text_Input from '../components/TextInput/index';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 // Components
-
 import style from './style';
 import CustumStatusBar from '../components/StatusBar';
 import Drawer from '../components/modal/Drawer';
@@ -57,6 +57,8 @@ export default class Splash extends Component {
       contactName: '',
       contactEmail: '',
       contactPhone: '',
+      shimmers: [{id: 1}, {id: 2}, {id: 3}, {id: 4}],
+      notifications: [{title: 'Alert Contacts', icon: 'bell'}],
       alertsType: [
         {
           title: 'Equipment Health Alerts',
@@ -76,7 +78,6 @@ export default class Splash extends Component {
           data: [],
         },
       ],
-      notifications: [{title: 'Alert Contacts', icon: 'bell'}],
     };
   }
 
@@ -689,6 +690,55 @@ export default class Splash extends Component {
                 </Text>
               </View>
             )}
+            {/* <View>
+              {this.state.shimmers.map((item) => (
+                <View
+                  key={item.id}
+                  style={{
+                    width: width * 0.9,
+                    height: height * 0.09,
+                    justifyContent: 'center',
+                  }}>
+                  <SkeletonPlaceholder>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View
+                          style={{
+                            width: width * 0.05,
+                            height: width * 0.05,
+                          }}></View>
+                        <View
+                          style={{
+                            width: width * 0.3,
+                            height: height * 0.04,
+                            marginLeft: width * 0.05,
+                          }}></View>
+                      </View>
+                      <View>
+                        <View
+                          style={{
+                            width: width * 0.1,
+                            height: width * 0.1,
+                          }}></View>
+                      </View>
+                      <View>
+                        <View
+                          style={{
+                            width: width * 0.1,
+                            height: width * 0.1,
+                          }}></View>
+                      </View>
+                    </View>
+                  </SkeletonPlaceholder>
+                </View>
+              ))}
+            </View> */}
             <FlatList
               data={allAlerts}
               renderItem={({item, index}) =>
