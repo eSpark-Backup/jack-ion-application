@@ -5,7 +5,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
-  TextInput,
+  // TextInput,
   Animated,
   TouchableOpacity,
   LayoutAnimation,
@@ -29,6 +29,7 @@ import TextTicker from 'react-native-text-ticker';
 import EditUnit from '../Units/modals/UnitEdit';
 import AddBuilding from '../../../../../components/modal/AddBuilding/index';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import TextInput from '../../../../../components/TextInput';
 
 // Components
 import {Fonts} from '../../../../../utils/fonts';
@@ -518,7 +519,12 @@ export default class RedirectMeter extends Component {
                   <View style={styles.currentReadContainer}>
                     <View style={styles.inputFilterView}>
                       <TextInput
-                        style={{width: width * 0.3, height: height * 0.05}}
+                        style={{
+                          width: width * 0.3,
+                          height: height * 0.05,
+                          borderWidth: 0,
+                          backgroundColor: '#fff',
+                        }}
                         value={this.state.loadFor}
                         placeholder="Search Here..."
                         onChangeText={(e) =>

@@ -124,7 +124,7 @@ export default styles = StyleSheet.create({
 
   mainBotton: {
     flexDirection: 'row',
-    height: height * 0.08,
+    height: height * 0.065,
     width: width * 0.95,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -187,8 +187,8 @@ export default styles = StyleSheet.create({
 
   infoViewLogo: {
     backgroundColor: '#232323',
-    width: width * 0.15,
-    height: width * 0.15,
+    width: width * 0.12,
+    height: width * 0.12,
     position: 'absolute',
     borderRadius: 10,
     top: -10,
@@ -200,12 +200,12 @@ export default styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    padding: width * 0.04,
+    padding: width * 0.03,
   },
   infoLowerView: {
     width: '100%',
     borderTopWidth: 1,
-    padding: width * 0.04,
+    padding: width * 0.03,
   },
 
   propButton: {
@@ -282,7 +282,7 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
   },
   mainBottonText: {
-    fontSize: width * 0.055,
+    fontSize: width * 0.05,
     color: '#2D2A2B',
     fontFamily: Fonts.BalooChettan2,
   },

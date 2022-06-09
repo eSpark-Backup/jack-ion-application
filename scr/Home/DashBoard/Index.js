@@ -434,10 +434,11 @@ export default class Splash extends Component {
               name="arrow-left"
               size={height * 0.04}
               color="white"
-              style={{right: 75}}
+              style={{right: 85}}
               onPress={() => this.props.navigation.goBack()}
             />
-            <View style={{flexDirection: 'row', right: 15}}>
+            <View
+              style={{flexDirection: 'row', alignItems: 'center', right: 15}}>
               <MaterialCommunityIcons
                 name="view-dashboard-outline"
                 size={width * 0.07}
@@ -494,12 +495,12 @@ export default class Splash extends Component {
                 <AntDesign
                   name="clockcircleo"
                   size={width * 0.06}
-                  style={{left: width * 0.01}}
+                  style={{left: width * 0.005}}
                 />
                 <Text style={styles.mainBottonText}>
                   Recently Viewed Properties
                 </Text>
-                <AntDesign name={upDownNearby} size={width * 0.05} />
+                <AntDesign name={upDownNearby} size={width * 0.035} />
               </TouchableOpacity>
               <View
                 style={{
@@ -527,17 +528,17 @@ export default class Splash extends Component {
               </View>
 
               <View style={styles.mainDataContainer}>
-                <View style={{...styles.infoViewContainer}}>
+                <View style={styles.infoViewContainer}>
                   <View style={styles.infoViewLogo}>
                     <MaterialCommunityIcons
                       name="home-city-outline"
-                      size={width * 0.1}
-                      color="#fff"
+                      size={width * 0.06}
+                      color="#eee"
                     />
                   </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
-                      <Text style={{fontSize: width * 0.05}}>Property</Text>
+                      <Text style={{fontSize: width * 0.04}}>Property</Text>
                       <Text
                         style={{fontSize: width * 0.06, fontWeight: 'bold'}}>
                         {totalProperties}
@@ -545,12 +546,12 @@ export default class Splash extends Component {
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
-                    <Text style={{fontSize: width * 0.05}}>
+                    <Text style={{fontSize: width * 0.04}}>
                       {propertiesPercent}% | {propertiesThisWeek} This Week
                     </Text>
                   </View>
                 </View>
-                <View style={{...styles.infoViewContainer}}>
+                <View style={styles.infoViewContainer}>
                   <View
                     style={{
                       ...styles.infoViewLogo,
@@ -558,13 +559,13 @@ export default class Splash extends Component {
                     }}>
                     <Ionicon
                       name="md-business-outline"
-                      size={width * 0.1}
-                      color="#fff"
+                      size={width * 0.06}
+                      color="#eee"
                     />
                   </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
-                      <Text style={{fontSize: width * 0.05}}>Buildings</Text>
+                      <Text style={{fontSize: width * 0.04}}>Buildings</Text>
                       <Text
                         style={{fontSize: width * 0.06, fontWeight: 'bold'}}>
                         {totalBuildings}
@@ -572,7 +573,7 @@ export default class Splash extends Component {
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
-                    <Text style={{fontSize: width * 0.05}}>
+                    <Text style={{fontSize: width * 0.04}}>
                       {buildingsPercent}% | {buildingsThisWeek} This Week
                     </Text>
                   </View>
@@ -585,13 +586,13 @@ export default class Splash extends Component {
                     }}>
                     <MaterialIcons
                       name="person"
-                      color="white"
-                      size={width * 0.1}
+                      color="#eee"
+                      size={width * 0.06}
                     />
                   </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
-                      <Text style={{fontSize: width * 0.05}}>Meters</Text>
+                      <Text style={{fontSize: width * 0.04}}>Meters</Text>
                       <Text
                         style={{fontSize: width * 0.06, fontWeight: 'bold'}}>
                         {totalMeters}
@@ -599,7 +600,7 @@ export default class Splash extends Component {
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
-                    <Text style={{fontSize: width * 0.05}}>
+                    <Text style={{fontSize: width * 0.04}}>
                       {metersPercent}% | {metersThisWeek} This Week
                     </Text>
                   </View>
