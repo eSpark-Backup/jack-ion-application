@@ -98,6 +98,7 @@ export default styles = StyleSheet.create({
     height: width * 0.035,
     borderRadius: 100,
     backgroundColor: '#175CA1',
+    marginHorizontal: 1,
   },
   onlineText: {
     fontSize: width * 0.03,
@@ -110,6 +111,7 @@ export default styles = StyleSheet.create({
     height: width * 0.035,
     borderRadius: 100,
     backgroundColor: '#DCDCDC',
+    marginHorizontal: 1,
   },
   offlineText: {
     fontSize: width * 0.03,

@@ -67,6 +67,8 @@ class Splash extends Component {
 
   async componentDidMount() {
     const token = await EncryptedStorage.getItem('user_token');
+    console.log('Authorization:', token);
+
     if (token != null) {
       API.setHeader('Authorization', 'Bearer ' + token);
     }

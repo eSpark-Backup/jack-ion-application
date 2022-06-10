@@ -690,7 +690,7 @@ export default class Splash extends Component {
                         <VictoryArea
                           interpolation="catmullRom"
                           data={newProperties}
-                          style={{data: {fill: '#5a17b299'}}}
+                          style={{data: {fill: '#175CA199'}}}
                         />
                       </View>
                       <VictoryAxis
@@ -780,7 +780,7 @@ export default class Splash extends Component {
                         style={{
                           fontSize: width * 0.06,
                           fontWeight: 'bold',
-                          color: 'purple',
+                          color: '#175CA1',
                         }}>
                         {totalProperties}
                       </Text>
@@ -807,7 +807,7 @@ export default class Splash extends Component {
                         style={{
                           fontSize: width * 0.06,
                           fontWeight: 'bold',
-                          color: 'purple',
+                          color: '#175CA1',
                         }}>
                         {totalUnits}
                       </Text>
@@ -834,7 +834,7 @@ export default class Splash extends Component {
                         style={{
                           fontSize: width * 0.06,
                           fontWeight: 'bold',
-                          color: 'purple',
+                          color: '#175CA1',
                         }}>
                         {totalDevices}
                       </Text>

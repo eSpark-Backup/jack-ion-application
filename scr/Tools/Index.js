@@ -198,11 +198,11 @@ class Tools extends Component {
           console.log('Access');
         } else {
           this.setState({hasAccess: false});
+          Alert.alert(
+            "You don't have access for the Camera",
+            'Kindly TurnOn Camera Permission to Access Camera',
+          );
           this.props.navigation.navigate('Settings');
-          // Alert.alert(
-          //   "You don't have access for the Camera",
-          //   'Kindly TurnOn Camera Permission to Access Camera',
-          // );
           console.log('Denied');
         }
         return granted;
