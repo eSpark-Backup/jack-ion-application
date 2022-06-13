@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import {
   Text,
@@ -12,13 +12,12 @@ import {
 //Packages
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustumStatusBar from '../../../../components/StatusBar';
-import EditUnit from '../Equipment/Units/modals/UnitEdit';
 
 // Components
 import style from './style';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default class Splash extends Component {
   constructor() {
@@ -152,7 +151,7 @@ export default class Splash extends Component {
           </View>
         </View> */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={{paddingHorizontal: 5, paddingTop: 5}}>
+          <View style={{ paddingHorizontal: 5, paddingTop: 5 }}>
             <View
               style={{
                 justifyContent: 'space-around',

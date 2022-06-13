@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -14,22 +14,23 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
-import {withNavigation} from 'react-navigation';
+import { withNavigation } from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import EncryptedStorage from 'react-native-encrypted-storage';
-let fcmToken = '';
+
 // Components
 import styles from './style';
-import {PERMISSIONS, request} from 'react-native-permissions';
+import { PERMISSIONS, request } from 'react-native-permissions';
 import API from '../api/SeviceApi';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+let fcmToken = '';
 class Splash extends Component {
   // static contextType = MainContext
   static navigationOptions = {
     title: 'Home',
-    tabBarIcon: ({tintColor}) => (
+    tabBarIcon: ({ tintColor }) => (
       <AntDesign name="home" color={tintColor} size={height * 0.04} />
     ),
   };
@@ -113,7 +114,7 @@ class Splash extends Component {
         onPress: () => null,
         style: 'cancel',
       },
-      {text: 'YES', onPress: () => BackHandler.exitApp()},
+      { text: 'YES', onPress: () => BackHandler.exitApp() },
     ]);
     return true;
   };
@@ -163,11 +164,11 @@ class Splash extends Component {
           hidden
           showHideTransition={'fade'}
         />
-        <View style={{elevation: width * 0.05}}>
+        <View style={{ elevation: width * 0.05 }}>
           <Image
             source={require('../../Images/loogo.png')}
             resizeMode="contain"
-            style={{height: height * 0.15}}
+            style={{ height: height * 0.15 }}
           />
         </View>
         <View
