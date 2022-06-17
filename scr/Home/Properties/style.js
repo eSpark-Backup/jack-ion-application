@@ -270,4 +270,21 @@ export default styles = StyleSheet.create({
     borderRadius: 4,
     marginLeft: 4,
   },
+
+  // Property list styling
+
+  propListContainer:{
+    alignItems: 'center',
+    marginVertical: height * 0.01,
+    backgroundColor: 'white',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  
 });
