@@ -1,10 +1,10 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../scr/utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../scr/utils/fonts';
 
 //Packages
 
 //Files
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -58,16 +58,16 @@ export default styles = StyleSheet.create({
   },
   headingInner: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
     elevation: width * 0.01,
     flexDirection: 'row',
   },
   mainHeadiing: {
-    fontFamily: Fonts.Montserrat,
-    fontSize: width * 0.07,
+    fontFamily: Fonts.BalsamiqSansRegular,
+    fontSize: width * 0.065,
     color: 'white',
+    textAlign: 'center',
   },
   barView: {
     alignItems: 'center',
@@ -142,6 +142,5 @@ export default styles = StyleSheet.create({
   },
   emailText: {
     fontSize: width * 0.05,
-    color: 'purple',
   },
 });

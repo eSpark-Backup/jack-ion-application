@@ -1,27 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  ActivityIndicator,
-  StatusBar,
   Dimensions,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
   LayoutAnimation,
   UIManager,
-  TextInput,
-  Button,
   Platform,
+  Linking,
+  TouchableOpacity,
 } from 'react-native';
 
-import Search from 'react-native-vector-icons/EvilIcons';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
-// import Dashboard from 'react-native-vector-icons/MaterialCommunityIcons';
 import Help from 'react-native-vector-icons/Feather';
 import Phone from 'react-native-vector-icons/Feather';
 import Email from 'react-native-vector-icons/Feather';
@@ -29,24 +17,19 @@ import TabIcon from 'react-native-vector-icons/MaterialIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import RNBeep from 'react-native-a-beep';
 
-//Packages
-import DropDownItem from 'react-native-drop-down-item';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import LinearGradient from 'react-native-linear-gradient';
-
 // Components
-import {Fonts} from '../utils/fonts';
+import { Fonts } from '../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../components/StatusBar';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const IC_ARR_DOWN = require('../../Images/down.png');
 const IC_ARR_UP = require('../../Images/up.png');
 
 export default class Splash extends Component {
   static navigationOptions = {
     title: 'Support',
-    tabBarIcon: ({tintColor}) => (
+    tabBarIcon: ({ tintColor }) => (
       <TabIcon name="contact-mail" color={tintColor} size={width * 0.05} />
     ),
   };
@@ -79,11 +62,11 @@ export default class Splash extends Component {
   // )
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({meter: !this.state.meter, meterDown: !this.state.meterDown});
+    this.setState({ meter: !this.state.meter, meterDown: !this.state.meterDown });
   };
   changeLayoutNearby = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({nearby: !this.state.nearby, nearDown: !this.state.nearDown});
+    this.setState({ nearby: !this.state.nearby, nearDown: !this.state.nearDown });
   };
   render() {
     let upDownMeter;
@@ -94,47 +77,42 @@ export default class Splash extends Component {
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
-        <View style={styles.headerContainer}>
-          <View style={styles.headerInner}>
+
+        <View style={styles.headingContainer}>
+          <View style={[styles.headingInner]}>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
-              style={styles.menuView}>
+              style={{
+                width: width * 0.15,
+                height: height * 0.06,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Back
                 size={width * 0.08}
                 color="white"
                 name="keyboard-backspace"
               />
             </TouchableOpacity>
-            <View style={styles.searchView}>
-              <Search
-                name="search"
-                size={width * 0.08}
-                style={{marginLeft: width * 0.05}}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: width * 0.2,
+              }}>
+              <Help
+                name="help-circle"
+                size={width * 0.07}
                 color="white"
+                style={{
+                  marginRight: width * 0.01,
+                }}
               />
-              <TextInput
-                placeholderTextColor="white"
-                placeholder="Search"
-                style={styles.search}
-                onChangeText={(e) => this.setState({currentWei: e})}
-              />
+              <Text style={styles.mainHeadiing}>Support</Text>
             </View>
           </View>
         </View>
-        <View style={styles.headingContainer}>
-          <View style={[styles.headingInner]}>
-            <Help
-              name="help-circle"
-              size={width * 0.07}
-              color="white"
-              style={{
-                marginRight: width * 0.01,
-              }}
-            />
-            <Text style={styles.mainHeadiing}>Support</Text>
-          </View>
-        </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {/* <View style={styles.onlineOfflineView}>
             <View style={styles.onlineView} />
             <Text style={styles.onlineText}>Contact Us</Text>
@@ -151,12 +129,22 @@ export default class Splash extends Component {
               </Text>
             </View>
             <View>
-              <View style={styles.insideBottonView}>
-                <Text style={{fontSize: width * 0.09, color: 'purple'}}>
-                  <Phone name="phone" size={width * 0.07} />
-                  844.538.8203
+              <TouchableOpacity
+                style={[styles.insideBottonView, { flexDirection: 'row' }]}
+                onPress={() => {
+                  Linking.openURL(`tel:844 538 8203`);
+                }}>
+                <Phone
+                  name="phone"
+                  size={width * 0.07}
+                  style={{
+                    marginHorizontal: width * 0.01,
+                  }}
+                />
+                <Text style={{ fontSize: width * 0.09, }}>
+                  844-538-8203
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.insideBottonView}>
               <Text
@@ -168,10 +156,24 @@ export default class Splash extends Component {
                 }}>
                 or send us an email
               </Text>
-              <Text style={styles.emailText}>
-                <Email name="mail" size={width * 0.05} />
-                jackhowell@ionenergysolutions.com
-              </Text>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() =>
+                  Linking.openURL('mailto:jackhowell@ionenergysolutions.com')
+                }>
+                <Email
+                  name="mail"
+                  size={width * 0.05}
+                  style={{ marginHorizontal: width * 0.01 }}
+                />
+                <Text style={styles.emailText}>
+                  jackhowell@ionenergysolutions.com
+                </Text>
+              </TouchableOpacity>
             </View>
             {/* <Button onPress={() => { RNBeep.beep() }} title="Beep Success"></Button>
             <Button onPress={() => { RNBeep.beep(false) }} title="Beep Fail"></Button>

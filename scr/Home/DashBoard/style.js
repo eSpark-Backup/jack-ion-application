@@ -1,22 +1,21 @@
-import { StyleSheet, Dimensions } from "react-native"
-import { Fonts } from '../../utils/fonts';
+import {StyleSheet, Dimensions} from 'react-native';
+import {Fonts} from '../../utils/fonts';
 
 //Packages
 
 //Files
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: 'white',
 
-    // alignItems:'center',        
+    // alignItems:'center',
   },
   headerContainer: {
     width: width * 1,
-    height: height * .09,
+    height: height * 0.09,
   },
   headerInner: {
     flex: 1,
@@ -25,146 +24,293 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
   },
   menuView: {
-    width: width * .15,
-    height: height * .06,
+    width: width * 0.15,
+    height: height * 0.06,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
-    borderBottomRightRadius: width * .1,
-    borderTopRightRadius: width * .1,
-    elevation: width * .01,
+    borderBottomRightRadius: width * 0.1,
+    borderTopRightRadius: width * 0.1,
+    elevation: width * 0.01,
   },
   searchView: {
-    marginLeft: width * .03,
-    width: width * .8,
-    height: height * .06,
+    marginLeft: width * 0.03,
+    width: width * 0.8,
+    height: height * 0.06,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
-    borderRadius: width * .1,
-    elevation: width * .01,
-    flexDirection: 'row'
+    borderRadius: width * 0.1,
+    elevation: width * 0.01,
+    flexDirection: 'row',
   },
   search: {
-    width: width * .7,
-    height: height * .07,
+    width: width * 0.7,
+    height: height * 0.07,
     borderBottomColor: '#25AAE1ec',
-    fontSize: width * .05,
+    fontSize: width * 0.05,
     fontFamily: Fonts.Montserrat,
     color: 'white',
   },
   headingContainer: {
     width: width * 1,
-    height: height * .07,
+    height: height * 0.07,
   },
   headingInner: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
-    elevation: width * .01,
-    flexDirection: "row"
+    elevation: width * 0.01,
+    flexDirection: 'row',
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
-    fontSize: width * .07,
+    fontSize: width * 0.07,
     color: 'white',
-
   },
   map: {
     width: width * 1,
-    height: height * .5,
-
+    height: height * 0.5,
   },
   barView: {
-    height: height * .36,
-    width: height * .36,
+    height: width * 0.66,
+    width: width * 0.66,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: height * .02,
-    backgroundColor: 'white',
-    borderRadius: width * .6,
-    elevation: height * .01,
+    marginVertical: width * 0.06,
   },
   barText: {
     textAlign: 'center',
     color: '#7591af',
-    fontSize: width * .04,
+    fontSize: width * 0.04,
     fontFamily: Fonts.Montserrat,
   },
   onlineOfflineView: {
     flexDirection: 'row',
     width: width * 1,
-    height: height * .05,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   onlineView: {
-    width: width * .035,
-    height: height * .02,
-    borderRadius: width * 1,
-    backgroundColor: '#09BAF2'
+    width: width * 0.035,
+    height: width * 0.035,
+    borderRadius: 100,
+    backgroundColor: '#175CA1',
+    marginHorizontal: 1,
   },
   onlineText: {
-    fontSize: width * .03,
+    fontSize: width * 0.03,
     color: '#2D2A2B',
     fontFamily: Fonts.Montserrat,
-    marginRight: width * .03
+    marginRight: width * 0.03,
   },
   offlineView: {
-    width: width * .035,
-    height: height * .02,
-    borderRadius: width * 1,
-    backgroundColor: '#3d5875'
+    width: width * 0.035,
+    height: width * 0.035,
+    borderRadius: 100,
+    backgroundColor: '#DCDCDC',
+    marginHorizontal: 1,
   },
   offlineText: {
-    fontSize: width * .03,
+    fontSize: width * 0.03,
     color: '#2D2A2B',
     fontFamily: Fonts.Montserrat,
   },
+  portfolioHeading: {
+    width: width * 1,
+    alignItems: 'center',
+    marginTop: width * 0.1,
+  },
+
   mainBotton: {
     flexDirection: 'row',
-    height: height * .08,
-    width: width * .95,
+    height: height * 0.065,
+    width: width * 0.95,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: width * .03,
+    paddingHorizontal: width * 0.03,
     alignSelf: 'center',
-    margin: width * .02,
+    margin: width * 0.02,
     borderRadius: 4,
-    elevation: width * .003,
-    borderWidth: 1
+    borderWidth: 1,
+    backgroundColor: 'white',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  mainDataContainer: {
+    width: width * 1,
+    alignItems: 'center',
+    marginTop: height * 0.02,
+  },
+  infoViewContainer: {
+    width: width * 0.9,
+    elevation: 5,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: height * 0.04,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  dataFieldHeadings: {
+    fontSize: width * 0.05,
+    color: '#25AAE1ec',
+    fontFamily: Fonts.Montserrat,
+    marginTop: height * 0.01,
+    borderColor: 'black',
+    borderBottomWidth: width * 0.002,
+    textTransform: 'uppercase',
+    marginBottom: height * 0.01,
+    textAlign: 'center',
+    width: width * 0.75,
+  },
+  infoViewInner: {
+    height: width * 0.07,
+    width: width * 0.8,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+    marginBottom: height * 0.02,
+  },
+
+  infoViewLogo: {
+    backgroundColor: '#232323',
+    width: width * 0.12,
+    height: width * 0.12,
+    position: 'absolute',
+    borderRadius: 10,
+    top: -10,
+    left: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  infoUpperView: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: width * 0.03,
+  },
+  infoLowerView: {
+    width: '100%',
+    borderTopWidth: 1,
+    padding: width * 0.03,
+  },
+
+  propButton: {
+    height: height * 0.09,
+    width: width * 0.9,
+    backgroundColor: 'white',
+    elevation: width * 0.01,
+    borderColor: '#115b72',
+    borderWidth: width * 0.001,
+    borderRadius: width * 0.008,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  propText: {
+    textTransform: 'capitalize',
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * 0.025,
+    color: '#001522',
+    // textShadowOffset: {
+    //   width: width * 0.002,
+    //   height: height * 0.002,
+    // },
+    textShadowRadius: width * 0.005,
+    textShadowColor: '#09BAF2',
+  },
+  buildUnitCountContainer: {
+    alignItems: 'center',
+    marginHorizontal: width * 0.01,
+  },
+  buildUnitCount: {
+    fontFamily: Fonts.Montserrat,
+    fontSize: width * 0.035,
+    color: '#001522',
+    // textShadowOffset: {
+    //   width: width * 0.002,
+    //   height: height * 0.002,
+    // },
+    textShadowRadius: width * 0.005,
+    textShadowColor: '#09BAF2',
+  },
+  dropView: {
+    height: height * 0.07,
+    width: width * 0.9,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+    top: height * -0.01,
+    overflow: 'hidden',
+  },
+  linearGradient: {
+    width: width * 0.5,
+    height: height * 0.15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: width * 0.003,
+  },
+  gradienttext: {
+    fontFamily: Fonts.Handlee,
+    fontSize: width * 0.055,
+    color: 'white',
+  },
+  dataFieldText: {
+    fontSize: height * 0.022,
+    fontFamily: Fonts.Montserrat,
+    width: width * 0.35,
+    textAlign: 'center',
   },
   mainBottonText: {
-    fontSize: width * .06,
+    fontSize: width * 0.05,
     color: '#2D2A2B',
     fontFamily: Fonts.BalooChettan2,
   },
   insideBottonView: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: height * .06
+    // height: height * 0.06,
   },
   meterReaderBotton: {
-    width: width * .9,
-    height: height * .05,
+    width: width * 0.9,
+    height: height * 0.05,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: width * .01,
-    elevation: width * .01,
+    borderRadius: width * 0.01,
+    elevation: width * 0.01,
     borderWidth: 2,
     borderColor: 'white',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   rightHandIcon: {
     position: 'absolute',
-    left: width * .03
+    left: width * 0.03,
   },
   meterBottonText: {
-    fontSize: width * .04,
+    fontSize: width * 0.04,
     color: 'white',
     fontFamily: Fonts.BalooChettan2,
   },
-
 });

@@ -36,9 +36,6 @@ import Scan from 'react-native-vector-icons/Ionicons';
 import Test from 'react-native-vector-icons/Entypo';
 import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
-import Base_URL from '../api/WebServices';
-import {create} from 'apisauce';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../components/Loader';
 import {withNavigation} from 'react-navigation';
 import {PERMISSIONS, check, RESULTS} from 'react-native-permissions';
@@ -54,6 +51,8 @@ import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustumStatusBar from '../components/StatusBar';
+import Toast from 'react-native-simple-toast';
+import API from '../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
 
 class Tools extends Component {
@@ -85,18 +84,6 @@ class Tools extends Component {
     }
   }
 
-  getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-    }
-  };
-
   onSuccess = async (e) => {
     // console.log('meter info ---->', e);
     this.setState({scan: false});
@@ -105,7 +92,7 @@ class Tools extends Component {
     const data = {
       device_serial_number: check,
     };
-    const meterResponse = await this.api.post(
+    const meterResponse = await API.post(
       `/property/equipment/unit/get-meter-info`,
       data,
     );
@@ -113,15 +100,13 @@ class Tools extends Component {
     const unitId = meterResponse?.data?.data?.meterinfo?.unit_id;
     if (meterResponse?.data?.bool) {
       this.setState({loader: true});
-      const unitResponse = await this.api.get(
-        `/property/equipment/unit/${unitId}`,
-      );
+      const unitResponse = await API.get(`/property/equipment/unit/${unitId}`);
       console.log(
         'Get Building Id',
         unitResponse?.data?.data?.unit?.building_id,
       );
       const buildingId = unitResponse?.data?.data?.unit?.building_id;
-      const buildingResponse = await this.api.get(
+      const buildingResponse = await API.get(
         `/property/equipment/building/${buildingId}`,
       );
 
@@ -177,15 +162,12 @@ class Tools extends Component {
   componentDidMount() {
     // console.log('What we Get tools',this.props.navigation.navigate('MeterDetails'))
     this.subs = [
-      this.props.navigation.addListener(
-        'didFocus',
-        () =>
-          Animated.spring(this.state.springValue, {
-            toValue: 1,
-            friction: 3,
-            useNativeDriver: true,
-          }).start(),
-        this.getToken(),
+      this.props.navigation.addListener('didFocus', () =>
+        Animated.spring(this.state.springValue, {
+          toValue: 1,
+          friction: 3,
+          useNativeDriver: true,
+        }).start(),
       ),
       this.props.navigation.addListener('willBlur', () =>
         this.setState({springValue: new Animated.Value(0)}),
@@ -218,8 +200,9 @@ class Tools extends Component {
           this.setState({hasAccess: false});
           Alert.alert(
             "You don't have access for the Camera",
-            'Kindly TurnOn Camera Permission from Settings to use Scanner',
+            'Kindly TurnOn Camera Permission to Access Camera',
           );
+          this.props.navigation.navigate('Settings');
           console.log('Denied');
         }
         return granted;
@@ -239,17 +222,18 @@ class Tools extends Component {
           }
           if (result == RESULTS.DENIED) {
             this.setState({hasAccess: false});
+            this.props.navigation.navigate('Settings');
             Alert.alert(
               "You don't have access for the Camera",
-              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+              'Kindly TurnOn Camera Permission to Access Camera',
             );
             console.log('Denied');
           }
           if (result == RESULTS.BLOCKED) {
-            this.setState({hasAccess: false});
+            this.props.navigation.navigate('Settings');
             Alert.alert(
               "You don't have access for the Camera",
-              'Kindly TurnOn Camera Permission from Settings to use Scanner',
+              'Kindly TurnOn Camera Permission to Access Camera',
             );
             console.log('Denied');
           }
@@ -391,13 +375,13 @@ class Tools extends Component {
             </View>
           </View> */}
           <View style={styles.toolContainer}>
-            <Animated.View
+            {/* <Animated.View
               style={{
                 transform: [{scale: springValue}],
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
-                onPress={() => console.log('helo')}>
+                onPress={() => Toast.show('Work in Progess')}>
                 <Image
                   source={require('../../Images/profileBack.jpg')}
                   style={styles.toolImage}
@@ -407,7 +391,7 @@ class Tools extends Component {
                   <Text style={styles.toolName}>Direct Connect</Text>
                 </View>
               </TouchableOpacity>
-            </Animated.View>
+            </Animated.View> */}
             <Animated.View
               style={{
                 transform: [{scale: springValue}],
@@ -425,13 +409,13 @@ class Tools extends Component {
                 </View>
               </TouchableOpacity>
             </Animated.View>
-            <Animated.View
+            {/* <Animated.View
               style={{
                 transform: [{scale: springValue}],
               }}>
               <TouchableOpacity
                 style={styles.toolButton}
-                onPress={() => console.log('helo')}>
+                onPress={() => Toast.show('Work in Progess')}>
                 <Image
                   source={require('../../Images/profileBack.jpg')}
                   style={styles.toolImage}
@@ -441,7 +425,7 @@ class Tools extends Component {
                   <Text style={styles.toolName}>Test Connect</Text>
                 </View>
               </TouchableOpacity>
-            </Animated.View>
+            </Animated.View> */}
           </View>
         </View>
       </View>

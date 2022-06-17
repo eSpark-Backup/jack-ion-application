@@ -22,27 +22,16 @@ import {
 } from 'react-native';
 
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
 import Menu from 'react-native-vector-icons/Entypo';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
-import Locate from 'react-native-vector-icons/Feather';
-import Globe from 'react-native-vector-icons/Feather';
-import Build from 'react-native-vector-icons/Ionicons';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import Modal from 'react-native-modal';
-import Folder from 'react-native-vector-icons/Feather';
-import Tag from 'react-native-vector-icons/Feather';
 import Equip from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
-import Message from 'react-native-vector-icons/Feather';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {
   VictoryChart,
-  VictoryGroup,
   VictoryBar,
   VictoryTheme,
   VictoryLegend,
@@ -50,9 +39,7 @@ import {
 } from 'victory-native';
 
 // Components
-import {Fonts} from '../../../../utils/fonts';
 import styles from './style';
-import style from './style';
 import CustumStatusBar from '../../../../components/StatusBar';
 const {width, height} = Dimensions.get('window');
 

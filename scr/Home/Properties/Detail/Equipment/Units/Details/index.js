@@ -18,10 +18,7 @@ import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import {View as MotiView} from 'moti';
-import {create} from 'apisauce';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Base_Url from '../../../../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../../components/Loader';
 import {Svg, G} from 'react-native-svg';
 
@@ -43,11 +40,8 @@ import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
 import style from './style';
+import API from '../../../../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
-
-const api = create({
-  baseURL: Base_Url,
-});
 
 export const MyToolTip = (value, position) => {
   return (
@@ -308,10 +302,10 @@ const App = ({navigation}) => {
   }, []);
 
   const getUnitDetail = async () => {
-    const res = await api.get(`/property/equipment/unit/${testId}`);
+    const res = await API.get(`/property/equipment/unit/${testId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     if (res.data?.bool) {
-      setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
+      // setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
       setData(res.data);
       setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
       // console.log(
@@ -322,6 +316,33 @@ const App = ({navigation}) => {
     // let unitData = res.data?.data?.unit?.unit_meter?.[0];
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
+
+    let alertData = {
+      id: res.data?.data?.unit?.unit_meter?.[0].id,
+      pid: propertyId,
+    };
+
+    const alertRes = await API.post(`/alert/recent`, alertData);
+    console.log('UNIT METER ALERT', alertRes.data?.data?.alert);
+    if (alertRes?.data?.bool) {
+      const unitAlertData = alertRes.data?.data?.alert;
+      setStatusInfo([
+        {
+          leftText: 'Type',
+          rightText: unitAlertData?.alert_type?.name,
+          icon: null,
+          bold: false,
+        },
+        {
+          leftText: 'Opened',
+          rightText:
+            unitAlertData?.created_at + '  ' + unitAlertData?.time_diff,
+          icon: null,
+          bold: true,
+          type: 'feather',
+        },
+      ]);
+    }
 
     // setUnitData([
     //   {
@@ -376,7 +397,7 @@ const App = ({navigation}) => {
 
     // console.log('Body Object', data);
 
-    const chartRes = await api.post(
+    const chartRes = await API.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
@@ -538,20 +559,14 @@ const App = ({navigation}) => {
   // }
 
   const getMeterTypes = async () => {
-    const res = await api.get('/property/equipment/meter/all-meters');
+    const res = await API.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
     // console.log('All Meters', res.data?.data);
   };
 
   const getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      // this.setState({token: token});
-      api.setHeader('Authorization', 'Bearer ' + token);
-      getUnitDetail();
-      getMeterTypes();
-    }
+    getUnitDetail();
+    getMeterTypes();
   };
 
   const iconSize = width * 0.08;
@@ -581,7 +596,7 @@ const App = ({navigation}) => {
     for (let i = 0; i < unitMeter?.reasons?.length; i++) {
       let reasonData = unitMeter?.reasons[i];
       let data = {
-        leftName: 'Reason' + ' ' + reasonData.options_reason_id,
+        leftName: 'Reason' + ' ' + (i + 1),
         rightName: reasonData.name,
         rightIcon: 'chevron-down',
         type: 'feather',
@@ -609,13 +624,13 @@ const App = ({navigation}) => {
     setMeterInfoData([
       {
         leftText: 'Manufacturer',
-        rightText: unitMeter?.model_no?.device?.manufacturer ?? 'N/A',
+        rightText: unitMeter?.device?.manufacturer ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
       {
         leftText: 'Device',
-        rightText: unitMeter?.model_no?.device?.name ?? 'N/A',
+        rightText: unitMeter?.device?.name ?? 'N/A',
         leftIcon: null,
         type: 'feather',
       },
@@ -638,7 +653,7 @@ const App = ({navigation}) => {
       //   type: 'feather',
       // },
       {
-        leftText: 'Meter Serial',
+        leftText: 'Device Serial',
         rightText: unitMeter?.device_serial_number ?? 'N/A',
         leftIcon: 'barcode-outline',
         leftType: 'ionicon',
@@ -672,9 +687,9 @@ const App = ({navigation}) => {
           {
             leftName: 'Type',
             rightName:
-              unitMeter?.model_no?.device?.manufacturer +
+              unitMeter?.device?.manufacturer +
               ' (' +
-              unitMeter?.model_no?.device?.name +
+              unitMeter?.device?.name +
               ')',
             rightIcon: 'chevron-down',
             type: 'feather',
@@ -684,7 +699,9 @@ const App = ({navigation}) => {
     ]);
     setRemoteReaderData([
       {
-        title: unitMeter?.model_no?.device?.device_type,
+        title: unitMeter?.device_serial_number
+          ? unitMeter?.device?.device_type
+          : 'No Device Programmed',
         img: require('../../../../../../../Images/remote-reader.png'),
         data: [
           {
@@ -696,11 +713,23 @@ const App = ({navigation}) => {
           },
           {
             leftName: 'Status',
-            rightIcon2: 'check',
+            rightIcon2: unitMeter?.installation_status == 1 ? 'check' : 'x',
             rightIcon: 'chevron-down',
-            rightName: 'Good',
+            rightName:
+              unitMeter?.installation_status == 1
+                ? 'Attempted and installed'
+                : 'Attempted but incomplete',
             type: 'feather',
-            text: 'As of 5 hours ago',
+            text: unitMeter?.time_diff
+              ? 'As of ' + unitMeter?.time_diff
+              : 'As of 5 hours ago',
+          },
+          {
+            leftName: 'Recent Alert',
+            rightIcon: 'chevron-down',
+            // rightName: unitMeter?.device_serial_number ?? 'N/A',
+            type: 'feather',
+            rightIcon2: null,
           },
         ],
       },
@@ -724,7 +753,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: unitMeterName,
+            rightName: unitMeter?.device?.name ?? 'N/A',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -747,42 +776,42 @@ const App = ({navigation}) => {
         ],
       },
     ]);
-    setStatusInfo([
-      {
-        leftText: 'Pulses',
-        rightText: unitMeter?.meter_read?.meter_reading
-          ? unitMeter?.meter_read?.meter_reading
-          : 0,
-        icon: null,
-        bold: false,
-      },
-      {
-        leftText: 'Meter Port',
-        rightText: 'Port 1',
-        icon: 'chevron-down',
-        bold: true,
-        type: 'feather',
-      },
-      {
-        leftText: 'Signal Type',
-        rightText: 'Pulse',
-        icon: 'chevron-down',
-        bold: true,
-        type: 'feather',
-      },
-      {
-        leftText: 'Temperature',
-        rightText: '59 F',
-        icon: null,
-        bold: false,
-      },
-      {
-        leftText: 'Battery',
-        rightText: 'Approx.7 Years',
-        icon: null,
-        bold: false,
-      },
-    ]);
+    // setStatusInfo([
+    //   {
+    //     leftText: 'Pulses',
+    //     rightText: unitMeter?.meter_read?.meter_reading
+    //       ? unitMeter?.meter_read?.meter_reading
+    //       : 0,
+    //     icon: null,
+    //     bold: false,
+    //   },
+    //   {
+    //     leftText: 'Meter Port',
+    //     rightText: 'Port 1',
+    //     icon: 'chevron-down',
+    //     bold: true,
+    //     type: 'feather',
+    //   },
+    //   {
+    //     leftText: 'Signal Type',
+    //     rightText: 'Pulse',
+    //     icon: 'chevron-down',
+    //     bold: true,
+    //     type: 'feather',
+    //   },
+    //   {
+    //     leftText: 'Temperature',
+    //     rightText: '59 F',
+    //     icon: null,
+    //     bold: false,
+    //   },
+    //   {
+    //     leftText: 'Battery',
+    //     rightText: 'Approx.7 Years',
+    //     icon: null,
+    //     bold: false,
+    //   },
+    // ]);
 
     if (data.length != 0) {
       setLoading(false);
@@ -810,7 +839,7 @@ const App = ({navigation}) => {
     // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setUnitMeter(data);
-      setUnitMeterName(data.meter_name[0].name);
+      setUnitMeterName('data.meter_name[0].name');
       setLoading(true);
       setDataSet([]);
       setMeterUsage([]);
@@ -828,7 +857,7 @@ const App = ({navigation}) => {
         end_date: `2021-${todayDate.getMonth() + 1}-${todayDate.getDate()}`,
       };
 
-      const chartRes = await api.post(
+      const chartRes = await API.post(
         `/property/equipment/meter-reading/chart-meter-all/${data.id}`,
         date,
       );
@@ -893,7 +922,7 @@ const App = ({navigation}) => {
     ]);
   };
   const deleteUnit = async () => {
-    const response = await api.delete(`/property/equipment/unit/${testId}`);
+    const response = await API.post(`/property/equipment/unit/${testId}`);
     alert(response?.data?.message);
     navigation.goBack();
   };
@@ -909,7 +938,7 @@ const App = ({navigation}) => {
 
   const deleteMeter = async () => {
     setDangerView(!dangerView);
-    const response = await api.delete(
+    const response = await API.post(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     getToken();
@@ -945,7 +974,6 @@ const App = ({navigation}) => {
                   style={[
                     styles.listText,
                     {
-                      textTransform: 'capitalize',
                       color: index == 1 ? typeColor(item.rightName) : '#000',
                     },
                   ]}>
@@ -992,7 +1020,6 @@ const App = ({navigation}) => {
                 style={[
                   styles.listText,
                   {
-                    textTransform: 'capitalize',
                     color: index == 1 ? typeColor(item.rightName) : '#000',
                   },
                 ]}>
@@ -1017,50 +1044,75 @@ const App = ({navigation}) => {
 
   const renderRemoteList = ({item, index}) => {
     return (
-      <TouchableOpacity
-        disabled={item.leftName == 'Status' ? false : true}
-        onPress={() => {
-          openStatusView(), setDangerView(false);
-        }}>
-        <View style={styles.listOuter}>
-          <View style={styles.listContainer}>
-            <View style={styles.flexRow}>
-              <Text style={styles.listText}>{item.leftName}</Text>
-            </View>
-            <View style={styles.flexRow}>
-              <View style={styles.flexColoum}>
-                <View style={{flexDirection: 'row-reverse'}}>
-                  {item.rightName == null ? null : (
-                    <Text style={styles.listText}>{item.rightName}</Text>
-                  )}
-                  {item.rightIcon2 == null ? null : (
-                    <Icon
-                      name={item.rightIcon2}
-                      type={item.type}
-                      size={width * 0.05}
-                      color="#0fc908"
-                      style={{marginRight: width * 0.01}}
-                    />
+      unitMeter?.device_serial_number && (
+        <TouchableOpacity
+          disabled={item.leftName == 'Recent Alert' ? false : true}
+          onPress={() => {
+            openStatusView(), setDangerView(false);
+          }}>
+          <View style={styles.listOuter}>
+            <View style={styles.listContainer}>
+              <View style={styles.flexRow}>
+                <Text style={styles.listText}>{item.leftName}</Text>
+              </View>
+              <View style={styles.flexRow}>
+                <View style={styles.flexColoum}>
+                  <View style={{flexDirection: 'row-reverse'}}>
+                    {item.rightName == null ? null : (
+                      <Text
+                        style={[
+                          styles.listText,
+                          {
+                            backgroundColor:
+                              index == 1
+                                ? unitMeter?.installation_status == 1
+                                  ? '#0fc908'
+                                  : '#f00'
+                                : null,
+                            color: index == 1 ? '#fff' : '#000',
+                            borderRadius: 5,
+                            padding: 2,
+                            fontWeight: 'bold',
+                          },
+                        ]}>
+                        {item.rightName}
+                      </Text>
+                    )}
+                    {item.rightIcon2 == null ? null : (
+                      <Icon
+                        name={item.rightIcon2}
+                        type={item.type}
+                        size={width * 0.05}
+                        color={
+                          unitMeter?.installation_status == 1
+                            ? '#0fc908'
+                            : '#f00'
+                        }
+                        style={{marginRight: width * 0.01}}
+                      />
+                    )}
+                  </View>
+                  {item.text && (
+                    <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
+                      {item.text}
+                    </Text>
                   )}
                 </View>
-                {item.text && (
-                  <Text style={styles.listGreyText}>{item.text}</Text>
+                {item.rightIcon == null ? null : (
+                  <Icon
+                    name={item.rightIcon}
+                    type={item.type}
+                    size={width * 0.05}
+                    color="#000"
+                    style={styles.centerIcon}
+                  />
                 )}
               </View>
-              {item.rightIcon == null ? null : (
-                <Icon
-                  name={item.rightIcon}
-                  type={item.type}
-                  size={width * 0.05}
-                  color="#000"
-                  style={styles.centerIcon}
-                />
-              )}
             </View>
+            <Divider style={styles.listDivider} />
           </View>
-          <Divider style={styles.listDivider} />
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      )
     );
   };
 
@@ -1165,7 +1217,6 @@ const App = ({navigation}) => {
                         styles.listText,
                         {
                           textAlign: 'right',
-                          textTransform: 'capitalize',
                         },
                       ]}>
                       {item.rightName}
@@ -1218,10 +1269,7 @@ const App = ({navigation}) => {
                 }}
               />
             ) : (
-              <Text
-                style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
-                {item.rightText}
-              </Text>
+              <Text style={styles.listInnerText}>{item.rightText}</Text>
             )}
           </View>
         </View>
@@ -1245,9 +1293,7 @@ const App = ({navigation}) => {
             )}
           </View>
           <View style={styles.flexRow}>
-            <Text style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
-              {item.rightText}
-            </Text>
+            <Text style={styles.listInnerText}>{item.rightText}</Text>
           </View>
         </View>
       </View>
@@ -1267,6 +1313,7 @@ const App = ({navigation}) => {
                 styles.listInnerText,
                 {
                   color: item.bold ? '#000' : '#8c8c8c',
+                  textTransform: 'capitalize',
                 },
               ]}>
               {item.rightText}
@@ -1404,7 +1451,6 @@ const App = ({navigation}) => {
           <View style={styles.dangerView}>
             <Button
               onPress={confirmUnitDelete}
-              titleStyle={{textTransform: 'capitalize'}}
               title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
               buttonStyle={{backgroundColor: '#e24b4b'}}
             />
@@ -1591,7 +1637,7 @@ const App = ({navigation}) => {
                   <Radio
                     name="radio"
                     size={width * 0.06}
-                    color="#fff"
+                    // color="#fff"
                     color="#000"
                     style={{marginRight: width * 0.025}}
                   />
@@ -1639,13 +1685,7 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text
-                      style={[
-                        styles.sectionText,
-                        {textTransform: 'capitalize'},
-                      ]}>
-                      {title}
-                    </Text>
+                    <Text style={styles.sectionText}>{title}</Text>
                     <Image source={img} style={styles.sectionImgStyle} />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
@@ -1663,6 +1703,7 @@ const App = ({navigation}) => {
                 )}
               />
             ) : null}
+
             {/*
         //* Reasons List
         */}
@@ -1676,15 +1717,7 @@ const App = ({navigation}) => {
                 renderSectionHeader={({section: {title, img}}) => (
                   <>
                     <View style={styles.sectionTitle}>
-                      <Text
-                        style={[
-                          styles.sectionText,
-                          {
-                            textTransform: 'capitalize',
-                          },
-                        ]}>
-                        {title}
-                      </Text>
+                      <Text style={styles.sectionText}>{title}</Text>
                     </View>
                     <Divider style={styles.sectionTitleDivider} />
                   </>
@@ -1704,14 +1737,8 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text
-                      style={[
-                        styles.sectionText,
-                        {
-                          textTransform: 'capitalize',
-                        },
-                      ]}>
-                      {unitMeter?.meter_name[0].name + ' Meter'}
+                    <Text style={styles.sectionText}>
+                      {unitMeter?.utility_type_name?.name ?? 'N/A'}
                     </Text>
                     <Image
                       source={img}
@@ -1884,7 +1911,10 @@ const App = ({navigation}) => {
                   </Svg>
                 ) : (
                   <View
-                    style={{height: height * 0.3, justifyContent: 'center'}}>
+                    style={{
+                      height: height * 0.3,
+                      justifyContent: 'center',
+                    }}>
                     <Text style={{fontSize: width * 0.06}}>
                       {loadChartData
                         ? 'Loading Data...'
@@ -1925,13 +1955,11 @@ const App = ({navigation}) => {
                 <View style={styles.dangerView}>
                   <Button
                     onPress={confirmDelete}
-                    titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${unitMeter?.meter_name[0].name} Meter`}
+                    title={`Delete ${unitMeter?.device?.name ?? 'N/A'}`}
                     buttonStyle={styles.dangerBtn}
                   />
                   <Button
                     onPress={confirmUnitDelete}
-                    titleStyle={{textTransform: 'capitalize'}}
                     title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
                     buttonStyle={styles.dangerBtn}
                   />
@@ -1971,21 +1999,26 @@ const App = ({navigation}) => {
                     source={typeSwitcher(item.meter_name)}
                     style={styles.meterImg}
                   /> */}
-                  <Text
-                    style={[
-                      styles.emptyMeterText,
-                      {
-                        flex: 1,
-                        fontSize: width * 0.026,
-                        fontWeight: 'bold',
-                        height: width * 0.15,
-                        width: width * 0.14,
-                        alignSelf: 'center',
-                        textAlignVertical: 'center',
-                      },
-                    ]}>
-                    {item.meter_name[0].name}
-                  </Text>
+                  <View
+                    style={{
+                      height: width * 0.15,
+                      width: width * 0.14,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={[
+                        styles.emptyMeterText,
+                        {
+                          fontSize: width * 0.026,
+                          fontWeight: 'bold',
+                          width: width * 0.14,
+                          textAlignVertical: 'center',
+                        },
+                      ]}>
+                      {item?.utility_type_name?.name ?? 'N/A'}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               ))}
           </ScrollView>

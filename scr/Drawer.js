@@ -1,15 +1,12 @@
 import React, {Component} from 'react';
+import {Dimensions} from 'react-native';
+
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Dashboard from 'react-native-vector-icons/MaterialCommunityIcons';
-import Properties from 'react-native-vector-icons/FontAwesome5';
-import Setting from 'react-native-vector-icons/Feather';
+
 import Home from './Home/route';
 import Settings from './settings/Index';
 import Tools from './Tools/route';
 import Support from './ContactUs/Index';
-
-import {StatusBar, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {Fonts} from './utils/fonts';
 
 const {width, height} = Dimensions.get('window');

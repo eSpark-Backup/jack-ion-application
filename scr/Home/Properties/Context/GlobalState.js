@@ -1,14 +1,11 @@
 import React from 'react';
 import Context from './propContext';
-import {create} from 'apisauce';
-import Base_URL from '../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {Alert} from 'react-native';
+import API from '../../../api/SeviceApi';
 
 class GlobalState extends React.Component {
   componentDidMount() {
-    this.getToken();
     NetInfo.fetch().then((state) => {
       console.log('Connection type', state.type);
       console.log('Is connected?', state.isConnected);
@@ -17,17 +14,6 @@ class GlobalState extends React.Component {
         : this.setState({isLoading: true});
     });
   }
-  getToken = async () => {
-    console.log('Get Token');
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-    }
-  };
 
   clearData = () => {
     this.setState({propList: []});
@@ -40,7 +26,7 @@ class GlobalState extends React.Component {
     let data = {
       offset: 0,
     };
-    const response = await this.api.post('/property/all', data);
+    const response = await API.post('/property/all', data);
     // console.log('respone property===>', response.data.data.properties);
     this.setState({
       offset: response?.data?.data?.offset,
@@ -50,7 +36,7 @@ class GlobalState extends React.Component {
       this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
-      Alert.alert('Error', 'Network Issues');
+      Alert.alert(response?.data?.message);
       this.setState({isLoading: false});
     }
   };
@@ -63,8 +49,9 @@ class GlobalState extends React.Component {
       offset: this.state.offset,
       billing: this.state.filterDataName,
       search: this.state.filterPropName,
+      location: this.state.filterLocation,
     };
-    const response = await this.api.post('/property/all', data);
+    const response = await API.post('/property/all', data);
     // console.log('respone property===>', response.data.data);
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
@@ -90,14 +77,14 @@ class GlobalState extends React.Component {
         this.setState({listLoader: false});
       }
     } else {
-      Alert.alert('Error', 'Network Issues');
+      Alert.alert(response?.data?.message);
       this.setState({listLoader: false});
     }
   };
 
   filterData = async (sort) => {
-    this.setState({biller: sort.billing, filterWork: true});
-    const response = await this.api.post('/property/all', sort);
+    this.setState({biller: sort.billing, filterWork: true, isLoading: true});
+    const response = await API.post('/property/all', sort);
     console.log('FIlter property===>', response);
     if (response?.data?.bool) {
       this.setState({
@@ -109,7 +96,7 @@ class GlobalState extends React.Component {
       this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
-      Alert.alert('Error', 'Network Issues');
+      Alert.alert('Error', response.data.message);
       this.setState({isLoading: false});
     }
   };
@@ -117,6 +104,7 @@ class GlobalState extends React.Component {
   state = {
     filterDataName: '',
     filterPropName: '',
+    filterLocation: '',
     token: null,
     isLoading: true,
     searchLoading: false,
@@ -133,6 +121,7 @@ class GlobalState extends React.Component {
     searchList: [],
     propList: [],
     filterWork: false,
+    loadData: true,
   };
 
   addProp = async (info) => {
@@ -145,23 +134,24 @@ class GlobalState extends React.Component {
       street: info.propStreet,
       city: info.propCity,
       st: info.propState,
-      meter_id: info.meter_id,
+      // meter_id: info.meter_id,
       // model_no_id: info.model_no_id,
+      // manufacturer_id: info.manufacturer_id,
+      device_id: info.device_id,
       utility_type_id: info.utility_type_id,
       zipcode: info.propZipCode,
       radial_dist: info.radial_dist,
       // not requrired data below
-      property_id: info.propCustomId,
+      custom_id: info.propCustomId,
       billing_company_id: info.propBillCompId,
       management_company_id: info.propManageCompId,
-      contact_name: info.propContactName,
+      owner_id: info.propContactName,
       contact_title: info.propContactTitle,
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
-      device_id: info.device_id,
     };
     console.log('data--->', data);
-    this.api.post('/property/add', data).then((res) => {
+    API.post('/property/add', data).then((res) => {
       console.log(res.data);
       if (res?.data?.bool) {
         this.checkData();
@@ -170,22 +160,39 @@ class GlobalState extends React.Component {
       }
     });
   };
+
   getBillingCompany = async () => {
-    const response = await this.api?.get('/property/billing-company/all');
-    console.log(
-      'Check billing company response',
-      response?.data?.data?.billingCompany,
-    );
-    this.setState({itemList: response?.data?.data?.billingCompany});
+    this.setState({isLoading: true});
+    const response = await API.get('/property/billing-company/all');
+    // console.log(
+    //   'Check billing company response',
+    //   response?.data?.data?.billingCompany,
+    // );
+    this.setState({
+      itemList: response?.data?.data?.billingCompany,
+    });
   };
 
   getManagementCompany = async () => {
-    const response = await this.api?.get('/property/management-company/all');
+    this.setState({isLoading: true});
+    const response = await API.get('/property/management-company/all');
     console.log(
       'Check management company response',
       response?.data?.data?.managementCompany,
     );
-    this.setState({manageCompList: response?.data?.data?.managementCompany});
+    let list = response?.data?.data?.managementCompany;
+    let filter = [];
+    for (let i = 0; i < list.length; i++) {
+      const data = {
+        name: list[i].manager_name,
+        id: list[i].id,
+      };
+      filter.push(data);
+    }
+    this.setState({
+      manageCompList: filter,
+      isLoading: false,
+    });
   };
 
   searchProperties = async (e) => {
@@ -197,7 +204,7 @@ class GlobalState extends React.Component {
 
     if (e) {
       this.setState({searchLoading: true});
-      const response = await this.api.post('/property/all', data);
+      const response = await API.post('/property/all', data);
       // console.log('Search property===>', response);
       this.setState({searchOffset: response?.data?.data?.offset});
       if (response?.data?.bool) {
@@ -205,7 +212,7 @@ class GlobalState extends React.Component {
         // console.log('Search property===>', response.data.data.properties);
         this.setState({searchLoading: false});
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert(response?.data?.message);
         this.setState({searchLoading: false});
       }
     } else {
@@ -221,7 +228,7 @@ class GlobalState extends React.Component {
     };
     if (this.state.loadFor) {
       this.setState({searchLoading: true});
-      const response = await this.api.post('/property/all', prop);
+      const response = await API.post('/property/all', prop);
       console.log('Search more property===>', response);
       if (response?.data?.bool) {
         if (
@@ -244,12 +251,29 @@ class GlobalState extends React.Component {
           }
         }, 3000);
       } else {
-        Alert.alert('Error', 'Network Issues');
+        Alert.alert(response?.data?.message);
         this.setState({searchLoading: false});
       }
     } else {
       this.setState({searchList: []});
     }
+  };
+
+  loadLoader = () => {
+    this.setState({isLoading: true});
+  };
+
+  stopLoader = () => {
+    this.setState({isLoading: false});
+  };
+
+  dontLoad = () => {
+    this.setState({loadData: false});
+  };
+
+  doLoad = () => {
+    console.log('LOAD KO TRUE KARO');
+    this.setState({loadData: true});
   };
 
   clearSearchList = () => {
@@ -267,7 +291,13 @@ class GlobalState extends React.Component {
     this.setState({filterPropName: e});
   };
 
+  updateFilterLocation = (e) => {
+    this.setState({filterLocation: e});
+  };
+
   render() {
+    console.log('LOADDATA GLOBALSTATE', this.state.loadData);
+
     return (
       <>
         <Context.Provider
@@ -282,10 +312,10 @@ class GlobalState extends React.Component {
             biller: this.state.biller,
             filterSerial: this.state.filterSerial,
             filterPropName: this.state.filterPropName,
+            filterLocation: this.state.filterLocation,
             filterWork: this.state.filterWork,
             addProp: this.addProp,
             checkData: this.checkData,
-            getToken: this.getToken,
             getBillingCompany: this.getBillingCompany,
             getManagementCompany: this.getManagementCompany,
             clearData: this.clearData,
@@ -293,11 +323,17 @@ class GlobalState extends React.Component {
             searchProperties: this.searchProperties,
             clearSearchList: this.clearSearchList,
             loadMoreData: this.loadMoreData,
+            loadData: this.state.loadData,
             loadSearchData: this.loadSearchData,
+            loadLoader: this.loadLoader,
+            stopLoader: this.stopLoader,
+            dontLoad: this.dontLoad,
+            doLoad: this.doLoad,
             updateBuilding: this.updateBuilding,
             updateBiller: this.updateBiller,
             updateFilterSerial: this.updateFilterSerial,
             updateFilterProperty: this.updateFilterProperty,
+            updateFilterLocation: this.updateFilterLocation,
           }}>
           {this.props.children}
         </Context.Provider>

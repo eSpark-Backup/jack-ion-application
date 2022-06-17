@@ -96,6 +96,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingVertical: width * 0.02,
+    width: width * 1,
   },
   searchModalContainer: {
     elevation: width * 0.005,
@@ -144,8 +145,6 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     borderTopLeftRadius: width * 0.01,
     borderTopRightRadius: width * 0.01,
-    // borderRadius: width * 0.01,
-    borderWidth: width * 0.001,
   },
   infoTopViewInner: {
     flex: 1,
@@ -157,7 +156,7 @@ export default styles = StyleSheet.create({
   infoViewInner: {
     flex: 1,
     flexDirection: 'row',
-    // justifyContent: '',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: width * 0.01,
   },
@@ -179,7 +178,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     // justifyContent: 'space-between',
     alignItems: 'center',
-    maxWidth: width * 0.23,
+    maxWidth: width * 0.25,
     marginRight: width * 0.01,
     marginVertical: width * 0.01,
     // padding: width * 0.005,
@@ -193,6 +192,7 @@ export default styles = StyleSheet.create({
     padding: width * 0.02,
     borderWidth: width * 0.002,
     borderRadius: width * 0.01,
+    marginRight: width * 0.02,
   },
   unitDetailInnerElseText: {
     fontSize: width * 0.035,
@@ -203,8 +203,8 @@ export default styles = StyleSheet.create({
     marginRight: width * 0.01,
   },
   untiDetailImage: {
-    height: width * 0.03,
-    width: width * 0.03,
+    height: width * 0.04,
+    width: width * 0.04,
     marginRight: width * 0.01,
   },
   unitDetailSeprater: {
@@ -253,7 +253,7 @@ export default styles = StyleSheet.create({
   },
   dropDownContainer: {
     paddingHorizontal: width * 0.03,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     borderRightWidth: width * 0.001,
     width: width * 0.4,
   },
@@ -283,5 +283,43 @@ export default styles = StyleSheet.create({
   },
   dropDownListText: {
     fontSize: 14,
+  },
+  skeletonContainer: {
+    width: width * 0.9,
+    justifyContent: 'center',
+    borderRadius: width * 0.01,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    paddingVertical: width * 0.037,
+    marginVertical: height * 0.01,
+  },
+  skeletonInnerContainer: {
+    width: width * 0.9,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: width * 0.02,
+  },
+  skeletonNameAndIcon: {
+    width: width * 0.25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  skeletonIcon: {
+    width: width * 0.08,
+    height: width * 0.08,
+    borderRadius: 4,
+  },
+  skeletonName: {
+    width: width * 0.15,
+    height: width * 0.06,
+    borderRadius: 4,
+  },
+  skeletonDevice: {
+    width: width * 0.29,
+    height: width * 0.07,
+    borderRadius: 4,
+    marginRight: width * 0.01,
   },
 });

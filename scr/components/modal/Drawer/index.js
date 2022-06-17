@@ -9,14 +9,15 @@ import {
   Pressable,
   Platform,
   KeyboardAvoidingView,
+  Image,
 } from 'react-native';
 
 //Packages
 
 import Modal from 'react-native-modal';
 import Menu from 'react-native-vector-icons/Entypo';
-import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import Equip from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -35,6 +36,7 @@ export default class DrawerModal extends Component {
       isVisible,
       naviagateToDetail,
       naviagateToEquip,
+      naviagateToAlerts,
       naviagateToChart,
       naviagateToSupport,
       onCancel,
@@ -54,42 +56,50 @@ export default class DrawerModal extends Component {
         statusBarTranslucent
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
-        <View style={{backgroundColor: '#35afe2', height: height * 0.05}} />
+        <View style={{backgroundColor: '#fff', height: height * 0.05}} />
         <View style={styles.drawerMainContainer}>
-          <View>
-            <Menu
-              name="menu"
-              size={height * 0.05}
-              color="white"
-              // style={{right: 90}}
-              onPress={onCancel}
-              style={{backgroundColor: '#35afe2'}}
+          <View style={{alignItems: 'center'}}>
+            <Image
+              source={require('../../../../Images/loogo.png')}
+              resizeMode="contain"
+              style={{height: height * 0.15}}
             />
           </View>
           <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={naviagateToDetail}>
               <View style={styles.drawerContent}>
-                <Detail
+                <MaterialCommunityIcons
                   name="account-details-outline"
-                  size={height * 0.035}
+                  size={width * 0.065}
                   color="#7575ff"
                   style={{marginRight: width * 0.02}}
                 />
-                <Text style={styles.drawerbtn}>Profile</Text>
+                <Text style={styles.drawerbtn}>Details</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
               <View style={styles.drawerContent}>
-                <Equip
+                <Feather
                   name="rss"
-                  size={height * 0.035}
+                  size={width * 0.065}
                   color="#ff9f71"
                   style={{marginRight: width * 0.02}}
                 />
-                <Text style={styles.drawerbtn}>Units</Text>
+                <Text style={styles.drawerbtn}>Equipments</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={naviagateToChart}>
+            <TouchableOpacity onPress={naviagateToAlerts}>
+              <View style={styles.drawerContent}>
+                <Feather
+                  name="alert-triangle"
+                  size={width * 0.065}
+                  color="#f00"
+                  style={{marginRight: width * 0.02}}
+                />
+                <Text style={styles.drawerbtn}>Alerts</Text>
+              </View>
+            </TouchableOpacity>
+            {/* <TouchableOpacity onPress={naviagateToChart}>
               <View style={styles.drawerContent}>
                 <Chart
                   name="pie-chart"
@@ -99,7 +109,7 @@ export default class DrawerModal extends Component {
                 />
                 <Text style={styles.drawerbtn}>Charts</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <TouchableOpacity
             style={{bottom: height * 0.05}}
@@ -112,7 +122,7 @@ export default class DrawerModal extends Component {
                 paddingBottom: height * 0.015,
                 marginBottom: height * 0.01,
               }}>
-              <Detail
+              <MaterialCommunityIcons
                 name="help-circle-outline"
                 size={height * 0.035}
                 color="#35afe2"

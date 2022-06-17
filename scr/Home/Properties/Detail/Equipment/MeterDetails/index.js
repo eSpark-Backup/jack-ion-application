@@ -13,14 +13,12 @@ import {
   BackHandler,
 } from 'react-native';
 import {Header, Button, Icon, Divider} from 'react-native-elements';
+import Modal from 'react-native-modal';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import {View as MotiView} from 'moti';
-import {create} from 'apisauce';
-import Base_Url from '../../../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -38,22 +36,22 @@ import {
 import styles from './style';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
+import API from '../../../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
-
-const api = create({
-  baseURL: Base_Url,
-});
 
 const App = ({navigation}) => {
   const scrollViewRef = useRef();
 
   const [dangerView, setDangerView] = useState(false);
+  const [installStatusView, setInstallStatusView] = useState(false);
   const [headView, setHeadView] = useState(false);
   const [opened, setOpened] = useState(false);
   const [openedStatus, setOpenedStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState([]);
+  const [reasonsData, setReasonsData] = useState([]);
+  const [reasonDataIndex, setReasonDataIndex] = useState(null);
   const [meterInfoData, setMeterInfoData] = useState([]);
   const [statusInfo, setStatusInfo] = useState([]);
   const [meterTypeData, setMeterTypeData] = useState([]);
@@ -242,14 +240,78 @@ const App = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
 
-  const getUnitDetail = async () => {
-    const res = await api.get(`/property/equipment/unit/${testId}`);
+  const changeStatus = async () => {
+    const UnitData = data?.data?.unit;
+    const UnitMeters = UnitData?.unit_meter;
+    const MeterIndex = UnitMeters.findIndex((i) => i.id == meterInfo.id);
+    let unitData = {...UnitData};
+
+    const defaultUnitData = await API.get(
+      `/property/default-meter-device/${UnitData.property.id}`,
+    );
+
+    const defaultDis =
+      defaultUnitData?.data?.data?.defaultLocation?.radial_dist;
+
+    unitData.unit_meter[MeterIndex].installation_status = '1';
+    unitData.unit_meter.map((i, index) => {
+      unitData.unit_meter[index].defaultLatitude = UnitData.property.latitude;
+      unitData.unit_meter[index].defaultLongitude = UnitData.property.longitude;
+    });
+    let meters = unitData.unit_meter;
+
+    unitData.meters = meters;
+    unitData.defaultRadial_dist = defaultDis * 1000;
+
+    // unitData['meters'] = unitData['unit_meter'];
+    delete unitData['unit_meter']; // Delete old key
+
+    console.log('UNIT DATA', unitData);
+    const UpdateData = await API.post(
+      `/property/equipment/unit/update-unit/${testId}`,
+      unitData,
+    );
+    console.log('UPDATE DATA RES', UpdateData.data);
+    if (UpdateData?.data?.bool) {
+      setInstallStatusView(false);
+      setLoading(true);
+      Alert.alert('Success', 'Status Changed Successfully');
+      const meterResponse = await API.post(
+        `/property/equipment/unit/get-meter-info`,
+        {device_serial_number: meterInfo.device_serial_number},
+      );
+      console.log('meterResponse DATA RES', meterResponse?.data);
+      if (meterResponse?.data?.bool) {
+        getToken(meterResponse?.data?.data?.meterinfo);
+      }
+    }
+  };
+
+  const getUnitDetail = async (meterData) => {
+    const res = await API.get(`/property/equipment/unit/${testId}`);
     console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
-    console.log('Kia ha Meter INfo Data', meterInfo);
-    setUnitMeter(meterInfo);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
+    console.log('Kia ha Meter INfo Data', meterInfo);
+    console.log(
+      'Kia ha Meter Index',
+      unitMeterArr.findIndex((i) => i.id == meterInfo.id),
+    );
+    if (meterData) {
+      console.log('DATA RECEIVED');
+      setUnitMeter(meterData);
+      if (meterData.installation_status == 2) {
+        setInstallStatusView(true);
+      }
+    } else {
+      console.log('DATA Not RECEIVED');
+      setUnitMeter(meterInfo);
+      if (meterInfo.installation_status == 2) {
+        setInstallStatusView(true);
+      }
+    }
+
     const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
     let data = {
@@ -259,7 +321,7 @@ const App = ({navigation}) => {
 
     setLoadChartData(true);
 
-    const chartRes = await api.post(
+    const chartRes = await API.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
@@ -397,20 +459,16 @@ const App = ({navigation}) => {
   };
 
   const getMeterTypes = async () => {
-    const res = await api.get('/property/equipment/meter/all-meters');
+    const res = await API.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
     console.log('All Meters', res.data?.data);
   };
 
-  const getToken = async () => {
+  const getToken = async (data) => {
     setLoading(true);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      console.log('token aya', token);
-      api.setHeader('Authorization', 'Bearer ' + token);
-      getUnitDetail();
-      getMeterTypes();
-    }
+
+    getUnitDetail(data);
+    getMeterTypes();
   };
 
   const testChartData = [
@@ -448,6 +506,34 @@ const App = ({navigation}) => {
 
   useEffect(() => {
     console.log('Kia ha unitMeter', data);
+    let reasonList = [];
+    for (let i = 0; i < unitMeter?.reasons?.length; i++) {
+      let reasonData = unitMeter?.reasons[i];
+      let data = {
+        leftName: 'Reason' + ' ' + (i + 1),
+        rightName: reasonData.name,
+        rightIcon: 'chevron-down',
+        type: 'feather',
+        data: [
+          {
+            leftText: 'Description',
+            rightText: reasonData.text_reason ?? 'N/A',
+            leftIcon: null,
+            type: 'feather',
+          },
+          {
+            leftText: 'Picture',
+            rightText: reasonData.picture ?? 'N/A',
+            leftIcon: null,
+            type: 'feather',
+          },
+        ],
+      };
+
+      console.log('Reason Picture', reasonData.picture);
+      reasonList.push(data);
+    }
+    console.log('Reason List', reasonList);
 
     setMeterInfoData([
       {
@@ -500,10 +586,17 @@ const App = ({navigation}) => {
       //   type: 'feather',
       // },
     ]);
+    setReasonsData([
+      {
+        title: 'Reasons',
+        // img: meterSwitcher(),
+        data: reasonList,
+      },
+    ]);
     setMeterTypeData([
       {
         title: 'Hot Water Meter',
-        img: meterSwitcher(),
+        // img: meterSwitcher(),
         data: [
           {
             leftName: 'Type',
@@ -520,7 +613,9 @@ const App = ({navigation}) => {
     ]);
     setRemoteReaderData([
       {
-        title: unitMeter?.device?.device_type,
+        title: unitMeter?.device_serial_number
+          ? unitMeter?.device?.device_type
+          : 'No Device Programmed',
         img: require('../../../../../../Images/remote-reader.png'),
         data: [
           {
@@ -532,11 +627,16 @@ const App = ({navigation}) => {
           },
           {
             leftName: 'Status',
-            rightIcon2: 'check',
+            rightIcon2: unitMeter?.installation_status == 1 ? 'check' : 'x',
             rightIcon: 'chevron-down',
-            rightName: 'Good',
+            rightName:
+              unitMeter?.installation_status == 1
+                ? 'Attempted and installed'
+                : 'Attempted but incomplete',
             type: 'feather',
-            text: 'As of 5 hours ago',
+            text: unitMeter?.time_diff
+              ? 'As of ' + unitMeter?.time_diff
+              : 'As of 5 hours ago',
           },
         ],
       },
@@ -593,7 +693,7 @@ const App = ({navigation}) => {
             leftIcon: null,
             leftName: 'Utility Type',
             rightIcon: null,
-            rightName: meterInfo?.meter_name[0].name,
+            rightName: unitMeter?.device?.name ?? 'N/A',
             type: 'ionicon',
             typeRight: 'feather',
           },
@@ -672,7 +772,7 @@ const App = ({navigation}) => {
     ]);
   };
   const deleteMeter = async () => {
-    const response = await api.delete(
+    const response = await API.post(
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     alert(response?.data?.message);
@@ -795,20 +895,41 @@ const App = ({navigation}) => {
               <View style={styles.flexColumn}>
                 <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text style={styles.listText}>{item.rightName}</Text>
+                    <Text
+                      style={[
+                        styles.listText,
+                        {
+                          backgroundColor:
+                            index == 1
+                              ? unitMeter?.installation_status == 1
+                                ? '#0fc908'
+                                : '#f00'
+                              : null,
+                          color: index == 1 ? '#fff' : '#000',
+                          borderRadius: 5,
+                          padding: 2,
+                          fontWeight: 'bold',
+                        },
+                      ]}>
+                      {item.rightName}
+                    </Text>
                   )}
                   {item.rightIcon2 == null ? null : (
                     <Icon
                       name={item.rightIcon2}
                       type={item.type}
                       size={iconSize}
-                      color="#0fc908"
+                      color={
+                        unitMeter?.installation_status == 1 ? '#0fc908' : '#f00'
+                      }
                       style={{marginRight: width * 0.01}}
                     />
                   )}
                 </View>
                 {item.text && (
-                  <Text style={styles.listGreyText}>{item.text}</Text>
+                  <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
+                    {item.text}
+                  </Text>
                 )}
               </View>
               {item.rightIcon == null ? null : (
@@ -833,9 +954,76 @@ const App = ({navigation}) => {
     setOpened(!opened);
   };
 
+  const openReasonData = (index) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setReasonDataIndex(index == reasonDataIndex ? null : index);
+  };
+
   const openStatusView = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpenedStatus(!openedStatus);
+  };
+
+  const renderReasonData = ({item, index}) => {
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            openReasonData(index), setDangerView(false);
+          }}>
+          <View style={styles.listOuter}>
+            <View style={styles.listContainer}>
+              <View style={styles.flexRow}>
+                <Text style={styles.listText}>{item.leftName}</Text>
+              </View>
+              <View style={styles.flexRow}>
+                <View style={styles.flexColoum}>
+                  <View
+                    style={{flexDirection: 'row-reverse', width: width * 0.6}}>
+                    {item.rightName == null ? null : (
+                      <TextTicker
+                        duration={6000}
+                        marqueeDelay={2000}
+                        repeatSpacer={width * 0.6}
+                        style={[
+                          styles.listText,
+                          {
+                            textAlign: 'right',
+                            textTransform: 'capitalize',
+                          },
+                        ]}>
+                        {item.rightName}
+                      </TextTicker>
+                    )}
+                  </View>
+                </View>
+                {item.rightIcon == null ? null : (
+                  <Icon
+                    name={item.rightIcon}
+                    type={item.type}
+                    size={width * 0.05}
+                    color="#000"
+                    style={styles.centerIcon}
+                  />
+                )}
+              </View>
+            </View>
+            <Divider style={styles.listDivider} />
+          </View>
+        </TouchableOpacity>
+        {index == reasonDataIndex && (
+          <FlatList
+            style={styles.statusList}
+            data={item.data}
+            keyExtractor={(item, index) => item + index}
+            renderItem={renderReasonInfo}
+            ItemSeparatorComponent={() => (
+              <Divider style={[styles.listDivider, {marginTop: 0}]} />
+            )}
+          />
+        )}
+      </View>
+    );
   };
 
   const renderMeterType = ({item, index}) => {
@@ -884,6 +1072,42 @@ const App = ({navigation}) => {
           <Divider style={styles.listDivider} />
         </View>
       </TouchableOpacity>
+    );
+  };
+
+  const renderReasonInfo = ({item}) => {
+    return (
+      <View style={styles.listInner}>
+        <View style={styles.listInnerContainer}>
+          <View style={styles.flexRow}>
+            <Text style={styles.listInnerText}>{item.leftText}</Text>
+            {item.leftIcon == null ? null : (
+              <Icon
+                name={item.leftIcon}
+                type={item.leftType}
+                size={width * 0.05}
+                color={'rgb(90,134,183)'}
+                style={styles.leftedIcon}
+              />
+            )}
+          </View>
+          <View style={styles.flexRow}>
+            {item.leftText == 'Picture' && item.rightText != 'N/A' ? (
+              <Image
+                style={{
+                  width: width * 0.25,
+                  height: width * 0.2,
+                }}
+                source={{
+                  uri: item.rightText,
+                }}
+              />
+            ) : (
+              <Text style={styles.listInnerText}>{item.rightText}</Text>
+            )}
+          </View>
+        </View>
+      </View>
     );
   };
 
@@ -951,6 +1175,29 @@ const App = ({navigation}) => {
   } else {
     return (
       <View style={{flex: 1}}>
+        <Modal isVisible={installStatusView}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              alignItems: 'center',
+              borderRadius: 10,
+              paddingVertical: width * 0.02,
+            }}>
+            <Text style={{fontSize: width * 0.06}}>Installation Status</Text>
+            <Text style={{textAlign: 'center', paddingVertical: width * 0.02}}>
+              Meter not installed completely would you like to change the
+              status?
+            </Text>
+            <TouchableOpacity onPress={changeStatus} style={styles.attemptBtn}>
+              <Text style={styles.attemptText}>Attempted and installed</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setInstallStatusView(false)}
+              style={{...styles.attemptBtn, backgroundColor: 'red'}}>
+              <Text style={styles.attemptText}>Stay Incomplete</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
         <Header
           leftComponent={{
             text: 'Close',
@@ -1074,7 +1321,7 @@ const App = ({navigation}) => {
                   <Radio
                     name="radio"
                     size={width * 0.06}
-                    color="#fff"
+                    // color="#fff"
                     color="#000"
                     style={{marginRight: width * 0.025}}
                   />
@@ -1141,6 +1388,26 @@ const App = ({navigation}) => {
               />
             ) : null}
             {/*
+        //* Reasons List
+        */}
+            {reasonsData[0].data.length > 0 && (
+              <SectionList
+                style={styles.sectionStyle}
+                contentContainerStyle={styles.sectionContainer}
+                sections={reasonsData}
+                keyExtractor={(item, index) => item + index}
+                renderItem={renderReasonData}
+                renderSectionHeader={({section: {title, img}}) => (
+                  <>
+                    <View style={styles.sectionTitle}>
+                      <Text style={styles.sectionText}>{title}</Text>
+                    </View>
+                    <Divider style={styles.sectionTitleDivider} />
+                  </>
+                )}
+              />
+            )}
+            {/*
         //* Meter Type List
         */}
             <SectionList
@@ -1159,7 +1426,7 @@ const App = ({navigation}) => {
                           textTransform: 'capitalize',
                         },
                       ]}>
-                      {unitMeter?.meter_name[0]?.name + ' Meter'}
+                      {unitMeter?.utility_type_name?.name ?? 'N/A'}
                     </Text>
                     <Image
                       source={img}
@@ -1332,9 +1599,14 @@ const App = ({navigation}) => {
                   </Svg>
                 ) : (
                   <View
-                    style={{height: height * 0.3, justifyContent: 'center'}}>
+                    style={{
+                      height: height * 0.3,
+                      justifyContent: 'center',
+                    }}>
                     <Text style={{fontSize: width * 0.06}}>
-                      {loadChartData ? 'Loading Data...' : 'No Read Data'}
+                      {loadChartData
+                        ? 'Loading Data...'
+                        : 'No Data for this Week'}
                     </Text>
                   </View>
                 )}
@@ -1398,7 +1670,7 @@ const App = ({navigation}) => {
                   <Button
                     onPress={confirmDelete}
                     titleStyle={{textTransform: 'capitalize'}}
-                    title={`Delete ${unitMeter?.meter_name[0]?.name} Meter`}
+                    title={`Delete ${unitMeter?.device?.name ?? 'N/A'}`}
                     buttonStyle={styles.dangerBtn}
                   />
                 </View>

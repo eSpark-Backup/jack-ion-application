@@ -5,7 +5,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
-  TextInput,
+  // TextInput,
   Animated,
   TouchableOpacity,
   LayoutAnimation,
@@ -21,8 +21,6 @@ import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Build from 'react-native-vector-icons/FontAwesome5';
 import Check from 'react-native-vector-icons/Feather';
 import Home from 'react-native-vector-icons/FontAwesome5';
-import Base_URL from '../../../../../api/WebServices';
-import {create} from 'apisauce';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import ContextProp from '../../../Context/propContext';
@@ -31,13 +29,14 @@ import TextTicker from 'react-native-text-ticker';
 import EditUnit from '../Units/modals/UnitEdit';
 import AddBuilding from '../../../../../components/modal/AddBuilding/index';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import TextInput from '../../../../../components/TextInput';
 
 // Components
 import {Fonts} from '../../../../../utils/fonts';
 
 import styles from './style';
-import style from './style';
 import CustumStatusBar from '../../../../../components/StatusBar';
+import API from '../../../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
 
 export default class RedirectMeter extends Component {
@@ -119,16 +118,10 @@ export default class RedirectMeter extends Component {
 
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      // console.log('token aya', token);
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-      this.setState({loader: false});
-    }
-    const res = await this.api.get('/property/equipment/meter/all-meters');
+
+    this.setState({loader: false});
+
+    const res = await API.get('/property/equipment/meter/all-meters');
     this.setState({meterList: res.data?.data}, () =>
       console.log('All Meters', this.state.meterList),
     );
@@ -157,7 +150,7 @@ export default class RedirectMeter extends Component {
     };
     if (e) {
       this.setState({searchLoading: true});
-      const response = await this.api.post('/property/all', data);
+      const response = await API.post('/property/all', data);
       console.log('Search property===>', response);
       this.setState({searchOffset: response.data.data.offset});
       console.log('Bool Response', response?.data?.bool);
@@ -193,7 +186,7 @@ export default class RedirectMeter extends Component {
     };
     if (this.state.loadFor) {
       this.setState({searchLoading: true});
-      const response = await this.api.post('/property/all', prop);
+      const response = await API.post('/property/all', prop);
       console.log('Search more property===>', response?.data);
       if (response?.data?.bool) {
         if (
@@ -229,7 +222,7 @@ export default class RedirectMeter extends Component {
     let data = {
       offset: 0,
     };
-    const response = await this.api.post('/property/all', data);
+    const response = await API.post('/property/all', data);
     this.setState({
       success: response.data.bool,
       offset: response.data.data.offset,
@@ -251,7 +244,7 @@ export default class RedirectMeter extends Component {
     let data = {
       offset: this.state.offset,
     };
-    const response = await this.api.post('/property/all', data);
+    const response = await API.post('/property/all', data);
     // console.log('respone property===>', response.data.data);
     this.setState({
       success: response.data.bool,
@@ -340,7 +333,7 @@ export default class RedirectMeter extends Component {
       propertyLong: item.longitude,
       propertyDetails: item,
     });
-    const response = await this.api.post(
+    const response = await API.post(
       `/property/equipment/building/all-buildings/${item.id}`,
     );
     console.log('Check response buildings--->', response);
@@ -371,7 +364,7 @@ export default class RedirectMeter extends Component {
     const data = {
       building_id: item.id,
     };
-    const unitResponse = await this.api.post(
+    const unitResponse = await API.post(
       `/property/equipment/unit/all-units`,
       data,
     );
@@ -429,7 +422,7 @@ export default class RedirectMeter extends Component {
     const data = {
       device_serial_number: check,
     };
-    const meterResponse = await this.api.post(
+    const meterResponse = await API.post(
       `/property/equipment/unit/get-meter-info`,
       data,
     );
@@ -460,7 +453,8 @@ export default class RedirectMeter extends Component {
     this.setState({
       unitModal: true,
       unitModalType: 'addMeterDirect',
-      meterTypesList: this.state.meterList,
+      meterTypesList: [],
+      // meterTypesList: this.state.meterList,
     });
     this.setState((prevState) => ({
       ...prevState,
@@ -525,7 +519,12 @@ export default class RedirectMeter extends Component {
                   <View style={styles.currentReadContainer}>
                     <View style={styles.inputFilterView}>
                       <TextInput
-                        style={{width: width * 0.3, height: height * 0.05}}
+                        style={{
+                          width: width * 0.3,
+                          height: height * 0.05,
+                          borderWidth: 0,
+                          backgroundColor: '#fff',
+                        }}
                         value={this.state.loadFor}
                         placeholder="Search Here..."
                         onChangeText={(e) =>
@@ -820,7 +819,7 @@ export default class RedirectMeter extends Component {
                                     </TextTicker>
                                   </View>
                                   <View style={styles.unitsMeterContainer}>
-                                    {item?.unit_meter?.length ? (
+                                    {/* {item?.unit_meter?.length ? (
                                       item?.unit_meter?.map((item) => (
                                         // console.log('item--->meter', item),
                                         <Image
@@ -834,7 +833,7 @@ export default class RedirectMeter extends Component {
                                       <Text style={styles.unitsNoMeterText}>
                                         No meters
                                       </Text>
-                                    )}
+                                    )} */}
                                   </View>
                                 </View>
                                 {item.id == this.state.unitId && (

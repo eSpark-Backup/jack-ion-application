@@ -12,6 +12,7 @@ import {
   FlatList,
   Alert,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Scanner from 'react-native-vector-icons/Ionicons';
 import Back from 'react-native-vector-icons/MaterialIcons';
@@ -20,19 +21,16 @@ import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import {DotsLoader} from 'react-native-indicator';
-import Base_URL from '../../../scr/api/WebServices';
 import Modal from 'react-native-modal';
 import {Header} from 'react-native-elements';
 import SplashScreen from 'react-native-splash-screen';
 import styles from './FilterStyle';
 import {RadioButton} from 'react-native-paper';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import ContextProp from './Context/propContext';
-import {create} from 'apisauce';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import SearchableDropDown from 'react-native-searchable-dropdown';
 
 const {width, height} = Dimensions.get('window');
-let api;
 
 export default class Splash extends Component {
   static contextType = ContextProp;
@@ -56,10 +54,17 @@ export default class Splash extends Component {
     };
   }
   getUtilityType = (type, index) => {
-    this.setState({
-      selectedType: type,
-      utilityIndex: index === this.state.utilityIndex ? null : index,
-    });
+    if (index === this.state.utilityIndex) {
+      this.setState({
+        selectedType: '',
+        utilityIndex: null,
+      });
+    } else {
+      this.setState({
+        selectedType: type,
+        utilityIndex: index,
+      });
+    }
   };
 
   getBillingCompany = () => {
@@ -105,7 +110,9 @@ export default class Splash extends Component {
         offset: 0,
         billing: this.state.biller,
         search: this.context.filterPropName,
+        location: this.context.filterLocation,
       };
+      console.log('Filter data', data);
       this.context.filterData(data);
       this.props.close();
       this.props.filterWork();
@@ -126,6 +133,7 @@ export default class Splash extends Component {
     this.props.close();
     this.setState({biller: ''});
     this.context.updateFilterProperty('');
+    this.context.updateFilterLocation('');
   };
 
   resetFilter = () => {
@@ -256,6 +264,18 @@ export default class Splash extends Component {
     }
   };
 
+  closeModal = () => {
+    if (this.context.filterWork) {
+      this.props.close();
+    } else {
+      this.props.close();
+      this.context.updateFilterProperty('');
+      this.context.updateFilterLocation('');
+      this.context.updateFilterSerial('');
+      this.setState({selectedType: ''});
+    }
+  };
+
   render() {
     const {scan} = this.state;
     const {
@@ -309,157 +329,197 @@ export default class Splash extends Component {
         </Modal>
         {/*Filter Modal*/}
         <Modal
+          avoidKeyboard={true}
           animationIn="slideInDown"
           animationOut="slideOutUp"
           statusBarTranslucent={true}
           isVisible={isVisible}>
-          <View style={styles.modalInner}>
-            <View
-              style={[
-                {...styles.boxConatainer, style},
-                // {height: type == 'Units' ? height * 0.35 : height * 0.35},
-              ]}>
-              <View style={styles.boxInner}>
-                {/* Box Header */}
-                <Header
-                  barStyle="dark-content"
-                  leftComponent={{
-                    text: 'Close',
-                    style: {fontSize: width * 0.05, color: '#000'},
-                    onPress: close,
-                  }}
-                  centerComponent={
-                    <View style={styles.headerCenter}>
-                      <Text style={styles.headerCenterText}>Filter</Text>
-                    </View>
-                  }
-                  rightComponent={{
-                    text: 'Reset',
-                    style: {fontSize: width * 0.05, color: '#5c5c5ccf'},
-                    onPress: () => {
-                      type == 'Units'
-                        ? this.resetFilter()
-                        : this.onFocusFunction();
-                    },
-                  }}
-                  backgroundColor="#fff"
-                  containerStyle={styles.filterHeader}
-                />
-                <View style={{width: '100%'}}>
-                  {type == 'Properties' ? (
-                    <View style={styles.currentReadContainer}>
-                      <View style={styles.inputFilterView}>
-                        <Text style={styles.filterListText}>Name:</Text>
-                        <TextInput
-                          style={styles.filterInputs}
-                          value={this.context.filterPropName}
-                          onChangeText={(e) =>
-                            this.context.updateFilterProperty(e)
-                          }
-                        />
+          <KeyboardAvoidingView behavior="padding">
+            <View style={styles.modalInner}>
+              <View>
+                <View style={styles.boxInner}>
+                  {/* Box Header */}
+                  <Header
+                    barStyle="dark-content"
+                    leftComponent={{
+                      text: 'Close',
+                      style: {fontSize: width * 0.05, color: '#000'},
+                      onPress: this.closeModal,
+                    }}
+                    centerComponent={
+                      <View style={styles.headerCenter}>
+                        <Text style={styles.headerCenterText}>Filter</Text>
                       </View>
-                      <View style={styles.filterLists}>
-                        <Text style={styles.filterListText}>Billing</Text>
-                        <TouchableOpacity
-                          onPress={this.getBillingCompany}
-                          style={styles.billingButton}>
-                          <Text style={styles.filterListText}>
-                            {this.context.biller}
-                          </Text>
-                          <DropDown name="caret-down" size={20} />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  ) : null}
-                  {type == 'Properties' ? null : (
-                    <View>
+                    }
+                    rightComponent={{
+                      text: 'Reset',
+                      style: {fontSize: width * 0.05, color: '#000'},
+                      onPress: () => {
+                        type == 'Units'
+                          ? this.resetFilter()
+                          : this.onFocusFunction();
+                      },
+                    }}
+                    backgroundColor="#fff"
+                    containerStyle={styles.filterHeader}
+                  />
+                  <View style={{width: '100%'}}>
+                    {type == 'Properties' ? (
                       <View style={styles.currentReadContainer}>
                         <View style={styles.inputFilterView}>
-                          <Text style={styles.filterListText}>Building:</Text>
+                          <Text style={styles.filterListText}>Name:</Text>
                           <TextInput
                             style={styles.filterInputs}
-                            value={buildingName}
-                            editable={false}
+                            value={this.context.filterPropName}
+                            onChangeText={(e) =>
+                              this.context.updateFilterProperty(e)
+                            }
                           />
                         </View>
                         <View style={styles.inputFilterView}>
-                          <Text style={styles.filterListText}>
-                            Serial Number:
-                          </Text>
+                          <Text style={styles.filterListText}>Location:</Text>
                           <TextInput
                             style={styles.filterInputs}
-                            value={this.context.filterSerial}
+                            value={this.context.filterLocation}
                             onChangeText={(e) =>
-                              this.context.updateFilterSerial(e)
+                              this.context.updateFilterLocation(e)
                             }
                           />
-                          <TouchableOpacity
-                            onPress={() => this.toggleScanner()}>
-                            <Scanner name="scan" size={20} />
-                          </TouchableOpacity>
                         </View>
                       </View>
-                    </View>
-                  )}
-                  {type == 'Units' ? (
-                    <View style={styles.currentReadContainer}>
-                      <View style={styles.inputFilterView}>
-                        <Text style={styles.filterListText}>
-                          Utility Types:
-                        </Text>
-                        {utilityTypes.length ? (
-                          <FlatList
-                            horizontal
-                            style={styles.utilityList}
-                            data={utilityTypes}
-                            renderItem={({item, index}) => (
-                              <TouchableOpacity
-                                style={{
-                                  ...styles.UtilityTypeBtn,
-                                  backgroundColor:
-                                    index == this.state.utilityIndex
-                                      ? '#efefef'
-                                      : null,
-                                }}
-                                onPress={() =>
-                                  this.getUtilityType(item.name, index)
-                                }>
-                                <Image
-                                  source={this.typeSwitcher(item.name)}
-                                  resizeMode="contain"
-                                  style={styles.UtilityTypeImg}
-                                />
-                              </TouchableOpacity>
-                            )}
-                          />
-                        ) : (
-                          <View style={styles.utilityDots}>
-                            <DotsLoader color="gray" />
+                    ) : null}
+                    {type == 'Properties' ? null : (
+                      <View>
+                        <View style={styles.currentReadContainer}>
+                          <View style={styles.inputFilterView}>
+                            <Text style={styles.filterListText}>Building:</Text>
+                            <TextInput
+                              style={styles.filterInputs}
+                              value={buildingName}
+                              editable={false}
+                            />
                           </View>
-                        )}
+                          <View style={styles.inputFilterView}>
+                            <Text style={styles.filterListText}>
+                              Serial Number:
+                            </Text>
+                            <TextInput
+                              style={styles.filterInputs}
+                              value={this.context.filterSerial}
+                              placeholder={'Serial Number'}
+                              onChangeText={(e) =>
+                                this.context.updateFilterSerial(e)
+                              }
+                            />
+                            <TouchableOpacity
+                              onPress={() => this.toggleScanner()}>
+                              <Scanner name="scan" size={width * 0.05} />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
                       </View>
-                    </View>
-                  ) : null}
-                  <View
-                    style={{
-                      ...styles.currentReadContainer,
-                      marginVertical: height * 0.015,
-                    }}>
-                    <TouchableOpacity
+                    )}
+                    {type == 'Units' ? (
+                      <View style={styles.currentReadContainer}>
+                        <View style={styles.inputFilterView}>
+                          <Text style={styles.filterListText}>
+                            Utility Types:
+                          </Text>
+                          {/* <SearchableDropDown
+                            onItemSelect={(item) => {
+                              this.setState({selectedType: item.name});
+                            }}
+                            containerStyle={styles.dropDownFullContainer}
+                            itemStyle={styles.dropDownItems}
+                            itemTextStyle={styles.dropDownItemText}
+                            itemsContainerStyle={styles.dropDownItemContainer}
+                            items={utilityTypes}
+                            resetValue={false}
+                            textInputProps={{
+                              placeholder: 'Search Utility',
+                              underlineColorAndroid: 'transparent',
+                              style: styles.dropDownFullTextInput,
+                              value: this.state.selectedType,
+                            }}
+                            listProps={{
+                              nestedScrollEnabled: true,
+                            }}
+                          /> */}
+                          {utilityTypes.length ? (
+                            <FlatList
+                              horizontal
+                              style={styles.utilityList}
+                              data={utilityTypes}
+                              renderItem={({item, index}) => (
+                                <TouchableOpacity
+                                  style={{
+                                    ...styles.UtilityTypeBtn,
+                                    backgroundColor:
+                                      index == this.state.utilityIndex
+                                        ? '#efefef'
+                                        : null,
+                                  }}
+                                  onPress={() =>
+                                    this.getUtilityType(item.name, index)
+                                  }>
+                                  <Image
+                                    source={this.typeSwitcher(item.name)}
+                                    resizeMode="contain"
+                                    style={styles.UtilityTypeImg}
+                                  />
+                                </TouchableOpacity>
+                              )}
+                            />
+                          ) : (
+                            <View style={styles.utilityDots}>
+                              <DotsLoader color="gray" />
+                            </View>
+                          )}
+                        </View>
+                      </View>
+                    ) : null}
+                    <View
                       style={{
-                        ...styles.filterUtility,
-                        backgroundColor: '#25aae1',
-                      }}
-                      onPress={this.filter}>
-                      <Text style={{color: '#fff'}}>Filter</Text>
-                    </TouchableOpacity>
+                        ...styles.currentReadContainer,
+                        marginVertical: height * 0.015,
+                      }}>
+                      <TouchableOpacity
+                        disabled={
+                          (this.props.type == 'Properties' &&
+                            this.context.filterPropName) ||
+                          this.context.filterLocation
+                            ? false
+                            : (this.props.type == 'Units' &&
+                                this.context.filterSerial) ||
+                              this.state.selectedType != ''
+                            ? false
+                            : true
+                        }
+                        style={{
+                          ...styles.filterUtility,
+
+                          backgroundColor:
+                            (this.props.type == 'Properties' &&
+                              this.context.filterPropName) ||
+                            this.context.filterLocation
+                              ? '#25aae1'
+                              : (this.props.type == 'Units' &&
+                                  this.context.filterSerial) ||
+                                this.state.selectedType != ''
+                              ? '#25aae1'
+                              : '#bbb',
+                        }}
+                        onPress={this.filter}>
+                        <Text style={{color: '#fff'}}>Filter</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
-        <Modal statusBarTranslucent={true} isVisible={this.state.showList}>
+        {/* <Modal statusBarTranslucent={true} isVisible={this.state.showList}>
           <View style={styles.billingModalInner}>
             <View style={{height: '50%', width: '60%'}}>
               <View style={styles.boxInner}>
@@ -519,7 +579,7 @@ export default class Splash extends Component {
               </View>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
     );
   }

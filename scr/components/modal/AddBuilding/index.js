@@ -9,24 +9,22 @@ import {
   ScrollView,
   FlatList,
   Keyboard,
+  LogBox,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 //Packages
 
-import Build from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-simple-toast';
 import Modal from 'react-native-modal';
 import Home from 'react-native-vector-icons/FontAwesome5';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
-import {create} from 'apisauce';
-import Base_URL from '../../../api/WebServices';
-import EncryptedStorage from 'react-native-encrypted-storage';
 // Components
 
 import styles from './style';
+import API from '../../../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
-const api = create({baseURL: Base_URL});
 
 export default function AddbuildingModal({
   modalVisible,
@@ -37,6 +35,8 @@ export default function AddbuildingModal({
   modalName,
   lastUnitName,
   buildData,
+  unitCount,
+  unitActualCount,
 }) {
   const [meterListArray, setMeterListArray] = useState([]);
   const [state, setState] = useState({
@@ -51,25 +51,24 @@ export default function AddbuildingModal({
     buildingName: '',
   });
   const getToken = async () => {
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      console.log('It Worked', token);
-      api.setHeader('Authorization', 'Bearer ' + token);
-    }
     getLoopOfUnits();
   };
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, []);
+
   useEffect(() => {
     setState((oldState) => ({
       ...oldState,
       newUnit: lastUnitName == undefined ? 'Unit-0' : lastUnitName,
       buildName:
-        type == 'Multyple'
+        type == 'Multiple'
           ? buildData.buildingName == undefined
             ? ''
             : buildData.buildingName
           : '',
       buildDescription:
-        type == 'Multyple'
+        type == 'Multiple'
           ? buildData.buildDes == undefined
             ? ''
             : buildData.buildDes
@@ -186,11 +185,14 @@ export default function AddbuildingModal({
   };
 
   const newBuilding = () => {
+    const unitsTotal = state.unitsArray.length + unitActualCount;
+
     if (state.buildName === '') {
       setError((oldState) => ({
         ...oldState,
         buildingName: 'Invalid Building Name',
       }));
+      Toast.show('Invalid Building Name', Toast.SHORT);
       return;
     } else {
       setError((oldState) => ({
@@ -203,12 +205,18 @@ export default function AddbuildingModal({
         ...oldState,
         units: 'Empty units',
       }));
+      Toast.show('Empty Units', Toast.SHORT);
       return;
     } else {
       setError((oldState) => ({
         ...oldState,
         units: '',
       }));
+    }
+    if (unitsTotal > unitCount) {
+      Toast.show(`Unit add limit is ${unitCount}`, Toast.SHORT);
+      return;
+    } else {
       var loopData = [];
       var i;
       for (i = 0; i < state.unitsArray.length; i++) {
@@ -217,7 +225,7 @@ export default function AddbuildingModal({
         });
       }
       // console.log('looppdata--->',loopData)
-      if (type == 'Multyple') {
+      if (type == 'Multiple') {
         handleAddbuildingApi({
           building_id: buildData.buildId,
           units: loopData,
@@ -236,8 +244,8 @@ export default function AddbuildingModal({
 
   const handleAddbuildingApi = async (data) => {
     // console.log('check data-->', data)
-    if (type == 'Multyple') {
-      const unitResponse = await api.post(
+    if (type == 'Multiple') {
+      const unitResponse = await API.post(
         `/property/equipment/unit/add-multiple-units`,
         data,
       );
@@ -249,7 +257,7 @@ export default function AddbuildingModal({
         alert(unitResponse?.data?.message);
       }
     } else {
-      const unitResponse = await api.post(
+      const unitResponse = await API.post(
         `/property/equipment/building/add-building`,
         data,
       );
@@ -311,7 +319,7 @@ export default function AddbuildingModal({
                   <TextInput
                     placeholder="Building Name"
                     value={state.buildName}
-                    disabled={type == 'Multyple' ? true : false}
+                    disabled={type == 'Multiple' ? true : false}
                     error={error.buildingName}
                     onChangeText={(text) => {
                       setError((oldState) => ({
@@ -446,7 +454,9 @@ export default function AddbuildingModal({
                   <TouchableOpacity onPress={newBuilding}>
                     <View style={styles.submitBotton}>
                       <Plus name="plus" color="white" size={18} />
-                      <Text style={{color: 'white'}}>Add Building</Text>
+                      <Text style={{color: 'white'}}>
+                        {type == 'Multiple' ? 'Add' : 'Add Building'}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 </View>

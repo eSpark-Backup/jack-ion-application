@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -12,25 +12,26 @@ import {
   BackHandler,
   Platform,
 } from 'react-native';
-import TabIcon from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
-import {withNavigation} from 'react-navigation';
+import { withNavigation } from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
-import {create} from 'apisauce';
-import Base_URL from '../api/WebServices';
 import EncryptedStorage from 'react-native-encrypted-storage';
-let fcmToken = '';
+
 // Components
 import styles from './style';
+import { PERMISSIONS, request } from 'react-native-permissions';
+import API from '../api/SeviceApi';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+let fcmToken = '';
 class Splash extends Component {
   // static contextType = MainContext
   static navigationOptions = {
     title: 'Home',
-    tabBarIcon: ({tintColor}) => (
-      <TabIcon name="home" color={tintColor} size={height * 0.04} />
+    tabBarIcon: ({ tintColor }) => (
+      <AntDesign name="home" color={tintColor} size={height * 0.04} />
     ),
   };
 
@@ -45,23 +46,33 @@ class Splash extends Component {
   }
 
   async requestLocationPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      //   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      //     // console.log('Access',)
-      //     // alert("You've access for the Location");
-      //   } else {
-      //     // alert("You don't have access for the Location");
-      //     // console.log('Denied',)
-      //   }
-    } catch (err) {
-      alert(err);
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+      } catch (err) {
+        alert(err);
+      }
+    }
+    if (Platform.OS == 'ios') {
+      request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        .then((result) => {
+          console.log('kia hai result location ka', result);
+        })
+        .catch((e) => {
+          alert(err);
+        });
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const token = await EncryptedStorage.getItem('user_token');
+    console.log('Authorization:', token);
+
+    if (token != null) {
+      API.setHeader('Authorization', 'Bearer ' + token);
+    }
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
@@ -76,6 +87,23 @@ class Splash extends Component {
         this.showNotifications(remoteMessage);
       });
       return unsubscribe;
+    } else {
+      console.log('status:', authStatus);
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+        this.onAppBootstrap();
+        this.createChannels();
+        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+          // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+          this.showNotifications(remoteMessage);
+        });
+        return unsubscribe;
+      }
     }
   }
 
@@ -86,7 +114,7 @@ class Splash extends Component {
         onPress: () => null,
         style: 'cancel',
       },
-      {text: 'YES', onPress: () => BackHandler.exitApp()},
+      { text: 'YES', onPress: () => BackHandler.exitApp() },
     ]);
     return true;
   };
@@ -103,18 +131,11 @@ class Splash extends Component {
     fcmToken = await messaging().getToken();
 
     console.log('TOKEN_______sss', fcmToken);
-    const token = await EncryptedStorage.getItem('user_token');
-    if (token != null) {
-      this.setState({token: token});
-      this.api = create({
-        baseURL: Base_URL,
-        headers: {Authorization: 'Bearer ' + token},
-      });
-    }
+
     let tokenfcm = {
       fcm_token: fcmToken,
     };
-    let res = await this.api.post('/user/set-fcm-token', tokenfcm);
+    await API.post('/user/set-fcm-token', tokenfcm);
     // console.log('FCM TOKEN RES>>>>>>', res?.data);
   }
 
@@ -143,11 +164,11 @@ class Splash extends Component {
           hidden
           showHideTransition={'fade'}
         />
-        <View style={{elevation: width * 0.05}}>
+        <View style={{ elevation: width * 0.05 }}>
           <Image
             source={require('../../Images/loogo.png')}
             resizeMode="contain"
-            style={{height: height * 0.14}}
+            style={{ height: height * 0.15 }}
           />
         </View>
         <View

@@ -1,4 +1,4 @@
-import React, { Component, Fragment, version } from 'react';
+import React, {Component, Fragment, version} from 'react';
 
 import {
   Text,
@@ -8,25 +8,23 @@ import {
   Pressable,
   KeyboardAvoidingView,
 } from 'react-native';
-import { Fonts } from '../../../utils/fonts';
+import {Fonts} from '../../../utils/fonts';
 
 //Packages
-import Base_URL from '../../../api/WebServices';
 import Build from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
-import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { create } from 'apisauce';
 
 // Components
 
 import styles from './style';
-const { width, height } = Dimensions.get('window');
+import API from '../../../api/SeviceApi';
+const {width, height} = Dimensions.get('window');
 let manufacturers = [
   {
     id: 1,
@@ -56,7 +54,6 @@ const models = [
   },
 ];
 export default class MeterTypeBuilder extends Component {
-
   state = {
     meterTypeInputs: [
       {
@@ -98,23 +95,20 @@ export default class MeterTypeBuilder extends Component {
       unit_of_measure_id: '',
     },
     meterListData: [],
-
-  }
-  getToken = async () => {
-
   };
+  getToken = async () => {};
   onChangeTypeBuilder = (e, index) => {
     // console.log('index: ' + index);
     // console.log('property name: ' + e.target.value);
     let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
     newArr[index].input = e; // replace e.target.value with whatever you want to change it to
-    this.setState({ meterTypeInputs: newArr }, () =>
+    this.setState({meterTypeInputs: newArr}, () =>
       console.log('e--->', this.state.meterTypeInputs),
     );
     if (index == 0) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, manufacturer: e },
+          meterTypeData: {...this.state.meterTypeData, manufacturer: e},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -122,7 +116,7 @@ export default class MeterTypeBuilder extends Component {
     if (index == 1) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, model: e },
+          meterTypeData: {...this.state.meterTypeData, model: e},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -130,7 +124,7 @@ export default class MeterTypeBuilder extends Component {
     if (index == 2) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, multiplier: Number(e) },
+          meterTypeData: {...this.state.meterTypeData, multiplier: Number(e)},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -138,7 +132,7 @@ export default class MeterTypeBuilder extends Component {
     if (index == 3) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: e },
+          meterTypeData: {...this.state.meterTypeData, unit_of_measure_id: e},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -149,13 +143,13 @@ export default class MeterTypeBuilder extends Component {
     newArr[index].showList = !newArr[index].showList;
     newArr[index].input = val;
     newArr[index].error = '';
-    this.setState({ meterTypeInputs: newArr }, () =>
+    this.setState({meterTypeInputs: newArr}, () =>
       console.log('Meter Type', this.state.meterTypeInputs),
     );
     if (index == 0) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, manufacturer: val },
+          meterTypeData: {...this.state.meterTypeData, manufacturer: val},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -163,7 +157,7 @@ export default class MeterTypeBuilder extends Component {
     if (index == 1) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, model: val },
+          meterTypeData: {...this.state.meterTypeData, model: val},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -171,7 +165,7 @@ export default class MeterTypeBuilder extends Component {
     if (index == 2) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, multiplier: val },
+          meterTypeData: {...this.state.meterTypeData, multiplier: val},
         },
         () => console.log('Meter Type', this.state.meterTypeData),
       );
@@ -179,7 +173,7 @@ export default class MeterTypeBuilder extends Component {
     if (index == 3) {
       this.setState(
         {
-          meterTypeData: { ...this.state.meterTypeData, unit_of_measure_id: val },
+          meterTypeData: {...this.state.meterTypeData, unit_of_measure_id: val},
           measureOfUnitName: name,
         },
         () => console.log('Meter Type', this.state.meterTypeData),
@@ -190,107 +184,102 @@ export default class MeterTypeBuilder extends Component {
     let newArr = [...this.state.meterTypeInputs];
     newArr[index].showList = !newArr[index].showList;
 
-    this.setState({ meterTypeInputs: newArr });
+    this.setState({meterTypeInputs: newArr});
   };
   handleSaveMeterTypeBuilder = async () => {
     if (!this.state.meterTypeData.manufacturer) {
       this.state.meterTypeInputs.map((item, index) => {
         let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
         newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
+        this.setState({meterTypeInputs: newArr});
       });
       let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
       newArr[0].error = 'Select manufacturer'; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
+      this.setState({meterTypeInputs: newArr});
       return;
     }
     if (!this.state.meterTypeData.model) {
       this.state.meterTypeInputs.map((item, index) => {
         let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
         newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
+        this.setState({meterTypeInputs: newArr});
       });
       let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
       newArr[1].error = 'Select model'; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
+      this.setState({meterTypeInputs: newArr});
       return;
     }
     if (!this.state.meterTypeData.multiplier) {
       this.state.meterTypeInputs.map((item, index) => {
         let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
         newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
+        this.setState({meterTypeInputs: newArr});
       });
       let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
       newArr[2].error = 'This should be greater then one '; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
+      this.setState({meterTypeInputs: newArr});
       return;
     }
     if (!this.state.meterTypeData.unit_of_measure_id) {
       this.state.meterTypeInputs.map((item, index) => {
         let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
         newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
+        this.setState({meterTypeInputs: newArr});
       });
       let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
       newArr[3].error = 'Select measure of unit '; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
+      this.setState({meterTypeInputs: newArr});
       return;
     } else {
       this.state.meterTypeInputs.map((item, index) => {
         let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
         newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-        this.setState({ meterTypeInputs: newArr });
+        this.setState({meterTypeInputs: newArr});
       });
       console.log('measureOfUnit Of_______', this.state.meterTypeData);
-      const token = await EncryptedStorage.getItem('user_token');
-      if (token != null) {
-        // console.log('token aya', token);
-        // this.setState({token: token});
-        this.api = create({
-          baseURL: Base_URL,
-          headers: {Authorization: 'Bearer ' + token},
-        });
-        }
-      const unitResponse = await this.api.post(
+
+      const unitResponse = await API.post(
         `/property/equipment/type/add-type`,
         this.state.meterTypeData,
       );
       console.log('addtype response--->', unitResponse);
       if (unitResponse?.ok) {
-      this.setState({ measureOfUnit: unitResponse?.data?.data }, () =>
-      console.log('measureOfUnit Of_______', this.state.measureOfUnit),
-      );
-      this.setState((prevState) => ({
-        ...prevState,
-        meterTypeData: {
-          // object that we want to update
-          ...prevState.meterTypeData, // keep all other key-value pairs
-          manufacturer: '',
-          model: '',
-          multiplier: 1,
-          unit_of_measure_id: '', // update the value of specific key
-        },
-        measureOfUnitName: '',
-      }),
-        () => this.props.meterTypeSelect({ 
-          name: 
-          unitResponse?.data?.data?.type?.model +
-          '(x' +
-          unitResponse?.data?.data?.type?.multiplier +
-          unitResponse?.data?.data?.type?.unit_of_measure +
-          ')',
-          id:unitResponse?.data?.data?.type?.id
-        }));
-      this.state.meterTypeInputs.map((item, index) => {
-        let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
-        if (index != 2) {
-          newArr[index].input = ''; // replace e.target.value with whatever you want to change it to
-        } else {
-          newArr[index].input = '1';
-        }
-        this.setState({ meterTypeInputs: newArr });
-      });
+        this.setState({measureOfUnit: unitResponse?.data?.data}, () =>
+          console.log('measureOfUnit Of_______', this.state.measureOfUnit),
+        );
+        this.setState(
+          (prevState) => ({
+            ...prevState,
+            meterTypeData: {
+              // object that we want to update
+              ...prevState.meterTypeData, // keep all other key-value pairs
+              manufacturer: '',
+              model: '',
+              multiplier: 1,
+              unit_of_measure_id: '', // update the value of specific key
+            },
+            measureOfUnitName: '',
+          }),
+          () =>
+            this.props.meterTypeSelect({
+              name:
+                unitResponse?.data?.data?.type?.model +
+                '(x' +
+                unitResponse?.data?.data?.type?.multiplier +
+                unitResponse?.data?.data?.type?.unit_of_measure +
+                ')',
+              id: unitResponse?.data?.data?.type?.id,
+            }),
+        );
+        this.state.meterTypeInputs.map((item, index) => {
+          let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
+          if (index != 2) {
+            newArr[index].input = ''; // replace e.target.value with whatever you want to change it to
+          } else {
+            newArr[index].input = '1';
+          }
+          this.setState({meterTypeInputs: newArr});
+        });
       } else {
         alert('Network error');
       }
@@ -302,19 +291,20 @@ export default class MeterTypeBuilder extends Component {
     //   isModalMeterVisible: false,
     //   measureOfUnitName: '',
     // });
-    this.setState((prevState) => ({
-      ...prevState,
-      meterTypeData: {
-        // object that we want to update
-        ...prevState.meterTypeData, // keep all other key-value pairs
-        manufacturer: '',
-        model: '',
-        multiplier: 1,
-        unit_of_measure_id: '', // update the value of specific key
-      },
-      measureOfUnitName: '',
-    }),
-    () => this.props.onCancel(false)
+    this.setState(
+      (prevState) => ({
+        ...prevState,
+        meterTypeData: {
+          // object that we want to update
+          ...prevState.meterTypeData, // keep all other key-value pairs
+          manufacturer: '',
+          model: '',
+          multiplier: 1,
+          unit_of_measure_id: '', // update the value of specific key
+        },
+        measureOfUnitName: '',
+      }),
+      () => this.props.onCancel(false),
     );
     this.state.meterTypeInputs.map((item, index) => {
       let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
@@ -324,7 +314,7 @@ export default class MeterTypeBuilder extends Component {
         newArr[index].input = '1';
       }
       newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
-      this.setState({ meterTypeInputs: newArr });
+      this.setState({meterTypeInputs: newArr});
     });
   };
   render() {
@@ -336,13 +326,11 @@ export default class MeterTypeBuilder extends Component {
       children,
       doneBtnTitle,
       onDone,
-      measureOfUnit
+      measureOfUnit,
     } = this.props;
 
-
-    const { meterTypeInputs } = this.state;
+    const {meterTypeInputs} = this.state;
     return (
-
       <Modal
         animationIn="slideInDown"
         animationOut="slideOutUp"
@@ -400,7 +388,7 @@ export default class MeterTypeBuilder extends Component {
                                 this.hideSuggestion(index, item.name);
                                 console.log('kuch', indexy);
                               }}
-                              containerStyle={{ padding: width * 0.03 }}
+                              containerStyle={{padding: width * 0.03}}
                               itemStyle={{
                                 padding: width * 0.027,
                                 // marginTop: width * 0.01,
@@ -409,26 +397,20 @@ export default class MeterTypeBuilder extends Component {
                                 borderWidth: width * 0.0015,
                                 borderRadius: width * 0.015,
                               }}
-                              itemTextStyle={{ color: '#222' }}
+                              itemTextStyle={{color: '#222'}}
                               itemsContainerStyle={{
                                 maxHeight: height * 0.135,
                               }}
-                              items={
-                                index == 0 ? manufacturers : models
-                              }
+                              items={index == 0 ? manufacturers : models}
                               resetValue={false}
                               textInputProps={{
                                 placeholder:
-                                  index == 0
-                                    ? 'Manufacturer*'
-                                    : 'Models*',
+                                  index == 0 ? 'Manufacturer*' : 'Models*',
                                 underlineColorAndroid: 'transparent',
                                 style: {
                                   padding: width * 0.027,
                                   margin: 0,
-                                  borderColor: item.error
-                                    ? '#A3001B'
-                                    : 'black',
+                                  borderColor: item.error ? '#A3001B' : 'black',
                                   borderWidth: width * 0.0019,
                                   borderRadius: width * 0.015,
                                 },
@@ -436,10 +418,7 @@ export default class MeterTypeBuilder extends Component {
                                   // console.log(text);
                                   this.onChangeTypeBuilder(text, index);
                                 },
-                                value: setTimeout(
-                                  () => item.input,
-                                  200,
-                                ),
+                                value: setTimeout(() => item.input, 200),
                                 defaultValue: item.input,
                               }}
                               listProps={{
@@ -451,9 +430,7 @@ export default class MeterTypeBuilder extends Component {
                               }}
                             />
                             {item.error ? (
-                              <HelperText
-                                type="error"
-                                visible={item.error}>
+                              <HelperText type="error" visible={item.error}>
                                 {item.error}
                               </HelperText>
                             ) : null}
@@ -482,8 +459,7 @@ export default class MeterTypeBuilder extends Component {
                                     // height: height * 0.04,
                                     width: width * 0.38,
                                   }}>
-                                  <Text
-                                    style={styles.desciptionHeading}>
+                                  <Text style={styles.desciptionHeading}>
                                     {item.name}
                                   </Text>
                                 </View>
@@ -491,14 +467,11 @@ export default class MeterTypeBuilder extends Component {
                                   style={[
                                     styles.inputContainer,
                                     {
-                                      width: width * 0.35
-
+                                      width: width * 0.35,
                                     },
                                   ]}>
                                   <MenuT
-                                    visible={
-                                      index == 3 ? item.showList : null
-                                    }
+                                    visible={index == 3 ? item.showList : null}
                                     anchor={
                                       index == 2 ? (
                                         <View>
@@ -519,10 +492,13 @@ export default class MeterTypeBuilder extends Component {
                                                 index,
                                               )
                                             }
-                                            style={[styles.input, {
-                                              height: height * 0.058,
-                                              width: width * 0.35
-                                            }]}
+                                            style={[
+                                              styles.input,
+                                              {
+                                                height: height * 0.058,
+                                                width: width * 0.35,
+                                              },
+                                            ]}
                                             error={item.error}
                                             mode={'outlined'}
                                             theme={{
@@ -545,20 +521,16 @@ export default class MeterTypeBuilder extends Component {
                                         <View>
                                           <TouchableOpacity
                                             style={{
-                                              backgroundColor:
-                                                '#F6F6F6',
+                                              backgroundColor: '#F6F6F6',
                                               justifyContent: 'center',
                                               borderColor: item.error
                                                 ? 'red'
                                                 : 'gray',
                                               width: width * 0.35,
                                               height: height * 0.061,
-                                              borderWidth:
-                                                width * 0.003,
-                                              borderRadius:
-                                                width * 0.01,
-                                              paddingHorizontal:
-                                                width * 0.03,
+                                              borderWidth: width * 0.003,
+                                              borderRadius: width * 0.01,
+                                              paddingHorizontal: width * 0.03,
                                               marginTop: width * 0.014,
                                             }}
                                             onPress={() =>
@@ -567,8 +539,7 @@ export default class MeterTypeBuilder extends Component {
                                             <Text
                                               style={{
                                                 color: '#25AAE1ec',
-                                                textTransform:
-                                                  'capitalize',
+                                                textTransform: 'capitalize',
                                               }}>
                                               {index == 3
                                                 ? this.state.measureOfUnitName
@@ -592,12 +563,9 @@ export default class MeterTypeBuilder extends Component {
                                       this.hideSuggestion(index)
                                     }>
                                     {index == 3
-                                      ? measureOfUnit.map(
-                                        (item) => (
+                                      ? measureOfUnit.map((item) => (
                                           <MenuItem
-                                            textStyle={
-                                              styles.textCapitalize
-                                            }
+                                            textStyle={styles.textCapitalize}
                                             onPress={() =>
                                               this.hideSuggestion(
                                                 index,
@@ -607,8 +575,7 @@ export default class MeterTypeBuilder extends Component {
                                             }>
                                             {item.name}
                                           </MenuItem>
-                                        ),
-                                      )
+                                        ))
                                       : null}
                                   </MenuT>
                                 </View>
@@ -647,13 +614,25 @@ export default class MeterTypeBuilder extends Component {
                     <TouchableOpacity onPress={this.meterTypeClose}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{ color: 'black',fontFamily:Fonts.Montserrat }}>Cancel</Text>
+                        <Text
+                          style={{
+                            color: 'black',
+                            fontFamily: Fonts.Montserrat,
+                          }}>
+                          Cancel
+                        </Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this.handleSaveMeterTypeBuilder}>
                       <View style={styles.saveUnitBotton}>
                         <Plus name="plus" color="white" size={18} />
-                        <Text style={{ color: 'white',fontFamily:Fonts.Montserrat }}>{doneBtnTitle}</Text>
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontFamily: Fonts.Montserrat,
+                          }}>
+                          {doneBtnTitle}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   </View>

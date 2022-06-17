@@ -21,7 +21,7 @@ export default styles = StyleSheet.create({
   },
   flexRow: {flexDirection: 'row'},
   flexColumn: {flexDirection: 'column'},
-  centerIcon: {alignSelf: 'center'},
+  centerIcon: {alignItems: 'center'},
   dangerBtn: {
     backgroundColor: '#e24b4b',
     marginBottom: height * 0.03,
@@ -106,7 +106,7 @@ export default styles = StyleSheet.create({
   chartPadding: {left: 40, bottom: 20, right: 20, top: 20},
   legendContainer: {flexDirection: 'row', alignSelf: 'center'},
   meterUsageBox: {
-    backgroundColor: '#DFDFDF',
+    backgroundColor: 'gray',
     width: width * 0.03,
     height: width * 0.03,
     alignSelf: 'center',
@@ -130,5 +130,20 @@ export default styles = StyleSheet.create({
     width: width * 0.9,
     alignSelf: 'center',
     marginBottom: width * 0.05,
+  },
+  attemptBtn: {
+    width: width * 0.5,
+    height: width * 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: width * 0.01,
+    marginVertical: width * 0.03,
+    elevation: width * 0.003,
+    backgroundColor: 'green',
+  },
+  attemptText: {
+    color: '#f5f5f5',
+    fontSize: width * 0.035,
+    fontWeight: 'bold',
   },
 });

@@ -4,10 +4,10 @@
  *
  * @format
  * @flow strict-local
- * 
+ *
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,7 +16,7 @@ import {
   Text,
   StatusBar,
   Pressable,
-  Button 
+  Button,
 } from 'react-native';
 
 import {
@@ -26,13 +26,12 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-// var Speech = require('react-native-speech');
 import Tts from 'react-native-tts';
 
 // Tts.setDefaultLanguage('en-GB')
 // Tts.setDefaultVoice('com.apple.ttsbundle.Daniel-compact')
 Tts.setDefaultLanguage('en-IE');
-Tts.setDefaultRate(.9, true);
+Tts.setDefaultRate(0.9, true);
 Tts.setDefaultPitch(1);
 
 export default class MainAdscreen extends Component {
@@ -54,15 +53,12 @@ export default class MainAdscreen extends Component {
   render() {
     return (
       <>
-        <StatusBar barStyle="dark-content" hidden/>
+        <StatusBar barStyle="dark-content" hidden />
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
-            <Button
-              title="Speak!"
-              onPress={this._startHandler}
-            />
+            <Button title="Speak!" onPress={this._startHandler} />
           </ScrollView>
         </SafeAreaView>
       </>
@@ -108,4 +104,3 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-

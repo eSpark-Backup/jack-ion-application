@@ -51,7 +51,7 @@ export default styles = StyleSheet.create({
   },
   headingContainer: {
     width: width * 1,
-    height: height * 0.07,
+    height: width * 0.12,
   },
   headingInner: {
     flex: 1,
@@ -63,8 +63,13 @@ export default styles = StyleSheet.create({
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.04,
+    fontSize: width * 0.06,
     color: 'white',
+    marginLeft: width * 0.01,
+  },
+  menuButton: {
+    left: width * 0.03,
+    position: 'absolute',
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
@@ -118,6 +123,68 @@ export default styles = StyleSheet.create({
     marginBottom: height * 0.01,
     textAlign: 'center',
     width: width * 0.75,
+  },
+  unitMixesHeadContainer: {
+    width: width * 0.85,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginBottom: width * 0.01,
+  },
+  unitMixesHeads: {
+    width: width * 0.14,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  unitMixesValuesContainer: {
+    width: '100%',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginBottom: height * 0.01,
+    paddingVertical: width * 0.005,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  unitMixesValues: {
+    width: width * 0.14,
+    textAlign: 'center',
+  },
+  sumUnitMixes: {
+    width: width * 0.8,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  sumUnitMixesHead: {
+    width: width * 0.25,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  sumUnitMixesValuesView: {
+    borderTopWidth: 1,
+    width: '90%',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    paddingVertical: width * 0.02,
+  },
+  tpanelHeads: {
+    width: width * 0.25,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginHorizontal: 5,
+  },
+  tpanelValuesContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: height * 0.01,
+    paddingVertical: width * 0.005,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  tpanelValues: {
+    width: width * 0.25,
+    marginHorizontal: 5,
+    textAlign: 'center',
   },
   contactViewContainer: {
     width: width * 0.9,
@@ -213,12 +280,10 @@ export default styles = StyleSheet.create({
   barView: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: height * 0.23,
-    width: height * 0.23,
-    backgroundColor: 'white',
-    borderRadius: width * 0.6,
-    marginTop: height * 0.02,
-    elevation: height * 0.01,
+    alignSelf: 'center',
+    height: width * 0.66,
+    width: width * 0.66,
+    marginVertical: width * 0.08,
   },
   barText: {
     textAlign: 'center',
@@ -326,6 +391,7 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     marginBottom: height * 0.01,
+    justifyContent: 'space-between',
   },
   desciptionHeading: {
     fontSize: height * 0.015,
@@ -399,5 +465,34 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: width * 0.03,
     marginVertical: height * 0.005,
+  },
+  onlineOfflineView: {
+    flexDirection: 'row',
+    width: width * 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  onlineView: {
+    width: width * 0.035,
+    height: width * 0.035,
+    borderRadius: 100,
+    backgroundColor: '#175CA1',
+  },
+  onlineText: {
+    fontSize: width * 0.03,
+    color: '#2D2A2B',
+    fontFamily: Fonts.Montserrat,
+    marginRight: width * 0.03,
+  },
+  offlineView: {
+    width: width * 0.035,
+    height: width * 0.035,
+    borderRadius: 100,
+    backgroundColor: '#ff1414',
+  },
+  offlineText: {
+    fontSize: width * 0.03,
+    color: '#2D2A2B',
+    fontFamily: Fonts.Montserrat,
   },
 });
