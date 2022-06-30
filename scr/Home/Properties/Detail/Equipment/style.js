@@ -82,7 +82,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+  },  
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.06,
