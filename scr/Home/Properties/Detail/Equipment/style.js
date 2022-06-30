@@ -78,6 +78,11 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     flexDirection: 'row',
   },
+  headerIconContainer:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },  
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.06,

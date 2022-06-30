@@ -286,5 +286,40 @@ export default styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  animatedView:{
+    flexDirection: 'row',
+    width: width * 0.9,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: width * 0.01,
+    backgroundColor: '#25AAE1ec',
+    borderBottomLeftRadius: width * 0.01,
+    borderBottomRightRadius: width * 0.01,
+    borderWidth: width * 0.001,
+  },
+  animatedViewDetailBtn:{
+    margin: width * 0.01,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  animatedViewDetailBtnName:{
+    color: 'white',
+    fontFamily: Fonts.Montserrat,
+    fontSize: width * 0.03,
+  },
+  pullDownContainer:{
+    width:width * 0.4,
+    justifyContent:'center',
+    alignItems:'center',
+    alignSelf:'center',
+    backgroundColor:'white',
+    elevation:height * .005,
+    position:'absolute'
+  },
+  pullDownText:{
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * .015,
+  }
+
   
 });

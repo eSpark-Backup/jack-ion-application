@@ -94,7 +94,7 @@ export default class Splash extends Component {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       // console.log('LOADDATA', this.context.loadData);
       // this.setState({ isPullDownShow: true });
-      if(this.context.propList){
+      if (this.context.propList) {
         this.setState({ isPullDownShow: true });
         this.hidePullDown()
       }
@@ -541,7 +541,7 @@ export default class Splash extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-        ) : null }
+        ) : null}
       </View>
     );
   };
@@ -789,15 +789,11 @@ export default class Splash extends Component {
               <Text>No Properties to Show</Text>
             ) : (
               <View>
-                {/* {this.state.isPullDownShow &&zzzzzz */}
-                  <View style={[styles.pullDownContainer,{height:this.state.isPullDownShow ? height * .07 : height * 0,}]}>
-                    <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
-                    {/* <MaterialIcons name="edit" color="white" size={width * 0.04} /> */}
-                    <Text style={{
-                      fontFamily: Fonts.Montserrat
-                    }}>Pull down to refresh</Text>
-                  </View>
-                {/* } */}
+                <View style={[styles.pullDownContainer, { height: this.state.isPullDownShow ? height * .07 : height * 0, }]}>
+                  <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
+                  {/* <MaterialIcons name="edit" color="white" size={width * 0.04} /> */}
+                  <Text style={styles.pullDownText}>Pull down to refresh</Text>
+                </View>
                 <FlatList
                   data={this.context.propList}
                   renderItem={this._renderPropList}
