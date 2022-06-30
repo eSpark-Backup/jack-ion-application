@@ -58,7 +58,7 @@ class Splash extends Component {
     if (Platform.OS == 'ios') {
       request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
         .then((result) => {
-          console.log('kia hai result location ka', result);
+          console.log('result---->', result);
         })
         .catch((e) => {
           alert(err);
@@ -68,7 +68,6 @@ class Splash extends Component {
 
   async componentDidMount() {
     const token = await EncryptedStorage.getItem('user_token');
-    console.log('Authorization:', token);
 
     if (token != null) {
       API.setHeader('Authorization', 'Bearer ' + token);
@@ -88,18 +87,15 @@ class Splash extends Component {
       });
       return unsubscribe;
     } else {
-      console.log('status:', authStatus);
       const authStatus = await messaging().requestPermission();
       const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
       if (enabled) {
-        console.log('Authorization status:', authStatus);
         this.onAppBootstrap();
         this.createChannels();
         const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-          // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
           this.showNotifications(remoteMessage);
         });
         return unsubscribe;
@@ -130,13 +126,11 @@ class Splash extends Component {
     // Get the token
     fcmToken = await messaging().getToken();
 
-    console.log('TOKEN_______sss', fcmToken);
 
     let tokenfcm = {
       fcm_token: fcmToken,
     };
     await API.post('/user/set-fcm-token', tokenfcm);
-    // console.log('FCM TOKEN RES>>>>>>', res?.data);
   }
 
   createChannels = () => {
@@ -147,7 +141,6 @@ class Splash extends Component {
   };
 
   showNotifications = (item) => {
-    console.log('kia mila items', item.notification);
     PushNotification.localNotification({
       channelId: 'test-id',
       title: item.notification.title,
