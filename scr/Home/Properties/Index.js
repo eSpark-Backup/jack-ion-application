@@ -92,18 +92,10 @@ export default class Splash extends Component {
   async componentDidMount() {
     this.onFocusFunction();
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      // console.log('LOADDATA', this.context.loadData);
-      // this.setState({ isPullDownShow: true });
       if (this.context.propList) {
         this.setState({ isPullDownShow: true });
         this.hidePullDown()
       }
-      // if (this.context.loadData) {
-      // } else {
-
-      // this.context.stopLoader();
-      // this.context.doLoad();
-      // }
     });
   }
 
@@ -158,9 +150,6 @@ export default class Splash extends Component {
     this.selectedProp(prop);
   };
 
-  // handleLoader = (child) => {
-  //   this.setState({ loadScreen: true });
-  // };
   selectedProp = (prop) => {
     this.setState({
       currentIndex: prop.index === this.state.currentIndex ? null : prop.index,
@@ -169,7 +158,6 @@ export default class Splash extends Component {
   };
 
   LoadData = async () => {
-    // console.log('End reached');
     await this.context.loadMoreData();
   };
 
@@ -198,7 +186,6 @@ export default class Splash extends Component {
   _renderMap = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log('Positon Batao', position);
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
         // this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
@@ -215,7 +202,6 @@ export default class Splash extends Component {
             this.setState({ isAddPropVisible: true });
           },
         );
-        console.log('What we Get', this.state.markers);
       },
       (error) => console.log('geo location', error),
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
@@ -225,7 +211,6 @@ export default class Splash extends Component {
   enableLocation = async () => {
     this.context.loadLoader();
     const location = await SystemSetting.isLocationEnabled();
-    console.log('GPS', location);
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
       this.context.stopLoader();
@@ -251,7 +236,6 @@ export default class Splash extends Component {
           })
             .then((json) => {
               var locationName = json.results[0].formatted_address;
-              console.log('LOACTION NAME', locationName);
               // this.fetchAddressData(locationName);
               this.setState({
                 locationBtn: locationName,
@@ -344,7 +328,6 @@ export default class Splash extends Component {
   };
 
   deleteProperty = async (id) => {
-    console.log('ID', id);
     this.context.loadLoader();
     const response = await API.post(`/property/delete/${id}`);
     if (response?.data?.bool) {
@@ -550,18 +533,13 @@ export default class Splash extends Component {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      // console.log('Connection type', state.type);
-      // console.log('Is connected?', state.isConnected);
-      // console.log('isInternetReachable?', state.isInternetReachable);
       this.setState({ noInternet: !state.isInternetReachable });
       if (state.isConnected) {
         this.closeAddProp();
-        // console.log('True chala');
         this.context.checkData();
         this.setState({ propertyList: this.context.propList });
         this.setState({ loadScreen: true, });
       } else {
-        // console.log('False chala');
         this.setState({ loadScreen: true });
       }
       this.context.dontLoad();
@@ -572,7 +550,6 @@ export default class Splash extends Component {
     this.setState({ fetching: true, });
     await this.sleep(2000);
     this.setState({ fetching: false, isPullDownShow: true });
-    // console.log("its reun _____")
     this.context.checkData();
     this.setState({ loadScreen: true });
   };
@@ -595,9 +572,7 @@ export default class Splash extends Component {
   render() {
     if (!this.context.isLoading && this.state.loadScreen) {
       this.setState({ loadScreen: false });
-      // this.setState({ Loading: true });
       this.hidePullDown()
-      // console.log('loader should be run or not')
     }
     if (!this.context.filterWork && this.state.filterWork) {
       this.setState({ filterWork: false });
