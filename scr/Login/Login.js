@@ -4,26 +4,23 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  Button,
   Dimensions,
   Image,
-  KeyboardAvoidingView,
-  Alert,
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
-import User from 'react-native-vector-icons/FontAwesome';
-import Key from 'react-native-vector-icons/FontAwesome5';
-import styles from './style';
-import { Input } from 'react-native-elements';
-import { Fonts } from '../utils/fonts';
+
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NetInfo from '@react-native-community/netinfo';
-import API from '../api/SeviceApi';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+import styles from './style';
+import API from '../api/SeviceApi';
 
 const { width, height } = Dimensions.get('window');
 
@@ -187,7 +184,7 @@ export default class Login extends Component {
             }) => (
               <>
                 <View style={styles.textInputContainer}>
-                  <User
+                  <FontAwesome
                     name="user"
                     color="#06012B"
                     size={width * 0.035}
@@ -213,7 +210,7 @@ export default class Login extends Component {
                   )}
                 </View>
                 <View style={styles.textInputContainer}>
-                  <Key
+                  <FontAwesome5
                     name="key"
                     color="#06012B"
                     size={width * 0.035}
