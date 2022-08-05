@@ -1,0 +1,249 @@
+import {StyleSheet, Dimensions, Platform} from 'react-native';
+import {Fonts} from '../../../../../utils/fonts';
+
+//Files
+const {width, height} = Dimensions.get('window');
+
+export default styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    alignItems: 'center',
+  },
+  headerContainer: {
+    borderBottomWidth: width * 0.003,
+    elevation: 1,
+  },
+  boxConatainer: {
+    width: width * 1,
+    marginVertical: width * 0.03,
+    paddingHorizontal: width * 0.03,
+  },
+  loaderStyle: {position: 'absolute', right: width * 0.03},
+  boxInner: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    borderRadius: width * 0.02,
+    elevation: width * 0.02,
+    alignItems: 'center',
+    // overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.36,
+    shadowRadius: 6.68,
+  },
+  currentReadContainer: {
+    width: '100%',
+  },
+  dimTextTicker: {
+    color: 'gray',
+    fontSize: width * 0.03,
+  },
+  inputFilterView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    elevation: 1,
+    marginVertical: height * 0.001,
+    paddingHorizontal: height * 0.02,
+  },
+  filterListText: {
+    color: '#5c5c5ccf',
+    fontSize: width * 0.04,
+  },
+  filterUtility: {
+    alignItems: 'center',
+    height: height * 0.16,
+    // backgroundColor: '#fff',
+    padding: width * 0.02,
+    elevation: 1,
+    marginVertical: width * 0.001,
+  },
+  propText: {
+    textTransform: 'capitalize',
+    fontFamily: Fonts.Montserrat,
+    fontSize: width * 0.04,
+    color: '#001522',
+    // textAlign: 'center',
+    textShadowOffset: {
+      width: width * 0.002,
+      height: height * 0.002,
+    },
+    textShadowRadius: width * 0.005,
+    textShadowColor: '#09BAF2',
+  },
+
+  propertiesContainer: {
+    width: '100%',
+    height: Platform.OS == 'ios' ? height * 0.04 : height * 0.04,
+    borderBottomWidth: 0.5,
+    paddingLeft: width * 0.02,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  propertiesText: {
+    fontSize: width * 0.04,
+    fontFamily: Fonts.Montserrat,
+    marginLeft: width * 0.02,
+  },
+  propertiesListContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: width * 0.002,
+    paddingVertical: width * 0.02,
+  },
+  propertyCheckContainer: {
+    position: 'absolute',
+    right: width * 0.02,
+    width: width * 0.05,
+    height: width * 0.05,
+    backgroundColor: '#25AAE1ec',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: width * 0.04,
+  },
+
+  buildingContainer: {
+    width: '100%',
+    height: height * 0.04,
+    borderBottomWidth: 0.5,
+    paddingHorizontal: width * 0.02,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  buildingInnerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buildingText: {
+    fontSize: width * 0.04,
+    fontFamily: Fonts.Montserrat,
+    marginLeft: width * 0.02,
+  },
+  buildingDefaultView: {
+    marginLeft: width * 0.03,
+    height: height * 0.07,
+    justifyContent: 'center',
+  },
+  buildingPropertySelectText: {
+    fontSize: width * 0.03,
+    fontFamily: Fonts.Montserrat,
+  },
+  buildingLoaderContainer: {
+    marginLeft: width * 0.03,
+    height: height * 0.07,
+    justifyContent: 'center',
+  },
+  buildingListContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: width * 0.002,
+    paddingVertical: width * 0.02,
+  },
+  buildingUnitCountText: {
+    fontSize: width * 0.03,
+    color: 'gray',
+  },
+  buildingCheckContainer: {
+    position: 'absolute',
+    right: width * 0.02,
+    width: width * 0.05,
+    height: width * 0.05,
+    backgroundColor: '#25AAE1ec',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: width * 0.04,
+  },
+  emptyBuildingContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: height * 0.07,
+    paddingHorizontal: width * 0.03,
+  },
+  emptyBuildingText: {
+    fontSize: width * 0.03,
+    fontFamily: Fonts.Montserrat,
+    marginRight: width * 0.03,
+  },
+
+  unitsContainer: {
+    width: '100%',
+    height: height * 0.04,
+    borderBottomWidth: 0.5,
+    paddingHorizontal: width * 0.02,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  unitsInnerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  unitsText: {
+    fontSize: width * 0.04,
+    fontFamily: Fonts.Montserrat,
+    marginLeft: width * 0.02,
+  },
+  unitsDefaultView: {
+    marginLeft: width * 0.03,
+    height: height * 0.07,
+    justifyContent: 'center',
+  },
+  unitsBuildingSelectText: {
+    fontSize: width * 0.03,
+    fontFamily: Fonts.Montserrat,
+  },
+  unitsLoaderContainer: {
+    marginLeft: width * 0.03,
+    height: height * 0.07,
+    justifyContent: 'center',
+  },
+  unitsListContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: width * 0.002,
+    paddingVertical: width * 0.02,
+  },
+  unitsMeterContainer: {
+    width: width * 0.6,
+    flexDirection: 'row',
+  },
+  unitsMeterImgStyle: {
+    height: width * 0.04,
+    width: width * 0.04,
+  },
+  unitsNoMeterText: {
+    fontSize: width * 0.03,
+    color: 'gray',
+  },
+  unitsCheckContainer: {
+    position: 'absolute',
+    right: width * 0.02,
+    width: width * 0.05,
+    height: width * 0.05,
+    backgroundColor: '#25AAE1ec',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: width * 0.04,
+  },
+  emptyunitsContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: height * 0.07,
+    paddingHorizontal: width * 0.03,
+  },
+  emptyUnitsText: {
+    fontSize: width * 0.03,
+    fontFamily: Fonts.Montserrat,
+    marginRight: width * 0.03,
+  },
+});
