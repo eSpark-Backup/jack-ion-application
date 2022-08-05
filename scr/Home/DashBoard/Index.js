@@ -504,7 +504,7 @@ export default class Splash extends Component {
               </View>
 
               <View style={styles.mainDataContainer}>
-                <View style={styles.infoViewContainer}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Properties')} style={styles.infoViewContainer}>
                   <View style={styles.infoViewLogo}>
                     <MaterialCommunityIcons
                       name="home-city-outline"
@@ -526,7 +526,7 @@ export default class Splash extends Component {
                       {propertiesPercent}% | {propertiesThisWeek} This Week
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.infoViewContainer}>
                   <View
                     style={{

@@ -623,7 +623,6 @@ class Property extends Component {
       if (state.isConnected) {
         this.closeAddProp();
         // this.context.checkData();
-        this.props?.fetchPropetry();
         this.setState({propertyList: this.context.propList});
         this.setState({loadScreen: true});
       } else {
@@ -658,7 +657,7 @@ class Property extends Component {
   };
 
   render() {
-    console.log('this.props.propList', this.props.propList);
+    console.log('this.props.isLoading', this.props.isLoading);
     if (!this.props.isLoading && this.state.loadScreen) {
       this.setState({loadScreen: false});
       this.hidePullDown();
@@ -864,12 +863,13 @@ class Property extends Component {
                   keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
                   ListFooterComponent={() =>
-                    this.context.listLoader ? (
+                    this.props.listLoader ? (
                       <ActivityIndicator color="#25dAE1" size="large" />
                     ) : null
                   }
                   onEndReachedThreshold={width * 0.0001}
-                  onEndReached={() => this.LoadData()}
+                  onMomentumScrollEnd={() => this.LoadData()}
+                  // onEndReached={() => this.LoadData()}
                 />
               </View>
             )}
@@ -884,6 +884,9 @@ const mapStateToProps = (state, ownProps) => ({
   propList: state.propertyReducer.propList,
   isLoading: state.propertyReducer.isLoading,
   offset: state.propertyReducer.offset,
+  listLoader: state.propertyReducer.listLoader,
+  limitExceed: state.propertyReducer.limitExceed
+
 });
 
 const mapDispatchToProps = (dispatch) => {

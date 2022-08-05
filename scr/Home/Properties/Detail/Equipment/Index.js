@@ -44,11 +44,13 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import UpdateModal from '../../../../components/modal/UpdateModal';
 import Drawer from '../../../../components/modal/Drawer/index';
 import AddBuilding from '../../../../components/modal/AddBuilding/index';
+import { connect } from 'react-redux';
+import { fetchPropetry } from '../../../../Store/Action/properties.action';
 
 const { width, height } = Dimensions.get('window');
 let buildListViewRef;
 
-export default class Splash extends Component {
+class Splash extends Component {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -179,7 +181,7 @@ export default class Splash extends Component {
           `/property/equipment/unit/all-units`,
           data,
         );
-
+        this.props.fetchPropetry()
         if (unitResponse?.ok == true) {
           this.setState({ realData: unitResponse?.data?.data, loader: false });
           let arry = unitResponse?.data?.data;
@@ -1422,3 +1424,14 @@ export default class Splash extends Component {
     );
   }
 }
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    fetchPropetry: () => dispatch(fetchPropetry()),
+
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Splash)
