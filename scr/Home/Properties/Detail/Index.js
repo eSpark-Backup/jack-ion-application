@@ -49,12 +49,14 @@ import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import API from '../../../api/SeviceApi';
+import { connect } from 'react-redux';
+import { fetchPropetry } from '../../../Store/Action/properties.action';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-export default class Splash extends React.Component {
+ class Details extends React.Component {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -340,6 +342,7 @@ export default class Splash extends React.Component {
       isLoading: true,
       isLoading: false,
     });
+    this.props.fetchPropetry()
     this.getPropertyDetails(this.state.propertyId);
   };
 
@@ -1052,3 +1055,16 @@ export default class Splash extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  isLoading: state.propertyReducer.isLoading,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    fetchPropetry: () => dispatch(fetchPropetry()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Details)

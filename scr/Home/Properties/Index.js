@@ -51,7 +51,7 @@ import {
 } from 'react-native-permissions';
 import API from '../../api/SeviceApi';
 import {connect} from 'react-redux';
-import {fetchPropetry} from '../../Store/Action/properties.action';
+import {fetchPropetry, loadMoreData} from '../../Store/Action/properties.action';
 const {width, height} = Dimensions.get('window');
 
 class Property extends Component {
@@ -159,7 +159,13 @@ class Property extends Component {
   };
 
   LoadData = async () => {
-    await this.context.loadMoreData();
+    let data = {
+      offset: this.props.offset,
+      search: this.context.filterPropName,
+      location: this.context.filterLocation,
+    };
+    this.props.loadMoreData(data)
+    // await this.context.loadMoreData();
   };
 
   cleardata = (prop) => {
@@ -334,7 +340,8 @@ class Property extends Component {
     if (response?.data?.bool) {
       this.setState({currentIndex: null});
       alert(response?.data?.message);
-      this.context.checkData();
+      // this.context.checkData();
+      this.props?.fetchPropetry();
       this.setState({propertyList: this.context.propList});
     } else {
       this.context.stopLoader();
@@ -615,7 +622,8 @@ class Property extends Component {
       this.setState({noInternet: !state.isInternetReachable});
       if (state.isConnected) {
         this.closeAddProp();
-        this.context.checkData();
+        // this.context.checkData();
+        this.props?.fetchPropetry();
         this.setState({propertyList: this.context.propList});
         this.setState({loadScreen: true});
       } else {
@@ -629,7 +637,8 @@ class Property extends Component {
     this.setState({fetching: true});
     await this.sleep(2000);
     this.setState({fetching: false, isPullDownShow: true});
-    this.context.checkData();
+    // this.context.checkData();
+    this.props?.fetchPropetry();
     this.setState({loadScreen: true});
   };
   hidePullDown = () => {
@@ -749,7 +758,7 @@ class Property extends Component {
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}
-              close={() => this.setState({showFilter: !this.state.showFilter})}
+              close={() => this.setState({showFilter: false})}
               filterWork={() => this.setState({filterWork: true})}
             />
             {this.state.showSearch ? (
@@ -874,12 +883,15 @@ class Property extends Component {
 const mapStateToProps = (state, ownProps) => ({
   propList: state.propertyReducer.propList,
   isLoading: state.propertyReducer.isLoading,
+  offset: state.propertyReducer.offset,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     // dispatching plain actions
     fetchPropetry: () => dispatch(fetchPropetry()),
+    loadMoreData: (data) => dispatch(loadMoreData(data)),
+
   };
 };
 
