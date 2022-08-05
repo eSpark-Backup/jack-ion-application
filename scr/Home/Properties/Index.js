@@ -116,7 +116,7 @@ class Property extends Component {
         return e.id;
       })
       .indexOf(Number(userId));
-    let ids = [...userData[index].recent_properties];
+    let  ids = [...userData[index].recent_properties];
     let found = ids.includes(item.id);
     if (!found) {
       if (ids.length > 9) {
@@ -150,7 +150,7 @@ class Property extends Component {
     this.addToRecent(prop.item);
     this.selectedProp(prop);
   };
-
+        
   selectedProp = (prop) => {
     this.setState({
       currentIndex: prop.index === this.state.currentIndex ? null : prop.index,
@@ -360,7 +360,7 @@ class Property extends Component {
             {prop.item.name == null ? 'Untitled' : prop.item.name}
           </TextTicker>
         </View>
-        <View style={{width: width * 0.6}}>
+        <View style={{ width: width * 0.6 }}>
           <TextTicker
             style={{color: 'gray'}}
             duration={6000}
@@ -406,14 +406,14 @@ class Property extends Component {
     ) {
       this.setState({stopLoader: true});
     }
-    console.log('prop--------------->', prop);
+    console.log("prop--------------->", prop)
     return (
       <View style={styles.propListContainer}>
         <TouchableOpacity
           style={{
             ...styles.propButton,
             borderBottomLeftRadius:
-              prop.index === this.state.currentIndex ? 0 : width * 0.008,
+              prop.index === this.state.currentIndex ? 0 : width * 0.008,  
             borderBottomRightRadius:
               prop.index === this.state.currentIndex ? 0 : width * 0.008,
           }}
@@ -424,7 +424,7 @@ class Property extends Component {
             color="#115b72"
           />
           <View>
-            <View style={{width: width * 0.6}}>
+            <View style={{ width: width * 0.6 }}>  
               <TextTicker
                 style={styles.propText}
                 duration={6000}
@@ -433,16 +433,24 @@ class Property extends Component {
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
-            <View style={{width: width * 0.6}}>
+            <View style={{
+              width: width * 0.6,
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}>
+              <Icon name="ios-location-outline"
+                size={height * 0.02}
+                color="gray"
+              />
               <TextTicker
                 style={{color: 'gray'}}
                 duration={6000}
                 marqueeDelay={2000}
                 repeatSpacer={width * 0.6}>
-                {(prop.item.street == null ? '' : prop.item.street + ', ') +
-                  (prop.item.st == null ? '' : prop.item.st + ', ') +
+                {
                   (prop.item.city == null ? '' : prop.item.city + ', ') +
-                  (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+                  (prop.item.st == null ? '' : prop.item.st)
+                }
               </TextTicker>
             </View>
           </View>
@@ -471,25 +479,25 @@ class Property extends Component {
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
           <View>
-            <View style={styles.animatedDetailView}>
+            <View
+              style={styles.animatedDetailView}>
               <View>
                 <View style={styles.animatedDetailShown}>
-                  <Icon
-                    name="ios-location-outline"
+                  <Icon name="ios-location-outline"
                     size={height * 0.025}
                     color="black"
                   />
                   <TextTicker
-                    style={{color: 'black', fontSize: height * 0.015}}
+                    style={{ color: 'black', fontSize: height * .015 }}
                     duration={6000}
                     marqueeDelay={2000}
                     repeatSpacer={width * 0.7}>
-                    {(prop.item.city == null ? '' : prop.item.city + ' , ') +
+                    {
+                      (prop.item.city == null ? '' : prop.item.city + ' , ') +
                       (prop.item.st == null ? '' : prop.item.st + ' , ') +
-                      (prop.item.street == null
-                        ? ''
-                        : prop.item.street + ' , ') +
-                      (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+                      (prop.item.street == null ? '' : prop.item.street + ' , ') +
+                      (prop.item.zipcode == null ? '' : prop.item.zipcode)
+                    }
                   </TextTicker>
                 </View>
                 <View style={styles.animatedDetailShown}>
@@ -550,29 +558,32 @@ class Property extends Component {
                     color="white"
                     size={width * 0.04}
                   />
-                  <Text style={styles.animatedViewDetailBtnName}>Details</Text>
+                  <Text
+                    style={styles.animatedViewDetailBtnName}>
+                    Details
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => this.jumpToEquip({prop, item: prop})}
+                  onPress={() => this.jumpToEquip({ prop, item: prop })}
                   style={styles.animatedViewDetailBtn}>
-                  <MaterialIcons
-                    name="edit"
-                    color="white"
-                    size={width * 0.04}
-                  />
-                  <Text style={styles.animatedViewDetailBtnName}>
+                  <MaterialIcons name="edit" color="white" size={width * 0.04} />
+                  <Text
+                    style={styles.animatedViewDetailBtnName}>
                     Equipments
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => this.jumpToAlerts({prop, item: prop})}
+                  onPress={() => this.jumpToAlerts({ prop, item: prop })}
                   style={styles.animatedViewDetailBtn}>
                   <Feather
                     name="alert-triangle"
                     color="white"
                     size={width * 0.04}
                   />
-                  <Text style={styles.animatedViewDetailBtnName}>Alerts</Text>
+                  <Text
+                    style={styles.animatedViewDetailBtnName}>
+                    Alerts
+                  </Text>
                 </TouchableOpacity>
               </View>
 
@@ -584,37 +595,14 @@ class Property extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <Text style={styles.animatedViewDetailBtnName}>Details</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.jumpToEquip({prop, item: prop})}
-                style={styles.animatedViewDetailBtn}>
-                <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                <Text style={styles.animatedViewDetailBtnName}>Equipments</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.jumpToAlerts({prop, item: prop})}
-                style={styles.animatedViewDetailBtn}>
-                <Feather
-                  name="alert-triangle"
-                  color="white"
-                  size={width * 0.04}
-                />
-                <Text style={styles.animatedViewDetailBtnName}>Alerts</Text>
+                <Text
+                  style={styles.animatedViewDetailBtnName}>
+                  Delete
+                </Text>
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              onPress={() => this.confirmDelete(prop?.item?.id)}
-              style={styles.animatedViewDetailBtn}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                color="white"
-                size={width * 0.04}
-              />
-              <Text style={styles.animatedViewDetailBtnName}>Delete</Text>
-            </TouchableOpacity>
           </View>
+
         ) : null}
       </View>
     );
@@ -740,10 +728,8 @@ class Property extends Component {
             </View>
           </View>
           <View style={styles.headingContainer}>
-            {/* <Add loader={this.handleLoader} /> */}
             <View style={styles.headingInner}>
               <TouchableOpacity
-                // onPress={this.openAddProp}
                 onPress={() => this.enableLocation()}
                 style={styles.addBotton}>
                 <MaterialIcon
@@ -779,8 +765,7 @@ class Property extends Component {
                   style={{alignItems: 'center'}}
                   behavior="padding">
                   <View style={styles.searchModalInner}>
-                    {/* <View style={styles.searchModalInput}> */}
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <EvilIcon
                         name="search"
                         size={width * 0.07}
@@ -855,20 +840,8 @@ class Property extends Component {
               <Text>No Properties to Show</Text>
             ) : (
               <View>
-                <View
-                  style={[
-                    styles.pullDownContainer,
-                    {
-                      height: this.state.isPullDownShow
-                        ? height * 0.07
-                        : height * 0,
-                    },
-                  ]}>
-                  <Icon
-                    name="ios-arrow-down-sharp"
-                    color="black"
-                    size={height * 0.03}
-                  />
+                <View style={[styles.pullDownContainer, { height: this.state.isPullDownShow ? height * .07 : height * 0, }]}>
+                  <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
                   <Text style={styles.pullDownText}>Pull down to refresh</Text>
                 </View>
                 <FlatList

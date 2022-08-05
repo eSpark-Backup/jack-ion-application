@@ -1863,11 +1863,6 @@ export default function UnitEdit({
           setImageBase64(res.assets[0].base64);
           setFilePath(res.assets[0].uri);
         }
-        // this.setState({
-        //   filePath: res,
-        //   fileData: res.data,
-        //   fileUri: res.uri
-        // });
       }
     });
   };
