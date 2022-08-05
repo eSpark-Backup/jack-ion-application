@@ -286,35 +286,6 @@ export default styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  animatedDetailView:{
-    width: width * 0.9,
-    alignItems: 'center',
-    backgroundColor: '#ffffff50',
-    // borderBottomLeftRadius: width * 0.01,
-    // borderBottomRightRadius: width * 0.01,
-    borderWidth: width * 0.001,
-  },
-  animatedDetailShown:{
-    borderBottomWidth:height * .0003,
-    width: width * 0.9,
-    height:height * .05,
-    borderColor:'black',
-    flexDirection:'row',
-    alignItems:'center',
-    paddingLeft:height * .01
-  },
-  animatedDetailBuildingAndUnit:{
-    flexDirection:'row',
-    alignItems:'center',
-    marginRight:height * .01,
-  },
-  animatedDetailBuildingAndUnitText:{
-    fontFamily: Fonts.Montserrat,
-    fontSize: height * 0.015,
-    color: '#001522',
-    marginLeft:height * .01,
-
-  },
   animatedView:{
     flexDirection: 'row',
     width: width * 0.9,
@@ -324,7 +295,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#25AAE1ec',
     borderBottomLeftRadius: width * 0.01,
     borderBottomRightRadius: width * 0.01,
-    // borderWidth: width * 0.001,
+    borderWidth: width * 0.001,
   },
   animatedViewDetailBtn:{
     margin: width * 0.01,
@@ -348,8 +319,7 @@ export default styles = StyleSheet.create({
   pullDownText:{
     fontFamily: Fonts.Montserrat,
     fontSize: height * .015,
-  },
-
+  }
 
   
 });

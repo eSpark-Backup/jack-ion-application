@@ -24,14 +24,14 @@ import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Folder from 'react-native-vector-icons/Feather';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { VictoryPie } from 'victory-native';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {VictoryPie} from 'victory-native';
 import Drawer from '../../../components/modal/Drawer/index';
 import ContextProp from '../Context/propContext';
-import { TextInput, FAB, HelperText } from 'react-native-paper';
+import {TextInput, FAB, HelperText} from 'react-native-paper';
 import Geocoder from 'react-native-geocoding';
 import {
   check,
@@ -43,13 +43,13 @@ import {
 
 // Components
 import styles from './style';
-import { Fonts } from '../../../utils/fonts';
+import {Fonts} from '../../../utils/fonts';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import API from '../../../api/SeviceApi';
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -107,11 +107,11 @@ export default class Splash extends React.Component {
         zipcode: '',
       },
       dropDownShow: [
-        { value: true },
-        { value: false },
-        { value: false },
-        { value: false },
-        { value: false },
+        {value: true},
+        {value: false},
+        {value: false},
+        {value: false},
+        {value: false},
       ],
     };
     if (Platform.OS === 'android') {
@@ -166,7 +166,7 @@ export default class Splash extends React.Component {
       manus.push(item.manufacturer.name);
     });
 
-    this.setState({ utilTypes, manus });
+    this.setState({utilTypes, manus});
 
     console.log('UTILITY TYPES', utilTypes);
     console.log('MANUFACTURERS', manus);
@@ -229,12 +229,12 @@ export default class Splash extends React.Component {
   };
 
   getMetersLocation = async (propertyId) => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     const metersLocation = await API.get(
       `/property/location-meters/${propertyId}`,
     );
     if (metersLocation?.data?.bool) {
-      this.setState({ markers: metersLocation?.data?.data, isLoading: false });
+      this.setState({markers: metersLocation?.data?.data, isLoading: false});
       let index = metersLocation?.data?.data?.length - 1;
       this.setState({
         propMarkers: metersLocation?.data?.data[index]?.property?.position,
@@ -247,7 +247,7 @@ export default class Splash extends React.Component {
   };
 
   toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+    this.setState({isModalVisible: !this.state.isModalVisible});
   };
 
   enableLocation = async () => {
@@ -310,10 +310,10 @@ export default class Splash extends React.Component {
       // this.getPropertyDetails(this.state.propertyId);
       const propertyRes = await API.get(`/property/${this.state.propertyId}`);
 
-      this.setState({ propertyData: propertyRes?.data?.data?.property });
+      this.setState({propertyData: propertyRes?.data?.data?.property});
 
       if (propertyRes?.data?.bool) {
-        this.setState({ isEditPropVisible: true, propertyflag: true });
+        this.setState({isEditPropVisible: true, propertyflag: true});
         this.context.doLoad();
       }
     } else {
@@ -362,12 +362,12 @@ export default class Splash extends React.Component {
   };
 
   naviagateToEquip = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
 
   naviagateToDetail = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate(
       'Detail',
       this.props.navigation.state.params,
@@ -390,7 +390,7 @@ export default class Splash extends React.Component {
   };
 
   naviagateToSupport = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate('Support');
   };
 
@@ -704,20 +704,24 @@ export default class Splash extends React.Component {
                   <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
                   <View style={styles.infoViewInner}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <Text style={[styles.dataFieldText, { overflow: 'scroll' }]}>
-                      {`${this.state.listData.street == null
+                    <Text style={[styles.dataFieldText, {overflow: 'scroll'}]}>
+                      {`${
+                        this.state.listData.street == null
                           ? ''
                           : this.state.listData.street
-                        } \n ${this.state.listData.city == null
+                      } \n ${
+                        this.state.listData.city == null
                           ? ''
                           : this.state.listData.city + ','
-                        } ${this.state.listData.st == null
+                      } ${
+                        this.state.listData.st == null
                           ? ''
                           : this.state.listData.st
-                        } ${this.state.listData.zipcode == null
+                      } ${
+                        this.state.listData.zipcode == null
                           ? ''
                           : this.state.listData.zipcode
-                        }`}
+                      }`}
                     </Text>
                   </View>
                 </View>
@@ -727,7 +731,7 @@ export default class Splash extends React.Component {
                     <Folder name="folder" size={width * 0.06} />
                     <Text style={styles.dataFieldText}>
                       {this.state.listData.custom_id == null ||
-                        this.state.listData.custom_id == ''
+                      this.state.listData.custom_id == ''
                         ? '--'
                         : this.state.listData.custom_id}
                     </Text>
@@ -735,67 +739,67 @@ export default class Splash extends React.Component {
                 </View>
                 <View style={styles.infoViewContainer}>
                   <Text style={styles.dataFieldHeadings}>Other Details</Text>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.4, textAlign: 'left' },
+                        {width: width * 0.4, textAlign: 'left'},
                       ]}>
                       Unit Count:
                     </Text>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.3, textAlign: 'auto' },
+                        {width: width * 0.3, textAlign: 'auto'},
                       ]}>
                       {this.state.listData.unit_count == null ||
-                        this.state.listData.unit_count == ''
+                      this.state.listData.unit_count == ''
                         ? '--'
                         : this.state.listData.unit_count}
                     </Text>
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.4, textAlign: 'left' },
+                        {width: width * 0.4, textAlign: 'left'},
                       ]}>
                       Utility Type:
                     </Text>
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      style={{ flexDirection: 'row' }}>
+                      style={{flexDirection: 'row'}}>
                       {this.state.utilTypes.map((item, index) => (
                         <View
-                          style={{ borderWidth: 1, borderRadius: 5, padding: 3 }}>
+                          style={{borderWidth: 1, borderRadius: 5, padding: 3}}>
                           <Text
                             style={[
                               styles.dataFieldText,
-                              { width: null, textAlign: 'auto' },
+                              {width: null, textAlign: 'auto'},
                             ]}>
                             {item == null || item == ''
                               ? '--'
                               : this.state.utilTypes?.length - 1 == index
-                                ? item
-                                : item + ', '}
+                              ? item
+                              : item + ', '}
                           </Text>
                         </View>
                       ))}
                     </ScrollView>
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.4, textAlign: 'left' },
+                        {width: width * 0.4, textAlign: 'left'},
                       ]}>
                       Manufacturer:
                     </Text>
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      style={{ flexDirection: 'row' }}>
+                      style={{flexDirection: 'row'}}>
                       {this.state.manus.map((item, index) => (
                         <View
                           style={{
@@ -806,13 +810,13 @@ export default class Splash extends React.Component {
                           <Text
                             style={[
                               styles.dataFieldText,
-                              { width: null, textAlign: 'auto' },
+                              {width: null, textAlign: 'auto'},
                             ]}>
                             {item == null || item == ''
                               ? '--'
                               : this.state.manus?.length - 1 == index
-                                ? item
-                                : item + ', '}
+                              ? item
+                              : item + ', '}
                           </Text>
                         </View>
                       ))}
@@ -827,7 +831,7 @@ export default class Splash extends React.Component {
                     <Folder name="folder" size={width * 0.06} />
                     <Text style={styles.dataFieldText}>
                       {this.state.listData.owner == null ||
-                        this.state.listData.owner == ''
+                      this.state.listData.owner == ''
                         ? '--'
                         : this.state.listData.owner}
                     </Text>
@@ -837,30 +841,30 @@ export default class Splash extends React.Component {
                   <Text style={styles.dataFieldHeadings}>
                     Meter Count & Installation Status
                   </Text>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.4, textAlign: 'left' },
+                        {width: width * 0.4, textAlign: 'left'},
                       ]}>
                       Meter Count:
                     </Text>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.3, textAlign: 'auto' },
+                        {width: width * 0.3, textAlign: 'auto'},
                       ]}>
                       {this.state.meterCount}
                     </Text>
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
-                    <Text style={[styles.dataFieldText, { textAlign: 'left' }]}>
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <Text style={[styles.dataFieldText, {textAlign: 'left'}]}>
                       Complete Installations:
                     </Text>
                     <Text
                       style={[
                         styles.dataFieldText,
-                        { width: width * 0.3, textAlign: 'auto' },
+                        {width: width * 0.3, textAlign: 'auto'},
                       ]}>
                       {this.state.installStatus}
                     </Text>
@@ -878,7 +882,7 @@ export default class Splash extends React.Component {
                   </View>
                   <ScrollView
                     nestedScrollEnabled
-                    style={{ width: width * 0.85, height: width * 0.2 }}>
+                    style={{width: width * 0.85, height: width * 0.2}}>
                     {this.state.unitMixes.map((item, index) => (
                       <View style={styles.unitMixesValuesContainer}>
                         <Text style={styles.unitMixesHeads}>{index + 1}</Text>
@@ -905,8 +909,8 @@ export default class Splash extends React.Component {
                     <Text>
                       {this.state.sumNoOfUnits > 0
                         ? Math.round(
-                          this.state.sumTotalGalDay / this.state.sumNoOfUnits,
-                        )
+                            this.state.sumTotalGalDay / this.state.sumNoOfUnits,
+                          )
                         : 0}
                     </Text>
                   </View>
@@ -968,7 +972,7 @@ export default class Splash extends React.Component {
                 </View>
 
                 <View style={styles.barView}>
-                  <Text style={{ position: 'absolute' }}>
+                  <Text style={{position: 'absolute'}}>
                     {onlineUnits == 0 && offlineUnits == 0
                       ? 'No Installations'
                       : 'Installation'}
@@ -980,9 +984,9 @@ export default class Splash extends React.Component {
                     labelRadius={width * 0.28}
                     padAngle={1}
                     data={[
-                      { x: onlineUnits, y: onlineUnits },
-                      { x: offlineUnits, y: offlineUnits },
-                      { x: notInstalledUnits, y: notInstalledUnits },
+                      {x: onlineUnits, y: onlineUnits},
+                      {x: offlineUnits, y: offlineUnits},
+                      {x: notInstalledUnits, y: notInstalledUnits},
                     ]}
                     colorScale={['#175CA1', '#ff1414', '#dcdcdc']}
                     style={{
@@ -995,15 +999,15 @@ export default class Splash extends React.Component {
                   />
                 </View>
                 <View style={styles.onlineOfflineView}>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View style={styles.onlineView} />
                     <Text style={styles.onlineText}>Complete</Text>
                   </View>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View style={styles.offlineView} />
                     <Text style={styles.offlineText}>Incomplete</Text>
                   </View>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View
                       style={{
                         ...styles.offlineView,

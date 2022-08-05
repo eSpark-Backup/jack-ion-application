@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 // import {View, Text, ActivityIndicator} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Splash from './splash';
@@ -26,7 +26,7 @@ class Main extends Component {
     // console.log('start doing some tasks for about 3 seconds')
     setTimeout(() => {
       // console.log('Done some tasks for about 3 seconds')
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     }, 3000);
   }
 
@@ -41,10 +41,10 @@ class Main extends Component {
       console.log('value kia ha', value);
       if (value !== null) {
         value == '1'
-          ? this.setState({ currentScreen: 'Home' })
-          : this.setState({ currentScreen: 'Login' });
+          ? this.setState({currentScreen: 'Home'})
+          : this.setState({currentScreen: 'Login'});
       } else {
-        this.setState({ currentScreen: 'Login' });
+        this.setState({currentScreen: 'Login'});
       }
     } catch (e) {
       console.log('error at getting', e);
