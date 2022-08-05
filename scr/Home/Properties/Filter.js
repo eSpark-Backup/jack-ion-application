@@ -29,10 +29,11 @@ import {RadioButton} from 'react-native-paper';
 import ContextProp from './Context/propContext';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import SearchableDropDown from 'react-native-searchable-dropdown';
-
+import { fetchPropetry } from '../../Store/Action/properties.action';
+import { connect } from 'react-redux';
 const {width, height} = Dimensions.get('window');
 
-export default class Splash extends Component {
+ class FilterComponent extends Component {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -108,12 +109,13 @@ export default class Splash extends Component {
     if (this.props.type == 'Properties') {
       let data = {
         offset: 0,
-        billing: this.state.biller,
+        // name: this.state.biller,
         search: this.context.filterPropName,
         location: this.context.filterLocation,
       };
       console.log('Filter data', data);
-      this.context.filterData(data);
+      // this.context.filterData(data);
+      this.props.fetchPropetry(data)
       this.props.close();
       this.props.filterWork();
       this.setState({showList: false});
@@ -128,7 +130,8 @@ export default class Splash extends Component {
     }
   };
 
-  onFocusFunction = () => {
+  resetPropertyFilter = () => {
+    this.props.fetchPropetry(false)
     this.context.checkData();
     this.props.close();
     this.setState({biller: ''});
@@ -357,7 +360,7 @@ export default class Splash extends Component {
                       onPress: () => {
                         type == 'Units'
                           ? this.resetFilter()
-                          : this.onFocusFunction();
+                          : this.resetPropertyFilter();
                       },
                     }}
                     backgroundColor="#fff"
@@ -584,3 +587,19 @@ export default class Splash extends Component {
     );
   }
 }
+
+
+
+const mapStateToProps = (state, ownProps) => ({
+  propList: state.propertyReducer.propList,
+  isLoading: state.propertyReducer.isLoading,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    fetchPropetry: (data) => dispatch(fetchPropetry(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterComponent)

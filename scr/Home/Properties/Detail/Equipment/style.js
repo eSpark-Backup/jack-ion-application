@@ -78,6 +78,11 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     flexDirection: 'row',
   },
+  headerIconContainer:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },  
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.06,
@@ -175,14 +180,13 @@ export default styles = StyleSheet.create({
     // backgroundColor:'red',
   },
   unitDetailInnerif: {
-    flexDirection: 'row',
     // justifyContent: 'space-between',
     alignItems: 'center',
-    maxWidth: width * 0.25,
+    width: width * 0.3,
     marginRight: width * 0.01,
     marginVertical: width * 0.01,
     // padding: width * 0.005,
-    // backgroundColor: 'red',
+    // backgroundColor: 'blue',
   },
   unitDetailInnerElse: {
     flexDirection: 'row',

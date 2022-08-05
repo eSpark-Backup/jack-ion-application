@@ -495,4 +495,8 @@ export default styles = StyleSheet.create({
     color: '#2D2A2B',
     fontFamily: Fonts.Montserrat,
   },
+  bunchContainer: { width: '95%', backgroundColor: '#cdcdcd', borderColor: 1, padding: 10, marginVertical: 20 },
+  rowSpaceBtw: { flexDirection: 'row', justifyContent: 'space-around' },
+  rowSpaceEvenly: {flexDirection: 'row', justifyContent: 'space-evenly'},
+  bunchAlertContainer: {flexDirection:'row', backgroundColor: 'yellow', padding: 5, borderRadius: 5, marginVertical: 5}
 });

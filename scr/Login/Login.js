@@ -21,6 +21,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import styles from './style';
 import API from '../api/SeviceApi';
+import { connect } from 'react-redux';
+import { userLogin } from '../Store/Action/user.action';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,7 +33,7 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required().min(6).label('Password'),
 });
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -115,6 +117,7 @@ export default class Login extends Component {
         response.data.data.user.role_id,
         response.data.data.user.id,
       ); //todo: Token Saved at this point
+      this.props.login(response.data.data.token)
       this.props.navigation.navigate('Home');
       this.setState({
         errName: '',
@@ -130,8 +133,9 @@ export default class Login extends Component {
       });
     }
   };
-
   render() {
+  console.log("this.props.user", this.props.user)
+
     return (
       <KeyboardAwareScrollView style={styles.container}
         keyboardShouldPersistTaps={'handled'}
@@ -281,3 +285,16 @@ export default class Login extends Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  user: state.userReducer.user,
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    login: (user) => dispatch(userLogin(user)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

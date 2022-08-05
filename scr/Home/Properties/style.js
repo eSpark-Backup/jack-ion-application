@@ -270,4 +270,86 @@ export default styles = StyleSheet.create({
     borderRadius: 4,
     marginLeft: 4,
   },
+
+  // Property list styling
+
+  propListContainer:{
+    alignItems: 'center',
+    marginVertical: height * 0.01,
+    backgroundColor: 'white',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  animatedDetailView:{
+    width: width * 0.9,
+    alignItems: 'center',
+    backgroundColor: '#ffffff50',
+    // borderBottomLeftRadius: width * 0.01,
+    // borderBottomRightRadius: width * 0.01,
+    borderWidth: width * 0.001,
+  },
+  animatedDetailShown:{
+    borderBottomWidth:height * .0003,
+    width: width * 0.9,
+    height:height * .05,
+    borderColor:'black',
+    flexDirection:'row',
+    alignItems:'center',
+    paddingLeft:height * .01
+  },
+  animatedDetailBuildingAndUnit:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginRight:height * .01,
+  },
+  animatedDetailBuildingAndUnitText:{
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * 0.015,
+    color: '#001522',
+    marginLeft:height * .01,
+
+  },
+  animatedView:{
+    flexDirection: 'row',
+    width: width * 0.9,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: width * 0.01,
+    backgroundColor: '#25AAE1ec',
+    borderBottomLeftRadius: width * 0.01,
+    borderBottomRightRadius: width * 0.01,
+    // borderWidth: width * 0.001,
+  },
+  animatedViewDetailBtn:{
+    margin: width * 0.01,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  animatedViewDetailBtnName:{
+    color: 'white',
+    fontFamily: Fonts.Montserrat,
+    fontSize: width * 0.03,
+  },
+  pullDownContainer:{
+    width:width * 0.4,
+    justifyContent:'center',
+    alignItems:'center',
+    alignSelf:'center',
+    backgroundColor:'white',
+    elevation:height * .005,
+    position:'absolute'
+  },
+  pullDownText:{
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * .015,
+  },
+
+
+  
 });

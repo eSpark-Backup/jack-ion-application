@@ -89,7 +89,7 @@ class GlobalState extends React.Component {
     if (response?.data?.bool) {
       this.setState({
         propList: response.data.data.properties,
-        filterDataName: sort.billing,
+        filterDataName: sort.name,
         offset: response?.data?.data?.offset,
       });
       console.log('FIltered property===>', response.data.data.properties);

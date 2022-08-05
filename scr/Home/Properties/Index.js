@@ -18,8 +18,8 @@ import {
 } from 'react-native';
 
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
@@ -28,7 +28,6 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {TextInput, Button} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
-import clc from 'cli-color';
 import CustumStatusBar from '../../components/StatusBar';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -36,7 +35,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Components
 import {Fonts} from '../../utils/fonts';
 import styles from './style';
-import Loader from '../../components/Loader';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
 import AddEditProperty from '../../components/modal/AddEditProperty';
@@ -52,9 +50,11 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import API from '../../api/SeviceApi';
+import {connect} from 'react-redux';
+import {fetchPropetry, loadMoreData} from '../../Store/Action/properties.action';
 const {width, height} = Dimensions.get('window');
 
-export default class Splash extends Component {
+class Property extends Component {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -62,7 +62,7 @@ export default class Splash extends Component {
       meter: false,
       isVisible: false,
       isAddPropVisible: false,
-      Loading: false,
+      // Loading: false,
       loadScreen: false,
       stopLoader: false,
       currentIndex: null,
@@ -73,6 +73,8 @@ export default class Splash extends Component {
       noInternet: false,
       locationBtn: '',
       markers: null,
+      refreshing: false,
+      isPullDownShow: true,
       shimmers: [
         {id: 1},
         {id: 2},
@@ -90,38 +92,15 @@ export default class Splash extends Component {
     }
   }
   async componentDidMount() {
+    this.props?.fetchPropetry();
+    this.onFocusFunction();
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      console.log('LOADDATA', this.context.loadData);
-      if (this.context.loadData) {
-        this.onFocusFunction();
-      } else {
-        this.context.stopLoader();
-        // this.context.doLoad();
+      if (this.context.propList) {
+        this.setState({isPullDownShow: true});
+        this.hidePullDown();
       }
     });
   }
-
-  onFocusFunction = () => {
-    this.setState({loadScreen: true});
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log('Connection type', state.type);
-      console.log('Is connected?', state.isConnected);
-      console.log('isInternetReachable?', state.isInternetReachable);
-      this.setState({noInternet: !state.isInternetReachable});
-      if (state.isConnected) {
-        this.closeAddProp();
-        console.log('True chala');
-        this.setState({loadScreen: true});
-        this.context.checkData();
-        this.setState({propertyList: this.context.propList});
-      } else {
-        console.log('False chala');
-        this.setState({loadScreen: true});
-      }
-      this.context.dontLoad();
-    });
-    unsubscribe();
-  };
 
   openFilter = () => {
     this.context.getBillingCompany();
@@ -137,7 +116,7 @@ export default class Splash extends Component {
         return e.id;
       })
       .indexOf(Number(userId));
-    let ids = [...userData[index].recent_properties];
+    let  ids = [...userData[index].recent_properties];
     let found = ids.includes(item.id);
     if (!found) {
       if (ids.length > 9) {
@@ -171,10 +150,7 @@ export default class Splash extends Component {
     this.addToRecent(prop.item);
     this.selectedProp(prop);
   };
-
-  handleLoader = (child) => {
-    this.setState({loadScreen: true});
-  };
+        
   selectedProp = (prop) => {
     this.setState({
       currentIndex: prop.index === this.state.currentIndex ? null : prop.index,
@@ -183,8 +159,13 @@ export default class Splash extends Component {
   };
 
   LoadData = async () => {
-    // console.log('End reached');
-    await this.context.loadMoreData();
+    let data = {
+      offset: this.props.offset,
+      search: this.context.filterPropName,
+      location: this.context.filterLocation,
+    };
+    this.props.loadMoreData(data)
+    // await this.context.loadMoreData();
   };
 
   cleardata = (prop) => {
@@ -212,7 +193,6 @@ export default class Splash extends Component {
   _renderMap = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log('Positon Batao', position);
         var lat = parseFloat(position.coords.latitude);
         var long = parseFloat(position.coords.longitude);
         // this.setState({lat: lat, long: long, iniLat: lat, iniLong: long});
@@ -229,7 +209,6 @@ export default class Splash extends Component {
             this.setState({isAddPropVisible: true});
           },
         );
-        console.log('What we Get', this.state.markers);
       },
       (error) => console.log('geo location', error),
       {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
@@ -239,7 +218,6 @@ export default class Splash extends Component {
   enableLocation = async () => {
     this.context.loadLoader();
     const location = await SystemSetting.isLocationEnabled();
-    console.log('GPS', location);
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
     if (!location) {
       this.context.stopLoader();
@@ -265,7 +243,6 @@ export default class Splash extends Component {
           })
             .then((json) => {
               var locationName = json.results[0].formatted_address;
-              console.log('LOACTION NAME', locationName);
               // this.fetchAddressData(locationName);
               this.setState({
                 locationBtn: locationName,
@@ -358,13 +335,13 @@ export default class Splash extends Component {
   };
 
   deleteProperty = async (id) => {
-    console.log('ID', id);
     this.context.loadLoader();
     const response = await API.post(`/property/delete/${id}`);
     if (response?.data?.bool) {
       this.setState({currentIndex: null});
       alert(response?.data?.message);
-      this.context.checkData();
+      // this.context.checkData();
+      this.props?.fetchPropetry();
       this.setState({propertyList: this.context.propList});
     } else {
       this.context.stopLoader();
@@ -390,8 +367,7 @@ export default class Splash extends Component {
             {prop.item.name == null ? 'Untitled' : prop.item.name}
           </TextTicker>
         </View>
-
-        <View style={{width: width * 0.6}}>
+        <View style={{ width: width * 0.6 }}>
           <TextTicker
             style={{color: 'gray'}}
             duration={6000}
@@ -430,36 +406,21 @@ export default class Splash extends Component {
       </SkeletonPlaceholder>
     </View>
   );
-
   _renderPropList = (prop) => {
     if (
-      prop.index == this.context.propList.length - 1 &&
+      prop.index == this.props.propList.length - 1 &&
       !this.state.stopLoader
     ) {
       this.setState({stopLoader: true});
-      this.setState({Loading: false});
-      // console.log(clc.green('agayayaaa_____'));
     }
+    console.log("prop--------------->", prop)
     return (
-      <View
-        style={{
-          alignItems: 'center',
-          marginVertical: height * 0.01,
-          backgroundColor: 'white',
-          elevation: 5,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        }}>
+      <View style={styles.propListContainer}>
         <TouchableOpacity
           style={{
             ...styles.propButton,
             borderBottomLeftRadius:
-              prop.index === this.state.currentIndex ? 0 : width * 0.008,
+              prop.index === this.state.currentIndex ? 0 : width * 0.008,  
             borderBottomRightRadius:
               prop.index === this.state.currentIndex ? 0 : width * 0.008,
           }}
@@ -470,7 +431,7 @@ export default class Splash extends Component {
             color="#115b72"
           />
           <View>
-            <View style={{width: width * 0.6}}>
+            <View style={{ width: width * 0.6 }}>  
               <TextTicker
                 style={styles.propText}
                 duration={6000}
@@ -479,16 +440,24 @@ export default class Splash extends Component {
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
-            <View style={{width: width * 0.6}}>
+            <View style={{
+              width: width * 0.6,
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}>
+              <Icon name="ios-location-outline"
+                size={height * 0.02}
+                color="gray"
+              />
               <TextTicker
                 style={{color: 'gray'}}
                 duration={6000}
                 marqueeDelay={2000}
                 repeatSpacer={width * 0.6}>
-                {(prop.item.street == null ? '' : prop.item.street + ', ') +
-                  (prop.item.st == null ? '' : prop.item.st + ', ') +
+                {
                   (prop.item.city == null ? '' : prop.item.city + ', ') +
-                  (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+                  (prop.item.st == null ? '' : prop.item.st)
+                }
               </TextTicker>
             </View>
           </View>
@@ -516,133 +485,183 @@ export default class Splash extends Component {
           </View>
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              width: width * 0.9,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: width * 0.01,
-              backgroundColor: '#25AAE1ec',
-              borderBottomLeftRadius: width * 0.01,
-              borderBottomRightRadius: width * 0.01,
-              borderWidth: width * 0.001,
-            }}>
-            <View style={{flexDirection: 'row'}}>
+          <View>
+            <View
+              style={styles.animatedDetailView}>
+              <View>
+                <View style={styles.animatedDetailShown}>
+                  <Icon name="ios-location-outline"
+                    size={height * 0.025}
+                    color="black"
+                  />
+                  <TextTicker
+                    style={{ color: 'black', fontSize: height * .015 }}
+                    duration={6000}
+                    marqueeDelay={2000}
+                    repeatSpacer={width * 0.7}>
+                    {
+                      (prop.item.city == null ? '' : prop.item.city + ' , ') +
+                      (prop.item.st == null ? '' : prop.item.st + ' , ') +
+                      (prop.item.street == null ? '' : prop.item.street + ' , ') +
+                      (prop.item.zipcode == null ? '' : prop.item.zipcode)
+                    }
+                  </TextTicker>
+                </View>
+                <View style={styles.animatedDetailShown}>
+                  <View style={styles.animatedDetailBuildingAndUnit}>
+                    <FontAwesome5Icon
+                      name="building"
+                      size={height * 0.02}
+                      color="#000"
+                    />
+                    <Text style={styles.animatedDetailBuildingAndUnitText}>
+                      {prop.item.building_count}
+                    </Text>
+                  </View>
+                  <View style={styles.animatedDetailBuildingAndUnit}>
+                    <FontAwesome5Icon
+                      name="house-user"
+                      size={height * 0.02}
+                      color="#000"
+                    />
+                    <Text style={styles.animatedDetailBuildingAndUnitText}>
+                      {prop.item.unit_actual_count}
+                    </Text>
+                  </View>
+
+                  <View style={styles.animatedDetailBuildingAndUnit}>
+                    <MaterialIcon
+                      name="router"
+                      size={width * 0.04}
+                      color="#000"
+                    />
+                    <Text style={styles.animatedDetailBuildingAndUnitText}>
+                      {prop.item.meter_count}
+                    </Text>
+                  </View>
+                  <View style={styles.animatedDetailBuildingAndUnit}>
+                    <MaterialCommunityIcons
+                      name="file-table-box-outline"
+                      size={width * 0.04}
+                      color="#000"
+                    />
+                    <Text style={styles.animatedDetailBuildingAndUnitText}>
+                      {prop.item.unit_mix_count}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.animatedDetailShown}></View>
+              </View>
+            </View>
+
+            <View style={styles.animatedView}>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  style={styles.animatedViewDetailBtn}
+                  onPress={() => this.jumpToDetail({prop, item: prop})}>
+                  <MaterialCommunityIcons
+                    name="view-compact-outline"
+                    color="white"
+                    size={width * 0.04}
+                  />
+                  <Text
+                    style={styles.animatedViewDetailBtnName}>
+                    Details
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.jumpToEquip({ prop, item: prop })}
+                  style={styles.animatedViewDetailBtn}>
+                  <MaterialIcons name="edit" color="white" size={width * 0.04} />
+                  <Text
+                    style={styles.animatedViewDetailBtnName}>
+                    Equipments
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.jumpToAlerts({ prop, item: prop })}
+                  style={styles.animatedViewDetailBtn}>
+                  <Feather
+                    name="alert-triangle"
+                    color="white"
+                    size={width * 0.04}
+                  />
+                  <Text
+                    style={styles.animatedViewDetailBtnName}>
+                    Alerts
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <TouchableOpacity
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                onPress={() => this.jumpToDetail({prop, item: prop})}>
+                onPress={() => this.confirmDelete(prop?.item?.id)}
+                style={styles.animatedViewDetailBtn}>
                 <MaterialCommunityIcons
-                  name="view-compact-outline"
+                  name="delete-outline"
                   color="white"
                   size={width * 0.04}
                 />
                 <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: Fonts.Montserrat,
-                    fontSize: width * 0.03,
-                  }}>
-                  Details
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.jumpToEquip({prop, item: prop})}
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: Fonts.Montserrat,
-                    fontSize: width * 0.03,
-                  }}>
-                  Equipments
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.jumpToAlerts({prop, item: prop})}
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Feather
-                  name="alert-triangle"
-                  color="white"
-                  size={width * 0.04}
-                />
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: Fonts.Montserrat,
-                    fontSize: width * 0.03,
-                  }}>
-                  Alerts
+                  style={styles.animatedViewDetailBtnName}>
+                  Delete
                 </Text>
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              onPress={() => this.confirmDelete(prop?.item?.id)}
-              style={{
-                margin: width * 0.01,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                color="white"
-                size={width * 0.04}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: Fonts.Montserrat,
-                  fontSize: width * 0.03,
-                }}>
-                Delete
-              </Text>
-            </TouchableOpacity>
           </View>
-        ) : // <View style={styles.dropView}>
-        //   <TouchableOpacity
-        //     onPress={() => this.jumpToDetail({prop, item: prop})}>
-        //     <LinearGradient
-        //       colors={['#09BAF2', '#115b72', '#0d3744']}
-        //       style={styles.linearGradient}
-        //       start={{x: 0.1, y: 1}}
-        //       end={{x: 1.5, y: 3}}>
-        //       <Text style={styles.gradienttext}>Property Profile</Text>
-        //     </LinearGradient>
-        //   </TouchableOpacity>
-        //   <TouchableOpacity
-        //     onPress={() => this.jumpToEquip({prop, item: prop})}>
-        //     <LinearGradient
-        //       colors={['#09BAF2', '#115b72', '#0d3744']}
-        //       style={styles.linearGradient}
-        //       start={{x: 0.1, y: 1}}
-        //       end={{x: 1.5, y: 3}}>
-        //       <Text style={styles.gradienttext}>Property Units</Text>
-        //     </LinearGradient>
-        //   </TouchableOpacity>
-        // </View>
-        null}
+
+        ) : null}
       </View>
     );
   };
 
+  sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  onFocusFunction = () => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      this.setState({noInternet: !state.isInternetReachable});
+      if (state.isConnected) {
+        this.closeAddProp();
+        // this.context.checkData();
+        this.props?.fetchPropetry();
+        this.setState({propertyList: this.context.propList});
+        this.setState({loadScreen: true});
+      } else {
+        this.setState({loadScreen: true});
+      }
+      this.context.dontLoad();
+    });
+    unsubscribe();
+  };
+  onRefresh = async () => {
+    this.setState({fetching: true});
+    await this.sleep(2000);
+    this.setState({fetching: false, isPullDownShow: true});
+    // this.context.checkData();
+    this.props?.fetchPropetry();
+    this.setState({loadScreen: true});
+  };
+  hidePullDown = () => {
+    setTimeout(() => {
+      LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+          property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+          type: LayoutAnimation.Types.easeInEaseOut,
+        },
+      });
+      this.setState({isPullDownShow: false});
+    }, 5000);
+  };
+
   render() {
-    if (!this.context.isLoading && this.state.loadScreen) {
+    console.log('this.props.propList', this.props.propList);
+    if (!this.props.isLoading && this.state.loadScreen) {
       this.setState({loadScreen: false});
-      this.setState({Loading: true});
+      this.hidePullDown();
     }
     if (!this.context.filterWork && this.state.filterWork) {
       this.setState({filterWork: false});
@@ -718,10 +737,8 @@ export default class Splash extends Component {
             </View>
           </View>
           <View style={styles.headingContainer}>
-            {/* <Add loader={this.handleLoader} /> */}
             <View style={styles.headingInner}>
               <TouchableOpacity
-                // onPress={this.openAddProp}
                 onPress={() => this.enableLocation()}
                 style={styles.addBotton}>
                 <MaterialIcon
@@ -741,7 +758,7 @@ export default class Splash extends Component {
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}
-              close={() => this.setState({showFilter: !this.state.showFilter})}
+              close={() => this.setState({showFilter: false})}
               filterWork={() => this.setState({filterWork: true})}
             />
             {this.state.showSearch ? (
@@ -757,8 +774,7 @@ export default class Splash extends Component {
                   style={{alignItems: 'center'}}
                   behavior="padding">
                   <View style={styles.searchModalInner}>
-                    {/* <View style={styles.searchModalInput}> */}
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <EvilIcon
                         name="search"
                         size={width * 0.07}
@@ -823,31 +839,39 @@ export default class Splash extends Component {
           <View style={styles.propertyList}>
             {this.state.noInternet ? (
               <Text>Check Your Internet Connection</Text>
-            ) : this.context.isLoading ? (
+            ) : this.props.isLoading ? (
               <ScrollView
                 scrollEnabled={false}
                 showsVerticalScrollIndicator={false}>
                 {this.state.shimmers.map((item) => this.renderShimmers(item))}
               </ScrollView>
-            ) : this.context.propList.length < 1 && !this.context.isLoading ? (
+            ) : this.props.propList.length < 1 && !this.props.isLoading ? (
               <Text>No Properties to Show</Text>
             ) : (
-              <FlatList
-                data={this.context.propList}
-                renderItem={this._renderPropList}
-                removeClippedSubviews={false}
-                maxToRenderPerBatch={150}
-                windowSize={100}
-                keyExtractor={(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-                ListFooterComponent={() =>
-                  this.context.listLoader ? (
-                    <ActivityIndicator color="#25dAE1" size="large" />
-                  ) : null
-                }
-                onEndReachedThreshold={width * 0.0001}
-                onEndReached={() => this.LoadData()}
-              />
+              <View>
+                <View style={[styles.pullDownContainer, { height: this.state.isPullDownShow ? height * .07 : height * 0, }]}>
+                  <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
+                  <Text style={styles.pullDownText}>Pull down to refresh</Text>
+                </View>
+                <FlatList
+                  data={this.props.propList}
+                  renderItem={this._renderPropList}
+                  removeClippedSubviews={false}
+                  maxToRenderPerBatch={150}
+                  windowSize={100}
+                  onRefresh={this.onRefresh}
+                  refreshing={this.state.refreshing}
+                  keyExtractor={(item, index) => index.toString()}
+                  showsVerticalScrollIndicator={false}
+                  ListFooterComponent={() =>
+                    this.context.listLoader ? (
+                      <ActivityIndicator color="#25dAE1" size="large" />
+                    ) : null
+                  }
+                  onEndReachedThreshold={width * 0.0001}
+                  onEndReached={() => this.LoadData()}
+                />
+              </View>
             )}
           </View>
         </View>
@@ -855,3 +879,20 @@ export default class Splash extends Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  propList: state.propertyReducer.propList,
+  isLoading: state.propertyReducer.isLoading,
+  offset: state.propertyReducer.offset,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    fetchPropetry: () => dispatch(fetchPropetry()),
+    loadMoreData: (data) => dispatch(loadMoreData(data)),
+
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Property);

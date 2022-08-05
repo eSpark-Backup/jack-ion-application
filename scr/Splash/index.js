@@ -6,8 +6,11 @@ import AuthNav from '../../navigation';
 import RootNav from '../../rootNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../components/Loader';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {Fonts} from '../utils/fonts';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Fonts } from '../utils/fonts';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistore, store } from '../Store/store';
 
 // import Drawer from "../../scr/Navigation/index";
 
@@ -49,16 +52,24 @@ class Main extends Component {
   };
 
   render() {
-    const {currentScreen} = this.state;
+    const { currentScreen } = this.state;
     let mainScreen =
       currentScreen === 'Login' ? (
-        <SafeAreaProvider>
-          <AuthNav />
-        </SafeAreaProvider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistore}>
+            <SafeAreaProvider>
+              <AuthNav />
+            </SafeAreaProvider>
+          </PersistGate>
+        </Provider>
       ) : (
-        <SafeAreaProvider>
-          <RootNav />
-        </SafeAreaProvider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistore}>
+            <SafeAreaProvider>
+              <RootNav />
+            </SafeAreaProvider>
+          </PersistGate>
+        </Provider>
       );
     if (this.state.isLoading) {
       return <Loader />;

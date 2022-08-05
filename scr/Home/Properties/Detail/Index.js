@@ -49,12 +49,14 @@ import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import API from '../../../api/SeviceApi';
+import { connect } from 'react-redux';
+import { fetchPropetry } from '../../../Store/Action/properties.action';
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-export default class Splash extends React.Component {
+ class Details extends React.Component {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -90,6 +92,7 @@ export default class Splash extends React.Component {
       selectAddManuUtil: [],
       unitMixes: [],
       tpanelData: [],
+      tBunchData: null,
       sumNoOfUnits: 0,
       sumTotalGalDay: 0,
       meterCount: 0,
@@ -119,13 +122,14 @@ export default class Splash extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
 
     const propertyData = this.props.navigation.state.params.item.item;
     this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
     this.getTpanelData(propertyData?.id);
+    this.getBunchData(propertyData?.id)
   }
 
   getTpanelData = async (id) => {
@@ -138,8 +142,18 @@ export default class Splash extends React.Component {
     }
   };
 
+  getBunchData = async (id) => {
+    const tBunchRes = await API.get(`/property/details-bunch/${id}`);
+    console.log('TBunch DATA', tBunchRes?.data?.data);
+    if (tBunchRes?.data?.bool) {
+      this.setState({
+        tBunchData: tBunchRes?.data?.data,
+      });
+    }
+  };
+
   getPropertyDetails = async (id) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     const propertyRes = await API.get(`/property/${id}`);
 
@@ -328,6 +342,7 @@ export default class Splash extends React.Component {
       isLoading: true,
       isLoading: false,
     });
+    this.props.fetchPropetry()
     this.getPropertyDetails(this.state.propertyId);
   };
 
@@ -384,11 +399,11 @@ export default class Splash extends React.Component {
 
   toggleflag = () => {
     console.log('TOGGLEFLAG');
-    this.setState({propertyflag: false});
+    this.setState({ propertyflag: false });
   };
 
   render() {
-    const {onlineUnits, offlineUnits, notInstalledUnits} = this.state;
+    const { onlineUnits, offlineUnits, notInstalledUnits, tBunchData } = this.state;
     return (
       <>
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
@@ -436,7 +451,7 @@ export default class Splash extends React.Component {
                 <Search
                   name="search"
                   size={height * 0.04}
-                  style={{marginLeft: width * 0.015}}
+                  style={{ marginLeft: width * 0.015 }}
                   color="white"
                 />
                 <TextInput
@@ -445,7 +460,7 @@ export default class Splash extends React.Component {
                   placeholderTextColor="white"
                   placeholder="Search"
                   style={styles.search}
-                  onChangeText={(e) => this.setState({currentWei: e})}
+                  onChangeText={(e) => this.setState({ currentWei: e })}
                   theme={{
                     colors: {
                       text: 'white',
@@ -471,14 +486,14 @@ export default class Splash extends React.Component {
                 name="account-details-outline"
                 size={width * 0.08}
                 color="white"
-                style={{top: height * 0.002}}
+                style={{ top: height * 0.002 }}
               />
               <Text style={styles.mainHeadiing}>Details</Text>
               {/* </View> */}
             </View>
           </View>
           <ScrollView
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled
             keyboardShouldPersistTaps="handled">
@@ -566,7 +581,7 @@ export default class Splash extends React.Component {
 
               <View style={styles.mainDataContainer}>
                 <TouchableOpacity
-                  style={{...styles.infoViewContainer, paddingHorizontal: 10}}
+                  style={{ ...styles.infoViewContainer, paddingHorizontal: 10 }}
                   onPress={() =>
                     this.props.navigation.navigate(
                       'Tpanel',
@@ -583,7 +598,7 @@ export default class Splash extends React.Component {
                     )
                   }>
                   <Text
-                    style={{...styles.dataFieldHeadings, borderBottomWidth: 0}}>
+                    style={{ ...styles.dataFieldHeadings, borderBottomWidth: 0 }}>
                     Tpanel
                   </Text>
                   {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -1005,6 +1020,33 @@ export default class Splash extends React.Component {
                     <Text style={styles.offlineText}>Not Installed</Text>
                   </View>
                 </View>
+                {console.log({ tBunchData })}
+                <View style={styles.bunchContainer}>
+                  <View style={styles.rowSpaceBtw}>
+                    <Text>
+                      Avg. Consumption Rate
+                    </Text>
+                    <Text>
+                      {tBunchData?.avgConsumption}%
+                    </Text>
+                  </View>
+
+                  {(tBunchData?.alert_level_count && tBunchData?.alert_level_count?.length > 0) &&
+                  <View style={styles.rowSpaceEvenly}>
+                    {tBunchData?.alert_level_count.map((val, ind) => {
+                      return (
+                        <View style={styles.bunchAlertContainer}>
+                            <Text style={{textTransform: 'capitalize'}}>
+                                {val?.alert_level}:
+                            </Text>
+                            <Text>
+                                {'  '}{val?.alert_count}
+                            </Text>
+                        </View>
+                      )
+                    })}
+                  </View>}
+                </View>
               </View>
             </View>
           </ScrollView>
@@ -1013,3 +1055,16 @@ export default class Splash extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  isLoading: state.propertyReducer.isLoading,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    fetchPropetry: () => dispatch(fetchPropetry()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Details)
