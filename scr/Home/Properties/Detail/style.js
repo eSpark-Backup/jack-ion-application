@@ -497,6 +497,6 @@ export default styles = StyleSheet.create({
   },
   bunchContainer: { width: '95%', backgroundColor: '#cdcdcd', borderColor: 1, padding: 10, marginVertical: 20 },
   rowSpaceBtw: { flexDirection: 'row', justifyContent: 'space-around' },
-  rowSpaceEvenly: {flexDirection: 'row', justifyContent: 'space-evenly'},
+  rowSpaceEvenly: {flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 5},
   bunchAlertContainer: {flexDirection:'row', backgroundColor: 'yellow', padding: 5, borderRadius: 5, marginVertical: 5}
 });

@@ -218,7 +218,7 @@ class Property extends Component {
   enableLocation = async () => {
     this.context.loadLoader();
     const location = await SystemSetting.isLocationEnabled();
-    Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
       this.context.stopLoader();
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [

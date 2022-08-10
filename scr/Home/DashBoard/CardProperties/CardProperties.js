@@ -30,6 +30,8 @@ export const CardProperties = ({navigation}) => {
     }
     setLoading(false);
   };
+
+  console.log("loading, properties", loading, properties)
   return (
     <View style={styles.main}>
       <View style={styles.headingContainer}>

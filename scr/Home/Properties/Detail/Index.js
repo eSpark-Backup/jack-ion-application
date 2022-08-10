@@ -123,7 +123,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
   async componentDidMount() {
     this.setState({ isLoading: true });
-    Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
 
     const propertyData = this.props.navigation.state.params.item.item;
     this.getPropertyDetails(propertyData?.id);
@@ -1031,21 +1031,32 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     </Text>
                   </View>
 
-                  {(tBunchData?.alert_level_count && tBunchData?.alert_level_count?.length > 0) &&
                   <View style={styles.rowSpaceEvenly}>
-                    {tBunchData?.alert_level_count.map((val, ind) => {
-                      return (
-                        <View style={styles.bunchAlertContainer}>
-                            <Text style={{textTransform: 'capitalize'}}>
-                                {val?.alert_level}:
+                        <View style={[styles.bunchAlertContainer, {backgroundColor: 'blue'}]}>
+                            <Text style={{textTransform: 'capitalize', color: '#fff'}}>
+                                Soft
                             </Text>
-                            <Text>
-                                {'  '}{val?.alert_count}
+                            <Text style={{ color: '#fff'}}>
+                                {'  '}{tBunchData?.alert_level_count[0]?.alert_count || 0}
                             </Text>
                         </View>
-                      )
-                    })}
-                  </View>}
+                        <View style={[styles.bunchAlertContainer, {backgroundColor: 'yellow'}]}>
+                            <Text style={{textTransform: 'capitalize'}}>
+                                Medium
+                            </Text>
+                            <Text>
+                                {'  '}{tBunchData?.alert_level_count[1]?.alert_count || 0}
+                            </Text>
+                        </View>
+                        <View style={[styles.bunchAlertContainer, {backgroundColor: 'red'}]}>
+                            <Text style={{textTransform: 'capitalize'}}>
+                                Hard
+                            </Text>
+                            <Text>
+                                {'  '}{tBunchData?.alert_level_count[2]?.alert_count || 0}
+                            </Text>
+                        </View>
+                  </View>
                 </View>
               </View>
             </View>

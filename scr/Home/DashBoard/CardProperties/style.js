@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 5,
         fontSize: 14,
+        textAlign: 'center'
       },
       tableColContainer: {  
         width: width / 2.2, 

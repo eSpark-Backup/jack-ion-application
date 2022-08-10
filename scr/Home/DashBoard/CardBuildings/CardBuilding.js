@@ -53,7 +53,7 @@ export const CardBuildings = ({navigation}) => {
                 {[
                   {title: 'Name', key: 'name'},
                   {
-                    title: 'Propert Name',
+                    title: 'Property Name',
                     key: 'property_name',
                   },
                   {title: 'Description', key: 'descriptions'},

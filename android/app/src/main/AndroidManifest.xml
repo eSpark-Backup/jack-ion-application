@@ -82,7 +82,7 @@
         </service>
       <meta-data
      android:name="com.google.android.geo.API_KEY"
-     android:value="AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A"/>
+     android:value="AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s"/>
     </application>
 
 </manifest>
