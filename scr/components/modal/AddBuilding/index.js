@@ -24,6 +24,8 @@ import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 
 import styles from './style';
 import API from '../../../api/SeviceApi';
+import { useDispatch } from 'react-redux';
+import { fetchPropetry } from '../../../Store/Action/properties.action';
 const {width, height} = Dimensions.get('window');
 
 export default function AddbuildingModal({
@@ -56,7 +58,7 @@ export default function AddbuildingModal({
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
-
+  const dispatch = useDispatch()
   useEffect(() => {
     setState((oldState) => ({
       ...oldState,
@@ -249,6 +251,7 @@ export default function AddbuildingModal({
         `/property/equipment/unit/add-multiple-units`,
         data,
       );
+        dispatch(fetchPropetry())
       console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
@@ -261,6 +264,7 @@ export default function AddbuildingModal({
         `/property/equipment/building/add-building`,
         data,
       );
+      dispatch(fetchPropetry())
       console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();

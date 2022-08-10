@@ -36,6 +36,8 @@ import clc from 'cli-color';
 import API from '../../../api/SeviceApi';
 import Text_Input from '../../../components/TextInput/index';
 import Searchable_Dropdown from '../../../components/SearchableDropdown/index';
+import { useDispatch } from 'react-redux';
+import { fetchPropetry } from '../../../Store/Action/properties.action';
 
 export default function AddEditProperty({
   modalVisible,
@@ -193,6 +195,10 @@ export default function AddEditProperty({
     {value: false},
     {value: false},
   ]);
+
+
+  
+  const dispatch = useDispatch()
 
   useEffect(() => {
     console.log('CurrLocate', currLocate);
@@ -868,39 +874,7 @@ export default function AddEditProperty({
         }
       }
 
-      // this.setState(
-      //   Object.assign(this.state.info, {
-      //     propName: this.state.Name,
-      //     propStreet: this.state.Street,
-      //     propState: this.state.State,
-      //     propCity: this.state.City,
-      //     propZipCode: this.state.ZipCode,
-      //     propBillComp: this.state.BillingCompanyId
-      //       ? this.state.BillingCompany
-      //       : '',
-      //     propBillCompId: this.state.BillingCompanyId,
-      //     propManageComp: this.state.managementCompanyId
-      //       ? this.state.managementCompany
-      //       : '',
-      //     propManageCompId: this.state.managementCompanyId,
-      //     propCustomId: this.state.CustomId,
-      //     propContactName: this.state.CustomerName,
-      //     propContactTitle: this.state.customerjobDes,
-      //     propContactPhone: this.state.customerPhone,
-      //     propContactEmail: this.state.customerEmail,
-      //     // meter_id: this.state.selectedMetersId,
-      //     manufacturer_id: this.state.manuIdsArr,
-      //     device_id: this.state.devIdsArr,
-      //     model_no_id: this.state.deviceData[2].data,
-      //     propLat: this.state.lat,
-      //     propLong: this.state.long,
-      //     utility_type_id: selectUtilIds,
-      //     radial_dist: Number(this.state.radialDis),
-      //   }),
-      //   () => this.props.loader(true),
-      //   {btnLoading: false},
-      // );
-      // this.context.addProp(this.state.info);
+      dispatch(fetchPropetry())
     }
   };
 
@@ -1397,7 +1371,7 @@ export default function AddEditProperty({
                   <GooglePlacesAutocomplete
                     placeholder="Address"
                     query={{
-                      key: 'AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A',
+                      key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
                       language: 'en', // language of the results
                     }}
                     fetchDetails={true}
