@@ -14,6 +14,10 @@ import Filter from './Properties/Filter';
 import Alerts from '../Alerts/index';
 import Tpanel from '../Home/Properties/Detail/Tpanel/index';
 import U_Details from './Properties/Detail/Equipment/Units/Details/index';
+import { CardProperties } from './DashBoard/CardProperties/CardProperties'
+import { CardBuildings } from './DashBoard/CardBuildings/CardBuilding'
+import { CardMeters } from './DashBoard/CardMeters/CardMeters'
+
 const {width, height} = Dimensions.get('window');
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -57,6 +61,9 @@ const RouteConfigs = {
   Notifications,
   Alerts,
   Tpanel,
+  CardProperties,
+  CardBuildings,
+  CardMeters
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

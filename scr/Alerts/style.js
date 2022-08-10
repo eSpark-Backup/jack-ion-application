@@ -106,7 +106,7 @@ export default styles = StyleSheet.create({
   },
   containerReset: {
     height: height * 0.08,
-    width: width * 1,
+    // width: width * 1,
     backgroundColor: '#25AAE1ec',
     marginVertical: height * 0.01,
     justifyContent: 'flex-start',

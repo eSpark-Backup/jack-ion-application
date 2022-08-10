@@ -127,6 +127,7 @@ export default class Splash extends Component {
     }
 
     const cardRes = await API.get(`/dashboard/cards`);
+    console.log("cardRes", cardRes)
     if (cardRes?.data?.bool) {
       this.setState({
         onlineProps: cardRes?.data?.data?.property_status[0],
@@ -504,7 +505,7 @@ export default class Splash extends Component {
               </View>
 
               <View style={styles.mainDataContainer}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Properties')} style={styles.infoViewContainer}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('CardProperties')} style={styles.infoViewContainer}>
                   <View style={styles.infoViewLogo}>
                     <MaterialCommunityIcons
                       name="home-city-outline"
@@ -527,7 +528,7 @@ export default class Splash extends Component {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                <View style={styles.infoViewContainer}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('CardBuildings')} style={styles.infoViewContainer}>
                   <View
                     style={{
                       ...styles.infoViewLogo,
@@ -553,8 +554,8 @@ export default class Splash extends Component {
                       {buildingsPercent}% | {buildingsThisWeek} This Week
                     </Text>
                   </View>
-                </View>
-                <View style={{ ...styles.infoViewContainer }}>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('CardMeters')} style={styles.infoViewContainer}>
                   <View
                     style={{
                       ...styles.infoViewLogo,
@@ -580,7 +581,7 @@ export default class Splash extends Component {
                       {metersPercent}% | {metersThisWeek} This Week
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               </View>
 
               <View style={{ width: width * 1, alignItems: 'center' }}>

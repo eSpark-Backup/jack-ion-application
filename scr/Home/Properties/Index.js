@@ -619,6 +619,7 @@ class Property extends Component {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
+      console.log("state", state.isInternetReachable)
       this.setState({noInternet: !state.isInternetReachable});
       if (state.isConnected) {
         this.closeAddProp();
