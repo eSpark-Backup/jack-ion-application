@@ -5,6 +5,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {styles} from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,6 +13,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {fetchPropetry} from '../../../Store/Action/properties.action';
 import {FlatList} from 'react-native-gesture-handler';
 import API from '../../../api/SeviceApi';
+import CustumStatusBar from '../../../components/StatusBar';
 
 const {height, width} = Dimensions.get('screen');
 export const CardProperties = ({navigation}) => {
@@ -34,6 +36,7 @@ export const CardProperties = ({navigation}) => {
   console.log("loading, properties", loading, properties)
   return (
     <View style={styles.main}>
+       {Platform.OS == 'ios' && <CustumStatusBar />}
       <View style={styles.headingContainer}>
         <View style={styles.headingInner}>
           <MaterialCommunityIcons

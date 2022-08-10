@@ -5,11 +5,13 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {styles} from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {FlatList} from 'react-native-gesture-handler';
 import API from '../../../api/SeviceApi';
+import CustumStatusBar from '../../../components/StatusBar';
 const {height, width} = Dimensions.get('screen');
 export const CardMeters = ({navigation}) => {
   const [meters, setMeters] = useState([]);
@@ -30,6 +32,7 @@ export const CardMeters = ({navigation}) => {
 
   return (
     <View style={styles.main}>
+       {Platform.OS == 'ios' && <CustumStatusBar />}
       <View style={styles.headingContainer}>
         <View style={styles.headingInner}>
           <MaterialCommunityIcons
