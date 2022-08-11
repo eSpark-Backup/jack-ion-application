@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "306249590561",
-    "project_id": "ion-meter",
-    "storage_bucket": "ion-meter.appspot.com"
+    "project_number": "1066777988769",
+    "project_id": "ion-meter-bh-176e1",
+    "storage_bucket": "ion-meter-bh-176e1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:306249590561:android:a21a539fa606bfee054060",
+        "mobilesdk_app_id": "1:1066777988769:android:6e805e2bc20d577436aae0",
         "android_client_info": {
           "package_name": "com.ionenergy.ionmeter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "306249590561-lef764ii93pajht6nthnjbav5ksu6m0r.apps.googleusercontent.com",
+          "client_id": "1066777988769-qr1hbmdtolm3t27g6ank05bj97rngtc1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDVKKOdiPpSkxdoVEgSlW6dq8VHwsVdS0w"
+          "current_key": "AIzaSyD15AEtHDgCXmU0wusX44CePbmNCL8LyYc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "306249590561-lef764ii93pajht6nthnjbav5ksu6m0r.apps.googleusercontent.com",
+              "client_id": "1066777988769-qr1hbmdtolm3t27g6ank05bj97rngtc1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

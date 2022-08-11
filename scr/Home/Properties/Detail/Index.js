@@ -403,7 +403,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   };
 
   render() {
-    const { onlineUnits, offlineUnits, notInstalledUnits, tBunchData } = this.state;
+    const { onlineUnits, offlineUnits, notInstalledUnits, tBunchData, propertyData } = this.state;
     return (
       <>
         {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
@@ -703,6 +703,38 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     ))}
                   </ScrollView> */}
                 </TouchableOpacity>
+
+                <View style={styles.infoViewContainer}>
+                  <Text style={styles.dataFieldHeadings}>
+                   Gateway
+                  </Text>
+                  <View style={styles.infoViewInner}>
+                    <Icon  name="router" size={25} />
+                    {propertyData?.gateway ? 
+                    <View style={{flexDirection: 'column'}}>
+                       <Text style={styles.dataFieldText}>
+                            {propertyData?.gateway?.serial_number}
+                        </Text>
+                        <Text style={styles.dataFieldText}>
+                            {"Synced"}
+                        </Text>
+                    </View>
+                      :
+                    <>
+                    <Text style={styles.dataFieldText}>
+                        No Gateway Programmed!
+                    </Text>
+                    </>}
+                    <Text style={styles.dataFieldText}>
+                      {this.state.listData.owner == null ||
+                      this.state.listData.owner == ''
+                        ? '--'
+                        : this.state.listData.owner}
+                    </Text>
+                  </View>
+                </View>
+
+
                 <View style={styles.infoViewContainer}>
                   <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
                   <View style={styles.infoViewInner}>
@@ -1032,30 +1064,30 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                   </View>
 
                   <View style={styles.rowSpaceEvenly}>
-                        <View style={[styles.bunchAlertContainer, {backgroundColor: 'blue'}]}>
+                        <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#3e89bf'}]}>
                             <Text style={{textTransform: 'capitalize', color: '#fff'}}>
                                 Soft
                             </Text>
                             <Text style={{ color: '#fff'}}>
                                 {'  '}{tBunchData?.alert_level_count[0]?.alert_count || 0}
                             </Text>
-                        </View>
-                        <View style={[styles.bunchAlertContainer, {backgroundColor: 'yellow'}]}>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#FFC107'}]}>
                             <Text style={{textTransform: 'capitalize'}}>
                                 Medium
                             </Text>
                             <Text>
                                 {'  '}{tBunchData?.alert_level_count[1]?.alert_count || 0}
                             </Text>
-                        </View>
-                        <View style={[styles.bunchAlertContainer, {backgroundColor: 'red'}]}>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#DC3545'}]}>
                             <Text style={{textTransform: 'capitalize'}}>
-                                Hard
+                                High
                             </Text>
                             <Text>
                                 {'  '}{tBunchData?.alert_level_count[2]?.alert_count || 0}
                             </Text>
-                        </View>
+                        </TouchableOpacity>
                   </View>
                 </View>
               </View>

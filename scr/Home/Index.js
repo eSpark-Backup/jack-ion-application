@@ -128,6 +128,7 @@ class Splash extends Component {
     // Get the token
     fcmToken = await messaging().getToken();
 
+    console.log("fcmToken fcmToken", fcmToken)
 
     let tokenfcm = {
       fcm_token: fcmToken,
