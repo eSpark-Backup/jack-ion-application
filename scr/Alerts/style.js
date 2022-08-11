@@ -78,7 +78,7 @@ export default styles = StyleSheet.create({
   },
   mainHeadiingReset: {
     fontFamily: Fonts.BalsamiqSansRegular,
-    fontSize: height * 0.028,
+    fontSize: Platform.OS == "ios" ? (height * 0.020) : height * 0.028,
     color: 'white',
   },
   subHeading: {
@@ -106,7 +106,7 @@ export default styles = StyleSheet.create({
   },
   containerReset: {
     height: height * 0.08,
-    // width: width * 1,
+    // width: width/3,
     backgroundColor: '#25AAE1ec',
     marginVertical: height * 0.01,
     justifyContent: 'flex-start',

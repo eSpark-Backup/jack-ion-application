@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Dimensions, ScrollView, ActivityIndicator} from 'react-native';
+import {View, Text, Dimensions, ScrollView, ActivityIndicator, Platform} from 'react-native';
 import {styles} from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {FlatList} from 'react-native-gesture-handler';
 import API from '../../../api/SeviceApi';
+import CustumStatusBar from '../../../components/StatusBar';
 const {height, width} = Dimensions.get('screen');
 export const CardBuildings = ({navigation}) => {
   const [buildings, setBuilding] = useState([]);
@@ -24,6 +25,7 @@ export const CardBuildings = ({navigation}) => {
 
   return (
     <View style={styles.main}>
+      {Platform.OS == 'ios' && <CustumStatusBar />}
       <View style={styles.headingContainer}>
         <View style={styles.headingInner}>
           <MaterialCommunityIcons

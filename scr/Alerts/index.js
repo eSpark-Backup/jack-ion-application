@@ -910,7 +910,7 @@ export default class Splash extends Component {
             <View style={[style.containerReset]}>
               <Feather
                 name="alert-triangle"
-                size={height * 0.035}
+                size={Platform?.OS == "ios" ? height * 0.041 :  height * 0.035}
                 style={{paddingRight: 5}}
                 color="white"
               />
@@ -921,7 +921,7 @@ export default class Splash extends Component {
             <View style={style.containerReset}>
               <Feather
                 name="settings"
-                size={height * 0.035}
+                size={Platform?.OS == "ios" ? height * 0.041 :  height * 0.035}
                 style={{paddingRight: 5}}
                 color="white"
               />
@@ -932,7 +932,7 @@ export default class Splash extends Component {
             <View style={style.containerReset}>
               <Feather
                 name="settings"
-                size={height * 0.035}
+                size={Platform?.OS == "ios" ? height * 0.041 :  height * 0.035}
                 style={{paddingRight: 5}}
                 color="white"
               />
