@@ -218,7 +218,7 @@ class Property extends Component {
   enableLocation = async () => {
     this.context.loadLoader();
     const location = await SystemSetting.isLocationEnabled();
-    Geocoder.init('AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A');
+    Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
       this.context.stopLoader();
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
@@ -431,17 +431,17 @@ class Property extends Component {
             color="#115b72"
           />
           <View>
-            <View style={{ width: width * 0.6 }}>  
+            <View style={{ width:  width * 0.5 }}>  
               <TextTicker
                 style={styles.propText}
                 duration={6000}
                 marqueeDelay={2000}
-                repeatSpacer={width * 0.6}>
+                repeatSpacer={ width * 0.5}>
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
             <View style={{
-              width: width * 0.6,
+              width:  width * 0.5,
               flexDirection: 'row',
               alignItems: 'center'
             }}>
@@ -453,7 +453,7 @@ class Property extends Component {
                 style={{color: 'gray'}}
                 duration={6000}
                 marqueeDelay={2000}
-                repeatSpacer={width * 0.6}>
+                repeatSpacer={ width * 0.5}>
                 {
                   (prop.item.city == null ? '' : prop.item.city + ', ') +
                   (prop.item.st == null ? '' : prop.item.st)
@@ -482,6 +482,14 @@ class Property extends Component {
                 {prop.item.unit_actual_count}
               </Text>
             </View>
+            {prop?.item?.gateway &&
+            <View style={styles.buildUnitCountContainer}>
+              <MaterialIcon
+                name="router"
+                size={width * 0.05}
+                color="#115b72"
+              />
+            </View>}
           </View>
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (

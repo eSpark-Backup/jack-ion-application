@@ -209,6 +209,7 @@ export default class Splash extends Component {
   };
 
   _renderProperties = (prop) => {
+    console.log("PROPS", prop?.item?.gateway)
     return (
       <View
         style={{
@@ -224,21 +225,21 @@ export default class Splash extends Component {
             color="#115b72"
           />
           <View>
-            <View style={{ width: width * 0.6 }}>
+            <View style={{ width: width * 0.5 }}>
               <TextTicker
                 style={styles.propText}
                 duration={6000}
                 marqueeDelay={2000}
-                repeatSpacer={width * 0.6}>
+                repeatSpacer={width * 0.5}>
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
-            <View style={{ width: width * 0.6 }}>
+            <View style={{ width: width * 0.5 }}>
               <TextTicker
                 style={{ color: 'gray' }}
                 duration={6000}
                 marqueeDelay={2000}
-                repeatSpacer={width * 0.6}>
+                repeatSpacer={width * 0.5}>
                 {(prop.item.street == null ? '' : prop.item.street + ', ') +
                   (prop.item.st == null ? '' : prop.item.st + ', ') +
                   (prop.item.city == null ? '' : prop.item.city + ', ') +
@@ -265,6 +266,16 @@ export default class Splash extends Component {
               />
               <Text style={styles.buildUnitCount}>
                 {prop.item.unit_actual_count}
+              </Text>
+            </View>
+            <View style={styles.buildUnitCountContainer}>
+              <MaterialIcons
+                name="warning"
+                size={width * 0.04}
+                color="#115b72"
+              />
+              <Text style={styles.buildUnitCount}>
+                {prop.item.alert_count}
               </Text>
             </View>
           </View>

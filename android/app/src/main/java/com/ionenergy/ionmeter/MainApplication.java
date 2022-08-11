@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
 import com.horcrux.svg.SvgPackage;
 import com.ninty.system.setting.SystemSettingPackage;
 import com.horcrux.svg.SvgPackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           new SvgPackage();
           new MainReactPackage();
+            new RNDateTimePickerPackage();
             new SvgPackage();
           new SystemSettingPackage();
           new MapsPackage();

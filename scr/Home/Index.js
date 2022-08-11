@@ -104,15 +104,17 @@ class Splash extends Component {
   }
 
   backAction = () => {
-    Alert.alert('Hold on!', 'Are you sure you want to go back?', [
-      {
-        text: 'Cancel',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      { text: 'YES', onPress: () => BackHandler.exitApp() },
-    ]);
-    return true;
+    if(this.props?.navigation?.isFocused()) {
+      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'YES', onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    }
   };
 
   componentWillUnmount() {
@@ -126,6 +128,7 @@ class Splash extends Component {
     // Get the token
     fcmToken = await messaging().getToken();
 
+    console.log("fcmToken fcmToken", fcmToken)
 
     let tokenfcm = {
       fcm_token: fcmToken,

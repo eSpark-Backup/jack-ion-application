@@ -160,7 +160,7 @@ class Splash extends Component {
     });
 
     const response = await API.post(
-      `/property/equipment/building/all-buildings/`,
+      `/property/equipment/building/all-buildings/${PropertyID}`,
     );
     const role = await AsyncStorage.getItem('user_role');
     this.setState({ userRole: role });

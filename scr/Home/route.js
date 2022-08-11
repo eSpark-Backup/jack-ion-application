@@ -17,6 +17,7 @@ import U_Details from './Properties/Detail/Equipment/Units/Details/index';
 import { CardProperties } from './DashBoard/CardProperties/CardProperties'
 import { CardBuildings } from './DashBoard/CardBuildings/CardBuilding'
 import { CardMeters } from './DashBoard/CardMeters/CardMeters'
+import { ConsumptionComparison } from './Report/ConsumptionComparison'
 
 const {width, height} = Dimensions.get('window');
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -63,7 +64,8 @@ const RouteConfigs = {
   Tpanel,
   CardProperties,
   CardBuildings,
-  CardMeters
+  CardMeters,
+  ConsumptionComparison
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

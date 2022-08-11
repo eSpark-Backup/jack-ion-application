@@ -2398,7 +2398,7 @@ export default function UnitEdit({
                     <GooglePlacesAutocomplete
                       placeholder="Address"
                       query={{
-                        key: 'AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A',
+                        key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
                         language: 'en', // language of the results
                       }}
                       fetchDetails={true}
@@ -4154,7 +4154,7 @@ export default function UnitEdit({
                             <GooglePlacesAutocomplete
                               placeholder="Address"
                               query={{
-                                key: 'AIzaSyAVCQa1ZgYSuqHfZLIkhMQ_C6W5L5Wi42A',
+                                key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
                                 language: 'en', // language of the results
                               }}
                               fetchDetails={true}
