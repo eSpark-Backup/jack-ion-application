@@ -156,7 +156,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
     this.setState({ isLoading: true });
 
     const propertyRes = await API.get(`/property/${id}`);
-
+    console.log("propertyRes propertyRes", propertyRes)
     const currPropData = propertyRes?.data?.data?.property;
     const utilityManufacturersArr =
       propertyRes?.data?.data?.property?.utility_manufacturers;
