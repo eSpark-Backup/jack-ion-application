@@ -14,13 +14,17 @@ import Filter from './Properties/Filter';
 import Alerts from '../Alerts/index';
 import Tpanel from '../Home/Properties/Detail/Tpanel/index';
 import U_Details from './Properties/Detail/Equipment/Units/Details/index';
-import { CardProperties } from './DashBoard/CardProperties/CardProperties'
-import { CardBuildings } from './DashBoard/CardBuildings/CardBuilding'
-import { CardMeters } from './DashBoard/CardMeters/CardMeters'
-import { ConsumptionComparison } from './Report/ConsumptionComparison'
-
+import {CardProperties} from './DashBoard/CardProperties/CardProperties';
+import {CardBuildings} from './DashBoard/CardBuildings/CardBuilding';
+import {CardMeters} from './DashBoard/CardMeters/CardMeters';
+import {ConsumptionComparison} from './Report/ConsumptionComparison';
 const {width, height} = Dimensions.get('window');
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {PropertyReport} from './Report';
+import {Usage} from './Report/Usage';
+import {Battery} from './Report/Battery';
+import { Temperature } from './Report/Temprature';
+import { Network } from './Report/Network';
 
 const IonNavigatorConfig = {
   initialRouteName: 'ionMain',
@@ -65,7 +69,12 @@ const RouteConfigs = {
   CardProperties,
   CardBuildings,
   CardMeters,
-  ConsumptionComparison
+  ConsumptionComparison,
+  PropertyReport,
+  Usage,
+  Battery,
+  Temperature,
+  Network
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

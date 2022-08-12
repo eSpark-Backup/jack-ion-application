@@ -79,7 +79,7 @@ export default class Splash extends Component {
           data: [],
         },
       ],
-      activeTab: 'alert'
+      activeTab: 'alert',
     };
   }
 
@@ -247,6 +247,14 @@ export default class Splash extends Component {
     this.toggleModal();
     this.props.navigation.navigate(
       'Detail',
+      this.props.navigation.state.params,
+    );
+  };
+
+  navigateToReport = () => {
+    this.toggleModal();
+    this.props.navigation.navigate(
+      'PropertyReport',
       this.props.navigation.state.params,
     );
   };
@@ -445,62 +453,58 @@ export default class Splash extends Component {
 
     return (
       <View>
-       <>
-              <SectionList
-                sections={alertsType}
-                renderItem={({item, index}) => (
-                  <View style={style.containerInner}>
-                    <View>
-                      <Text style={style.mainHeadiingItems}>{item.name}</Text>
-                      <Text style={style.sideHeadingItems}>
-                        {item.description}
-                      </Text>
-                    </View>
-                    {item.status == 2 ? (
-                      <Text style={style.settingsComingSoon}>Coming Soon</Text>
-                    ) : (
-                      <View style={style.settingsContentContainer}>
-                        <Switch
-                          trackColor={{false: 'lightgray', true: '#25AAE1'}}
-                          thumbColor={'#f4f3f4'}
-                          ios_backgroundColor="#3e3e3e"
-                          value={item.user_allowed}
-                          onValueChange={() =>
-                            this.changeAlertStatus(item, index)
-                          }
-                        />
-                        <TouchableOpacity
-                          onPress={() => {
-                            this.setState({
-                              settingModal: true,
-                              alertSettObj: item,
-                              alertSettObjInd: index,
-                            });
-                          }}>
-                          <Feather
-                            name={'settings'}
-                            size={height * 0.035}
-                            style={{paddingRight: 5}}
-                            color="#999"
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                  </View>
-                )}
-                renderSectionHeader={({section: {title, icon}}) => (
-                  <View style={style.subHeadContainer}>
-                    <Feather
-                      name={icon}
-                      size={height * 0.035}
-                      style={{paddingRight: 5}}
-                      color="#999"
+        <>
+          <SectionList
+            sections={alertsType}
+            renderItem={({item, index}) => (
+              <View style={style.containerInner}>
+                <View>
+                  <Text style={style.mainHeadiingItems}>{item.name}</Text>
+                  <Text style={style.sideHeadingItems}>{item.description}</Text>
+                </View>
+                {item.status == 2 ? (
+                  <Text style={style.settingsComingSoon}>Coming Soon</Text>
+                ) : (
+                  <View style={style.settingsContentContainer}>
+                    <Switch
+                      trackColor={{false: 'lightgray', true: '#25AAE1'}}
+                      thumbColor={'#f4f3f4'}
+                      ios_backgroundColor="#3e3e3e"
+                      value={item.user_allowed}
+                      onValueChange={() => this.changeAlertStatus(item, index)}
                     />
-                    <Text style={style.subHeading}>{title}</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setState({
+                          settingModal: true,
+                          alertSettObj: item,
+                          alertSettObjInd: index,
+                        });
+                      }}>
+                      <Feather
+                        name={'settings'}
+                        size={height * 0.035}
+                        style={{paddingRight: 5}}
+                        color="#999"
+                      />
+                    </TouchableOpacity>
                   </View>
                 )}
-              />
-            </>
+              </View>
+            )}
+            renderSectionHeader={({section: {title, icon}}) => (
+              <View style={style.subHeadContainer}>
+                <Feather
+                  name={icon}
+                  size={height * 0.035}
+                  style={{paddingRight: 5}}
+                  color="#999"
+                />
+                <Text style={style.subHeading}>{title}</Text>
+              </View>
+            )}
+          />
+        </>
       </View>
     );
   };
@@ -523,58 +527,54 @@ export default class Splash extends Component {
     return (
       <View>
         <>
-              <SectionList
-                sections={this.state.alertContacts}
-                renderItem={({item}) => (
-                  <View style={style.containerInner}>
+          <SectionList
+            sections={this.state.alertContacts}
+            renderItem={({item}) => (
+              <View style={style.containerInner}>
+                <View style={style.viewAlignment}>
+                  <Feather
+                    name="user"
+                    size={height * 0.04}
+                    style={{paddingRight: 5}}
+                  />
+                  <View>
+                    <Text style={style.mainHeadiingItems}>{item.name}</Text>
                     <View style={style.viewAlignment}>
-                      <Feather
-                        name="user"
-                        size={height * 0.04}
-                        style={{paddingRight: 5}}
-                      />
-                      <View>
-                        <Text style={style.mainHeadiingItems}>{item.name}</Text>
-                        <View style={style.viewAlignment}>
-                          <Text style={style.contactOtherInfo}>
-                            {item.email}
-                          </Text>
-                          <Text style={style.contactOtherInfo}>
-                            {item.phone}
-                          </Text>
-                        </View>
-                      </View>
+                      <Text style={style.contactOtherInfo}>{item.email}</Text>
+                      <Text style={style.contactOtherInfo}>{item.phone}</Text>
                     </View>
+                  </View>
+                </View>
 
-                    <TouchableOpacity>
-                      <Feather
-                        name={'settings'}
-                        size={height * 0.035}
-                        style={{paddingRight: 5}}
-                        color="#999"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                )}
-                renderSectionHeader={({section: {title, icon}}) => (
-                  <View style={style.subHeadContainer}>
-                    <Feather
-                      name={icon}
-                      size={height * 0.035}
-                      style={{paddingRight: 5}}
-                      color="#999"
-                    />
-                    <Text style={style.subHeading}>{title}</Text>
-                  </View>
-                )}
-              />
-              <TouchableOpacity
-                onPress={() => this.setState({contactModal: true})}
-                style={style.newContactBtn}>
-                <Feather name="plus" size={height * 0.024} color="#fff" />
-                <Text style={style.newContactBtnText}>Add New Contact</Text>
-              </TouchableOpacity>
-            </>
+                <TouchableOpacity>
+                  <Feather
+                    name={'settings'}
+                    size={height * 0.035}
+                    style={{paddingRight: 5}}
+                    color="#999"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            renderSectionHeader={({section: {title, icon}}) => (
+              <View style={style.subHeadContainer}>
+                <Feather
+                  name={icon}
+                  size={height * 0.035}
+                  style={{paddingRight: 5}}
+                  color="#999"
+                />
+                <Text style={style.subHeading}>{title}</Text>
+              </View>
+            )}
+          />
+          <TouchableOpacity
+            onPress={() => this.setState({contactModal: true})}
+            style={style.newContactBtn}>
+            <Feather name="plus" size={height * 0.024} color="#fff" />
+            <Text style={style.newContactBtnText}>Add New Contact</Text>
+          </TouchableOpacity>
+        </>
       </View>
     );
   };
@@ -592,7 +592,7 @@ export default class Splash extends Component {
       alertSelected,
       showAdvanceSett,
       loader,
-      activeTab
+      activeTab,
     } = this.state;
     return (
       <View style={style.container}>
@@ -606,6 +606,7 @@ export default class Splash extends Component {
           naviagateToChart={this.naviagateToChart}
           naviagateToAlerts={this.naviagateToAlerts}
           naviagateToSupport={this.naviagateToSupport}
+          navigateToReport={this.navigateToReport}
         />
         <View style={style.headingContainer}>
           <View style={[style.headingInner]}>
@@ -906,37 +907,61 @@ export default class Splash extends Component {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <TouchableOpacity onPress={() => this.setState({activeTab: 'alert'})} activeOpacity={0.9}>
-            <View style={[style.containerReset]}>
+          <TouchableOpacity
+            onPress={() => this.setState({activeTab: 'alert'})}
+            activeOpacity={0.9}>
+            <View style={style.tabContainer}>
               <Feather
                 name="alert-triangle"
-                size={Platform?.OS == "ios" ? height * 0.041 :  height * 0.035}
+                size={20}
                 style={{paddingRight: 5}}
-                color="white"
+                color={activeTab == 'alert' ? '#000' : '#fff'}
               />
-              <Text style={style.mainHeadiingReset}>Alerts</Text>
+              <Text
+                style={{
+                  color: activeTab == 'alert' ? '#000' : '#fff',
+                  fontSize: 16,
+                }}>
+                Alerts
+              </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.setState({activeTab: 'setting'})} activeOpacity={0.9}>
-            <View style={style.containerReset}>
+          <TouchableOpacity
+            onPress={() => this.setState({activeTab: 'setting'})}
+            activeOpacity={0.9}>
+            <View style={style.tabContainer}>
               <Feather
                 name="settings"
-                size={Platform?.OS == "ios" ? height * 0.041 :  height * 0.035}
+                size={20}
                 style={{paddingRight: 5}}
-                color="white"
+                color={activeTab == 'setting' ? '#000' : '#fff'}
               />
-              <Text style={style.mainHeadiingReset}>Settings</Text>
+              <Text
+                style={{
+                  color: activeTab == 'setting' ? '#000' : '#fff',
+                  fontSize: 16,
+                }}>
+                Settings
+              </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.setState({activeTab: 'notification'})} activeOpacity={0.9}>
-            <View style={style.containerReset}>
+          <TouchableOpacity
+            onPress={() => this.setState({activeTab: 'notification'})}
+            activeOpacity={0.9}>
+            <View style={style.tabContainer}>
               <Feather
                 name="settings"
-                size={Platform?.OS == "ios" ? height * 0.041 :  height * 0.035}
+                size={20}
                 style={{paddingRight: 5}}
-                color="white"
+                color={activeTab == 'notification' ? '#000' : '#fff'}
               />
-              <Text style={style.mainHeadiingReset}>Notifications</Text>
+              <Text
+                style={{
+                  color: activeTab == 'notification' ? '#000' : '#fff',
+                  fontSize: 16,
+                }}>
+                Notifications
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -945,12 +970,9 @@ export default class Splash extends Component {
           style={style.container}
           showsVerticalScrollIndicator={false}>
           <View style={style.containView}>
-           
-            {activeTab == "alert" && this.renderAlert()}
-            {activeTab == "setting" && this.renderSetting()}
-            {activeTab == "notification" && this.renderNotification()}
-
-           
+            {activeTab == 'alert' && this.renderAlert()}
+            {activeTab == 'setting' && this.renderSetting()}
+            {activeTab == 'notification' && this.renderNotification()}
           </View>
         </ScrollView>
       </View>

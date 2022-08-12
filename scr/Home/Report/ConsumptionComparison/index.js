@@ -83,6 +83,7 @@ export const ConsumptionComparison = ({navigation, route}) => {
               Consumption Comparison Report
             </Text>
           </View>
+          <View />
         </View>
       </View>
 

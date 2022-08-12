@@ -115,7 +115,7 @@ export default styles = StyleSheet.create({
     padding: width * 0.03,
     elevation: width * 0.01,
   },
-
+  tabContainer: {flexDirection: 'row', width: width/3, alignItems: 'center', justifyContent: 'center', backgroundColor: '#25AAE1ec', padding: 10},
   selectAllBtnContainer: {
     width: width * 1,
     height: height * 0.06,

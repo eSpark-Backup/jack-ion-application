@@ -316,6 +316,15 @@ class Splash extends Component {
     this.props.navigation.navigate('Support');
   };
 
+  navigateToReport = () => {
+    this.toggleModal();
+    this.props.navigation.navigate(
+      'PropertyReport',
+      this.props.navigation.state.params,
+    );
+  };
+
+
   selectAndCloseAdd = async () => {
     if (Platform.OS == 'ios') {
       setTimeout(() => {
@@ -972,6 +981,7 @@ class Splash extends Component {
             naviagateToChart={this.naviagateToChart}
             naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
+            navigateToReport={this.navigateToReport}
           />
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>

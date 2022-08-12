@@ -1,0 +1,173 @@
+import React, { useState } from 'react';
+import {View, Text, StyleSheet, Dimensions, Platform, TouchableOpacity} from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import CustumStatusBar from '../../components/StatusBar';
+import Drawer from '../../components/modal/Drawer/index';
+import { styles } from './styles';
+
+const {width, height} = Dimensions.get('screen');
+export const PropertyReport = ({navigation}) => {
+
+  const [isModalVisible, setisModalVisible] = useState(false)
+
+  const items = [
+    {
+      name: 'Consumption Comparison Report',
+      description:
+        'Building Name, Unit Name, Device Serial Number, Consumption Limit, Actual Consumption, Alert Level, Date',
+      icon: (
+        <Entypo
+          name="bar-graph"
+          size={width * 0.065}
+          color="#25AAE1ec"
+          style={{marginRight: width * 0.02}}
+        />
+      ),
+      navigateTo: 'ConsumptionComparison',
+    },
+    {
+      name: 'Usage',
+      description:
+        'Building, Unit, Device Serial Number, Meter Usage, Meter Reading, Utility Type, Date',
+      icon: (
+        <MaterialIcons
+          name="data-usage"
+          size={width * 0.065}
+          color="#25AAE1ec"
+          style={{marginRight: width * 0.02}}
+        />
+      ),
+      navigateTo: 'Usage',
+    },
+    {
+      name: 'Network',
+      description:
+        'Building, Unit, Device Serial Number, Attached To, Manufacturer, Device, Date',
+      icon: (
+        <Entypo
+          name="network"
+          size={width * 0.065}
+          color="#25AAE1ec"
+          style={{marginRight: width * 0.02}}
+        />
+      ),
+      navigateTo: 'Network',
+    },
+    {
+      name: 'Battery',
+      description: 'Building, Unit, Device Serial Number, Battery, Date',
+      icon: (
+        <Feather
+          name="battery"
+          size={width * 0.065}
+          color="#25AAE1ec"
+          style={{marginRight: width * 0.02}}
+        />
+      ),
+      navigateTo: 'Battery',
+    },
+    {
+      name: 'Temperature',
+      description: 'Building, Unit, Device Serial Number, Temperature, Date',
+      icon: (
+        <FontAwesome5
+          name="temperature-low"
+          size={width * 0.065}
+          color="#25AAE1ec"
+          style={{marginRight: width * 0.02}}
+        />
+      ),
+      navigateTo: 'Temperature',
+    },
+  ];
+
+const toggleModal = () => {
+    setisModalVisible(!isModalVisible);
+  };
+
+  const  naviagateToEquip = () => {
+    toggleModal();
+    navigation.navigate('Equip', navigation.state.params);
+  };
+
+  const  naviagateToDetail = () => {
+    toggleModal();
+    navigation.navigate(
+      'Detail',
+      navigation.state.params,
+    );
+  };
+
+  const navigateToReport = () => {
+    toggleModal();
+    navigation.navigate(
+      'PropertyReport',
+      navigation.state.params,
+    );
+  };
+
+  const naviagateToAlerts = () => {
+    toggleModal();
+  };
+
+  const naviagateToSupport = () => {
+    setisModalVisible(!isModalVisible);
+    navigation.navigate('Support');
+  };
+
+
+  console.log("navigation?.state?.params",  navigation?.state?.params?.item?.item?.id)
+  return (
+    <View>
+        {Platform.OS == 'ios' && <CustumStatusBar />}
+        <View style={styles.headingContainer}>
+          <View style={[styles.headingInner]}>
+            <TouchableOpacity
+              onPress={toggleModal}
+              style={styles.drawerMenuBtn}>
+              <MaterialIcons size={width * 0.08} color="white" name="menu" />
+            </TouchableOpacity>
+            <View style={styles.mainHeadingContainer}>
+              <Text style={styles.mainHeadiing}>Property Reports</Text>
+            </View>
+          </View>
+        </View>
+
+        <Drawer
+            isVisible={isModalVisible}
+            onCancel={toggleModal}
+            naviagateToDetail={naviagateToDetail}
+            naviagateToEquip={naviagateToEquip}
+            // naviagateToChart={naviagateToChart}
+            naviagateToAlerts={naviagateToAlerts}
+            naviagateToSupport={naviagateToSupport}
+            navigateToReport={navigateToReport}
+          />
+
+          <View>
+              {items?.map((val, ind) => {
+                return (
+                  <TouchableOpacity activeOpacity={.8} onPress={() => navigation?.navigate(val?.navigateTo , {propId: navigation?.state?.params?.item?.item?.id})} 
+                    style={styles.itemContainer}>
+                      <View style={{width: "10%"}}>  
+                          {val?.icon}
+                      </View>
+                      <View  style={{width: "90%", height: 50}}>
+                          <Text style={{fontWeight: '700', fontSize: 17}}>
+                              {val?.name}
+                          </Text>
+                          <Text numberOfLines={2}>
+                              {val?.description}
+                          </Text>
+                      </View>
+                  </TouchableOpacity>
+                )
+              })}
+          </View>
+
+    </View>
+  );
+};

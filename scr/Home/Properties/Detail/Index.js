@@ -377,6 +377,14 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
     );
   };
 
+  navigateToReport = () => {
+    this.toggleModal();
+    this.props.navigation.navigate(
+      'PropertyReport',
+      this.props.navigation.state.params,
+    );
+  };
+
   naviagateToChart = () => {
     this.toggleModal();
     this.props.navigation.navigate(
@@ -433,6 +441,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
             naviagateToChart={this.naviagateToChart}
             naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
+            navigateToReport={this.navigateToReport}
+
           />
 
           <StatusBar hidden backgroundColor="white" barStyle="dark-content" />

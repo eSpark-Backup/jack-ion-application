@@ -14,11 +14,13 @@ export const styles = StyleSheet.create({
       },
       headingInner: {
         flex: 1,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#25AAE1ec',
         elevation: width * 0.01,
         flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingHorizontal: 15
       },
       mainHeadiing: {
         fontFamily: Fonts.Montserrat,

@@ -16,7 +16,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   drawerContentContainer: {
-    marginTop: height * -0.6,
+    marginTop: height * -0.5,
     width: width * 0.45,
     flexDirection: 'column',
     top: 20,

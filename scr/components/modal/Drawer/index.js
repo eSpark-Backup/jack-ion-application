@@ -18,6 +18,8 @@ import Modal from 'react-native-modal';
 import Menu from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Icon, IconToggle} from 'react-native-material-ui';
@@ -39,6 +41,7 @@ export default class DrawerModal extends Component {
       naviagateToAlerts,
       naviagateToChart,
       naviagateToSupport,
+      navigateToReport,
       onCancel,
       children,
       doneBtnTitle,
@@ -97,6 +100,18 @@ export default class DrawerModal extends Component {
                   style={{marginRight: width * 0.02}}
                 />
                 <Text style={styles.drawerbtn}>Alerts</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={navigateToReport}>
+              <View style={styles.drawerContent}>
+                <Entypo
+                  name="bar-graph"
+                  size={width * 0.065}
+                  color="#f00"
+                  style={{marginRight: width * 0.02}}
+                />
+                <Text style={styles.drawerbtn}>Reports</Text>
               </View>
             </TouchableOpacity>
             {/* <TouchableOpacity onPress={naviagateToChart}>
