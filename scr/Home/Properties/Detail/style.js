@@ -122,7 +122,7 @@ export default styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: height * 0.01,
     textAlign: 'center',
-    width: width * 0.75,
+    width: width * 0.8,
   },
   unitMixesHeadContainer: {
     width: width * 0.85,
@@ -477,6 +477,7 @@ export default styles = StyleSheet.create({
     height: width * 0.035,
     borderRadius: 100,
     backgroundColor: '#175CA1',
+    marginHorizontal: 5
   },
   onlineText: {
     fontSize: width * 0.03,
@@ -489,13 +490,14 @@ export default styles = StyleSheet.create({
     height: width * 0.035,
     borderRadius: 100,
     backgroundColor: '#ff1414',
+    marginHorizontal: 5
   },
   offlineText: {
     fontSize: width * 0.03,
     color: '#2D2A2B',
     fontFamily: Fonts.Montserrat,
   },
-  bunchContainer: { width: '95%', backgroundColor: '#cdcdcd', borderColor: 1, padding: 10, marginVertical: 20 },
+  bunchContainer: { width: '95%', backgroundColor: '#cdcdcd', borderColor: 1, padding: 10, marginVertical: 20, borderRadius: 10 },
   rowSpaceBtw: { flexDirection: 'row', justifyContent: 'space-around' },
   rowSpaceEvenly: {flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 5},
   bunchAlertContainer: {flexDirection:'row', backgroundColor: 'yellow', padding: 5, borderRadius: 5, marginVertical: 5}

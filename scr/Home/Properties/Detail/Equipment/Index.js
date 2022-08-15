@@ -46,6 +46,8 @@ import Drawer from '../../../../components/modal/Drawer/index';
 import AddBuilding from '../../../../components/modal/AddBuilding/index';
 import { connect } from 'react-redux';
 import { fetchPropetry } from '../../../../Store/Action/properties.action';
+import {RNCamera} from 'react-native-camera';
+import BarcodeMask from 'react-native-barcode-mask';
 
 const { width, height } = Dimensions.get('window');
 let buildListViewRef;
@@ -99,7 +101,7 @@ class Splash extends Component {
       unitMeters: [],
       unitDatax: [],
       isEditUnitModalVisible: false,
-      activeTab: "network",
+      activeTab: "units",
       shimmers: [
         { id: 1 },
         { id: 2 },
@@ -112,7 +114,8 @@ class Splash extends Component {
       ],
       gateway: false,
       loading: false,
-      serialNumber: ''
+      serialNumber: '',
+      isVisible: false,
     };
 
     if (Platform.OS === 'android') {
@@ -990,6 +993,75 @@ class Splash extends Component {
       <>
         <View style={styles.container}>
           <CustumStatusBar />
+
+          <Modal
+            animationIn="bounceInUp"
+            animationOut="bounceInDown"
+            backdropOpacity={5}
+            statusBarTranslucent
+            isVisible={this.state.isVisible}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'space-around',
+                  borderRadius: width * 0.02,
+                  marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    fontSize: width * 0.08,
+                  }}>
+                  Scan Barcode
+                </Text>
+                <RNCamera
+                  ref={(ref) => {
+                    this.camera = ref;
+                  }}
+                  style={{flex: 1}}
+                  type={RNCamera.Constants.Type.back}
+                  autoFocus="on"
+                  onBarCodeRead={(e) => {
+                    this.setState({serialNumber: e?.data?.substring(0)})
+                  }}
+                  captureAudio={false}
+                >
+                  <BarcodeMask outerMaskOpacity={0} />
+                </RNCamera>
+                <View
+                  style={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingVertical: height * 0.02,
+                  }}>
+                  <TouchableOpacity 
+                  onPress={() => {
+                    this.setState({
+                      isVisible: !this.state?.isVisible
+                    })
+                  }}>
+                    <View
+                      style={{
+                        backgroundColor: 'white',
+                        borderRadius: width * 0.008,
+                        height: height * 0.05,
+                        justifyContent: 'center',
+                        width: width * 0.4,
+                      }}>
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          color: '#25AAE1',
+                          fontWeight: 'bold',
+                        }}>
+                        Switch Off Scanner
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+          </Modal>
           {/* Building Edit Modal */}
           <UpdateModal
             isVisible={this.state.editModal}
@@ -1493,6 +1565,11 @@ class Splash extends Component {
                     <View>
                       <View style={styles.textInputContainer}>
                         <MaterialCommunityIcons
+                          onPress={() => {
+                            this.setState({
+                              isVisible: !this.state?.isVisible
+                            })
+                          }}
                           name="barcode-scan"
                           color="#06012B"
                           size={width * 0.035}

@@ -1062,14 +1062,13 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     <Text style={styles.offlineText}>Not Installed</Text>
                   </View>
                 </View>
-                {console.log({ tBunchData })}
                 <View style={styles.bunchContainer}>
                   <View style={styles.rowSpaceBtw}>
                     <Text>
                       Avg. Consumption Rate
                     </Text>
                     <Text>
-                      {tBunchData?.avgConsumption}%
+                      {tBunchData?.avgConsumption || '0.00'}%
                     </Text>
                   </View>
 

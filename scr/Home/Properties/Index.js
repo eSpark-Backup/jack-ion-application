@@ -517,6 +517,9 @@ class Property extends Component {
                 </View>
                 <View style={styles.animatedDetailShown}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
+                    <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
+                      Building:
+                    </Text>
                     <FontAwesome5Icon
                       name="building"
                       size={height * 0.02}
@@ -527,6 +530,9 @@ class Property extends Component {
                     </Text>
                   </View>
                   <View style={styles.animatedDetailBuildingAndUnit}>
+                    <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
+                      Unit:
+                    </Text>
                     <FontAwesome5Icon
                       name="house-user"
                       size={height * 0.02}
@@ -536,30 +542,36 @@ class Property extends Component {
                       {prop.item.unit_actual_count}
                     </Text>
                   </View>
-
-                  <View style={styles.animatedDetailBuildingAndUnit}>
-                    <MaterialIcon
-                      name="router"
-                      size={width * 0.04}
-                      color="#000"
-                    />
-                    <Text style={styles.animatedDetailBuildingAndUnitText}>
-                      {prop.item.meter_count}
-                    </Text>
-                  </View>
-                  <View style={styles.animatedDetailBuildingAndUnit}>
-                    <MaterialCommunityIcons
-                      name="file-table-box-outline"
-                      size={width * 0.04}
-                      color="#000"
-                    />
-                    <Text style={styles.animatedDetailBuildingAndUnitText}>
-                      {prop.item.unit_mix_count}
-                    </Text>
-                  </View>
                 </View>
 
-                <View style={styles.animatedDetailShown}></View>
+                <View style={styles.animatedDetailShown}>
+                  <View style={styles.animatedDetailBuildingAndUnit}>
+                    <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
+                      Meter:
+                    </Text>
+                      <MaterialIcon
+                        name="router"
+                        size={width * 0.04}
+                        color="#000"
+                      />
+                      <Text style={styles.animatedDetailBuildingAndUnitText}>
+                        {prop.item.meter_count}
+                      </Text>
+                    </View>
+                    <View style={styles.animatedDetailBuildingAndUnit}>
+                      <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
+                        Unit Mix:
+                      </Text>
+                      <MaterialCommunityIcons
+                        name="file-table-box-outline"
+                        size={width * 0.04}
+                        color="#000"
+                      />
+                      <Text style={styles.animatedDetailBuildingAndUnitText}>
+                        {prop.item.unit_mix_count}
+                      </Text>
+                    </View>
+                </View>
               </View>
             </View>
 
