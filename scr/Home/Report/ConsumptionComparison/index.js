@@ -185,6 +185,7 @@ export const ConsumptionComparison = ({navigation, route}) => {
                 renderItem={({item, index}) => {
                   return (
                     <View
+                      key={index}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',

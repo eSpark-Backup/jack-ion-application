@@ -150,7 +150,7 @@ const toggleModal = () => {
           <View>
               {items?.map((val, ind) => {
                 return (
-                  <TouchableOpacity activeOpacity={.8} onPress={() => navigation?.navigate(val?.navigateTo , {propId: navigation?.state?.params?.item?.item?.id})} 
+                  <TouchableOpacity key={ind} activeOpacity={.8} onPress={() => navigation?.navigate(val?.navigateTo , {propId: navigation?.state?.params?.item?.item?.id})} 
                     style={styles.itemContainer}>
                       <View style={{width: "10%"}}>  
                           {val?.icon}

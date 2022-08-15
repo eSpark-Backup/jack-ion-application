@@ -49,7 +49,7 @@ import { fetchPropetry } from '../../../../Store/Action/properties.action';
 
 const { width, height } = Dimensions.get('window');
 let buildListViewRef;
-
+let listViewRef
 class Splash extends Component {
   static contextType = ContextProp;
   constructor() {
@@ -99,6 +99,7 @@ class Splash extends Component {
       unitMeters: [],
       unitDatax: [],
       isEditUnitModalVisible: false,
+      activeTab: "network",
       shimmers: [
         { id: 1 },
         { id: 2 },
@@ -109,6 +110,9 @@ class Splash extends Component {
         { id: 7 },
         { id: 8 },
       ],
+      gateway: false,
+      loading: false,
+      serialNumber: ''
     };
 
     if (Platform.OS === 'android') {
@@ -154,9 +158,11 @@ class Splash extends Component {
     this.setState({ filterWork: false, loader: true, loaderBuildings: true });
     const PropertyID = this.props.navigation.state.params.item.item.id;
     const PropRes = await API.get(`/property/${PropertyID}`);
+    console.log("gateway response", PropRes?.data?.data?.property?.gateway)
     this.setState({
       unitCount: PropRes?.data?.data?.property?.unit_count,
       unitActualCount: PropRes?.data?.data?.property.unit_actual_count,
+      gateway: PropRes?.data?.data?.property?.gateway
     });
 
     const response = await API.post(
@@ -220,6 +226,30 @@ class Splash extends Component {
       this.setState({ loaderBuildings: false });
     }
   };
+
+  attachGateway = async () => {
+    if(!this?.state?.serialNumber) {
+      alert('Serial number is required!')
+      return
+    }
+    this.setState({loading: true})
+    const data = {
+      "serial_number": this.state.serialNumber,
+      "property_id": this?.props?.navigation?.state?.params?.item?.item?.id
+    }
+    const result = await API.post('/gateway/attach-gateway', data)
+    console.log(result)
+      if (result?.ok) {
+        if(result?.data?.bool) {
+          this.checkData()
+        }else {
+          alert(result?.data?.message)
+        }
+      }else {
+        alert(result?.data?.message)
+      }
+    this.setState({loading: false})
+  }
 
   filerUnits = async (serial, id) => {
     let data = {
@@ -954,8 +984,8 @@ class Splash extends Component {
     const { result, scan, scanResult } = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
-    const { loader, loaderBuildings, meterTypeInputs } = this.state;
-
+    const { loader, loaderBuildings, meterTypeInputs, gateway } = this.state;
+    console.log("gateway", gateway)
     return (
       <>
         <View style={styles.container}>
@@ -1049,387 +1079,485 @@ class Splash extends Component {
               </View>
             </View>
           </View>
-          <View style={styles.bodyContainer}>
-            <View style={styles.mainDataContainer}>
-              <View style={styles.mainData}>
-                <View style={styles.dropDownContainer}>
-                  <MenuT
-                    visible={this.state.addMenuVisible}
-                    anchor={
-                      <TouchableOpacity
-                        style={[
-                          styles.dropDown,
-                          {
-                            borderColor:
-                              this.state.unitActualCount >= this.state.unitCount
-                                ? '#817e7e80'
-                                : '#3E4A4F',
-                          },
-                        ]}
-                        disabled={
-                          this.state.unitActualCount >= this.state.unitCount
-                            ? true
-                            : false
-                        }
-                        onPress={() => this.setState({ addMenuVisible: true })}>
-                        <Feather
-                          name="plus"
-                          size={height * 0.025}
-                          color={
-                            this.state.unitActualCount >= this.state.unitCount
-                              ? '#817e7e80'
-                              : '#3E4A4F'
-                          }
-                        />
-                        <Text
-                          style={[
-                            styles.dropDownText,
-                            {
-                              color:
-                                this.state.unitActualCount >=
-                                  this.state.unitCount
-                                  ? '#817e7e80'
-                                  : '#3E4A4F',
-                            },
-                          ]}>
-                          Add
-                        </Text>
-                        <Feather
-                          name="chevron-down"
-                          size={height * 0.02}
-                          color={
-                            this.state.unitActualCount >= this.state.unitCount
-                              ? '#817e7e80'
-                              : '#3E4A4F'
-                          }
-                          style={{ marginLeft: width * 0.02 }}
-                        />
-                      </TouchableOpacity>
-                    }
-                    onRequestClose={() =>
-                      this.setState({ addMenuVisible: false })
-                    }>
-                    {this.state.AddArray.map((item, index) => (
-                      <MenuItem
-                        disabled={
-                          this.state.dataBuild.length == 0 && index !== 2
-                            ? true
-                            : false
-                        }
-                        onPress={item.func}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            padding: width * 0.02,
-                          }}>
-                          {index < 2 ? (
-                            <FontAwesome5
-                              color={
-                                this.state.dataBuild.length == 0 && index !== 2
-                                  ? '#817e7e80'
-                                  : '#000'
-                              }
-                              name="house-user"
-                              size={width * 0.04}
-                              // color="#3E4A4F"
-                              style={{
-                                paddingHorizontal:
-                                  Platform.OS == 'ios' ? width * 0.025 : null,
-                                paddingRight:
-                                  Platform.OS == 'android'
-                                    ? width * 0.025
-                                    : null,
-                              }}
-                            />
-                          ) : (
-                            <FontAwesome5
-                              name="building"
-                              size={width * 0.04}
-                              color="#3E4A4F"
-                              style={{
-                                paddingHorizontal:
-                                  Platform.OS == 'ios' ? width * 0.028 : null,
-                                paddingRight:
-                                  Platform.OS == 'android'
-                                    ? width * 0.035
-                                    : null,
-                                left: Platform.OS == 'android' ? 3 : null,
-                              }}
-                            />
-                          )}
-                          <Text
-                            style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0 &&
-                                    index !== 2
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]}>
-                            {item.name}
-                          </Text>
-                        </View>
-                      </MenuItem>
-                    ))}
-                  </MenuT>
-                  {!loader &&
-                    this.state.unitActualCount >= this.state.unitCount && (
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: width * 0.032,
-                          color: '#ff0000ff',
-                        }}>
-                        Unit Count Limit Exceed
-                      </Text>
-                    )}
-                </View>
-
-                {/* Top Lists */}
-                {loaderBuildings ? (
-                  <View
-                    style={{
-                      height: width * 0.22,
-                      justifyContent: 'center',
-                      flexDirection: 'row',
-                    }}>
-                    <SkeletonPlaceholder>
-                      <View
-                        style={{
-                          width: width * 0.3,
-                          height: width * 0.22,
-                          borderRadius: width * 0.01,
-                          borderWidth: width * 0.001,
-                          marginLeft: width * 0.02,
-                        }}
-                      />
-                    </SkeletonPlaceholder>
-                    <SkeletonPlaceholder>
-                      <View
-                        style={{
-                          width: width * 0.3,
-                          height: width * 0.22,
-                          borderRadius: width * 0.01,
-                          borderWidth: width * 0.001,
-                          marginLeft: width * 0.02,
-                        }}
-                      />
-                    </SkeletonPlaceholder>
-                  </View>
-                ) : this.state.dataBuild.length == 0 ? (
-                  <View style={{ width: width * 0.55, justifyContent: 'center' }}>
-                    <Text style={styles.noDataStyling}>
-                      No data add Building
-                    </Text>
-                  </View>
-                ) : (
-                  <FlatList
-                    ref={(ref) => {
-                      buildListViewRef = ref;
-                    }}
-                    style={{ height: width * 0.22 }}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal={true}
-                    data={this.state.dataBuild}
-                    renderItem={this._renderBuildingList}
-                    keyExtractor={(item) => item.id.toString()}
-                  />
-                )}
-              </View>
-              <EditUnit
-                flag={this.state.flag}
-                propertyId={this.props.navigation.state.params.item.item.id}
-                propertyLat={
-                  this.props.navigation.state.params.item.item.latitude
-                }
-                propertyLong={
-                  this.props.navigation.state.params.item.item.longitude
-                }
-                enableFlag={() => this.setState({ flag: true })}
-                disableFlag={() => this.setState({ flag: false })}
-                modalVisible={this.state.isModalUnitVisible}
-                closeModal={() =>
-                  this.setState({
-                    isModalUnitVisible: !this.state.isModalUnitVisible,
-                  })
-                }
-                reRun={() => this.checkData()}
-                meterTypes={[]}
-                modalName="Add Unit"
-                type={'add'}
-                buildingName={this.state.buildingData.name}
-                buildingId={this.state.editBuildId}
-                unitDetails={this.state.unitData}
-                doneBtnTitle="Add Unit"
-                doneIcon={
-                  <Iconx name="plus" type="feather" size={18} color="#fff" />
-                }
-                handleEditUnit={() => {
-                  this.setState({ isModalUnitVisible: false });
-                }}
-                unitsArray={this.state.realData}
-                userRole={this.state.userRole}
-              />
-              {/*
-              //! for edit unit
-              */}
-              <EditUnit
-                flag={this.state.flag}
-                propertyId={this.props.navigation.state.params.item.item.id}
-                propertyLat={
-                  this.props.navigation.state.params.item.item.latitude
-                }
-                propertyLong={
-                  this.props.navigation.state.params.item.item.longitude
-                }
-                enableFlag={() => this.setState({ flag: true })}
-                disableFlag={() => this.setState({ flag: false })}
-                modalVisible={this.state.isEditUnitModalVisible}
-                closeModal={() =>
-                  this.setState({
-                    isEditUnitModalVisible: !this.state.isEditUnitModalVisible,
-                  })
-                }
-                reRun={() => this.checkData()}
-                meterTypes={this.state.unitMeters}
-                modalName="Edit Unit"
-                buildingName={this.state.buildingData.name}
-                buildingId={this.state.editBuildId}
-                unitDetails={this.state.unitDatax.data}
-                unitMixesId={this.state.unitMixesId}
-                userRole={this.state.userRole}
-              />
-              <AddBuilding
-                unitCount={this.state.unitCount}
-                unitActualCount={this.state.unitActualCount}
-                modalVisible={this.state.isModalBuildVisible}
-                type={this.state.buildingModalType}
-                modalName={
-                  this.state.buildingModalType
-                    ? 'Add Multiple Units'
-                    : 'Add Building'
-                }
-                closeModal={() => this.setState({ isModalBuildVisible: false })}
-                reRun={this.handleAddBuilding}
-                propertyId={this.props.navigation.state.params.item.item.id}
-                lastUnitName={this.state.newUnit}
-                buildData={{
-                  buildingName: this.state.buildingData.name,
-                  buildDes: this.state.editBuildDes,
-                  buildId: this.state.editBuildId,
-                }}
-              />
-              <Filter
-                type="Units"
-                onReset={this.get_filterVal}
-                utilityTypes={this.state.getUtilities}
-                get_filterVal={this.get_filterVal}
-                changeChanged={this.changedFalse}
-                isVisible={this.state.showFilter}
-                close={() =>
-                  this.setState({ showFilter: !this.state.showFilter })
-                }
-                buildingName={this.state.buildingData.name}
-                buildiingId={this.state.editBuildId}
-                changed={this.state.changed}
-                filterWork={(e) =>
-                  this.setState(
-                    { filterWork: e },
-                  )
-                }
-              />
-              {this.state.showSearch ? (
-                <Modal
-                  isVisible={this.state.showSearch}
-                  style={styles.searchModalContainer}>
-                  {Platform.OS == 'ios' && (
-                    <CustumStatusBar backColor transparent />
-                  )}
-                  <KeyboardAvoidingView behavior="padding">
-                    <View style={styles.searchModalInner}>
-                      <Search name="search" size={width * 0.07} color="white" />
-                      <TextInput
-                        underlineColor="transparent"
-                        dense={true}
-                        autoFocus={true}
-                        placeholderTextColor="white"
-                        placeholder="Search"
-                        style={styles.search}
-                        onChangeText={(e) => this.searchUnits(e)}
-                        theme={{
-                          colors: {
-                            text: 'white',
-                            primary: '#25dAE1',
-                            selectionColor: 'transparent',
-                            background: 'transparent',
-                          },
-                        }}
-                      />
-                      <View style={{ position: 'absolute', right: width * 0.1 }}>
-                        {this.state.searchLoading ? (
-                          <ActivityIndicator color="white" size="small" />
-                        ) : null}
-                      </View>
-                      <TouchableOpacity
-                        onPress={() => this.setState({ showSearch: false })}>
-                        <MaterialCommunityIcons
-                          name="close"
-                          color="white"
-                          size={width * 0.055}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.searchDataListContainer}>
-                      <FlatList
-                        style={{ marginBottom: width * 0.2 }}
-                        data={this.state.searchList}
-                        renderItem={this._renderUnitList}
-                        removeClippedSubviews={false}
-                        maxToRenderPerBatch={150}
-                        windowSize={100}
-                        keyExtractor={(item, index) => index.toString()}
-                        showsVerticalScrollIndicator={false}
-                      />
-                    </View>
-                  </KeyboardAvoidingView>
-                </Modal>
-              ) : null}
-              {loader ? (
-                <View
-                  style={{
-                    width: width * 1,
-                    alignItems: 'center',
-                  }}>
-                  {this.state.shimmers.map((item) => this.renderShimmers(item))}
-                </View>
-              ) : this.state.realData.length == 0 ? (
-                <View style={{ width: width * 0.55, justifyContent: 'center' }}>
-                  <Text style={styles.noDataStyling}>No data add Unit</Text>
-                </View>
-              ) : (
-                <View style={{ width: width * 1, backgroundColor: '#F5F5F5' }}>
-                  <FlatList
-                    ref={(ref) => {
-                      listViewRef = ref;
-                    }}
-                    showsVerticalScrollIndicator={false}
-                    style={{ marginBottom: width * 0.29 }}
-                    contentContainerStyle={{
-                      backgroundColor: '#F5F5F5',
-                      alignItems: 'center',
-                    }}
-                    numColumns={1}
-                    initialNumToRender={realData.length}
-                    data={this._customSort(realData)}
-                    renderItem={this._renderUnitList}
-                    keyExtractor={(item) => item.id.toString()}
-                  />
-                </View>
-              )}
-            </View>
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}>
+            <TouchableOpacity
+              activeOpacity={.8}
+              onPress={() => this.setState({activeTab: "units"})}
+              style={styles.tabContainer}>
+              <Text style={{color: this.state.activeTab == "units" ? "#000" : "#fff"}}>Units</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={.8}
+              onPress={() => this.setState({activeTab: "network"})}
+              style={styles.tabContainer}>
+              <Text style={{color: this.state.activeTab == "network" ? "#000" : "#fff"}}>Network</Text>
+            </TouchableOpacity>
           </View>
+            {this.state.activeTab == 'units' ? 
+             <View style={styles.bodyContainer}>
+             <View style={styles.mainDataContainer}>
+               <View style={styles.mainData}>
+                 <View style={styles.dropDownContainer}>
+                   <MenuT
+                     visible={this.state.addMenuVisible}
+                     anchor={
+                       <TouchableOpacity
+                         style={[
+                           styles.dropDown,
+                           {
+                             borderColor:
+                               this.state.unitActualCount >= this.state.unitCount
+                                 ? '#817e7e80'
+                                 : '#3E4A4F',
+                           },
+                         ]}
+                         disabled={
+                           this.state.unitActualCount >= this.state.unitCount
+                             ? true
+                             : false
+                         }
+                         onPress={() => this.setState({ addMenuVisible: true })}>
+                         <Feather
+                           name="plus"
+                           size={height * 0.025}
+                           color={
+                             this.state.unitActualCount >= this.state.unitCount
+                               ? '#817e7e80'
+                               : '#3E4A4F'
+                           }
+                         />
+                         <Text
+                           style={[
+                             styles.dropDownText,
+                             {
+                               color:
+                                 this.state.unitActualCount >=
+                                   this.state.unitCount
+                                   ? '#817e7e80'
+                                   : '#3E4A4F',
+                             },
+                           ]}>
+                           Add
+                         </Text>
+                         <Feather
+                           name="chevron-down"
+                           size={height * 0.02}
+                           color={
+                             this.state.unitActualCount >= this.state.unitCount
+                               ? '#817e7e80'
+                               : '#3E4A4F'
+                           }
+                           style={{ marginLeft: width * 0.02 }}
+                         />
+                       </TouchableOpacity>
+                     }
+                     onRequestClose={() =>
+                       this.setState({ addMenuVisible: false })
+                     }>
+                     {this.state.AddArray.map((item, index) => (
+                       <MenuItem
+                         disabled={
+                           this.state.dataBuild.length == 0 && index !== 2
+                             ? true
+                             : false
+                         }
+                         onPress={item.func}>
+                         <View
+                           style={{
+                             flexDirection: 'row',
+                             padding: width * 0.02,
+                           }}>
+                           {index < 2 ? (
+                             <FontAwesome5
+                               color={
+                                 this.state.dataBuild.length == 0 && index !== 2
+                                   ? '#817e7e80'
+                                   : '#000'
+                               }
+                               name="house-user"
+                               size={width * 0.04}
+                               // color="#3E4A4F"
+                               style={{
+                                 paddingHorizontal:
+                                   Platform.OS == 'ios' ? width * 0.025 : null,
+                                 paddingRight:
+                                   Platform.OS == 'android'
+                                     ? width * 0.025
+                                     : null,
+                               }}
+                             />
+                           ) : (
+                             <FontAwesome5
+                               name="building"
+                               size={width * 0.04}
+                               color="#3E4A4F"
+                               style={{
+                                 paddingHorizontal:
+                                   Platform.OS == 'ios' ? width * 0.028 : null,
+                                 paddingRight:
+                                   Platform.OS == 'android'
+                                     ? width * 0.035
+                                     : null,
+                                 left: Platform.OS == 'android' ? 3 : null,
+                               }}
+                             />
+                           )}
+                           <Text
+                             style={[
+                               styles.dropDownListText,
+                               {
+                                 color:
+                                   this.state.dataBuild.length == 0 &&
+                                     index !== 2
+                                     ? '#817e7e80'
+                                     : '#000',
+                               },
+                             ]}>
+                             {item.name}
+                           </Text>
+                         </View>
+                       </MenuItem>
+                     ))}
+                   </MenuT>
+                   {!loader &&
+                     this.state.unitActualCount >= this.state.unitCount && (
+                       <Text
+                         style={{
+                           textAlign: 'center',
+                           fontSize: width * 0.032,
+                           color: '#ff0000ff',
+                         }}>
+                         Unit Count Limit Exceed
+                       </Text>
+                     )}
+                 </View>
+ 
+                 {/* Top Lists */}
+                 {loaderBuildings ? (
+                   <View
+                     style={{
+                       height: width * 0.22,
+                       justifyContent: 'center',
+                       flexDirection: 'row',
+                     }}>
+                     <SkeletonPlaceholder>
+                       <View
+                         style={{
+                           width: width * 0.3,
+                           height: width * 0.22,
+                           borderRadius: width * 0.01,
+                           borderWidth: width * 0.001,
+                           marginLeft: width * 0.02,
+                         }}
+                       />
+                     </SkeletonPlaceholder>
+                     <SkeletonPlaceholder>
+                       <View
+                         style={{
+                           width: width * 0.3,
+                           height: width * 0.22,
+                           borderRadius: width * 0.01,
+                           borderWidth: width * 0.001,
+                           marginLeft: width * 0.02,
+                         }}
+                       />
+                     </SkeletonPlaceholder>
+                   </View>
+                 ) : this.state.dataBuild.length == 0 ? (
+                   <View style={{ width: width * 0.55, justifyContent: 'center' }}>
+                     <Text style={styles.noDataStyling}>
+                       No data add Building
+                     </Text>
+                   </View>
+                 ) : (
+                   <FlatList
+                     ref={(ref) => {
+                       buildListViewRef = ref;
+                     }}
+                     style={{ height: width * 0.22 }}
+                     showsHorizontalScrollIndicator={false}
+                     horizontal={true}
+                     data={this.state.dataBuild}
+                     renderItem={this._renderBuildingList}
+                     keyExtractor={(item) => item.id.toString()}
+                   />
+                 )}
+               </View>
+               <EditUnit
+                 flag={this.state.flag}
+                 propertyId={this.props.navigation.state.params.item.item.id}
+                 propertyLat={
+                   this.props.navigation.state.params.item.item.latitude
+                 }
+                 propertyLong={
+                   this.props.navigation.state.params.item.item.longitude
+                 }
+                 enableFlag={() => this.setState({ flag: true })}
+                 disableFlag={() => this.setState({ flag: false })}
+                 modalVisible={this.state.isModalUnitVisible}
+                 closeModal={() =>
+                   this.setState({
+                     isModalUnitVisible: !this.state.isModalUnitVisible,
+                   })
+                 }
+                 reRun={() => this.checkData()}
+                 meterTypes={[]}
+                 modalName="Add Unit"
+                 type={'add'}
+                 buildingName={this.state.buildingData.name}
+                 buildingId={this.state.editBuildId}
+                 unitDetails={this.state.unitData}
+                 doneBtnTitle="Add Unit"
+                 doneIcon={
+                   <Iconx name="plus" type="feather" size={18} color="#fff" />
+                 }
+                 handleEditUnit={() => {
+                   this.setState({ isModalUnitVisible: false });
+                 }}
+                 unitsArray={this.state.realData}
+                 userRole={this.state.userRole}
+               />
+               {/*
+               //! for edit unit
+               */}
+               <EditUnit
+                 flag={this.state.flag}
+                 propertyId={this.props.navigation.state.params.item.item.id}
+                 propertyLat={
+                   this.props.navigation.state.params.item.item.latitude
+                 }
+                 propertyLong={
+                   this.props.navigation.state.params.item.item.longitude
+                 }
+                 enableFlag={() => this.setState({ flag: true })}
+                 disableFlag={() => this.setState({ flag: false })}
+                 modalVisible={this.state.isEditUnitModalVisible}
+                 closeModal={() =>
+                   this.setState({
+                     isEditUnitModalVisible: !this.state.isEditUnitModalVisible,
+                   })
+                 }
+                 reRun={() => this.checkData()}
+                 meterTypes={this.state.unitMeters}
+                 modalName="Edit Unit"
+                 buildingName={this.state.buildingData.name}
+                 buildingId={this.state.editBuildId}
+                 unitDetails={this.state.unitDatax.data}
+                 unitMixesId={this.state.unitMixesId}
+                 userRole={this.state.userRole}
+               />
+               <AddBuilding
+                 unitCount={this.state.unitCount}
+                 unitActualCount={this.state.unitActualCount}
+                 modalVisible={this.state.isModalBuildVisible}
+                 type={this.state.buildingModalType}
+                 modalName={
+                   this.state.buildingModalType
+                     ? 'Add Multiple Units'
+                     : 'Add Building'
+                 }
+                 closeModal={() => this.setState({ isModalBuildVisible: false })}
+                 reRun={this.handleAddBuilding}
+                 propertyId={this.props.navigation.state.params.item.item.id}
+                 lastUnitName={this.state.newUnit}
+                 buildData={{
+                   buildingName: this.state.buildingData.name,
+                   buildDes: this.state.editBuildDes,
+                   buildId: this.state.editBuildId,
+                 }}
+               />
+               <Filter
+                 type="Units"
+                 onReset={this.get_filterVal}
+                 utilityTypes={this.state.getUtilities}
+                 get_filterVal={this.get_filterVal}
+                 changeChanged={this.changedFalse}
+                 isVisible={this.state.showFilter}
+                 close={() =>
+                   this.setState({ showFilter: !this.state.showFilter })
+                 }
+                 buildingName={this.state.buildingData.name}
+                 buildiingId={this.state.editBuildId}
+                 changed={this.state.changed}
+                 filterWork={(e) =>
+                   this.setState(
+                     { filterWork: e },
+                   )
+                 }
+               />
+               {this.state.showSearch ? (
+                 <Modal
+                   isVisible={this.state.showSearch}
+                   style={styles.searchModalContainer}>
+                   {Platform.OS == 'ios' && (
+                     <CustumStatusBar backColor transparent />
+                   )}
+                   <KeyboardAvoidingView behavior="padding">
+                     <View style={styles.searchModalInner}>
+                       <Search name="search" size={width * 0.07} color="white" />
+                       <TextInput
+                         underlineColor="transparent"
+                         dense={true}
+                         autoFocus={true}
+                         placeholderTextColor="white"
+                         placeholder="Search"
+                         style={styles.search}
+                         onChangeText={(e) => this.searchUnits(e)}
+                         theme={{
+                           colors: {
+                             text: 'white',
+                             primary: '#25dAE1',
+                             selectionColor: 'transparent',
+                             background: 'transparent',
+                           },
+                         }}
+                       />
+                       <View style={{ position: 'absolute', right: width * 0.1 }}>
+                         {this.state.searchLoading ? (
+                           <ActivityIndicator color="white" size="small" />
+                         ) : null}
+                       </View>
+                       <TouchableOpacity
+                         onPress={() => this.setState({ showSearch: false })}>
+                         <MaterialCommunityIcons
+                           name="close"
+                           color="white"
+                           size={width * 0.055}
+                         />
+                       </TouchableOpacity>
+                     </View>
+                     <View style={styles.searchDataListContainer}>
+                       <FlatList
+                         style={{ marginBottom: width * 0.2 }}
+                         data={this.state.searchList}
+                         renderItem={this._renderUnitList}
+                         removeClippedSubviews={false}
+                         maxToRenderPerBatch={150}
+                         windowSize={100}
+                         keyExtractor={(item, index) => index.toString()}
+                         showsVerticalScrollIndicator={false}
+                       />
+                     </View>
+                   </KeyboardAvoidingView>
+                 </Modal>
+               ) : null}
+               {loader ? (
+                 <View
+                   style={{
+                     width: width * 1,
+                     alignItems: 'center',
+                   }}>
+                   {this.state.shimmers.map((item) => this.renderShimmers(item))}
+                 </View>
+               ) : this.state.realData.length == 0 ? (
+                 <View style={{ width: width * 0.55, justifyContent: 'center' }}>
+                   <Text style={styles.noDataStyling}>No data add Unit</Text>
+                 </View>
+               ) : (
+                 <View style={{ width: width * 1, backgroundColor: '#F5F5F5' }}>
+                   <FlatList
+                     ref={(ref) => {
+                       listViewRef = ref;
+                     }}
+                     showsVerticalScrollIndicator={false}
+                     style={{ marginBottom: width * 0.29 }}
+                     contentContainerStyle={{
+                       backgroundColor: '#F5F5F5',
+                       alignItems: 'center',
+                     }}
+                     numColumns={1}
+                     initialNumToRender={realData.length}
+                     data={this._customSort(realData)}
+                     renderItem={this._renderUnitList}
+                     keyExtractor={(item) => item.id.toString()}
+                   />
+                 </View>
+               )}
+             </View>
+           </View> 
+           :
+            <View style={styles.bodyContainer}>
+              {!loader ? <>
+                {!gateway ? 
+                <View style={styles.addGatewayContainer}>
+                    <View style={{marginVertical: 20}}>
+                      <Text style={{fontSize:  18, color: '#bdbdbd'}}>
+                          Program a Gateway
+                      </Text>
+                    </View>
+                    <View>
+                      <View style={styles.textInputContainer}>
+                        <MaterialCommunityIcons
+                          name="barcode-scan"
+                          color="#06012B"
+                          size={width * 0.035}
+                          style={{ padding: 5 }}
+                        />
+                        <TextInput
+                          keyboardType="default"
+                          placeholder="Enter Serial Number"
+                          placeholderTextColor="#5B5B61"
+                          underlineColorAndroid="transparent"
+                          onChangeText={(text) => this.setState({serialNumber: text})}
+                          style={styles.input}
+                        />
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                        style={{ marginTop: width * 0.05 }}
+                        activeOpacity={0.8}
+                        onPress={() => this.attachGateway()}>
+                        <View style={styles.buttonContainer}>
+                          {this.state.loading ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                          ) : (
+                            <Text style={styles.btnText}>Attach</Text>
+                          )}
+                          {/* <Text style={styles.btnText}>Attach</Text> */}
+                        </View>
+                    </TouchableOpacity>
+                </View> :
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                  <Text style={[styles.mainHeadiing, {color: '#000'}]}>
+                      Network Information
+                  </Text>
+
+                  <Text style={[styles.mainHeadiing, {color: '#000'}]}>
+                      {gateway?.serial_number}
+                  </Text>
+                  <Text style={[styles.mainHeadiing, {color: '#000'}]}>
+                      {"Synced"}
+                  </Text>
+                  <View style={{marginVertical: 15, flexDirection: 'row', width: '50%', justifyContent: 'space-around'}}>
+                      <MaterialCommunityIcons 
+                        name='ethernet'
+                        size={45}
+                        color={gateway?.eth?.connection ? "#25AAE1ec" : "#000"}
+                      />
+                      <MaterialCommunityIcons 
+                        name='signal-cellular-outline'
+                        size={45}
+                        color={gateway?.cellular?.connection ? "#25AAE1ec" : "#000"}
+                      />
+                      <MaterialCommunityIcons 
+                        name='wifi'
+                        size={45}
+                        color={gateway?.wifi?.connection ? "#25AAE1ec" : "#000"}
+                      />
+                  </View>
+              </View>}
+              </> : 
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size={'large'} color="#25AAE1ec" />
+                </View> 
+              }
+            </View>
+           }
         </View>
       </>
     );

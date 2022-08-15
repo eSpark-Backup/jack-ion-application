@@ -183,6 +183,7 @@ export const Battery = ({navigation, route}) => {
                 renderItem={({item, index}) => {
                   return (
                     <View
+                      key={index}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',

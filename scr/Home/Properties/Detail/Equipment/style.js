@@ -92,7 +92,15 @@ export default styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     flex: 1,
   },
-
+  tabContainer: {
+    width: '50%',
+    backgroundColor: '#25AAE1ec',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: .5,
+    borderColor: '#bdbdbd'
+  },
   mainDataContainer: {
     flex: 1,
     alignItems: 'center',
@@ -325,5 +333,64 @@ export default styles = StyleSheet.create({
     height: width * 0.07,
     borderRadius: 4,
     marginRight: width * 0.01,
+  },
+  textInputContainer: {
+    flexDirection: 'row',
+    borderWidth: height * 0.0027,
+    borderColor: '#06012B',
+    backgroundColor: '#fff',
+    borderRadius: height * 0.05,
+    elevation: 2,
+    padding: 8,
+    alignItems: 'center',
+    height: width * 0.12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    width: width * 0.7,
+    overflow: 'hidden'
+  },
+  input: {
+    flex: 1,
+    fontSize: width * 0.035,
+    fontFamily: Fonts.Montserrat,
+    alignSelf: 'center',
+    padding: 0,
+    margin: 0,
+    borderColor: 'transparent',
+    backgroundColor: '#fff',
+  },
+  addGatewayContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonContainer: {
+    borderWidth: height * 0.0027,
+    borderColor: '#06012B',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 8,
+    backgroundColor: '#35AFE2',
+    borderRadius: height * 0.05,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    height: width * 0.12,
+    width: width * 0.7,
+  },
+  btnText: {
+    fontSize: width * 0.035,
+    color: '#fff',
+    fontFamily: Fonts.Montserrat,
   },
 });

@@ -183,6 +183,7 @@ export const Temperature = ({navigation, route}) => {
                 renderItem={({item, index}) => {
                   return (
                     <View
+                       key={index}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
