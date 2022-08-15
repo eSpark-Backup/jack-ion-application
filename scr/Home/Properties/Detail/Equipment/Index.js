@@ -1023,7 +1023,8 @@ class Splash extends Component {
                   type={RNCamera.Constants.Type.back}
                   autoFocus="on"
                   onBarCodeRead={(e) => {
-                    this.setState({serialNumber: e?.data?.substring(0)})
+                    console.log("e e e", e)
+                    this.setState({serialNumber: e?.data, isVisible: false})
                   }}
                   captureAudio={false}
                 >
@@ -1576,6 +1577,7 @@ class Splash extends Component {
                           style={{ padding: 5 }}
                         />
                         <TextInput
+                          value={this.state.serialNumber}
                           keyboardType="default"
                           placeholder="Enter Serial Number"
                           placeholderTextColor="#5B5B61"
