@@ -5170,8 +5170,6 @@ export default function UnitEdit({
                               </Text>
                             </TouchableOpacity>
                           )
-                        ) : loadManufacturers ? (
-                          <DotsLoader color="#25AAE1ec" />
                         ) : (
                           <TouchableOpacity
                             onPress={() => {

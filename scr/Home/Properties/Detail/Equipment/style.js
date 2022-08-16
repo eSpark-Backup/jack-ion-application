@@ -193,6 +193,7 @@ export default styles = StyleSheet.create({
     width: width * 0.3,
     marginRight: width * 0.01,
     marginVertical: width * 0.01,
+    justifyContent: 'center'
     // padding: width * 0.005,
     // backgroundColor: 'blue',
   },
@@ -217,7 +218,8 @@ export default styles = StyleSheet.create({
   untiDetailImage: {
     height: width * 0.04,
     width: width * 0.04,
-    marginRight: width * 0.01,
+    // marginRight: width * 0.01,
+    alignSelf: 'center'
   },
   unitDetailSeprater: {
     borderColor: '#3E4A4F50',

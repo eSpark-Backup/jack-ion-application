@@ -428,10 +428,11 @@ class Property extends Component {
           <MaterialCommunityIcons
             name="home-city-outline"
             size={width * 0.09}
+            style={{marginHorizontal: 15}}
             color="#115b72"
           />
-          <View>
-            <View style={{ width:  width * 0.5 }}>  
+          <View style={{width:  width * 0.5, position: 'absolute', left: width * 0.16}}>
+            <View style={{ width:  width * 0.5}}>  
               <TextTicker
                 style={styles.propText}
                 duration={6000}
@@ -461,7 +462,7 @@ class Property extends Component {
               </TextTicker>
             </View>
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', marginHorizontal: 15, justifyContent: 'flex-end'}}>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
                 name="building"

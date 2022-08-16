@@ -182,7 +182,7 @@ export default styles = StyleSheet.create({
     borderColor: '#115b72',
     borderWidth: width * 0.001,
     borderRadius: width * 0.008,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     // elevation: width * 0.01,
