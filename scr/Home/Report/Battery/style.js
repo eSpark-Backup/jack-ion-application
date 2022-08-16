@@ -41,13 +41,13 @@ export const styles = StyleSheet.create({
       },
       dateSelectorHeading: {
         color: '#8E97A6',
-        fontFamily: 'Lexend-Regular',
+        // fontFamily: 'Lexend-Regular',
         fontSize: 11,
         marginHorizontal: 5
         },
     dateText: {
         color: '#8E97A6',
-        fontFamily: 'Lexend-Regular',
+        // fontFamily: 'Lexend-Regular',
         fontSize: 11,
       },
       tableHeader: {
