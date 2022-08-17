@@ -98,8 +98,18 @@ export default styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: .5,
-    borderColor: '#bdbdbd'
+    // borderWidth: .5,
+    // borderColor: '#bdbdbd'
+  },
+  activeTabContainer: {
+    width: '50%',
+    backgroundColor: '#fff',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // borderWidth: .5,
+    // borderColor: '#bdbdbd',
+    elevation: width * 0.005,
   },
   mainDataContainer: {
     flex: 1,
@@ -193,7 +203,7 @@ export default styles = StyleSheet.create({
     width: width * 0.3,
     marginRight: width * 0.01,
     marginVertical: width * 0.01,
-    justifyContent: 'center'
+    justifyContent: 'center',
     // padding: width * 0.005,
     // backgroundColor: 'blue',
   },
@@ -232,7 +242,7 @@ export default styles = StyleSheet.create({
   dataFieldText: {
     fontSize: width * 0.03,
     fontFamily: Fonts.Montserrat,
-    // textAlign: 'center',
+    textAlign: 'center',
     textTransform: 'capitalize',
     color: '#3E4A4F',
   },
