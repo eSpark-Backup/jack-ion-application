@@ -25,7 +25,7 @@ import {Usage} from './Report/Usage';
 import {Battery} from './Report/Battery';
 import { Temperature } from './Report/Temprature';
 import { Network } from './Report/Network';
-
+import { Profile } from '../Profile/index'
 const IonNavigatorConfig = {
   initialRouteName: 'ionMain',
   defaultNavigationOptions: {
@@ -74,7 +74,8 @@ const RouteConfigs = {
   Usage,
   Battery,
   Temperature,
-  Network
+  Network,
+  Profile
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

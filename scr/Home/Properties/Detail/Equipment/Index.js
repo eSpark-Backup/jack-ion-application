@@ -544,7 +544,7 @@ class Splash extends Component {
               </View>
               <View style={styles.unitDetailContainer}>
                 {unit?.item?.unit_meter?.length ? (
-                  <View style={{ flexDirection: 'row', maxWidth: width * 0.5 }}>
+                  <View style={{ flexDirection: 'row', maxWidth: width * 0.22 }}>
                     <View style={styles.unitDetailInnerif}>
                       <Image
                         source={require('../../../../../Images/remote-reader.png')}

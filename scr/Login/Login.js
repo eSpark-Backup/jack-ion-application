@@ -117,7 +117,7 @@ class Login extends Component {
         response.data.data.user.role_id,
         response.data.data.user.id,
       ); //todo: Token Saved at this point
-      this.props.login(response.data.data.token)
+      this.props.login({...response?.data?.data?.user, token: response?.data?.data?.token})
       this.props.navigation.navigate('Home');
       this.setState({
         errName: '',
@@ -134,7 +134,6 @@ class Login extends Component {
     }
   };
   render() {
-  console.log("this.props.user", this.props.user)
 
     return (
       <KeyboardAwareScrollView style={styles.container}

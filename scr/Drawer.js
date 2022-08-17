@@ -8,6 +8,7 @@ import Settings from './settings/Index';
 import Tools from './Tools/route';
 import Support from './ContactUs/Index';
 import {Fonts} from './utils/fonts';
+import { Profile } from './Profile';
 
 const {width, height} = Dimensions.get('window');
 
@@ -38,6 +39,7 @@ const RouteConfigs = {
   Settings: Settings,
   Tools: Tools,
   Support: Support,
+  Profile: Profile
 };
 
 const BottomNav = createBottomTabNavigator(RouteConfigs, AuthNavigatorConfig);

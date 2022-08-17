@@ -585,7 +585,7 @@ export default class Splash extends Component {
               )}
             /> */}
 
-            <View style={style.containerReset}>
+            {/* <View style={style.containerReset}>
               <Logout
                 name="logout"
                 size={height * 0.03}
@@ -619,7 +619,7 @@ export default class Splash extends Component {
                 </View>
                 <Arrow name="keyboard-arrow-right" size={height * 0.04} />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* <View
               style={{
                 // height: height * 0.09,
