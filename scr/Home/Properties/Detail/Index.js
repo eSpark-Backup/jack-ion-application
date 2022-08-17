@@ -540,7 +540,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                 {this.state.markers?.length > 0 &&
                   this.state.markers.map(
                     (marker, index) =>
-                      marker?.position?.lat && (
+                      marker?.position?.lat ? (
                         <Marker
                           key={index}
                           coordinate={{
@@ -568,7 +568,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                             />
                           </View>
                         </Marker>
-                      ),
+                      ) : null,
                   )}
               </MapView>
               <View style={styles.clientName}>

@@ -160,7 +160,7 @@ export default class CustomSidebarMenu extends Component {
                                         <Text
                                             style={{
                                                 fontSize: hp('2%'),
-                                                fontFamily: 'LexendDeca-Regular',
+                                                // fontFamily: 'LexendDeca-Regular',
                                                 color: 'white',
                                                 marginLeft: wp('12%'),
                                             }}>
@@ -231,7 +231,7 @@ export default class CustomSidebarMenu extends Component {
                                             fontSize: hp('2%'),
                                             width: wp('40%'),
                                             height: hp('3%'),
-                                            fontFamily: 'LexendDeca-Regular',
+                                            // fontFamily: 'LexendDeca-Regular',
                                             color:
                                                 global.currentScreenIndex === key
                                                     ? '#25AAE1ec'
@@ -263,7 +263,7 @@ export default class CustomSidebarMenu extends Component {
                                         fontSize: hp('2%'),
                                         width: wp('40%'),
                                         height: hp('3%'),
-                                        fontFamily: 'LexendDeca-Regular',
+                                        // fontFamily: 'LexendDeca-Regular',
                                         color: 'white',
                                     }}>
                                     {this.property.name}
@@ -327,7 +327,7 @@ export default class CustomSidebarMenu extends Component {
                                             fontSize: hp('2%'),
                                             width: wp('40%'),
                                             height: hp('3%'),
-                                            fontFamily: 'LexendDeca-Regular',
+                                            // fontFamily: 'LexendDeca-Regular',
                                             color:
                                                 global.currentScreenIndex === key
                                                     ? '#25AAE1ec'

@@ -305,6 +305,7 @@ const App = ({navigation}) => {
     const res = await API.get(`/property/equipment/unit/${testId}`);
     console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     if (res.data?.bool) {
+      console.log("CHeck What the data is ?", res.data)
       // setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
       setData(res.data);
       setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
@@ -1044,7 +1045,7 @@ const App = ({navigation}) => {
 
   const renderRemoteList = ({item, index}) => {
     return (
-      unitMeter?.device_serial_number && (
+      unitMeter?.device_serial_number ? (
         <TouchableOpacity
           disabled={item.leftName == 'Recent Alert' ? false : true}
           onPress={() => {
@@ -1092,11 +1093,11 @@ const App = ({navigation}) => {
                       />
                     )}
                   </View>
-                  {item.text && (
+                  {item.text ? (
                     <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
                       {item.text}
                     </Text>
-                  )}
+                  ) : null}
                 </View>
                 {item.rightIcon == null ? null : (
                   <Icon
@@ -1112,7 +1113,7 @@ const App = ({navigation}) => {
             <Divider style={styles.listDivider} />
           </View>
         </TouchableOpacity>
-      )
+      ) : <View />
     );
   };
 
@@ -1178,7 +1179,7 @@ const App = ({navigation}) => {
             <Divider style={styles.listDivider} />
           </View>
         </TouchableOpacity>
-        {index == reasonDataIndex && (
+        {index == reasonDataIndex ? (
           <FlatList
             style={styles.statusList}
             data={item.data}
@@ -1188,7 +1189,7 @@ const App = ({navigation}) => {
               <Divider style={[styles.listDivider, {marginTop: 0}]} />
             )}
           />
-        )}
+        ) : null}
       </View>
     );
   };
