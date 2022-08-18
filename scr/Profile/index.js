@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Dimensions, Alert} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions, Alert, Platform} from 'react-native';
 import TabIcon from 'react-native-vector-icons/FontAwesome5';
 import {useSelector} from 'react-redux';
 import {styles} from './styles';
@@ -8,6 +8,7 @@ import Logout from 'react-native-vector-icons/SimpleLineIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { Avatar } from 'react-native-elements';
+import CustumStatusBar from '../components/StatusBar';
 
 const {width, height} = Dimensions.get('screen');
 export const Profile = ({navigation}) => {
@@ -47,6 +48,7 @@ export const Profile = ({navigation}) => {
   }
   return (
     <>
+      {Platform.OS == "ios" && <CustumStatusBar />}
       <View style={styles.headingContainer}>
         <View style={[styles.headingInner]}>
           <TouchableOpacity
