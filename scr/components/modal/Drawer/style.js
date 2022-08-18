@@ -32,9 +32,4 @@ export default styles = StyleSheet.create({
     paddingBottom: height * 0.01,
     paddingTop: height * 0.01,
   },
-  drawerbtn: {
-    fontSize: width * 0.06,
-    color: 'black',
-    fontWeight: 'normal',
-  },
 });

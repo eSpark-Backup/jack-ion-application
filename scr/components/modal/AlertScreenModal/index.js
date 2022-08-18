@@ -1,5 +1,4 @@
 import {
-  Text,
   View,
   Switch,
   TouchableOpacity,
@@ -13,6 +12,8 @@ import styles from './style';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import TextReuseableComponent from '../../Text/index';
+
 const {width, height} = Dimensions.get('window');
 
 export default ({isVisible, onClose, ModalHeader, ModalBody, ModalFooter}) => {
@@ -25,7 +26,7 @@ export default ({isVisible, onClose, ModalHeader, ModalBody, ModalFooter}) => {
             borderRadius: 5,
           }}>
           <View style={styles.modalHeader}>
-            <Text style={styles.settingModalHead}>{ModalHeader}</Text>
+            <TextReuseableComponent title style={styles.settingModalHead} value={ModalHeader} />
             <TouchableOpacity onPress={onClose}>
               <MaterialIcons size={width * 0.05} name="close" />
             </TouchableOpacity>

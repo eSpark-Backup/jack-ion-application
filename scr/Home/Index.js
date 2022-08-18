@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
   Image,
   StatusBar,
@@ -23,6 +22,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import styles from './style';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import API from '../api/SeviceApi';
+import TextReuseableComponent from '../components/Text/index';
 
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
@@ -181,7 +181,7 @@ class Splash extends Component {
               style={styles.backgroundImageDash}
               blurRadius={0.5}
             />
-            <Text style={styles.bottonHeading}>Dashboard</Text>
+            <TextReuseableComponent title style={styles.bottonHeading} value={"Dashboard"} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Properties')}
@@ -192,7 +192,7 @@ class Splash extends Component {
                 style={styles.backgroundImageDash}
                 blurRadius={1.5}
               />
-              <Text style={styles.bottonHeading}>Properties</Text>
+              <TextReuseableComponent title style={styles.bottonHeading} value={"Properties"} />
             </View>
           </TouchableOpacity>
         </View>

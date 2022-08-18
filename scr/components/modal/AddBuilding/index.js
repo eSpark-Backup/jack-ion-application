@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-  Text,
   View,
   Dimensions,
   TouchableOpacity,
@@ -26,6 +25,7 @@ import styles from './style';
 import API from '../../../api/SeviceApi';
 import { useDispatch } from 'react-redux';
 import { fetchPropetry } from '../../../Store/Action/properties.action';
+import TextReuseableComponent from '../../Text/index';
 const {width, height} = Dimensions.get('window');
 
 export default function AddbuildingModal({
@@ -300,7 +300,7 @@ export default function AddbuildingModal({
                     size={height * 0.05}
                     color="#5e5e5e"
                   />
-                  <Text style={styles.modalHeading}>{modalName}</Text>
+                  <TextReuseableComponent title style={styles.modalHeading} value={modalName} />
                   <Pressable
                     onPress={changeUtilityAndToggle}
                     android_ripple={{
@@ -378,7 +378,7 @@ export default function AddbuildingModal({
                     size={height * 0.02}
                     color="#5e5e5e"
                   />
-                  <Text style={styles.desciptionHeading}># OF UNITS</Text>
+                  <TextReuseableComponent title style={styles.desciptionHeading} value={"# OF UNITS"} />
                 </View>
                 <View
                   style={{
@@ -429,9 +429,7 @@ export default function AddbuildingModal({
                       onCheckColor="#25AAE1ec"
                       onTintColor="#25AAE1ec"
                     />
-                    <Text style={{fontSize: width * 0.035}}>
-                      Auto Increment
-                    </Text>
+                    <TextReuseableComponent title value={"Auto Increment"} />
                   </View>
                 </View>
                 {error.units ? (
@@ -452,15 +450,13 @@ export default function AddbuildingModal({
                   <TouchableOpacity onPress={changeUtilityAndToggle}>
                     <View style={styles.cancelBotton}>
                       <Plus name="close" color="black" size={18} />
-                      <Text style={{color: 'black'}}>Cancel</Text>
+                      <TextReuseableComponent title value={"Cancel"} />
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={newBuilding}>
                     <View style={styles.submitBotton}>
                       <Plus name="plus" color="white" size={18} />
-                      <Text style={{color: 'white'}}>
-                        {type == 'Multiple' ? 'Add' : 'Add Building'}
-                      </Text>
+                      <TextReuseableComponent title style={{color: 'white'}} value={`${type == 'Multiple' ? 'Add' : 'Add Building'}`} />
                     </View>
                   </TouchableOpacity>
                 </View>

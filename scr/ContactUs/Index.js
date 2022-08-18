@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
   Dimensions,
   LayoutAnimation,
@@ -21,6 +20,7 @@ import RNBeep from 'react-native-a-beep';
 import { Fonts } from '../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../components/StatusBar';
+import TextReuseableComponent from '../../scr/components/Text/index';
 
 const { width, height } = Dimensions.get('window');
 const IC_ARR_DOWN = require('../../Images/down.png');
@@ -45,21 +45,6 @@ export default class Splash extends Component {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
-  // _renderMyList = ({ item }) => (
-  //   <View style={{ flex: 1, }}>
-  //     <View style={style.renderListContainer}>
-  //       <Text style={style.renderListHeading1}>
-  //         {this.state.date}/{this.state.month}/{this.state.year}
-  //       </Text>
-  //       <Text style={style.renderListHeading2}>
-  //         {this.state.hour}:{this.state.minutes}
-  //       </Text>
-  //       <Text style={style.renderListHeading1}>
-  //         {item}
-  //       </Text>
-  //     </View>
-  //   </View>
-  // )
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     this.setState({ meter: !this.state.meter, meterDown: !this.state.meterDown });
@@ -108,15 +93,11 @@ export default class Splash extends Component {
                   marginRight: width * 0.01,
                 }}
               />
-              <Text style={styles.mainHeadiing}>Support</Text>
+              <TextReuseableComponent title style={styles.mainHeadiing} value={"Support"} />
             </View>
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          {/* <View style={styles.onlineOfflineView}>
-            <View style={styles.onlineView} />
-            <Text style={styles.onlineText}>Contact Us</Text>
-          </View> */}
           <View>
             <View
               style={{
@@ -124,9 +105,7 @@ export default class Splash extends Component {
                 justifyContent: 'center',
                 paddingTop: 40,
               }}>
-              <Text style={styles.mainBottonText}>
-                Feel free to give us a call
-              </Text>
+              <TextReuseableComponent title style={styles.mainBottonText} value={"Feel free to give us a call"} />
             </View>
             <View>
               <TouchableOpacity
@@ -141,21 +120,16 @@ export default class Splash extends Component {
                     marginHorizontal: width * 0.01,
                   }}
                 />
-                <Text style={{ fontSize: width * 0.09, }}>
-                  844-538-8203
-                </Text>
+                <TextReuseableComponent title style={{ fontSize: width * 0.09, }} value={"844-538-8203"} />
               </TouchableOpacity>
             </View>
             <View style={styles.insideBottonView}>
-              <Text
-                style={{
+              <TextReuseableComponent title style={{
                   fontSize: width * 0.05,
                   color: 'black',
                   fontFamily: Fonts.BalooChettan2,
                   paddingTop: 20,
-                }}>
-                or send us an email
-              </Text>
+                }} value={"or send us an email"} />
               <TouchableOpacity
                 style={{
                   flexDirection: 'row',
@@ -170,16 +144,9 @@ export default class Splash extends Component {
                   size={width * 0.05}
                   style={{ marginHorizontal: width * 0.01 }}
                 />
-                <Text style={styles.emailText}>
-                  jackhowell@ionenergysolutions.com
-                </Text>
+                <TextReuseableComponent title style={styles.emailText} value={"jackhowell@ionenergysolutions.com"} />
               </TouchableOpacity>
             </View>
-            {/* <Button onPress={() => { RNBeep.beep() }} title="Beep Success"></Button>
-            <Button onPress={() => { RNBeep.beep(false) }} title="Beep Fail"></Button>
-            <Button onPress={() => { RNBeep.PlaySysSound(RNBeep.AndroidSoundIDs.TONE_CDMA_CONFIRM) }} title="Beep Android Custom"></Button>
-            <Button onPress={() => { RNBeep.PlaySysSound(45) }} title="Beep Something"></Button>
-            <Button onPress={() => { RNBeep.PlaySysSound(RNBeep.iOSSoundIDs.AudioToneError) }} title="Beep iOS Custom"></Button> */}
           </View>
         </View>
       </View>

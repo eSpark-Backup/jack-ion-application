@@ -1,7 +1,6 @@
-import React, {Component, Fragment, version} from 'react';
+import React, { Component, Fragment, version } from 'react';
 
 import {
-  Text,
   View,
   Dimensions,
   TouchableOpacity,
@@ -22,13 +21,14 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 import Chart from 'react-native-vector-icons/Feather';
 import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
+import { Icon, IconToggle } from 'react-native-material-ui';
 import CustumStatusBar from '../../StatusBar';
+import TextReuseableComponent from '../../Text/index';
 
 // Components
 
 import styles from './style';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default class DrawerModal extends Component {
   render() {
@@ -59,13 +59,13 @@ export default class DrawerModal extends Component {
         statusBarTranslucent
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
-        <View style={{backgroundColor: '#fff', height: height * 0.05}} />
+        <View style={{ backgroundColor: '#fff', height: height * 0.05 }} />
         <View style={styles.drawerMainContainer}>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Image
               source={require('../../../../Images/loogo.png')}
               resizeMode="contain"
-              style={{height: height * 0.15}}
+              style={{ height: height * 0.15 }}
             />
           </View>
           <View style={styles.drawerContentContainer}>
@@ -75,9 +75,9 @@ export default class DrawerModal extends Component {
                   name="account-details-outline"
                   size={width * 0.065}
                   color="#7575ff"
-                  style={{marginRight: width * 0.02}}
+                  style={{ marginRight: width * 0.02 }}
                 />
-                <Text style={styles.drawerbtn}>Details</Text>
+                <TextReuseableComponent title style={styles.drawerbtn} value={'Details'} />
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
@@ -86,9 +86,9 @@ export default class DrawerModal extends Component {
                   name="rss"
                   size={width * 0.065}
                   color="#ff9f71"
-                  style={{marginRight: width * 0.02}}
+                  style={{ marginRight: width * 0.02 }}
                 />
-                <Text style={styles.drawerbtn}>Equipments</Text>
+                <TextReuseableComponent title style={styles.drawerbtn} value={'Equipments'} />
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToAlerts}>
@@ -97,9 +97,9 @@ export default class DrawerModal extends Component {
                   name="alert-triangle"
                   size={width * 0.065}
                   color="#f00"
-                  style={{marginRight: width * 0.02}}
+                  style={{ marginRight: width * 0.02 }}
                 />
-                <Text style={styles.drawerbtn}>Alerts</Text>
+                <TextReuseableComponent title style={styles.drawerbtn} value={'Alerts'} />
               </View>
             </TouchableOpacity>
 
@@ -109,9 +109,9 @@ export default class DrawerModal extends Component {
                   name="bar-graph"
                   size={width * 0.065}
                   color="#f00"
-                  style={{marginRight: width * 0.02}}
+                  style={{ marginRight: width * 0.02 }}
                 />
-                <Text style={styles.drawerbtn}>Reports</Text>
+                <TextReuseableComponent title style={styles.drawerbtn} value={'Reports'} />
               </View>
             </TouchableOpacity>
             {/* <TouchableOpacity onPress={naviagateToChart}>
@@ -120,14 +120,14 @@ export default class DrawerModal extends Component {
                   name="pie-chart"
                   size={height * 0.035}
                   color="#009349"
-                  style={{marginRight: width * 0.02}}
+                  style={{ marginRight: width * 0.02 }}
                 />
-                <Text style={styles.drawerbtn}>Charts</Text>
+                <TextReuseableComponent title={'Component'} style={styles.drawerbtn} />
               </View>
             </TouchableOpacity> */}
           </View>
           <TouchableOpacity
-            style={{bottom: height * 0.05}}
+            style={{ bottom: height * 0.05 }}
             onPress={naviagateToSupport}>
             <View
               style={{
@@ -146,7 +146,7 @@ export default class DrawerModal extends Component {
                   bottom: Platform.OS == 'ios' ? 2 : null,
                 }}
               />
-              <Text style={[styles.drawerbtn]}>Support</Text>
+              <TextReuseableComponent title style={[styles.drawerbtn]} value={'Support'} />
             </View>
           </TouchableOpacity>
         </View>

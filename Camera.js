@@ -3,7 +3,6 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
-  Text,
   View,
   Slider,
   TouchableOpacity,
@@ -14,6 +13,8 @@ import {
 } from 'react-native'
 
 import SystemSetting from 'react-native-system-setting'
+
+import TextReuseableComponent from './scr/components/Text/index';
 
 export default class SystemSettingExample extends Component {
   isAndroid = Platform.OS === 'android'
@@ -262,9 +263,9 @@ export default class SystemSettingExample extends Component {
         />
         <View style={styles.card}>
           <View style={styles.row}>
-            <Text style={[styles.title, { flex: 1 }]}>Func</Text>
+          <TextReuseableComponent title style={[styles.title, { flex: 1 }]} value={'Func'} />
             <TouchableOpacity onPress={this._openAppSetting}>
-              <Text style={styles.btn}>Open App Setting</Text>
+              <TextReuseableComponent title style={styles.btn} value={'Open App Setting'} />
             </TouchableOpacity>
           </View>
         </View>
@@ -280,13 +281,13 @@ const ValueView = props => {
   return (
     <View style={styles.card}>
       <View style={styles.row}>
-        <Text style={styles.title}>{title}</Text>
+        <TextReuseableComponent title style={styles.title} value={title} />
         {btn && (
           <TouchableOpacity onPress={btn.onPress}>
-            <Text style={styles.btn}>{btn.title}</Text>
+            <TextReuseableComponent title style={styles.btn} value={btn.title} />
           </TouchableOpacity>
         )}
-        <Text style={styles.value}>{value}</Text>
+        <TextReuseableComponent title style={styles.value} value={value} />
       </View>
       <Slider ref={refFunc} style={styles.slider} onValueChange={changeVal} />
     </View>
@@ -300,10 +301,8 @@ const StatusView = props => {
   return (
     <View style={styles.card}>
       <View style={styles.row}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={{ flex: 1, opacity: 0.4, paddingHorizontal: 8 }}>
-          current status is {loading ? 'switching' : value ? 'On' : 'Off'}{' '}
-        </Text>
+        <TextReuseableComponent title style={styles.title} value={title} />
+        <TextReuseableComponent title style={{ flex: 1, opacity: 0.4, paddingHorizontal: 8 }} value={`current status is ${loading ? 'switching' : value ? 'on' : 'off'}`} />
         {loading && <ActivityIndicator animating={loading} />}
         <Switch onValueChange={switchFunc} value={value} />
       </View>

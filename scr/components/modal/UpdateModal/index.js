@@ -1,7 +1,6 @@
 import React, {Component, Fragment, version} from 'react';
 
 import {
-  Text,
   View,
   Dimensions,
   TouchableOpacity,
@@ -19,6 +18,8 @@ import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TextInput, HelperText} from 'react-native-paper';
 import {Button} from 'react-native-elements';
 import {Icon, IconToggle} from 'react-native-material-ui';
+
+import TextReuseableComponent from '../../Text/index';
 
 // Components
 
@@ -136,7 +137,7 @@ export default class UpdateModal extends Component {
                       size={height * 0.05}
                       color="#5e5e5e"
                     />
-                    <Text style={styles.modalHeading}>{title}</Text>
+                    <TextReuseableComponent title style={styles.modalHeading} value={title} />
                     <Pressable
                       onPress={this.clearUpdateBuild}
                       android_ripple={{
@@ -162,7 +163,7 @@ export default class UpdateModal extends Component {
                         size={width * 0.04}
                         color="#5e5e5e"
                       />
-                      <Text style={styles.desciptionHeading}>BUILDING*</Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"BUILDING*"} />
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -199,9 +200,7 @@ export default class UpdateModal extends Component {
                       </HelperText>
                     ) : null}
                     <View style={styles.desciptionContainer}>
-                      <Text style={styles.desciptionHeading}>
-                        Building Despcription*
-                      </Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"Building Despcription*"} />
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -252,13 +251,13 @@ export default class UpdateModal extends Component {
                     <TouchableOpacity onPress={this.clearUpdateBuild}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <Text style={{color: 'black'}}>Cancel</Text>
+                        <TextReuseableComponent title style={{color: 'black'}} value={"Cancel"} />
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this.editAlert}>
                       <View style={styles.saveUnitBotton}>
                         <Plus name="plus" color="white" size={18} />
-                        <Text style={{color: 'white'}}>{doneBtnTitle}</Text>
+                        <TextReuseableComponent title style={{color: 'white'}} value={doneBtnTitle} />
                       </View>
                     </TouchableOpacity>
                   </View>

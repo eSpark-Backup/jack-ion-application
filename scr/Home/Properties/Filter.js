@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {
   View,
-  Text,
   Dimensions,
   TouchableOpacity,
   PermissionsAndroid,
@@ -31,6 +30,8 @@ import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import SearchableDropDown from 'react-native-searchable-dropdown';
 import { fetchPropetry } from '../../Store/Action/properties.action';
 import { connect } from 'react-redux';
+import TextReuseableComponent from '../../components/Text/index';
+
 const {width, height} = Dimensions.get('window');
 
  class FilterComponent extends Component {
@@ -314,7 +315,7 @@ const {width, height} = Dimensions.get('window');
                     name="keyboard-backspace"
                   />
                 </TouchableOpacity>
-                <Text style={styles.scannerHeading}>Scan Barcode</Text>
+                <TextReuseableComponent title style={styles.scannerHeading} value={"Scan Barcode"} />
               </View>
               <RNCamera
                 ref={(ref) => {
@@ -341,7 +342,6 @@ const {width, height} = Dimensions.get('window');
             <View style={styles.modalInner}>
               <View>
                 <View style={styles.boxInner}>
-                  {/* Box Header */}
                   <Header
                     barStyle="dark-content"
                     leftComponent={{
@@ -351,7 +351,7 @@ const {width, height} = Dimensions.get('window');
                     }}
                     centerComponent={
                       <View style={styles.headerCenter}>
-                        <Text style={styles.headerCenterText}>Filter</Text>
+                        <TextReuseableComponent title style={styles.headerCenterText} value={"Filter"} />
                       </View>
                     }
                     rightComponent={{
@@ -370,7 +370,7 @@ const {width, height} = Dimensions.get('window');
                     {type == 'Properties' ? (
                       <View style={styles.currentReadContainer}>
                         <View style={styles.inputFilterView}>
-                          <Text style={styles.filterListText}>Name:</Text>
+                          <TextReuseableComponent title style={styles.filterListText} value={"Name:"} />
                           <TextInput
                             style={styles.filterInputs}
                             value={this.context.filterPropName}
@@ -380,7 +380,7 @@ const {width, height} = Dimensions.get('window');
                           />
                         </View>
                         <View style={styles.inputFilterView}>
-                          <Text style={styles.filterListText}>Location:</Text>
+                          <TextReuseableComponent title style={styles.filterListText} value={"Location:"} />
                           <TextInput
                             style={styles.filterInputs}
                             value={this.context.filterLocation}
@@ -395,7 +395,7 @@ const {width, height} = Dimensions.get('window');
                       <View>
                         <View style={styles.currentReadContainer}>
                           <View style={styles.inputFilterView}>
-                            <Text style={styles.filterListText}>Building:</Text>
+                            <TextReuseableComponent title style={styles.filterListText} value={"Building:"} />
                             <TextInput
                               style={styles.filterInputs}
                               value={buildingName}
@@ -403,9 +403,7 @@ const {width, height} = Dimensions.get('window');
                             />
                           </View>
                           <View style={styles.inputFilterView}>
-                            <Text style={styles.filterListText}>
-                              Serial Number:
-                            </Text>
+                            <TextReuseableComponent title style={styles.filterListText} value={"Serial Number:"} />
                             <TextInput
                               style={styles.filterInputs}
                               value={this.context.filterSerial}
@@ -425,29 +423,7 @@ const {width, height} = Dimensions.get('window');
                     {type == 'Units' ? (
                       <View style={styles.currentReadContainer}>
                         <View style={styles.inputFilterView}>
-                          <Text style={styles.filterListText}>
-                            Utility Types:
-                          </Text>
-                          {/* <SearchableDropDown
-                            onItemSelect={(item) => {
-                              this.setState({selectedType: item.name});
-                            }}
-                            containerStyle={styles.dropDownFullContainer}
-                            itemStyle={styles.dropDownItems}
-                            itemTextStyle={styles.dropDownItemText}
-                            itemsContainerStyle={styles.dropDownItemContainer}
-                            items={utilityTypes}
-                            resetValue={false}
-                            textInputProps={{
-                              placeholder: 'Search Utility',
-                              underlineColorAndroid: 'transparent',
-                              style: styles.dropDownFullTextInput,
-                              value: this.state.selectedType,
-                            }}
-                            listProps={{
-                              nestedScrollEnabled: true,
-                            }}
-                          /> */}
+                          <TextReuseableComponent title style={styles.filterListText} value={"Utility Types:"} />
                           {utilityTypes.length ? (
                             <FlatList
                               horizontal
@@ -513,7 +489,7 @@ const {width, height} = Dimensions.get('window');
                               : '#bbb',
                         }}
                         onPress={this.filter}>
-                        <Text style={{color: '#fff'}}>Filter</Text>
+                        <TextReuseableComponent title style={{color: '#fff'}} value={"Filter"} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -522,67 +498,6 @@ const {width, height} = Dimensions.get('window');
             </View>
           </KeyboardAvoidingView>
         </Modal>
-        {/* <Modal statusBarTranslucent={true} isVisible={this.state.showList}>
-          <View style={styles.billingModalInner}>
-            <View style={{height: '50%', width: '60%'}}>
-              <View style={styles.boxInner}>
-                <View style={styles.billingModalHeader}>
-                  <Text style={{fontSize: width * 0.04}}>Billing</Text>
-                </View>
-                <View style={styles.companyList}>
-                  <ScrollView>
-                    {this.state.billCompanies.map((item) => (
-                      <View style={styles.billingCompnay}>
-                        {Platform.OS == 'ios' ? (
-                          <View
-                            style={{
-                              borderRadius: height * 0.1,
-                              backgroundColor: '#94949424',
-                              borderWidth: 1,
-                              borderColor: 'grey',
-                              margin: width * 0.01,
-                            }}>
-                            <RadioButton
-                              value={item.name}
-                              status={
-                                this.state.biller === item.name
-                                  ? 'checked'
-                                  : 'unchecked'
-                              }
-                              color="#25aae1"
-                              onPress={() => this.listSelection(item.name)}
-                            />
-                          </View>
-                        ) : (
-                          <RadioButton
-                            value={item.name}
-                            status={
-                              this.state.biller === item.name
-                                ? 'checked'
-                                : 'unchecked'
-                            }
-                            color="#25aae1"
-                            onPress={() => this.listSelection(item.name)}
-                          />
-                        )}
-                        <Text>{item.name}</Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-
-                <View style={styles.billingModalBottom}>
-                  <TouchableOpacity onPress={this.cancelButton}>
-                    <Text style={styles.billingModalBtns}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.onOkay}>
-                    <Text style={styles.billingModalBtns}>Ok</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </Modal> */}
       </View>
     );
   }

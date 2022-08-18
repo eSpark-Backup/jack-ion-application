@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
-  Text,
   Dimensions,
   ScrollView,
   ActivityIndicator,
@@ -43,7 +42,7 @@ export const CardMeters = ({navigation}) => {
             onPress={() => navigation?.goBack()}
           />
           <View style={{flexDirection: 'row', alignItems: 'center', right: 15}}>
-            <Text style={styles.mainHeadiing}>Meters</Text>
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Meters"} />
           </View>
         </View>
       </View>
@@ -74,7 +73,7 @@ export const CardMeters = ({navigation}) => {
                         style={{
                           width: width / 2.2,
                         }}>
-                        <Text style={styles.tableHeading}>{value?.title}</Text>
+                        <TextReuseableComponent title style={styles.tableHeading} value={value?.title} />
                       </View>
                       <View
                         style={{
@@ -98,19 +97,13 @@ export const CardMeters = ({navigation}) => {
                         justifyContent: 'space-between',
                       }}>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.device?.name}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.device?.name} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.device?.device_type}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.device?.device_type} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.device?.manufacturer}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.device?.manufacturer} />
                       </View>
                     </View>
                   );

@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {Text, FlatList, View, TouchableOpacity, Keyboard} from 'react-native';
+import {FlatList, View, TouchableOpacity, Keyboard} from 'react-native';
 import {TextInput} from 'react-native-paper';
+
+import TextReuseableComponent from '../Text/index';
 
 const defaultItemValue = {
   name: '',
@@ -99,7 +101,7 @@ export default class SearchableDropDown extends Component {
           style={{...this.props.itemStyle, flex: 1, flexDirection: 'row'}}>
           <View
             style={{flex: 0.9, flexDirection: 'row', alignItems: 'flex-start'}}>
-            <Text>{item.name}</Text>
+            <TextReuseableComponent title value={item.name} />
           </View>
           <View
             style={{flex: 0.1, flexDirection: 'row', alignItems: 'flex-end'}}>
@@ -118,7 +120,7 @@ export default class SearchableDropDown extends Component {
                 borderRadius: 100,
                 marginLeft: 10,
               }}>
-              <Text>X</Text>
+              <TextReuseableComponent title value={"X"} />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -133,7 +135,7 @@ export default class SearchableDropDown extends Component {
           style={{...this.props.itemStyle, flex: 1, flexDirection: 'row'}}>
           <View
             style={{flex: 1, flexDirection: 'row', alignItems: 'flex-start'}}>
-            <Text>{item.name}</Text>
+            <TextReuseableComponent title value={item.name} />
           </View>
         </TouchableOpacity>
       );
@@ -155,9 +157,9 @@ export default class SearchableDropDown extends Component {
           {this.props.selectedItems &&
           this.props.selectedItems.length > 0 &&
           this.props.selectedItems.find((x) => x.id === item.id) ? (
-            <Text style={{...this.props.itemTextStyle}}>{item.name}</Text>
+            <TextReuseableComponent title style={{...this.props.itemTextStyle}} value={item.name} />
           ) : (
-            <Text style={{...this.props.itemTextStyle}}>{item.name}</Text>
+            <TextReuseableComponent title style={{...this.props.itemTextStyle}} value={item.name} />
           )}
         </TouchableOpacity>
       );
@@ -334,7 +336,7 @@ export default class SearchableDropDown extends Component {
                   padding: 8,
                   borderRadius: 15,
                 }}>
-                <Text style={{color: '#555'}}>{item.name}</Text>
+                <TextReuseableComponent title style={{color: '#555'}} value={item.name} />
                 <TouchableOpacity
                   onPress={() =>
                     setTimeout(() => {
@@ -350,7 +352,7 @@ export default class SearchableDropDown extends Component {
                     borderRadius: 100,
                     marginLeft: 10,
                   }}>
-                  <Text>X</Text>
+                  <TextReuseableComponent title value={"X"} />
                 </TouchableOpacity>
               </View>
             );

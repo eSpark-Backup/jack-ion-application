@@ -1173,6 +1173,7 @@ class Splash extends Component {
             }}>
             <TouchableOpacity
               activeOpacity={.8}
+<<<<<<< Updated upstream
               onPress={() => this.setState({ activeTab: "units" })}
               style={activeTab == "units" ? styles.activeTabContainer : styles.tabContainer}>
               <Text style={{ color: activeTab == "units" ? "#25AAE1ec" : "#fff", fontWeight: "bold" }}>Units</Text>
@@ -1182,6 +1183,17 @@ class Splash extends Component {
               onPress={() => this.setState({ activeTab: "network" })}
               style={activeTab == "network" ? styles.activeTabContainer : styles.tabContainer}>
               <Text style={{ color: activeTab == "network" ? "#25AAE1ec" : "#fff", fontWeight: "bold" }}>Network</Text>
+=======
+              onPress={() => this.setState({activeTab: "units"})}
+              style={activeTab == "units" ? styles.activeTabContainer : styles.tabContainer}>
+              <Text style={{color: activeTab == "units" ? "#25AAE1ec" : "#fff", fontWeight: "bold"}}>Units</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={.8}
+              onPress={() => this.setState({activeTab: "network"})}
+              style={activeTab == "network" ? styles.activeTabContainer : styles.tabContainer}>
+              <Text style={{color: activeTab == "network" ? "#25AAE1ec" : "#fff",  fontWeight: "bold"}}>Network</Text>
+>>>>>>> Stashed changes
             </TouchableOpacity>
           </View>
           {this.state.activeTab == 'units' ?

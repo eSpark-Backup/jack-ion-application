@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
-  Text,
   Dimensions,
   ScrollView,
   ActivityIndicator,
@@ -14,6 +13,8 @@ import {fetchPropetry} from '../../../Store/Action/properties.action';
 import {FlatList} from 'react-native-gesture-handler';
 import API from '../../../api/SeviceApi';
 import CustumStatusBar from '../../../components/StatusBar';
+
+import TextReuseableComponent from '../../../components/Text/index';
 
 const {height, width} = Dimensions.get('screen');
 export const CardProperties = ({navigation}) => {
@@ -47,7 +48,7 @@ export const CardProperties = ({navigation}) => {
             onPress={() => navigation?.goBack()}
           />
           <View style={{flexDirection: 'row', alignItems: 'center', right: 15}}>
-            <Text style={styles.mainHeadiing}>Properties</Text>
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Properties"} />
           </View>
         </View>
       </View>
@@ -81,7 +82,7 @@ export const CardProperties = ({navigation}) => {
                         style={{
                           width: width / 2.2,
                         }}>
-                        <Text style={styles.tableHeading}>{value?.title}</Text>
+                        <TextReuseableComponent title style={styles.tableHeading} value={value?.title} />
                       </View>
                       <View
                         style={{
@@ -105,33 +106,25 @@ export const CardProperties = ({navigation}) => {
                         justifyContent: 'space-between',
                       }}>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>{item?.name}</Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.name} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>{item?.city}</Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.city} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>{item?.owner}</Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.owner} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.building_count}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.building_count} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.alert_count}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.alert_count} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.unit_count}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.unit_count} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.created_at}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.created_at} />
                       </View>
                     </View>
                   );
