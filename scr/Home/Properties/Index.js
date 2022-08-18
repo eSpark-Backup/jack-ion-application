@@ -349,44 +349,118 @@ class Property extends Component {
   };
 
   _renderSearchPropList = (prop) => (
-    <TouchableOpacity
-      style={styles.propButton}
-      onPress={() => this.jumpFromSearch({prop, item: prop})}>
-      <MaterialCommunityIcons
-        name="home-city-outline"
-        size={width * 0.09}
-        color="#115b72"
-      />
-      <View>
-        <View style={{width: width * 0.6}}>
-          <TextTicker
-            style={styles.propText}
-            duration={6000}
-            marqueeDelay={2000}
-            repeatSpacer={width * 0.6}>
-            {prop.item.name == null ? 'Untitled' : prop.item.name}
-          </TextTicker>
-        </View>
-        <View style={{ width: width * 0.6 }}>
-          <TextTicker
-            style={{color: 'gray'}}
-            duration={6000}
-            marqueeDelay={2000}
-            repeatSpacer={width * 0.6}>
-            {(prop.item.street == null ? '' : prop.item.street + ', ') +
-              (prop.item.st == null ? '' : prop.item.st + ', ') +
-              (prop.item.city == null ? '' : prop.item.city + ', ') +
-              (prop.item.zipcode == null ? '' : prop.item.zipcode)}
-          </TextTicker>
-        </View>
-      </View>
+    // <TouchableOpacity
+    //   style={styles.propButton}
+    //   onPress={() => this.jumpFromSearch({prop, item: prop})}>
+    //   <MaterialCommunityIcons
+    //     name="home-city-outline"
+    //     size={width * 0.09}
+    //     color="#115b72"
+    //   />
+    //   <View>
+    //     <View style={{width: width * 0.6}}>
+    //       <TextTicker
+    //         style={styles.propText}
+    //         duration={6000}
+    //         marqueeDelay={2000}
+    //         repeatSpacer={width * 0.6}>
+    //         {prop.item.name == null ? 'Untitled' : prop.item.name}
+    //       </TextTicker>
+    //     </View>
+    //     <View style={{ width: width * 0.6 }}>
+    //       <TextTicker
+    //         style={{color: 'gray'}}
+    //         duration={6000}
+    //         marqueeDelay={2000}
+    //         repeatSpacer={width * 0.6}>
+    //         {(prop.item.street == null ? '' : prop.item.street + ', ') +
+    //           (prop.item.st == null ? '' : prop.item.st + ', ') +
+    //           (prop.item.city == null ? '' : prop.item.city + ', ') +
+    //           (prop.item.zipcode == null ? '' : prop.item.zipcode)}
+    //       </TextTicker>
+    //     </View>
+    //   </View>
 
-      <MaterialCommunityIcons
-        name="signal-cellular-outline"
-        size={height * 0.04}
-        color="#115b72"
-      />
-    </TouchableOpacity>
+    //   <MaterialCommunityIcons
+    //     name="signal-cellular-outline"
+    //     size={height * 0.04}
+    //     color="#115b72"
+    //   />
+    // </TouchableOpacity>
+    <TouchableOpacity
+          style={{
+            ...styles.propButton,
+           
+          }}
+          onPress={() => this.jumpFromSearch({prop, item: prop})}>
+          <MaterialCommunityIcons
+            name="home-city-outline"
+            size={width * 0.09}
+            style={{marginHorizontal: 15}}
+            color="#115b72"
+          />
+          <View style={{width:  width * 0.5, position: 'absolute', left: width * 0.16}}>
+            <View style={{ width:  width * 0.5}}>  
+              <TextTicker
+                style={styles.propText}
+                duration={6000}
+                marqueeDelay={2000}
+                repeatSpacer={ width * 0.5}>
+                {prop.item.name == null ? 'Untitled' : prop.item.name}
+              </TextTicker>
+            </View>
+            <View style={{
+              width:  width * 0.5,
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}>
+              <Icon name="ios-location-outline"
+                size={height * 0.02}
+                color="gray"
+              />
+              <TextTicker
+                style={{color: 'gray'}}
+                duration={6000}
+                marqueeDelay={2000}
+                repeatSpacer={ width * 0.5}>
+                {
+                  (prop.item.city == null ? '' : prop.item.city + ', ') +
+                  (prop.item.st == null ? '' : prop.item.st)
+                }
+              </TextTicker>
+            </View>
+          </View>
+          <View style={{flexDirection: 'row', marginHorizontal: 15, justifyContent: 'flex-end'}}>
+            <View style={styles.buildUnitCountContainer}>
+              <FontAwesome5Icon
+                name="building"
+                size={width * 0.04}
+                color="#115b72"
+              />
+              <Text style={styles.buildUnitCount}>
+                {prop.item.building_count}
+              </Text>
+            </View>
+            <View style={styles.buildUnitCountContainer}>
+              <FontAwesome5Icon
+                name="house-user"
+                size={width * 0.04}
+                color="#115b72"
+              />
+              <Text style={styles.buildUnitCount}>
+                {prop.item.unit_actual_count}
+              </Text>
+            </View>
+            {prop?.item?.gateway &&
+            <View style={styles.buildUnitCountContainer}>
+              <MaterialIcon
+                name="router"
+                size={width * 0.05}
+                color="#115b72"
+              />
+            </View>}
+          </View>
+        </TouchableOpacity>
   );
 
   renderShimmers = (item) => (

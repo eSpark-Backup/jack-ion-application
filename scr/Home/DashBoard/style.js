@@ -57,12 +57,14 @@ export default styles = StyleSheet.create({
     height: height * 0.07,
   },
   headingInner: {
-    flex: 1,
-    justifyContent: 'center',
+    width: width * 1,
+    height: height * 0.07,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#25AAE1ec',
     elevation: width * 0.01,
-    flexDirection: 'row',
+    paddingHorizontal: width * .02
   },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
