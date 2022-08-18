@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Platform,
   Dimensions,
@@ -18,6 +17,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ScrollView} from 'react-native-gesture-handler';
 import moment from 'moment';
 import API from '../../../api/SeviceApi';
+
+import TextReuseableComponent from '../../../components/Text/index';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -79,9 +80,7 @@ export const ConsumptionComparison = ({navigation, route}) => {
             onPress={() => navigation?.goBack()}
           />
           <View>
-            <Text style={styles.mainHeadiing}>
-              Consumption Comparison Report
-            </Text>
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Consumption Comparison Report"} />
           </View>
           <View />
         </View>
@@ -115,11 +114,9 @@ export const ConsumptionComparison = ({navigation, route}) => {
           style={styles.dateSelectorContainer}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="date-range" size={17} color="#8E97A6" />
-            <Text style={styles.dateSelectorHeading}>{'From'}</Text>
+            <TextReuseableComponent title style={styles.dateSelectorHeading} value={"From"} />
           </View>
-          <Text style={styles.dateText}>
-            {fromDate && new Date(fromDate)?.toDateString()}
-          </Text>
+          <TextReuseableComponent title style={styles.dateText} value={fromDate && new Date(fromDate)?.toDateString()} />
         </TouchableOpacity>
 
         <View style={styles.dateDivider} />
@@ -132,9 +129,9 @@ export const ConsumptionComparison = ({navigation, route}) => {
           style={styles.dateSelectorContainer}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="date-range" size={17} color="#8E97A6" />
-            <Text style={styles.dateSelectorHeading}>{'To'}</Text>
+            <TextReuseableComponent title style={styles.dateSelectorHeading} value={"To"} />
           </View>
-          <Text style={styles.dateText}>{toDate?.toDateString()}</Text>
+          <TextReuseableComponent title style={styles.dateText} value={toDate?.toDateString()} />
         </TouchableOpacity>
       </View>
       {/* DATE PICKER WORK END */}
@@ -166,7 +163,7 @@ export const ConsumptionComparison = ({navigation, route}) => {
                         style={{
                           width: width / 2.3,
                         }}>
-                        <Text style={styles.tableHeading}>{value?.title}</Text>
+                        <TextReuseableComponent title style={styles.tableHeading} value={value?.title} />
                       </View>
                       <View
                         style={{
@@ -191,29 +188,19 @@ export const ConsumptionComparison = ({navigation, route}) => {
                         justifyContent: 'space-between',
                       }}>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.building_name}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.building_name} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.unit_name}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.unit_name} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.device_serial_number}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.device_serial_number} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.compare?.cmption_limit}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.compare?.cmption_limit} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.actual_cmption}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.actual_cmption} />
                       </View>
                       <View style={styles?.tableColContainer}>
                              {item?.alert_level != '-' ?
@@ -225,12 +212,10 @@ export const ConsumptionComparison = ({navigation, route}) => {
                                 />
                             </View>
                              :
-                            <Text style={styles?.tableColText}>
-                                {item?.alert_level}
-                            </Text>}
+                            <TextReuseableComponent title style={styles?.tableColText} value={item?.alert_level} />}
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>{item?.date}</Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.date} />
                       </View>
                     </View>
                   );
@@ -240,7 +225,7 @@ export const ConsumptionComparison = ({navigation, route}) => {
                     {!loading ? (
                       <View
                         style={{flex: 1, margin: 20, justifyContent: 'center'}}>
-                        <Text>Empty</Text>
+                        <TextReuseableComponent title value={"Empty"} />
                       </View>
                     ) : null}
                   </>

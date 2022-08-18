@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
   TouchableOpacity,
   TextInput,
@@ -23,6 +22,7 @@ import styles from './style';
 import API from '../api/SeviceApi';
 import { connect } from 'react-redux';
 import { userLogin } from '../Store/Action/user.action';
+import TextReuseableComponent from '../components/Text/index';
 
 const { width, height } = Dimensions.get('window');
 
@@ -153,10 +153,8 @@ class Login extends Component {
             />
           </View>
           <View style={{ marginBottom: height * 0.05 }}>
-            <Text style={styles.titleText}>
-              Sign In into
-              <Text style={styles.highlightText}> ION</Text>
-            </Text>
+            <TextReuseableComponent title style={styles.titleText} value={`Sign In into
+              ${<TextReuseableComponent style={styles.highlightText} value={"ION"} />}`} />
           </View>
           <Formik
             initialValues={{
@@ -207,9 +205,7 @@ class Login extends Component {
                 </View>
                 <View style={styles.errorView}>
                   {touched.email && (
-                    <Text style={{ color: '#A3001B' }}>
-                      {errors.email || this.state.errName}
-                    </Text>
+                    <TextReuseableComponent title style={{ color: '#A3001B' }} value={errors.email || this.state.errName} />
                   )}
                 </View>
                 <View style={styles.textInputContainer}>
@@ -233,12 +229,9 @@ class Login extends Component {
                 </View>
                 <View style={styles.errorView}>
                   {touched.password && (
-                    <Text
-                      style={{
-                        color: '#A3001B',
-                      }}>
-                      {errors.password || this.state.errPass}
-                    </Text>
+                    <TextReuseableComponent title style={{
+                      color: '#A3001B',
+                    }} value={errors.password || this.state.errPass} />
                   )}
                 </View>
                 <TouchableOpacity
@@ -249,7 +242,7 @@ class Login extends Component {
                     {this.state.isLoading ? (
                       <ActivityIndicator size="small" color="#ffffff" />
                     ) : (
-                      <Text style={styles.btnText}>Login</Text>
+                      <TextReuseableComponent title style={styles.btnText} value={"Login"} />
                     )}
                   </View>
                 </TouchableOpacity>
@@ -267,9 +260,7 @@ class Login extends Component {
                 }, 100);
               }}>
               <View style={{ width: width * 0.75, alignItems: 'center' }}>
-                <Text style={styles.bottomText}>
-                  Not a Member Yet? Contact Administrator
-                </Text>
+                <TextReuseableComponent title style={styles.bottomText} value={"Not a Member Yet? Contact Administrator"} />
               </View>
             </TouchableOpacity>
           </View>

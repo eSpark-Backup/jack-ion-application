@@ -4,7 +4,6 @@ import {
     View,
     StyleSheet,
     Image,
-    Text,
     TouchableOpacity,
     Dimensions,
     Linking,
@@ -19,6 +18,7 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import LinearGradient from 'react-native-linear-gradient';
+import TextReuseableComponent from '../components/Text/index';
 // import { colors } from '../src/colors/colors';
 
 const { width, height } = Dimensions.get('window');
@@ -157,15 +157,10 @@ export default class CustomSidebarMenu extends Component {
                                             //backgroundColor:"red",
                                             marginLeft: wp('0%'),
                                         }}>
-                                        <Text
-                                            style={{
-                                                fontSize: hp('2%'),
-                                                // fontFamily: 'LexendDeca-Regular',
+                                        <TextReuseableComponent title style={{
                                                 color: 'white',
                                                 marginLeft: wp('12%'),
-                                            }}>
-                                            {"name"}
-                                        </Text>
+                                            }} value={"name"} />
                                         <Iconedd
                                             name="chevrons-right"
                                             color="white"
@@ -225,20 +220,12 @@ export default class CustomSidebarMenu extends Component {
                                             }}
                                         />
                                     </View>
-                                    <Text
-                                        //control all text of navigation drawer
-                                        style={{
-                                            fontSize: hp('2%'),
-                                            width: wp('40%'),
-                                            height: hp('3%'),
-                                            // fontFamily: 'LexendDeca-Regular',
+                                    <TextReuseableComponent title style={{
                                             color:
                                                 global.currentScreenIndex === key
                                                     ? '#25AAE1ec'
                                                     : 'white',
-                                        }}>
-                                        {item.navOptionName}
-                                    </Text>
+                                        }} value={item.navOptionName} />
                                 </TouchableOpacity>
                             </View>
                         ))}
@@ -257,17 +244,9 @@ export default class CustomSidebarMenu extends Component {
                             onPress={() => this.changeLayoutProperty()}
                             >
                             <View style={{ marginRight: 10, marginLeft: 20 }}>
-                                <Text
-                                    //control all text of navigation drawer
-                                    style={{
-                                        fontSize: hp('2%'),
-                                        width: wp('40%'),
-                                        height: hp('3%'),
-                                        // fontFamily: 'LexendDeca-Regular',
+                                <TextReuseableComponent title style={{
                                         color: 'white',
-                                    }}>
-                                    {this.property.name}
-                                </Text>
+                                    }} value={this.property.name} />
                             </View>
                             <View>
                                 {this.state.drop ? (<Iconedd name='chevron-down' color="white" size={hp('3%')} />
@@ -321,20 +300,12 @@ export default class CustomSidebarMenu extends Component {
                                             }}
                                         />
                                     </View>
-                                    <Text
-                                        //control all text of navigation drawer
-                                        style={{
-                                            fontSize: hp('2%'),
-                                            width: wp('40%'),
-                                            height: hp('3%'),
-                                            // fontFamily: 'LexendDeca-Regular',
+                                    <TextReuseableComponent title style={{
                                             color:
                                                 global.currentScreenIndex === key
                                                     ? '#25AAE1ec'
                                                     : 'white',
-                                        }}>
-                                        {item.navOptionName}
-                                    </Text>
+                                        }} value={item.navOptionName} />
                                 </TouchableOpacity>
                             </View>
                         ))}

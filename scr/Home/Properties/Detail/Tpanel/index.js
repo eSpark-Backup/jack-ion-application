@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import {
-  Text,
   View,
   Dimensions,
   ScrollView,
@@ -12,6 +11,7 @@ import {
 //Packages
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustumStatusBar from '../../../../components/StatusBar';
+import TextReuseableComponent from '../../../../components/Text/index';
 
 // Components
 import style from './style';
@@ -135,7 +135,7 @@ export default class Splash extends Component {
                 alignItems: 'center',
                 marginLeft: width * 0.25,
               }}>
-              <Text style={style.mainHeadiing}>Tpanel</Text>
+              <TextReuseableComponent title style={style.mainHeadiing} value={"Tpanel"} />
             </View>
           </View>
         </View>
@@ -147,7 +147,7 @@ export default class Splash extends Component {
               style={{paddingRight: 5}}
               color="white"
             />
-            <Text style={style.mainHeadiing}>Alerts</Text>
+            <TextReuseableComponent title style={style.mainHeadiing} value={"Alerts"} />
           </View>
         </View> */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -159,18 +159,18 @@ export default class Splash extends Component {
                 flexDirection: 'row',
                 marginBottom: width * 0.01,
               }}>
-              <Text style={style.tpanelHeads}>Device Serial</Text>
-              <Text style={style.tpanelHeads}>Building</Text>
-              <Text style={style.tpanelHeads}>Unit</Text>
-              <Text style={style.tpanelHeads}>Utility Type</Text>
-              <Text style={style.tpanelHeads}>Manufacturer</Text>
-              <Text style={style.tpanelHeads}>Device</Text>
-              <Text style={style.tpanelHeads}>Attached To</Text>
-              <Text style={style.tpanelHeads}>Signal Strength</Text>
-              <Text style={style.tpanelHeads}>Temperature</Text>
-              <Text style={style.tpanelHeads}>Battery</Text>
-              <Text style={style.tpanelHeads}>Meter Usage</Text>
-              <Text style={style.tpanelHeads}>Meter Reading</Text>
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Device Serial"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Building"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Unit"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Utility Type"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Manufacturer"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Device"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Attached To"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={'Signal Strength'} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Temperature"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Battery"} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={'Meter Usage'} />
+              <TextReuseableComponent title style={style.tpanelHeads} value={"Meter Reading"} />
             </View>
 
             <ScrollView>
@@ -179,34 +179,18 @@ export default class Splash extends Component {
                   <TouchableOpacity
                     style={style.tpanelValuesContainer}
                     onPress={() => this.goToDetails(item)}>
-                    <Text style={style.tpanelValues}>
-                      {i.device_serial_number}
-                    </Text>
-                    <Text style={style.tpanelValues}>{item.building}</Text>
-                    <Text style={style.tpanelValues}>{item.name}</Text>
-                    <Text style={style.tpanelValues}>
-                      {i.utility_type_name.name}
-                    </Text>
-                    <Text style={style.tpanelValues}>
-                      {i.manufacturer.name}
-                    </Text>
-                    <Text style={style.tpanelValues}>{i.device.name}</Text>
-                    <Text style={style.tpanelValues}>{i.attachedTo_name}</Text>
-                    <Text style={style.tpanelValues}>
-                      {i.meter_read?.signal_strength}
-                    </Text>
-                    <Text style={style.tpanelValues}>
-                      {i.meter_read?.temperature}
-                    </Text>
-                    <Text style={style.tpanelValues}>
-                      {i.meter_read?.battery}
-                    </Text>
-                    <Text style={style.tpanelValues}>
-                      {i.meter_read?.meter_usage}
-                    </Text>
-                    <Text style={style.tpanelValues}>
-                      {i.meter_read?.meter_reading}
-                    </Text>
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.device_serial_number} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={item.building} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={item.name} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.utility_type_name.name} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.manufacturer.name} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.device.name} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.attachedTo_name} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.meter_read?.signal_strength} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.meter_read?.temperature} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.meter_read?.battery} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.meter_read?.meter_usage} />
+                    <TextReuseableComponent title style={style.tpanelValues} value={i.meter_read?.meter_reading} />
                   </TouchableOpacity>
                 )),
               )}

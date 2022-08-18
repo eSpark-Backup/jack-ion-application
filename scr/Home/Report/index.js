@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import {View, Text, StyleSheet, Dimensions, Platform, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Dimensions, Platform, TouchableOpacity} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import CustumStatusBar from '../../components/StatusBar';
 import Drawer from '../../components/modal/Drawer/index';
+import TextReuseableComponent from '../../components/Text/index';
+
 import { styles } from './styles';
 
 const {width, height} = Dimensions.get('screen');
@@ -131,7 +133,7 @@ const toggleModal = () => {
               <MaterialIcons size={width * 0.08} color="white" name="menu" />
             </TouchableOpacity>
             <View style={styles.mainHeadingContainer}>
-              <Text style={styles.mainHeadiing}>Property Reports</Text>
+              <TextReuseableComponent title style={styles.mainHeadiing} value={"Property Reports"} />
             </View>
           </View>
         </View>
@@ -156,12 +158,8 @@ const toggleModal = () => {
                           {val?.icon}
                       </View>
                       <View  style={{width: "90%", height: 50}}>
-                          <Text style={{fontWeight: '700', fontSize: 17}}>
-                              {val?.name}
-                          </Text>
-                          <Text numberOfLines={2}>
-                              {val?.description}
-                          </Text>
+                          <TextReuseableComponent title value={val?.name} />
+                          <TextReuseableComponent title numberOfLines={2} value={val?.description} />
                       </View>
                   </TouchableOpacity>
                 )

@@ -1,7 +1,6 @@
 import React, {Component, version} from 'react';
 
 import {
-  Text,
   View,
   Dimensions,
   ScrollView,
@@ -37,6 +36,8 @@ import style from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+
+import TextReuseableComponent from '../components/Text/index';
 
 const {width, height} = Dimensions.get('window');
 
@@ -387,7 +388,7 @@ export default class Splash extends Component {
               color="white"
               style={style.settingIcon}
             />
-            <Text style={styles.mainHeadiing}>Settings</Text>
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Settings"} />
           </View>
         </View>
         <ScrollView
@@ -396,10 +397,8 @@ export default class Splash extends Component {
           <View style={style.containView}>
             <View style={style.containerInner}>
               <View>
-                <Text style={style.mainHeadiingItems}>Camera Access</Text>
-                <Text style={style.sideHeadingItems}>
-                  Scan equipment and take photos
-                </Text>
+                <TextReuseableComponent title style={style.mainHeadiingItems} value={"Camera Access"} />
+                <TextReuseableComponent title style={style.sideHeadingItems} value={"Scan equipment and take photos"} />
               </View>
               <Switch
                 trackColor={{false: 'lightgray', true: '#25AAE1'}}
@@ -411,10 +410,8 @@ export default class Splash extends Component {
             </View>
             <View style={style.containerInner}>
               <View>
-                <Text style={style.mainHeadiingItems}>File Storage</Text>
-                <Text style={style.sideHeadingItems}>
-                  Upload profile and property photos
-                </Text>
+                <TextReuseableComponent title style={style.mainHeadiingItems} value={"File Storage"} />
+                <TextReuseableComponent title style={style.sideHeadingItems} value={"Upload profile and property photos"} />
               </View>
               <Switch
                 trackColor={{false: 'lightgray', true: '#25AAE1'}}

@@ -1,6 +1,5 @@
 import React, {Component, Fragment, version} from 'react';
 import {
-  Text,
   View,
   Image,
   ActivityIndicator,
@@ -33,6 +32,7 @@ import TextInput from '../../../../../components/TextInput';
 
 // Components
 import {Fonts} from '../../../../../utils/fonts';
+import TextReuseableComponent from '../../../../../components/Text/index';
 
 import styles from './style';
 import CustumStatusBar from '../../../../../components/StatusBar';
@@ -491,7 +491,7 @@ export default class RedirectMeter extends Component {
             }}
             centerComponent={
               <View style={{flexDirection: 'row'}}>
-                <Text style={{fontSize: width * 0.05}}>Add meter directly</Text>
+                <TextReuseableComponent title value={"Add meter directly"} />
               </View>
             }
             backgroundColor="#fff"
@@ -513,7 +513,7 @@ export default class RedirectMeter extends Component {
                     size={width * 0.04}
                     color="#115b72"
                   />
-                  <Text style={styles.propertiesText}>Properties</Text>
+                  <TextReuseableComponent title style={styles.propertiesText} value={"Properties"} />
                 </View>
                 <View style={{width: '100%'}}>
                   <View style={styles.currentReadContainer}>
@@ -630,7 +630,7 @@ export default class RedirectMeter extends Component {
                       size={width * 0.04}
                       color="#115b72"
                     />
-                    <Text style={styles.buildingText}>Buildings</Text>
+                    <TextReuseableComponent title style={styles.buildingText} value={"Buildings"} />
                   </View>
                   {this.state.propertyId ? (
                     <TouchableOpacity
@@ -651,9 +651,7 @@ export default class RedirectMeter extends Component {
                   <View style={styles.currentReadContainer}>
                     {!this.state.propertyId ? (
                       <View style={styles.buildingDefaultView}>
-                        <Text style={styles.buildingPropertySelectText}>
-                          Please select property first
-                        </Text>
+                        <TextReuseableComponent title style={styles.buildingPropertySelectText} value={"Please select property first"} />
                       </View>
                     ) : this.state.loaderBuildings ? (
                       <View style={styles.buildingLoaderContainer}>
@@ -693,9 +691,7 @@ export default class RedirectMeter extends Component {
                                         : item.name}
                                     </TextTicker>
                                   </View>
-                                  <Text style={styles.buildingUnitCountText}>
-                                    {item.unit_count} Units
-                                  </Text>
+                                  <TextReuseableComponent title style={styles.buildingUnitCountText} value={`${item.unit_count} Units`} />
                                 </View>
                                 {item.id == this.state.buildingId && (
                                   <View style={styles.buildingCheckContainer}>
@@ -717,9 +713,7 @@ export default class RedirectMeter extends Component {
                           style={{
                             flexDirection: 'row',
                           }}>
-                          <Text style={styles.emptyBuildingText}>
-                            No buildings found add new building
-                          </Text>
+                          <TextReuseableComponent title style={styles.emptyBuildingText} value={"No buildings found add new building"} />
                           <Build
                             name="hand-point-right"
                             size={width * 0.04}
@@ -759,7 +753,7 @@ export default class RedirectMeter extends Component {
                       size={width * 0.04}
                       color="#115b72"
                     />
-                    <Text style={styles.unitsText}>Units</Text>
+                    <TextReuseableComponent title style={styles.unitsText} value={"Units"} />
                   </View>
                   {this.state.buildingId ? (
                     <TouchableOpacity
@@ -778,9 +772,7 @@ export default class RedirectMeter extends Component {
                   <View style={styles.currentReadContainer}>
                     {!this.state.buildingId ? (
                       <View style={styles.unitsDefaultView}>
-                        <Text style={styles.unitsBuildingSelectText}>
-                          Please select building
-                        </Text>
+                        <TextReuseableComponent title style={styles.unitsBuildingSelectText} value={"Please select building"} />
                       </View>
                     ) : this.state.unitLoader ? (
                       <View style={styles.unitsLoaderContainer}>
@@ -830,9 +822,7 @@ export default class RedirectMeter extends Component {
                                         />
                                       ))
                                     ) : (
-                                      <Text style={styles.unitsNoMeterText}>
-                                        No meters
-                                      </Text>
+                                      <TextReuseableComponent title style={styles.unitsNoMeterText} value={"No meters"} />
                                     )} */}
                                   </View>
                                 </View>
@@ -853,9 +843,7 @@ export default class RedirectMeter extends Component {
                     ) : (
                       <View style={styles.emptyunitsContainer}>
                         <View style={{flexDirection: 'row'}}>
-                          <Text style={styles.emptyUnitsText}>
-                            No units found add new unit
-                          </Text>
+                          <TextReuseableComponent title style={styles.emptyUnitsText} value={"No units found add new unit"} />
                           <Build
                             name="hand-point-right"
                             size={width * 0.04}

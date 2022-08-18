@@ -3,7 +3,6 @@ import React, {Component, version} from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View,
   Image,
   ImageBackground,
@@ -41,6 +40,7 @@ import {
 // Components
 import styles from './style';
 import CustumStatusBar from '../../../../components/StatusBar';
+import TextReuseableComponent from '../../../../components/Text/index';
 const {width, height} = Dimensions.get('window');
 
 const dataBar2 = {
@@ -172,7 +172,7 @@ export default class Splash extends Component {
                     color="#7575ff"
                     style={{marginRight: width * 0.02}}
                   />
-                  <Text style={styles.drawerbtn}>Profile</Text>
+                  <TextReuseableComponent title style={styles.drawerbtn} value={"Profile"} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={this.naviagateToEquip}>
@@ -183,7 +183,7 @@ export default class Splash extends Component {
                     color="#ff9f71"
                     style={{marginRight: width * 0.02}}
                   />
-                  <Text style={styles.drawerbtn}>Units</Text>
+                  <TextReuseableComponent title style={styles.drawerbtn} value={"Units"} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={this.naviagateToChart}>
@@ -194,7 +194,7 @@ export default class Splash extends Component {
                     color="#009349"
                     style={{marginRight: width * 0.02}}
                   />
-                  <Text style={styles.drawerbtn}>Charts</Text>
+                  <TextReuseableComponent title style={styles.drawerbtn} value={"Charts"} />
                 </View>
               </TouchableOpacity>
             </View>
@@ -218,7 +218,7 @@ export default class Splash extends Component {
                     bottom: Platform.OS == 'ios' ? 2 : null,
                   }}
                 />
-                <Text style={styles.drawerbtn}>Support</Text>
+                <TextReuseableComponent title style={styles.drawerbtn} value={"Support"} />
               </View>
             </TouchableOpacity>
           </View>
@@ -267,7 +267,7 @@ export default class Splash extends Component {
                 color="white"
                 style={{top: height * 0.002}}
               />
-              <Text style={styles.mainHeadiing}>Charts</Text>
+              <TextReuseableComponent title style={styles.mainHeadiing} value={"Charts"} />
             </View>
           </View>
         </View>
@@ -275,7 +275,7 @@ export default class Splash extends Component {
           <View style={styles.bodyContainer}>
             <View style={styles.mainDataContainer}>
               <View style={styles.contactViewContainer}>
-                <Text style={styles.dataFieldHeadings}>Property Health</Text>
+                <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Property Health"} />
               </View>
               <View style={styles.barViewContainer}>
                 <View style={styles.barView}>
@@ -290,9 +290,7 @@ export default class Splash extends Component {
                     rotation={0}
                     lineCap="butt">
                     {(fill) => (
-                      <Text style={styles.barText}>
-                        Transceiver {'\n'} {Math.round((100 * fill) / 100)} %
-                      </Text>
+                      <TextReuseableComponent title style={styles.barText} value={`Transceiver \n ${Math.round((100 * fill) / 100)} %`} />
                     )}
                   </AnimatedCircularProgress>
                 </View>
@@ -308,15 +306,13 @@ export default class Splash extends Component {
                     rotation={0}
                     lineCap="butt">
                     {(fill) => (
-                      <Text style={styles.barText}>
-                        Repeater {'\n'} {Math.round((100 * fill) / 100)} %
-                      </Text>
+                      <TextReuseableComponent title style={styles.barText} value={`Repeater \n ${Math.round((100 * fill) / 100)} %`} />
                     )}
                   </AnimatedCircularProgress>
                 </View>
               </View>
               <View style={styles.contactViewContainer}>
-                <Text style={styles.dataFieldHeadings}>Check in history</Text>
+                <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Check in history"} />
               </View>
               <View style={{height: height * 0.45}}>
                 <VictoryChart

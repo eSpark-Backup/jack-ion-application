@@ -13,7 +13,6 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   StatusBar,
   Pressable,
   Button,

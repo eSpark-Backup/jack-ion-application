@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  Text,
   View,
   TouchableOpacity,
   TextInput,
@@ -16,6 +15,7 @@ import Key from 'react-native-vector-icons/FontAwesome5';
 import styles from './style';
 import {Input} from 'react-native-elements';
 import {Fonts} from '../utils/fonts';
+import TextReuseableComponent from '../components/Text/index';
 
 const {width, height} = Dimensions.get('window');
 
@@ -60,22 +60,9 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.05}}>
-          <Text
-            style={{
-              fontSize: height * 0.025,
-              // color: '#fff',
-              fontFamily: Fonts.Montserrat,
-            }}>
-            Sign Up into{' '}
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: height * 0.035,
+          <TextReuseableComponent title value={` Sign Up into ${<TextReuseableComponent title style={{
                 color: '#35AFE2',
-              }}>
-              ION
-            </Text>
-          </Text>
+              }} value={"ION"} />}`} />
         </View>
         <View style={styles.textInputContainer}>
           <Input
@@ -105,7 +92,7 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.02, marginRight: width * 0.24}}>
-          <Text style={{color: '#A3001B'}}>{this.state.errName}</Text>
+          <TextReuseableComponent title style={{color: '#A3001B'}} value={this.state.errName} />
         </View>
         <View style={styles.textInputContainer}>
           <Input
@@ -135,7 +122,7 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.02, marginRight: width * 0.24}}>
-          <Text style={{color: '#A3001B'}}>{this.state.errPass}</Text>
+          <TextReuseableComponent title style={{color: '#A3001B'}} value={this.state.errPass} />
         </View>
         <View style={styles.textInputContainer}>
           <Input
@@ -163,7 +150,7 @@ export default class Login extends Component {
           />
         </View>
         <View style={{marginBottom: height * 0.05, marginRight: width * 0.24}}>
-          <Text style={{color: '#A3001B'}}>{this.state.errPass}</Text>
+          <TextReuseableComponent title style={{color: '#A3001B'}} value={this.state.errPass} />
         </View>
         <TouchableOpacity
           activeOpacity={0.8}
@@ -171,14 +158,9 @@ export default class Login extends Component {
             this._checkCredentials();
           }}>
           <View style={styles.buttonContainer}>
-            <Text
-              style={{
-                fontSize: height * 0.022,
+            <TextReuseableComponent title style={{
                 color: '#fff',
-                fontFamily: Fonts.Montserrat,
-              }}>
-              Sign Up
-            </Text>
+              }} value={"Sign Up"} />
           </View>
         </TouchableOpacity>
         <View style={{marginTop: height * 0.05}}>
@@ -189,14 +171,7 @@ export default class Login extends Component {
                   this.setState({errName: '', errPass: ''});
                 }, 100);
             }}>
-            <Text
-              style={{
-                fontSize: height * 0.022,
-                // color: '#fff',
-                fontFamily: Fonts.Montserrat,
-              }}>
-              Already have an account? Login!
-            </Text>
+            <TextReuseableComponent title value={"Already have an account? Login!"} />
           </TouchableOpacity>
         </View>
         <StatusBar hidden

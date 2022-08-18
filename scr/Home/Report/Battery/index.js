@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Platform,
   Dimensions,
@@ -18,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ScrollView} from 'react-native-gesture-handler';
 import moment from 'moment';
 import API from '../../../api/SeviceApi';
+import TextReuseableComponent from '../../../components/Text/index';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -79,9 +79,7 @@ export const Battery = ({navigation, route}) => {
             onPress={() => navigation?.goBack()}
           />
           <View>
-            <Text style={styles.mainHeadiing}>
-                Battery
-            </Text>
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Battery"} />
           </View>
           <View />
         </View>
@@ -115,11 +113,9 @@ export const Battery = ({navigation, route}) => {
           style={styles.dateSelectorContainer}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="date-range" size={17} color="#8E97A6" />
-            <Text style={styles.dateSelectorHeading}>{'From'}</Text>
+            <TextReuseableComponent title style={styles.dateSelectorHeading} value={"From"} />
           </View>
-          <Text style={styles.dateText}>
-            {fromDate && new Date(fromDate)?.toDateString()}
-          </Text>
+          <TextReuseableComponent title style={styles.dateText} value={fromDate && new Date(fromDate)?.toDateString()} />
         </TouchableOpacity>
 
         <View style={styles.dateDivider} />
@@ -132,9 +128,9 @@ export const Battery = ({navigation, route}) => {
           style={styles.dateSelectorContainer}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="date-range" size={17} color="#8E97A6" />
-            <Text style={styles.dateSelectorHeading}>{'To'}</Text>
+            <TextReuseableComponent title style={styles.dateSelectorHeading} value={"To"} />
           </View>
-          <Text style={styles.dateText}>{toDate?.toDateString()}</Text>
+          <TextReuseableComponent title style={styles.dateText} value={toDate?.toDateString()} />
         </TouchableOpacity>
       </View>
       {/* DATE PICKER WORK END */}
@@ -164,7 +160,7 @@ export const Battery = ({navigation, route}) => {
                         style={{
                           width: width / 2.3,
                         }}>
-                        <Text style={styles.tableHeading}>{value?.title}</Text>
+                        <TextReuseableComponent title style={styles.tableHeading} value={value?.title} />
                       </View>
                       <View
                         style={{
@@ -189,27 +185,19 @@ export const Battery = ({navigation, route}) => {
                         justifyContent: 'space-between',
                       }}>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.building_name}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.building_name} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.unit_name}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.unit_name} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.device_serial_number}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.device_serial_number} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>
-                          {item?.meter_read?.battery} {item?.meter_read?.battery ? "%" : '-'}
-                        </Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={`${item?.meter_read?.battery} ${item?.meter_read?.battery ? "%" : '-'}`} />
                       </View>
                       <View style={styles?.tableColContainer}>
-                        <Text style={styles?.tableColText}>{item?.time_diff}</Text>
+                        <TextReuseableComponent title style={styles?.tableColText} value={item?.time_diff} />
                       </View>
                     </View>
                   );
@@ -219,7 +207,7 @@ export const Battery = ({navigation, route}) => {
                     {!loading ? (
                       <View
                         style={{flex: 1, margin: 20, justifyContent: 'center'}}>
-                        <Text>Empty</Text>
+                        <TextReuseableComponent title value={"Empty"} />
                       </View>
                     ) : null}
                   </>

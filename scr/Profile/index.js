@@ -65,9 +65,8 @@ export const Profile = ({navigation}) => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-            //   marginLeft: width * 0.2,
             }}>
-            <Text style={styles.mainHeadiing}>Profile</Text>
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Profile"} />
           </View>
           <TouchableOpacity 
             onPress={onLogout}
@@ -99,28 +98,28 @@ export const Profile = ({navigation}) => {
 
         <View style={styles.detailsContainer}>
           <View style={styles.detailItem}>
-            <Text>Name:</Text>
-            <Text>{user.name || '-'}</Text>
+            <TextReuseableComponent title value={"Name:"} />
+            <TextReuseableComponent title value={user.name || '-'} />
           </View>
           <View style={styles.detailItem}>
-            <Text>Email:</Text>
-            <Text>{user.email || '-'}</Text>
+            <TextReuseableComponent title value={"Email:"} />
+            <TextReuseableComponent title value={user.email || '-'} />
           </View>
           <View style={styles.detailItem}>
-            <Text>Role:</Text>
-            <Text>{user.role || '-'}</Text>
+            <TextReuseableComponent title value={"Role:"} />
+            <TextReuseableComponent title value={user.role || '-'} />
           </View>
           <View style={styles.detailItem}>
-            <Text>Address:</Text>
-            <Text>{user.address || '-'}</Text>
+            <TextReuseableComponent title value={"Address:"} />
+            <TextReuseableComponent title value={user.address || '-'} />
           </View>
           <View style={styles.detailItem}>
-            <Text>Country:</Text>
-            <Text>{user.country || '-'}</Text>
+            <TextReuseableComponent title value={"Country:"} />
+            <TextReuseableComponent title value={user.country || '-'} />
           </View>
           <View style={[styles.detailItem, {borderBottomColor: "#fff"}]}>
-            <Text>City:</Text>
-            <Text>{user.city || '-'}</Text>
+            <TextReuseableComponent title value={"City:"} />
+            <TextReuseableComponent title value={user.city || '-'} />
           </View>
         </View>
         

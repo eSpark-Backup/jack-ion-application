@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  Text,
   View,
   Dimensions,
   SectionList,
@@ -37,6 +36,8 @@ import styles from './style';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
 import API from '../../../../../api/SeviceApi';
+import TextReuseableComponent from '../../../../../components/Text/index';
+
 const {width, height} = Dimensions.get('window');
 
 const App = ({navigation}) => {
@@ -801,20 +802,16 @@ const App = ({navigation}) => {
                   style={{marginRight: width * 0.03}}
                 />
               )}
-              <Text style={styles.listText}>{item.leftName}</Text>
+              <TextReuseableComponent title style={styles.listText} value={item.leftName} />
             </View>
             <View style={styles.flexRow}>
               {item.rightName == null ? null : (
-                <Text
-                  style={[
-                    styles.listText,
-                    {
-                      textTransform: 'capitalize',
-                      // color: index == 1 ? typeColor(item.rightName) : '#000',
-                    },
-                  ]}>
-                  {item.rightName}
-                </Text>
+                <TextReuseableComponent title style={[
+                  styles.listText,
+                  {
+                    textTransform: 'capitalize',
+                  },
+                ]} value={item.rightName} />
               )}
               {item.rightIcon == null ? null : (
                 <Icon
@@ -848,20 +845,16 @@ const App = ({navigation}) => {
                 style={{marginRight: width * 0.03}}
               />
             )}
-            <Text style={styles.listText}>{item.leftName}</Text>
+            <TextReuseableComponent title style={styles.listText} value={item.leftName} />
           </View>
           <View style={styles.flexRow}>
             {item.rightName == null ? null : (
-              <Text
-                style={[
-                  styles.listText,
-                  {
-                    textTransform: 'capitalize',
-                    // color: index == 1 ? typeColor(item.rightName) : '#000',
-                  },
-                ]}>
-                {item.rightName}
-              </Text>
+              <TextReuseableComponent title style={[
+                styles.listText,
+                {
+                  textTransform: 'capitalize',
+                },
+              ]} value={item.rightName} />
             )}
             {item.rightIcon == null ? null : (
               <Icon
@@ -889,30 +882,26 @@ const App = ({navigation}) => {
         <View style={styles.listOuter}>
           <View style={styles.listContainer}>
             <View style={styles.flexRow}>
-              <Text style={styles.listText}>{item.leftName}</Text>
+              <TextReuseableComponent title style={styles.listText} value={item.leftName} />
             </View>
             <View style={styles.flexRow}>
               <View style={styles.flexColumn}>
                 <View style={{flexDirection: 'row-reverse'}}>
                   {item.rightName == null ? null : (
-                    <Text
-                      style={[
-                        styles.listText,
-                        {
-                          backgroundColor:
-                            index == 1
-                              ? unitMeter?.installation_status == 1
-                                ? '#0fc908'
-                                : '#f00'
-                              : null,
-                          color: index == 1 ? '#fff' : '#000',
-                          borderRadius: 5,
-                          padding: 2,
-                          fontWeight: 'bold',
-                        },
-                      ]}>
-                      {item.rightName}
-                    </Text>
+                    <TextReuseableComponent title style={[
+                      styles.listText,
+                      {
+                        backgroundColor:
+                          index == 1
+                            ? unitMeter?.installation_status == 1
+                              ? '#0fc908'
+                              : '#f00'
+                            : null,
+                        color: index == 1 ? '#fff' : '#000',
+                        borderRadius: 5,
+                        padding: 2,
+                      },
+                    ]} value={item.rightName} />
                   )}
                   {item.rightIcon2 == null ? null : (
                     <Icon
@@ -927,9 +916,7 @@ const App = ({navigation}) => {
                   )}
                 </View>
                 {item.text && (
-                  <Text style={[styles.listGreyText, {textAlign: 'right'}]}>
-                    {item.text}
-                  </Text>
+                  <TextReuseableComponent title style={[styles.listGreyText, {textAlign: 'right'}]} value={item.text} />
                 )}
               </View>
               {item.rightIcon == null ? null : (
@@ -974,7 +961,7 @@ const App = ({navigation}) => {
           <View style={styles.listOuter}>
             <View style={styles.listContainer}>
               <View style={styles.flexRow}>
-                <Text style={styles.listText}>{item.leftName}</Text>
+                <TextReuseableComponent title style={styles.listText} value={item.leftName} />
               </View>
               <View style={styles.flexRow}>
                 <View style={styles.flexColoum}>
@@ -1035,7 +1022,7 @@ const App = ({navigation}) => {
         <View style={styles.listOuter}>
           <View style={styles.listContainer}>
             <View style={styles.flexRow}>
-              <Text style={styles.listText}>{item.leftName}</Text>
+              <TextReuseableComponent title style={styles.listText} value={item.leftName} />
             </View>
             <View style={styles.flexRow}>
               <View style={styles.flexColumn}>
@@ -1080,7 +1067,7 @@ const App = ({navigation}) => {
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
           <View style={styles.flexRow}>
-            <Text style={styles.listInnerText}>{item.leftText}</Text>
+            <TextReuseableComponent title style={styles.listInnerText} value={item.leftText} />
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
@@ -1103,7 +1090,7 @@ const App = ({navigation}) => {
                 }}
               />
             ) : (
-              <Text style={styles.listInnerText}>{item.rightText}</Text>
+              <TextReuseableComponent title style={styles.listInnerText} value={item.rightText} />
             )}
           </View>
         </View>
@@ -1116,7 +1103,7 @@ const App = ({navigation}) => {
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
           <View style={styles.flexRow}>
-            <Text style={styles.listInnerText}>{item.leftText}</Text>
+            <TextReuseableComponent title style={styles.listInnerText} value={item.leftText} />
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
@@ -1128,9 +1115,7 @@ const App = ({navigation}) => {
             )}
           </View>
           <View style={styles.flexRow}>
-            <Text style={[styles.listInnerText, {textTransform: 'capitalize'}]}>
-              {item.rightText}
-            </Text>
+            <TextReuseableComponent title style={[styles.listInnerText, {textTransform: 'capitalize'}]} value={item.rightText} />
           </View>
         </View>
       </View>
@@ -1142,18 +1127,15 @@ const App = ({navigation}) => {
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
           <View style={styles.flexRow}>
-            <Text style={styles.listGreyText}>{item.leftText}</Text>
+            <TextReuseableComponent title style={styles.listGreyText} value={item.leftText} />
           </View>
           <View style={styles.flexRow}>
-            <Text
-              style={[
+            <TextReuseableComponent title style={[
                 styles.listInnerText,
                 {
                   color: item.bold ? '#000' : '#8c8c8c',
                 },
-              ]}>
-              {item.rightText}
-            </Text>
+              ]} value={item.rightText} />
             {item.icon == null ? null : (
               <Icon
                 name={item.icon}
@@ -1183,18 +1165,15 @@ const App = ({navigation}) => {
               borderRadius: 10,
               paddingVertical: width * 0.02,
             }}>
-            <Text style={{fontSize: width * 0.06}}>Installation Status</Text>
-            <Text style={{textAlign: 'center', paddingVertical: width * 0.02}}>
-              Meter not installed completely would you like to change the
-              status?
-            </Text>
+            <TextReuseableComponent title style={{fontSize: width * 0.06}} value={"Installation Status"} />
+            <TextReuseableComponent title style={{textAlign: 'center', paddingVertical: width * 0.02}} value={"Meter not installed completely would you like to change the status?"} />
             <TouchableOpacity onPress={changeStatus} style={styles.attemptBtn}>
-              <Text style={styles.attemptText}>Attempted and installed</Text>
+              <TextReuseableComponent title style={styles.attemptText} value={"Attempted and installed"} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setInstallStatusView(false)}
               style={{...styles.attemptBtn, backgroundColor: 'red'}}>
-              <Text style={styles.attemptText}>Stay Incomplete</Text>
+              <TextReuseableComponent title style={styles.attemptText} value={"Stay Incomplete"} />
             </TouchableOpacity>
           </View>
         </Modal>
@@ -1212,7 +1191,7 @@ const App = ({navigation}) => {
                 color="#000"
                 style={{alignSelf: 'center', marginRight: width * 0.01}}
               />
-              <Text style={{fontSize: iconSize}}>Meter Details</Text>
+              <TextReuseableComponent title style={{fontSize: iconSize}} value={"Meter Details"} />
             </View>
           }
           backgroundColor="#fff"
@@ -1237,19 +1216,13 @@ const App = ({navigation}) => {
                   translateX: 0,
                 }}
                 style={styles.currentReadContainer}>
-                <Text style={{color: '#5c5c5ccf'}}>CURRENT READ</Text>
+                <TextReuseableComponent title style={{color: '#5c5c5ccf'}} value={"CURRENT READ"} />
                 <View style={styles.currentReadInnerContainer}>
-                  <Text
-                    style={{
-                      fontSize: width * 0.08,
-                      // color: typeColor(unitMeter?.meter_name),
+                  <TextReuseableComponent title style={{
                       color: '#639CC7',
-                    }}>
-                    {unitMeter?.meter_read?.meter_reading
+                    }} value={`${unitMeter?.meter_read?.meter_reading
                       ? unitMeter?.meter_read?.meter_reading
-                      : 0}{' '}
-                    Gallons
-                  </Text>
+                      : 0} Gallons`} />
                   <RightArrow
                     name="chevron-thin-right"
                     size={width * 0.08}
@@ -1261,7 +1234,7 @@ const App = ({navigation}) => {
                 </View>
                 <View style={styles.flexRow}>
                   <Check name="check" size={iconSize} color="#0fc908" />
-                  <Text style={{color: '#5c5c5ccf'}}>As of 5 hours ago</Text>
+                  <TextReuseableComponent title style={{color: '#5c5c5ccf'}} value={"As of 5 hours ago"} />
                 </View>
               </MotiView>
             )}
@@ -1292,23 +1265,23 @@ const App = ({navigation}) => {
                     onPress={() => setHeadView(!headView)}
                   />
                   <View>
-                    <Text style={styles.greyText}>PULSES</Text>
-                    <Text style={[styles.text, {color: '#639CC7'}]}>3,786</Text>
+                    <TextReuseableComponent title style={styles.greyText} value={"PULSES"} />
+                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={"3,786"} />
                   </View>
-                  <Text style={styles.symbolStyle}>x</Text>
+                  <TextReuseableComponent title style={styles.symbolStyle} value={"x"} />
                   <View>
-                    <Text style={styles.greyText}>MULTIPLIER</Text>
-                    <Text style={[styles.text, {color: '#639CC7'}]}>1</Text>
+                    <TextReuseableComponent title style={styles.greyText} value={"MULTIPLIER"} />
+                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={"1"} />
                   </View>
-                  <Text style={styles.symbolStyle}>+</Text>
+                  <TextReuseableComponent title style={styles.symbolStyle} value={"+"} />
                   <View>
-                    <Text style={styles.greyText}>IMR</Text>
-                    <Text style={[styles.text, {color: '#639CC7'}]}>21</Text>
+                    <TextReuseableComponent title style={styles.greyText} value={"IMR"} />
+                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={"21"} />
                   </View>
-                  <Text style={styles.symbolStyle}>=</Text>
+                  <TextReuseableComponent title style={styles.symbolStyle} value={"="} />
                   <View>
-                    <Text style={styles.greyText}>CURRENT READ</Text>
-                    <Text style={[styles.text, {color: '#639CC7'}]}>3,807</Text>
+                    <TextReuseableComponent title style={styles.greyText} value={"CURRENT READ"} />
+                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={"3,807"} />
                   </View>
                 </View>
               </MotiView>
@@ -1345,7 +1318,7 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, icon, type}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text style={styles.sectionText}>{title}</Text>
+                    <TextReuseableComponent title style={styles.sectionText} value={title} />
                     <Icon
                       name={icon}
                       type={type}
@@ -1369,7 +1342,7 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text style={styles.sectionText}>{title}</Text>
+                    <TextReuseableComponent title style={styles.sectionText} value={title} />
                     <Image source={img} style={styles.sectionImgStyle} />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
@@ -1400,7 +1373,7 @@ const App = ({navigation}) => {
                 renderSectionHeader={({section: {title, img}}) => (
                   <>
                     <View style={styles.sectionTitle}>
-                      <Text style={styles.sectionText}>{title}</Text>
+                      <TextReuseableComponent title style={styles.sectionText} value={title} />
                     </View>
                     <Divider style={styles.sectionTitleDivider} />
                   </>
@@ -1419,15 +1392,12 @@ const App = ({navigation}) => {
               renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <Text
-                      style={[
+                    <TextReuseableComponent title style={[
                         styles.sectionText,
                         {
                           textTransform: 'capitalize',
                         },
-                      ]}>
-                      {unitMeter?.utility_type_name?.name ?? 'N/A'}
-                    </Text>
+                      ]} value={unitMeter?.utility_type_name?.name ?? 'N/A'} />
                     <Image
                       source={img}
                       resizeMode="contain"
@@ -1451,7 +1421,7 @@ const App = ({navigation}) => {
             ) : null}
             <View>
               <View style={styles.usageTextContainer}>
-                <Text style={styles.sectionText}>Usage</Text>
+                <TextReuseableComponent title style={styles.sectionText} value={"Usage"} />
                 <Icon
                   name="bar-chart"
                   type="fontisto"
@@ -1603,11 +1573,9 @@ const App = ({navigation}) => {
                       height: height * 0.3,
                       justifyContent: 'center',
                     }}>
-                    <Text style={{fontSize: width * 0.06}}>
-                      {loadChartData
+                    <TextReuseableComponent title value={loadChartData
                         ? 'Loading Data...'
-                        : 'No Data for this Week'}
-                    </Text>
+                        : 'No Data for this Week'} />
                   </View>
                 )}
                 {/* <Chart
@@ -1639,11 +1607,11 @@ const App = ({navigation}) => {
                 <View style={styles.legendContainer}>
                   <View style={styles.flexRow}>
                     <View style={styles.meterUsageBox} />
-                    <Text>Meter Usage</Text>
+                    <TextReuseableComponent title value={"Meter Usage"} />
                   </View>
                   <View style={styles.flexRow}>
                     <View style={styles.meterReadBox} />
-                    <Text>Meter Read</Text>
+                    <TextReuseableComponent title value={"Meter Read"} />
                   </View>
                 </View>
               </View>
@@ -1654,7 +1622,7 @@ const App = ({navigation}) => {
                 onPress={() => {
                   setDangerView(!dangerView);
                 }}>
-                <Text style={{fontSize: width * 0.07}}>Danger Zone</Text>
+                <TextReuseableComponent title value={"Danger Zone"} />
                 <Icon
                   name={dangerView ? 'chevron-down' : 'chevron-right'}
                   type="feather"

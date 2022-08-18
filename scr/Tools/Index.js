@@ -3,7 +3,6 @@ import React, {Component, Fragment, version} from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View,
   Image,
   ImageBackground,
@@ -288,14 +287,10 @@ class Tools extends Component {
                   borderRadius: width * 0.02,
                   marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
                 }}>
-                <Text
-                  style={{
+                <TextReuseableComponent title style={{
                     color: 'white',
                     textAlign: 'center',
-                    fontSize: width * 0.08,
-                  }}>
-                  Scan Barcode
-                </Text>
+                  }} value={"Scan Barcode"} />
                 <RNCamera
                   ref={(ref) => {
                     this.camera = ref;
@@ -331,14 +326,10 @@ class Tools extends Component {
                         justifyContent: 'center',
                         width: width * 0.4,
                       }}>
-                      <Text
-                        style={{
+                      <TextReuseableComponent title style={{
                           textAlign: 'center',
                           color: '#25AAE1',
-                          fontWeight: 'bold',
-                        }}>
-                        Switch Off Scanner
-                      </Text>
+                        }} value={"Switch Off Scanner"} />
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -351,14 +342,10 @@ class Tools extends Component {
                   borderRadius: width * 0.02,
                   alignItems: 'center',
                 }}>
-                <Text
-                  style={{
+                <TextReuseableComponent title style={{
                     color: 'white',
                     textAlign: 'center',
-                    fontSize: width * 0.06,
-                  }}>
-                  Getting Meter Info...
-                </Text>
+                  }} value={"Getting Meter Info..."} />
               </View>
             )}
           </Modal>
@@ -405,7 +392,7 @@ class Tools extends Component {
                 />
                 <Scan name="barcode-sharp" size={height * 0.06} color="white" />
                 <View>
-                  <Text style={styles.toolName}>Barcode Scanner</Text>
+                  <TextReuseableComponent title style={styles.toolName} value={"Barcode Scanner"} />
                 </View>
               </TouchableOpacity>
             </Animated.View>

@@ -1,7 +1,6 @@
 import React, { Component, Fragment, version } from 'react';
 
 import {
-  Text,
   View,
   StatusBar,
   Dimensions,
@@ -48,6 +47,8 @@ import { connect } from 'react-redux';
 import { fetchPropetry } from '../../../../Store/Action/properties.action';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
+
+import TextReuseableComponent from '../../../../components/Text/index';
 
 const { width, height } = Dimensions.get('window');
 let buildListViewRef;
@@ -589,9 +590,7 @@ class Splash extends Component {
                       size={width * 0.04}
                       style={styles.unitDetailInnerElseIcon}
                     />
-                    <Text style={styles.unitDetailInnerElseText}>
-                      Program a Device
-                    </Text>
+                    <TextReuseableComponent title style={styles.unitDetailInnerElseText} value={"Program a Device"} />
                   </View>
                 )}
               </View>
@@ -749,14 +748,9 @@ class Splash extends Component {
                     color="white"
                     size={width * 0.04}
                   />
-                  <Text
-                    style={{
+                  <TextReuseableComponent title style={{
                       color: 'white',
-                      fontFamily: Fonts.Montserrat,
-                      fontSize: width * 0.03,
-                    }}>
-                    View
-                  </Text>
+                    }} value={"View"} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => this._openEditUnit(unit?.item?.id)}
@@ -770,14 +764,9 @@ class Splash extends Component {
                     color="white"
                     size={width * 0.04}
                   />
-                  <Text
-                    style={{
+                  <TextReuseableComponent title style={{
                       color: 'white',
-                      fontFamily: Fonts.Montserrat,
-                      fontSize: width * 0.03,
-                    }}>
-                    Edit
-                  </Text>
+                    }} value={"Edit"} />
                 </TouchableOpacity>
               </View>
 
@@ -793,14 +782,9 @@ class Splash extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <Text
-                  style={{
+                <TextReuseableComponent title style={{
                     color: 'white',
-                    fontFamily: Fonts.Montserrat,
-                    fontSize: width * 0.03,
-                  }}>
-                  Delete
-                </Text>
+                  }} value={"Delete"} />
               </TouchableOpacity>
             </View>
           </View>
@@ -837,20 +821,13 @@ class Splash extends Component {
             </View>
           )}
         </View>
-        <Text style={styles.buildingUnitName}>
-          {build.item.unit_count} Units
-        </Text>
+        <TextReuseableComponent title style={styles.buildingUnitName} value={`${build.item.unit_count} Units`} />
         <TouchableOpacity
           onPress={() => this.buildingEditOpen(build.item)}
           style={styles.buildingEditBtn}>
-          <Text
-            style={{
+          <TextReuseableComponent title style={{
               color: 'white',
-              fontFamily: Fonts.Montserrat,
-              fontSize: width * 0.03,
-            }}>
-            Edit
-          </Text>
+            }} value={"Edit"} />
           <MaterialIcons name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -1125,7 +1102,7 @@ class Splash extends Component {
                         : this.openAndClear
                     }>
                     <Search name="search" size={height * 0.04} color="white" />
-                    <Text style={{ color: 'white' }}>Search</Text>
+                    <TextReuseableComponent title style={{ color: 'white' }} value={"Search"} />
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -1161,7 +1138,7 @@ class Splash extends Component {
                   size={width * 0.06}
                   color="white"
                 />
-                <Text style={styles.mainHeadiing}>Equipments</Text>
+                <TextReuseableComponent title style={styles.mainHeadiing} value={"Equipments"} />
               </View>
             </View>
           </View>

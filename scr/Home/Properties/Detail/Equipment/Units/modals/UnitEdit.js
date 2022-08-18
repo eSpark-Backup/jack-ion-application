@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useReducer } from 'react';
 import {
   ScrollView,
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Pressable,
@@ -59,6 +58,8 @@ import Searchable_Dropdown from '../../../../../../components/SearchableDropdown
 import Text_Input from '../../../../../../components/TextInput';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
 import API from '../../../../../../api/SeviceApi';
+
+import TextReuseableComponent from '../../../../../../components/Text/index';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -1517,9 +1518,7 @@ export default function UnitEdit({
     return (
       <View style={{ width: width * 0.8 }} key={item.id}>
         {index < 2 && (
-          <Text style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}>
-            {item.name}
-          </Text>
+          <TextReuseableComponent title style={[styles.meterDesciptionHeading, { top: width * 0.01 }]} value={item.name} />
         )}
         {index < 2 && (
           <Text_Input
@@ -1580,7 +1579,7 @@ export default function UnitEdit({
         )}
         {index == 2 && showAddType !== 'Attached To' ? (
           <View style={{ margin: 0 }}>
-            <Text style={[styles.meterDesciptionHeading]}>Attached To*</Text>
+            <TextReuseableComponent title style={[styles.meterDesciptionHeading]} value={"Attached To*"} />
             <View
               style={{
                 flexDirection: 'row',
@@ -1667,9 +1666,7 @@ export default function UnitEdit({
           index == 2 && (
             <View style={{ borderTopWidth: 2, paddingVertical: 10 }}>
               <View>
-                <Text style={styles.meterDesciptionHeading}>
-                  Add New {showAddType}
-                </Text>
+                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`Add New ${showAddType}`} />
               </View>
               <Text_Input
                 placeholder={'Type new Attached To'}
@@ -1687,20 +1684,15 @@ export default function UnitEdit({
                   marginTop: width * 0.03,
                 }}>
                 <TouchableOpacity onPress={cancelAddNewType}>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: width * 0.045,
-                      color: '#25AAE1ec',
-                      width: width * 0.2,
-                      textAlign: 'center',
-                      borderWidth: 2,
-                      borderColor: '#25AAE1ec',
-                      borderRadius: 5,
-                      padding: 3,
-                    }}>
-                    Cancel
-                  </Text>
+                  <TextReuseableComponent title style={{
+                    color: '#25AAE1ec',
+                    width: width * 0.2,
+                    textAlign: 'center',
+                    borderWidth: 2,
+                    borderColor: '#25AAE1ec',
+                    borderRadius: 5,
+                    padding: 3,
+                  }} value={"Cancel"} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={doneAddType}
@@ -1718,44 +1710,39 @@ export default function UnitEdit({
                             ? false
                             : true
                   }>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: width * 0.045,
-                      color:
-                        showAddType == 'Manufacturer' && addManufacturer
+                  <TextReuseableComponent title style={{
+                    color:
+                      showAddType == 'Manufacturer' && addManufacturer
+                        ? '#25AAE1ec'
+                        : showAddType != 'Manufacturer' &&
+                          addDevice[0].selectId &&
+                          addDevice[1].selectId &&
+                          addDevice[2].select
                           ? '#25AAE1ec'
-                          : showAddType != 'Manufacturer' &&
-                            addDevice[0].selectId &&
-                            addDevice[1].selectId &&
-                            addDevice[2].select
+                          : showAddType == 'Utility' && addUtility
                             ? '#25AAE1ec'
-                            : showAddType == 'Utility' && addUtility
+                            : showAddType == 'Attached To' && addAttached
                               ? '#25AAE1ec'
-                              : showAddType == 'Attached To' && addAttached
-                                ? '#25AAE1ec'
-                                : '#D0D0D0',
-                      width: width * 0.15,
-                      borderWidth: 2,
-                      borderColor:
-                        showAddType == 'Manufacturer' && addManufacturer
+                              : '#D0D0D0',
+                    width: width * 0.15,
+                    borderWidth: 2,
+                    borderColor:
+                      showAddType == 'Manufacturer' && addManufacturer
+                        ? '#25AAE1ec'
+                        : showAddType != 'Manufacturer' &&
+                          addDevice[0].selectId &&
+                          addDevice[1].selectId &&
+                          addDevice[2].select
                           ? '#25AAE1ec'
-                          : showAddType != 'Manufacturer' &&
-                            addDevice[0].selectId &&
-                            addDevice[1].selectId &&
-                            addDevice[2].select
+                          : showAddType == 'Utility' && addUtility
                             ? '#25AAE1ec'
-                            : showAddType == 'Utility' && addUtility
+                            : showAddType == 'Attached To' && addAttached
                               ? '#25AAE1ec'
-                              : showAddType == 'Attached To' && addAttached
-                                ? '#25AAE1ec'
-                                : '#D0D0D0',
-                      borderRadius: 5,
-                      padding: 3,
-                      textAlign: 'center',
-                    }}>
-                    Add
-                  </Text>
+                              : '#D0D0D0',
+                    borderRadius: 5,
+                    padding: 3,
+                    textAlign: 'center',
+                  }} value={"Add"} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -1769,9 +1756,7 @@ export default function UnitEdit({
     // console.log('index check slider 3 ---> ',index)
     return (
       <View style={{ width: width * 0.8 }} key={item.id}>
-        <Text style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}>
-          {item.name}
-        </Text>
+        <TextReuseableComponent title style={[styles.meterDesciptionHeading, { top: width * 0.01 }]} value={item.name} />
         <Text_Input
           placeholder={item.name}
           value={item.value}
@@ -2523,13 +2508,7 @@ export default function UnitEdit({
                       flexDirection: 'row',
                       // width: width * 0.85,
                     }}>
-                    <Text
-                      style={[
-                        styles.meterDesciptionHeading,
-                        { fontSize: width * 0.06 },
-                      ]}>
-                      Add {showAddType}
-                    </Text>
+                    <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`Add ${showAddType}`} />
                     <TouchableOpacity
                       style={{
                         position: 'absolute',
@@ -2566,9 +2545,7 @@ export default function UnitEdit({
                     {showAddType == 'Manufacturer' && (
                       <View>
                         <View>
-                          <Text style={[styles.meterDesciptionHeading]}>
-                            New {showAddType}
-                          </Text>
+                          <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`New ${showAddType}`} />
                         </View>
                         <Text_Input
                           placeholder={'Type new manufacturer'}
@@ -2591,9 +2568,7 @@ export default function UnitEdit({
                               }}
                               key={item.id}>
                               <View>
-                                <Text style={styles.meterDesciptionHeading}>
-                                  {item.name}
-                                </Text>
+                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={item.name} />
                               </View>
                               {index < 2 ? (
                                 <Searchable_Dropdown
@@ -2670,10 +2645,7 @@ export default function UnitEdit({
                                   />
                                   <View>
                                     <View>
-                                      <Text
-                                        style={styles.meterDesciptionHeading}>
-                                        Model Number* (Bekkar hai)
-                                      </Text>
+                                      <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Model Number*"} />
                                     </View>
                                     <Text_Input
                                       placeholder="Type Model Number"
@@ -2686,10 +2658,7 @@ export default function UnitEdit({
                                   </View>
                                   <View>
                                     <View>
-                                      <Text
-                                        style={styles.meterDesciptionHeading}>
-                                        Product Description*
-                                      </Text>
+                                      <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Product Description*"} />
                                     </View>
                                     <Text_Input
                                       placeholder="Type Product Description"
@@ -2709,9 +2678,7 @@ export default function UnitEdit({
                     {showAddType == 'Utility' && (
                       <View>
                         <View>
-                          <Text style={[styles.meterDesciptionHeading]}>
-                            New {showAddType} Type
-                          </Text>
+                          <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`New ${showAddType} Type`} />
                         </View>
                         <Text_Input
                           placeholder="Type new utility"
@@ -2726,9 +2693,7 @@ export default function UnitEdit({
                     {showAddType == 'Attached To' && (
                       <View>
                         <View>
-                          <Text style={[styles.meterDesciptionHeading]}>
-                            Add New {showAddType}
-                          </Text>
+                          <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`Add New ${showAddType}`} />
                         </View>
                         <Text_Input
                           placeholder={'Type new Attached To'}
@@ -2804,16 +2769,7 @@ export default function UnitEdit({
                         alignItems: 'center',
                         height: width * 0.25,
                       }}>
-                      <Text
-                        style={[
-                          styles.meterDesciptionHeading,
-                          { fontSize: width * 0.045, fontWeight: 'bold' },
-                        ]}>
-                        Meter-
-                        {newMeterFlag
-                          ? meterListData.length + 1
-                          : selectedMeter}
-                      </Text>
+                      <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`Meter- ${newMeterFlag ? meterListData.length + 1 : selectedMeter}`} />
                     </View>
                     {sliderNumber < 6 ? (
                       <TouchableOpacity
@@ -2859,29 +2815,24 @@ export default function UnitEdit({
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}>
-                      <Text
-                        style={[
+                      <TextReuseableComponent title style={[
                           styles.meterDesciptionHeading,
                           {
-                            fontSize: width * 0.045,
-                            height: width * 0.2,
                             top: -5,
                             textTransform:
                               sliderNumber == 4 ? 'none' : 'capitalize',
                           },
-                        ]}>
-                        {sliderNumber == 1 && showAddType == ''
-                          ? 'Utility Type & Device Info'
-                          : sliderNumber == 2
-                            ? 'Attached To'
-                            : sliderNumber == 3
-                              ? 'Installation Image'
-                              : sliderNumber == 4
-                                ? 'GPS Location of Install'
-                                : sliderNumber == 5
-                                  ? 'Install Status'
-                                  : ''}
-                      </Text>
+                        ]} value={sliderNumber == 1 && showAddType == ''
+                        ? 'Utility Type & Device Info'
+                        : sliderNumber == 2
+                          ? 'Attached To'
+                          : sliderNumber == 3
+                            ? 'Installation Image'
+                            : sliderNumber == 4
+                              ? 'GPS Location of Install'
+                              : sliderNumber == 5
+                                ? 'Install Status'
+                                : ''} />
                     </View>
                     <View style={{ height: 5 }} />
                   </View>
@@ -2922,9 +2873,7 @@ export default function UnitEdit({
                                     style={{
                                       width: width * 0.8,
                                     }}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      Utility Type*
-                                    </Text>
+                                    <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Utility Type*"} />
                                     <View
                                       pointerEvents={'auto'}
                                       style={{
@@ -3029,9 +2978,7 @@ export default function UnitEdit({
                                   <View
                                     style={{ width: width * 0.8 }}
                                     key={item.id}>
-                                    <Text style={styles.meterDesciptionHeading}>
-                                      {item.name}*
-                                    </Text>
+                                    <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`${item.name}*`} />
                                     <View
                                       style={{
                                         flexDirection: 'row',
@@ -3189,16 +3136,12 @@ export default function UnitEdit({
                                           width: width * 0.35,
                                         },
                                       ]}>
-                                      <Text
-                                        style={[
+                                      <TextReuseableComponent title style={[
                                           styles.desciptionHeading,
                                           {
-                                            height: width * 0.05,
                                             textAlignVertical: 'bottom',
                                           },
-                                        ]}>
-                                        Product Desc*
-                                      </Text>
+                                        ]} value={"Product Desc*"} />
                                     </View>
                                     <View>
                                       <Text_Input
@@ -3241,13 +3184,9 @@ export default function UnitEdit({
                                   {showAddType == 'Manufacturer' && (
                                     <View>
                                       <View>
-                                        <Text
-                                          style={[
-                                            styles.meterDesciptionHeading,
-                                            { fontWeight: 'bold' },
-                                          ]}>
-                                          New {showAddType}
-                                        </Text>
+                                        <TextReuseableComponent title style={
+                                            styles.meterDesciptionHeading
+                                          } value={`New ${showAddType}`} />
                                       </View>
                                       <Text_Input
                                         placeholder={'Type new manufacturer'}
@@ -3265,16 +3204,11 @@ export default function UnitEdit({
                                         }}>
                                         <TouchableOpacity
                                           onPress={cancelAddNewType}>
-                                          <Text
-                                            style={{
-                                              fontWeight: 'bold',
-                                              fontSize: width * 0.045,
+                                          <TextReuseableComponent title style={{
                                               color: '#25AAE1ec',
                                               width: width * 0.17,
                                               textAlign: 'center',
-                                            }}>
-                                            Cancel
-                                          </Text>
+                                            }} value={"Cancel"} />
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                           onPress={doneAddType}
@@ -3295,10 +3229,7 @@ export default function UnitEdit({
                                                     ? false
                                                     : true
                                           }>
-                                          <Text
-                                            style={{
-                                              fontWeight: 'bold',
-                                              fontSize: width * 0.045,
+                                          <TextReuseableComponent title style={{
                                               color:
                                                 showAddType == 'Manufacturer' &&
                                                   addManufacturer
@@ -3319,9 +3250,7 @@ export default function UnitEdit({
                                                         : '#D0D0D0',
                                               width: width * 0.15,
                                               textAlign: 'center',
-                                            }}>
-                                            Add
-                                          </Text>
+                                            }} value={"Add"} />
                                         </TouchableOpacity>
                                       </View>
                                     </View>
@@ -3331,18 +3260,12 @@ export default function UnitEdit({
                                       style={{
                                         zIndex: 10,
                                       }}>
-                                      <Text
-                                        style={{
+                                      <TextReuseableComponent title style={{
                                           alignSelf: 'flex-start',
-                                          fontSize: width * 0.03,
                                           color: '#3E4A4F',
                                           textTransform: 'capitalize',
-                                          fontFamily: Fonts.ComfortaaRegular,
                                           marginBottom: width * 0.01,
-                                          fontWeight: 'bold',
-                                        }}>
-                                        Add New Device
-                                      </Text>
+                                        }} value={"Add New Device"} />
                                       {addDevice &&
                                         addDevice?.map((item, index) => (
                                           <View
@@ -3352,12 +3275,9 @@ export default function UnitEdit({
                                             }}
                                             key={item.id}>
                                             <View>
-                                              <Text
-                                                style={
+                                              <TextReuseableComponent title style={
                                                   styles.meterDesciptionHeading
-                                                }>
-                                                {item.name}
-                                              </Text>
+                                                } value={item.name} />
                                             </View>
                                             {index < 1 ? (
                                               <Searchable_Dropdown
@@ -3461,12 +3381,9 @@ export default function UnitEdit({
                                                 />
                                                 <View>
                                                   <View>
-                                                    <Text
-                                                      style={
+                                                    <TextReuseableComponent title style={
                                                         styles.meterDesciptionHeading
-                                                      }>
-                                                      Model Number*
-                                                    </Text>
+                                                      } value={"Model Number*"} />
                                                   </View>
                                                   <View
                                                     style={{
@@ -3553,12 +3470,7 @@ export default function UnitEdit({
                                                               justifyContent:
                                                                 'center',
                                                             }}>
-                                                            <Text
-                                                              style={{
-                                                                color: 'black',
-                                                              }}>
-                                                              {item}
-                                                            </Text>
+                                                            <TextReuseableComponent title value={item} />
                                                             <TouchableOpacity
                                                               onPress={() => {
                                                                 const items = modelArr.filter(
@@ -3588,12 +3500,9 @@ export default function UnitEdit({
                                                 </View>
                                                 <View>
                                                   <View>
-                                                    <Text
-                                                      style={
+                                                    <TextReuseableComponent title style={
                                                         styles.meterDesciptionHeading
-                                                      }>
-                                                      Product Description*
-                                                    </Text>
+                                                      } value={"Product Description*"} />
                                                   </View>
                                                   <Text_Input
                                                     placeholder="Type Product Description"
@@ -3630,10 +3539,7 @@ export default function UnitEdit({
                                         }}>
                                         <TouchableOpacity
                                           onPress={cancelAddNewType}>
-                                          <Text
-                                            style={{
-                                              fontWeight: 'bold',
-                                              fontSize: width * 0.045,
+                                          <TextReuseableComponent title style={{
                                               color: '#25AAE1ec',
                                               width: width * 0.2,
                                               textAlign: 'center',
@@ -3641,9 +3547,7 @@ export default function UnitEdit({
                                               borderWidth: 2,
                                               padding: 3,
                                               borderRadius: 5,
-                                            }}>
-                                            Cancel
-                                          </Text>
+                                            }} value={"Cancel"} />
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                           onPress={doneAddType}
@@ -3666,10 +3570,7 @@ export default function UnitEdit({
                                                     ? false
                                                     : true
                                           }>
-                                          <Text
-                                            style={{
-                                              fontWeight: 'bold',
-                                              fontSize: width * 0.045,
+                                          <TextReuseableComponent title style={{
                                               color:
                                                 showAddType == 'Manufacturer' &&
                                                   addManufacturer
@@ -3713,9 +3614,7 @@ export default function UnitEdit({
                                               borderWidth: 2,
                                               padding: 3,
                                               borderRadius: 5,
-                                            }}>
-                                            Add
-                                          </Text>
+                                            }} value={"Add"} />
                                         </TouchableOpacity>
                                       </View>
                                     </View>
@@ -3738,18 +3637,13 @@ export default function UnitEdit({
                                         <View>
                                           <View>
                                             <View>
-                                              <Text
-                                                style={{
-                                                  fontSize: width * 0.03,
+                                              <TextReuseableComponent title style={{
                                                   color: '#3E4A4F',
                                                   textTransform: 'capitalize',
                                                   fontFamily:
                                                     Fonts.ComfortaaRegular,
                                                   marginBottom: width * 0.01,
-                                                  fontWeight: 'bold',
-                                                }}>
-                                                Select Device
-                                              </Text>
+                                                }} value={"Select Device"} />
                                             </View>
                                             <Searchable_Dropdown
                                               onItemSelect={(item) => {
@@ -3829,18 +3723,11 @@ export default function UnitEdit({
                                             />
                                           </View>
                                           <View>
-                                            <Text
-                                              style={{
-                                                fontSize: width * 0.03,
+                                            <TextReuseableComponent title style={{
                                                 color: '#3E4A4F',
                                                 textTransform: 'capitalize',
-                                                fontFamily:
-                                                  Fonts.ComfortaaRegular,
                                                 marginBottom: width * 0.01,
-                                                fontWeight: 'bold',
-                                              }}>
-                                              Add New {showAddType}
-                                            </Text>
+                                              }} value={`Add New ${showAddType}`} />
                                           </View>
                                           <Text_Input
                                             placeholder="Type New Model Number"
@@ -3864,16 +3751,11 @@ export default function UnitEdit({
                                               onPress={cancelAddNewType}
                                             // onPress={() => console.log('Cancel Press')}
                                             >
-                                              <Text
-                                                style={{
-                                                  fontWeight: 'bold',
-                                                  fontSize: width * 0.045,
+                                              <TextReuseableComponent title style={{
                                                   color: '#25AAE1ec',
                                                   width: width * 0.16,
                                                   textAlign: 'center',
-                                                }}>
-                                                Cancel
-                                              </Text>
+                                                }} value={"Cancel"} />
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                               onPress={doneAddType}
@@ -3881,18 +3763,13 @@ export default function UnitEdit({
                                               disabled={
                                                 addModelNumber ? false : true
                                               }>
-                                              <Text
-                                                style={{
-                                                  fontWeight: 'bold',
-                                                  fontSize: width * 0.045,
+                                              <TextReuseableComponent title style={{
                                                   color: addModelNumber
                                                     ? '#25AAE1ec'
                                                     : '#d0d0d0',
                                                   width: width * 0.16,
                                                   textAlign: 'center',
-                                                }}>
-                                                Add
-                                              </Text>
+                                                }} value={"Add"} />
                                             </TouchableOpacity>
                                           </View>
                                         </View>
@@ -3940,24 +3817,18 @@ export default function UnitEdit({
                       <TouchableOpacity
                         onPress={requestCameraPermission}
                         style={styles.button}>
-                        <Text style={styles.buttonText}>
-                          Launch Camera Directly
-                        </Text>
+                        <TextReuseableComponent title style={styles.buttonText} value={"Launch Camera Directly"} />
                         <Ionicons
                           name="camera"
                           size={width * 0.05}
                           color="#3E4A4F"
                         />
                       </TouchableOpacity>
-                      <Text style={[styles.buttonText, { opacity: 0.5 }]}>
-                        ------------- OR --------------
-                      </Text>
+                      <TextReuseableComponent title style={[styles.buttonText, { opacity: 0.5 }]} value={"------------- OR --------------"} />
                       <TouchableOpacity
                         onPress={imageGalleryLaunch}
                         style={styles.button}>
-                        <Text style={styles.buttonText}>
-                          Launch Image Gallery Directly
-                        </Text>
+                        <TextReuseableComponent title style={styles.buttonText} value={'Launch Image Gallery Directly'} />
                         <Ionicons
                           name="images"
                           size={width * 0.05}
@@ -4308,15 +4179,10 @@ export default function UnitEdit({
                                 resizeMode="contain"
                                 controls={false}
                               />
-                              <Text
-                                style={{
-                                  fontSize: width * 0.06,
-                                  fontWeight: 'bold',
+                              <TextReuseableComponent title style={{
                                   color: '#00B1DC',
-                                }}>
-                                Installation Successful
-                              </Text>
-                              <Text>Meter is installed Successfully</Text>
+                                }} value={"Installation Successful"} />
+                              <TextReuseableComponent title value={"Meter is installed Successfully"} />
                             </View>
                           )}
                           {installationStatus == 2 && statusAnimation == true && (
@@ -4330,15 +4196,10 @@ export default function UnitEdit({
                                 }}
                                 source={require('../../../../../../../Images/cross.gif')}
                               />
-                              <Text
-                                style={{
-                                  fontSize: width * 0.06,
-                                  fontWeight: 'bold',
+                              <TextReuseableComponent title style={{
                                   color: '#FF0000',
-                                }}>
-                                Installation not Succeed
-                              </Text>
-                              <Text>Meter is not installed</Text>
+                                }} value={"Installation not Succeed"} />
+                              <TextReuseableComponent title value={"Meter is not installed"} />
                             </View>
                           )}
                           {installationStatus == 2 && statusAnimation == false && (
@@ -4347,9 +4208,7 @@ export default function UnitEdit({
                                 style={{
                                   width: width * 0.8,
                                 }}>
-                                <Text style={styles.meterDesciptionHeading}>
-                                  Reason*
-                                </Text>
+                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason*"} />
                                 <Searchable_Dropdown
                                   onItemSelect={(item) => {
                                     setReasonText(item.name);
@@ -4397,9 +4256,7 @@ export default function UnitEdit({
                                     nestedScrollEnabled: true,
                                   }}
                                 />
-                                <Text style={styles.meterDesciptionHeading}>
-                                  Reason Description*
-                                </Text>
+                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason Description*"} />
                                 <Text_Input
                                   placeholder="Describe Your Reason"
                                   value={reasonDes}
@@ -4474,9 +4331,7 @@ export default function UnitEdit({
                                       </View>
                                     </ScrollView>
                                   ) : (
-                                    <Text style={{ textAlign: 'center' }}>
-                                      No Image Uploaded
-                                    </Text>
+                                    <TextReuseableComponent title style={{ textAlign: 'center' }} value={"No Image Uploaded"} />
                                   )}
                                 </View>
                               </View>
@@ -4498,19 +4353,15 @@ export default function UnitEdit({
                                 color="#fff"
                                 style={{marginRight: width * 0.01}}
                               />
-                              <Text style={styles.buttonText}>Upload File</Text>
+                              <TextReuseableComponent title style={styles.buttonText} value={"Upload File"} />
                             </View>
                             {reasonPath?.assets &&
                               reasonPath?.assets.map((item) => (
-                                <Text
-                                  style={{
+                                <TextReuseableComponent title style={{
                                     // width: width * 0.45,
                                     flex: 1,
-                                    height: width * 0.09,
                                     paddingHorizontal: width * 0.01,
-                                  }}>
-                                  File: {item.fileName.slice(10)}
-                                </Text>
+                                  }} value={`File: ${item.fileName.slice(10)}} />
                               ))}
                           </TouchableOpacity> */}
                             </View>
@@ -4529,9 +4380,7 @@ export default function UnitEdit({
                                   styles.attemptBtn,
                                   { backgroundColor: 'green' },
                                 ]}>
-                                <Text style={styles.attemptText}>
-                                  Attempted and installed
-                                </Text>
+                                <TextReuseableComponent title style={styles.attemptText} value={"Attempted and installed"} />
                               </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={() => {
@@ -4545,9 +4394,7 @@ export default function UnitEdit({
                                   styles.attemptBtn,
                                   { backgroundColor: '#f00' },
                                 ]}>
-                                <Text style={styles.attemptText}>
-                                  Attempted but incomplete
-                                </Text>
+                                <TextReuseableComponent title style={styles.attemptText} value={"Attempted but incomplete"} />
                               </TouchableOpacity>
                             </View>
                           )}
@@ -4566,18 +4413,9 @@ export default function UnitEdit({
                     {doneAnimation || checkSerial || hideBtn ? (
                       !hideBtn ? (
                         doneAnimation ? (
-                          <Text
-                            style={[styles.buttonText, { width: width * 0.7 }]}>
-                            {newMeter.name.charAt(0).toUpperCase() +
-                              newMeter.name.slice(1).toLowerCase()}{' '}
-                            Meter added succesfully please checking installation
-                            status...
-                          </Text>
+                          <TextReuseableComponent title style={[styles.buttonText, { width: width * 0.7 }]} value={`${newMeter.name.charAt(0).toUpperCase()} ${newMeter.name.slice(1).toLowerCase()} Meter added successfully checking installation status...`} />
                         ) : (
-                          <Text
-                            style={[styles.buttonText, { width: width * 0.7 }]}>
-                            Please wait while checking Device Serial Number...
-                          </Text>
+                          <TextReuseableComponent title style={[styles.buttonText, { width: width * 0.7 }]} value={"Please wait while checking Device Serial Number..."} />
                         )
                       ) : null
                     ) : (
@@ -4717,13 +4555,9 @@ export default function UnitEdit({
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Text
-                      style={[
-                        styles.meterDesciptionHeading,
-                        { fontSize: width * 0.06 },
-                      ]}>
-                      Make Selection
-                    </Text>
+                    <TextReuseableComponent title style={
+                        styles.meterDesciptionHeading
+                      } value={"Make Selection"} />
 
                     <TouchableOpacity
                       style={{
@@ -4760,7 +4594,7 @@ export default function UnitEdit({
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text>Use Default Values</Text>
+                  <TextReuseableComponent title value={"Use Default Values"} />
                   <Switch
                     trackColor={{ false: '#767577', true: '#81b0ff' }}
                     thumbColor={defaultValues ? '#25AAE1ec ' : '#f4f3f4'}
@@ -4809,17 +4643,11 @@ export default function UnitEdit({
                         borderless: true,
                         // radius: width * 0.03,
                       }}>
-                      <Text
-                        style={[
-                          styles.modalHeading,
-                          { color: '#5e5e5e', fontSize: width * 0.04 },
-                        ]}>
-                        Cancel
-                      </Text>
+                      <TextReuseableComponent title style={
+                          styles.modalHeading
+                        } value={"Cancel"} />
                     </Pressable>
-                    <Text style={[styles.modalHeading, { top: 8 }]}>
-                      {modalName}
-                    </Text>
+                    <TextReuseableComponent title style={[styles.modalHeading, { top: 8 }]} value={modalName} />
                     <Pressable
                       style={{ marginRight: 5, top: 8 }}
                       onPress={handleAddNewUnit}
@@ -4828,13 +4656,10 @@ export default function UnitEdit({
                         borderless: true,
                         // radius: width * 0.03,
                       }}>
-                      <Text
-                        style={[
+                      <TextReuseableComponent title style={[
                           styles.modalHeading,
-                          { color: '#25AAE1', fontSize: width * 0.04 },
-                        ]}>
-                        Confirm
-                      </Text>
+                          { color: '#25AAE1' },
+                        ]} value={"Confirm"} />
                     </Pressable>
                     {/* <Pressable
                       onPress={() =>
@@ -4881,7 +4706,7 @@ export default function UnitEdit({
                         size={height * 0.02}
                         color="#5e5e5e"
                       />
-                      <Text style={styles.desciptionHeading}>BUILDING*</Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"BUILDING*"} />
                     </View>
                     <View
                       style={[
@@ -4897,7 +4722,7 @@ export default function UnitEdit({
                       />
                     </View>
                     <View style={styles.desciptionContainer}>
-                      <Text style={styles.desciptionHeading}>UNIT*</Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"UNIT*"} />
                     </View>
                     <View
                       style={[
@@ -4943,7 +4768,7 @@ export default function UnitEdit({
                       ) : null}
                     </View>
                     <View style={styles.desciptionContainer}>
-                      <Text style={styles.desciptionHeading}>UNIT MIX*</Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"UNIT MIX*"} />
                     </View>
                     <View style={{ zIndex: 1 }}>
                       {/* {unitMixIcon ? (
@@ -5086,23 +4911,9 @@ export default function UnitEdit({
                               shadowOpacity: 0.2,
                               shadowRadius: 1.41,
                             }}>
-                            {/* <Image
-                                  source={typeSwitcher(item.meter_name)}
-                                  style={styles.untiDetailImage}
-                                /> */}
-
-                            <Text
-                              style={[
-                                styles.meterDesciptionHeading,
-                                {
-                                  marginBottom: 0,
-                                  fontWeight: 'bold',
-                                  fontSize: width * 0.045,
-                                },
-                              ]}>
-                              {/* {item.meter_name[0].name} */}
-                              Meter-{index + 1}
-                            </Text>
+                            <TextReuseableComponent title style={
+                                styles.meterDesciptionHeading
+                              } value={`Meter- ${index + 1}`} />
                             <TouchableOpacity
                               onPress={() => removeMeterAlert(item, index)}
                               style={{
@@ -5125,13 +4936,9 @@ export default function UnitEdit({
                         {type == 'addMeterDirect' || type == 'meterDirect' ? (
                           meterData.length == 1 ? (
                             <View style={{ marginLeft: width * 0.02 }}>
-                              <Text
-                                style={{
-                                  fontSize: height * 0.04,
+                              <TextReuseableComponent title style={{
                                   color: '#25AAE1ec',
-                                }}>
-                                No Meters
-                              </Text>
+                                }} value={"No Meters"} />
                             </View>
                           ) : (
                             <TouchableOpacity
@@ -5151,7 +4958,6 @@ export default function UnitEdit({
                                 enableLocation();
                               }}
                               style={{
-                                // flexDirection: 'row',
                                 justifyContent: 'flex-start',
                                 alignItems: 'center',
                                 zIndex: 1,
@@ -5160,14 +4966,9 @@ export default function UnitEdit({
                                 borderColor: '#25AAE1ec',
                                 paddingVertical: width * 0.01,
                               }}>
-                              {/*//todo: Button for meter */}
-                              <Text
-                                style={{
-                                  fontSize: width * 0.06,
+                              <TextReuseableComponent title style={{
                                   color: '#25AAE1ec',
-                                }}>
-                                Add Meter
-                              </Text>
+                                }} value={"Add Meter"} />
                             </TouchableOpacity>
                           )
                         ) : (
@@ -5187,14 +4988,9 @@ export default function UnitEdit({
                               paddingHorizontal: width * 0.02,
                               paddingVertical: width * 0.01,
                             }}>
-                            {/*//todo: Button for meter */}
-                            <Text
-                              style={{
-                                fontSize: width * 0.06,
+                            <TextReuseableComponent title style={{
                                 color: '#25AAE1ec',
-                              }}>
-                              Add Meter
-                            </Text>
+                              }} value={"Add Meter"} />
                           </TouchableOpacity>
                         )}
                       </View>
@@ -5226,7 +5022,7 @@ export default function UnitEdit({
                           }>
                           <View style={styles.cancelBotton}>
                             <MaterialCommunityIcons name="close" color="black" size={18} />
-                            <Text style={{color: 'black'}}>Cancel</Text>
+                            <TextReuseableComponent title style={{color: 'black'}} value={"Cancel"} />
                           </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleAddNewUnit}>
@@ -5242,13 +5038,11 @@ export default function UnitEdit({
                               color="white"
                               size={18}
                             />
-                            <Text style={{color: 'white'}}>
-                              {type == 'meterDirect' ||
+                            <TextReuseableComponent title style={{color: 'white'}} value={type == 'meterDirect' ||
                               type == 'addMeterDirect' ||
                               type == 'add'
                                 ? 'Add Unit'
-                                : 'Edit Unit'}
-                            </Text>
+                                : 'Edit Unit'} />
                           </View>
                         </TouchableOpacity>
                       </View> */}
@@ -5286,16 +5080,11 @@ export default function UnitEdit({
                   name="keyboard-backspace"
                 />
               </TouchableOpacity>
-              <Text
-                style={{
+              <TextReuseableComponent title style={{
                   textAlign: 'center',
                   color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: 20,
                   paddingLeft: width * 0.08,
-                }}>
-                Scan Barcode
-              </Text>
+                }} value={"Scan Barcode"} />
             </View>
             <RNCamera
               ref={(ref) => {

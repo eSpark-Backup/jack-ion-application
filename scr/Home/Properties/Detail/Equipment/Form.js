@@ -3,7 +3,6 @@ import React, {Component, version} from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View,
   Image,
   ImageBackground,
@@ -30,6 +29,8 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import Tag from 'react-native-vector-icons/Feather';
 import {Icon, IconToggle} from 'react-native-material-ui';
 import {TextInput, Button, FAB} from 'react-native-paper';
+
+import TextReuseableComponent from '../../../../components/Text/index';
 
 import Modal from 'react-native-modal';
 
@@ -58,11 +59,6 @@ export default class Splash extends Component {
         <TouchableOpacity
           style={{
             width: width * 0.3,
-            // left: width * .1    ,
-            // borderWidth: height * .001,
-            // borderColor: "purple",
-            // backgroundColor: 'white',
-            // borderRadius: width * .5,
           }}
           onPress={this.toggleModal}>
           <View
@@ -72,15 +68,9 @@ export default class Splash extends Component {
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            {/* <Message name="home" size={height * .025} color="purple" /> */}
-            <Text
-              style={{
-                fontSize: 14,
+            <TextReuseableComponent title style={{
                 color: 'purple',
-                // fontFamily: Fonts.WorkSansRegular
-              }}>
-              Add a Unit
-            </Text>
+              }} value={"Add a Unit"} />
           </View>
         </TouchableOpacity>
         <Modal
@@ -99,7 +89,7 @@ export default class Splash extends Component {
                       size={height * 0.05}
                       color="#5e5e5e"
                     />
-                    <Text style={styles.modalHeading}>New Property</Text>
+                    <TextReuseableComponent title style={styles.modalHeading} value={"New Property"} />
                     <Pressable
                       onPress={() =>
                         this.setState({
@@ -131,9 +121,7 @@ export default class Splash extends Component {
                         size={height * 0.03}
                         color="#5e5e5e"
                       />
-                      <Text style={styles.desciptionHeading}>
-                        PROPERTY INFORMATION
-                      </Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"PROPERTY INFORMATION"} />
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -175,9 +163,7 @@ export default class Splash extends Component {
                         size={height * 0.03}
                         color="#5e5e5e"
                       />
-                      <Text style={styles.desciptionHeading}>
-                        PORTFOLIO DETAILS
-                      </Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"PORTFOLIO DETAILS"} />
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -239,9 +225,7 @@ export default class Splash extends Component {
                         size={height * 0.03}
                         color="#5e5e5e"
                       />
-                      <Text style={styles.desciptionHeading}>
-                        CONTACT INFO (OPTIONAL)
-                      </Text>
+                      <TextReuseableComponent title style={styles.desciptionHeading} value={"CONTACT INFO (OPTIONAL)"} />
                     </View>
                     <View style={styles.contactInfoContainer}>
                       <View style={styles.contactInfoInner}>

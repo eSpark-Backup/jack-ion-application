@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View,
   Image,
   ImageBackground,
@@ -43,9 +42,7 @@ export default class Splash extends Component {
           </View>
           <View style={styles.bottomContainer}>
             <ActivityIndicator size="large" color="white" style={styles.activityIndi} />
-            <Text style={styles.bottomText}>
-              ION Energy Solutions
-            </Text>
+            <TextReuseableComponent title style={styles.bottomText} value={"ION Energy Solutions"} />
           </View>
         </LinearGradient>
       </View>

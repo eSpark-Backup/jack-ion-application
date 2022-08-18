@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import {View, Text, ActivityIndicator} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Splash from './splash';
 import AuthNav from '../../navigation';
@@ -23,9 +22,7 @@ class Main extends Component {
       currentScreen: 'Login',
       isLoading: true,
     };
-    // console.log('start doing some tasks for about 3 seconds')
     setTimeout(() => {
-      // console.log('Done some tasks for about 3 seconds')
       this.setState({isLoading: false});
     }, 3000);
   }

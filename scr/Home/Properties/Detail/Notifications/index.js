@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  Text,
   View,
   Dimensions,
   TouchableOpacity,
@@ -18,6 +17,8 @@ import styles from './style';
 import CustumStatusBar from '../../../../components/StatusBar';
 import Loader from '../../../../components/Loader';
 import API from '../../../../api/SeviceApi';
+
+import TextReuseableComponent from '../../../../components/Text/index';
 
 const {width, height} = Dimensions.get('window');
 
@@ -153,7 +154,7 @@ export default class Splash extends Component {
                   marginRight: width * 0.01,
                 }}
               />
-              <Text style={styles.mainHeadiing}>Notifications</Text>
+              <TextReuseableComponent title style={styles.mainHeadiing} value={"Notifications"} />
               <View style={{flexDirection: 'row-reverse', flex: 1}}>
                 <Menu
                   visible={this.state.visible}
@@ -201,14 +202,10 @@ export default class Splash extends Component {
           {this.state.LoaderState ? (
             <Loader />
           ) : this.state.notificationData.length < 1 ? (
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: height * 0.3,
-                fontSize: width * 0.05,
-              }}>
-              No Notifications to show
-            </Text>
+            <TextReuseableComponent title style={{
+              textAlign: 'center',
+              marginTop: height * 0.3,
+            }} value={"No Notifications to show"} />
           ) : (
             <FlatList
               style={{flex: 1}}
@@ -233,11 +230,8 @@ export default class Splash extends Component {
                     }}
                   />
                   <View>
-                    <Text
-                      style={{fontWeight: 'bold', textTransform: 'capitalize'}}>
-                      {item.sender_name}
-                    </Text>
-                    <Text style={{width: width * 0.8}}>{item.message}</Text>
+                    <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={item.sender_name} />
+                    <TextReuseableComponent title style={{width: width * 0.8}} value={item.message} />
                   </View>
                 </TouchableOpacity>
               )}

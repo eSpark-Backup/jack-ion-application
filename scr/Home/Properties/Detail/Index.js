@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  Text,
   View,
   StatusBar,
   Dimensions,
@@ -51,6 +50,8 @@ import SystemSetting from 'react-native-system-setting';
 import API from '../../../api/SeviceApi';
 import { connect } from 'react-redux';
 import { fetchPropetry } from '../../../Store/Action/properties.action';
+import TextReuseableComponent from '../../../components/Text/index';
+
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
@@ -498,8 +499,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                 color="white"
                 style={{ top: height * 0.002 }}
               />
-              <Text style={styles.mainHeadiing}>Details</Text>
-              {/* </View> */}
+              <TextReuseableComponent title style={styles.mainHeadiing} value={"Details"} />
             </View>
           </View>
           <ScrollView
@@ -540,7 +540,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                 {this.state.markers?.length > 0 &&
                   this.state.markers.map(
                     (marker, index) =>
-                      marker?.position?.lat ? (
+                      marker?.position?.lat && (
                         <Marker
                           key={index}
                           coordinate={{
@@ -568,16 +568,14 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                             />
                           </View>
                         </Marker>
-                      ) : null,
+                      ),
                   )}
               </MapView>
               <View style={styles.clientName}>
                 <Properties name="home-city-outline" size={width * 0.08} />
-                <Text style={styles.clientNameHeading}>
-                  {this.state.listData.name == null
+                <TextReuseableComponent title style={styles.clientNameHeading} value={this.state.listData.name == null
                     ? 'Untitled'
-                    : this.state.listData.name}
-                </Text>
+                    : this.state.listData.name} />
                 <Pressable
                   style={styles.clientDataEdit}
                   onPress={() => this.enableLocation()}
@@ -585,7 +583,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     color: 'white',
                     radius: width * 0.1,
                   }}>
-                  <Text style={styles.editBottonText}>Edit</Text>
+                  <TextReuseableComponent title style={styles.editBottonText} value={"Edit"} />
                 </Pressable>
               </View>
 
@@ -600,157 +598,37 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                           .item,
                         tpanelData: this.state.tpanelData,
                       },
-                      // this.state.tpanelData,
-                      // {
-                      //   propertyData: this.props.navigation.state.params.item
-                      //     .item,
-                      // },
                     )
                   }>
-                  <Text
-                    style={{ ...styles.dataFieldHeadings, borderBottomWidth: 0 }}>
-                    Tpanel
-                  </Text>
-                  {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    <View>
-                      <View
-                        style={{
-                          justifyContent: 'space-around',
-                          alignItems: 'center',
-                          flexDirection: 'row',
-                          marginBottom: width * 0.01,
-                        }}>
-                        <Text style={styles.tpanelHeads}>Device Serial</Text>
-                        <Text style={styles.tpanelHeads}>Building</Text>
-                        <Text style={styles.tpanelHeads}>Unit</Text>
-                        <Text style={styles.tpanelHeads}>Utility Type</Text>
-                        <Text style={styles.tpanelHeads}>Manufacturer</Text>
-                        <Text style={styles.tpanelHeads}>Device</Text>
-                        <Text style={styles.tpanelHeads}>Attached To</Text>
-                        <Text style={styles.tpanelHeads}>Signal Strength</Text>
-                        <Text style={styles.tpanelHeads}>Temperature</Text>
-                        <Text style={styles.tpanelHeads}>Battery</Text>
-                        <Text style={styles.tpanelHeads}>Meter Usage</Text>
-                        <Text style={styles.tpanelHeads}>Meter Reading</Text>
-                      </View>
-                      {this.state.tpanelData.map(
-                        (item) =>
-                          item.unit_meter.length > 0 && (
-                            <View style={styles.tpanelValuesContainer}>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.device_serial_number,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.building}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.name}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.utility_type_name.name,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.manufacturer.name,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map((i) => i.device.name)}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map((i) => i.attachedTo_name)}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.signal_strength,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.temperature,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.battery,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.meter_usage,
-                                )}
-                              </Text>
-                              <Text style={styles.tpanelValues}>
-                                {item.unit_meter.map(
-                                  (i) => i.meter_read.meter_reading,
-                                )}
-                              </Text>
-                            </View>
-                          ),
-                      )}
-                    </View>
-                  </ScrollView> */}
-                  {/* <ScrollView
-                    nestedScrollEnabled
-                    style={{width: width * 0.85, height: width * 0.2}}>
-                    {this.state.unitMixes.map((item, index) => (
-                      <View style={styles.unitMixesValuesContainer}>
-                        <Text style={styles.unitMixesHeads}>{index + 1}</Text>
-                        <Text style={styles.unitMixesValues}>{item.br}</Text>
-                        <Text style={styles.unitMixesValues}>{item.ba}</Text>
-                        <Text style={styles.unitMixesValues}>
-                          {item.no_of_units}
-                        </Text>
-                        <Text style={styles.unitMixesValues}>{item.gud}</Text>
-                        <Text style={styles.unitMixesValues}>
-                          {item.no_of_units * item.gud}
-                        </Text>
-                      </View>
-                    ))}
-                  </ScrollView> */}
+                  <TextReuseableComponent title style={{ ...styles.dataFieldHeadings, borderBottomWidth: 0 }} value={"Tpanel"} />
                 </TouchableOpacity>
 
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>
-                   Gateway
-                  </Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Gateway"} />
                   <View style={styles.infoViewInner}>
                     <Icon  name="router" size={25} />
                     {propertyData?.gateway ? 
                     <View style={{flexDirection: 'column'}}>
-                       <Text style={styles.dataFieldText}>
-                            {propertyData?.gateway?.serial_number}
-                        </Text>
-                        <Text style={styles.dataFieldText}>
-                            {"Synced"}
-                        </Text>
+                        <TextReuseableComponent title style={styles.dataFieldText} value={propertyData?.gateway?.serial_number} />
+                        <TextReuseableComponent title style={styles.dataFieldText} value={"Synced"} />
                     </View>
                       :
                     <>
-                    <Text style={styles.dataFieldText}>
-                        No Gateway Programmed!
-                    </Text>
+                    <TextReuseableComponent title style={styles.dataFieldText} value={"No Gateway Programmed!"} />
                     </>}
-                    <Text style={styles.dataFieldText}>
-                      {this.state.listData.owner == null ||
+                    <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
                       this.state.listData.owner == ''
                         ? '--'
-                        : this.state.listData.owner}
-                    </Text>
+                        : this.state.listData.owner} />
                   </View>
                 </View>
 
 
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>ADDRESS</Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"ADDRESS"} />
                   <View style={styles.infoViewInner}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <Text style={[styles.dataFieldText, {overflow: 'scroll'}]}>
-                      {`${
+                    <TextReuseableComponent title style={[styles.dataFieldText, {overflow: 'scroll'}]} value={`${
                         this.state.listData.street == null
                           ? ''
                           : this.state.listData.street
@@ -766,51 +644,39 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                         this.state.listData.zipcode == null
                           ? ''
                           : this.state.listData.zipcode
-                      }`}
-                    </Text>
+                      }`} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>CUSTOM ID</Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"CUSTOM ID"} />
                   <View style={styles.infoViewInner}>
                     <Folder name="folder" size={width * 0.06} />
-                    <Text style={styles.dataFieldText}>
-                      {this.state.listData.custom_id == null ||
+                    <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.custom_id == null ||
                       this.state.listData.custom_id == ''
                         ? '--'
-                        : this.state.listData.custom_id}
-                    </Text>
+                        : this.state.listData.custom_id} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>Other Details</Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Other Details"} />
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <Text
-                      style={[
+                    <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         {width: width * 0.4, textAlign: 'left'},
-                      ]}>
-                      Unit Count:
-                    </Text>
-                    <Text
-                      style={[
+                      ]} value={"Unit Count:"} />
+                    <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         {width: width * 0.3, textAlign: 'auto'},
-                      ]}>
-                      {this.state.listData.unit_count == null ||
-                      this.state.listData.unit_count == ''
-                        ? '--'
-                        : this.state.listData.unit_count}
-                    </Text>
+                      ]} value={this.state.listData.unit_count == null ||
+                        this.state.listData.unit_count == ''
+                          ? '--'
+                          : this.state.listData.unit_count} />
                   </View>
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <Text
-                      style={[
+                    <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         {width: width * 0.4, textAlign: 'left'},
-                      ]}>
-                      Utility Type:
-                    </Text>
+                      ]} value={"Utility Type:"} />
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
@@ -818,29 +684,23 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                       {this.state.utilTypes.map((item, index) => (
                         <View
                           style={{borderWidth: 1, borderRadius: 5, padding: 3}}>
-                          <Text
-                            style={[
+                          <TextReuseableComponent title style={[
                               styles.dataFieldText,
                               {width: null, textAlign: 'auto'},
-                            ]}>
-                            {item == null || item == ''
-                              ? '--'
-                              : this.state.utilTypes?.length - 1 == index
-                              ? item
-                              : item + ', '}
-                          </Text>
+                            ]} value={item == null || item == ''
+                            ? '--'
+                            : this.state.utilTypes?.length - 1 == index
+                            ? item
+                            : item + ', '} />
                         </View>
                       ))}
                     </ScrollView>
                   </View>
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <Text
-                      style={[
+                    <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         {width: width * 0.4, textAlign: 'left'},
-                      ]}>
-                      Manufacturer:
-                    </Text>
+                      ]} value={"Manufacturer:"} />
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
@@ -852,117 +712,91 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                             borderRadius: 5,
                             padding: 3,
                           }}>
-                          <Text
-                            style={[
+                          <TextReuseableComponent title style={[
                               styles.dataFieldText,
                               {width: null, textAlign: 'auto'},
-                            ]}>
-                            {item == null || item == ''
-                              ? '--'
-                              : this.state.manus?.length - 1 == index
-                              ? item
-                              : item + ', '}
-                          </Text>
+                            ]} value={item == null || item == ''
+                            ? '--'
+                            : this.state.manus?.length - 1 == index
+                            ? item
+                            : item + ', '} />
                         </View>
                       ))}
                     </ScrollView>
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>
-                    Owner/Developer Name
-                  </Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Owner/Developer Name"} />
                   <View style={styles.infoViewInner}>
                     <Folder name="folder" size={width * 0.06} />
-                    <Text style={styles.dataFieldText}>
-                      {this.state.listData.owner == null ||
+                    <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
                       this.state.listData.owner == ''
                         ? '--'
-                        : this.state.listData.owner}
-                    </Text>
+                        : this.state.listData.owner} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>
-                    Meter Count & Installation Status
-                  </Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Meter Count & Installation Status"} />
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <Text
-                      style={[
+                    <TextReuseableComponent title  style={[
                         styles.dataFieldText,
                         {width: width * 0.4, textAlign: 'left'},
-                      ]}>
-                      Meter Count:
-                    </Text>
-                    <Text
-                      style={[
+                      ]} value={"Meter Count:"} />
+                    <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         {width: width * 0.3, textAlign: 'auto'},
-                      ]}>
-                      {this.state.meterCount}
-                    </Text>
+                      ]} value={this.state.meterCount} />
                   </View>
                   <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <Text style={[styles.dataFieldText, {textAlign: 'left'}]}>
-                      Complete Installations:
-                    </Text>
-                    <Text
-                      style={[
+                    <TextReuseableComponent title style={[styles.dataFieldText, {textAlign: 'left'}]} value={"Complete Installations:"} />
+                    <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         {width: width * 0.3, textAlign: 'auto'},
-                      ]}>
-                      {this.state.installStatus}
-                    </Text>
+                      ]} value={this.state.installStatus} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>Unit Mixes</Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Unit Mixes"} />
                   <View style={styles.unitMixesHeadContainer}>
-                    <Text style={styles.unitMixesHeads}>#</Text>
-                    <Text style={styles.unitMixesHeads}>BR</Text>
-                    <Text style={styles.unitMixesHeads}>BA</Text>
-                    <Text style={styles.unitMixesHeads}># Units</Text>
-                    <Text style={styles.unitMixesHeads}>G/U/D</Text>
-                    <Text style={styles.unitMixesHeads}>T/G/D</Text>
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"#"} />
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"BR"} />
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"BA"} />
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"# Units"} />
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"G/U/D"} />
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"T/G/D"} />
                   </View>
                   <ScrollView
                     nestedScrollEnabled
                     style={{width: width * 0.85, height: width * 0.2}}>
                     {this.state.unitMixes.map((item, index) => (
                       <View style={styles.unitMixesValuesContainer}>
-                        <Text style={styles.unitMixesHeads}>{index + 1}</Text>
-                        <Text style={styles.unitMixesValues}>{item.br}</Text>
-                        <Text style={styles.unitMixesValues}>{item.ba}</Text>
-                        <Text style={styles.unitMixesValues}>
-                          {item.no_of_units}
-                        </Text>
-                        <Text style={styles.unitMixesValues}>{item.gud}</Text>
-                        <Text style={styles.unitMixesValues}>
-                          {item.no_of_units * item.gud}
-                        </Text>
+                        <TextReuseableComponent title style={styles.unitMixesHeads} value={index + 1} />
+                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.br} />
+                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.ba} />
+                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units} />
+                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.gud} />
+                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units * item.gud} />
                       </View>
                     ))}
                   </ScrollView>
                   <View style={styles.sumUnitMixes}>
-                    <Text style={styles.sumUnitMixesHead}>Sum # Units</Text>
-                    <Text style={styles.sumUnitMixesHead}>Sum T/G/D</Text>
-                    <Text style={styles.sumUnitMixesHead}>ADC</Text>
+                    <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum # Units"} />
+                    <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum T/G/D"} />
+                    <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"ADC"} />
                   </View>
                   <View style={styles.sumUnitMixesValuesView}>
-                    <Text>{this.state.sumNoOfUnits}</Text>
-                    <Text>{this.state.sumTotalGalDay}</Text>
-                    <Text>
-                      {this.state.sumNoOfUnits > 0
+                    <TextReuseableComponent title value={this.state.sumNoOfUnits} />
+                    <TextReuseableComponent title value={this.state.sumTotalGalDay} />
+                    <TextReuseableComponent title value={this.state.sumNoOfUnits > 0
                         ? Math.round(
                             this.state.sumTotalGalDay / this.state.sumNoOfUnits,
                           )
-                        : 0}
-                    </Text>
+                        : 0} />
                   </View>
                 </View>
 
                 <View style={styles.contactViewContainer}>
-                  <Text style={styles.dataFieldHeadings}>Contact Info</Text>
+                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Contact Info"} />
                   <View style={styles.contactInfoContainer}>
                     <View style={styles.contactInfoInner}>
                       <Icon
@@ -1017,11 +851,9 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                 </View>
 
                 <View style={styles.barView}>
-                  <Text style={{position: 'absolute'}}>
-                    {onlineUnits == 0 && offlineUnits == 0
+                  <TextReuseableComponent title style={{position: 'absolute'}} value={onlineUnits == 0 && offlineUnits == 0
                       ? 'No Installations'
-                      : 'Installation'}
-                  </Text>
+                      : 'Installation'} />
                   <VictoryPie
                     width={width * 0.75}
                     height={width * 0.75}
@@ -1046,11 +878,11 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                 <View style={styles.onlineOfflineView}>
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.onlineView} />
-                    <Text style={styles.onlineText}>Complete</Text>
+                    <TextReuseableComponent title style={styles.onlineText} value={"Complete"} />
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.offlineView} />
-                    <Text style={styles.offlineText}>Incomplete</Text>
+                    <TextReuseableComponent title style={styles.offlineText} value={"Incomplete"} />
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View
@@ -1059,43 +891,27 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                         backgroundColor: '#dcdcdc',
                       }}
                     />
-                    <Text style={styles.offlineText}>Not Installed</Text>
+                    <TextReuseableComponent title style={styles.offlineText} value={"Not Installed"} />
                   </View>
                 </View>
                 <View style={styles.bunchContainer}>
                   <View style={styles.rowSpaceBtw}>
-                    <Text>
-                      Avg. Consumption Rate
-                    </Text>
-                    <Text>
-                      {tBunchData?.avgConsumption || '0.00'}%
-                    </Text>
+                    <TextReuseableComponent title value={"Avg. Consumption Rate"} />
+                    <TextReuseableComponent title value={`${tBunchData?.avgConsumption || '0.00'} %`} />
                   </View>
 
                   <View style={styles.rowSpaceEvenly}>
                         <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#3e89bf'}]}>
-                            <Text style={{textTransform: 'capitalize', color: '#fff'}}>
-                                Soft
-                            </Text>
-                            <Text style={{ color: '#fff'}}>
-                                {'  '}{tBunchData?.alert_level_count[0]?.alert_count || 0}
-                            </Text>
+                            <TextReuseableComponent title style={{textTransform: 'capitalize', color: '#fff'}} value={"Soft"} />
+                            <TextReuseableComponent title style={{ color: '#fff'}} value={tBunchData?.alert_level_count[0]?.alert_count || 0} />
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#FFC107'}]}>
-                            <Text style={{textTransform: 'capitalize'}}>
-                                Medium
-                            </Text>
-                            <Text>
-                                {'  '}{tBunchData?.alert_level_count[1]?.alert_count || 0}
-                            </Text>
+                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"Medium"} />
+                            <TextReuseableComponent title value={tBunchData?.alert_level_count[1]?.alert_count || 0} />
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#DC3545'}]}>
-                            <Text style={{textTransform: 'capitalize'}}>
-                                High
-                            </Text>
-                            <Text>
-                                {'  '}{tBunchData?.alert_level_count[2]?.alert_count || 0}
-                            </Text>
+                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"High"} />
+                            <TextReuseableComponent title value={tBunchData?.alert_level_count[2]?.alert_count || 0} />
                         </TouchableOpacity>
                   </View>
                 </View>

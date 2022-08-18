@@ -3,7 +3,6 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
-  Text,
   View,
   Slider,
   TouchableOpacity,
