@@ -624,8 +624,8 @@ class Property extends Component {
                     <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
                       Meter:
                     </Text>
-                      <MaterialIcon
-                        name="router"
+                      <Feather
+                        name="inbox"
                         size={width * 0.04}
                         color="#000"
                       />

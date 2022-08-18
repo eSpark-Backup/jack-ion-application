@@ -949,8 +949,8 @@ export default class Splash extends Component {
             onPress={() => this.setState({activeTab: 'notification'})}
             activeOpacity={0.9}>
             <View style={style.tabContainer}>
-              <Feather
-                name="settings"
+              <MaterialIcons
+                name="notifications"
                 size={20}
                 style={{paddingRight: 5}}
                 color={activeTab == 'notification' ? '#000' : '#fff'}
