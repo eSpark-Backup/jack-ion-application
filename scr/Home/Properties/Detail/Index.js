@@ -902,15 +902,15 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
                   <View style={styles.rowSpaceEvenly}>
                         <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#3e89bf'}]}>
-                            <TextReuseableComponent title style={{textTransform: 'capitalize', color: '#fff'}} value={"Soft"} />
+                            <TextReuseableComponent title style={{textTransform: 'capitalize', color: '#fff'}} value={"Soft:"} />
                             <TextReuseableComponent title style={{ color: '#fff'}} value={tBunchData?.alert_level_count[0]?.alert_count || 0} />
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#FFC107'}]}>
-                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"Medium"} />
+                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"Medium:"} />
                             <TextReuseableComponent title value={tBunchData?.alert_level_count[1]?.alert_count || 0} />
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#DC3545'}]}>
-                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"High"} />
+                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"High:"} />
                             <TextReuseableComponent title value={tBunchData?.alert_level_count[2]?.alert_count || 0} />
                         </TouchableOpacity>
                   </View>

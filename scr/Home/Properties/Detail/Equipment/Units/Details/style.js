@@ -24,10 +24,7 @@ export default styles = StyleSheet.create({
     marginRight: width * 0.025,
   },
   emptyMeterText: {
-    fontSize: width * 0.05,
-    fontFamily: Fonts.ComfortaaRegular,
     textAlign: 'center',
-    width: width * 0.9,
     alignSelf: 'center',
   },
   metersImgContainer: {

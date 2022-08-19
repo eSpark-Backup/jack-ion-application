@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Dimensions,
@@ -11,15 +11,15 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import {Header, Button, Icon} from 'react-native-elements';
+import { Header, Button, Icon } from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
-import {View as MotiView} from 'moti';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { View as MotiView } from 'moti';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Loader from '../../../../../../components/Loader';
-import {Svg, G} from 'react-native-svg';
+import { Svg, G } from 'react-native-svg';
 
 import {
   VictoryChart,
@@ -29,29 +29,29 @@ import {
   VictoryBar,
   VictoryLine,
 } from 'victory-native';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Fonts } from '../../../../../../utils/fonts';
 import TextReuseableComponent from '../../../../../../components/Text/index';
 
 import EditUnit from '../modals/UnitEdit';
 // Components
 import styles from './style';
-import {Checkbox, Divider} from 'react-native-paper';
-import {color} from 'react-native-reanimated';
+import { Checkbox, Divider } from 'react-native-paper';
+import { color } from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
 import style from './style';
 import API from '../../../../../../api/SeviceApi';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const MyToolTip = (value, position) => {
   return (
-    <View style={{height: 50, width: 50, backgroundColor: 'pink'}}>
+    <View style={{ height: 50, width: 50, backgroundColor: 'pink' }}>
       <TextReuseableComponent title value={value.y} />
     </View>
   );
 };
 
-const App = ({navigation}) => {
+const App = ({ navigation }) => {
   const scrollViewRef = useRef();
   const gettingChartdata = useRef(false);
 
@@ -208,9 +208,9 @@ const App = ({navigation}) => {
 
       // INDEPENDENT AXIS
       axisYears: {
-        axis: {stroke: 'black', strokeWidth: 1},
+        axis: { stroke: 'black', strokeWidth: 1 },
         ticks: {
-          size: ({tick}) => {
+          size: ({ tick }) => {
             const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
             return tickSize;
           },
@@ -226,7 +226,7 @@ const App = ({navigation}) => {
 
       // DATA SET ONE
       axisOne: {
-        axis: {stroke: BLUE_COLOR, strokeWidth: 1},
+        axis: { stroke: BLUE_COLOR, strokeWidth: 1 },
         ticks: {
           strokeWidth: 0,
         },
@@ -243,7 +243,7 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineOne: {
-        data: {stroke: '#5D84B6', strokeWidth: 2},
+        data: { stroke: '#5D84B6', strokeWidth: 2 },
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
@@ -254,8 +254,8 @@ const App = ({navigation}) => {
 
       // DATA SET TWO
       axisTwo: {
-        axis: {stroke: RED_COLOR, strokeWidth: 1},
-        ticks: {strokeWidth: 0},
+        axis: { stroke: RED_COLOR, strokeWidth: 1 },
+        ticks: { strokeWidth: 0 },
         tickLabels: {
           fill: 'gray',
           // fontFamily: 'inherit',
@@ -270,12 +270,12 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineTwo: {
-        data: {stroke: 'gray', strokeWidth: 4.5},
+        data: { stroke: 'gray', strokeWidth: 4.5 },
       },
 
       // HORIZONTAL LINE
       lineThree: {
-        data: {stroke: '#e95f46', strokeWidth: 2},
+        data: { stroke: '#e95f46', strokeWidth: 2 },
       },
     };
   };
@@ -919,7 +919,7 @@ const App = ({navigation}) => {
         text: 'No',
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => deleteUnit()},
+      { text: 'Yes', onPress: () => deleteUnit() },
     ]);
   };
   const deleteUnit = async () => {
@@ -933,7 +933,7 @@ const App = ({navigation}) => {
         text: 'No',
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => deleteMeter()},
+      { text: 'Yes', onPress: () => deleteMeter() },
     ]);
   };
 
@@ -947,7 +947,7 @@ const App = ({navigation}) => {
     alert(response?.data?.message);
   };
 
-  const renderUnitList = ({item, index}) => {
+  const renderUnitList = ({ item, index }) => {
     return data?.data?.unit?.unit_meter?.length == 0 ? (
       index == 1 ? null : (
         <View style={styles.listOuter}>
@@ -964,7 +964,7 @@ const App = ({navigation}) => {
                   type={item.type}
                   size={width * 0.05}
                   color={'#000'}
-                  style={{marginRight: width * 0.03}}
+                  style={{ marginRight: width * 0.03 }}
                 />
               )}
               <TextReuseableComponent title style={styles.listText} value={item.leftName} />
@@ -1007,7 +1007,7 @@ const App = ({navigation}) => {
                 type={item.type}
                 size={width * 0.05}
                 color={'#000'}
-                style={{marginRight: width * 0.03}}
+                style={{ marginRight: width * 0.03 }}
               />
             )}
             <TextReuseableComponent title style={styles.listText} value={item.leftName} />
@@ -1037,7 +1037,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderRemoteList = ({item, index}) => {
+  const renderRemoteList = ({ item, index }) => {
     return (
       unitMeter?.device_serial_number ? (
         <TouchableOpacity
@@ -1052,7 +1052,7 @@ const App = ({navigation}) => {
               </View>
               <View style={styles.flexRow}>
                 <View style={styles.flexColoum}>
-                  <View style={{flexDirection: 'row-reverse'}}>
+                  <View style={{ flexDirection: 'row-reverse' }}>
                     {item.rightName == null ? null : (
                       <TextReuseableComponent title style={[
                         styles.listText,
@@ -1079,12 +1079,12 @@ const App = ({navigation}) => {
                             ? '#0fc908'
                             : '#f00'
                         }
-                        style={{marginRight: width * 0.01}}
+                        style={{ marginRight: width * 0.01 }}
                       />
                     )}
                   </View>
                   {item.text ? (
-                    <TextReuseableComponent title style={[styles.listGreyText, {textAlign: 'right'}]} value={item.text} />
+                    <TextReuseableComponent title style={[styles.listGreyText, { textAlign: 'right' }]} value={item.text} />
                   ) : null}
                 </View>
                 {item.rightIcon == null ? null : (
@@ -1120,7 +1120,7 @@ const App = ({navigation}) => {
     setOpenedStatus(!openedStatus);
   };
 
-  const renderReasonData = ({item, index}) => {
+  const renderReasonData = ({ item, index }) => {
     return (
       <View>
         <TouchableOpacity
@@ -1135,7 +1135,7 @@ const App = ({navigation}) => {
               <View style={styles.flexRow}>
                 <View style={styles.flexColoum}>
                   <View
-                    style={{flexDirection: 'row-reverse', width: width * 0.6}}>
+                    style={{ flexDirection: 'row-reverse', width: width * 0.6 }}>
                     {item.rightName == null ? null : (
                       <TextTicker
                         duration={6000}
@@ -1174,7 +1174,7 @@ const App = ({navigation}) => {
             keyExtractor={(item, index) => item + index}
             renderItem={renderReasonInfo}
             ItemSeparatorComponent={() => (
-              <Divider style={[styles.listDivider, {marginTop: 0}]} />
+              <Divider style={[styles.listDivider, { marginTop: 0 }]} />
             )}
           />
         ) : null}
@@ -1182,7 +1182,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderMeterType = ({item, index}) => {
+  const renderMeterType = ({ item, index }) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -1196,7 +1196,7 @@ const App = ({navigation}) => {
             <View style={styles.flexRow}>
               <View style={styles.flexColoum}>
                 <View
-                  style={{flexDirection: 'row-reverse', width: width * 0.6}}>
+                  style={{ flexDirection: 'row-reverse', width: width * 0.6 }}>
                   {item.rightName == null ? null : (
                     <TextTicker
                       duration={6000}
@@ -1230,7 +1230,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderReasonInfo = ({item}) => {
+  const renderReasonInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
@@ -1265,7 +1265,7 @@ const App = ({navigation}) => {
       </View>
     );
   };
-  const renderMeterInfo = ({item}) => {
+  const renderMeterInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
@@ -1289,7 +1289,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderStatusInfo = ({item}) => {
+  const renderStatusInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
@@ -1298,12 +1298,12 @@ const App = ({navigation}) => {
           </View>
           <View style={styles.flexRow}>
             <TextReuseableComponent title style={[
-                styles.listInnerText,
-                {
-                  color: item.bold ? '#000' : '#8c8c8c',
-                  textTransform: 'capitalize',
-                },
-              ]} value={item.rightText} />
+              styles.listInnerText,
+              {
+                color: item.bold ? '#000' : '#8c8c8c',
+                textTransform: 'capitalize',
+              },
+            ]} value={item.rightText} />
             {item.icon == null ? null : (
               <Icon
                 name={item.icon}
@@ -1323,7 +1323,7 @@ const App = ({navigation}) => {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <EditUnit
           flag={flag}
           propertyId={propertyId}
@@ -1343,18 +1343,18 @@ const App = ({navigation}) => {
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
-          // itemPressHandle={() => {
-          //   setEditUnitMenuVisible(false);
-          // }}
-          // handleEditUnit={() => {
-          //   ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
-          //   setEditUnitModalVisible(false);
-          // }}
+        // itemPressHandle={() => {
+        //   setEditUnitMenuVisible(false);
+        // }}
+        // handleEditUnit={() => {
+        //   ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
+        //   setEditUnitModalVisible(false);
+        // }}
         />
         <Header
           leftComponent={{
             text: 'Close',
-            style: {fontSize: width * 0.05, color: '#000'},
+            style: { fontSize: width * 0.05, color: '#000' },
             onPress: () => navigation.goBack(),
           }}
           centerComponent={
@@ -1378,14 +1378,14 @@ const App = ({navigation}) => {
           backgroundColor="#fff"
           containerStyle={styles.headerContainerStyle}
         />
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <SectionList
-            style={{marginTop: height * 0.02}}
+            style={{ marginTop: height * 0.02 }}
             contentContainerStyle={styles.sectionContainer}
             sections={unitData}
             keyExtractor={(item, index) => item + index}
             renderItem={renderUnitList}
-            renderSectionHeader={({section: {title, icon, type}}) => (
+            renderSectionHeader={({ section: { title, icon, type } }) => (
               <>
                 <View style={styles.sectionTitle}>
                   <TextReuseableComponent title style={styles.sectionText} value={title} />
@@ -1401,7 +1401,7 @@ const App = ({navigation}) => {
             )}
           />
           <View>
-            <TextReuseableComponent title style={styles.emptyMeterText} value={'No meter in this unit.\nAdd meter with edit option'} />
+            <TextReuseableComponent subHeading style={styles.emptyMeterText} value={'No meter in this unit.\nAdd meter with edit option'} />
             <View style={styles.metersImgContainer}>
               <Image
                 source={require('../../../../../../../Images/meter-hot.png')}
@@ -1436,7 +1436,7 @@ const App = ({navigation}) => {
             <Button
               onPress={confirmUnitDelete}
               title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
-              buttonStyle={{backgroundColor: '#e24b4b'}}
+              buttonStyle={{ backgroundColor: '#e24b4b' }}
             />
           </View>
         </View>
@@ -1444,7 +1444,7 @@ const App = ({navigation}) => {
     );
   } else {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <EditUnit
           flag={flag}
           propertyId={propertyId}
@@ -1476,7 +1476,7 @@ const App = ({navigation}) => {
         <Header
           leftComponent={{
             text: 'Close',
-            style: {fontSize: width * 0.05, color: '#000'},
+            style: { fontSize: width * 0.05, color: '#000' },
             onPress: () => navigation.goBack(),
           }}
           centerComponent={
@@ -1505,7 +1505,7 @@ const App = ({navigation}) => {
           ref={scrollViewRef}
           onContentSizeChange={() => {
             if (dangerView) {
-              scrollViewRef.current.scrollToEnd({animated: true});
+              scrollViewRef.current.scrollToEnd({ animated: true });
             }
           }}>
           <View style={styles.container}>
@@ -1520,13 +1520,14 @@ const App = ({navigation}) => {
                   translateX: 0,
                 }}
                 style={styles.currentReadContainer}>
-                <TextReuseableComponent title style={{color: '#5c5c5ccf'}} value={"CURRENT READ"} />
+                <TextReuseableComponent title style={{ color: '#5c5c5ccf' }} value={"CURRENT READ"} />
                 <View style={styles.currentReadInnerContainer}>
-                  <TextReuseableComponent title style={{
-                      color: '#639CC7',
-                    }} value={`${unitMeter?.meter_read?.meter_reading
-                      ? unitMeter?.meter_read?.meter_reading
-                      : 0} Gallons`} />
+                  <TextReuseableComponent heading style={{
+                    color: '#639CC7',
+                    fontSize: iconSize,
+                  }} value={`${unitMeter?.meter_read?.meter_reading
+                    ? unitMeter?.meter_read?.meter_reading
+                    : 0} Gallons`} />
                   <RightArrow
                     name="chevron-thin-right"
                     size={iconSize}
@@ -1538,9 +1539,9 @@ const App = ({navigation}) => {
                 </View>
                 <View style={styles.flexRow}>
                   <Check name="check" size={width * 0.05} color="#0fc908" />
-                  <TextReuseableComponent title style={{color: '#5c5c5ccf'}} value={unitMeter?.time_diff
-                      ? 'As of ' + unitMeter?.time_diff
-                      : 'As of 5 hours ago'} />
+                  <TextReuseableComponent title style={{ color: '#5c5c5ccf' }} value={unitMeter?.time_diff
+                    ? 'As of ' + unitMeter?.time_diff
+                    : 'As of 5 hours ago'} />
                 </View>
               </MotiView>
             )}
@@ -1556,7 +1557,7 @@ const App = ({navigation}) => {
                 }}
                 style={[
                   styles.currentReadContainer,
-                  {alignItems: 'center', justifyContent: 'center'},
+                  { alignItems: 'center', justifyContent: 'center' },
                 ]}>
                 <View
                   style={{
@@ -1573,28 +1574,28 @@ const App = ({navigation}) => {
                   <View>
                     <TextReuseableComponent title style={styles.greyText} value={"PULSES"} />
                     <TextReuseableComponent title value={unitMeter?.meter_read?.meter_reading
-                        ? unitMeter?.meter_read?.meter_reading
-                        : 0} />
+                      ? unitMeter?.meter_read?.meter_reading
+                      : 0} />
                   </View>
                   <TextReuseableComponent title style={styles.symbolStyle} value={"x"} />
                   <View>
                     <TextReuseableComponent title style={styles.greyText} value={"MULTIPLIER"} />
-                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={"1"} />
+                    <TextReuseableComponent title style={[styles.text, { color: '#639CC7' }]} value={"1"} />
                   </View>
                   <TextReuseableComponent title style={styles.symbolStyle} value={"+"} />
                   <View>
                     <TextReuseableComponent title style={styles.greyText} value={"IMR"} />
-                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={unitMeter?.initial_meter_reading
-                        ? unitMeter?.initial_meter_reading
-                        : 0} />
+                    <TextReuseableComponent title style={[styles.text, { color: '#639CC7' }]} value={unitMeter?.initial_meter_reading
+                      ? unitMeter?.initial_meter_reading
+                      : 0} />
                   </View>
                   <TextReuseableComponent title style={styles.symbolStyle} value={"="} />
                   <View>
                     <TextReuseableComponent title style={styles.greyText} value={"CURRENT READ"} />
-                    <TextReuseableComponent title style={[styles.text, {color: '#639CC7'}]} value={unitMeter?.meter_read?.meter_reading
-                        ? unitMeter?.meter_read?.meter_reading +
-                          unitMeter?.initial_meter_reading
-                        : 0} />
+                    <TextReuseableComponent title style={[styles.text, { color: '#639CC7' }]} value={unitMeter?.meter_read?.meter_reading
+                      ? unitMeter?.meter_read?.meter_reading +
+                      unitMeter?.initial_meter_reading
+                      : 0} />
                   </View>
                 </View>
               </MotiView>
@@ -1602,14 +1603,14 @@ const App = ({navigation}) => {
             <View>
               <Button
                 title="Quick Actions"
-                titleStyle={{color: '#000'}}
+                titleStyle={{ color: '#000' }}
                 icon={
                   <Radio
                     name="radio"
                     size={width * 0.06}
                     // color="#fff"
                     color="#000"
-                    style={{marginRight: width * 0.025}}
+                    style={{ marginRight: width * 0.025 }}
                   />
                 }
                 buttonStyle={{
@@ -1628,10 +1629,10 @@ const App = ({navigation}) => {
               sections={unitData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderUnitList}
-              renderSectionHeader={({section: {title, icon, type}}) => (
+              renderSectionHeader={({ section: { title, icon, type } }) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <TextReuseableComponent title style={styles.sectionText} value={title} />
+                    <TextReuseableComponent heading value={title} />
                     <Icon
                       name={icon}
                       type={type}
@@ -1652,10 +1653,10 @@ const App = ({navigation}) => {
               sections={remoteReaderData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderRemoteList}
-              renderSectionHeader={({section: {title, img}}) => (
+              renderSectionHeader={({ section: { title, img } }) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <TextReuseableComponent title style={styles.sectionText} value={title} />
+                    <TextReuseableComponent heading value={title} />
                     <Image source={img} style={styles.sectionImgStyle} />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
@@ -1669,7 +1670,7 @@ const App = ({navigation}) => {
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderStatusInfo}
                 ItemSeparatorComponent={() => (
-                  <Divider style={[styles.listDivider, {marginTop: 0}]} />
+                  <Divider style={[styles.listDivider, { marginTop: 0 }]} />
                 )}
               />
             ) : null}
@@ -1684,10 +1685,10 @@ const App = ({navigation}) => {
                 sections={reasonsData}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderReasonData}
-                renderSectionHeader={({section: {title, img}}) => (
+                renderSectionHeader={({ section: { title, img } }) => (
                   <>
                     <View style={styles.sectionTitle}>
-                      <TextReuseableComponent title style={styles.sectionText} value={title} />
+                      <TextReuseableComponent heading value={title} />
                     </View>
                     <Divider style={styles.sectionTitleDivider} />
                   </>
@@ -1704,10 +1705,10 @@ const App = ({navigation}) => {
               sections={meterTypeData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderMeterType}
-              renderSectionHeader={({section: {title, img}}) => (
+              renderSectionHeader={({ section: { title, img } }) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <TextReuseableComponent title style={styles.sectionText} value={unitMeter?.utility_type_name?.name ?? 'N/A'} />
+                    <TextReuseableComponent heading value={unitMeter?.utility_type_name?.name ?? 'N/A'} />
                     <Image
                       source={img}
                       resizeMode="contain"
@@ -1725,13 +1726,13 @@ const App = ({navigation}) => {
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderMeterInfo}
                 ItemSeparatorComponent={() => (
-                  <Divider style={[styles.listDivider, {marginTop: 0}]} />
+                  <Divider style={[styles.listDivider, { marginTop: 0 }]} />
                 )}
               />
             ) : null}
             <View>
               <View style={styles.usageTextContainer}>
-                <TextReuseableComponent title style={styles.sectionText} value={"Usage"} />
+                <TextReuseableComponent heading value={"Usage"} />
                 <Icon
                   name="bar-chart"
                   type="fontisto"
@@ -1750,7 +1751,7 @@ const App = ({navigation}) => {
               {/*
               //todo: Add Chart here 
               */}
-              <View style={{alignItems: 'center'}}>
+              <View style={{ alignItems: 'center' }}>
                 {meterReadData.length > 0 ? (
                   <Svg style={styled.parent}>
                     <G transform={'translate(0, -10)'}>
@@ -1768,9 +1769,9 @@ const App = ({navigation}) => {
                         domainPadding={{
                           x: width * 0.05,
                         }}
-                        labels={({datum, index}) => `${datum.y}`}
+                        labels={({ datum, index }) => `${datum.y}`}
                         style={{
-                          data: {fill: '#DFDFDF'},
+                          data: { fill: '#DFDFDF' },
                           labels: {
                             fontSize: width * 0.02,
                           },
@@ -1804,43 +1805,43 @@ const App = ({navigation}) => {
                           meterReadData.length > 0 ? meterReadData : dataSetOne
                         }
                         // data={dataSetOne}
-                        domainPadding={{x: [width * 0.05, 0], y: [1, 1]}}
+                        domainPadding={{ x: [width * 0.05, 0], y: [1, 1] }}
                         domain={
                           readDate.length > 0 && meterReadData.length > 0
                             ? {
-                                x: [
-                                  meterReadData[0]?.x,
-                                  meterReadData[meterReadData.length - 1]?.x,
-                                ],
-                                y: [
-                                  meterUsage.length > 0
-                                    ? Math.max(...meterUsage) > 0
-                                      ? dataSet[0] - Math.max(...meterUsage)
-                                      : 0
-                                    : 0,
-                                  // 16,
-                                  dataSet?.length > 0
-                                    ? dataSet[dataSet?.length - 1]
-                                    : 0,
-                                ],
-                              }
+                              x: [
+                                meterReadData[0]?.x,
+                                meterReadData[meterReadData.length - 1]?.x,
+                              ],
+                              y: [
+                                meterUsage.length > 0
+                                  ? Math.max(...meterUsage) > 0
+                                    ? dataSet[0] - Math.max(...meterUsage)
+                                    : 0
+                                  : 0,
+                                // 16,
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
                             : {
-                                x: [
-                                  new Date(2021, 10, 13),
-                                  new Date(2021, 10, 19),
-                                ],
-                                y: [
-                                  dataSet?.length > 0 ? dataSet[0] : 0,
-                                  // 11,
+                              x: [
+                                new Date(2021, 10, 13),
+                                new Date(2021, 10, 19),
+                              ],
+                              y: [
+                                dataSet?.length > 0 ? dataSet[0] : 0,
+                                // 11,
 
-                                  dataSet?.length > 0
-                                    ? dataSet[dataSet?.length - 1]
-                                    : 0,
-                                ],
-                              }
+                                dataSet?.length > 0
+                                  ? dataSet[dataSet?.length - 1]
+                                  : 0,
+                              ],
+                            }
                         }
                         interpolation="monotoneX"
-                        scale={{x: 'time', y: 'linear'}}
+                        scale={{ x: 'time', y: 'linear' }}
                         standalone={false}
                         style={styled.lineOne}
                       />
@@ -1856,7 +1857,7 @@ const App = ({navigation}) => {
                         orientation="right"
                         standalone={false}
                         style={styled.axisTwo}
-                        // tickFormat={(x) => `${x / 1000000}`}
+                      // tickFormat={(x) => `${x / 1000000}`}
                       />
 
                       <VictoryAxis
@@ -1872,7 +1873,7 @@ const App = ({navigation}) => {
                             ? `${date.getDate()}`
                             : `0${date.getDate()}`)
                         }
-                        domainPadding={{x: width * 0.05, y: height * 0.5}}
+                        domainPadding={{ x: width * 0.05, y: height * 0.5 }}
                       />
                       {/* </VictoryChart> */}
                     </G>
@@ -1884,8 +1885,8 @@ const App = ({navigation}) => {
                       justifyContent: 'center',
                     }}>
                     <TextReuseableComponent title value={loadChartData
-                        ? 'Loading Data...'
-                        : 'No Data for this Week'} />
+                      ? 'Loading Data...'
+                      : 'No Data for this Week'} />
                   </View>
                 )}
 
@@ -1903,7 +1904,7 @@ const App = ({navigation}) => {
             </View>
             <View>
               <View style={styles.usageTextContainer}>
-                <TextReuseableComponent title value={"Danger Zone"} />
+                <TextReuseableComponent heading value={"Danger Zone"} />
                 <Icon
                   name={dangerView ? 'chevron-down' : 'chevron-right'}
                   type="feather"
@@ -1952,10 +1953,10 @@ const App = ({navigation}) => {
                   }}>
                   {item.id == unitMeter?.id && (
                     <View
-                      style={[styles.meterInner, {backgroundColor: '#639CC7'}]}>
+                      style={[styles.meterInner, { backgroundColor: '#639CC7' }]}>
                       <Check
                         name="check"
-                        style={{marginLeft: width * 0.005}}
+                        style={{ marginLeft: width * 0.005 }}
                         size={width * 0.02}
                         color="#fff"
                       />
@@ -1973,12 +1974,12 @@ const App = ({navigation}) => {
                       justifyContent: 'center',
                     }}>
                     <TextReuseableComponent title style={[
-                        styles.emptyMeterText,
-                        {
-                          width: width * 0.14,
-                          textAlignVertical: 'center',
-                        },
-                      ]} value={item?.utility_type_name?.name ?? 'N/A'} />
+                      styles.emptyMeterText,
+                      {
+                        width: width * 0.14,
+                        textAlignVertical: 'center',
+                      },
+                    ]} value={item?.utility_type_name?.name ?? 'N/A'} />
                   </View>
                 </TouchableOpacity>
               ))}

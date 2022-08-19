@@ -182,7 +182,7 @@ export default function UnitEdit({
     {
       id: 0,
       error: '',
-      name: 'Device Serial Number',
+      name: 'Device Serial Number*',
       value:
         type == 'meterDirect' || type == 'addMeterDirect'
           ? unitDetails?.unit?.meterSerial
@@ -2818,6 +2818,7 @@ export default function UnitEdit({
                       <TextReuseableComponent title style={[
                           styles.meterDesciptionHeading,
                           {
+                            height: width * 0.2,  
                             top: -5,
                             textTransform:
                               sliderNumber == 4 ? 'none' : 'capitalize',

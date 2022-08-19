@@ -77,7 +77,7 @@ export default class DrawerModal extends Component {
                   color="#7575ff"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent title style={styles.drawerbtn} value={'Details'} />
+                <TextReuseableComponent heading value={'Details'} />
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
@@ -88,7 +88,7 @@ export default class DrawerModal extends Component {
                   color="#ff9f71"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent title style={styles.drawerbtn} value={'Equipments'} />
+                <TextReuseableComponent heading value={'Equipments'} />
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToAlerts}>
@@ -99,7 +99,7 @@ export default class DrawerModal extends Component {
                   color="#f00"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent title style={styles.drawerbtn} value={'Alerts'} />
+                <TextReuseableComponent heading value={'Alerts'} />
               </View>
             </TouchableOpacity>
 
@@ -111,7 +111,7 @@ export default class DrawerModal extends Component {
                   color="#f00"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent title style={styles.drawerbtn} value={'Reports'} />
+                <TextReuseableComponent heading value={'Reports'} />
               </View>
             </TouchableOpacity>
             {/* <TouchableOpacity onPress={naviagateToChart}>
@@ -122,7 +122,7 @@ export default class DrawerModal extends Component {
                   color="#009349"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent title={'Component'} style={styles.drawerbtn} />
+                <TextReuseableComponent title={'Component'}  />
               </View>
             </TouchableOpacity> */}
           </View>
@@ -146,7 +146,7 @@ export default class DrawerModal extends Component {
                   bottom: Platform.OS == 'ios' ? 2 : null,
                 }}
               />
-              <TextReuseableComponent title style={[styles.drawerbtn]} value={'Support'} />
+              <TextReuseableComponent heading value={'Support'} />
             </View>
           </TouchableOpacity>
         </View>
