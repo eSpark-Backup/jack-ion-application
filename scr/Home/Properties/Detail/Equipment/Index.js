@@ -2,7 +2,6 @@ import React, { Component, Fragment, version } from 'react';
 
 import {
   View,
-  Text,
   StatusBar,
   Dimensions,
   TouchableOpacity,
@@ -998,14 +997,10 @@ class Splash extends Component {
                 borderRadius: width * 0.02,
                 marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
               }}>
-              <Text
-                style={{
+              <TextReuseableComponent title style={{
                   color: 'white',
                   textAlign: 'center',
-                  fontSize: width * 0.08,
-                }}>
-                Scan Barcode
-              </Text>
+                }} value={"Scan Barcode"} />
               <RNCamera
                 ref={(ref) => {
                   this.camera = ref;
@@ -1041,14 +1036,10 @@ class Splash extends Component {
                       justifyContent: 'center',
                       width: width * 0.4,
                     }}>
-                    <Text
-                      style={{
+                    <TextReuseableComponent title style={{
                         textAlign: 'center',
                         color: '#25AAE1',
-                        fontWeight: 'bold',
-                      }}>
-                      Switch Off Scanner
-                    </Text>
+                      }} value={"Switch Off Scanner"} />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -1153,13 +1144,13 @@ class Splash extends Component {
               activeOpacity={.8}
               onPress={() => this.setState({ activeTab: "units" })}
               style={activeTab == "units" ? styles.activeTabContainer : styles.tabContainer}>
-              <Text style={{ color: activeTab == "units" ? "#25AAE1ec" : "#fff", fontWeight: "bold" }}>Units</Text>
+              <TextReuseableComponent title style={{ color: activeTab == "units" ? "#25AAE1ec" : "#fff" }} value={"Units"} />
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={.8}
               onPress={() => this.setState({ activeTab: "network" })}
               style={activeTab == "network" ? styles.activeTabContainer : styles.tabContainer}>
-              <Text style={{ color: activeTab == "network" ? "#25AAE1ec" : "#fff", fontWeight: "bold" }}>Network</Text>
+              <TextReuseableComponent title style={{ color: activeTab == "network" ? "#25AAE1ec" : "#fff" }} value={"Network"} />
             </TouchableOpacity>
           </View>
           {this.state.activeTab == 'units' ?
@@ -1195,8 +1186,7 @@ class Splash extends Component {
                                 : '#3E4A4F'
                             }
                           />
-                          <Text
-                            style={[
+                          <TextReuseableComponent title style={[
                               styles.dropDownText,
                               {
                                 color:
@@ -1205,9 +1195,7 @@ class Splash extends Component {
                                     ? '#817e7e80'
                                     : '#3E4A4F',
                               },
-                            ]}>
-                            Add
-                          </Text>
+                            ]} value={"Add"} />
                           <Feather
                             name="chevron-down"
                             size={height * 0.02}
@@ -1271,8 +1259,7 @@ class Splash extends Component {
                                 }}
                               />
                             )}
-                            <Text
-                              style={[
+                            <TextReuseableComponent title style={[
                                 styles.dropDownListText,
                                 {
                                   color:
@@ -1281,23 +1268,17 @@ class Splash extends Component {
                                       ? '#817e7e80'
                                       : '#000',
                                 },
-                              ]}>
-                              {item.name}
-                            </Text>
+                              ]} value={item.name} />
                           </View>
                         </MenuItem>
                       ))}
                     </MenuT>
                     {!loader &&
                       this.state.unitActualCount >= this.state.unitCount && (
-                        <Text
-                          style={{
-                            textAlign: 'center',
-                            fontSize: width * 0.032,
-                            color: '#ff0000ff',
-                          }}>
-                          Unit Count Limit Exceed
-                        </Text>
+                        <TextReuseableComponent title style={{
+                          textAlign: 'center',
+                          color: '#ff0000ff',
+                        }} value={"Unit Count Limit Exceed"} />
                       )}
                   </View>
 
@@ -1334,9 +1315,7 @@ class Splash extends Component {
                     </View>
                   ) : this.state.dataBuild.length == 0 ? (
                     <View style={{ width: width * 0.55, justifyContent: 'center' }}>
-                      <Text style={styles.noDataStyling}>
-                        No data add Building
-                      </Text>
+                      <TextReuseableComponent title style={styles.noDataStyling} value={"No data add Building"} />
                     </View>
                   ) : (
                     <FlatList
@@ -1520,7 +1499,7 @@ class Splash extends Component {
                   </View>
                 ) : this.state.realData.length == 0 ? (
                   <View style={{ width: width * 0.55, justifyContent: 'center' }}>
-                    <Text style={styles.noDataStyling}>No data add Unit</Text>
+                    <TextReuseableComponent title style={styles.noDataStyling} value={"No data add Unit"} />
                   </View>
                 ) : (
                   <View style={{ width: width * 1, backgroundColor: '#F5F5F5' }}>
@@ -1550,9 +1529,7 @@ class Splash extends Component {
                 {!gateway ?
                   <View style={styles.addGatewayContainer}>
                     <View style={{ marginVertical: 20 }}>
-                      <Text style={{ fontSize: 18, color: '#bdbdbd' }}>
-                        Program a Gateway
-                      </Text>
+                      <TextReuseableComponent title style={{ color: '#bdbdbd' }} value={"Program a Gateway"} />
                     </View>
                     <View>
                       <View style={styles.textInputContainer}>
@@ -1586,23 +1563,15 @@ class Splash extends Component {
                         {this.state.loading ? (
                           <ActivityIndicator size="small" color="#ffffff" />
                         ) : (
-                          <Text style={styles.btnText}>Attach</Text>
+                          <TextReuseableComponent title style={styles.btnText} value={"Attach"} />
                         )}
-                        {/* <Text style={styles.btnText}>Attach</Text> */}
                       </View>
                     </TouchableOpacity>
                   </View> :
                   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={[styles.mainHeadiing, { color: '#000' }]}>
-                      Network Information
-                    </Text>
-
-                    <Text style={[styles.mainHeadiing, { color: '#000' }]}>
-                      {gateway?.serial_number}
-                    </Text>
-                    <Text style={[styles.mainHeadiing, { color: '#000' }]}>
-                      {"Synced"}
-                    </Text>
+                    <TextReuseableComponent title style={[styles.mainHeadiing, { color: '#000' }]} value={"Network Information"} />
+                    <TextReuseableComponent title style={[styles.mainHeadiing, { color: '#000' }]} value={gateway?.serial_number} />
+                    <TextReuseableComponent title style={[styles.mainHeadiing, { color: '#000' }]} value={"Synced"} />
                     <View style={{ marginVertical: 15, flexDirection: 'row', width: '50%', justifyContent: 'space-around' }}>
                       <MaterialCommunityIcons
                         name='ethernet'

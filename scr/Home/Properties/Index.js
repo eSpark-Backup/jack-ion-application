@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import {
-  Text,
   View,
   Dimensions,
   TouchableOpacity,
@@ -52,6 +51,9 @@ import {
 import API from '../../api/SeviceApi';
 import {connect} from 'react-redux';
 import {fetchPropetry, loadMoreData} from '../../Store/Action/properties.action';
+
+import TextReuseableComponent from '../../components/Text/index';
+
 const {width, height} = Dimensions.get('window');
 
 class Property extends Component {
@@ -437,9 +439,7 @@ class Property extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <Text style={styles.buildUnitCount}>
-                {prop.item.building_count}
-              </Text>
+              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
             </View>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
@@ -447,9 +447,7 @@ class Property extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <Text style={styles.buildUnitCount}>
-                {prop.item.unit_actual_count}
-              </Text>
+              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
             </View>
             {prop?.item?.gateway &&
             <View style={styles.buildUnitCountContainer}>
@@ -543,9 +541,7 @@ class Property extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <Text style={styles.buildUnitCount}>
-                {prop.item.building_count}
-              </Text>
+              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
             </View>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
@@ -553,9 +549,7 @@ class Property extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <Text style={styles.buildUnitCount}>
-                {prop.item.unit_actual_count}
-              </Text>
+              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
             </View>
             {prop?.item?.gateway &&
             <View style={styles.buildUnitCountContainer}>
@@ -592,59 +586,43 @@ class Property extends Component {
                 </View>
                 <View style={styles.animatedDetailShown}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
-                      Building:
-                    </Text>
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Building:"} />
                     <FontAwesome5Icon
                       name="building"
                       size={height * 0.02}
                       color="#000"
                     />
-                    <Text style={styles.animatedDetailBuildingAndUnitText}>
-                      {prop.item.building_count}
-                    </Text>
+                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.building_count} />
                   </View>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
-                      Unit:
-                    </Text>
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit:"} />
                     <FontAwesome5Icon
                       name="house-user"
                       size={height * 0.02}
                       color="#000"
                     />
-                    <Text style={styles.animatedDetailBuildingAndUnitText}>
-                      {prop.item.unit_actual_count}
-                    </Text>
+                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_actual_count} />
                   </View>
                 </View>
 
                 <View style={styles.animatedDetailShown}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
-                      Meter:
-                    </Text>
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Meter:"} />
                       <Feather
                         name="inbox"
                         size={width * 0.04}
                         color="#000"
                       />
-                      <Text style={styles.animatedDetailBuildingAndUnitText}>
-                        {prop.item.meter_count}
-                      </Text>
+                      <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.meter_count} />
                     </View>
                     <View style={styles.animatedDetailBuildingAndUnit}>
-                      <Text style={{ color: 'black', fontSize: height * .015, marginHorizontal: 4 }}>
-                        Unit Mix:
-                      </Text>
+                      <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit Mix:"} />
                       <MaterialCommunityIcons
                         name="file-table-box-outline"
                         size={width * 0.04}
                         color="#000"
                       />
-                      <Text style={styles.animatedDetailBuildingAndUnitText}>
-                        {prop.item.unit_mix_count}
-                      </Text>
+                      <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_mix_count} />
                     </View>
                 </View>
               </View>
@@ -660,19 +638,13 @@ class Property extends Component {
                     color="white"
                     size={width * 0.04}
                   />
-                  <Text
-                    style={styles.animatedViewDetailBtnName}>
-                    Details
-                  </Text>
+                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Details"} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => this.jumpToEquip({ prop, item: prop })}
                   style={styles.animatedViewDetailBtn}>
                   <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                  <Text
-                    style={styles.animatedViewDetailBtnName}>
-                    Equipments
-                  </Text>
+                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Equipments"} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => this.jumpToAlerts({ prop, item: prop })}
@@ -682,10 +654,7 @@ class Property extends Component {
                     color="white"
                     size={width * 0.04}
                   />
-                  <Text
-                    style={styles.animatedViewDetailBtnName}>
-                    Alerts
-                  </Text>
+                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Alerts"} />
                 </TouchableOpacity>
               </View>
 
@@ -697,10 +666,7 @@ class Property extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <Text
-                  style={styles.animatedViewDetailBtnName}>
-                  Delete
-                </Text>
+                <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Delete"} />
               </TouchableOpacity>
             </View>
           </View>
@@ -796,9 +762,7 @@ class Property extends Component {
                       size={height * 0.04}
                       color="white"
                     />
-                    <Text style={{color: 'white', paddingLeft: width * 0.035}}>
-                      Search
-                    </Text>
+                    <TextReuseableComponent title style={{color: 'white', paddingLeft: width * 0.035}} value={"Search"} />
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -848,7 +812,7 @@ class Property extends Component {
                 size={width * 0.08}
                 color="white"
               />
-              <Text style={styles.mainHeadiing}>Properties</Text>
+              <TextReuseableComponent title style={styles.mainHeadiing} value={"Properties"} />
             </View>
             <Filter
               type="Properties"
@@ -933,7 +897,7 @@ class Property extends Component {
           </View>
           <View style={styles.propertyList}>
             {this.state.noInternet ? (
-              <Text>Check Your Internet Connection</Text>
+              <TextReuseableComponent title value={"Check Your Internet Connection"} />
             ) : this.props.isLoading ? (
               <ScrollView
                 scrollEnabled={false}
@@ -941,12 +905,12 @@ class Property extends Component {
                 {this.state.shimmers.map((item) => this.renderShimmers(item))}
               </ScrollView>
             ) : this.props.propList.length < 1 && !this.props.isLoading ? (
-              <Text>No Properties to Show</Text>
+              <TextReuseableComponent title value={"No Properties to Show"} />
             ) : (
               <View>
                 <View style={[styles.pullDownContainer, { height: this.state.isPullDownShow ? height * .07 : height * 0, }]}>
                   <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
-                  <Text style={styles.pullDownText}>Pull down to refresh</Text>
+                  <TextReuseableComponent title style={styles.pullDownText} value={"Pull down to refresh"} />
                 </View>
                 <FlatList
                   data={this.props.propList}
