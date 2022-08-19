@@ -2,6 +2,7 @@ import React, { Component, Fragment, version } from 'react';
 
 import {
   View,
+  Text,
   StatusBar,
   Dimensions,
   TouchableOpacity,

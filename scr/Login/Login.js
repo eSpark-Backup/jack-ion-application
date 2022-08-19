@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Text,
   TouchableOpacity,
   TextInput,
   Dimensions,
@@ -153,8 +154,10 @@ class Login extends Component {
             />
           </View>
           <View style={{ marginBottom: height * 0.05 }}>
-            <TextReuseableComponent title style={styles.titleText} value={`Sign In into
-              ${<TextReuseableComponent style={styles.highlightText} value={"ION"} />}`} />
+          <Text style={styles.titleText}>
+              Sign In into
+              <Text style={styles.highlightText}> ION</Text>
+            </Text>
           </View>
           <Formik
             initialValues={{
