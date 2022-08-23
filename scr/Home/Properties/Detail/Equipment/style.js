@@ -1,7 +1,7 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../../../utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../../../utils/fonts';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -78,15 +78,23 @@ export default styles = StyleSheet.create({
     elevation: width * 0.01,
     flexDirection: 'row',
   },
-  headerIconContainer:{
+  headerIconContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },  
+  },
   mainHeadiing: {
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.06,
     color: 'white',
+  },
+  buildingBadge: {
+    backgroundColor: '#25AAE1ec',
+    width: '100%',
+    justifyContent: "center",
+    padding: 6,
+    color: 'white',
+    flexDirection: 'row'
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
@@ -98,8 +106,6 @@ export default styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    // borderWidth: .5,
-    // borderColor: '#bdbdbd'
   },
   activeTabContainer: {
     width: '50%',
@@ -107,8 +113,6 @@ export default styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    // borderWidth: .5,
-    // borderColor: '#bdbdbd',
     elevation: width * 0.005,
   },
   mainDataContainer: {

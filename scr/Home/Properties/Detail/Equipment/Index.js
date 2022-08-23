@@ -417,7 +417,7 @@ class Splash extends Component {
 
   actionOnPress = (unit) => {
     if (this.state.showSearch) {
-      this.setState({showSearch: false})
+      this.setState({ showSearch: false })
       this.props.navigation.navigate('U_Details', {
         unitId: unit.item.id,
         buildingName: this.state.buildingData.name,
@@ -747,8 +747,8 @@ class Splash extends Component {
                     size={width * 0.04}
                   />
                   <TextReuseableComponent title style={{
-                      color: 'white',
-                    }} value={"View"} />
+                    color: 'white',
+                  }} value={"View"} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => this._openEditUnit(unit?.item?.id)}
@@ -763,8 +763,8 @@ class Splash extends Component {
                     size={width * 0.04}
                   />
                   <TextReuseableComponent title style={{
-                      color: 'white',
-                    }} value={"Edit"} />
+                    color: 'white',
+                  }} value={"Edit"} />
                 </TouchableOpacity>
               </View>
 
@@ -781,8 +781,8 @@ class Splash extends Component {
                   size={width * 0.04}
                 />
                 <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"Delete"} />
+                  color: 'white',
+                }} value={"Delete"} />
               </TouchableOpacity>
             </View>
           </View>
@@ -824,8 +824,8 @@ class Splash extends Component {
           onPress={() => this.buildingEditOpen(build.item)}
           style={styles.buildingEditBtn}>
           <TextReuseableComponent title style={{
-              color: 'white',
-            }} value={"Edit"} />
+            color: 'white',
+          }} value={"Edit"} />
           <MaterialIcons name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -995,9 +995,9 @@ class Splash extends Component {
                 marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
               }}>
               <TextReuseableComponent title style={{
-                  color: 'white',
-                  textAlign: 'center',
-                }} value={"Scan Barcode"} />
+                color: 'white',
+                textAlign: 'center',
+              }} value={"Scan Barcode"} />
               <RNCamera
                 ref={(ref) => {
                   this.camera = ref;
@@ -1034,9 +1034,9 @@ class Splash extends Component {
                       width: width * 0.4,
                     }}>
                     <TextReuseableComponent title style={{
-                        textAlign: 'center',
-                        color: '#25AAE1',
-                      }} value={"Switch Off Scanner"} />
+                      textAlign: 'center',
+                      color: '#25AAE1',
+                    }} value={"Switch Off Scanner"} />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -1184,15 +1184,15 @@ class Splash extends Component {
                             }
                           />
                           <TextReuseableComponent title style={[
-                              styles.dropDownText,
-                              {
-                                color:
-                                  this.state.unitActualCount >=
-                                    this.state.unitCount
-                                    ? '#817e7e80'
-                                    : '#3E4A4F',
-                              },
-                            ]} value={"Add"} />
+                            styles.dropDownText,
+                            {
+                              color:
+                                this.state.unitActualCount >=
+                                  this.state.unitCount
+                                  ? '#817e7e80'
+                                  : '#3E4A4F',
+                            },
+                          ]} value={"Add"} />
                           <Feather
                             name="chevron-down"
                             size={height * 0.02}
@@ -1257,15 +1257,15 @@ class Splash extends Component {
                               />
                             )}
                             <TextReuseableComponent title style={[
-                                styles.dropDownListText,
-                                {
-                                  color:
-                                    this.state.dataBuild.length == 0 &&
-                                      index !== 2
-                                      ? '#817e7e80'
-                                      : '#000',
-                                },
-                              ]} value={item.name} />
+                              styles.dropDownListText,
+                              {
+                                color:
+                                  this.state.dataBuild.length == 0 &&
+                                    index !== 2
+                                    ? '#817e7e80'
+                                    : '#000',
+                              },
+                            ]} value={item.name} />
                           </View>
                         </MenuItem>
                       ))}
@@ -1328,6 +1328,15 @@ class Splash extends Component {
                     />
                   )}
                 </View>
+                {this.state?.buildingData?.name && <View style={styles.buildingBadge}>
+                  <View>
+                    <FontAwesome5 name="building" size={width * 0.04} color="white" />
+                  </View>
+                  <View>
+                    <TextReuseableComponent title style={{ color: 'white', marginLeft: width * 0.02 }} value={`${this.state?.buildingData?.name ? this.state?.buildingData?.name : ''}`} />
+                  </View>
+                </View>}
+
                 <EditUnit
                   flag={this.state.flag}
                   propertyId={this.props.navigation.state.params.item.item.id}
