@@ -767,6 +767,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                   </View>
                   <ScrollView
                     nestedScrollEnabled
+                    showsVerticalScrollIndicator={false}
                     style={{width: width * 0.85, height: width * 0.2}}>
                     {this.state.unitMixes.map((item, index) => (
                       <View style={styles.unitMixesValuesContainer}>

@@ -511,6 +511,7 @@ class Splash extends Component {
   };
 
   _renderUnitList = (unit) => {
+    console.log(unit, 'unit ------>');
     return (
       <View
         style={{
@@ -556,7 +557,7 @@ class Splash extends Component {
               </View>
               <View style={styles.unitDetailContainer}>
                 {unit?.item?.unit_meter?.length ? (
-                  <View style={{ flexDirection: 'row', maxWidth: width * 0.22 }}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View style={styles.unitDetailInnerif}>
                       <Image
                         source={require('../../../../../Images/remote-reader.png')}
@@ -580,6 +581,14 @@ class Splash extends Component {
                           }`}
                       </TextTicker>
                     </View>
+                    {
+                      unit?.item?.unit_meter?.length ? <View style={styles.deviceInstalledIndicator}>
+                        <Feather
+                          name="check"
+                          size={width * 0.035}
+                          color="white"
+                        />
+                      </View> : null}
                   </View>
                 ) : (
                   <View style={styles.unitDetailInnerElse}>

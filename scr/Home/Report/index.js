@@ -159,7 +159,7 @@ const toggleModal = () => {
                       </View>
                       <View  style={{width: "90%", height: 50}}>
                           <TextReuseableComponent title value={val?.name} />
-                          <TextReuseableComponent title numberOfLines={2} value={val?.description} />
+                          <TextReuseableComponent numberOfLines={2} value={val?.description} />
                       </View>
                   </TouchableOpacity>
                 )
