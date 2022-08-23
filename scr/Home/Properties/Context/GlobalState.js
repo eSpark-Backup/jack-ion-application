@@ -27,7 +27,6 @@ class GlobalState extends React.Component {
       offset: 0,
     };
     const response = await API.post('/property/all', data);
-    // console.log('respone property===>', response.data.data.properties);
     this.setState({
       offset: response?.data?.data?.offset,
     });
@@ -52,7 +51,6 @@ class GlobalState extends React.Component {
       location: this.state.filterLocation,
     };
     const response = await API.post('/property/all', data);
-    // console.log('respone property===>', response.data.data);
     if (response?.data?.bool) {
       console.log('this.state.offset===>', this.state.offset);
       console.log(

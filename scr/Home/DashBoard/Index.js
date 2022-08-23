@@ -208,7 +208,6 @@ export default class Splash extends Component {
   };
 
   _renderProperties = (prop) => {
-    console.log('PROPS', prop?.item?.gateway);
     return (
       <View
         style={{

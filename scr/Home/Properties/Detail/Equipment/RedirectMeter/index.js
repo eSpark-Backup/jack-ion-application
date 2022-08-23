@@ -245,7 +245,6 @@ export default class RedirectMeter extends Component {
       offset: this.state.offset,
     };
     const response = await API.post('/property/all', data);
-    // console.log('respone property===>', response.data.data);
     this.setState({
       success: response.data.bool,
     });

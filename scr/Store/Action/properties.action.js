@@ -15,7 +15,6 @@ export const fetchPropetry = (data) => {
             offset: 0,
           },
     );
-    console.log('respone property===>', response.data.data.properties, data);
 
     if (response?.data?.bool) {
       const payload = {
@@ -43,7 +42,6 @@ export const loadMoreData = (data) => {
             offset: 0,
           },
     );
-    console.log('LOAD MORE respone property===>', response.data.data.properties, data);
 
     if (response?.data?.bool) {
       if (

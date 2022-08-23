@@ -162,7 +162,6 @@ class Splash extends Component {
     this.setState({ filterWork: false, loader: true, loaderBuildings: true });
     const PropertyID = this.props.navigation.state.params.item.item.id;
     const PropRes = await API.get(`/property/${PropertyID}`);
-    console.log("gateway response", PropRes?.data?.data?.property?.gateway)
     this.setState({
       unitCount: PropRes?.data?.data?.property?.unit_count,
       unitActualCount: PropRes?.data?.data?.property.unit_actual_count,
@@ -177,7 +176,6 @@ class Splash extends Component {
 
     if (response?.ok == true) {
       this.setState({ dataBuild: response?.data?.data });
-      console.log('Something found???', response?.data?.data);
       this.setState({ loaderBuildings: false });
       if (response?.data?.data?.length != 0) {
         this.setState({
@@ -978,7 +976,6 @@ class Splash extends Component {
     const realData = this.state.realData;
     const realColor = this.state.hColor;
     const { loader, loaderBuildings, meterTypeInputs, gateway, activeTab } = this.state;
-    console.log("gateway", gateway)
     return (
       <>
         <View style={styles.container}>
