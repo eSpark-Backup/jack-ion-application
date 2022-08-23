@@ -298,7 +298,6 @@ export default function UnitEdit({
   };
 
   const sendInstallationStatus = (status) => {
-    console.log("status ==========>", status);
     setHideBtn(true);
     setInstallationStatus(status);
     setStatusAnimation(true);
@@ -472,7 +471,7 @@ export default function UnitEdit({
     callApi();
 
     let arr2 = meterTypes;
-
+    console.log('arr2====================================', arr2);
     setMeterListData(arr2);
 
 
@@ -508,19 +507,26 @@ export default function UnitEdit({
         return { name, ...rest };
       });
       setUnitMix(unitMixes);
-      if (type != 'add') {
-        // setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
-        setUnitMixId(unitMixesId);
-        unitMixes?.map((item) => {
-          if (item.id == unitMixesId) {
-            setSelectedUnitMix(item.name);
-          }
-        });
+      if (modalVisible) {
+
+        if (type != 'add') {
+          // setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
+          setUnitMixId(unitMixesId);
+          unitMixes?.map((item) => {
+            if (item.id == unitMixesId) {
+              console.log('SelectedUnitMix', item.name);
+              setSelectedUnitMix(item.name);
+            }
+
+          });
+        }
         console.log('UNITMIXES');
       }
     }
     // callApi();
   }, [meterTypes, unitDetails, modalVisible]);
+  console.log('UnitMixID', unitMixId);
+  console.log('SelectedUnitMixES', selectedUnitMix);
 
   useEffect(() => {
     if (sliderNumber == 5) {
@@ -944,16 +950,6 @@ export default function UnitEdit({
         const { model_no: name, ...rest } = item;
         return { name, ...rest };
       });
-      // listSlide[2].data = modelNos;
-      // listSlide[2].selectId = '';
-      // listSlide[2].select = '';
-      // this.setState((prevState) => ({
-      //   error: {
-      //     // object that we want to update
-      //     ...prevState.error, // keep all other key-value pairs
-      //     deviceId: '',
-      //   },
-      // }));
       setProductNo(product_desc);
       console.log(clc.cyanBright('product desc of device'), product_desc);
       console.log('DAEA of models', modelNos);
@@ -1002,34 +998,6 @@ export default function UnitEdit({
         alert(delMeter.data.message);
       }
     }
-    // if (item.id != null) {
-    //   const delMeter = await API.post(
-    //     `/property/equipment/unit/unit-meter/${item.id}`,
-    //   );
-    //   if (delMeter.data.bool) {
-    //     if (indOfMData >= 0) {
-    //       let listData = [...meterData];
-    //       listData.splice(indOfMData, 1);
-    //       setMeterData(listData);
-    //     }
-    //     let listArr = [...meterListData];
-    //     listArr.splice(index, 1);
-    //     setMeterListData(listArr);
-    //     reRun();
-    //   } else {
-    //     alert(delMeter.data.message)
-    //   }
-    // } else {
-    //   if (indOfMData >= 0) {
-    //     let listData = [...meterData];
-    //     listData.splice(indOfMData, 1);
-    //     setMeterData(listData);
-    //   }
-    //   let listArr = [...meterListData];
-    //   listArr.splice(index, 1);
-    //   setMeterListData(listArr);
-    //   reRun();
-    // }
   };
 
   const handleAddNewUnit = async () => {
@@ -1152,12 +1120,6 @@ export default function UnitEdit({
     }
   };
 
-  // const handleOpenMeterSelection = () => {
-  //   // console.log('e-ss--->');
-  //   setMeterMenuVisible(true);
-  //   callApi();
-  // };
-
   const handleAddMeter = async () => {
     LayoutAnimation.configureNext({
       duration: 300,
@@ -1203,7 +1165,7 @@ export default function UnitEdit({
         errorUnits: '',
       }));
     }
-    if (unitMixId == null) {
+    if (unitMixId == null || selectedUnitMix == '') {
       setError((oldState) => ({
         ...oldState,
         errorUnitMix: 'Please select Unit Mix',
@@ -1217,13 +1179,10 @@ export default function UnitEdit({
     }
     console.log('Meter Data ka Bata', meterData);
 
-    if (
-      meterData.length == 0 &&
-      (type == 'addMeterDirect' || type == 'meterDirect' || type == 'add')
-    ) {
-      callApi();
-      enableLocation();
-    }
+
+    callApi();
+    enableLocation();
+
   }
 
   const checkingSerial = async () => {
@@ -1404,15 +1363,6 @@ export default function UnitEdit({
       },
     });
     setShowAddType(false);
-    // console.log('selectedID', selectedDevId);
-    // if (selectedDevId != null) {
-    //   const addMeter = meterListData.filter((item) => item.id != selectedDevId);
-    //   console.log('ADDMETER', addMeter);
-    //   setMeterListData(addMeter);
-    // }
-
-
-    // console.log('meterArray------>', meterArray);
     setStatusAnimation(false);
 
     setShowAddMeterSlider(false);
@@ -1433,11 +1383,6 @@ export default function UnitEdit({
       unit_mix_id: unitMixId,
       meters: meterData,
     };
-
-    // console.log('Meter Data 1', unitDetails?.unit?.id);
-    // console.log('Meter Data 2', meterData[1].reasons);
-    // console.log('data--->', data);
-    // console.log('data meters--->', data.meters);
     if (type == 'add' || type == 'addMeterDirect') {
       console.log('ADD CHALA');
       const unitResponse = await API.post(
@@ -1449,7 +1394,6 @@ export default function UnitEdit({
         setIsActivityLoader(false);
         alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
-        // console.log('datachecckk-->>', unitResponse?.data?.data);
         cancelMeter();
       } else {
         setIsActivityLoader(false);
@@ -1458,18 +1402,12 @@ export default function UnitEdit({
         alert(unitResponse?.data?.message);
         cancelMeter();
       }
-      // console.log('Add unit response', unitResponse?.data);
     } else {
       console.log('EDIT CHALA');
       const unitResponse = await API.post(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
       );
-      // console.log(
-      //   'Unitmeterchecckk-->>',
-      //   unitResponse?.data?.data?.unit?.unit_meter,
-      // );
-      // console.log('update data check-->>', unitResponse?.data);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         setIsActivityLoader(false);
@@ -3997,551 +3935,375 @@ export default function UnitEdit({
                         </View>
                       )}
                     </View>
-                  ) : // <View style={styles.container}>
-                    //   <View
-                    //     style={{
-                    //       flex: 1,
-                    //       width: width,
-                    //       alignItems: 'center',
-                    //       justifyContent: 'center',
-                    //       marginTop: width * 0.01,
-                    //     }}>
-                    //     <View
-                    //       style={{
-                    //         flex: 1,
-                    //         zIndex: 2,
-                    //         position: 'absolute',
-                    //         top: width * 0.04,
-                    //         width: width * 0.72,
-                    //       }}>
-                    //       <GooglePlacesAutocomplete
-                    //         placeholder="Address"
-                    //         query={{
-                    //           key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
-                    //           language: 'en', // language of the results
-                    //         }}
-                    //         fetchDetails={true}
-                    //         onPress={(data, details) =>
-                    //           catchLocation(details.geometry.location)
-                    //         }
-                    //         onFail={(error) => console.error(error)}
-                    //       />
-                    //     </View>
-                    //     <TouchableOpacity
-                    //       onPress={() => getPropertyLocation()}
-                    //       style={[
-                    //         styles.doneButton,
-                    //         {bottom: width * 0.15, right: width * 0.025},
-                    //       ]}>
-                    //       <Icon
-                    //         size={width * 0.07}
-                    //         color="#fff"
-                    //         name={'location-city'}
-                    //       />
-                    //     </TouchableOpacity>
-                    //     <TouchableOpacity
-                    //       onPress={() => getCurrentLocation()}
-                    //       style={[
-                    //         styles.doneButton,
-                    //         {bottom: 5, right: width * 0.025},
-                    //       ]}>
-                    //       <Icon
-                    //         size={width * 0.07}
-                    //         color="#fff"
-                    //         name={'gps-fixed'}
-                    //       />
-                    //     </TouchableOpacity>
-                    //     {markers.length > 0 && (
-                    //       <View
-                    //         style={{
-                    //           // backgroundColor: 'blue',
-                    //           width: width * 0.13,
-                    //           height: width * 0.22,
-                    //           zIndex: 1,
-                    //           position: 'absolute',
-                    //           alignItems: 'center',
-                    //         }}>
-                    //         <Icon
-                    //           size={width * 0.12}
-                    //           color="#f00"
-                    //           name={'location-pin'}
-                    //         />
-                    //       </View>
-                    //     )}
-                    //     {markers.length > 0 ? (
-                    //       <View
-                    //         style={{
-                    //           width: '100%',
-                    //           height: '100%',
-                    //           borderRadius: width * 0.3,
-                    //         }}>
-                    //         <MapView
-                    //           style={{
-                    //             width: '100%',
-                    //             height: '100%',
-                    //             borderRadius: width * 0.03,
-                    //           }}
-                    //           // scrollEnabled={false}
-                    //           // initialRegion={{
-                    //           //   latitude: parseFloat(propertyLat),
-                    //           //   longitude: parseFloat(propertyLong),
-                    //           //   latitudeDelta: LATITUDE_DELTA,
-                    //           //   longitudeDelta: LONGITUDE_DELTA,
-                    //           // }}
-                    //           region={{
-                    //             latitude: lat,
-                    //             longitude: long,
-                    //             latitudeDelta: latDelta,
-                    //             longitudeDelta: longDelta,
-                    //           }}
-                    //           zoomEnabled={true}
-                    //           provider={PROVIDER_GOOGLE}
-                    //           showsUserLocation={true}
-                    //           showsMyLocationButton={false}
-                    //           onRegionChangeComplete={(e, ges) =>
-                    //             moveMarker(e, ges)
-                    //           }
-                    //           // onPress={(e) => this.getLocation(e)}
-                    //         >
-                    //           <Marker
-                    //             coordinate={{
-                    //               latitude: parseFloat(propertyLat),
-                    //               longitude: parseFloat(propertyLong),
-                    //             }}
-                    //             title={'Property Location'}
-                    //             // icon={require('../../../../../../../Images/Proplocate.png')}
-                    //             draggable>
-                    //             <View
-                    //               style={{
-                    //                 width: width * 0.1,
-                    //                 height: width * 0.1,
-                    //                 backgroundColor: 'transparent',
-                    //               }}>
-                    //               <Image
-                    //                 source={require('../../../../../../../Images/Proplocate.png')}
-                    //                 // resizeMode="center"
-                    //                 resizeMode="cover"
-                    //                 resizeMethod="auto"
-                    //                 style={{
-                    //                   width: width * 0.1,
-                    //                   height: width * 0.1,
-                    //                   // backgroundColor: 'red',
-                    //                 }}
-                    //               />
-                    //             </View>
-                    //           </Marker>
-                    //           <Circle
-                    //             center={{
-                    //               latitude: parseFloat(propertyLat),
-                    //               longitude: parseFloat(propertyLong),
-                    //             }}
-                    //             radius={radialDis}
-                    //             fillColor="rgba(12,170,225,0.3)"
-                    //             strokeColor="rgba(12,170,225,1)"
-                    //           />
-                    //         </MapView>
-                    //       </View>
-                    //     ) : null}
-                    //   </View>
-                    // </View>
-                    sliderNumber == 4 ? (
-                      <View style={styles.container}>
+                  ) : sliderNumber == 4 ? (
+                    <View style={styles.container}>
+                      <View
+                        style={{
+                          flex: 1,
+                          width: width,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginTop: width * 0.01,
+                        }}>
                         <View
                           style={{
                             flex: 1,
-                            width: width,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginTop: width * 0.01,
+                            zIndex: 2,
+                            position: 'absolute',
+                            top: width * 0.04,
+                            width: width * 0.72,
                           }}>
+                          <GooglePlacesAutocomplete
+                            placeholder="Address"
+                            query={{
+                              key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
+                              language: 'en', // language of the results
+                            }}
+                            fetchDetails={true}
+                            onPress={(data, details) =>
+                              catchLocation(details.geometry.location)
+                            }
+                            onFail={(error) => console.error(error)}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => getPropertyLocation()}
+                          style={[
+                            styles.doneButton,
+                            { bottom: width * 0.15, right: width * 0.025 },
+                          ]}>
+                          <Icon
+                            size={width * 0.07}
+                            color="#fff"
+                            name={'location-city'}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => getCurrentLocation()}
+                          style={[
+                            styles.doneButton,
+                            { bottom: 5, right: width * 0.025 },
+                          ]}>
+                          <Icon
+                            size={width * 0.07}
+                            color="#fff"
+                            name={'gps-fixed'}
+                          />
+                        </TouchableOpacity>
+                        {markers.length > 0 && (
                           <View
                             style={{
-                              flex: 1,
-                              zIndex: 2,
+                              // backgroundColor: 'blue',
+                              width: width * 0.13,
+                              height: width * 0.22,
+                              zIndex: 1,
                               position: 'absolute',
-                              top: width * 0.04,
-                              width: width * 0.72,
+                              alignItems: 'center',
                             }}>
-                            <GooglePlacesAutocomplete
-                              placeholder="Address"
-                              query={{
-                                key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
-                                language: 'en', // language of the results
-                              }}
-                              fetchDetails={true}
-                              onPress={(data, details) =>
-                                catchLocation(details.geometry.location)
-                              }
-                              onFail={(error) => console.error(error)}
+                            <Icon
+                              size={width * 0.12}
+                              color="#f00"
+                              name={'location-pin'}
                             />
                           </View>
-                          <TouchableOpacity
-                            onPress={() => getPropertyLocation()}
-                            style={[
-                              styles.doneButton,
-                              { bottom: width * 0.15, right: width * 0.025 },
-                            ]}>
-                            <Icon
-                              size={width * 0.07}
-                              color="#fff"
-                              name={'location-city'}
-                            />
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => getCurrentLocation()}
-                            style={[
-                              styles.doneButton,
-                              { bottom: 5, right: width * 0.025 },
-                            ]}>
-                            <Icon
-                              size={width * 0.07}
-                              color="#fff"
-                              name={'gps-fixed'}
-                            />
-                          </TouchableOpacity>
-                          {markers.length > 0 && (
-                            <View
-                              style={{
-                                // backgroundColor: 'blue',
-                                width: width * 0.13,
-                                height: width * 0.22,
-                                zIndex: 1,
-                                position: 'absolute',
-                                alignItems: 'center',
-                              }}>
-                              <Icon
-                                size={width * 0.12}
-                                color="#f00"
-                                name={'location-pin'}
-                              />
-                            </View>
-                          )}
-                          {markers.length > 0 ? (
-                            <View
+                        )}
+                        {markers.length > 0 ? (
+                          <View
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              borderRadius: width * 0.3,
+                            }}>
+                            <MapView
                               style={{
                                 width: '100%',
                                 height: '100%',
-                                borderRadius: width * 0.3,
-                              }}>
-                              <MapView
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  borderRadius: width * 0.03,
+                                borderRadius: width * 0.03,
+                              }}
+                              // scrollEnabled={false}
+                              // initialRegion={{
+                              //   latitude: parseFloat(propertyLat),
+                              //   longitude: parseFloat(propertyLong),
+                              //   latitudeDelta: LATITUDE_DELTA,
+                              //   longitudeDelta: LONGITUDE_DELTA,
+                              // }}
+                              region={{
+                                latitude: lat,
+                                longitude: long,
+                                latitudeDelta: latDelta,
+                                longitudeDelta: longDelta,
+                              }}
+                              zoomEnabled={true}
+                              minZoomLevel={17}
+                              provider={PROVIDER_GOOGLE}
+                              showsUserLocation={true}
+                              showsMyLocationButton={false}
+                              onRegionChangeComplete={(e, ges) =>
+                                moveMarker(e, ges)
+                              }
+                            // onPress={(e) => this.getLocation(e)}
+                            >
+                              <Marker
+                                coordinate={{
+                                  latitude: parseFloat(propertyLat),
+                                  longitude: parseFloat(propertyLong),
                                 }}
-                                // scrollEnabled={false}
-                                // initialRegion={{
-                                //   latitude: parseFloat(propertyLat),
-                                //   longitude: parseFloat(propertyLong),
-                                //   latitudeDelta: LATITUDE_DELTA,
-                                //   longitudeDelta: LONGITUDE_DELTA,
-                                // }}
-                                region={{
-                                  latitude: lat,
-                                  longitude: long,
-                                  latitudeDelta: latDelta,
-                                  longitudeDelta: longDelta,
-                                }}
-                                zoomEnabled={true}
-                                minZoomLevel={17}
-                                provider={PROVIDER_GOOGLE}
-                                showsUserLocation={true}
-                                showsMyLocationButton={false}
-                                onRegionChangeComplete={(e, ges) =>
-                                  moveMarker(e, ges)
-                                }
-                              // onPress={(e) => this.getLocation(e)}
-                              >
-                                <Marker
-                                  coordinate={{
-                                    latitude: parseFloat(propertyLat),
-                                    longitude: parseFloat(propertyLong),
-                                  }}
-                                  title={'Property Location'}
-                                  // icon={require('../../../../../../../Images/Proplocate.png')}
-                                  draggable>
-                                  <View
+                                title={'Property Location'}
+                                // icon={require('../../../../../../../Images/Proplocate.png')}
+                                draggable>
+                                <View
+                                  style={{
+                                    width: width * 0.1,
+                                    height: width * 0.1,
+                                    backgroundColor: 'transparent',
+                                  }}>
+                                  <Image
+                                    source={require('../../../../../../../Images/Proplocate.png')}
+                                    // resizeMode="center"
+                                    resizeMode="cover"
+                                    resizeMethod="auto"
                                     style={{
                                       width: width * 0.1,
                                       height: width * 0.1,
-                                      backgroundColor: 'transparent',
-                                    }}>
-                                    <Image
-                                      source={require('../../../../../../../Images/Proplocate.png')}
-                                      // resizeMode="center"
-                                      resizeMode="cover"
-                                      resizeMethod="auto"
-                                      style={{
-                                        width: width * 0.1,
-                                        height: width * 0.1,
-                                        // backgroundColor: 'red',
-                                      }}
-                                    />
-                                  </View>
-                                </Marker>
-                                <Circle
-                                  center={{
-                                    latitude: parseFloat(propertyLat),
-                                    longitude: parseFloat(propertyLong),
-                                  }}
-                                  radius={radialDis}
-                                  fillColor="rgba(12,170,225,0.3)"
-                                  strokeColor="rgba(12,170,225,1)"
-                                />
-                              </MapView>
-                            </View>
-                          ) : null}
-                        </View>
+                                      // backgroundColor: 'red',
+                                    }}
+                                  />
+                                </View>
+                              </Marker>
+                              <Circle
+                                center={{
+                                  latitude: parseFloat(propertyLat),
+                                  longitude: parseFloat(propertyLong),
+                                }}
+                                radius={radialDis}
+                                fillColor="rgba(12,170,225,0.3)"
+                                strokeColor="rgba(12,170,225,1)"
+                              />
+                            </MapView>
+                          </View>
+                        ) : null}
                       </View>
-                    ) : sliderNumber == 5 ? (
-                      doneAnimation ? (
-                        <Image
-                          resizeMode="contain"
-                          resizeMethod="auto"
-                          style={{
-                            flex: 1,
-                            width: width * 0.3,
-                            height: width * 0.8,
-                          }}
-                          source={require('../../../../../../../Images/aniLoad.gif')}
-                        />
-                      ) : (
-                        <View style={styles.reasonFileContainer}>
-                          {installationStatus == 1 && statusAnimation == true && (
-                            <View style={{ alignItems: 'center' }}>
-                              <Video
-                                source={require('../../../../../../../Images/checkmarkv.mp4')}
-                                repeat
-                                style={{
-                                  width: width * 0.3,
-                                  height: width * 0.3,
+                    </View>
+                  ) : sliderNumber == 5 ? (
+                    doneAnimation ? (
+                      <Image
+                        resizeMode="contain"
+                        resizeMethod="auto"
+                        style={{
+                          flex: 1,
+                          width: width * 0.3,
+                          height: width * 0.8,
+                        }}
+                        source={require('../../../../../../../Images/aniLoad.gif')}
+                      />
+                    ) : (
+                      <View style={styles.reasonFileContainer}>
+                        {installationStatus == 1 && statusAnimation == true && (
+                          <View style={{ alignItems: 'center' }}>
+                            <Video
+                              source={require('../../../../../../../Images/checkmarkv.mp4')}
+                              repeat
+                              style={{
+                                width: width * 0.3,
+                                height: width * 0.3,
+                              }}
+                              resizeMode="contain"
+                              controls={false}
+                            />
+                            <TextReuseableComponent title style={{
+                              color: '#00B1DC',
+                            }} value={"Installation Successful"} />
+                            <TextReuseableComponent title value={"Meter is installed Successfully"} />
+                          </View>
+                        )}
+                        {installationStatus == 2 && statusAnimation == true && (
+                          <View style={{ alignItems: 'center' }}>
+                            <Image
+                              resizeMode="contain"
+                              resizeMethod="auto"
+                              style={{
+                                width: width * 0.3,
+                                height: width * 0.3,
+                              }}
+                              source={require('../../../../../../../Images/cross.gif')}
+                            />
+                            <TextReuseableComponent title style={{
+                              color: '#FF0000',
+                            }} value={"Installation not Succeed"} />
+                            <TextReuseableComponent title value={"Meter is not installed"} />
+                          </View>
+                        )}
+                        {installationStatus == 2 && statusAnimation == false && (
+                          <View style={{ flex: 1 }}>
+                            <View
+                              style={{
+                                width: width * 0.8,
+                              }}>
+                              <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason*"} />
+                              <Searchable_Dropdown
+                                onItemSelect={(item) => {
+                                  setReasonText(item.name);
+                                  setReasonId(item.id);
                                 }}
-                                resizeMode="contain"
-                                controls={false}
-                              />
-                              <TextReuseableComponent title style={{
-                                color: '#00B1DC',
-                              }} value={"Installation Successful"} />
-                              <TextReuseableComponent title value={"Meter is installed Successfully"} />
-                            </View>
-                          )}
-                          {installationStatus == 2 && statusAnimation == true && (
-                            <View style={{ alignItems: 'center' }}>
-                              <Image
-                                resizeMode="contain"
-                                resizeMethod="auto"
-                                style={{
-                                  width: width * 0.3,
-                                  height: width * 0.3,
+                                containerStyle={{
+                                  marginVertical: width * 0.02,
                                 }}
-                                source={require('../../../../../../../Images/cross.gif')}
-                              />
-                              <TextReuseableComponent title style={{
-                                color: '#FF0000',
-                              }} value={"Installation not Succeed"} />
-                              <TextReuseableComponent title value={"Meter is not installed"} />
-                            </View>
-                          )}
-                          {installationStatus == 2 && statusAnimation == false && (
-                            <View style={{ flex: 1 }}>
-                              <View
-                                style={{
-                                  width: width * 0.8,
-                                }}>
-                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason*"} />
-                                <Searchable_Dropdown
-                                  onItemSelect={(item) => {
-                                    setReasonText(item.name);
-                                    setReasonId(item.id);
-                                  }}
-                                  containerStyle={{
-                                    marginVertical: width * 0.02,
-                                  }}
-                                  itemStyle={{
-                                    padding: width * 0.027,
-                                    backgroundColor: 'rgb(247, 247, 247)',
-                                    borderColor: '#bbb',
-                                    borderWidth: width * 0.0015,
+                                itemStyle={{
+                                  padding: width * 0.027,
+                                  backgroundColor: 'rgb(247, 247, 247)',
+                                  borderColor: '#bbb',
+                                  borderWidth: width * 0.0015,
+                                  borderRadius: width * 0.015,
+                                  // padding: width * 0.027,
+                                  // backgroundColor: '#fff',
+                                  // borderColor: '#bbb',
+                                  // borderWidth: width * 0.0015,
+                                  // borderRadius: width * 0.015,
+                                  // margin: width * 0.005,
+                                }}
+                                itemTextStyle={{ color: '#222' }}
+                                itemsContainerStyle={{ maxHeight: width * 0.25 }}
+                                items={reasons}
+                                resetValue={false}
+                                textInputProps={{
+                                  placeholder: 'Select Reasons',
+                                  underlineColorAndroid: 'transparent',
+                                  trueIcon: 'chevron-up',
+                                  falseIcon: 'chevron-down',
+                                  style: {
+                                    margin: 0,
                                     borderRadius: width * 0.015,
-                                    // padding: width * 0.027,
-                                    // backgroundColor: '#fff',
-                                    // borderColor: '#bbb',
-                                    // borderWidth: width * 0.0015,
-                                    // borderRadius: width * 0.015,
-                                    // margin: width * 0.005,
-                                  }}
-                                  itemTextStyle={{ color: '#222' }}
-                                  itemsContainerStyle={{ maxHeight: width * 0.25 }}
-                                  items={reasons}
-                                  resetValue={false}
-                                  textInputProps={{
-                                    placeholder: 'Select Reasons',
-                                    underlineColorAndroid: 'transparent',
-                                    trueIcon: 'chevron-up',
-                                    falseIcon: 'chevron-down',
-                                    style: {
-                                      margin: 0,
-                                      borderRadius: width * 0.015,
-                                      height: width * 0.13,
-                                      backgroundColor: '#F6F6F6',
-                                      borderWidth: width * 0.0019,
-                                    },
-                                    onTextChange: (text) => {
-                                      setReasonText(text);
-                                    },
-                                    value: setTimeout(() => reasonText, 200),
-                                    defaultValue: reasonText,
-                                  }}
-                                  listProps={{
-                                    nestedScrollEnabled: true,
-                                  }}
-                                />
-                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason Description*"} />
-                                <Text_Input
-                                  placeholder="Describe Your Reason"
-                                  value={reasonDes}
-                                  style={{
-                                    ...styles.meterInput,
-                                    marginVertical: width * 0.02,
-                                  }}
-                                  onChangeText={(text) => {
-                                    setReasonDes(text);
-                                  }}
-                                />
-                              </View>
-                              <View
+                                    height: width * 0.13,
+                                    backgroundColor: '#F6F6F6',
+                                    borderWidth: width * 0.0019,
+                                  },
+                                  onTextChange: (text) => {
+                                    setReasonText(text);
+                                  },
+                                  value: setTimeout(() => reasonText, 200),
+                                  defaultValue: reasonText,
+                                }}
+                                listProps={{
+                                  nestedScrollEnabled: true,
+                                }}
+                              />
+                              <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason Description*"} />
+                              <Text_Input
+                                placeholder="Describe Your Reason"
+                                value={reasonDes}
                                 style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}>
-                                <View>
-                                  <TouchableOpacity
-                                    onPress={() =>
-                                      requestCameraPermission('reason')
-                                    }
-                                    style={[styles.button, { width: width * 0.1 }]}>
-                                    <Ionicons
-                                      name="camera"
-                                      size={width * 0.05}
-                                      color="#3E4A4F"
-                                    />
-                                  </TouchableOpacity>
-                                  <TouchableOpacity
-                                    onPress={() => imageGalleryLaunch('reason')}
-                                    style={[styles.button, { width: width * 0.1 }]}>
-                                    <Ionicons
-                                      name="images"
-                                      size={width * 0.05}
-                                      color="#3E4A4F"
-                                    />
-                                  </TouchableOpacity>
-                                </View>
-                                <View style={styles.imageListContainer}>
-                                  {reasonPath.length > 0 ? (
-                                    <ScrollView
-                                      horizontal
-                                      showsHorizontalScrollIndicator={false}>
-                                      <View
-                                        style={{ flexDirection: 'row', flex: 1 }}>
-                                        {reasonPath?.map(({ uri, index }) => (
-                                          <View style={styles.imageContainer}>
-                                            <TouchableOpacity
-                                              onPress={() =>
-                                                removeImage(uri, 'reason')
-                                              }
-                                              style={styles.imageRemovebtn}>
-                                              <Ionicons
-                                                name="close-circle"
-                                                size={width * 0.07}
-                                              />
-                                            </TouchableOpacity>
-                                            <Image
-                                              resizeMode="cover"
-                                              style={{
-                                                alignSelf: 'center',
-                                                height: width * 0.25,
-                                                width: width * 0.25,
-                                              }}
-                                              source={{ uri: uri }}
-                                              key={index}
-                                            />
-                                          </View>
-                                        ))}
-                                      </View>
-                                    </ScrollView>
-                                  ) : (
-                                    <TextReuseableComponent title style={{ textAlign: 'center' }} value={"No Image Uploaded"} />
-                                  )}
-                                </View>
-                              </View>
-
-                              {/* <TouchableOpacity
-                            onPress={() => imageGalleryLaunch('reason')}
-                            style={styles.button1}>
+                                  ...styles.meterInput,
+                                  marginVertical: width * 0.02,
+                                }}
+                                onChangeText={(text) => {
+                                  setReasonDes(text);
+                                }}
+                              />
+                            </View>
                             <View
                               style={{
                                 flexDirection: 'row',
+                                justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor: '#25AAE1ec',
-                                height: width * 0.12,
-                                paddingHorizontal: width * 0.03,
                               }}>
-                              <Ionicons
-                                name="images"
-                                size={width * 0.05}
-                                color="#fff"
-                                style={{marginRight: width * 0.01}}
-                              />
-                              <TextReuseableComponent title style={styles.buttonText} value={"Upload File"} />
+                              <View>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    requestCameraPermission('reason')
+                                  }
+                                  style={[styles.button, { width: width * 0.1 }]}>
+                                  <Ionicons
+                                    name="camera"
+                                    size={width * 0.05}
+                                    color="#3E4A4F"
+                                  />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => imageGalleryLaunch('reason')}
+                                  style={[styles.button, { width: width * 0.1 }]}>
+                                  <Ionicons
+                                    name="images"
+                                    size={width * 0.05}
+                                    color="#3E4A4F"
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                              <View style={styles.imageListContainer}>
+                                {reasonPath.length > 0 ? (
+                                  <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}>
+                                    <View
+                                      style={{ flexDirection: 'row', flex: 1 }}>
+                                      {reasonPath?.map(({ uri, index }) => (
+                                        <View style={styles.imageContainer}>
+                                          <TouchableOpacity
+                                            onPress={() =>
+                                              removeImage(uri, 'reason')
+                                            }
+                                            style={styles.imageRemovebtn}>
+                                            <Ionicons
+                                              name="close-circle"
+                                              size={width * 0.07}
+                                            />
+                                          </TouchableOpacity>
+                                          <Image
+                                            resizeMode="cover"
+                                            style={{
+                                              alignSelf: 'center',
+                                              height: width * 0.25,
+                                              width: width * 0.25,
+                                            }}
+                                            source={{ uri: uri }}
+                                            key={index}
+                                          />
+                                        </View>
+                                      ))}
+                                    </View>
+                                  </ScrollView>
+                                ) : (
+                                  <TextReuseableComponent title style={{ textAlign: 'center' }} value={"No Image Uploaded"} />
+                                )}
+                              </View>
                             </View>
-                            {reasonPath?.assets &&
-                              reasonPath?.assets.map((item) => (
-                                <TextReuseableComponent title style={{
-                                    // width: width * 0.45,
-                                    flex: 1,
-                                    paddingHorizontal: width * 0.01,
-                                  }} value={`File: ${item.fileName.slice(10)}} />
-                              ))}
-                          </TouchableOpacity> */}
-                            </View>
-                          )}
-                          {installationStatus == 0 && statusAnimation == false && (
-                            <View
-                              style={{
-                                flex: 1,
-                                // backgroundColor: 'yellow',
-                                justifyContent: 'flex-start',
-                                alignItems: 'flex-start',
-                              }}>
-                              <TouchableOpacity
-                                onPress={() => sendInstallationStatus(1)}
-                                style={[
-                                  styles.attemptBtn,
-                                  { backgroundColor: 'green' },
-                                ]}>
-                                <TextReuseableComponent title style={styles.attemptText} value={"Attempted and installed"} />
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  setInstallationStatus(2);
-                                  setStatusAnimation(true);
-                                  setLetsFinish(true);
-                                  setTimeout(() => {
-                                    setStatusAnimation(false);
-                                  }, 5000);
-                                }}
-                                style={[
-                                  styles.attemptBtn,
-                                  { backgroundColor: '#f00' },
-                                ]}>
-                                <TextReuseableComponent title style={styles.attemptText} value={"Attempted but incomplete"} />
-                              </TouchableOpacity>
-                            </View>
-                          )}
-                        </View>
-                      )
-                    ) : null}
+                          </View>
+                        )}
+                        {installationStatus == 0 && statusAnimation == false && (
+                          <View
+                            style={{
+                              flex: 1,
+                              // backgroundColor: 'yellow',
+                              justifyContent: 'flex-start',
+                              alignItems: 'flex-start',
+                            }}>
+                            <TouchableOpacity
+                              onPress={() => sendInstallationStatus(1)}
+                              style={[
+                                styles.attemptBtn,
+                                { backgroundColor: 'green' },
+                              ]}>
+                              <TextReuseableComponent title style={styles.attemptText} value={"Attempted and installed"} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setInstallationStatus(2);
+                                setStatusAnimation(true);
+                                setLetsFinish(true);
+                                setTimeout(() => {
+                                  setStatusAnimation(false);
+                                }, 5000);
+                              }}
+                              style={[
+                                styles.attemptBtn,
+                                { backgroundColor: '#f00' },
+                              ]}>
+                              <TextReuseableComponent title style={styles.attemptText} value={"Attempted but incomplete"} />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
+                    )
+                  ) : null}
 
                   <View
                     style={{
@@ -4789,19 +4551,15 @@ export default function UnitEdit({
                       } value={"Cancel"} />
                     </Pressable>
                     <TextReuseableComponent title style={[styles.modalHeading, { top: 8 }]} value={modalName} />
-                    <Pressable
-                      style={{ marginRight: 5, top: 8 }}
+                    <View
+                      style={{ marginRight: 5, top: 8, width: width * .15 }}
                       onPress={handleAddNewUnit}
                       android_ripple={{
                         color: '#25AAE1',
                         borderless: true,
                         // radius: width * 0.03,
                       }}>
-                      <TextReuseableComponent title style={[
-                        styles.modalHeading,
-                        { color: '#25AAE1' },
-                      ]} value={"Confirm"} />
-                    </Pressable>
+                    </View>
                     {/* <Pressable
                       onPress={() =>
                         Alert.alert(
@@ -5114,8 +4872,7 @@ export default function UnitEdit({
                         ) : (
                           <TouchableOpacity
                             onPress={() => {
-                              callApi();
-                              enableLocation();
+                              handleAddMeter();
                             }}
                             style={{
                               // flexDirection: 'row',

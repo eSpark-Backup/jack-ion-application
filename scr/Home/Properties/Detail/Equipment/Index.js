@@ -511,7 +511,6 @@ class Splash extends Component {
   };
 
   _renderUnitList = (unit) => {
-    console.log(unit, 'unit ------>');
     return (
       <View
         style={{
@@ -591,14 +590,14 @@ class Splash extends Component {
                       </View> : null}
                   </View>
                 ) : (
-                  <View style={styles.unitDetailInnerElse}>
+                  <TouchableOpacity onPress={() => this._openEditUnit(unit?.item?.id)} style={styles.unitDetailInnerElse}>
                     <MaterialCommunityIcons
                       name="barcode-off"
                       size={width * 0.04}
                       style={styles.unitDetailInnerElseIcon}
                     />
                     <TextReuseableComponent title style={styles.unitDetailInnerElseText} value={"Program a Device"} />
-                  </View>
+                  </TouchableOpacity>
                 )}
               </View>
             </View>
