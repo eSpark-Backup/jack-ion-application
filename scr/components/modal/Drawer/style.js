@@ -11,7 +11,7 @@ export default styles = StyleSheet.create({
     left: width * -0.05,
   },
   drawerMainContainer: {
-    height: height,
+    height: '100%',
     backgroundColor: '#fff',
     justifyContent: 'space-between',
   },

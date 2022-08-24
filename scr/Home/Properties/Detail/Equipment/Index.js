@@ -1522,7 +1522,7 @@ class Splash extends Component {
                         listViewRef = ref;
                       }}
                       showsVerticalScrollIndicator={false}
-                      style={{ marginBottom: width * 0.29 }}
+                      style={{ marginBottom: width * 0.35 }}
                       contentContainerStyle={{
                         backgroundColor: '#F5F5F5',
                         alignItems: 'center',
