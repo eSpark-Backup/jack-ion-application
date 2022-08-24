@@ -92,6 +92,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#25AAE1ec',
     width: '100%',
     justifyContent: "center",
+    alignItems: 'center',
     padding: 6,
     color: 'white',
     flexDirection: 'row'
