@@ -585,7 +585,7 @@ class Splash extends Component {
                         <Feather
                           name="check"
                           size={width * 0.035}
-                          color="white"
+                          color="green"
                         />
                       </View> : null}
                   </View>

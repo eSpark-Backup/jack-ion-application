@@ -268,12 +268,8 @@ export default styles = StyleSheet.create({
     top: height * 0.02,
     width: width * 0.04,
     height: width * 0.04,
-    backgroundColor: '#0df2c9',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 4,
-    // borderTopRightRadius: width * 0.008,
-    // borderBottomLeftRadius: width * 0.02,
   },
   buildingUnitName: {
     paddingHorizontal: 10,
