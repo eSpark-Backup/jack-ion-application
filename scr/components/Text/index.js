@@ -3,7 +3,7 @@ import React from 'react';
 
 const { width, height } = Dimensions.get('window');
 
-export default TextReuseableComponent = ({ value, style, textProps , heading ,subHeading, title}) => {
+export default TextReuseableComponent = ({ value, style, heading ,subHeading, title, ...textProps}) => {
     return (
         <Text
             {...textProps}

@@ -157,7 +157,7 @@ const toggleModal = () => {
                       <View style={{width: "10%"}}>  
                           {val?.icon}
                       </View>
-                      <View  style={{width: "90%", height: 50}}>
+                      <View  style={{width: "90%", height: 60}}>
                           <TextReuseableComponent title value={val?.name} />
                           <TextReuseableComponent numberOfLines={2} value={val?.description} />
                       </View>
