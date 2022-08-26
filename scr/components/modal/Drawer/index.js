@@ -73,7 +73,7 @@ export default class DrawerModal extends Component {
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
         <View style={styles.drawerMainContainer}>
-          <View style={{ alignItems: 'center', backgroundColor: '#4EC5F1', height: height * 0.2 }}>
+          <View style={{ alignItems: 'center', backgroundColor: '#e3e3e3', height: height * 0.2 }}>
             <Image
               source={require('../../../../Images/loogo.png')}
               resizeMode="contain"
