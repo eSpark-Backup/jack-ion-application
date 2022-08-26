@@ -84,6 +84,7 @@ export default class DrawerModal extends Component {
               style={{ height: height * 0.12, marginTop: 25 }}
             />
           </View>
+          <View style={{ height: 1.5, backgroundColor: '#25AAE1ec'}} />
           {propertyName ? <View style={styles.propertyTitle}>
             <MaterialCommunityIcons
               name="home-city-outline"
@@ -92,7 +93,7 @@ export default class DrawerModal extends Component {
             />
             <TextReuseableComponent heading style={{ marginLeft: 10 }} value={`${propertyName}`} />
           </View> : null}
-          {propertyName ? <View style={{ height: height * 0.001, backgroundColor: '#e3e3e3', marginTop: height * 0.01, marginBottom: 10 }} /> : null}
+          {propertyName ? <View style={{ height: 1.5, backgroundColor: '#25AAE1ec', marginTop: height * 0.01, marginBottom: 10 }} /> : null}
           <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={naviagateToDetail}>
               <View style={detailsSelected ? styles.selected : styles.drawerContent}>
