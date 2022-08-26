@@ -18,7 +18,6 @@ export default styles = StyleSheet.create({
   drawerContentContainer: {
     width: width * 0.67,
     flexDirection: 'column',
-    top: 20,
     left: 5,
     borderTopLeftRadius: width * 0.015,
     borderBottomLeftRadius: width * 0.015,
@@ -30,6 +29,17 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: height * 0.01,
     paddingTop: height * 0.01,
+    marginLeft: width * 0.035,
+    width: '100%',
+  },
+  drawerLinks: {
+    marginTop: height * 0.02,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: height * 0.01,
+    paddingTop: height * 0.01,
+    marginLeft: width * 0.065,
+    width: '100%',
   },
   selected: {
     marginTop: height * 0.02,
@@ -44,5 +54,11 @@ export default styles = StyleSheet.create({
   },
   propertyTitle: {
     marginTop: height * 0.02,
+    flexDirection: 'row',
+    paddingTop: height * 0.01,
+    borderRadius: 5,
+    marginLeft: width * 0.045,
+    width: '100%',
+    padding: 10,
   },
 });

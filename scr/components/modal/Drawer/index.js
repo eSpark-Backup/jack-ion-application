@@ -80,10 +80,16 @@ export default class DrawerModal extends Component {
               style={{ height: height * 0.12, marginTop: 25 }}
             />
           </View>
+          {propertyName ? <View style={styles.propertyTitle}>
+            <MaterialCommunityIcons
+              name="home-city-outline"
+              size={width * 0.08}
+              color="#25AAE1ec"
+            />
+            <TextReuseableComponent heading style={{ marginLeft: 10 }} value={`${propertyName}`} />
+          </View> : null}
+          {propertyName ? <View style={{ height: height * 0.001, backgroundColor: '#e3e3e3', marginTop: height * 0.01, marginBottom: 10 }} /> : null}
           <View style={styles.drawerContentContainer}>
-              {propertyName ? <View style={styles.propertyTitle}>
-                <TextReuseableComponent title value={`PROPERTY: ${propertyName}`} />
-              </View> : null}
             <TouchableOpacity onPress={naviagateToDetail}>
               <View style={detailsSelected ? styles.selected : styles.drawerContent}>
                 <MaterialCommunityIcons
@@ -106,6 +112,9 @@ export default class DrawerModal extends Component {
                 <TextReuseableComponent title value={'Equipments'} />
               </View>
             </TouchableOpacity>
+          </View>
+          <View style={{ height: height * 0.001, backgroundColor: '#e3e3e3', marginTop: height * 0.05 }} />
+          <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={() => {
               naviagateToAlerts();
             }}>
