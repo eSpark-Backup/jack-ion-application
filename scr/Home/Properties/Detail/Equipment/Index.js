@@ -83,6 +83,9 @@ class Splash extends Component {
       filterWork: false,
       detailsSelected: false,
       equipmentsSelected: false,
+      reportsSelected: false,
+      alertSelected: false,
+      supportSelected: false,
       dataBuild: [],
       realData: [],
       fileMenuVisible: false,
@@ -320,6 +323,9 @@ class Splash extends Component {
       isModalVisible: !this.state.isModalVisible,
       equipmentsSelected: true,
       detailsSelected: false,
+      alertSelected: false,
+      reportsSelected: false,
+      supportSelected: false,
     });
   };
 
@@ -337,13 +343,6 @@ class Splash extends Component {
     });
     this.props.navigation.navigate(
       'Detail',
-      this.props.navigation.state.params,
-    );
-  };
-  naviagateToChart = () => {
-    this.toggleModal();
-    this.props.navigation.navigate(
-      'Charts',
       this.props.navigation.state.params,
     );
   };
@@ -1094,8 +1093,10 @@ class Splash extends Component {
             naviagateToDetail={this.naviagateToDetail}
             detailsSelected={this.state.detailsSelected}
             equipmentsSelected={this.state.equipmentsSelected}
+            reportsSelected={this.state.reportsSelected}
+            alertSelected={this.state.alertSelected}
+            supportSelected={this.state.supportSelected}
             naviagateToEquip={this.naviagateToEquip}
-            naviagateToChart={this.naviagateToChart}
             naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
             navigateToReport={this.navigateToReport}

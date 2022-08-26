@@ -43,6 +43,7 @@ export default class DrawerModal extends Component {
       toEquipments: false,
       toReports: false,
       toSupport: false,
+      toAlerts: false,
       propertyTitle: '',
     };
   }
@@ -58,6 +59,9 @@ export default class DrawerModal extends Component {
       onCancel,
       detailsSelected,
       equipmentsSelected,
+      alertSelected,
+      reportsSelected,
+      supportSelected,
       propertyName
     } = this.props;
     return (
@@ -112,13 +116,8 @@ export default class DrawerModal extends Component {
                 <TextReuseableComponent title value={'Equipments'} />
               </View>
             </TouchableOpacity>
-          </View>
-          <View style={{ height: height * 0.001, backgroundColor: '#e3e3e3', marginTop: height * 0.025 }} />
-          <View style={styles.drawerContentContainer}>
-            <TouchableOpacity onPress={() => {
-              naviagateToAlerts();
-            }}>
-              <View style={styles.drawerContent}>
+            <TouchableOpacity onPress={naviagateToAlerts}>
+              <View style={alertSelected ? styles.selected : styles.drawerContent}>
                 <Feather
                   name="alert-triangle"
                   size={width * 0.065}
@@ -130,7 +129,7 @@ export default class DrawerModal extends Component {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={navigateToReport}>
-              <View style={styles.drawerContent}>
+              <View style={reportsSelected ? styles.selected : styles.drawerContent}>
                 <Entypo
                   name="bar-graph"
                   size={width * 0.065}
@@ -141,7 +140,7 @@ export default class DrawerModal extends Component {
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToSupport}>
-              <View style={styles.drawerContent}>
+              <View style={supportSelected ? styles.selected : styles.drawerContent}>
                 <MaterialCommunityIcons
                   name="help-circle-outline"
                   size={width * 0.065}
