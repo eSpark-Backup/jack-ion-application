@@ -3,7 +3,7 @@ import {StyleSheet, Dimensions} from 'react-native';
 //Packages
 
 //Files
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 
 export default styles = StyleSheet.create({
   modalContainer: {
@@ -11,13 +11,12 @@ export default styles = StyleSheet.create({
     left: width * -0.05,
   },
   drawerMainContainer: {
-    height: '100%',
+    height: height,
     backgroundColor: '#fff',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   drawerContentContainer: {
-    marginTop: height * -0.5,
-    width: width * 0.45,
+    width: width * 0.67,
     flexDirection: 'column',
     top: 20,
     left: 5,
@@ -31,5 +30,19 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: height * 0.01,
     paddingTop: height * 0.01,
+  },
+  selected: {
+    marginTop: height * 0.02,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: height * 0.01,
+    paddingTop: height * 0.01,
+    backgroundColor: '#e3e3e3',
+    borderRadius: 5,
+    width: '100%',
+    padding: 10,
+  },
+  propertyTitle: {
+    marginTop: height * 0.02,
   },
 });

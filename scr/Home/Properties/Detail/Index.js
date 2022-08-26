@@ -100,6 +100,9 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
       installStatus: 0,
       lat: 0,
       long: 0,
+      detailsSelected: false,
+      equipmentsSelected: false,
+      propertyTitle: '',
       markers: [],
       propMarkers: [],
       error: {
@@ -250,7 +253,12 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   };
 
   toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
+    this.setState({
+      isModalVisible: !this.state.isModalVisible,
+      detailsSelected: true,
+      equipmentsSelected: false,
+      propertyTitle: this.state.listData.name,
+    });
   };
 
   enableLocation = async () => {
@@ -366,12 +374,20 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   };
 
   naviagateToEquip = () => {
-    this.setState({isModalVisible: false});
+    this.setState({
+      detailsSelected: false,
+      equipmentsSelected: true,
+      isModalVisible: false,
+    });
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
 
   naviagateToDetail = () => {
-    this.setState({isModalVisible: false});
+    this.setState({
+      isModalVisible: false,
+      detailsSelected: true,
+      equipmentsSelected: false,
+    });
     this.props.navigation.navigate(
       'Detail',
       this.props.navigation.state.params,
@@ -438,12 +454,14 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
             isVisible={this.state.isModalVisible}
             onCancel={this.toggleModal}
             naviagateToDetail={this.naviagateToDetail}
+            detailsSelected={this.state.detailsSelected}
+            equipmentsSelected={this.state.equipmentsSelected}
             naviagateToEquip={this.naviagateToEquip}
             naviagateToChart={this.naviagateToChart}
             naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
             navigateToReport={this.navigateToReport}
-
+            propertyName={this.state.propertyTitle}
           />
 
           <StatusBar hidden backgroundColor="white" barStyle="dark-content" />

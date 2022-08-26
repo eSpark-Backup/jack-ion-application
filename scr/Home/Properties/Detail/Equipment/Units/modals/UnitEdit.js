@@ -1392,7 +1392,7 @@ export default function UnitEdit({
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         setIsActivityLoader(false);
-        alert(unitResponse?.data?.message);
+        // alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
         cancelMeter();
       } else {
@@ -1411,7 +1411,7 @@ export default function UnitEdit({
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         setIsActivityLoader(false);
-        alert(unitResponse?.data?.message);
+        // alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
         cancelMeter();
       } else {

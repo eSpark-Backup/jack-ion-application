@@ -554,14 +554,14 @@ class Property extends Component {
               />
               <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
             </View>
-            {prop?.item?.gateway &&
+            {/* {prop?.item?.gateway &&
               <View style={styles.buildUnitCountContainer}>
                 <MaterialIcon
                   name="router"
                   size={width * 0.05}
                   color="#115b72"
                 />
-              </View>}
+              </View>} */}
           </View>
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (

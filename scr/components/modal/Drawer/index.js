@@ -14,7 +14,7 @@ import {
 //Packages
 
 import Modal from 'react-native-modal';
-import Menu from 'react-native-vector-icons/Entypo';
+import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -24,6 +24,7 @@ import Plus from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Icon, IconToggle } from 'react-native-material-ui';
 import CustumStatusBar from '../../StatusBar';
 import TextReuseableComponent from '../../Text/index';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 // Components
 
@@ -31,21 +32,33 @@ import styles from './style';
 const { width, height } = Dimensions.get('window');
 
 export default class DrawerModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      item: {},
+      listItems: [],
+      focus: false,
+      addMenuVisible: false,
+      toDetails: false,
+      toEquipments: false,
+      toReports: false,
+      toSupport: false,
+      propertyTitle: '',
+    };
+  }
+
   render() {
     const {
-      title,
-      style,
       isVisible,
       naviagateToDetail,
       naviagateToEquip,
       naviagateToAlerts,
-      naviagateToChart,
       naviagateToSupport,
       navigateToReport,
       onCancel,
-      children,
-      doneBtnTitle,
-      onDone,
+      detailsSelected,
+      equipmentsSelected,
+      propertyName
     } = this.props;
     return (
       <Modal
@@ -59,47 +72,51 @@ export default class DrawerModal extends Component {
         statusBarTranslucent
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
-        <View style={{ backgroundColor: '#fff', height: height * 0.05 }} />
         <View style={styles.drawerMainContainer}>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', backgroundColor: '#4EC5F1', height: height * 0.2 }}>
             <Image
               source={require('../../../../Images/loogo.png')}
               resizeMode="contain"
-              style={{ height: height * 0.15 }}
+              style={{ height: height * 0.12, marginTop: 25 }}
             />
           </View>
           <View style={styles.drawerContentContainer}>
+              {propertyName ? <View style={styles.propertyTitle}>
+                <TextReuseableComponent title value={`PROPERTY: ${propertyName}`} />
+              </View> : null}
             <TouchableOpacity onPress={naviagateToDetail}>
-              <View style={styles.drawerContent}>
+              <View style={detailsSelected ? styles.selected : styles.drawerContent}>
                 <MaterialCommunityIcons
                   name="account-details-outline"
                   size={width * 0.065}
-                  color="#7575ff"
+                  color="#35afe2"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent heading value={'Details'} />
+                <TextReuseableComponent title value={'Details'} />
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
-              <View style={styles.drawerContent}>
+              <View style={equipmentsSelected ? styles.selected : styles.drawerContent}>
                 <Feather
                   name="rss"
                   size={width * 0.065}
-                  color="#ff9f71"
+                  color="#35afe2"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent heading value={'Equipments'} />
+                <TextReuseableComponent title value={'Equipments'} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={naviagateToAlerts}>
+            <TouchableOpacity onPress={() => {
+              naviagateToAlerts();
+            }}>
               <View style={styles.drawerContent}>
                 <Feather
                   name="alert-triangle"
                   size={width * 0.065}
-                  color="#f00"
+                  color="#35afe2"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent heading value={'Alerts'} />
+                <TextReuseableComponent title value={'Alerts'} />
               </View>
             </TouchableOpacity>
 
@@ -108,47 +125,24 @@ export default class DrawerModal extends Component {
                 <Entypo
                   name="bar-graph"
                   size={width * 0.065}
-                  color="#f00"
+                  color="#35afe2"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent heading value={'Reports'} />
+                <TextReuseableComponent title value={'Reports'} />
               </View>
             </TouchableOpacity>
-            {/* <TouchableOpacity onPress={naviagateToChart}>
+            <TouchableOpacity onPress={naviagateToSupport}>
               <View style={styles.drawerContent}>
-                <Chart
-                  name="pie-chart"
-                  size={height * 0.035}
-                  color="#009349"
+                <MaterialCommunityIcons
+                  name="help-circle-outline"
+                  size={width * 0.065}
+                  color="#35afe2"
                   style={{ marginRight: width * 0.02 }}
                 />
-                <TextReuseableComponent title={'Component'}  />
+                <TextReuseableComponent title value={'Support'} />
               </View>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={{ bottom: height * 0.05 }}
-            onPress={naviagateToSupport}>
-            <View
-              style={{
-                flexDirection: 'row',
-                // alignItems: 'center',
-                justifyContent: 'center',
-                paddingBottom: height * 0.015,
-                marginBottom: height * 0.01,
-              }}>
-              <MaterialCommunityIcons
-                name="help-circle-outline"
-                size={height * 0.035}
-                color="#35afe2"
-                style={{
-                  marginRight: width * 0.02,
-                  bottom: Platform.OS == 'ios' ? 2 : null,
-                }}
-              />
-              <TextReuseableComponent heading value={'Support'} />
-            </View>
-          </TouchableOpacity>
         </View>
       </Modal>
     );

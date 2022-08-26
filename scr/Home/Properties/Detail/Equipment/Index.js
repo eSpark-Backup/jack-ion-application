@@ -81,6 +81,8 @@ class Splash extends Component {
       showSearch: false,
       showFilter: false,
       filterWork: false,
+      detailsSelected: false,
+      equipmentsSelected: false,
       dataBuild: [],
       realData: [],
       fileMenuVisible: false,
@@ -314,8 +316,13 @@ class Splash extends Component {
   };
 
   toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+    this.setState({
+      isModalVisible: !this.state.isModalVisible,
+      equipmentsSelected: true,
+      detailsSelected: false,
+    });
   };
+
   toggleModalUnit = () => {
     this.setState({ isModalUnitVisible: !this.state.isModalUnitVisible });
   };
@@ -323,7 +330,11 @@ class Splash extends Component {
     this.setState({ isModalBuildVisible: !this.state.isModalBuildVisible });
   };
   naviagateToDetail = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({
+      isModalVisible: false,
+      detailsSelected: true,
+      equipmentsSelected: false,
+    });
     this.props.navigation.navigate(
       'Detail',
       this.props.navigation.state.params,
@@ -337,6 +348,11 @@ class Splash extends Component {
     );
   };
   naviagateToAlerts = () => {
+    this.setState({
+      isModalVisible: false,
+      detailsSelected: false,
+      equipmentsSelected: false,
+    });
     this.toggleModal();
     this.props.navigation.navigate(
       'Alerts',
@@ -344,12 +360,21 @@ class Splash extends Component {
     );
   };
   naviagateToSupport = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({
+      isModalVisible: false,
+      detailsSelected: false,
+      equipmentsSelected: false,
+    });
     this.props.navigation.navigate('Support');
   };
 
   navigateToReport = () => {
     this.toggleModal();
+    this.setState({
+      isModalVisible: false,
+      detailsSelected: false,
+      equipmentsSelected: false,
+    });
     this.props.navigation.navigate(
       'PropertyReport',
       this.props.navigation.state.params,
@@ -1067,11 +1092,14 @@ class Splash extends Component {
             isVisible={this.state.isModalVisible}
             onCancel={this.toggleModal}
             naviagateToDetail={this.naviagateToDetail}
+            detailsSelected={this.state.detailsSelected}
+            equipmentsSelected={this.state.equipmentsSelected}
             naviagateToEquip={this.naviagateToEquip}
             naviagateToChart={this.naviagateToChart}
             naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
             navigateToReport={this.navigateToReport}
+            propertyName={this.props?.navigation?.state?.params?.item?.item?.name}
           />
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
