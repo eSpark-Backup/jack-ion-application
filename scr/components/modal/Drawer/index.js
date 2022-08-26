@@ -113,7 +113,7 @@ export default class DrawerModal extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={{ height: height * 0.001, backgroundColor: '#e3e3e3', marginTop: height * 0.05 }} />
+          <View style={{ height: height * 0.001, backgroundColor: '#e3e3e3', marginTop: height * 0.025 }} />
           <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={() => {
               naviagateToAlerts();
