@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import {
   View,
@@ -24,7 +24,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import { TextInput, Button } from 'react-native-paper';
+import {TextInput, Button} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import CustumStatusBar from '../../components/StatusBar';
@@ -32,7 +32,7 @@ import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Components
-import { Fonts } from '../../utils/fonts';
+import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
@@ -49,13 +49,16 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import API from '../../api/SeviceApi';
-import { connect } from 'react-redux';
-import { fetchPropetry, loadMoreData } from '../../Store/Action/properties.action';
+import {connect} from 'react-redux';
+import {
+  fetchPropetry,
+  loadMoreData,
+} from '../../Store/Action/properties.action';
 
 import TextReuseableComponent from '../../components/Text/index';
 import Loader from '../../components/Loader';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 class Property extends Component {
   static contextType = ContextProp;
@@ -79,14 +82,14 @@ class Property extends Component {
       refreshing: false,
       isPullDownShow: true,
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
     };
 
@@ -99,7 +102,7 @@ class Property extends Component {
     this.onFocusFunction();
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       if (this.context.propList) {
-        this.setState({ isPullDownShow: true });
+        this.setState({isPullDownShow: true});
         this.hidePullDown();
       }
     });
@@ -107,7 +110,7 @@ class Property extends Component {
 
   openFilter = () => {
     this.context.getBillingCompany();
-    this.setState({ showFilter: true });
+    this.setState({showFilter: true});
   };
 
   addToRecent = async (item) => {
@@ -133,23 +136,23 @@ class Property extends Component {
     }
   };
 
-  jumpToDetail = async ({ prop, item }) => {
-    this.props.navigation.navigate('Detail', { item });
+  jumpToDetail = async ({prop, item}) => {
+    this.props.navigation.navigate('Detail', {item});
     this.addToRecent(prop.item);
     this.selectedProp(prop);
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
   };
-  jumpFromSearch = ({ prop, item }) => {
-    this.props.navigation.navigate('Detail', { item });
-    this.setState({ showSearch: false });
+  jumpFromSearch = ({prop, item}) => {
+    this.props.navigation.navigate('Detail', {item});
+    this.setState({showSearch: false});
   };
-  jumpToEquip = ({ prop, item }) => {
-    this.props.navigation.navigate('Equip', { item });
+  jumpToEquip = ({prop, item}) => {
+    this.props.navigation.navigate('Equip', {item});
     this.addToRecent(prop.item);
     this.selectedProp(prop);
   };
-  jumpToAlerts = ({ prop, item }) => {
-    this.props.navigation.navigate('Alerts', { item });
+  jumpToAlerts = ({prop, item}) => {
+    this.props.navigation.navigate('Alerts', {item});
     this.addToRecent(prop.item);
     this.selectedProp(prop);
   };
@@ -167,21 +170,21 @@ class Property extends Component {
       search: this.context.filterPropName,
       location: this.context.filterLocation,
     };
-    this.props.loadMoreData(data)
+    this.props.loadMoreData(data);
     // await this.context.loadMoreData();
   };
 
   cleardata = (prop) => {
-    this.jumpToDetail({ prop, item: prop });
+    this.jumpToDetail({prop, item: prop});
     this.context.clearData();
   };
 
   closeAndClear = () => {
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
     this.context.clearSearchList();
   };
   openAndClear = () => {
-    this.setState({ showSearch: true });
+    this.setState({showSearch: true});
     this.context.clearSearchList();
   };
 
@@ -209,22 +212,22 @@ class Property extends Component {
           },
           () => {
             this.context.stopLoader();
-            this.setState({ Loading: false });
-            this.setState({ isAddPropVisible: true });
+            this.setState({Loading: false});
+            this.setState({isAddPropVisible: true});
           },
         );
       },
       (error) => console.log('geo location', error),
-      { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
+      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
     );
   };
 
   enableLocation = async () => {
-    this.setState({ Loading: true });
+    this.setState({Loading: true});
     const location = await SystemSetting.isLocationEnabled();
     Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
       this.context.stopLoader();
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -256,7 +259,7 @@ class Property extends Component {
             .catch((error) => console.warn(error));
         },
         (error) => console.log('geo locations', error),
-        { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
+        {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
       );
       if (Platform.OS == 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
@@ -303,7 +306,7 @@ class Property extends Component {
 
       this._renderMap();
     } else {
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
       this.context.stopLoader();
       Alert.alert(
         `You don't have access for the Location`,
@@ -323,11 +326,11 @@ class Property extends Component {
   };
 
   openAddProp = () => {
-    this.setState({ isAddPropVisible: true });
+    this.setState({isAddPropVisible: true});
   };
 
   closeAddProp = () => {
-    this.setState({ isAddPropVisible: false });
+    this.setState({isAddPropVisible: false});
   };
 
   confirmDelete = (id) => {
@@ -336,7 +339,7 @@ class Property extends Component {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => this.deleteProperty(id) },
+      {text: 'Yes', onPress: () => this.deleteProperty(id)},
     ]);
   };
 
@@ -344,11 +347,11 @@ class Property extends Component {
     this.context.loadLoader();
     const response = await API.post(`/property/delete/${id}`);
     if (response?.data?.bool) {
-      this.setState({ currentIndex: null });
+      this.setState({currentIndex: null});
       alert(response?.data?.message);
       // this.context.checkData();
       this.props?.fetchPropetry();
-      this.setState({ propertyList: this.context.propList });
+      this.setState({propertyList: this.context.propList});
     } else {
       this.context.stopLoader();
     }
@@ -396,17 +399,17 @@ class Property extends Component {
     <TouchableOpacity
       style={{
         ...styles.propButton,
-
       }}
-      onPress={() => this.jumpFromSearch({ prop, item: prop })}>
+      onPress={() => this.jumpFromSearch({prop, item: prop})}>
       <MaterialCommunityIcons
         name="home-city-outline"
         size={width * 0.09}
-        style={{ marginHorizontal: 15 }}
+        style={{marginHorizontal: 15}}
         color="#115b72"
       />
-      <View style={{ width: width * 0.5, position: 'absolute', left: width * 0.16 }}>
-        <View style={{ width: width * 0.5 }}>
+      <View
+        style={{width: width * 0.5, position: 'absolute', left: width * 0.16}}>
+        <View style={{width: width * 0.5}}>
           <TextTicker
             style={styles.propText}
             duration={6000}
@@ -415,35 +418,40 @@ class Property extends Component {
             {prop.item.name == null ? 'Untitled' : prop.item.name}
           </TextTicker>
         </View>
-        <View style={{
-          width: width * 0.5,
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}>
-          <Icon name="ios-location-outline"
-            size={height * 0.02}
-            color="gray"
-          />
+        <View
+          style={{
+            width: width * 0.5,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Icon name="ios-location-outline" size={height * 0.02} color="gray" />
           <TextTicker
-            style={{ color: 'gray' }}
+            style={{color: 'gray'}}
             duration={6000}
             marqueeDelay={2000}
             repeatSpacer={width * 0.5}>
-            {
-              (prop.item.city == null ? '' : prop.item.city + ', ') +
-              (prop.item.st == null ? '' : prop.item.st)
-            }
+            {(prop.item.city == null ? '' : prop.item.city + ', ') +
+              (prop.item.st == null ? '' : prop.item.st)}
           </TextTicker>
         </View>
       </View>
-      <View style={{ flexDirection: 'row', marginHorizontal: 15, justifyContent: 'flex-end' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginHorizontal: 15,
+          justifyContent: 'flex-end',
+        }}>
         <View style={styles.buildUnitCountContainer}>
           <FontAwesome5Icon
             name="building"
             size={width * 0.04}
             color="#115b72"
           />
-          <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
+          <TextReuseableComponent
+            title
+            style={styles.buildUnitCount}
+            value={prop.item.building_count}
+          />
         </View>
         <View style={styles.buildUnitCountContainer}>
           <FontAwesome5Icon
@@ -451,16 +459,17 @@ class Property extends Component {
             size={width * 0.04}
             color="#115b72"
           />
-          <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
+          <TextReuseableComponent
+            title
+            style={styles.buildUnitCount}
+            value={prop.item.unit_actual_count}
+          />
         </View>
-        {prop?.item?.gateway &&
+        {prop?.item?.gateway && (
           <View style={styles.buildUnitCountContainer}>
-            <MaterialIcon
-              name="router"
-              size={width * 0.05}
-              color="#115b72"
-            />
-          </View>}
+            <MaterialIcon name="router" size={width * 0.05} color="#115b72" />
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -487,7 +496,7 @@ class Property extends Component {
       prop.index == this.props.propList.length - 1 &&
       !this.state.stopLoader
     ) {
-      this.setState({ stopLoader: true });
+      this.setState({stopLoader: true});
     }
     return (
       <View style={styles.propListContainer}>
@@ -503,11 +512,16 @@ class Property extends Component {
           <MaterialCommunityIcons
             name="home-city-outline"
             size={width * 0.09}
-            style={{ marginHorizontal: 15 }}
+            style={{marginHorizontal: 15}}
             color="#115b72"
           />
-          <View style={{ width: width * 0.5, position: 'absolute', left: width * 0.16 }}>
-            <View style={{ width: width * 0.5 }}>
+          <View
+            style={{
+              width: width * 0.5,
+              position: 'absolute',
+              left: width * 0.16,
+            }}>
+            <View style={{width: width * 0.5}}>
               <TextTicker
                 style={styles.propText}
                 duration={6000}
@@ -516,35 +530,44 @@ class Property extends Component {
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
-            <View style={{
-              width: width * 0.5,
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}>
-              <Icon name="ios-location-outline"
+            <View
+              style={{
+                width: width * 0.5,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Icon
+                name="ios-location-outline"
                 size={height * 0.02}
                 color="gray"
               />
               <TextTicker
-                style={{ color: 'gray' }}
+                style={{color: 'gray'}}
                 duration={6000}
                 marqueeDelay={2000}
                 repeatSpacer={width * 0.5}>
-                {
-                  (prop.item.city == null ? '' : prop.item.city + ', ') +
-                  (prop.item.st == null ? '' : prop.item.st)
-                }
+                {(prop.item.city == null ? '' : prop.item.city + ', ') +
+                  (prop.item.st == null ? '' : prop.item.st)}
               </TextTicker>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', marginHorizontal: 15, justifyContent: 'flex-end' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginHorizontal: 15,
+              justifyContent: 'flex-end',
+            }}>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
                 name="building"
                 size={width * 0.04}
                 color="#115b72"
               />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
+              <TextReuseableComponent
+                title
+                style={styles.buildUnitCount}
+                value={prop.item.building_count}
+              />
             </View>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
@@ -552,7 +575,11 @@ class Property extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
+              <TextReuseableComponent
+                title
+                style={styles.buildUnitCount}
+                value={prop.item.unit_actual_count}
+              />
             </View>
             {/* {prop?.item?.gateway &&
               <View style={styles.buildUnitCountContainer}>
@@ -566,98 +593,140 @@ class Property extends Component {
         </TouchableOpacity>
         {prop.index === this.state.currentIndex ? (
           <View>
-            <View
-              style={styles.animatedDetailView}>
+            <View style={styles.animatedDetailView}>
               <View>
                 <View style={styles.animatedDetailShown}>
-                  <Icon name="ios-location-outline"
+                  <Icon
+                    name="ios-location-outline"
                     size={height * 0.025}
                     color="black"
                   />
                   <TextTicker
-                    style={{ color: 'black', fontSize: height * .015 }}
+                    style={{color: 'black', fontSize: height * 0.015}}
                     duration={6000}
                     marqueeDelay={2000}
                     repeatSpacer={width * 0.7}>
-                    {
-                      (prop.item.city == null ? '' : prop.item.city + ' , ') +
+                    {(prop.item.city == null ? '' : prop.item.city + ' , ') +
                       (prop.item.st == null ? '' : prop.item.st + ' , ') +
-                      (prop.item.street == null ? '' : prop.item.street + ' , ') +
-                      (prop.item.zipcode == null ? '' : prop.item.zipcode)
-                    }
+                      (prop.item.street == null
+                        ? ''
+                        : prop.item.street + ' , ') +
+                      (prop.item.zipcode == null ? '' : prop.item.zipcode)}
                   </TextTicker>
                 </View>
-                <View style={styles.animatedDetailShown}>
+                <View style={styles.animatedDetailShown1}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Building:"} />
                     <FontAwesome5Icon
                       name="building"
                       size={height * 0.02}
                       color="#000"
                     />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.building_count} />
+                    <TextReuseableComponent
+                      title
+                      style={{marginHorizontal: 4}}
+                      value={'Building: '}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.animatedDetailBuildingAndUnitText}
+                      value={prop.item.building_count}
+                    />
                   </View>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit:"} />
                     <FontAwesome5Icon
                       name="house-user"
                       size={height * 0.02}
                       color="#000"
                     />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_actual_count} />
+                    <TextReuseableComponent
+                      title
+                      style={{marginHorizontal: 4}}
+                      value={'Unit: '}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.animatedDetailBuildingAndUnitText}
+                      value={prop.item.unit_actual_count}
+                    />
                   </View>
                 </View>
-
-                <View style={styles.animatedDetailShown}>
+                <View style={styles.animatedDetailShown1}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Meter:"} />
-                    <Feather
-                      name="inbox"
-                      size={width * 0.04}
-                      color="#000"
+                    <Feather name="inbox" size={width * 0.04} color="#000" />
+                    <TextReuseableComponent
+                      title
+                      style={{marginHorizontal: 4}}
+                      value={'Meter: '}
                     />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.meter_count} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.animatedDetailBuildingAndUnitText}
+                      value={prop.item.meter_count}
+                    />
                   </View>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit Mix:"} />
                     <MaterialCommunityIcons
                       name="file-table-box-outline"
                       size={width * 0.04}
                       color="#000"
                     />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_mix_count} />
+                    <TextReuseableComponent
+                      title
+                      style={{marginHorizontal: 4}}
+                      value={'Unit Mix: '}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.animatedDetailBuildingAndUnitText}
+                      value={prop.item.unit_mix_count}
+                    />
                   </View>
                 </View>
               </View>
             </View>
-
             <View style={styles.animatedView}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity
                   style={styles.animatedViewDetailBtn}
-                  onPress={() => this.jumpToDetail({ prop, item: prop })}>
+                  onPress={() => this.jumpToDetail({prop, item: prop})}>
                   <MaterialCommunityIcons
                     name="view-compact-outline"
                     color="white"
                     size={width * 0.04}
                   />
-                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Details"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.animatedViewDetailBtnName}
+                    value={'Details'}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => this.jumpToEquip({ prop, item: prop })}
+                  onPress={() => this.jumpToEquip({prop, item: prop})}
                   style={styles.animatedViewDetailBtn}>
-                  <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Equipments"} />
+                  <MaterialIcons
+                    name="edit"
+                    color="white"
+                    size={width * 0.04}
+                  />
+                  <TextReuseableComponent
+                    title
+                    style={styles.animatedViewDetailBtnName}
+                    value={'Equipments'}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => this.jumpToAlerts({ prop, item: prop })}
+                  onPress={() => this.jumpToAlerts({prop, item: prop})}
                   style={styles.animatedViewDetailBtn}>
                   <Feather
                     name="alert-triangle"
                     color="white"
                     size={width * 0.04}
                   />
-                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Alerts"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.animatedViewDetailBtnName}
+                    value={'Alerts'}
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -669,11 +738,14 @@ class Property extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Delete"} />
+                <TextReuseableComponent
+                  title
+                  style={styles.animatedViewDetailBtnName}
+                  value={'Delete'}
+                />
               </TouchableOpacity>
             </View>
           </View>
-
         ) : null}
       </View>
     );
@@ -683,27 +755,27 @@ class Property extends Component {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log("state", state.isInternetReachable)
-      this.setState({ noInternet: !state.isInternetReachable });
+      console.log('state', state.isInternetReachable);
+      this.setState({noInternet: !state.isInternetReachable});
       if (state.isConnected) {
         this.closeAddProp();
         // this.context.checkData();
-        this.setState({ propertyList: this.context.propList });
-        this.setState({ loadScreen: true });
+        this.setState({propertyList: this.context.propList});
+        this.setState({loadScreen: true});
       } else {
-        this.setState({ loadScreen: true });
+        this.setState({loadScreen: true});
       }
       this.context.dontLoad();
     });
     unsubscribe();
   };
   onRefresh = async () => {
-    this.setState({ fetching: true });
+    this.setState({fetching: true});
     await this.sleep(2000);
-    this.setState({ fetching: false, isPullDownShow: true });
+    this.setState({fetching: false, isPullDownShow: true});
     // this.context.checkData();
     this.props?.fetchPropetry();
-    this.setState({ loadScreen: true });
+    this.setState({loadScreen: true});
   };
   hidePullDown = () => {
     setTimeout(() => {
@@ -717,18 +789,18 @@ class Property extends Component {
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      this.setState({ isPullDownShow: false });
+      this.setState({isPullDownShow: false});
     }, 5000);
   };
 
   render() {
     console.log('this.props.isLoading', this.props.isLoading);
     if (!this.props.isLoading && this.state.loadScreen) {
-      this.setState({ loadScreen: false });
+      this.setState({loadScreen: false});
       this.hidePullDown();
     }
     if (!this.context.filterWork && this.state.filterWork) {
-      this.setState({ filterWork: false });
+      this.setState({filterWork: false});
     }
     return (
       <>
@@ -765,7 +837,11 @@ class Property extends Component {
                       size={height * 0.04}
                       color="white"
                     />
-                    <TextReuseableComponent title style={{ color: 'white', paddingLeft: width * 0.035 }} value={"Search"} />
+                    <TextReuseableComponent
+                      title
+                      style={{color: 'white', paddingLeft: width * 0.035}}
+                      value={'Search'}
+                    />
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -815,13 +891,17 @@ class Property extends Component {
                 size={width * 0.08}
                 color="white"
               />
-              <TextReuseableComponent title style={styles.mainHeadiing} value={"Properties"} />
+              <TextReuseableComponent
+                title
+                style={styles.mainHeadiing}
+                value={'Properties'}
+              />
             </View>
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}
-              close={() => this.setState({ showFilter: false })}
-              filterWork={() => this.setState({ filterWork: true })}
+              close={() => this.setState({showFilter: false})}
+              filterWork={() => this.setState({filterWork: true})}
             />
             {this.state.showSearch ? (
               <Modal
@@ -833,10 +913,10 @@ class Property extends Component {
                   <CustumStatusBar backColor transparent />
                 )}
                 <KeyboardAvoidingView
-                  style={{ alignItems: 'center' }}
+                  style={{alignItems: 'center'}}
                   behavior="padding">
                   <View style={styles.searchModalInner}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <EvilIcon
                         name="search"
                         size={width * 0.07}
@@ -867,7 +947,7 @@ class Property extends Component {
                       />
                     </View>
                     {/* </View> */}
-                    <View style={{ position: 'absolute', right: width * 0.1 }}>
+                    <View style={{position: 'absolute', right: width * 0.1}}>
                       {this.context.searchLoading ? (
                         <ActivityIndicator color="white" size="small" />
                       ) : null}
@@ -882,7 +962,7 @@ class Property extends Component {
                   </View>
                   <View style={styles.searchList}>
                     <FlatList
-                      style={{ marginBottom: width * 0.2 }}
+                      style={{marginBottom: width * 0.2}}
                       data={this.context.searchList}
                       renderItem={this._renderSearchPropList}
                       removeClippedSubviews={false}
@@ -900,7 +980,10 @@ class Property extends Component {
           </View>
           <View style={styles.propertyList}>
             {this.state.noInternet ? (
-              <TextReuseableComponent title value={"Check Your Internet Connection"} />
+              <TextReuseableComponent
+                title
+                value={'Check Your Internet Connection'}
+              />
             ) : this.props.isLoading ? (
               <ScrollView
                 scrollEnabled={false}
@@ -908,12 +991,28 @@ class Property extends Component {
                 {this.state.shimmers.map((item) => this.renderShimmers(item))}
               </ScrollView>
             ) : this.props.propList.length < 1 && !this.props.isLoading ? (
-              <TextReuseableComponent title value={"No Properties to Show"} />
+              <TextReuseableComponent title value={'No Properties to Show'} />
             ) : (
               <View>
-                <View style={[styles.pullDownContainer, { height: this.state.isPullDownShow ? height * .07 : height * 0, }]}>
-                  <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
-                  <TextReuseableComponent title style={styles.pullDownText} value={"Pull down to refresh"} />
+                <View
+                  style={[
+                    styles.pullDownContainer,
+                    {
+                      height: this.state.isPullDownShow
+                        ? height * 0.07
+                        : height * 0,
+                    },
+                  ]}>
+                  <Icon
+                    name="ios-arrow-down-sharp"
+                    color="black"
+                    size={height * 0.03}
+                  />
+                  <TextReuseableComponent
+                    title
+                    style={styles.pullDownText}
+                    value={'Pull down to refresh'}
+                  />
                 </View>
                 <FlatList
                   data={this.props.propList}
@@ -932,7 +1031,7 @@ class Property extends Component {
                   }
                   onEndReachedThreshold={width * 0.0001}
                   onMomentumScrollEnd={() => this.LoadData()}
-                // onEndReached={() => this.LoadData()}
+                  // onEndReached={() => this.LoadData()}
                 />
               </View>
             )}
@@ -948,8 +1047,7 @@ const mapStateToProps = (state, ownProps) => ({
   isLoading: state.propertyReducer.isLoading,
   offset: state.propertyReducer.offset,
   listLoader: state.propertyReducer.listLoader,
-  limitExceed: state.propertyReducer.limitExceed
-
+  limitExceed: state.propertyReducer.limitExceed,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -957,7 +1055,6 @@ const mapDispatchToProps = (dispatch) => {
     // dispatching plain actions
     fetchPropetry: () => dispatch(fetchPropetry()),
     loadMoreData: (data) => dispatch(loadMoreData(data)),
-
   };
 };
 

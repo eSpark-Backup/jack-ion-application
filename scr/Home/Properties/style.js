@@ -273,7 +273,7 @@ export default styles = StyleSheet.create({
 
   // Property list styling
 
-  propListContainer:{
+  propListContainer: {
     alignItems: 'center',
     marginVertical: height * 0.01,
     backgroundColor: 'white',
@@ -286,36 +286,46 @@ export default styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  animatedDetailView:{
+  animatedDetailView: {
     width: width * 0.9,
     alignItems: 'center',
     backgroundColor: '#ffffff50',
     // borderBottomLeftRadius: width * 0.01,
     // borderBottomRightRadius: width * 0.01,
     borderWidth: width * 0.001,
+    // marginBottom: 10,
   },
-  animatedDetailShown:{
-    borderBottomWidth:height * .0003,
+  animatedDetailShown: {
+    borderBottomWidth: height * 0.0003,
     width: width * 0.9,
-    height:height * .05,
-    borderColor:'black',
-    flexDirection:'row',
-    alignItems:'center',
-    paddingLeft:height * .01
+    height: height * 0.05,
+    borderColor: 'black',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: height * 0.01,
   },
-  animatedDetailBuildingAndUnit:{
-    flexDirection:'row',
-    alignItems:'center',
-    marginRight:height * .01,
+  animatedDetailShown1: {
+    borderBottomWidth: height * 0.0003,
+    width: width * 0.9,
+    height: height * 0.05,
+    borderColor: 'black',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingLeft: height * 0.01,
   },
-  animatedDetailBuildingAndUnitText:{
+  animatedDetailBuildingAndUnit: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: height * 0.01,
+  },
+  animatedDetailBuildingAndUnitText: {
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.015,
     color: '#001522',
-    marginLeft:height * .01,
-
+    marginLeft: height * 0.01,
   },
-  animatedView:{
+  animatedView: {
     flexDirection: 'row',
     width: width * 0.9,
     alignItems: 'center',
@@ -326,30 +336,27 @@ export default styles = StyleSheet.create({
     borderBottomRightRadius: width * 0.01,
     // borderWidth: width * 0.001,
   },
-  animatedViewDetailBtn:{
+  animatedViewDetailBtn: {
     margin: width * 0.01,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  animatedViewDetailBtnName:{
+  animatedViewDetailBtnName: {
     color: 'white',
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.03,
   },
-  pullDownContainer:{
-    width:width * 0.4,
-    justifyContent:'center',
-    alignItems:'center',
-    alignSelf:'center',
-    backgroundColor:'white',
-    elevation:height * .005,
-    position:'absolute'
+  pullDownContainer: {
+    width: width * 0.4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    elevation: height * 0.005,
+    position: 'absolute',
   },
-  pullDownText:{
+  pullDownText: {
     fontFamily: Fonts.Montserrat,
-    fontSize: height * .015,
+    fontSize: height * 0.015,
   },
-
-
-  
 });

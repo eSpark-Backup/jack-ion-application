@@ -29,7 +29,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: height * 0.01,
     paddingTop: height * 0.01,
-    marginLeft: width * 0.035,
+    marginLeft: width * 0.03,
     width: '100%',
   },
   drawerLinks: {
@@ -50,7 +50,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#e3e3e3',
     borderRadius: 5,
     width: '100%',
-    padding: 10,
+    padding: 11,
   },
   propertyTitle: {
     marginTop: height * 0.02,

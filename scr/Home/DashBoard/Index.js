@@ -252,7 +252,11 @@ export default class Splash extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
+              <TextReuseableComponent
+                title
+                style={styles.buildUnitCount}
+                value={prop.item.building_count}
+              />
             </View>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
@@ -260,7 +264,11 @@ export default class Splash extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
+              <TextReuseableComponent
+                title
+                style={styles.buildUnitCount}
+                value={prop.item.unit_actual_count}
+              />
             </View>
             <View style={styles.buildUnitCountContainer}>
               <MaterialIcons
@@ -268,7 +276,11 @@ export default class Splash extends Component {
                 size={width * 0.04}
                 color="#115b72"
               />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.alert_count} />
+              <TextReuseableComponent
+                title
+                style={styles.buildUnitCount}
+                value={prop.item.alert_count}
+              />
             </View>
           </View>
         </TouchableOpacity>
@@ -298,9 +310,13 @@ export default class Splash extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <TextReuseableComponent title style={{
+                <TextReuseableComponent
+                  title
+                  style={{
                     color: 'white',
-                  }} value={"Details"} />
+                  }}
+                  value={'Details'}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.jumpToEquip({prop, item: prop})}
@@ -310,9 +326,13 @@ export default class Splash extends Component {
                   alignItems: 'center',
                 }}>
                 <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                <TextReuseableComponent title style={{
+                <TextReuseableComponent
+                  title
+                  style={{
                     color: 'white',
-                  }} value={"Equipments"} />
+                  }}
+                  value={'Equipments'}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.jumpToAlerts({prop, item: prop})}
@@ -326,9 +346,13 @@ export default class Splash extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <TextReuseableComponent title style={{
+                <TextReuseableComponent
+                  title
+                  style={{
                     color: 'white',
-                  }} value={"Alerts"} />
+                  }}
+                  value={'Alerts'}
+                />
               </TouchableOpacity>
             </View>
 
@@ -344,9 +368,13 @@ export default class Splash extends Component {
                 color="white"
                 size={width * 0.04}
               />
-              <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"Delete"} />
+              <TextReuseableComponent
+                title
+                style={{
+                  color: 'white',
+                }}
+                value={'Delete'}
+              />
             </TouchableOpacity>
           </View>
         ) : null}
@@ -390,7 +418,7 @@ export default class Splash extends Component {
         {Platform.OS == 'ios' && <CustumStatusBar />}
         {/* <View style={styles.headingContainer}> */}
         <View style={styles.headingInner}>
-          <View style={{width: width * 0.1}} >
+          <View style={{width: width * 0.1}}>
             <MaterialCommunityIcons
               name="arrow-left"
               size={height * 0.04}
@@ -405,7 +433,11 @@ export default class Splash extends Component {
               size={width * 0.07}
               color="white"
             />
-            <TextReuseableComponent title style={styles.mainHeadiing} value={"Dashboard"} />
+            <TextReuseableComponent
+              title
+              style={styles.mainHeadiing}
+              value={'Dashboard'}
+            />
           </View>
           <View style={{width: width * 0.1}} />
         </View>
@@ -459,7 +491,11 @@ export default class Splash extends Component {
                   size={width * 0.06}
                   style={{left: width * 0.005}}
                 />
-                <TextReuseableComponent title style={styles.mainBottonText} value={"Recently Viewed Properties"} />
+                <TextReuseableComponent
+                  title
+                  style={styles.mainBottonText}
+                  value={'Recently Viewed Properties'}
+                />
                 <AntDesign name={upDownNearby} size={width * 0.035} />
               </TouchableOpacity>
               <View
@@ -469,7 +505,10 @@ export default class Splash extends Component {
                 }}>
                 <View style={styles.insideBottonView}>
                   {recentProperties.length < 1 ? (
-                    <TextReuseableComponent title value={"No Recent Properties"} />
+                    <TextReuseableComponent
+                      title
+                      value={'No Recent Properties'}
+                    />
                   ) : (
                     <FlatList
                       style={{marginTop: height * 0.01}}
@@ -495,12 +534,15 @@ export default class Splash extends Component {
                   </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
-                      <TextReuseableComponent title value={"Property"} />
+                      <TextReuseableComponent title value={'Property'} />
                       <TextReuseableComponent title value={totalProperties} />
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
-                    <TextReuseableComponent title value={`${propertiesPercent}% | ${propertiesThisWeek} This Week`} />
+                    <TextReuseableComponent
+                      title
+                      value={`${propertiesPercent}% | ${propertiesThisWeek} This Week`}
+                    />
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -521,12 +563,15 @@ export default class Splash extends Component {
                   </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
-                      <TextReuseableComponent title value={"Buildings"} />
+                      <TextReuseableComponent title value={'Buildings'} />
                       <TextReuseableComponent title value={totalBuildings} />
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
-                    <TextReuseableComponent title value={`${buildingsPercent}% | ${buildingsThisWeek} This Week`} />
+                    <TextReuseableComponent
+                      title
+                      value={`${buildingsPercent}% | ${buildingsThisWeek} This Week`}
+                    />
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -545,21 +590,28 @@ export default class Splash extends Component {
                   </View>
                   <View style={styles.infoUpperView}>
                     <View style={{alignItems: 'flex-end'}}>
-                      <TextReuseableComponent title value={"Meters"} />
+                      <TextReuseableComponent title value={'Meters'} />
                       <TextReuseableComponent title value={totalMeters} />
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
-                    <TextReuseableComponent title value={`${metersPercent}% | ${metersThisWeek} This Week`} />
+                    <TextReuseableComponent
+                      title
+                      value={`${metersPercent}% | ${metersThisWeek} This Week`}
+                    />
                   </View>
                 </TouchableOpacity>
               </View>
 
               <View style={{width: width * 1, alignItems: 'center'}}>
-                <TextReuseableComponent subHeading value={"Property Status"} />
+                <TextReuseableComponent subHeading value={'Property Status'} />
               </View>
               <View style={styles.barView}>
-                <TextReuseableComponent title style={{position: 'absolute'}} value={"Property Status"} />
+                <TextReuseableComponent
+                  title
+                  style={{position: 'absolute'}}
+                  value={'Property Status'}
+                />
                 <VictoryPie
                   width={width * 0.75}
                   height={width * 0.75}
@@ -591,7 +643,11 @@ export default class Splash extends Component {
                     });
                   }}>
                   <View style={styles.onlineView} />
-                  <TextReuseableComponent title style={styles.onlineText} value={"Online"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.onlineText}
+                    value={'Online'}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{flexDirection: 'row', padding: width * 0.01}}
@@ -601,11 +657,15 @@ export default class Splash extends Component {
                     })
                   }>
                   <View style={styles.offlineView} />
-                  <TextReuseableComponent title style={styles.offlineText} value={"Not Installed"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.offlineText}
+                    value={'Not Installed'}
+                  />
                 </TouchableOpacity>
               </View>
               <View style={styles.portfolioHeading}>
-                <TextReuseableComponent subHeading  value={"Portfolio Growth"} />
+                <TextReuseableComponent subHeading value={'Portfolio Growth'} />
               </View>
               <View style={{alignItems: 'center'}}>
                 {newProperties.length > 0 && (
@@ -670,11 +730,19 @@ export default class Splash extends Component {
                 }}>
                 <View style={{flexDirection: 'row'}}>
                   <View style={styles.onlineView} />
-                  <TextReuseableComponent title style={styles.onlineText} value={"New Properties"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.onlineText}
+                    value={'New Properties'}
+                  />
                 </View>
                 <View style={{flexDirection: 'row'}}>
                   <View style={styles.offlineView} />
-                  <TextReuseableComponent title style={styles.offlineText} value={"Total Properties"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.offlineText}
+                    value={'Total Properties'}
+                  />
                 </View>
               </View>
               <View
@@ -685,12 +753,20 @@ export default class Splash extends Component {
                   paddingTop: width * 0.03,
                   // paddingHorizontal: width * .03,
                 }}>
-                <TextReuseableComponent heading style={{
+                <TextReuseableComponent
+                  heading
+                  style={{
                     color: '#2D2A2B',
-                  }} value={"You are"} />
-                <TextReuseableComponent heading style={{
+                  }}
+                  value={'You are'}
+                />
+                <TextReuseableComponent
+                  heading
+                  style={{
                     color: '#2D2A2B',
-                  }} value={"Currently Serving"} />
+                  }}
+                  value={'Currently Serving'}
+                />
                 <View
                   style={{
                     paddingTop: width * 0.1,
@@ -713,11 +789,15 @@ export default class Splash extends Component {
                       />
                     </View>
                     <View style={{width: width * 0.28}}>
-                      <TextReuseableComponent heading style={{
+                      <TextReuseableComponent
+                        heading
+                        style={{
                           fontWeight: 'bold',
                           color: '#175CA1',
-                        }} value={totalProperties} />
-                      <TextReuseableComponent  heading  value={"Properties"} />
+                        }}
+                        value={totalProperties}
+                      />
+                      <TextReuseableComponent heading value={'Properties'} />
                     </View>
                   </View>
                   <View
@@ -736,11 +816,15 @@ export default class Splash extends Component {
                       style={{
                         width: width * 0.28,
                       }}>
-                      <TextReuseableComponent heading style={{
+                      <TextReuseableComponent
+                        heading
+                        style={{
                           color: '#175CA1',
                           fontWeight: 'bold',
-                        }} value={totalUnits} />
-                      <TextReuseableComponent  heading value={"Units"} />
+                        }}
+                        value={totalUnits}
+                      />
+                      <TextReuseableComponent heading value={'Units'} />
                     </View>
                   </View>
                   <View
@@ -759,11 +843,15 @@ export default class Splash extends Component {
                       style={{
                         width: width * 0.28,
                       }}>
-                      <TextReuseableComponent heading style={{
+                      <TextReuseableComponent
+                        heading
+                        style={{
                           fontWeight: 'bold',
                           color: '#175CA1',
-                        }} value={totalDevices} />
-                      <TextReuseableComponent heading  value={"Devices"} />
+                        }}
+                        value={totalDevices}
+                      />
+                      <TextReuseableComponent heading value={'Devices'} />
                     </View>
                   </View>
                 </View>
