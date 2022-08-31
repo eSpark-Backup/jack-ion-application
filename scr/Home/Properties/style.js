@@ -303,6 +303,16 @@ export default styles = StyleSheet.create({
     alignItems:'center',
     paddingLeft:height * .01
   },
+  animatedDetailShown1:{
+    borderBottomWidth:height * .0003,
+    width: width * 0.9,
+    height:height * .05,
+    borderColor:'black',
+    flexDirection:'row',
+    justifyContent: 'space-evenly',
+    alignItems:'center',
+    paddingLeft:height * .01
+  },
   animatedDetailBuildingAndUnit:{
     flexDirection:'row',
     alignItems:'center',

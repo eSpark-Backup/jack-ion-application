@@ -587,44 +587,44 @@ class Property extends Component {
                     }
                   </TextTicker>
                 </View>
-                <View style={styles.animatedDetailShown}>
+                <View style={styles.animatedDetailShown1}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Building:"} />
                     <FontAwesome5Icon
                       name="building"
                       size={height * 0.02}
                       color="#000"
                     />
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Building:"} />
                     <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.building_count} />
                   </View>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit:"} />
                     <FontAwesome5Icon
                       name="house-user"
                       size={height * 0.02}
                       color="#000"
                     />
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit:"} />
                     <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_actual_count} />
                   </View>
                 </View>
 
-                <View style={styles.animatedDetailShown}>
+                <View style={styles.animatedDetailShown1}>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Meter:"} />
                     <Feather
                       name="inbox"
                       size={width * 0.04}
                       color="#000"
                     />
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Meter:"} />
                     <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.meter_count} />
                   </View>
                   <View style={styles.animatedDetailBuildingAndUnit}>
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit Mix:"} />
                     <MaterialCommunityIcons
                       name="file-table-box-outline"
                       size={width * 0.04}
                       color="#000"
                     />
+                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit Mix:"} />
                     <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_mix_count} />
                   </View>
                 </View>

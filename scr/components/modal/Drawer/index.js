@@ -62,7 +62,7 @@ export default class DrawerModal extends Component {
       alertSelected,
       reportsSelected,
       supportSelected,
-      propertyName
+      propertyName,
     } = this.props;
     return (
       <Modal
@@ -77,26 +77,49 @@ export default class DrawerModal extends Component {
         style={styles.modalContainer}>
         <CustumStatusBar backColor />
         <View style={styles.drawerMainContainer}>
-          <View style={{ alignItems: 'center', backgroundColor: '#e3e3e3', height: height * 0.2 }}>
+          <View
+            style={{
+              alignItems: 'center',
+              backgroundColor: '#e3e3e3',
+              height: height * 0.2,
+            }}>
             <Image
               source={require('../../../../Images/loogo.png')}
               resizeMode="contain"
               style={{ height: height * 0.12, marginTop: 25 }}
             />
           </View>
-          <View style={{ height: 1.5, backgroundColor: '#25AAE1ec'}} />
-          {propertyName ? <View style={styles.propertyTitle}>
-            <MaterialCommunityIcons
-              name="home-city-outline"
-              size={width * 0.08}
-              color="#25AAE1ec"
+          <View style={{ height: 1.5, backgroundColor: "#35afe2" }} />
+          {propertyName ? (
+            <View style={styles.propertyTitle}>
+              <MaterialCommunityIcons
+                name="home-city-outline"
+                size={width * 0.08}
+                color="#25AAE1ec"
+              />
+              <TextReuseableComponent
+                heading
+                style={{ marginLeft: 10 }}
+                value={`${propertyName}`}
+              />
+            </View>
+          ) : null}
+          {propertyName ? (
+            <View
+              style={{
+                height: 1.5,
+                backgroundColor: '#25AAE1ec',
+                marginTop: height * 0.01,
+                marginBottom: 10,
+              }}
             />
-            <TextReuseableComponent heading style={{ marginLeft: 10 }} value={`${propertyName}`} />
-          </View> : null}
-          {propertyName ? <View style={{ height: 1.5, backgroundColor: '#25AAE1ec', marginTop: height * 0.01, marginBottom: 10 }} /> : null}
+          ) : null}
           <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={naviagateToDetail}>
-              <View style={detailsSelected ? styles.selected : styles.drawerContent}>
+              <View
+                style={
+                  detailsSelected ? styles.selected : styles.drawerContent
+                }>
                 <MaterialCommunityIcons
                   name="account-details-outline"
                   size={width * 0.065}
@@ -107,7 +130,10 @@ export default class DrawerModal extends Component {
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToEquip}>
-              <View style={equipmentsSelected ? styles.selected : styles.drawerContent}>
+              <View
+                style={
+                  equipmentsSelected ? styles.selected : styles.drawerContent
+                }>
                 <Feather
                   name="rss"
                   size={width * 0.065}
@@ -118,7 +144,8 @@ export default class DrawerModal extends Component {
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={naviagateToAlerts}>
-              <View style={alertSelected ? styles.selected : styles.drawerContent}>
+              <View
+                style={alertSelected ? styles.selected : styles.drawerContent}>
                 <Feather
                   name="alert-triangle"
                   size={width * 0.065}
@@ -130,7 +157,10 @@ export default class DrawerModal extends Component {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={navigateToReport}>
-              <View style={reportsSelected ? styles.selected : styles.drawerContent}>
+              <View
+                style={
+                  reportsSelected ? styles.selected : styles.drawerContent
+                }>
                 <Entypo
                   name="bar-graph"
                   size={width * 0.065}
@@ -140,8 +170,19 @@ export default class DrawerModal extends Component {
                 <TextReuseableComponent title value={'Reports'} />
               </View>
             </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              height: 1.5,
+              backgroundColor: "#35afe2",
+              marginTop: height * 0.05,
+              marginBottom: 10,
+            }}
+          />
+          <View style={styles.drawerContentContainer}>
             <TouchableOpacity onPress={naviagateToSupport}>
-              <View style={supportSelected ? styles.selected : styles.drawerContent}>
+              <View
+                style={styles.supportContent}>
                 <MaterialCommunityIcons
                   name="help-circle-outline"
                   size={width * 0.065}
