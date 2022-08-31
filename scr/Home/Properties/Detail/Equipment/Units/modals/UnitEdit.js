@@ -309,7 +309,6 @@ export default function UnitEdit({
 
   const enableLocation = async (oldPos) => {
     const location = await SystemSetting.isLocationEnabled();
-    console.log('GPS', location);
     if (!location) {
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -354,20 +353,16 @@ export default function UnitEdit({
 
   const AddTypes = (item, type) => {
     if (type == 'Models') {
-      console.log('ADD CHALA', item);
       const items = [...modelArr];
       items.push(item);
       setModelArr(items);
       setAddModelNo('');
       // this.setState({modelArr: items, modelNo: ''});
     } else {
-      console.log('ADD CHALA', item);
       setSelectedUtil(item.name);
       setSelectedUtilId(item.id);
       const items = selectUtil;
       items.push(item);
-      // selectedTypes.current = items;
-
       setSelectUtil(items);
     }
   };
@@ -409,7 +404,7 @@ export default function UnitEdit({
     if (Platform.OS == 'ios') {
       request(PERMISSIONS.IOS.CAMERA)
         .then((result) => {
-          console.log('kia hai result camera ka', result);
+          // console.log('kia hai result camera ka', result);
           if (result == RESULTS.GRANTED) {
             cameraLaunch(type);
           } else {
@@ -471,7 +466,6 @@ export default function UnitEdit({
     callApi();
 
     let arr2 = meterTypes;
-    console.log('arr2====================================', arr2);
     setMeterListData(arr2);
 
 
@@ -481,7 +475,6 @@ export default function UnitEdit({
   //   _renderMap();
   // }, []);
   useEffect(() => {
-    console.log(clc.xterm(80)('AYA PROPERTY ID', propertyId));
     LogBox.ignoreLogs(['Warning: Failed prop type: Invalid prop']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     if (type == 'meterDirect' || type == 'addMeterDirect') {
@@ -490,7 +483,6 @@ export default function UnitEdit({
       // newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
       setSlide2(newArr);
     }
-    // console.log('showAddMeterSlider------->', showAddMeterSlider);
   }, [showAddMeterSlider]);
 
   useEffect(async () => {
@@ -510,23 +502,18 @@ export default function UnitEdit({
       if (modalVisible) {
 
         if (type != 'add') {
-          // setUnitMix(propertyData?.data?.data?.property?.unit_mixes);
           setUnitMixId(unitMixesId);
           unitMixes?.map((item) => {
             if (item.id == unitMixesId) {
-              console.log('SelectedUnitMix', item.name);
               setSelectedUnitMix(item.name);
             }
 
           });
         }
-        console.log('UNITMIXES');
       }
     }
     // callApi();
   }, [meterTypes, unitDetails, modalVisible]);
-  console.log('UnitMixID', unitMixId);
-  console.log('SelectedUnitMixES', selectedUnitMix);
 
   useEffect(() => {
     if (sliderNumber == 5) {
@@ -564,21 +551,11 @@ export default function UnitEdit({
               hasAccess: true,
             }));
           }
-          // setState((oldState) => ({
-          //   ...oldState,
-          //   isScannerVisible: true,
-          //   hasAccess: true,
-          //   scan: true,
-          // }));
         } else {
           setState((oldState) => ({
             ...oldState,
             hasAccess: false,
           }));
-          // Alert.alert(
-          //   "You don't have access for the Camera",
-          //   'Kindly TurnOn Camera Permission from Settings to use Scanner',
-          // );
         }
         return granted;
       } catch (err) {
@@ -825,9 +802,7 @@ export default function UnitEdit({
 
     //? Some thing wrong with this code -----------
 
-    console.log('devEdit', devEdit);
     if (defaultDevices.length > 0 && !oldDev) {
-      console.log('existingDev', existingDev);
       const filterDevices = defaultDevices.filter(
         (item) => item.manufacturer_id === slide1[0].data[0]?.id,
       );
@@ -882,17 +857,14 @@ export default function UnitEdit({
       const filterRes = utilTypes.filter((item1) =>
         utilityIds.some((item2) => item1.id == item2),
       );
-      console.log(' UTILITY RES', filterRes);
       setSelectUtil(filterRes);
     }
   };
 
   const getAllDevices = async () => {
-    console.log('get all Devices-->>>');
 
     const devicesResponse = await API.get(`/property/equipment/device/all`);
     if (devicesResponse.ok) {
-      console.log('cha;a', devicesResponse?.data?.data);
       setDevicesArray(devicesResponse?.data?.data);
       setEnableDevice(true);
     } else {
@@ -901,8 +873,6 @@ export default function UnitEdit({
   };
 
   const getDevice = async (some, index) => {
-    console.log('get devices--->', some?.id);
-    console.log('get devices--->', some);
     // const deviceResponse = await API.get(
     //   `/property/equipment/device/all/${some?.id}`,
     // );
@@ -945,14 +915,11 @@ export default function UnitEdit({
     }
     if (index == 1) {
       const product_desc = some?.product_desc;
-      console.log('MODEL NOS OF DEVICE', some?.model_nos);
       const modelNos = some?.model_nos.map((item) => {
         const { model_no: name, ...rest } = item;
         return { name, ...rest };
       });
       setProductNo(product_desc);
-      console.log(clc.cyanBright('product desc of device'), product_desc);
-      console.log('DAEA of models', modelNos);
     }
     setSlide1(listSlide);
   };
@@ -971,7 +938,6 @@ export default function UnitEdit({
     if (type == 'add') {
       let listArr = [...meterListData];
       listArr.splice(index, 1);
-      console.log('YEHI CHAL removeMeter', listArr);
       setMeterListData(listArr);
       let listData = [...meterData];
       listData.splice(index, 1);
@@ -991,7 +957,6 @@ export default function UnitEdit({
         }
         let listArr = [...meterListData];
         listArr.splice(index, 1);
-        console.log('YEHI CHAL removeMeter', listArr);
         setMeterListData(listArr);
         reRun();
       } else {
@@ -1078,7 +1043,6 @@ export default function UnitEdit({
     // console.log('data--->', data);
     // console.log('data meters--->', data.meters);
     if (type == 'add' || type == 'addMeterDirect') {
-      console.log('ADD CHALA');
       const unitResponse = await API.post(
         `/property/equipment/unit/add-unit`,
         data,
@@ -1091,8 +1055,6 @@ export default function UnitEdit({
         // console.log('datachecckk-->>', unitResponse?.data?.data);
       } else {
         setIsActivityLoader(false);
-        console.log('EDIT RESPONSE FALSE MILA');
-        console.log(unitResponse?.data);
         alert(unitResponse?.data?.message);
       }
       // console.log('Add unit response', unitResponse?.data);
@@ -1114,7 +1076,6 @@ export default function UnitEdit({
         reRun(unitResponse?.data?.data);
       } else {
         setIsActivityLoader(false);
-        console.log('ADD RESPONSE FALSE MILA');
         alert(unitResponse?.data?.message);
       }
     }
@@ -1177,7 +1138,6 @@ export default function UnitEdit({
         errorUnitMix: '',
       }));
     }
-    console.log('Meter Data ka Bata', meterData);
 
 
     callApi();
@@ -1219,7 +1179,6 @@ export default function UnitEdit({
     // let UtilArray = typeof items !== 'undefined' ? [...items] : [...selectUtil];
     let ManuArray = [...defaultManuLis];
     // console.log('Utility DATA', UtilArray);
-    console.log('SLIDE  ', ManuArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);
@@ -1275,8 +1234,6 @@ export default function UnitEdit({
         },
       );
       if (dis > radialDis) {
-        console.log('DIS BTW', dis);
-        console.log('RADIAL DIS', radialDis);
 
         Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
       } else {
@@ -1384,7 +1341,6 @@ export default function UnitEdit({
       meters: meterData,
     };
     if (type == 'add' || type == 'addMeterDirect') {
-      console.log('ADD CHALA');
       const unitResponse = await API.post(
         `/property/equipment/unit/add-unit`,
         data,
@@ -1392,18 +1348,14 @@ export default function UnitEdit({
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         setIsActivityLoader(false);
-        // alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
         cancelMeter();
       } else {
         setIsActivityLoader(false);
-        console.log('EDIT RESPONSE FALSE MILA');
-        console.log(unitResponse?.data);
         alert(unitResponse?.data?.message);
         cancelMeter();
       }
     } else {
-      console.log('EDIT CHALA');
       const unitResponse = await API.post(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
@@ -1416,7 +1368,6 @@ export default function UnitEdit({
         cancelMeter();
       } else {
         setIsActivityLoader(false);
-        console.log('ADD RESPONSE FALSE MILA');
         alert(unitResponse?.data?.message);
         cancelMeter();
       }
@@ -1470,13 +1421,11 @@ export default function UnitEdit({
     };
     var meterArray = [...meterListData]; // copying the old datas array
     if (editMeterIndex != null) {
-      console.log('IF CHAL', meterVals);
       let meterData = [...meterListData];
       meterData[editMeterIndex] = meterVals;
       setMeterListData(meterData);
     } else {
       meterArray.push(meterVals);
-      console.log('ELSE CHAL');
       setMeterListData(meterArray);
     }
 
@@ -1495,12 +1444,9 @@ export default function UnitEdit({
     for (let i = 0; i < reasonPath?.length; i++) {
       reasonBase64s.push(`data:image/jpeg;base64,${reasonPath[0]?.base64}`);
     }
-    console.log('METERLISTDATA BATAO', meterListData);
-    console.log('METERDATA BATAO', meterData);
     var loopData = [...meterData];
     let meterVals = {};
     meterListData?.map((item) => {
-      console.log('Get REASONS Information---->>', item.reasons);
       let newReasonArr = [...reasonArr];
       if (type != 'add' || type != 'addMeterDirect') {
         newReasonArr.push({
@@ -1554,18 +1500,14 @@ export default function UnitEdit({
       };
     });
     if (editMeterIndex != null) {
-      console.log('METER DATA IF CHALA');
       let data = [...meterData];
       data[editMeterIndex] = meterVals;
       setMeterData(loopData);
     } else {
-      console.log('METER DATA ELSE CHALA');
       loopData.push(meterVals);
-      console.log('LOOP DATA', loopData);
       setMeterData(loopData);
     }
     setLetsUpdateMeterData(false);
-    // console.log('oldMeterListData finishSlider----->>>>>', meterArray);
   };
 
   const typeSwitcher = (arg) => {
@@ -1856,14 +1798,12 @@ export default function UnitEdit({
   };
 
   const selectMeterLocation = async () => {
-    console.log('Location ka batao', await SystemSetting.isLocationEnabled());
     setSelectLocation(true);
   };
 
   const _renderMap = (oldPos) => {
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log('Positon Batao', position);
         // var lat = parseFloat(position.coords.latitude);
         // var long = parseFloat(position.coords.longitude);
         var lat = parseFloat(propertyLat);
@@ -1885,7 +1825,6 @@ export default function UnitEdit({
           },
         ]);
       },
-      (error) => console.log('geo location', error),
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
     );
   };
@@ -1954,11 +1893,9 @@ export default function UnitEdit({
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      console.log('Keyboard Shown');
       setScroll(true);
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      console.log('Keyboard Hidden');
       setVerticalOffs(-400);
       setScroll(false);
     });
@@ -2010,13 +1947,7 @@ export default function UnitEdit({
           setImageBase64(res.assets[0].base64);
           setFilePath(res.assets[0].uri);
 
-          console.log('FIle PAth Array');
         }
-        // this.setState({
-        //   filePath: res,
-        //   fileData: res.data,
-        //   fileUri: res.uri
-        // });
       }
     });
   };
@@ -2104,11 +2035,9 @@ export default function UnitEdit({
       },
     });
     // setAddNewType(true);
-    console.log('Value', value);
     setShowAddType(value);
     if (value == 'Model Number') {
       setEnableDevice(false);
-      console.log('Model Number Adding------');
       getAllDevices();
     }
   };
@@ -2137,7 +2066,6 @@ export default function UnitEdit({
       );
       if (ManufacturersResponse?.data?.bool) {
         setShowAddType('');
-        console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
         LayoutAnimation.configureNext({
           duration: 300,
           create: {
@@ -2164,7 +2092,6 @@ export default function UnitEdit({
         data,
       );
       if (ModelNumberResponse?.data?.bool) {
-        console.log('datachecckk-->>', ModelNumberResponse?.data?.data);
         LayoutAnimation.configureNext({
           duration: 300,
           create: {
@@ -2191,7 +2118,6 @@ export default function UnitEdit({
         data,
       );
       if (UtilityResponse?.data?.bool) {
-        console.log('datachecckk-->>', UtilityResponse?.data?.data);
         setShowAddType('');
         LayoutAnimation.configureNext({
           duration: 300,
@@ -2220,7 +2146,6 @@ export default function UnitEdit({
         data,
       );
       if (AttachedToResponse?.data?.bool) {
-        console.log('datachecckk-->>', AttachedToResponse?.data?.data);
         setShowAddType('');
         LayoutAnimation.configureNext({
           duration: 300,
@@ -2253,7 +2178,6 @@ export default function UnitEdit({
         data,
       );
       if (DeviceTypesResponse?.data?.bool) {
-        console.log('datachecckk-->>', DeviceTypesResponse?.data?.data);
         LayoutAnimation.configureNext({
           duration: 300,
           create: {
@@ -2315,9 +2239,7 @@ export default function UnitEdit({
   const getMeterData = async (data, index) => {
     callApi(true);
     setSelectedMeter(index + 1);
-    console.log('Unit Mix Id', data.unit_mix_id);
     if (data.id) {
-      console.log('DATA.ID', data.id);
       setDevEdit(true);
       setSelectedDevId(data.id);
       setEditMeterIndex(index);
@@ -2327,7 +2249,6 @@ export default function UnitEdit({
       setSelectedDevId(null);
     }
     setLoadManufacturers(true);
-    console.log('DATA', data);
     setDefaultMeterValues(false);
     setDefaultDeviceValues(false);
     setNewMeterFlag(false);
@@ -2342,7 +2263,6 @@ export default function UnitEdit({
     setProductNo(data.device.product_desc);
     setAttachedToId(data.attachedTo_id);
     setAttachedTo(data.attachedTo_name);
-    console.log('GET METER DATA', data.installation_status);
     if (data.installation_status == 1) {
       setInstallationStatus(data.installation_status);
       setStatusAnimation(true);
@@ -2384,15 +2304,7 @@ export default function UnitEdit({
       setLoadManufacturers(false);
     }
 
-    // setLoadManufacturers(false);
-    // setShowAddMeterSlider(false);
 
-    // setNewMeter((oldState) => ({
-    //   ...oldState,
-    //   id: data?.meter_name[0]?.id,
-    //   name: data?.meter_name[0]?.name,
-    //   number: index + 1,
-    // }));
   };
 
   const slideBacker = () => {
@@ -2412,7 +2324,6 @@ export default function UnitEdit({
         backdropColor="black"
         statusBarTranslucent
         style={{ margin: 0 }}
-        // onBackdropPress={() => se7tShowAddMeterSlider(false)}
         isVisible={modalVisible}>
         {isActivityLoader ? (
           <View styles={styles.boxInner}>
@@ -3727,7 +3638,7 @@ export default function UnitEdit({
                                               onItemSelect={(item) => {
                                                 // this.getNewDeviceData(items, index);
                                                 setSelectedDevice(item);
-                                                console.log('kia ha', item);
+                                                // console.log('kia ha', item);
                                               }}
                                               containerStyle={{
                                                 paddingBottom: width * 0.02,
@@ -4732,7 +4643,7 @@ export default function UnitEdit({
                           onTextChange: (text) => {
                             console.log(text);
                           },
-                          value: setTimeout(() => selectedUnitMix, 200),
+                          value: selectedUnitMix,
                           defaultValue: selectedUnitMix,
                         }}
                         listProps={{
@@ -4748,89 +4659,80 @@ export default function UnitEdit({
                       ) : null}
                     </View>
                   </View>
-                  {/* </View> */}
                   <View
                     style={{
                       flex: 10,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      // backgroundColor: 'yellow',
                     }}>
+                    {meterListData?.length > 0 && <View>
+                      <TextReuseableComponent heading value={"Meters"} style={{ marginTop: 5 }} />
+                    </View>}
                     <View
                       style={[
                         styles.inputContainer,
                         {
                           flex: 8,
                           flexDirection: 'row',
-                          // height: width * 0.15,
                           justifyContent: 'space-around',
                           alignItems: 'center',
                           flexWrap: 'wrap',
                           padding: 5,
+                          // backgroundColor: 'yellow'
                         },
                       ]}>
-                      {loadMeters ? (
-                        <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
-                      ) : (
-                        meterListData?.length > 0 &&
-                        meterListData?.map((item, index) => (
-                          <TouchableOpacity
-                            // disabled={true}
-                            onPress={() => {
-                              LayoutAnimation.configureNext({
-                                duration: 300,
-                                create: {
-                                  type: LayoutAnimation.Types.easeInEaseOut,
-                                  property: LayoutAnimation.Properties.opacity,
-                                },
-                                update: {
-                                  type: LayoutAnimation.Types.easeInEaseOut,
-                                },
-                              }),
-                                // setShowAddMeterSlider(true),
-                                // setDefaultScreen(true),
-                                getMeterData(item, index);
-                              enableLocation(true);
-                            }}
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'space-around',
-                              padding: 8,
-                              margin: width * 0.01,
-                              elevation: 2,
-                              backgroundColor: 'white',
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              shadowColor: '#000',
-                              shadowOffset: {
-                                width: 0,
-                                height: 1,
-                              },
-                              shadowOpacity: 0.2,
-                              shadowRadius: 1.41,
-                            }}>
-                            <TextReuseableComponent title style={
-                              styles.meterDesciptionHeading
-                            } value={`Meter- ${index + 1}`} />
-                            <TouchableOpacity
-                              onPress={() => removeMeterAlert(item, index)}
-                              style={{
-                                zIndex: 1,
-                                backgroundColor: '#fff',
-                              }}>
-                              <MaterialCommunityIcons
-                                name="trash-can-outline"
-                                size={width * 0.07}
-                              />
-                            </TouchableOpacity>
-                          </TouchableOpacity>
-                        ))
-                      )}
+                      <ScrollView showsVerticalScrollIndicator={false} >
+                        {loadMeters ? (
+                          <ActivityIndicator color={'#25AAE1ec'} size={'large'} />
+                        ) : (
+                          meterListData?.length === 0 ? <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                            <TextReuseableComponent heading style={{
+                              color: '#25AAE1ec',
+                            }} value={"No Meters"} />
+                          </View> :
+                            meterListData?.length > 0 &&
+                            meterListData?.map((item, index) => (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  LayoutAnimation.configureNext({
+                                    duration: 300,
+                                    create: {
+                                      type: LayoutAnimation.Types.easeInEaseOut,
+                                      property: LayoutAnimation.Properties.opacity,
+                                    },
+                                    update: {
+                                      type: LayoutAnimation.Types.easeInEaseOut,
+                                    },
+                                  }),
+                                    // setShowAddMeterSlider(true),
+                                    // setDefaultScreen(true),
+                                    getMeterData(item, index);
+                                  enableLocation(true);
+                                }}
+                                style={styles.meterContainer}>
+                                <TextReuseableComponent title style={
+                                  styles.meterDesciptionHeading
+                                } value={`Meter- ${index + 1}`} />
+                                <TouchableOpacity
+                                  onPress={() => removeMeterAlert(item, index)}
+                                  style={{
+                                    zIndex: 1,
+                                    backgroundColor: '#fff',
+                                  }}>
+                                  <MaterialCommunityIcons
+                                    name="trash-can-outline"
+                                    size={width * 0.07}
+                                  />
+                                </TouchableOpacity>
+                              </TouchableOpacity>
+                            ))
+                        )}
+                      </ScrollView>
                       <View
                         style={{
                           alignItems: 'center',
                           justifyContent: 'flex-end',
+                          // marginTop: width * 0.05,
                         }}>
                         {type == 'addMeterDirect' || type == 'meterDirect' ? (
                           meterData.length == 1 ? (
@@ -4875,13 +4777,14 @@ export default function UnitEdit({
                               handleAddMeter();
                             }}
                             style={{
-                              // flexDirection: 'row',
                               justifyContent: 'flex-start',
                               alignItems: 'center',
                               zIndex: 1,
                               borderWidth: 2,
                               borderRadius: 5,
                               borderColor: '#25AAE1ec',
+                              width: width * 0.8,
+                              marginTop: width * 0.035,
                               paddingHorizontal: width * 0.02,
                               paddingVertical: width * 0.01,
                             }}>
@@ -4893,7 +4796,6 @@ export default function UnitEdit({
                       </View>
                     </View>
                   </View>
-                  {/* Box Footer */}
                   <View
                     style={{
                       // backgroundColor: 'pink',
@@ -5059,7 +4961,27 @@ const styles = StyleSheet.create({
     fontSize: height * 0.034,
     textAlign: 'center',
   },
+  meterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 8,
+    margin: width * 0.01,
+    width: width * 0.75,
+    elevation: 2,
+    backgroundColor: 'white',
+    // borderWidth: 1,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    // shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+  },
   meterDesciptionHeading: {
+    marginRight: width * 0.07,
     fontSize: width * 0.04,
     color: '#3E4A4F',
     textTransform: 'capitalize',

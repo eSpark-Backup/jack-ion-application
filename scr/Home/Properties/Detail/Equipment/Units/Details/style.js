@@ -103,8 +103,8 @@ export default styles = StyleSheet.create({
     borderWidth: 0.8,
   },
   sectionImgStyle: {
-    height: height * 0.08,
-    width: height * 0.08,
+    height: height * 0.05,
+    width: height * 0.05,
   },
   statusList: {width: width * 0.9, bottom: width * 0.02},
   usageTextContainer: {

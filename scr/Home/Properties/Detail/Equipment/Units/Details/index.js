@@ -1318,7 +1318,6 @@ const App = ({ navigation }) => {
     );
   };
 
-  // console.log(clc.red('data', JSON.stringify(data.data)));
   if (loading) {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
@@ -1333,23 +1332,13 @@ const App = ({ navigation }) => {
           disableFlag={() => setFlag(false)}
           modalVisible={editUnitModalVisible}
           meterMenuVisible={editUnitMenuVisible}
-          // showMenu={() => setEditUnitMenuVisible(true)}
-          // hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
-          // openModal={() => setEditUnitModalVisible(true)}
           reRun={() => getToken()}
           meterTypes={arrayOfUnits}
           modalName="Edit Unit"
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
-        // itemPressHandle={() => {
-        //   setEditUnitMenuVisible(false);
-        // }}
-        // handleEditUnit={() => {
-        //   ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
-        //   setEditUnitModalVisible(false);
-        // }}
         />
         <Header
           leftComponent={{
@@ -1465,6 +1454,7 @@ const App = ({ navigation }) => {
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
+          unitMixesId={data.data?.unit?.unit_mix_id}
           itemPressHandle={() => {
             setEditUnitMenuVisible(false);
           }}
