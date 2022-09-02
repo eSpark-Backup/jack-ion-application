@@ -62,6 +62,10 @@ export default class Splash extends Component {
       contactName: '',
       contactEmail: '',
       contactPhone: '',
+      currentIndex: '',
+      currentItemId: '',
+      alert_type: [],
+      currentPropertyId: '',
       shimmers: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
       notifications: [{ title: 'Alert Contacts', icon: 'bell' }],
       alertsType: [
@@ -102,7 +106,7 @@ export default class Splash extends Component {
       alert(alertContactRes.data.message);
       this.setState({ loader: false });
     }
-    console.log('alertContactRes', alertContactRes?.data?.data);
+
   }
 
   fetchAlerts = async () => {
@@ -153,7 +157,7 @@ export default class Splash extends Component {
   fetchAlertSettings = async () => {
     const propertyData = this.props.navigation.state.params.item.item;
     const alertsRes = await API.get(`/alert/property/${propertyData?.id}`);
-    console.log('Alert Results', alertsRes.data.data);
+    // console.log('Alert Results', alertsRes.data.data);
     if (alertsRes.data.bool) {
       const allowedIds = alertsRes.data?.data?.alert_type?.alert_type_id;
       allowedIds.map((item) => {
@@ -190,7 +194,7 @@ export default class Splash extends Component {
       `alert/property/update/${propertyData?.id}`,
       AlertIds,
     );
-    console.log('UPDATE API DATA', updateAlertStatus.data.data);
+    // console.log('UPDATE API DATA', updateAlertStatus.data.data);
     if (updateAlertStatus.data.bool) {
       this.fetchAlertSettings();
       this.setState({ loader: false });
@@ -224,7 +228,56 @@ export default class Splash extends Component {
       this.setState({ loader: false });
       alertArray[0].data.map((item) => (item.contact_alerts = true));
       alertArray[1].data.map((item) => (item.contact_alerts = true));
-      this.setState({ alertsType: alertArray, contactModal: false });
+      const data = [...this.state.alertContacts];
+      data[0].data = [...this.state.alertContacts[0].data, contactInfo?.data?.data?.alert_contact];
+      this.setState({ alertsType: alertArray, contactModal: false, alertContacts: data, currentIndex: '', contactName: '', contactEmail: '', contactPhone: '' });
+    } else {
+      this.setState({ loader: false });
+      alert(contactInfo.data.message);
+    }
+  };
+
+  handleUpdateContact = async (index) => {
+    // console.log('update contact called', index);
+    const propertyData = this.props.navigation.state.params.item.item;
+    const alertArray = [...this.state.alertsType];
+    let IDs = [];
+    alertArray.map((itm) => {
+      itm.data.map((i, ind) => {
+        if (i.contact_alerts == true) {
+          i.parent < 2 ? IDs.push(ind + 1) : IDs.push(ind + 5);
+        }
+      });
+    });
+
+    const AlertIds = { alert_type_id: IDs };
+    // console.log('AlertIds', AlertIds);
+
+    this.setState({ loader: true });
+    let contactData = {
+      name: this.state.contactName,
+      email: this.state.contactEmail,
+      phone: this.state.contactPhone,
+      alert_type: this.state.alert_type,
+    };
+    const updateAlertStatus = await API.post(
+      `/alert/property/contact/update/${this.state.currentItemId}`,
+      contactData,
+    );
+    
+    // console.log('updateAlertStatus', updateAlertStatus);
+    if (updateAlertStatus?.data?.bool) {
+      const data = [...this.state.alertContacts];
+      data[0].data[this.state.currentIndex] = contactData;
+      this.setState({ alertContacts: data });
+      this.setState({ 
+        loader: false,
+        contactModal: false, 
+        currentIndex: '', 
+        contactName: '', 
+        contactEmail: '', 
+        contactPhone: '' 
+      });
     } else {
       this.setState({ loader: false });
       alert(contactInfo.data.message);
@@ -232,7 +285,7 @@ export default class Splash extends Component {
   };
 
   cancelContact = () => {
-    this.setState({ contactModal: false });
+    this.setState({ contactModal: false, currentIndex: '', contactName: '', contactEmail: '', contactPhone: '' });
     const alertArray = [...this.state.alertsType];
     alertArray[0].data.map((item) => (item.contact_alerts = true));
     alertArray[1].data.map((item) => (item.contact_alerts = true));
@@ -250,6 +303,7 @@ export default class Splash extends Component {
   };
 
   naviagateToEquip = () => {
+    // console.log('this.props.navigation.state.params', this.props.navigation.state.params);
     this.toggleModal();
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
@@ -292,7 +346,7 @@ export default class Splash extends Component {
       alertIds: selectedIds,
     });
 
-    console.log('Selected Ids', selectedIds.length);
+    // console.log('Selected Ids', selectedIds.length);
   };
 
   checkAllAlert = () => {
@@ -319,7 +373,7 @@ export default class Splash extends Component {
       property_id: propertyId,
     };
     const dismissAlert = await API.post('/alert/dismiss/add', data);
-    console.log('RESPONSE', dismissAlert.data);
+    // console.log('RESPONSE', dismissAlert.data);
     if (dismissAlert.data.bool) {
       this.setState({ dismissModal: false, dismissNote: '' });
       this.fetchAlerts();
@@ -506,6 +560,19 @@ export default class Splash extends Component {
     );
   };
 
+  handleSettingsClick = (item, index) => {
+    this.setState({
+      currentIndex: index,
+      currentItemId: item.id,
+      currentPropertyId: item.property_id,
+      contactModal: true,
+      contactName: item.name,
+      contactEmail: item.email,
+      contactPhone: item.phone,
+      alert_type: item.alert_type
+    });
+  }
+
   renderNotification = () => {
     const {
       alertSettObj,
@@ -526,7 +593,7 @@ export default class Splash extends Component {
         <>
           <SectionList
             sections={this.state.alertContacts}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <View style={style.containerInner}>
                 <View style={style.viewAlignment}>
                   <Feather
@@ -538,13 +605,11 @@ export default class Splash extends Component {
                     <TextReuseableComponent title style={style.mainHeadiingItems} value={item.name} />
                     <View style={style.viewAlignment}>
                       <TextReuseableComponent title style={style.contactOtherInfo} value={item.email} />
-
                       <TextReuseableComponent title style={style.contactOtherInfo} value={item.phone} />
                     </View>
                   </View>
                 </View>
-
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => this.handleSettingsClick(item, index)}>
                   <Feather
                     name={'settings'}
                     size={height * 0.035}
@@ -710,9 +775,9 @@ export default class Splash extends Component {
         <AlertScreenModal
           isVisible={this.state.contactModal}
           onClose={() => {
-            this.setState({ contactModal: false });
+            this.setState({ contactModal: false, currentIndex: '', contactName: '', contactEmail: '', contactPhone: '' });
           }}
-          ModalHeader={'Add New Contact'}
+          ModalHeader={this.state.currentIndex ? 'Update Contact' : 'Add New Contact'}
           ModalBody={
             <View style={{ alignItems: 'center' }}>
               <View style={style.contactInfoContainer}>
@@ -726,6 +791,7 @@ export default class Splash extends Component {
                 </View>
                 <Text_Input
                   placeholder="Contact Name"
+                  value={this.state.contactName}
                   style={style.contactInput}
                   onChangeText={(text) => this.setState({ contactName: text })}
                 />
@@ -742,6 +808,7 @@ export default class Splash extends Component {
                 <Text_Input
                   placeholder="Email"
                   style={style.contactInput}
+                  value={this.state.contactEmail}
                   onChangeText={(text) => this.setState({ contactEmail: text })}
                 />
               </View>
@@ -757,6 +824,7 @@ export default class Splash extends Component {
                 <Text_Input
                   placeholder="Phone(optional)"
                   style={style.contactInput}
+                  value={this.state.contactPhone}
                   onChangeText={(text) => this.setState({ contactPhone: text })}
                 />
               </View>
@@ -864,14 +932,14 @@ export default class Splash extends Component {
                 <TextReuseableComponent title value={"Cancel"} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={this.addContact}
+                onPress={this.state.currentIndex ? () => this.handleUpdateContact(this.state.currentIndex) : this.addContact}
                 disabled={!contactName || (!contactEmail && true)}
                 style={{
                   ...style.dismissModalDoneBtn,
                   backgroundColor:
                     contactName && contactEmail ? '#25AAE1' : '#999',
                 }}>
-                <TextReuseableComponent title style={{ color: 'white' }} value={"Save"} />
+                <TextReuseableComponent title style={{ color: 'white' }} value={this.state.currentIndex ? "Update" : "Save"} />
               </TouchableOpacity>
             </View>
           }

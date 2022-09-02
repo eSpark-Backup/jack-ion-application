@@ -7,8 +7,8 @@ import API from '../../../api/SeviceApi';
 class GlobalState extends React.Component {
   componentDidMount() {
     NetInfo.fetch().then((state) => {
-      console.log('Connection type', state.type);
-      console.log('Is connected?', state.isConnected);
+      // console.log('Connection type', state.type);
+      // console.log('Is connected?', state.isConnected);
       !state.isConnected
         ? this.setState({isLoading: false})
         : this.setState({isLoading: true});
@@ -83,14 +83,14 @@ class GlobalState extends React.Component {
   filterData = async (sort) => {
     this.setState({biller: sort.billing, filterWork: true, isLoading: true});
     const response = await API.post('/property/all', sort);
-    console.log('FIlter property===>', response);
+    // console.log('FIlter property===>', response);
     if (response?.data?.bool) {
       this.setState({
         propList: response.data.data.properties,
         filterDataName: sort.name,
         offset: response?.data?.data?.offset,
       });
-      console.log('FIltered property===>', response.data.data.properties);
+      // console.log('FIltered property===>', response.data.data.properties);
       this.setState({limitExceed: false});
       this.setState({isLoading: false});
     } else {
@@ -148,9 +148,9 @@ class GlobalState extends React.Component {
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
     };
-    console.log('data--->', data);
+    // console.log('data--->', data);
     API.post('/property/add', data).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       if (res?.data?.bool) {
         this.checkData();
       } else {
@@ -174,10 +174,10 @@ class GlobalState extends React.Component {
   getManagementCompany = async () => {
     this.setState({isLoading: true});
     const response = await API.get('/property/management-company/all');
-    console.log(
-      'Check management company response',
-      response?.data?.data?.managementCompany,
-    );
+    // console.log(
+    //   'Check management company response',
+    //   response?.data?.data?.managementCompany,
+    // );
     let list = response?.data?.data?.managementCompany;
     let filter = [];
     for (let i = 0; i < list.length; i++) {
@@ -243,7 +243,7 @@ class GlobalState extends React.Component {
           });
         }
         setTimeout(() => {
-          console.log('Check Searh Loader', this.state.searchLoading);
+          // console.log('Check Searh Loader', this.state.searchLoading);
           if (this.state.searchLoading) {
             this.setState({searchLoading: false});
           }
@@ -270,7 +270,7 @@ class GlobalState extends React.Component {
   };
 
   doLoad = () => {
-    console.log('LOAD KO TRUE KARO');
+    // console.log('LOAD KO TRUE KARO');
     this.setState({loadData: true});
   };
 
@@ -294,7 +294,7 @@ class GlobalState extends React.Component {
   };
 
   render() {
-    console.log('LOADDATA GLOBALSTATE', this.state.loadData);
+    // console.log('LOADDATA GLOBALSTATE', this.state.loadData);
 
     return (
       <>

@@ -252,7 +252,7 @@ export default function AddbuildingModal({
         data,
       );
         dispatch(fetchPropetry())
-      console.log('buildResponse--->', unitResponse);
+      // console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         reRun();
@@ -265,7 +265,7 @@ export default function AddbuildingModal({
         data,
       );
       dispatch(fetchPropetry())
-      console.log('buildResponse--->', unitResponse);
+      // console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         reRun();

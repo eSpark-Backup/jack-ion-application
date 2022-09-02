@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Dimensions,
@@ -10,7 +10,7 @@ import {
 
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
+import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
 
 // Components
 import styles from './style';
@@ -20,7 +20,7 @@ import API from '../../../../api/SeviceApi';
 
 import TextReuseableComponent from '../../../../components/Text/index';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default class Splash extends Component {
   constructor() {
@@ -43,93 +43,120 @@ export default class Splash extends Component {
       '/property/equipment/meter/notification-show',
     );
 
-    console.log('Notifications Response', notificationsRes?.data);
+    // console.log('Notifications Response', notificationsRes?.data);
     if (notificationsRes?.data?.bool) {
-      this.setState({notificationData: notificationsRes?.data?.data?.notify});
+      this.setState({ notificationData: notificationsRes?.data?.data?.notify });
     }
 
-    this.setState({LoaderState: false});
+    this.setState({ LoaderState: false });
+    // console.log('this.state.notificationData ==', this.state.notificationData);
   }
 
   notificationFilterApi = async (code) => {
-    this.setState({LoaderState: true});
+    this.setState({ LoaderState: true });
     if (code) {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
-        {code: code},
+        { code: code },
       );
 
-      console.log('Notifications Response', notificationsRes?.data);
+      // console.log('Notifications Response', notificationsRes?.data);
       if (notificationsRes?.data?.bool) {
-        this.setState({notificationData: notificationsRes?.data?.data?.notify});
+        this.setState({ notificationData: notificationsRes?.data?.data?.notify });
       }
 
-      this.setState({LoaderState: false});
+      this.setState({ LoaderState: false });
     } else {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
       );
 
-      console.log('Notifications Response', notificationsRes?.data);
+      // console.log('Notifications Response', notificationsRes?.data);
       if (notificationsRes?.data?.bool) {
-        this.setState({notificationData: notificationsRes?.data?.data?.notify});
+        this.setState({ notificationData: notificationsRes?.data?.data?.notify });
       }
 
-      this.setState({LoaderState: false});
+      this.setState({ LoaderState: false });
     }
   };
 
   openMenu = () => {
-    this.setState({visible: true});
+    this.setState({ visible: true });
   };
 
   closeMenu = () => {
-    this.setState({visible: false});
+    this.setState({ visible: false });
   };
 
   onPressFilterItem = (value) => {
     switch (value) {
       case 'Property':
-        console.log('Property');
+        // console.log('Property');
         this.notificationFilterApi(202);
         break;
       case 'Building':
-        console.log('Building');
+        // console.log('Building');
         this.notificationFilterApi(302);
         break;
       case 'Unit':
-        console.log('Unit');
+        // console.log('Unit');
         this.notificationFilterApi(402);
         break;
       case 'Meter_type':
-        console.log('Meter_type');
+        // console.log('Meter_type');
         this.notificationFilterApi(201);
         break;
       case 'Manufacturer':
-        console.log('Manufacturer');
+        // console.log('Manufacturer');
         this.notificationFilterApi(602);
         break;
       case 'Device':
-        console.log('Device');
+        // console.log('Device');
         this.notificationFilterApi(702);
         break;
       case 'Reset':
-        console.log('Reset');
+        // console.log('Reset');
         this.notificationFilterApi();
         break;
       default:
-        console.log('Unknown');
+        // console.log('Unknown');
         break;
     }
     this.closeMenu();
   };
+
+  findWord(word, str) {
+    return RegExp('\\b' + word + '\\b').test(str)
+  }
+
+  handleNotificationPress = (item) => {
+    if (item.link) {
+      const wordRes = this.findWord("equipment", item.link);
+      const regex = /\d+/g;
+      const matches = item.link.match(regex);  // creates array from matches
+
+      if (wordRes && matches.length) {
+        const id = matches[0];
+        const newItem = {
+          item: {
+            item: {
+              id
+            }
+          }
+        }
+        return this.props.navigation.navigate("Equip", newItem);
+      }
+      return null;
+    }
+    return null;
+  }
 
   render() {
     let upDownMeter;
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
     let upDownNearby;
     !this.state.nearDown ? (upDownNearby = 'down') : (upDownNearby = 'up');
-    console.log('LoaderState');
+    // console.log('LoaderState');
 
     return (
       <View style={styles.container}>
@@ -155,7 +182,7 @@ export default class Splash extends Component {
                 }}
               />
               <TextReuseableComponent title style={styles.mainHeadiing} value={"Notifications"} />
-              <View style={{flexDirection: 'row-reverse', flex: 1}}>
+              <View style={{ flexDirection: 'row-reverse', flex: 1 }}>
                 <Menu
                   visible={this.state.visible}
                   onDismiss={this.closeMenu}
@@ -198,7 +225,7 @@ export default class Splash extends Component {
           </View>
         </View>
 
-        <View style={{flex: 1, alignItems: 'center'}}>
+        <View style={{ flex: 1, alignItems: 'center' }}>
           {this.state.LoaderState ? (
             <Loader />
           ) : this.state.notificationData.length < 1 ? (
@@ -208,10 +235,11 @@ export default class Splash extends Component {
             }} value={"No Notifications to show"} />
           ) : (
             <FlatList
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               data={this.state.notificationData}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity
+                  onPress={() => this.handleNotificationPress(item)}
                   style={{
                     borderWidth: 1,
                     width: width * 0.95,
@@ -230,8 +258,8 @@ export default class Splash extends Component {
                     }}
                   />
                   <View>
-                    <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={item.sender_name} />
-                    <TextReuseableComponent title style={{width: width * 0.8}} value={item.message} />
+                    <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={item.sender_name} />
+                    <TextReuseableComponent title style={{ width: width * 0.8 }} value={item.message} />
                   </View>
                 </TouchableOpacity>
               )}

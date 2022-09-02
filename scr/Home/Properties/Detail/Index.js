@@ -23,14 +23,14 @@ import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Folder from 'react-native-vector-icons/Feather';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {VictoryPie} from 'victory-native';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { VictoryPie } from 'victory-native';
 import Drawer from '../../../components/modal/Drawer/index';
 import ContextProp from '../Context/propContext';
-import {TextInput, FAB, HelperText} from 'react-native-paper';
+import { TextInput, FAB, HelperText } from 'react-native-paper';
 import Geocoder from 'react-native-geocoding';
 import {
   check,
@@ -42,7 +42,7 @@ import {
 
 // Components
 import styles from './style';
-import {Fonts} from '../../../utils/fonts';
+import { Fonts } from '../../../utils/fonts';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
@@ -52,12 +52,12 @@ import { connect } from 'react-redux';
 import { fetchPropetry } from '../../../Store/Action/properties.action';
 import TextReuseableComponent from '../../../components/Text/index';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
- class Details extends React.Component {
+class Details extends React.Component {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -113,11 +113,11 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
         zipcode: '',
       },
       dropDownShow: [
-        {value: true},
-        {value: false},
-        {value: false},
-        {value: false},
-        {value: false},
+        { value: true },
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
       ],
     };
     if (Platform.OS === 'android') {
@@ -172,7 +172,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
       manus.push(item.manufacturer.name);
     });
 
-    this.setState({utilTypes, manus});
+    this.setState({ utilTypes, manus });
 
     console.log('UTILITY TYPES', utilTypes);
     console.log('MANUFACTURERS', manus);
@@ -235,12 +235,12 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   };
 
   getMetersLocation = async (propertyId) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const metersLocation = await API.get(
       `/property/location-meters/${propertyId}`,
     );
     if (metersLocation?.data?.bool) {
-      this.setState({markers: metersLocation?.data?.data, isLoading: false});
+      this.setState({ markers: metersLocation?.data?.data, isLoading: false });
       let index = metersLocation?.data?.data?.length - 1;
       this.setState({
         propMarkers: metersLocation?.data?.data[index]?.property?.position,
@@ -321,10 +321,10 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
       // this.getPropertyDetails(this.state.propertyId);
       const propertyRes = await API.get(`/property/${this.state.propertyId}`);
 
-      this.setState({propertyData: propertyRes?.data?.data?.property});
+      this.setState({ propertyData: propertyRes?.data?.data?.property });
 
       if (propertyRes?.data?.bool) {
-        this.setState({isEditPropVisible: true, propertyflag: true});
+        this.setState({ isEditPropVisible: true, propertyflag: true });
         this.context.doLoad();
       }
     } else {
@@ -418,7 +418,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   };
 
   naviagateToSupport = () => {
-    this.setState({isModalVisible: false});
+    this.setState({ isModalVisible: false });
     this.props.navigation.navigate('Support');
   };
 
@@ -441,7 +441,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
             currAddr={this.state.locationBtn}
             propertyData={
               this.state.propertyData == null
-                ? this.props.navigation.state.params.item.item
+                ? this.props?.navigation?.state?.params?.item?.item
                 : this.state.propertyData
             }
             addedSuccessfully={this.onEditSucces}
@@ -592,8 +592,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
               <View style={styles.clientName}>
                 <Properties name="home-city-outline" size={width * 0.08} />
                 <TextReuseableComponent title style={styles.clientNameHeading} value={this.state.listData.name == null
-                    ? 'Untitled'
-                    : this.state.listData.name} />
+                  ? 'Untitled'
+                  : this.state.listData.name} />
                 <Pressable
                   style={styles.clientDataEdit}
                   onPress={() => this.enableLocation()}
@@ -624,20 +624,20 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Gateway"} />
                   <View style={styles.infoViewInner}>
-                    <Icon  name="router" size={25} />
-                    {propertyData?.gateway ? 
-                    <View style={{flexDirection: 'column'}}>
+                    <Icon name="router" size={25} />
+                    {propertyData?.gateway ?
+                      <View style={{ flexDirection: 'column' }}>
                         <TextReuseableComponent title style={styles.dataFieldText} value={propertyData?.gateway?.serial_number} />
                         <TextReuseableComponent title style={styles.dataFieldText} value={"Synced"} />
-                    </View>
+                      </View>
                       :
-                    <>
-                    <TextReuseableComponent title style={styles.dataFieldText} value={"No Gateway Programmed!"} />
-                    </>}
+                      <>
+                        <TextReuseableComponent title style={styles.dataFieldText} value={"No Gateway Programmed!"} />
+                      </>}
                     <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
                       this.state.listData.owner == ''
-                        ? '--'
-                        : this.state.listData.owner} />
+                      ? '--'
+                      : this.state.listData.owner} />
                   </View>
                 </View>
 
@@ -646,22 +646,18 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"ADDRESS"} />
                   <View style={styles.infoViewInner}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <TextReuseableComponent title style={[styles.dataFieldText, {overflow: 'scroll'}]} value={`${
-                        this.state.listData.street == null
-                          ? ''
-                          : this.state.listData.street
-                      } \n ${
-                        this.state.listData.city == null
-                          ? ''
-                          : this.state.listData.city + ','
-                      } ${
-                        this.state.listData.st == null
-                          ? ''
-                          : this.state.listData.st
-                      } ${
-                        this.state.listData.zipcode == null
-                          ? ''
-                          : this.state.listData.zipcode
+                    <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll' }]} value={`${this.state.listData.street == null
+                      ? ''
+                      : this.state.listData.street
+                      } \n ${this.state.listData.city == null
+                        ? ''
+                        : this.state.listData.city + ','
+                      } ${this.state.listData.st == null
+                        ? ''
+                        : this.state.listData.st
+                      } ${this.state.listData.zipcode == null
+                        ? ''
+                        : this.state.listData.zipcode
                       }`} />
                   </View>
                 </View>
@@ -671,58 +667,58 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     <Folder name="folder" size={width * 0.06} />
                     <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.custom_id == null ||
                       this.state.listData.custom_id == ''
-                        ? '--'
-                        : this.state.listData.custom_id} />
+                      ? '--'
+                      : this.state.listData.custom_id} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Other Details"} />
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
                     <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        {width: width * 0.4, textAlign: 'left'},
-                      ]} value={"Unit Count:"} />
+                      styles.dataFieldText,
+                      { width: width * 0.4, textAlign: 'left' },
+                    ]} value={"Unit Count:"} />
                     <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        {width: width * 0.3, textAlign: 'auto'},
-                      ]} value={this.state.listData.unit_count == null ||
-                        this.state.listData.unit_count == ''
-                          ? '--'
-                          : this.state.listData.unit_count} />
+                      styles.dataFieldText,
+                      { width: width * 0.3, textAlign: 'auto' },
+                    ]} value={this.state.listData.unit_count == null ||
+                      this.state.listData.unit_count == ''
+                      ? '--'
+                      : this.state.listData.unit_count} />
                   </View>
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
                     <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        {width: width * 0.4, textAlign: 'left'},
-                      ]} value={"Utility Type:"} />
+                      styles.dataFieldText,
+                      { width: width * 0.4, textAlign: 'left' },
+                    ]} value={"Utility Type:"} />
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      style={{flexDirection: 'row'}}>
+                      style={{ flexDirection: 'row' }}>
                       {this.state.utilTypes.map((item, index) => (
                         <View
-                          style={{borderWidth: 1, borderRadius: 5, padding: 3}}>
+                          style={{ borderWidth: 1, borderRadius: 5, padding: 3 }}>
                           <TextReuseableComponent title style={[
-                              styles.dataFieldText,
-                              {width: null, textAlign: 'auto'},
-                            ]} value={item == null || item == ''
+                            styles.dataFieldText,
+                            { width: null, textAlign: 'auto' },
+                          ]} value={item == null || item == ''
                             ? '--'
                             : this.state.utilTypes?.length - 1 == index
-                            ? item
-                            : item + ', '} />
+                              ? item
+                              : item + ', '} />
                         </View>
                       ))}
                     </ScrollView>
                   </View>
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
                     <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        {width: width * 0.4, textAlign: 'left'},
-                      ]} value={"Manufacturer:"} />
+                      styles.dataFieldText,
+                      { width: width * 0.4, textAlign: 'left' },
+                    ]} value={"Manufacturer:"} />
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      style={{flexDirection: 'row'}}>
+                      style={{ flexDirection: 'row' }}>
                       {this.state.manus.map((item, index) => (
                         <View
                           style={{
@@ -731,13 +727,13 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                             padding: 3,
                           }}>
                           <TextReuseableComponent title style={[
-                              styles.dataFieldText,
-                              {width: null, textAlign: 'auto'},
-                            ]} value={item == null || item == ''
+                            styles.dataFieldText,
+                            { width: null, textAlign: 'auto' },
+                          ]} value={item == null || item == ''
                             ? '--'
                             : this.state.manus?.length - 1 == index
-                            ? item
-                            : item + ', '} />
+                              ? item
+                              : item + ', '} />
                         </View>
                       ))}
                     </ScrollView>
@@ -749,28 +745,28 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     <Folder name="folder" size={width * 0.06} />
                     <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
                       this.state.listData.owner == ''
-                        ? '--'
-                        : this.state.listData.owner} />
+                      ? '--'
+                      : this.state.listData.owner} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Meter Count & Installation Status"} />
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <TextReuseableComponent title  style={[
-                        styles.dataFieldText,
-                        {width: width * 0.4, textAlign: 'left'},
-                      ]} value={"Meter Count:"} />
+                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
                     <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        {width: width * 0.3, textAlign: 'auto'},
-                      ]} value={this.state.meterCount} />
+                      styles.dataFieldText,
+                      { width: width * 0.4, textAlign: 'left' },
+                    ]} value={"Meter Count:"} />
+                    <TextReuseableComponent title style={[
+                      styles.dataFieldText,
+                      { width: width * 0.3, textAlign: 'auto' },
+                    ]} value={this.state.meterCount} />
                   </View>
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
-                    <TextReuseableComponent title style={[styles.dataFieldText, {textAlign: 'left'}]} value={"Complete Installations:"} />
+                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                    <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'left' }]} value={"Complete Installations:"} />
                     <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        {width: width * 0.3, textAlign: 'auto'},
-                      ]} value={this.state.installStatus} />
+                      styles.dataFieldText,
+                      { width: width * 0.3, textAlign: 'auto' },
+                    ]} value={this.state.installStatus} />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
@@ -786,7 +782,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                   <ScrollView
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                    style={{width: width * 0.85, height: width * 0.2}}>
+                    style={{ width: width * 0.85, height: width * 0.2 }}>
                     {this.state.unitMixes.map((item, index) => (
                       <View style={styles.unitMixesValuesContainer}>
                         <TextReuseableComponent title style={styles.unitMixesHeads} value={index + 1} />
@@ -807,10 +803,10 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     <TextReuseableComponent title value={this.state.sumNoOfUnits} />
                     <TextReuseableComponent title value={this.state.sumTotalGalDay} />
                     <TextReuseableComponent title value={this.state.sumNoOfUnits > 0
-                        ? Math.round(
-                            this.state.sumTotalGalDay / this.state.sumNoOfUnits,
-                          )
-                        : 0} />
+                      ? Math.round(
+                        this.state.sumTotalGalDay / this.state.sumNoOfUnits,
+                      )
+                      : 0} />
                   </View>
                 </View>
 
@@ -822,16 +818,12 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                         name="account-box"
                         size={height * 0.04}
                         color="white"
-                        maxOpacity={0.5}
+                        maxOpacity={0.1}
                       />
                     </View>
-                    <TextInput
-                      value={this.state.listData?.contact_name}
-                      placeholder="Contact Name"
-                      onChangeText={(text) => console.log(text)}
-                      editable={false}
-                      style={styles.contactInput}
-                    />
+                    <View style={styles.contactInfoText}>
+                      <TextReuseableComponent title value={this.state.listData?.contact_name} />
+                    </View>
                   </View>
                   <View style={styles.contactInfoContainer}>
                     <View style={styles.contactInfoInner}>
@@ -842,37 +834,28 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                         maxOpacity={0.5}
                       />
                     </View>
-                    <TextInput
-                      value={this.state.listData?.contact_phone}
-                      placeholder="Phone"
-                      onChangeText={(text) => console.log(text)}
-                      editable={false}
-                      style={styles.contactInput}
-                    />
+                    <View style={styles.contactInfoText}>
+                      <TextReuseableComponent title value={this.state.listData?.contact_phone} />
+                    </View>
                   </View>
                   <View style={styles.contactInfoContainer}>
                     <View style={styles.contactInfoInner}>
                       <Icon
                         name="mail-outline"
-                        size={height * 0.04}
+                        size={height * 0.03}
                         color="white"
                         maxOpacity={0.5}
                       />
                     </View>
-                    <TextInput
-                      value={this.state.listData?.contact_email}
-                      placeholder="Email"
-                      onChangeText={(text) => console.log(text)}
-                      editable={false}
-                      style={styles.contactInput}
-                    />
+                    <View style={styles.contactInfoText}>
+                      <TextReuseableComponent title value={this.state.listData?.contact_email} />
+                    </View>
                   </View>
                 </View>
-
                 <View style={styles.barView}>
-                  <TextReuseableComponent title style={{position: 'absolute'}} value={onlineUnits == 0 && offlineUnits == 0
-                      ? 'No Installations'
-                      : 'Installation'} />
+                  <TextReuseableComponent title style={{ position: 'absolute' }} value={onlineUnits == 0 && offlineUnits == 0
+                    ? 'No Installations'
+                    : 'Installation'} />
                   <VictoryPie
                     width={width * 0.75}
                     height={width * 0.75}
@@ -880,9 +863,9 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                     labelRadius={width * 0.28}
                     padAngle={1}
                     data={[
-                      {x: onlineUnits, y: onlineUnits},
-                      {x: offlineUnits, y: offlineUnits},
-                      {x: notInstalledUnits, y: notInstalledUnits},
+                      { x: onlineUnits, y: onlineUnits },
+                      { x: offlineUnits, y: offlineUnits },
+                      { x: notInstalledUnits, y: notInstalledUnits },
                     ]}
                     colorScale={['#175CA1', '#ff1414', '#dcdcdc']}
                     style={{
@@ -895,15 +878,15 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                   />
                 </View>
                 <View style={styles.onlineOfflineView}>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View style={styles.onlineView} />
                     <TextReuseableComponent title style={styles.onlineText} value={"Complete"} />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View style={styles.offlineView} />
                     <TextReuseableComponent title style={styles.offlineText} value={"Incomplete"} />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View
                       style={{
                         ...styles.offlineView,
@@ -920,18 +903,18 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
                   </View>
 
                   <View style={styles.rowSpaceEvenly}>
-                        <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#3e89bf'}]}>
-                            <TextReuseableComponent title style={{textTransform: 'capitalize', color: '#fff'}} value={"Soft:"} />
-                            <TextReuseableComponent title style={{ color: '#fff'}} value={tBunchData?.alert_level_count[0]?.alert_count || 0} />
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#FFC107'}]}>
-                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"Medium:"} />
-                            <TextReuseableComponent title value={tBunchData?.alert_level_count[1]?.alert_count || 0} />
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', {propId: propertyData?.id})} style={[styles.bunchAlertContainer, {backgroundColor: '#DC3545'}]}>
-                            <TextReuseableComponent title style={{textTransform: 'capitalize'}} value={"High:"} />
-                            <TextReuseableComponent title value={tBunchData?.alert_level_count[2]?.alert_count || 0} />
-                        </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', { propId: propertyData?.id })} style={[styles.bunchAlertContainer, { backgroundColor: '#3e89bf' }]}>
+                      <TextReuseableComponent title style={{ textTransform: 'capitalize', color: '#fff' }} value={"Soft:"} />
+                      <TextReuseableComponent title style={{ color: '#fff' }} value={tBunchData?.alert_level_count[0]?.alert_count || 0} />
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', { propId: propertyData?.id })} style={[styles.bunchAlertContainer, { backgroundColor: '#FFC107' }]}>
+                      <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={"Medium:"} />
+                      <TextReuseableComponent title value={tBunchData?.alert_level_count[1]?.alert_count || 0} />
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', { propId: propertyData?.id })} style={[styles.bunchAlertContainer, { backgroundColor: '#DC3545' }]}>
+                      <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={"High:"} />
+                      <TextReuseableComponent title value={tBunchData?.alert_level_count[2]?.alert_count || 0} />
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>

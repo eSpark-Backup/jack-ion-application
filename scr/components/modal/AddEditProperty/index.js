@@ -202,9 +202,9 @@ export default function AddEditProperty({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('CurrLocate', currLocate);
+    // console.log('CurrLocate', currLocate);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    console.log('AGAY BRHA');
+    // console.log('AGAY BRHA');
     callApi();
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -221,13 +221,13 @@ export default function AddEditProperty({
   }, []);
 
   if (flag && !propertyFlag) {
-    console.log('flag true');
+    // console.log('flag true');
     if (propertyData) {
-      console.log('PROPERTY DATA', propertyData);
-      console.log(
-        'utility_manufacturers DATA',
-        propertyData.utility_manufacturers,
-      );
+      // console.log('PROPERTY DATA', propertyData);
+      // console.log(
+      //   'utility_manufacturers DATA',
+      //   propertyData.utility_manufacturers,
+      // );
       const Manufactures = propertyData.utility_manufacturers;
 
       let newArr = [...manufacturersArray];
@@ -239,7 +239,7 @@ export default function AddEditProperty({
           utility_type: Manufactures[i].utility_type.name,
           utility_type_id: Manufactures[i].utility_type.id,
         });
-        console.log('newArr Batao', newArr);
+        // console.log('newArr Batao', newArr);
       }
       setManufacturersArray(newArr);
 
@@ -269,8 +269,8 @@ export default function AddEditProperty({
         nOU = nOU + Number(uMdata[i].no_of_units);
         tGD = tGD + Number(singleTGD);
       }
-      console.log('NOU', nOU);
-      console.log('TGD', tGD);
+      // console.log('NOU', nOU);
+      // console.log('TGD', tGD);
       setSumNoOfUnit(nOU);
       setSumTotalGalDay(tGD);
     }
@@ -280,7 +280,7 @@ export default function AddEditProperty({
 
   const _keyboardDidShow = () => {
     animate();
-    console.log('KEYBORD SHOW');
+    // console.log('KEYBORD SHOW');
     if (dropDownShow[2].value) {
       setAvoidMargin(0.35);
       setAvoidKeyboard(true);
@@ -346,22 +346,22 @@ export default function AddEditProperty({
   };
 
   const AddTypes = (item) => {
-    console.log('PUSHING', item);
+    // console.log('PUSHING', item);
     const items = selectAddManuUtil;
     items.push(item);
-    console.log('PUSHED', items);
+    // console.log('PUSHED', items);
     setSelectAddManuUtil(items);
-    console.log('AFTER PUSHED');
+    // console.log('AFTER PUSHED');
     forceUpdate();
   };
 
   const getData = async (some, index) => {
-    console.log('get devices--->', some);
+    // console.log('get devices--->', some);
 
     let listSlide = [...utilAndManu]; // copying the old datas array
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
-    console.log('XX___--->>', some?.name);
+    // console.log('XX___--->>', some?.name);
     if (index == 0) {
       let allManu = [...allManuList];
 

@@ -722,7 +722,7 @@ class Property extends Component {
   };
 
   render() {
-    console.log('this.props.isLoading', this.props.isLoading);
+    // console.log('this.props.isLoading', this.props.isLoading);
     if (!this.props.isLoading && this.state.loadScreen) {
       this.setState({ loadScreen: false });
       this.hidePullDown();

@@ -1,9 +1,9 @@
-import {StyleSheet, Dimensions, Platform, StatusBar} from 'react-native';
-import {Fonts} from '../../../utils/fonts';
+import { StyleSheet, Dimensions, Platform, StatusBar } from 'react-native';
+import { Fonts } from '../../../utils/fonts';
 
 //Packages
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -190,39 +190,28 @@ export default styles = StyleSheet.create({
     width: width * 0.9,
     justifyContent: 'center',
     alignItems: 'center',
-    // marginBottom: height * .02,
-    // borderRadius: width * .05,
+    backgroundColor: 'white',
+    marginBottom: height * 0.02,
+    borderRadius: width * 0.05,
   },
   contactInfoContainer: {
     height: height * 0.09,
-    width: width * 0.9,
-    // borderBottomWidth: width * .002,
+    width: width * 0.8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    textAlign: 'center',
   },
   contactInfoInner: {
     height: height * 0.074,
     width: width * 0.14,
-    borderWidth: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'center',
     backgroundColor: '#25AAE1ec',
-    left: width * 0.03,
-    position: 'absolute',
-    borderTopLeftRadius: width * 0.01,
-    borderBottomLeftRadius: width * 0.01,
   },
-  contactInput: {
-    height: height * 0.074,
-    width: width * 0.7,
-    fontSize: height * 0.02,
-    borderTopWidth: width * 0.001,
-    borderBottomWidth: width * 0.001,
-    borderRightWidth: width * 0.001,
-    position: 'absolute',
-    left: width * 0.17,
-    backgroundColor: 'white',
+  contactInfoText: {
+    marginLeft: 10,
   },
   infoViewContainer: {
     width: width * 0.9,
@@ -335,7 +324,7 @@ export default styles = StyleSheet.create({
     // paddingBottom: height * 0.015,
   },
 
-  drawerBtnIcon: {marginRight: width * 0.02},
+  drawerBtnIcon: { marginRight: width * 0.02 },
 
   // ----------------------------------------------------
 
@@ -499,6 +488,6 @@ export default styles = StyleSheet.create({
   },
   bunchContainer: { width: '95%', backgroundColor: '#cdcdcd', borderColor: 1, padding: 10, marginVertical: 20, borderRadius: 10 },
   rowSpaceBtw: { flexDirection: 'row', justifyContent: 'space-around' },
-  rowSpaceEvenly: {flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 5},
-  bunchAlertContainer: {flexDirection:'row', backgroundColor: 'yellow', padding: 5, borderRadius: 5, marginVertical: 5}
+  rowSpaceEvenly: { flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 5 },
+  bunchAlertContainer: { flexDirection: 'row', backgroundColor: 'yellow', padding: 5, borderRadius: 5, marginVertical: 5 }
 });

@@ -167,7 +167,7 @@ class Login extends Component {
             onSubmit={(values) => {
               console.log(values);
               NetInfo.fetch().then((state) => {
-                console.log('Is connected?', state.isConnected);
+                // console.log('Is connected?', state.isConnected);
                 if (state.isConnected) {
                   this._checkCredentials(values.email, values.password);
                   values.email = '';

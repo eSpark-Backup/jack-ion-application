@@ -1376,12 +1376,12 @@ class Splash extends Component {
 
                 <EditUnit
                   flag={this.state.flag}
-                  propertyId={this.props.navigation.state.params.item.item.id}
+                  propertyId={this.props?.navigation?.state?.params?.item?.item?.id}
                   propertyLat={
-                    this.props.navigation.state.params.item.item.latitude
+                    this.props.navigation.state.params?.item?.item?.latitude
                   }
                   propertyLong={
-                    this.props.navigation.state.params.item.item.longitude
+                    this.props.navigation.state.params?.item?.item?.longitude
                   }
                   enableFlag={() => this.setState({ flag: true })}
                   disableFlag={() => this.setState({ flag: false })}
@@ -1413,12 +1413,12 @@ class Splash extends Component {
                */}
                 <EditUnit
                   flag={this.state.flag}
-                  propertyId={this.props.navigation.state.params.item.item.id}
+                  propertyId={this.props?.navigation?.state?.params?.item?.item?.id}
                   propertyLat={
-                    this.props.navigation.state.params.item.item.latitude
+                    this.props.navigation?.state?.params?.item?.item?.latitude
                   }
                   propertyLong={
-                    this.props.navigation.state.params.item.item.longitude
+                    this.props.navigation.state.params?.item?.item?.longitude
                   }
                   enableFlag={() => this.setState({ flag: true })}
                   disableFlag={() => this.setState({ flag: false })}
@@ -1449,7 +1449,7 @@ class Splash extends Component {
                   }
                   closeModal={() => this.setState({ isModalBuildVisible: false })}
                   reRun={this.handleAddBuilding}
-                  propertyId={this.props.navigation.state.params.item.item.id}
+                  propertyId={this.props?.navigation?.state?.params?.item?.item?.id}
                   lastUnitName={this.state.newUnit}
                   buildData={{
                     buildingName: this.state.buildingData.name,
