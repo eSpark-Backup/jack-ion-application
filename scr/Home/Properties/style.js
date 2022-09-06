@@ -272,7 +272,6 @@ export default styles = StyleSheet.create({
   },
 
   // Property list styling
-
   propListContainer:{
     alignItems: 'center',
     marginVertical: height * 0.01,
@@ -285,6 +284,19 @@ export default styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  pullDownContainer:{
+    width:width * 0.4,
+    justifyContent:'center',
+    alignItems:'center',
+    alignSelf:'center',
+    backgroundColor:'white',
+    elevation:height * .005,
+    position:'absolute'
+  },
+  pullDownText:{
+    fontFamily: Fonts.Montserrat,
+    fontSize: height * .015,
   },
   animatedDetailView:{
     width: width * 0.9,
@@ -346,20 +358,4 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.03,
   },
-  pullDownContainer:{
-    width:width * 0.4,
-    justifyContent:'center',
-    alignItems:'center',
-    alignSelf:'center',
-    backgroundColor:'white',
-    elevation:height * .005,
-    position:'absolute'
-  },
-  pullDownText:{
-    fontFamily: Fonts.Montserrat,
-    fontSize: height * .015,
-  },
-
-
-  
 });

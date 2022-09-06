@@ -32,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../api/SeviceApi';
 import Svg, { G } from 'react-native-svg';
 import TextReuseableComponent from '../../components/Text/index';
+import Properties from '../../components/properties';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -216,142 +217,18 @@ export default class Splash extends Component {
           alignItems: 'center',
           marginVertical: height * 0.01,
         }}>
-        <TouchableOpacity
-          style={styles.propButton}
-          onPress={() => this.selectedProp(prop)}>
-          <MaterialCommunityIcons
-            name="home-city-outline"
-            size={width * 0.09}
-            color="#115b72"
-          />
-          <View>
-            <View style={{ width: width * 0.5 }}>
-              <TextTicker
-                style={styles.propText}
-                duration={6000}
-                marqueeDelay={2000}
-                repeatSpacer={width * 0.5}>
-                {prop.item.name == null ? 'Untitled' : prop.item.name}
-              </TextTicker>
-            </View>
-            <View style={{ width: width * 0.5 }}>
-              <TextTicker
-                style={{ color: 'gray' }}
-                duration={6000}
-                marqueeDelay={2000}
-                repeatSpacer={width * 0.5}>
-                {(prop.item.street == null ? '' : prop.item.street + ', ') +
-                  (prop.item.st == null ? '' : prop.item.st + ', ') +
-                  (prop.item.city == null ? '' : prop.item.city + ', ') +
-                  (prop.item.zipcode == null ? '' : prop.item.zipcode)}
-              </TextTicker>
-            </View>
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={styles.buildUnitCountContainer}>
-              <FontAwesome5Icon
-                name="building"
-                size={width * 0.04}
-                color="#115b72"
-              />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
-            </View>
-            <View style={styles.buildUnitCountContainer}>
-              <FontAwesome5Icon
-                name="house-user"
-                size={width * 0.04}
-                color="#115b72"
-              />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
-            </View>
-            <View style={styles.buildUnitCountContainer}>
-              <MaterialIcons
-                name="warning"
-                size={width * 0.04}
-                color="#115b72"
-              />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.alert_count} />
-            </View>
-          </View>
-        </TouchableOpacity>
-        {prop.index === this.state.currentIndex ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              width: width * 0.9,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: width * 0.01,
-              backgroundColor: '#25AAE1ec',
-              borderBottomLeftRadius: width * 0.01,
-              borderBottomRightRadius: width * 0.01,
-              borderWidth: width * 0.001,
-            }}>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                onPress={() => this.jumpToDetail({ prop, item: prop })}>
-                <MaterialCommunityIcons
-                  name="view-compact-outline"
-                  color="white"
-                  size={width * 0.04}
-                />
-                <TextReuseableComponent title style={{
-                  color: 'white',
-                }} value={"Details"} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.jumpToEquip({ prop, item: prop })}
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                <TextReuseableComponent title style={{
-                  color: 'white',
-                }} value={"Equipments"} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.jumpToAlerts({ prop, item: prop })}
-                style={{
-                  margin: width * 0.01,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Feather
-                  name="alert-triangle"
-                  color="white"
-                  size={width * 0.04}
-                />
-                <TextReuseableComponent title style={{
-                  color: 'white',
-                }} value={"Alerts"} />
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => this.confirmDelete(prop?.item?.id, prop.index)}
-              style={{
-                margin: width * 0.01,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                color="white"
-                size={width * 0.04}
-              />
-              <TextReuseableComponent title style={{
-                color: 'white',
-              }} value={"Delete"} />
-            </TouchableOpacity>
-          </View>
-        ) : null}
+        <Properties
+          prop={prop}
+          routerIcon={false}
+          warningIcon={true}
+          jumpFromSearch={null}
+          selectedProp={this.selectedProp}
+          currentIndex={this.state.currentIndex}
+          jumpToDetail={this.jumpToDetail}
+          jumpToEquip={this.jumpToEquip}
+          jumpToAlerts={this.jumpToAlerts}
+          confirmDelete={this.confirmDelete}
+        />
       </View>
     );
   };

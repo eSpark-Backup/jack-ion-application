@@ -17,15 +17,11 @@ import {
 } from 'react-native';
 
 //Packages
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import { TextInput, Button } from 'react-native-paper';
-import TextTicker from 'react-native-text-ticker';
 import ContextProp from './Context/propContext';
 import CustumStatusBar from '../../components/StatusBar';
 import NetInfo from '@react-native-community/netinfo';
@@ -54,6 +50,7 @@ import { fetchPropetry, loadMoreData } from '../../Store/Action/properties.actio
 
 import TextReuseableComponent from '../../components/Text/index';
 import Loader from '../../components/Loader';
+import Properties from '../../components/properties';
 
 const { width, height } = Dimensions.get('window');
 
@@ -354,117 +351,6 @@ class Property extends Component {
     }
   };
 
-  _renderSearchPropList = (prop) => (
-    // <TouchableOpacity
-    //   style={styles.propButton}
-    //   onPress={() => this.jumpFromSearch({prop, item: prop})}>
-    //   <MaterialCommunityIcons
-    //     name="home-city-outline"
-    //     size={width * 0.09}
-    //     color="#115b72"
-    //   />
-    //   <View>
-    //     <View style={{width: width * 0.6}}>
-    //       <TextTicker
-    //         style={styles.propText}
-    //         duration={6000}
-    //         marqueeDelay={2000}
-    //         repeatSpacer={width * 0.6}>
-    //         {prop.item.name == null ? 'Untitled' : prop.item.name}
-    //       </TextTicker>
-    //     </View>
-    //     <View style={{ width: width * 0.6 }}>
-    //       <TextTicker
-    //         style={{color: 'gray'}}
-    //         duration={6000}
-    //         marqueeDelay={2000}
-    //         repeatSpacer={width * 0.6}>
-    //         {(prop.item.street == null ? '' : prop.item.street + ', ') +
-    //           (prop.item.st == null ? '' : prop.item.st + ', ') +
-    //           (prop.item.city == null ? '' : prop.item.city + ', ') +
-    //           (prop.item.zipcode == null ? '' : prop.item.zipcode)}
-    //       </TextTicker>
-    //     </View>
-    //   </View>
-
-    //   <MaterialCommunityIcons
-    //     name="signal-cellular-outline"
-    //     size={height * 0.04}
-    //     color="#115b72"
-    //   />
-    // </TouchableOpacity>
-    <TouchableOpacity
-      style={{
-        ...styles.propButton,
-
-      }}
-      onPress={() => this.jumpFromSearch({ prop, item: prop })}>
-      <MaterialCommunityIcons
-        name="home-city-outline"
-        size={width * 0.09}
-        style={{ marginHorizontal: 15 }}
-        color="#115b72"
-      />
-      <View style={{ width: width * 0.5, position: 'absolute', left: width * 0.16 }}>
-        <View style={{ width: width * 0.5 }}>
-          <TextTicker
-            style={styles.propText}
-            duration={6000}
-            marqueeDelay={2000}
-            repeatSpacer={width * 0.5}>
-            {prop.item.name == null ? 'Untitled' : prop.item.name}
-          </TextTicker>
-        </View>
-        <View style={{
-          width: width * 0.5,
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}>
-          <Icon name="ios-location-outline"
-            size={height * 0.02}
-            color="gray"
-          />
-          <TextTicker
-            style={{ color: 'gray' }}
-            duration={6000}
-            marqueeDelay={2000}
-            repeatSpacer={width * 0.5}>
-            {
-              (prop.item.city == null ? '' : prop.item.city + ', ') +
-              (prop.item.st == null ? '' : prop.item.st)
-            }
-          </TextTicker>
-        </View>
-      </View>
-      <View style={{ flexDirection: 'row', marginHorizontal: 15, justifyContent: 'flex-end' }}>
-        <View style={styles.buildUnitCountContainer}>
-          <FontAwesome5Icon
-            name="building"
-            size={width * 0.04}
-            color="#115b72"
-          />
-          <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
-        </View>
-        <View style={styles.buildUnitCountContainer}>
-          <FontAwesome5Icon
-            name="house-user"
-            size={width * 0.04}
-            color="#115b72"
-          />
-          <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
-        </View>
-        {prop?.item?.gateway &&
-          <View style={styles.buildUnitCountContainer}>
-            <MaterialIcon
-              name="router"
-              size={width * 0.05}
-              color="#115b72"
-            />
-          </View>}
-      </View>
-    </TouchableOpacity>
-  );
-
   renderShimmers = (item) => (
     <View key={item.id} style={styles.skeletonMainContainer}>
       <SkeletonPlaceholder>
@@ -491,190 +377,18 @@ class Property extends Component {
     }
     return (
       <View style={styles.propListContainer}>
-        <TouchableOpacity
-          style={{
-            ...styles.propButton,
-            borderBottomLeftRadius:
-              prop.index === this.state.currentIndex ? 0 : width * 0.008,
-            borderBottomRightRadius:
-              prop.index === this.state.currentIndex ? 0 : width * 0.008,
-          }}
-          onPress={() => this.selectedProp(prop)}>
-          <MaterialCommunityIcons
-            name="home-city-outline"
-            size={width * 0.09}
-            style={{ marginHorizontal: 15 }}
-            color="#115b72"
-          />
-          <View style={{ width: width * 0.5, position: 'absolute', left: width * 0.16 }}>
-            <View style={{ width: width * 0.5 }}>
-              <TextTicker
-                style={styles.propText}
-                duration={6000}
-                marqueeDelay={2000}
-                repeatSpacer={width * 0.5}>
-                {prop.item.name == null ? 'Untitled' : prop.item.name}
-              </TextTicker>
-            </View>
-            <View style={{
-              width: width * 0.5,
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}>
-              <Icon name="ios-location-outline"
-                size={height * 0.02}
-                color="gray"
-              />
-              <TextTicker
-                style={{ color: 'gray' }}
-                duration={6000}
-                marqueeDelay={2000}
-                repeatSpacer={width * 0.5}>
-                {
-                  (prop.item.city == null ? '' : prop.item.city + ', ') +
-                  (prop.item.st == null ? '' : prop.item.st)
-                }
-              </TextTicker>
-            </View>
-          </View>
-          <View style={{ flexDirection: 'row', marginHorizontal: 15, justifyContent: 'flex-end' }}>
-            <View style={styles.buildUnitCountContainer}>
-              <FontAwesome5Icon
-                name="building"
-                size={width * 0.04}
-                color="#115b72"
-              />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.building_count} />
-            </View>
-            <View style={styles.buildUnitCountContainer}>
-              <FontAwesome5Icon
-                name="house-user"
-                size={width * 0.04}
-                color="#115b72"
-              />
-              <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.unit_actual_count} />
-            </View>
-            {/* {prop?.item?.gateway &&
-              <View style={styles.buildUnitCountContainer}>
-                <MaterialIcon
-                  name="router"
-                  size={width * 0.05}
-                  color="#115b72"
-                />
-              </View>} */}
-          </View>
-        </TouchableOpacity>
-        {prop.index === this.state.currentIndex ? (
-          <View>
-            <View
-              style={styles.animatedDetailView}>
-              <View>
-                <View style={styles.animatedDetailShown}>
-                  <Icon name="ios-location-outline"
-                    size={height * 0.025}
-                    color="black"
-                  />
-                  <TextTicker
-                    style={{ color: 'black', fontSize: height * .015 }}
-                    duration={6000}
-                    marqueeDelay={2000}
-                    repeatSpacer={width * 0.7}>
-                    {
-                      (prop.item.city == null ? '' : prop.item.city + ' , ') +
-                      (prop.item.st == null ? '' : prop.item.st + ' , ') +
-                      (prop.item.street == null ? '' : prop.item.street + ' , ') +
-                      (prop.item.zipcode == null ? '' : prop.item.zipcode)
-                    }
-                  </TextTicker>
-                </View>
-                <View style={styles.animatedDetailShown1}>
-                  <View style={styles.animatedDetailBuildingAndUnit}>
-                    <FontAwesome5Icon
-                      name="building"
-                      size={height * 0.02}
-                      color="#000"
-                    />
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Building:"} />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.building_count} />
-                  </View>
-                  <View style={styles.animatedDetailBuildingAndUnit}>
-                    <FontAwesome5Icon
-                      name="house-user"
-                      size={height * 0.02}
-                      color="#000"
-                    />
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit:"} />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_actual_count} />
-                  </View>
-                </View>
-
-                <View style={styles.animatedDetailShown1}>
-                  <View style={styles.animatedDetailBuildingAndUnit}>
-                    <Feather
-                      name="inbox"
-                      size={width * 0.04}
-                      color="#000"
-                    />
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Meter:"} />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.meter_count} />
-                  </View>
-                  <View style={styles.animatedDetailBuildingAndUnit}>
-                    <MaterialCommunityIcons
-                      name="file-table-box-outline"
-                      size={width * 0.04}
-                      color="#000"
-                    />
-                    <TextReuseableComponent title style={{ marginHorizontal: 4 }} value={"Unit Mix:"} />
-                    <TextReuseableComponent title style={styles.animatedDetailBuildingAndUnitText} value={prop.item.unit_mix_count} />
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.animatedView}>
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity
-                  style={styles.animatedViewDetailBtn}
-                  onPress={() => this.jumpToDetail({ prop, item: prop })}>
-                  <MaterialCommunityIcons
-                    name="view-compact-outline"
-                    color="white"
-                    size={width * 0.04}
-                  />
-                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Details"} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.jumpToEquip({ prop, item: prop })}
-                  style={styles.animatedViewDetailBtn}>
-                  <MaterialIcons name="edit" color="white" size={width * 0.04} />
-                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Equipments"} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.jumpToAlerts({ prop, item: prop })}
-                  style={styles.animatedViewDetailBtn}>
-                  <Feather
-                    name="alert-triangle"
-                    color="white"
-                    size={width * 0.04}
-                  />
-                  <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Alerts"} />
-                </TouchableOpacity>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => this.confirmDelete(prop?.item?.id)}
-                style={styles.animatedViewDetailBtn}>
-                <MaterialCommunityIcons
-                  name="delete-outline"
-                  color="white"
-                  size={width * 0.04}
-                />
-                <TextReuseableComponent title style={styles.animatedViewDetailBtnName} value={"Delete"} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-        ) : null}
+        <Properties
+          prop={prop}
+          routerIcon={false}
+          warningIcon={false}
+          jumpFromSearch={null}
+          selectedProp={this.selectedProp}
+          currentIndex={this.state.currentIndex}
+          jumpToDetail={this.jumpToDetail}
+          jumpToEquip={this.jumpToEquip}
+          jumpToAlerts={this.jumpToAlerts}
+          confirmDelete={this.confirmDelete}
+        />
       </View>
     );
   };
@@ -884,7 +598,20 @@ class Property extends Component {
                     <FlatList
                       style={{ marginBottom: width * 0.2 }}
                       data={this.context.searchList}
-                      renderItem={this._renderSearchPropList}
+                      renderItem={(item) => {
+                        return <Properties
+                          prop={item}
+                          routerIcon={true}
+                          warningIcon={false}
+                          jumpFromSearch={null}
+                          selectedProp={this.selectedProp}
+                          currentIndex={this.state.currentIndex}
+                          jumpToDetail={this.jumpToDetail}
+                          jumpToEquip={this.jumpToEquip}
+                          jumpToAlerts={this.jumpToAlerts}
+                          confirmDelete={this.confirmDelete}
+                        />
+                      }}
                       removeClippedSubviews={false}
                       maxToRenderPerBatch={150}
                       windowSize={100}
