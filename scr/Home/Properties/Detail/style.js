@@ -118,7 +118,7 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     marginTop: height * 0.01,
     borderColor: 'black',
-    borderBottomWidth: width * 0.002,
+    borderBottomWidth: width * 0.003,
     textTransform: 'uppercase',
     marginBottom: height * 0.01,
     textAlign: 'center',
@@ -129,11 +129,15 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-around',
     flexDirection: 'row',
     marginBottom: width * 0.01,
+    backgroundColor: '#25AAE1ec',
+    borderRadius: width * 0.01,
+    elevation: width * 0.01,
   },
   unitMixesHeads: {
     width: width * 0.14,
     textAlign: 'center',
     fontWeight: 'bold',
+    color: 'white'
   },
   unitMixesValuesContainer: {
     width: '100%',
@@ -149,18 +153,21 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
   },
   sumUnitMixes: {
-    width: width * 0.8,
+    width: width * 0.85,
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
+    backgroundColor: '#25AAE1ec',
+    borderRadius: width * 0.01,
+    elevation: width * 0.01,
   },
   sumUnitMixesHead: {
     width: width * 0.25,
     textAlign: 'center',
     fontWeight: 'bold',
+    color: 'white'
   },
   sumUnitMixesValuesView: {
-    borderTopWidth: 1,
     width: '90%',
     justifyContent: 'space-around',
     flexDirection: 'row',
@@ -208,7 +215,6 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    backgroundColor: '#25AAE1ec',
   },
   contactInfoText: {
     marginLeft: 10,
@@ -235,7 +241,6 @@ export default styles = StyleSheet.create({
     width: width * 0.7,
     textAlign: 'center',
   },
-
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',

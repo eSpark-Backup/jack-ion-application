@@ -673,77 +673,87 @@ class Details extends React.Component {
                 </View>
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Other Details"} />
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                  <View style={{ height: width * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01 }}>
+
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.4, textAlign: 'left' },
+                      { width: width * 0.3, textAlign: 'left' },
                     ]} value={"Unit Count:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.3, textAlign: 'auto' },
+                      { width: '60%', textAlign: 'right', right: height * 0.01 },
                     ]} value={this.state.listData.unit_count == null ||
                       this.state.listData.unit_count == ''
                       ? '--'
                       : this.state.listData.unit_count} />
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: width * 0.4, textAlign: 'left' },
-                    ]} value={"Utility Type:"} />
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      style={{ flexDirection: 'row' }}>
-                      {this.state.utilTypes.map((item, index) => (
-                        <View
-                          style={{ borderWidth: 1, borderRadius: 5, padding: 3 }}>
-                          <TextReuseableComponent title style={[
-                            styles.dataFieldText,
-                            { width: null, textAlign: 'auto' },
-                          ]} value={item == null || item == ''
-                            ? '--'
-                            : this.state.utilTypes?.length - 1 == index
-                              ? item
-                              : item + ', '} />
-                        </View>
-                      ))}
-                    </ScrollView>
+                  <View style={{ height: width * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01 }}>
+                    <View>
+                      <TextReuseableComponent title style={[
+                        styles.dataFieldText,
+                        { width: width * 0.3, textAlign: 'left' },
+                      ]} value={"Utility Type:"} />
+                    </View>
+
+                    <View style={{ width: '60%', alignItems: 'flex-end' }}>
+
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={{ flexDirection: 'row' }}>
+                        {this.state?.utilTypes?.map((item, index) => (
+
+                          <View
+                            style={{
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              padding: 3,
+                              marginHorizontal: height * 0.01
+                            }}>
+
+                            <TextReuseableComponent title style={[
+                              styles.dataFieldText,
+                              { width: null, textAlign: 'auto' },
+                            ]} value={item} />
+
+                          </View>
+                        ))}
+                      </ScrollView>
+                    </View>
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
+                  <View style={{ height: width * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.02, marginVertical: height * 0.01 }}>
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.4, textAlign: 'left' },
+                      { width: width * 0.3, textAlign: 'left' },
                     ]} value={"Manufacturer:"} />
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      style={{ flexDirection: 'row' }}>
-                      {this.state.manus.map((item, index) => (
-                        <View
-                          style={{
-                            borderWidth: 1,
-                            borderRadius: 5,
-                            padding: 3,
-                          }}>
-                          <TextReuseableComponent title style={[
-                            styles.dataFieldText,
-                            { width: null, textAlign: 'auto' },
-                          ]} value={item == null || item == ''
-                            ? '--'
-                            : this.state.manus?.length - 1 == index
-                              ? item
-                              : item + ', '} />
-                        </View>
-                      ))}
-                    </ScrollView>
+                    <View style={{ width: '60%', alignItems: 'flex-end' }}>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={{ flexDirection: 'row' }}>
+                        {this.state?.manus?.map((item, index) => (
+                          <View
+                            style={{
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              padding: 3,
+                              marginHorizontal: height * 0.01
+                            }}>
+                            <TextReuseableComponent title style={[
+                              styles.dataFieldText,
+                              { width: null, textAlign: 'auto' },
+                            ]} value={item} />
+                          </View>
+                        ))}
+                      </ScrollView>
+                    </View>
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Owner/Developer Name"} />
                   <View style={styles.infoViewInner}>
                     <Folder name="folder" size={width * 0.06} />
-                    <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
+                    <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={this.state.listData.owner == null ||
                       this.state.listData.owner == ''
                       ? '--'
                       : this.state.listData.owner} />
@@ -758,18 +768,21 @@ class Details extends React.Component {
                     ]} value={"Meter Count:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.3, textAlign: 'auto' },
+                      { width: width * 0.4, textAlign: 'right' },
                     ]} value={this.state.meterCount} />
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
-                    <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'left' }]} value={"Complete Installations:"} />
+                  <View style={[styles.infoViewInner, { height: width * 0.07, justifyContent: 'space-between' }]}>
+                    <TextReuseableComponent title style={{
+                      textAlign: 'left', fontSize: height * 0.022,
+                      fontFamily: Fonts.Montserrat,
+                    }} value={"Complete Installations:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.3, textAlign: 'auto' },
+                      { width: width * 0.3, textAlign: 'right' },
                     ]} value={this.state.installStatus} />
                   </View>
                 </View>
-                <View style={styles.infoViewContainer}>
+                <View style={[styles.infoViewContainer, { height: height * 0.4 }]}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Unit Mixes"} />
                   <View style={styles.unitMixesHeadContainer}>
                     <TextReuseableComponent title style={styles.unitMixesHeads} value={"#"} />
@@ -782,18 +795,18 @@ class Details extends React.Component {
                   <ScrollView
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                    style={{ width: width * 0.85, height: width * 0.2 }}>
+                    style={{ width: width * 0.85, height: height * 0.4, marginVertical: height * 0.01 }}>
                     {this.state.unitMixes.map((item, index) => (
                       <View style={styles.unitMixesValuesContainer}>
-                        <TextReuseableComponent title style={styles.unitMixesHeads} value={index + 1} />
+                        <TextReuseableComponent title style={styles.unitMixesValues} value={index + 1} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.br} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.ba} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.gud} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units * item.gud} />
                       </View>
-                    ))}
-                  </ScrollView>
+                        ))}
+                  </ScrollView> 
                   <View style={styles.sumUnitMixes}>
                     <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum # Units"} />
                     <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum T/G/D"} />
@@ -817,7 +830,7 @@ class Details extends React.Component {
                       <Icon
                         name="account-box"
                         size={height * 0.04}
-                        color="white"
+                        color='#25AAE1ec'
                         maxOpacity={0.1}
                       />
                     </View>
@@ -830,7 +843,7 @@ class Details extends React.Component {
                       <Icon
                         name="phone"
                         size={height * 0.04}
-                        color="white"
+                        color='#25AAE1ec'
                         maxOpacity={0.5}
                       />
                     </View>
@@ -843,7 +856,7 @@ class Details extends React.Component {
                       <Icon
                         name="mail-outline"
                         size={height * 0.03}
-                        color="white"
+                        color='#25AAE1ec'
                         maxOpacity={0.5}
                       />
                     </View>

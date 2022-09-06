@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Dimensions,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 //Packages
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,20 +20,20 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import {VictoryArea, VictoryAxis, VictoryPie} from 'victory-native';
+import { VictoryArea, VictoryAxis, VictoryPie } from 'victory-native';
 
 // Components
-import {Fonts} from '../../utils/fonts';
+import { Fonts } from '../../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../../components/StatusBar';
 import TextTicker from 'react-native-text-ticker';
 import Loader from '../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../api/SeviceApi';
-import Svg, {G} from 'react-native-svg';
+import Svg, { G } from 'react-native-svg';
 import TextReuseableComponent from '../../components/Text/index';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 70.0322;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -41,7 +41,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default class Splash extends Component {
   static navigationOptions = {
     title: 'Home',
-    tabBarIcon: ({tintColor}) => (
+    tabBarIcon: ({ tintColor }) => (
       <AntDesign name="home" color={tintColor} size={height * 0.04} />
     ),
   };
@@ -84,6 +84,8 @@ export default class Splash extends Component {
       },
       userCurrentIndex: null,
       userCurrentData: [],
+      showNewProperties: true,
+      showTotalProperties: true
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -92,7 +94,7 @@ export default class Splash extends Component {
 
   async componentDidMount() {
     // console.log('What we Get', this.props.navigation);
-    this.setState({loadData: true});
+    this.setState({ loadData: true });
     const userDataUnParsed = await AsyncStorage.getItem('users_data');
     const userId = await AsyncStorage.getItem('user_id');
     const userData = JSON.parse(userDataUnParsed);
@@ -102,7 +104,7 @@ export default class Splash extends Component {
         return e.id;
       })
       .indexOf(Number(userId));
-    this.setState({userCurrentIndex: index, userCurrentData: userData});
+    this.setState({ userCurrentIndex: index, userCurrentData: userData });
     let data = {
       ids: userData[index].recent_properties,
     };
@@ -116,8 +118,8 @@ export default class Splash extends Component {
     }
     const PortfolioRes = await API.get(`/dashboard/portfolio-chart`);
 
-    console.log('ProtfolioRes New', PortfolioRes?.data?.data?.new);
-    console.log('ProtfolioRes New', PortfolioRes?.data?.data?.total);
+    // console.log('ProtfolioRes New', PortfolioRes?.data?.data?.new);
+    // console.log('ProtfolioRes New', PortfolioRes?.data?.data?.total);
     if (PortfolioRes.data?.bool) {
       this.setState({
         newProperties: PortfolioRes?.data?.data?.new,
@@ -126,7 +128,7 @@ export default class Splash extends Component {
     }
 
     const cardRes = await API.get(`/dashboard/cards`);
-    console.log('cardRes', cardRes);
+    // console.log('cardRes', cardRes);
     if (cardRes?.data?.bool) {
       this.setState({
         onlineProps: cardRes?.data?.data?.property_status[0],
@@ -161,19 +163,19 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
-  jumpToDetail = ({prop, item}) => {
-    this.props.navigation.navigate('Detail', {item});
+  jumpToDetail = ({ prop, item }) => {
+    this.props.navigation.navigate('Detail', { item });
     this.selectedProp(prop);
-    this.setState({showSearch: false});
+    this.setState({ showSearch: false });
   };
 
-  jumpToEquip = ({prop, item}) => {
-    this.props.navigation.navigate('Equip', {item});
+  jumpToEquip = ({ prop, item }) => {
+    this.props.navigation.navigate('Equip', { item });
     this.selectedProp(prop);
   };
 
-  jumpToAlerts = ({prop, item}) => {
-    this.props.navigation.navigate('Alerts', {item});
+  jumpToAlerts = ({ prop, item }) => {
+    this.props.navigation.navigate('Alerts', { item });
     this.selectedProp(prop);
   };
 
@@ -183,7 +185,7 @@ export default class Splash extends Component {
         text: 'No',
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => this.deleteProperty(id, index)},
+      { text: 'Yes', onPress: () => this.deleteProperty(id, index) },
     ]);
   };
 
@@ -200,10 +202,10 @@ export default class Splash extends Component {
       userDataUpdated[this.state.userCurrentIndex].recent_properties = ids;
       const jsonData = JSON.stringify(userDataUpdated);
       await AsyncStorage.setItem('users_data', jsonData);
-      this.setState({currentIndex: null});
+      this.setState({ currentIndex: null });
       alert(response?.data?.message);
       this.context.checkData();
-      this.setState({propertyList: this.context.propList});
+      this.setState({ propertyList: this.context.propList });
     }
   };
 
@@ -223,7 +225,7 @@ export default class Splash extends Component {
             color="#115b72"
           />
           <View>
-            <View style={{width: width * 0.5}}>
+            <View style={{ width: width * 0.5 }}>
               <TextTicker
                 style={styles.propText}
                 duration={6000}
@@ -232,9 +234,9 @@ export default class Splash extends Component {
                 {prop.item.name == null ? 'Untitled' : prop.item.name}
               </TextTicker>
             </View>
-            <View style={{width: width * 0.5}}>
+            <View style={{ width: width * 0.5 }}>
               <TextTicker
-                style={{color: 'gray'}}
+                style={{ color: 'gray' }}
                 duration={6000}
                 marqueeDelay={2000}
                 repeatSpacer={width * 0.5}>
@@ -245,7 +247,7 @@ export default class Splash extends Component {
               </TextTicker>
             </View>
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <View style={styles.buildUnitCountContainer}>
               <FontAwesome5Icon
                 name="building"
@@ -285,25 +287,25 @@ export default class Splash extends Component {
               borderBottomRightRadius: width * 0.01,
               borderWidth: width * 0.001,
             }}>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity
                 style={{
                   margin: width * 0.01,
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
-                onPress={() => this.jumpToDetail({prop, item: prop})}>
+                onPress={() => this.jumpToDetail({ prop, item: prop })}>
                 <MaterialCommunityIcons
                   name="view-compact-outline"
                   color="white"
                   size={width * 0.04}
                 />
                 <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"Details"} />
+                  color: 'white',
+                }} value={"Details"} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.jumpToEquip({prop, item: prop})}
+                onPress={() => this.jumpToEquip({ prop, item: prop })}
                 style={{
                   margin: width * 0.01,
                   flexDirection: 'row',
@@ -311,11 +313,11 @@ export default class Splash extends Component {
                 }}>
                 <MaterialIcons name="edit" color="white" size={width * 0.04} />
                 <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"Equipments"} />
+                  color: 'white',
+                }} value={"Equipments"} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.jumpToAlerts({prop, item: prop})}
+                onPress={() => this.jumpToAlerts({ prop, item: prop })}
                 style={{
                   margin: width * 0.01,
                   flexDirection: 'row',
@@ -327,8 +329,8 @@ export default class Splash extends Component {
                   size={width * 0.04}
                 />
                 <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"Alerts"} />
+                  color: 'white',
+                }} value={"Alerts"} />
               </TouchableOpacity>
             </View>
 
@@ -345,8 +347,8 @@ export default class Splash extends Component {
                 size={width * 0.04}
               />
               <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"Delete"} />
+                color: 'white',
+              }} value={"Delete"} />
             </TouchableOpacity>
           </View>
         ) : null}
@@ -356,7 +358,7 @@ export default class Splash extends Component {
 
   changeLayoutRecent = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({recentProps: !this.state.recentProps});
+    this.setState({ recentProps: !this.state.recentProps });
   };
   render() {
     const {
@@ -390,7 +392,7 @@ export default class Splash extends Component {
         {Platform.OS == 'ios' && <CustumStatusBar />}
         {/* <View style={styles.headingContainer}> */}
         <View style={styles.headingInner}>
-          <View style={{width: width * 0.1}} >
+          <View style={{ width: width * 0.1 }} >
             <MaterialCommunityIcons
               name="arrow-left"
               size={height * 0.04}
@@ -399,7 +401,7 @@ export default class Splash extends Component {
               onPress={() => this.props.navigation.goBack()}
             />
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialCommunityIcons
               name="view-dashboard-outline"
               size={width * 0.07}
@@ -407,11 +409,11 @@ export default class Splash extends Component {
             />
             <TextReuseableComponent title style={styles.mainHeadiing} value={"Dashboard"} />
           </View>
-          <View style={{width: width * 0.1}} />
+          <View style={{ width: width * 0.1 }} />
         </View>
         {/* </View> */}
-        <View style={{flex: 1}}>
-          <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+        <View style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <View
               style={{
                 width: width * 1,
@@ -432,8 +434,6 @@ export default class Splash extends Component {
                 }}
                 zoomEnabled={true}
                 provider={PROVIDER_GOOGLE}
-                // showsUserLocation={true}
-                // showsMyLocationButton={true}
               >
                 {this.state.markers.length > 0 &&
                   this.state.markers.map((marker) => (
@@ -457,7 +457,7 @@ export default class Splash extends Component {
                 <AntDesign
                   name="clockcircleo"
                   size={width * 0.06}
-                  style={{left: width * 0.005}}
+                  style={{ left: width * 0.005 }}
                 />
                 <TextReuseableComponent title style={styles.mainBottonText} value={"Recently Viewed Properties"} />
                 <AntDesign name={upDownNearby} size={width * 0.035} />
@@ -472,7 +472,7 @@ export default class Splash extends Component {
                     <TextReuseableComponent title value={"No Recent Properties"} />
                   ) : (
                     <FlatList
-                      style={{marginTop: height * 0.01}}
+                      style={{ marginTop: height * 0.01 }}
                       data={recentProperties}
                       renderItem={this._renderProperties}
                     />
@@ -494,7 +494,7 @@ export default class Splash extends Component {
                     />
                   </View>
                   <View style={styles.infoUpperView}>
-                    <View style={{alignItems: 'flex-end'}}>
+                    <View style={{ alignItems: 'flex-end' }}>
                       <TextReuseableComponent title value={"Property"} />
                       <TextReuseableComponent title value={totalProperties} />
                     </View>
@@ -520,7 +520,7 @@ export default class Splash extends Component {
                     />
                   </View>
                   <View style={styles.infoUpperView}>
-                    <View style={{alignItems: 'flex-end'}}>
+                    <View style={{ alignItems: 'flex-end' }}>
                       <TextReuseableComponent title value={"Buildings"} />
                       <TextReuseableComponent title value={totalBuildings} />
                     </View>
@@ -544,7 +544,7 @@ export default class Splash extends Component {
                     />
                   </View>
                   <View style={styles.infoUpperView}>
-                    <View style={{alignItems: 'flex-end'}}>
+                    <View style={{ alignItems: 'flex-end' }}>
                       <TextReuseableComponent title value={"Meters"} />
                       <TextReuseableComponent title value={totalMeters} />
                     </View>
@@ -555,22 +555,22 @@ export default class Splash extends Component {
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: width * 1, alignItems: 'center'}}>
+              <View style={{ width: width * 1, alignItems: 'center' }}>
                 <TextReuseableComponent subHeading value={"Property Status"} />
               </View>
               <View style={styles.barView}>
-                <TextReuseableComponent title style={{position: 'absolute'}} value={"Property Status"} />
+                <TextReuseableComponent title style={{ position: 'absolute' }} value={"Property Status"} />
                 <VictoryPie
                   width={width * 0.75}
                   height={width * 0.75}
                   innerRadius={width * 0.35}
                   labelRadius={width * 0.28}
-                  labels={({datum}) => Math.round(datum._x)}
+                  labels={({ datum }) => Math.round(datum._x)}
                   padAngle={1}
-                  animate={{duration: 400}}
+                  animate={{ duration: 400 }}
                   data={[
-                    {x: onlineProps, y: onlineProps},
-                    {x: offlineProps, y: offlineProps},
+                    { x: onlineProps, y: onlineProps },
+                    { x: offlineProps, y: offlineProps },
                   ]}
                   colorScale={['#175CA1', '#DCDCDC']}
                   style={{
@@ -584,7 +584,7 @@ export default class Splash extends Component {
               </View>
               <View style={styles.onlineOfflineView}>
                 <TouchableOpacity
-                  style={{flexDirection: 'row', padding: width * 0.01}}
+                  style={{ flexDirection: 'row', padding: width * 0.01 }}
                   onPress={() => {
                     this.setState({
                       onlineProps: onlineProps > 0 ? 0 : onlineStatic,
@@ -594,7 +594,7 @@ export default class Splash extends Component {
                   <TextReuseableComponent title style={styles.onlineText} value={"Online"} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{flexDirection: 'row', padding: width * 0.01}}
+                  style={{ flexDirection: 'row', padding: width * 0.01 }}
                   onPress={() =>
                     this.setState({
                       offlineProps: offlineProps > 0 ? 0 : offlineStatic,
@@ -605,9 +605,9 @@ export default class Splash extends Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.portfolioHeading}>
-                <TextReuseableComponent subHeading  value={"Portfolio Growth"} />
+                <TextReuseableComponent subHeading value={"Portfolio Growth"} />
               </View>
-              <View style={{alignItems: 'center'}}>
+              <View style={{ alignItems: 'center' }}>
                 {newProperties.length > 0 && (
                   <Svg
                     style={{
@@ -624,22 +624,23 @@ export default class Splash extends Component {
                         orientation="left"
                         standalone={false}
                         style={{
-                          axis: {strokeWidth: 1},
+                          axis: { strokeWidth: 1 },
                         }}
                       />
-                      <View style={{position: 'absolute'}}>
-                        <VictoryArea
+                      <View style={{ position: 'absolute' }}>
+                        {this.state.showTotalProperties && <VictoryArea
                           interpolation="natural"
                           data={totProperties}
-                          style={{data: {fill: '#DCDCDC'}}}
-                        />
+                          style={{ data: { fill: '#DCDCDC' } }}
+                        />}
                       </View>
-                      <View style={{position: 'absolute'}}>
-                        <VictoryArea
-                          interpolation="catmullRom"
-                          data={newProperties}
-                          style={{data: {fill: '#175CA199'}}}
-                        />
+                      <View style={{ position: 'absolute' }}>
+                        {this.state.showNewProperties &&
+                          <VictoryArea
+                            interpolation="catmullRom"
+                            data={newProperties}
+                            style={{ data: { fill: '#175CA199' } }}
+                          />}
                       </View>
                       <VictoryAxis
                         dependentAxis
@@ -647,13 +648,13 @@ export default class Splash extends Component {
                         orientation="right"
                         standalone={false}
                         style={{
-                          axis: {strokeWidth: 1},
+                          axis: { strokeWidth: 1 },
                         }}
                       />
                       <VictoryAxis
                         standalone={false}
                         style={{
-                          axis: {stroke: 'black', strokeWidth: 1},
+                          axis: { stroke: 'black', strokeWidth: 1 },
                           tickLabels: {
                             fill: 'transparent',
                           },
@@ -668,14 +669,14 @@ export default class Splash extends Component {
                   ...styles.onlineOfflineView,
                   marginVertical: height * 0.05,
                 }}>
-                <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity activeOpacity={.9} onPress={() => this.setState({ showNewProperties: !this.state.showNewProperties })} style={{ flexDirection: 'row' }}>
                   <View style={styles.onlineView} />
-                  <TextReuseableComponent title style={styles.onlineText} value={"New Properties"} />
-                </View>
-                <View style={{flexDirection: 'row'}}>
+                  <TextReuseableComponent title style={[styles.onlineText, !this.state.showNewProperties && { textDecorationLine: 'line-through' }]} value={"New Properties"} />
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={.9} onPress={() => this.setState({ showTotalProperties: !this.state.showTotalProperties })} style={{ flexDirection: 'row' }}>
                   <View style={styles.offlineView} />
-                  <TextReuseableComponent title style={styles.offlineText} value={"Total Properties"} />
-                </View>
+                  <TextReuseableComponent title style={[styles.offlineText, !this.state.showTotalProperties && { textDecorationLine: 'line-through' }]} value={"Total Properties"} />
+                </TouchableOpacity>
               </View>
               <View
                 style={{
@@ -683,87 +684,89 @@ export default class Splash extends Component {
                   justifyContent: 'space-evenly',
                   alignItems: 'center',
                   paddingTop: width * 0.03,
-                  // paddingHorizontal: width * .03,
                 }}>
                 <TextReuseableComponent heading style={{
-                    color: '#2D2A2B',
-                  }} value={"You are"} />
-                <TextReuseableComponent heading style={{
-                    color: '#2D2A2B',
-                  }} value={"Currently Serving"} />
+                  color: '#2D2A2B',
+                  textAlign: 'center',
+                }} value={"You are \n Currently Serving"} />
                 <View
                   style={{
                     paddingTop: width * 0.1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}>
                   <View
                     style={{
                       height: height * 0.09,
-                      width: width * 0.5,
+                      width: width * 0.75,
+                      alignSelf: 'center',
                       justifyContent: 'space-between',
-                      alignItems: 'center',
                       flexDirection: 'row',
                       marginVertical: height * 0.015,
                     }}>
-                    <View style={{width: width * 0.15}}>
+                    <View style={{ width: width * 0.15 }}>
                       <MaterialCommunityIcons
                         name="home-city-outline"
                         size={width * 0.15}
+                        color="#444444"
                       />
                     </View>
-                    <View style={{width: width * 0.28}}>
+                    <View style={{ width: width * 0.28 }}>
                       <TextReuseableComponent heading style={{
-                          fontWeight: 'bold',
-                          color: '#175CA1',
-                        }} value={totalProperties} />
-                      <TextReuseableComponent  heading  value={"Properties"} />
+                        fontWeight: 'bold',
+                        color: '#175CA1',
+                        textAlign: 'center',
+                      }} value={totalProperties} />
+                      <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Properties"} />
                     </View>
                   </View>
                   <View
                     style={{
                       height: height * 0.09,
-                      width: width * 0.5,
+                      width: width * 0.75,
+                      alignSelf: 'center',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       flexDirection: 'row',
                       marginVertical: height * 0.015,
                     }}>
-                    <View style={{width: width * 0.15}}>
-                      <Ionicon name="md-business-outline" size={width * 0.15} />
+                    <View style={{ width: width * 0.15 }}>
+                      <Ionicon name="md-business-outline" size={width * 0.15} color="#444444" />
                     </View>
                     <View
                       style={{
                         width: width * 0.28,
                       }}>
                       <TextReuseableComponent heading style={{
-                          color: '#175CA1',
-                          fontWeight: 'bold',
-                        }} value={totalUnits} />
-                      <TextReuseableComponent  heading value={"Units"} />
+                        color: '#175CA1',
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                      }} value={totalUnits} />
+                      <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Units"} />
                     </View>
                   </View>
                   <View
                     style={{
                       height: height * 0.09,
-                      width: width * 0.5,
+                      width: width * 0.75,
+                      alignSelf: 'center',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       flexDirection: 'row',
                       marginVertical: height * 0.015,
                     }}>
-                    <View style={{width: width * 0.15}}>
-                      <FeatherIcon name="cast" size={width * 0.15} />
+                    <View style={{ width: width * 0.15 }}>
+                      <FeatherIcon name="cast" size={width * 0.15} color="#444444" />
                     </View>
                     <View
                       style={{
                         width: width * 0.28,
                       }}>
                       <TextReuseableComponent heading style={{
-                          fontWeight: 'bold',
-                          color: '#175CA1',
-                        }} value={totalDevices} />
-                      <TextReuseableComponent heading  value={"Devices"} />
+                        fontWeight: 'bold',
+                        color: '#175CA1',
+                        textAlign: 'center',
+                      }} value={totalDevices} />
+                      <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Devices"} />
                     </View>
                   </View>
                 </View>
