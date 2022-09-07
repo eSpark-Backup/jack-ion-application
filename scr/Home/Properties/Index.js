@@ -605,7 +605,7 @@ class Property extends Component {
                           warningIcon={false}
                           jumpFromSearch={null}
                           selectedProp={this.selectedProp}
-                          currentIndex={this.state.currentIndex}
+                          currentIndex={null}
                           jumpToDetail={this.jumpToDetail}
                           jumpToEquip={this.jumpToEquip}
                           jumpToAlerts={this.jumpToAlerts}

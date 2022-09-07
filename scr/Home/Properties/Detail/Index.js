@@ -687,7 +687,7 @@ class Details extends React.Component {
                       ? '--'
                       : this.state.listData.unit_count} />
                   </View>
-                  <View style={{ height: width * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01 }}>
+                  <View style={{ height: height * 0.06, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center' }}>
                     <View>
                       <TextReuseableComponent title style={[
                         styles.dataFieldText,
@@ -704,16 +704,22 @@ class Details extends React.Component {
                         {this.state?.utilTypes?.map((item, index) => (
 
                           <View
+                            key={index}
                             style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              padding: 3,
-                              marginHorizontal: height * 0.01
+                              justifyContent: 'center',
+                              textAlign: 'center',
+                              marginHorizontal: height * 0.01,
                             }}>
 
                             <TextReuseableComponent title style={[
                               styles.dataFieldText,
-                              { width: null, textAlign: 'auto' },
+                              {
+                                width: null,
+                                textAlign: 'auto',
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                padding: 3,
+                              },
                             ]} value={item} />
 
                           </View>
@@ -721,7 +727,7 @@ class Details extends React.Component {
                       </ScrollView>
                     </View>
                   </View>
-                  <View style={{ height: width * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.02, marginVertical: height * 0.01 }}>
+                  <View style={{ height: height * 0.06, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.01 }}>
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
                       { width: width * 0.3, textAlign: 'left' },
@@ -734,14 +740,20 @@ class Details extends React.Component {
                         {this.state?.manus?.map((item, index) => (
                           <View
                             style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              padding: 3,
-                              marginHorizontal: height * 0.01
+
+                              justifyContent: 'center',
+                              textAlign: 'center',
+                              marginHorizontal: height * 0.01,
                             }}>
                             <TextReuseableComponent title style={[
                               styles.dataFieldText,
-                              { width: null, textAlign: 'auto' },
+                              {
+                                width: null,
+                                textAlign: 'auto',
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                padding: 3,
+                              },
                             ]} value={item} />
                           </View>
                         ))}
@@ -805,8 +817,8 @@ class Details extends React.Component {
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.gud} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units * item.gud} />
                       </View>
-                        ))}
-                  </ScrollView> 
+                    ))}
+                  </ScrollView>
                   <View style={styles.sumUnitMixes}>
                     <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum # Units"} />
                     <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum T/G/D"} />
@@ -825,12 +837,13 @@ class Details extends React.Component {
 
                 <View style={styles.contactViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Contact Info"} />
+                  {this.state.listData?.contact_name || this.state.listData?.contact_phone || this.state.listData?.contact_email ? <>
                   <View style={styles.contactInfoContainer}>
                     <View style={styles.contactInfoInner}>
                       <Icon
                         name="account-box"
                         size={height * 0.04}
-                        color='#25AAE1ec'
+                        color="#444444"
                         maxOpacity={0.1}
                       />
                     </View>
@@ -838,32 +851,34 @@ class Details extends React.Component {
                       <TextReuseableComponent title value={this.state.listData?.contact_name} />
                     </View>
                   </View>
-                  <View style={styles.contactInfoContainer}>
-                    <View style={styles.contactInfoInner}>
-                      <Icon
-                        name="phone"
-                        size={height * 0.04}
-                        color='#25AAE1ec'
-                        maxOpacity={0.5}
-                      />
+                    <View style={styles.contactInfoContainer}>
+                      <View style={styles.contactInfoInner}>
+                        <Icon
+                          name="phone"
+                          size={height * 0.04}
+                          color="#444444"
+                          maxOpacity={0.5}
+                        />
+                      </View>
+                      <View style={styles.contactInfoText}>
+                        <TextReuseableComponent title value={this.state.listData?.contact_phone} />
+                      </View>
                     </View>
-                    <View style={styles.contactInfoText}>
-                      <TextReuseableComponent title value={this.state.listData?.contact_phone} />
-                    </View>
-                  </View>
-                  <View style={styles.contactInfoContainer}>
-                    <View style={styles.contactInfoInner}>
-                      <Icon
-                        name="mail-outline"
-                        size={height * 0.03}
-                        color='#25AAE1ec'
-                        maxOpacity={0.5}
-                      />
-                    </View>
-                    <View style={styles.contactInfoText}>
-                      <TextReuseableComponent title value={this.state.listData?.contact_email} />
-                    </View>
-                  </View>
+                    <View style={styles.contactInfoContainer}>
+                      <View style={styles.contactInfoInner}>
+                        <Icon
+                          name="mail-outline"
+                          size={height * 0.03}
+                          color="#444444"
+                          maxOpacity={0.5}
+                        />
+                      </View>
+                      <View style={styles.contactInfoText}>
+                        <TextReuseableComponent title value={this.state.listData?.contact_email} />
+                      </View>
+                    </View></> : <View style={{ height: height * 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                    <TextReuseableComponent subHeading value={"No Contact Info Available"} />
+                  </View>}
                 </View>
                 <View style={styles.barView}>
                   <TextReuseableComponent title style={{ position: 'absolute' }} value={onlineUnits == 0 && offlineUnits == 0

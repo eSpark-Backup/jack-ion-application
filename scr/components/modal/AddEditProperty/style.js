@@ -89,9 +89,10 @@ export default styles = StyleSheet.create({
     flex: 1,
     zIndex: 2,
     position: 'absolute',
-    top: width * 0.16,
+    top: width * 0.03,
     width: width * 0.72,
     backgroundColor: 'white',
+    borderRadius: width * 0.03,
   },
   radialDisHeading: {
     marginTop: width * 0.02,

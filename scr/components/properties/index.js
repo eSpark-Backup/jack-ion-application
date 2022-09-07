@@ -62,7 +62,7 @@ const Properties = ({
                     </TextTicker>
                 </View>
                 <View style={{
-                    width: width * 0.5,
+                    width: width * 0.55,
                     flexDirection: 'row',
                     alignItems: 'center'
                 }}>

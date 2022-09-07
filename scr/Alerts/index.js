@@ -2,6 +2,7 @@ import React, { Component, version } from 'react';
 
 import {
   View,
+  Alert,
   Dimensions,
   ScrollView,
   LogBox,
@@ -238,20 +239,6 @@ export default class Splash extends Component {
   };
 
   handleUpdateContact = async (index) => {
-    // console.log('update contact called', index);
-    const propertyData = this.props.navigation.state.params.item.item;
-    const alertArray = [...this.state.alertsType];
-    let IDs = [];
-    alertArray.map((itm) => {
-      itm.data.map((i, ind) => {
-        if (i.contact_alerts == true) {
-          i.parent < 2 ? IDs.push(ind + 1) : IDs.push(ind + 5);
-        }
-      });
-    });
-
-    const AlertIds = { alert_type_id: IDs };
-    // console.log('AlertIds', AlertIds);
 
     this.setState({ loader: true });
     let contactData = {
@@ -264,24 +251,76 @@ export default class Splash extends Component {
       `/alert/property/contact/update/${this.state.currentItemId}`,
       contactData,
     );
-    
-    // console.log('updateAlertStatus', updateAlertStatus);
     if (updateAlertStatus?.data?.bool) {
       const data = [...this.state.alertContacts];
       data[0].data[this.state.currentIndex] = contactData;
-      this.setState({ alertContacts: data });
-      this.setState({ 
+      this.setState({
         loader: false,
-        contactModal: false, 
-        currentIndex: '', 
-        contactName: '', 
-        contactEmail: '', 
-        contactPhone: '' 
+        alertContacts: data,
+        contactModal: false,
+        currentIndex: '',
+        contactName: '',
+        contactEmail: '',
+        contactPhone: ''
       });
     } else {
       this.setState({ loader: false });
       alert(contactInfo.data.message);
     }
+  };
+
+  handleDeleteContact = async (item, index) => {
+    console.log('item ---->', item);
+    Alert.alert("Delete Contact?",
+      "Contact will be deleted if you confirm.",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("No, continue editing")
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            this.setState({ loader: true });
+            const updateAlertStatus = await API.get(
+              `/alert/contact/delete/${item.id}`
+            );
+
+            if (updateAlertStatus?.data?.bool) {
+              // fetch updated data
+              const allAlertsRes = await API.get(`/alert/all/${item?.property_id}`);
+              console.log('allAlertsRes alert', allAlertsRes);
+              if (allAlertsRes.data.bool) {
+                console.log('deleted contact alert bool true');
+                let allAlerts = allAlertsRes.data.data;     
+                let alerts = [...allAlerts];
+                alerts.map((item, index) => {
+                  alerts[index].check = false;
+                });
+                this.setState({
+                  loader: false,
+                  allAlerts: alerts,
+                  alertContacts: alerts,
+                  contactModal: false,
+                  currentIndex: '',
+                  contactName: '',
+                  contactEmail: '',
+                  contactPhone: ''
+                });
+              } else {
+                this.setState({ loader: false });
+                alert(allAlertsRes.data.message);
+              }
+
+
+            } else {
+              this.setState({ loader: false });
+              alert(updateAlertStatus.data.message);
+            }
+          },
+          style: "cancel"
+        }
+      ],);
   };
 
   cancelContact = () => {
@@ -574,27 +613,12 @@ export default class Splash extends Component {
   }
 
   renderNotification = () => {
-    const {
-      alertSettObj,
-      alertSettObjInd,
-      contactName,
-      contactEmail,
-      isModalVisible,
-      alertsType,
-      allAlerts,
-      allAlertsChecked,
-      alertSelected,
-      showAdvanceSett,
-      loader,
-    } = this.state;
-
     return (
       <View>
-        <>
           <SectionList
             sections={this.state.alertContacts}
             renderItem={({ item, index }) => (
-              <View style={style.containerInner}>
+              <View key={index} style={style.containerInner}>
                 <View style={style.viewAlignment}>
                   <Feather
                     name="user"
@@ -609,14 +633,24 @@ export default class Splash extends Component {
                     </View>
                   </View>
                 </View>
-                <TouchableOpacity onPress={() => this.handleSettingsClick(item, index)}>
-                  <Feather
-                    name={'settings'}
-                    size={height * 0.035}
-                    style={{ paddingRight: 5 }}
-                    color="#999"
-                  />
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity onPress={() => this.handleSettingsClick(item, index)}>
+                    <Feather
+                      name={'settings'}
+                      size={height * 0.035}
+                      style={{ marginHorizontal: 10 }}
+                      color="#999"
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.handleDeleteContact(item, index)}>
+                    <Feather
+                      name={'delete'}
+                      size={height * 0.035}
+                      style={{ paddingRight: 5 }}
+                      color="#999"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
             renderSectionHeader={({ section: { title, icon } }) => (
@@ -637,7 +671,6 @@ export default class Splash extends Component {
             <Feather name="plus" size={height * 0.024} color="#fff" />
             <TextReuseableComponent title style={style.newContactBtnText} value={"Add New Contact"} />
           </TouchableOpacity>
-        </>
       </View>
     );
   };
@@ -962,7 +995,6 @@ export default class Splash extends Component {
               />
               <TextReuseableComponent title style={{
                 color: activeTab == 'alert' ? '#000' : '#fff',
-                fontSize: 16,
               }} value={"Alerts"} />
             </View>
           </TouchableOpacity>
@@ -978,7 +1010,6 @@ export default class Splash extends Component {
               />
               <TextReuseableComponent title style={{
                 color: activeTab == 'setting' ? '#000' : '#fff',
-                fontSize: 16,
               }} value={"Settings"} />
             </View>
           </TouchableOpacity>
@@ -994,7 +1025,6 @@ export default class Splash extends Component {
               />
               <TextReuseableComponent title style={{
                 color: activeTab == 'notification' ? '#000' : '#fff',
-                fontSize: 16,
               }} value={"Notifications"} />
             </View>
           </TouchableOpacity>

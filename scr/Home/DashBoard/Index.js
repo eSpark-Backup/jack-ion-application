@@ -580,14 +580,14 @@ export default class Splash extends Component {
                       flexDirection: 'row',
                       marginVertical: height * 0.015,
                     }}>
-                    <View style={{ width: width * 0.15 }}>
+                    <View style={{ width: width * 0.37, alignItems: 'center' }}>
                       <MaterialCommunityIcons
                         name="home-city-outline"
                         size={width * 0.15}
                         color="#444444"
                       />
                     </View>
-                    <View style={{ width: width * 0.28 }}>
+                    <View style={{ width: width * 0.37 }}>
                       <TextReuseableComponent heading style={{
                         fontWeight: 'bold',
                         color: '#175CA1',
@@ -606,12 +606,12 @@ export default class Splash extends Component {
                       flexDirection: 'row',
                       marginVertical: height * 0.015,
                     }}>
-                    <View style={{ width: width * 0.15 }}>
+                    <View style={{ width: width * 0.37, alignItems: 'center' }}>
                       <Ionicon name="md-business-outline" size={width * 0.15} color="#444444" />
                     </View>
                     <View
                       style={{
-                        width: width * 0.28,
+                        width: width * 0.37
                       }}>
                       <TextReuseableComponent heading style={{
                         color: '#175CA1',
@@ -631,12 +631,12 @@ export default class Splash extends Component {
                       flexDirection: 'row',
                       marginVertical: height * 0.015,
                     }}>
-                    <View style={{ width: width * 0.15 }}>
+                    <View style={{width: width * 0.37, alignItems: 'center' }}>
                       <FeatherIcon name="cast" size={width * 0.15} color="#444444" />
                     </View>
                     <View
                       style={{
-                        width: width * 0.28,
+                        width: width * 0.37
                       }}>
                       <TextReuseableComponent heading style={{
                         fontWeight: 'bold',
