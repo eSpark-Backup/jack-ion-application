@@ -81,12 +81,13 @@ export default class DrawerModal extends Component {
             style={{
               alignItems: 'center',
               backgroundColor: '#e3e3e3',
-              height: height * 0.2,
+              height: height * 0.25,
+              justifyContent: 'center'
             }}>
             <Image
               source={require('../../../../Images/loogo.png')}
               resizeMode="contain"
-              style={{ height: height * 0.12, marginTop: 25 }}
+              style={{ height: height * 0.12}}
             />
           </View>
           <View style={{ height: 1.5, backgroundColor: "#35afe2" }} />
