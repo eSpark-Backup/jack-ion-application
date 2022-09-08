@@ -32,6 +32,9 @@ import Loader from '../components/Loader';
 import AlertScreenModal from '../components/modal/AlertScreenModal';
 import TextReuseableComponent from '../components/Text/index';
 
+// Actions
+import { fetchAlerts, changeContactAlerts, fetchAlertsTypes, fetchAlertSettings } from '../Store/Action/alerts.action';
+
 const { width, height } = Dimensions.get('window');
 
 export default class Splash extends Component {
@@ -95,7 +98,7 @@ export default class Splash extends Component {
   async componentDidMount() {
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
     this.setState({ loader: true });
-    this.fetchAlerts();
+    fetchAlerts();
     this.fetchAlertsTypes();
     // this.fetchAlertSettings();
     const alertContactRes = await API.get(`/alert/property/contact/all`);
@@ -110,21 +113,21 @@ export default class Splash extends Component {
 
   }
 
-  fetchAlerts = async () => {
-    const propertyData = this.props.navigation.state.params.item.item;
-    const allAlertsRes = await API.get(`/alert/all/${propertyData?.id}`);
-    if (allAlertsRes.data.bool) {
-      let allAlerts = allAlertsRes.data.data;
-      let alerts = [...allAlerts];
-      alerts.map((item, index) => {
-        alerts[index].check = false;
-      });
-      this.setState({ allAlerts: alerts });
-    } else {
-      this.setState({ loader: false });
-      alert(allAlertsRes.data.message);
-    }
-  };
+  // fetchAlerts = async () => {
+  //   const propertyData = this.props.navigation.state.params.item.item;
+  //   const allAlertsRes = await API.get(`/alert/all/${propertyData?.id}`);
+  //   if (allAlertsRes.data.bool) {
+  //     let allAlerts = allAlertsRes.data.data;
+  //     let alerts = [...allAlerts];
+  //     alerts.map((item, index) => {
+  //       alerts[index].check = false;
+  //     });
+  //     this.setState({ allAlerts: alerts });
+  //   } else {
+  //     this.setState({ loader: false });
+  //     alert(allAlertsRes.data.message);
+  //   }
+  // };
 
   changeContactAlerts = (index, ind) => {
     let updateArr = [...this.state.alertsType];
@@ -415,7 +418,7 @@ export default class Splash extends Component {
     // console.log('RESPONSE', dismissAlert.data);
     if (dismissAlert.data.bool) {
       this.setState({ dismissModal: false, dismissNote: '' });
-      this.fetchAlerts();
+      fetchAlerts();
     } else {
       this.setState({ loader: false });
       alert(dismissAlert.data.message);
