@@ -603,8 +603,8 @@ class Property extends Component {
                           prop={item}
                           routerIcon={true}
                           warningIcon={false}
-                          jumpFromSearch={null}
-                          selectedProp={this.selectedProp}
+                          jumpFromSearch={this.jumpFromSearch}
+                          selectedProp={null}
                           currentIndex={null}
                           jumpToDetail={this.jumpToDetail}
                           jumpToEquip={this.jumpToEquip}

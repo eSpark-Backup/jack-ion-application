@@ -677,11 +677,11 @@ class Details extends React.Component {
 
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.3, textAlign: 'left' },
+                      { width: width * 0.355, textAlign: 'left' },
                     ]} value={"Unit Count:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: '60%', textAlign: 'right', right: height * 0.01 },
+                      { width: width * 0.422, textAlign: 'right', right: height * 0.01 },
                     ]} value={this.state.listData.unit_count == null ||
                       this.state.listData.unit_count == ''
                       ? '--'
@@ -691,11 +691,11 @@ class Details extends React.Component {
                     <View>
                       <TextReuseableComponent title style={[
                         styles.dataFieldText,
-                        { width: width * 0.3, textAlign: 'left' },
+                        { width: width * 0.355, textAlign: 'left' },
                       ]} value={"Utility Type:"} />
                     </View>
 
-                    <View style={{ width: '60%', alignItems: 'flex-end' }}>
+                    <View style={{ width: width * 0.422, alignItems: 'flex-end' }}>
 
                       <ScrollView
                         horizontal
@@ -721,7 +721,6 @@ class Details extends React.Component {
                                 padding: 3,
                               },
                             ]} value={item} />
-
                           </View>
                         ))}
                       </ScrollView>
@@ -730,9 +729,9 @@ class Details extends React.Component {
                   <View style={{ height: height * 0.06, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.01 }}>
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.3, textAlign: 'left' },
+                      { width: width * 0.355, textAlign: 'left' },
                     ]} value={"Manufacturer:"} />
-                    <View style={{ width: '60%', alignItems: 'flex-end' }}>
+                    <View style={{ width: width * 0.422, alignItems: 'flex-end' }}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -740,7 +739,6 @@ class Details extends React.Component {
                         {this.state?.manus?.map((item, index) => (
                           <View
                             style={{
-
                               justifyContent: 'center',
                               textAlign: 'center',
                               marginHorizontal: height * 0.01,
