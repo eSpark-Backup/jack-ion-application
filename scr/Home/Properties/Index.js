@@ -63,7 +63,6 @@ class Property extends Component {
       isVisible: false,
       isAddPropVisible: false,
       Loading: false,
-      loadScreen: false,
       stopLoader: false,
       currentIndex: null,
       propertyList: null,
@@ -403,21 +402,19 @@ class Property extends Component {
         this.closeAddProp();
         // this.context.checkData();
         this.setState({ propertyList: this.context.propList });
-        this.setState({ loadScreen: true });
       } else {
-        this.setState({ loadScreen: true });
+        console.log('unsubscribe function called');
       }
       this.context.dontLoad();
     });
     unsubscribe();
   };
   onRefresh = async () => {
-    this.setState({ fetching: true });
-    await this.sleep(2000);
-    this.setState({ fetching: false, isPullDownShow: true });
+    // this.setState({ fetching: true });
+    // await this.sleep(2000);
+    this.setState({ isPullDownShow: true });
     // this.context.checkData();
     this.props?.fetchPropetry();
-    this.setState({ loadScreen: true });
   };
   hidePullDown = () => {
     setTimeout(() => {
@@ -437,8 +434,7 @@ class Property extends Component {
 
   render() {
     // console.log('this.props.isLoading', this.props.isLoading);
-    if (!this.props.isLoading && this.state.loadScreen) {
-      this.setState({ loadScreen: false });
+    if (!this.props.isLoading) {
       this.hidePullDown();
     }
     if (!this.context.filterWork && this.state.filterWork) {
@@ -629,11 +625,23 @@ class Property extends Component {
             {this.state.noInternet ? (
               <TextReuseableComponent title value={"Check Your Internet Connection"} />
             ) : this.props.isLoading ? (
-              <ScrollView
-                scrollEnabled={false}
-                showsVerticalScrollIndicator={false}>
-                {this.state.shimmers.map((item) => this.renderShimmers(item))}
-              </ScrollView>
+              <>
+              {this.state.shimmers.map((item) => this.renderShimmers(item))}
+              </>
+              // <ScrollView
+              //   scrollEnabled={false}
+              //   showsVerticalScrollIndicator={false}>
+              //   {this.state.shimmers.map((item) => this.renderShimmers(item))}
+              // </ScrollView>
+              // <>
+              //   <TextReuseableComponent value={"Loading..."}/>
+              //   <FlatList 
+              //     data={this.state.shimmers}
+              //     renderItems={({item}) => {
+              //       return this.renderShimmers(item)
+              //     }}
+              //   />
+              // </>
             ) : this.props.propList.length < 1 && !this.props.isLoading ? (
               <TextReuseableComponent title value={"No Properties to Show"} />
             ) : (

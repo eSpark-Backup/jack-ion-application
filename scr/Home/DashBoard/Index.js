@@ -371,9 +371,9 @@ export default class Splash extends Component {
                     />
                   </View>
                   <View style={styles.infoUpperView}>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <TextReuseableComponent title value={"Property"} />
-                      <TextReuseableComponent title value={totalProperties} />
+                    <View style={{ alignItems: 'center' }}>
+                      <TextReuseableComponent title value={"Property"}  />
+                      <TextReuseableComponent title value={totalProperties}  />
                     </View>
                   </View>
                   <View style={styles.infoLowerView}>
@@ -397,7 +397,7 @@ export default class Splash extends Component {
                     />
                   </View>
                   <View style={styles.infoUpperView}>
-                    <View style={{ alignItems: 'flex-end' }}>
+                    <View style={{ alignItems: 'center' }}>
                       <TextReuseableComponent title value={"Buildings"} />
                       <TextReuseableComponent title value={totalBuildings} />
                     </View>
@@ -421,7 +421,7 @@ export default class Splash extends Component {
                     />
                   </View>
                   <View style={styles.infoUpperView}>
-                    <View style={{ alignItems: 'flex-end' }}>
+                    <View style={{ alignItems: 'center' }}>
                       <TextReuseableComponent title value={"Meters"} />
                       <TextReuseableComponent title value={totalMeters} />
                     </View>

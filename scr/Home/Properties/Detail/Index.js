@@ -632,7 +632,7 @@ class Details extends React.Component {
                       </View>
                       :
                       <>
-                        <TextReuseableComponent title style={styles.dataFieldText} value={"No Gateway Programmed!"} />
+                        <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={"No Gateway Programmed!"} />
                       </>}
                     <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
                       this.state.listData.owner == ''
@@ -644,9 +644,9 @@ class Details extends React.Component {
 
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"ADDRESS"} />
-                  <View style={styles.infoViewInner}>
+                  <View style={[styles.infoViewInner, { height: 'auto' }]}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll' }]} value={`${this.state.listData.street == null
+                    <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll', textAlign: 'right' }]} value={`${this.state.listData.street == null
                       ? ''
                       : this.state.listData.street
                       } \n ${this.state.listData.city == null
@@ -664,8 +664,8 @@ class Details extends React.Component {
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"CUSTOM ID"} />
                   <View style={styles.infoViewInner}>
-                    <Folder name="folder" size={width * 0.06} />
-                    <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.custom_id == null ||
+                    <Folder name="folder" size={width * 0.06} style={{ textAlign: 'left' }} />
+                    <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={this.state.listData.custom_id == null ||
                       this.state.listData.custom_id == ''
                       ? '--'
                       : this.state.listData.custom_id} />
@@ -781,11 +781,11 @@ class Details extends React.Component {
                       { width: width * 0.4, textAlign: 'right' },
                     ]} value={this.state.meterCount} />
                   </View>
-                  <View style={[styles.infoViewInner, { height: width * 0.07, justifyContent: 'space-between' }]}>
-                    <TextReuseableComponent title style={{
-                      textAlign: 'left', fontSize: height * 0.022,
-                      fontFamily: Fonts.Montserrat,
-                    }} value={"Complete Installations:"} />
+                  <View style={[styles.infoViewInner, { height: height * 0.05, justifyContent: 'space-between' }]}>
+                    <TextReuseableComponent subHeading style={[
+                      styles.dataFieldText,
+                      { width: width * 0.5, textAlign: 'left' },
+                    ]} value={"Complete Installations:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
                       { width: width * 0.3, textAlign: 'right' },
