@@ -627,8 +627,18 @@ class Details extends React.Component {
                     <Icon name="router" size={25} />
                     {propertyData?.gateway ?
                       <View style={{ flexDirection: 'column' }}>
-                        <TextReuseableComponent title style={styles.dataFieldText} value={propertyData?.gateway?.serial_number} />
-                        <TextReuseableComponent title style={styles.dataFieldText} value={"Synced"} />
+                        <TextReuseableComponent title style={{
+                          width: width * 0.7,
+                          textAlign: 'right',
+                          fontSize: height * 0.022,
+                          fontFamily: Fonts.Montserrat,
+                        }} value={propertyData?.gateway?.serial_number} />
+                        <TextReuseableComponent title style={{
+                          width: width * 0.7,
+                          textAlign: 'right',
+                          fontSize: height * 0.022,
+                          fontFamily: Fonts.Montserrat,
+                        }} value={"Synced"} />
                       </View>
                       :
                       <>
@@ -726,7 +736,7 @@ class Details extends React.Component {
                       </ScrollView>
                     </View>
                   </View>
-                  <View style={{ height: height * 0.06, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.01 }}>
+                  <View style={{ height: height * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.01 }}>
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
                       { width: width * 0.355, textAlign: 'left' },
@@ -781,14 +791,14 @@ class Details extends React.Component {
                       { width: width * 0.4, textAlign: 'right' },
                     ]} value={this.state.meterCount} />
                   </View>
-                  <View style={[styles.infoViewInner, { height: height * 0.05, justifyContent: 'space-between' }]}>
+                  <View style={[styles.infoViewInner, { height: height * 0.06, justifyContent: 'space-between' }]}>
                     <TextReuseableComponent subHeading style={[
                       styles.dataFieldText,
-                      { width: width * 0.5, textAlign: 'left' },
+                      { width: width * 0.6, textAlign: 'left' },
                     ]} value={"Complete Installations:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.3, textAlign: 'right' },
+                      { width: width * 0.2, textAlign: 'right' },
                     ]} value={this.state.installStatus} />
                   </View>
                 </View>
@@ -836,19 +846,19 @@ class Details extends React.Component {
                 <View style={styles.contactViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Contact Info"} />
                   {this.state.listData?.contact_name || this.state.listData?.contact_phone || this.state.listData?.contact_email ? <>
-                  <View style={styles.contactInfoContainer}>
-                    <View style={styles.contactInfoInner}>
-                      <Icon
-                        name="account-box"
-                        size={height * 0.04}
-                        color="#444444"
-                        maxOpacity={0.1}
-                      />
+                    <View style={styles.contactInfoContainer}>
+                      <View style={styles.contactInfoInner}>
+                        <Icon
+                          name="account-box"
+                          size={height * 0.04}
+                          color="#444444"
+                          maxOpacity={0.1}
+                        />
+                      </View>
+                      <View style={styles.contactInfoText}>
+                        <TextReuseableComponent title value={this.state.listData?.contact_name} />
+                      </View>
                     </View>
-                    <View style={styles.contactInfoText}>
-                      <TextReuseableComponent title value={this.state.listData?.contact_name} />
-                    </View>
-                  </View>
                     <View style={styles.contactInfoContainer}>
                       <View style={styles.contactInfoInner}>
                         <Icon
