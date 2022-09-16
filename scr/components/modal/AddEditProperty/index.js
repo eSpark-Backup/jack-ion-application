@@ -1229,12 +1229,12 @@ export default function AddEditProperty({
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
           onPress={() => openEditManu(item, index)}
-          style={styles.manufacturersArrItem}>
+          style={[styles.manufacturersArrItem, { borderRadius: 5 }]}>
           <TextReuseableComponent title style={{ color: '#787878' }} value={item.name} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => DeleteManufacture(item)}
-          style={styles.manufacturersArrItemDel}>
+          style={[styles.manufacturersArrItemDel, { borderRadius: 5 }]}>
           <MaterialCommunityIcon name="delete" size={width * 0.08} />
         </TouchableOpacity>
       </View>

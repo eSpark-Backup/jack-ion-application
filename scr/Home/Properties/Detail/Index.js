@@ -789,7 +789,10 @@ class Details extends React.Component {
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
                       { width: width * 0.4, textAlign: 'right' },
-                    ]} value={this.state.meterCount} />
+                    ]} value={this.state.meterCount == null ||
+                      this.state.meterCount == ''
+                      ? '--'
+                      : this.state.meterCount} />
                   </View>
                   <View style={[styles.infoViewInner, { height: height * 0.06, justifyContent: 'space-between' }]}>
                     <TextReuseableComponent subHeading style={[
@@ -799,7 +802,7 @@ class Details extends React.Component {
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
                       { width: width * 0.2, textAlign: 'right' },
-                    ]} value={this.state.installStatus} />
+                    ]} value={this.state.installStatus === 'undefined/undefined' || this.state.installStatus == '' || this.state.installStatus == null ? '--' : this.state.installStatus} />
                   </View>
                 </View>
                 <View style={[styles.infoViewContainer, { height: height * 0.4 }]}>
