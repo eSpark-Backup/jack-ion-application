@@ -23,6 +23,7 @@ import styles from './style';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import API from '../api/SeviceApi';
 import TextReuseableComponent from '../components/Text/index';
+import { object } from 'yup/lib/locale';
 
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
@@ -152,10 +153,17 @@ class Splash extends Component {
   };
 
   solveMeFirst = () => {
-    arr = [1, 2, 3, 4, 5];
+    var arr = ["a", "b","b","b", "c","c", "d", "d"];
     // find the sum of the elements in the array
+    let obj = {};
+    for(let i = 0; i < arr.length; i++) {
+      let key = arr[i];
+      let num = 1;
 
-    return arr;
+      obj[key] = obj.hasOwnProperty(key) ? obj[key] + 1  : num;
+    }
+    console.log(obj);
+    return [obj];
   }
 
   render() {
@@ -191,7 +199,7 @@ class Splash extends Component {
             <TextReuseableComponent title style={styles.bottonHeading} value={"Dashboard"} />
           </TouchableOpacity> */}
           <View>
-            <TextReuseableComponent value={this.solveMeFirst()} />
+            <TextReuseableComponent value={this.solveMeFirst().map((item) => Object.values(item))} />
           </View>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Properties')}
