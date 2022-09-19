@@ -151,6 +151,13 @@ class Splash extends Component {
     });
   };
 
+  solveMeFirst = () => {
+    arr = [1, 2, 3, 4, 5];
+    // find the sum of the elements in the array
+
+    return arr;
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -173,7 +180,7 @@ class Splash extends Component {
             justifyContent: 'space-between',
             backgroundColor: '',
           }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => this.props.navigation.navigate('DashBoard')}
             style={styles.mainBotton}>
             <Image
@@ -182,7 +189,10 @@ class Splash extends Component {
               blurRadius={0.5}
             />
             <TextReuseableComponent title style={styles.bottonHeading} value={"Dashboard"} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View>
+            <TextReuseableComponent value={this.solveMeFirst()} />
+          </View>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Properties')}
             style={styles.mainBotton}>
