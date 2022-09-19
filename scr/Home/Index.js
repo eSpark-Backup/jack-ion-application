@@ -153,17 +153,49 @@ class Splash extends Component {
   };
 
   solveMeFirst = () => {
-    var arr = ["a", "b","b","b", "c","c", "d", "d"];
-    // find the sum of the elements in the array
-    let obj = {};
-    for(let i = 0; i < arr.length; i++) {
-      let key = arr[i];
-      let num = 1;
+    // var arr = ["a", "b","b","b", "c","c","c","c", "d", "d", "e"];
+    // // find the sum of the elements in the array
+    // let obj = {};
+    // for(let i = 0; i < arr.length; i++) {
+    //   let key = arr[i];
+    //   let num = 1;
 
-      obj[key] = obj.hasOwnProperty(key) ? obj[key] + 1  : num;
+    //   obj[key] = obj.hasOwnProperty(key) ? obj[key] + 1  : num;
+    // }
+    // console.log(obj);
+    // return [obj];
+
+    // let arr = [1, 2, 3, 5, 2];
+    // // summ every element in the array
+    // // return arr.reduce((acc, next) => acc + next)
+    // let sum = 0;
+    // for(let i = 0; i < arr.length; i++) {
+    //   console.log('sum', sum);
+    //   sum = sum + arr[i];
+    // }
+    // console.log('sum', sum);
+    // return [sum];
+
+    // Alice and Bob each created one problem for Haceeernlk. A reviewer rates the two challenges,
+    // rewarding points on a scale from 1 to 100 for three categories: Find their comparison points by comparing a[0] with b[0] and so forth;
+
+    var a = [4, 3, 4];
+    var b = [5, 5, 6];
+    var result = [0, 0];
+    for(let i = 0; i < a.length; i++) {
+      let aliceValue = a[i];
+      let bobValue = b[i];
+      if (aliceValue > bobValue) {
+        result[0]++;
+      } else if (bobValue > aliceValue) {
+        result[1]++;
+      }
     }
-    console.log(obj);
-    return [obj];
+    console.log(result);
+    return result;
+
+
+
   }
 
   render() {
@@ -199,7 +231,7 @@ class Splash extends Component {
             <TextReuseableComponent title style={styles.bottonHeading} value={"Dashboard"} />
           </TouchableOpacity> */}
           <View>
-            <TextReuseableComponent value={this.solveMeFirst().map((item) => Object.values(item))} />
+            <TextReuseableComponent value={this.solveMeFirst()?.map((item) => <TextReuseableComponent value={item} />)} />
           </View>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Properties')}
