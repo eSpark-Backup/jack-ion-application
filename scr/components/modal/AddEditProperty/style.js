@@ -79,7 +79,7 @@ export default styles = StyleSheet.create({
   loactionSelectionMainView: {alignItems: 'center', justifyContent: 'center'},
   loactionSelectionInnerView: {
     width: width * 0.9,
-    height: width * 1,
+    height: width * 1.2,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',

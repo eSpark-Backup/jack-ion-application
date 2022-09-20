@@ -1322,7 +1322,9 @@ export default function AddEditProperty({
             margin: 0,
             bottom: avoidKeyboard ? width * avoidMargin : 0,
           }}
-          isVisible={modalVisible}>
+          isVisible={modalVisible} 
+          onBackdropPress={closeModal}
+          >
           {selectLocation ? (
             <View style={styles.loactionSelectionMainView}>
               <View style={styles.loactionSelectionInnerView}>

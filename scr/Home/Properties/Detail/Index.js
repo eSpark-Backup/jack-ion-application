@@ -590,7 +590,7 @@ class Details extends React.Component {
                   )}
               </MapView>
               <View style={styles.clientName}>
-                <Properties name="home-city-outline" size={width * 0.08} />
+                <Properties name="home-city-outline" size={width * 0.1} style={{ color: '#25AAE1ec' }} />
                 <TextReuseableComponent title style={styles.clientNameHeading} value={this.state.listData.name == null
                   ? 'Untitled'
                   : this.state.listData.name} />
