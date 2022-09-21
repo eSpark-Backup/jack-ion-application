@@ -624,30 +624,19 @@ class Details extends React.Component {
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Gateway"} />
                   <View style={styles.infoViewInner}>
-                    <Icon name="router" size={25} />
+                    <Icon name="router" size={width * 0.06} />
                     {propertyData?.gateway ?
-                      <View style={{ flexDirection: 'column' }}>
+                      <View style={{ justifyContent: 'flex-end' }}>
                         <TextReuseableComponent title style={{
-                          width: width * 0.7,
                           textAlign: 'right',
                           fontSize: height * 0.022,
                           fontFamily: Fonts.Montserrat,
-                        }} value={propertyData?.gateway?.serial_number} />
-                        <TextReuseableComponent title style={{
-                          width: width * 0.7,
-                          textAlign: 'right',
-                          fontSize: height * 0.022,
-                          fontFamily: Fonts.Montserrat,
-                        }} value={"Synced"} />
+                        }} value={`${propertyData?.gateway?.serial_number} Synced`} />
                       </View>
                       :
                       <>
                         <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={"No Gateway Programmed!"} />
                       </>}
-                    <TextReuseableComponent title style={styles.dataFieldText} value={this.state.listData.owner == null ||
-                      this.state.listData.owner == ''
-                      ? '--'
-                      : this.state.listData.owner} />
                   </View>
                 </View>
 
@@ -659,7 +648,7 @@ class Details extends React.Component {
                     <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll', textAlign: 'right' }]} value={`${this.state.listData.street == null
                       ? ''
                       : this.state.listData.street
-                      } \n ${this.state.listData.city == null
+                      } ${this.state.listData.city == null
                         ? ''
                         : this.state.listData.city + ','
                       } ${this.state.listData.st == null
@@ -683,44 +672,39 @@ class Details extends React.Component {
                 </View>
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Other Details"} />
-                  <View style={{ height: width * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01 }}>
+                  <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: width * 0.8 }}>
 
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.355, textAlign: 'left' },
+                      { width: '40%', textAlign: 'left' },
                     ]} value={"Unit Count:"} />
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.422, textAlign: 'right', right: height * 0.01 },
+                      { width: '60%', textAlign: 'right' },
                     ]} value={this.state.listData.unit_count == null ||
                       this.state.listData.unit_count == ''
                       ? '--'
                       : this.state.listData.unit_count} />
                   </View>
-                  <View style={{ height: height * 0.06, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center' }}>
-                    <View>
+
+                  <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01, width: width * 0.8 }}>
                       <TextReuseableComponent title style={[
                         styles.dataFieldText,
-                        { width: width * 0.355, textAlign: 'left' },
+                        { width: '45%', textAlign: 'left' },
                       ]} value={"Utility Type:"} />
-                    </View>
-
-                    <View style={{ width: width * 0.422, alignItems: 'flex-end' }}>
-
+                    <View style={{ width: '55%', alignItems: 'flex-end' }}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         style={{ flexDirection: 'row' }}>
                         {this.state?.utilTypes?.map((item, index) => (
-
                           <View
                             key={index}
                             style={{
                               justifyContent: 'center',
                               textAlign: 'center',
-                              marginHorizontal: height * 0.01,
+                              marginHorizontal: this.state?.utilTypes.length > 1 ? 5 : null,
                             }}>
-
                             <TextReuseableComponent title style={[
                               styles.dataFieldText,
                               {
@@ -736,12 +720,13 @@ class Details extends React.Component {
                       </ScrollView>
                     </View>
                   </View>
-                  <View style={{ height: height * 0.07, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginBottom: height * 0.01 }}>
+
+                  <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01, marginBottom: height * 0.01, width: width * 0.8 }}>
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
-                      { width: width * 0.355, textAlign: 'left' },
+                      { width: '45%', textAlign: 'left' },
                     ]} value={"Manufacturer:"} />
-                    <View style={{ width: width * 0.422, alignItems: 'flex-end' }}>
+                    <View style={{ width: '55%', alignItems: 'flex-end' }}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -751,7 +736,7 @@ class Details extends React.Component {
                             style={{
                               justifyContent: 'center',
                               textAlign: 'center',
-                              marginHorizontal: height * 0.01,
+                              marginHorizontal: this.state?.manus.length > 1 ? 5 : null,
                             }}>
                             <TextReuseableComponent title style={[
                               styles.dataFieldText,
@@ -769,6 +754,7 @@ class Details extends React.Component {
                     </View>
                   </View>
                 </View>
+
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Owner/Developer Name"} />
                   <View style={styles.infoViewInner}>
@@ -818,7 +804,7 @@ class Details extends React.Component {
                   <ScrollView
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                    style={{ width: width * 0.85, height: height * 0.4, marginVertical: height * 0.01 }}>
+                    style={{ width: width * 0.8, height: height * 0.4, marginVertical: height * 0.01 }}>
                     {this.state.unitMixes.map((item, index) => (
                       <View style={styles.unitMixesValuesContainer}>
                         <TextReuseableComponent title style={styles.unitMixesValues} value={index + 1} />

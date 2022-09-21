@@ -125,7 +125,7 @@ export default styles = StyleSheet.create({
     width: width * 0.8,
   },
   unitMixesHeadContainer: {
-    width: width * 0.85,
+    width: width * 0.8,
     justifyContent: 'space-around',
     flexDirection: 'row',
     marginBottom: width * 0.01,
@@ -153,7 +153,7 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
   },
   sumUnitMixes: {
-    width: width * 0.85,
+    width: width * 0.8,
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
@@ -234,6 +234,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginBottom: height * 0.02,
+    justifyContent: 'space-between'
   },
   dataFieldText: {
     fontSize: height * 0.022,
