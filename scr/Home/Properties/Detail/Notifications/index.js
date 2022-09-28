@@ -11,6 +11,7 @@ import {
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
+import Feather from 'react-native-vector-icons/Feather';
 
 // Components
 import styles from './style';
@@ -146,9 +147,33 @@ export default class Splash extends Component {
         }
         return this.props.navigation.navigate("Equip", newItem);
       }
-      return null;
+      return item.link.includes('properties') ? this.props.navigation.goBack() : null;
     }
     return null;
+  }
+
+  handleDeleteNotification = async (itemId) => {
+    this.setState({ LoaderState: true });
+    const deleteNotificationById = await API.post('/dashboard/delete-notification-by-id', { id: itemId });
+
+    if (deleteNotificationById.data.bool) {
+      const notificationsRes = await API.post(
+        '/property/equipment/meter/notification-show',
+      );
+      if (notificationsRes?.data?.bool) {
+        this.setState({ notificationData: notificationsRes?.data?.data?.notify, LoaderState: false });
+      } else {
+        alert(notificationsRes?.data?.message);
+        this.setState({ LoaderState: false });
+      }
+    } else {
+      alert(deleteNotificationById.data.message);
+      this.setState({ LoaderState: false });
+    }
+  }
+
+  handleClear = () => {
+    this.setState({ notificationData: [] })
   }
 
   render() {
@@ -156,7 +181,6 @@ export default class Splash extends Component {
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
     let upDownNearby;
     !this.state.nearDown ? (upDownNearby = 'down') : (upDownNearby = 'up');
-    // console.log('LoaderState');
 
     return (
       <View style={styles.container}>
@@ -224,46 +248,59 @@ export default class Splash extends Component {
             </View>
           </View>
         </View>
-
         <View style={{ flex: 1, alignItems: 'center' }}>
           {this.state.LoaderState ? (
             <Loader />
-          ) : this.state.notificationData.length < 1 ? (
+          ) : this.state?.notificationData?.length < 1 ? (
             <TextReuseableComponent title style={{
               textAlign: 'center',
               marginTop: height * 0.3,
             }} value={"No Notifications to show"} />
           ) : (
-            <FlatList
-              style={{ flex: 1 }}
-              data={this.state.notificationData}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => this.handleNotificationPress(item)}
-                  style={{
-                    borderWidth: 1,
-                    width: width * 0.95,
-                    borderRadius: 10,
-                    padding: width * 0.02,
-                    margin: width * 0.02,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <MaterialCommunityIcon
-                    name="notifications"
-                    size={width * 0.07}
-                    color="black"
-                    style={{
-                      marginRight: width * 0.01,
-                    }}
-                  />
-                  <View>
-                    <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={item.sender_name} />
-                    <TextReuseableComponent title style={{ width: width * 0.8 }} value={item.message} />
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
+            <>
+              <FlatList
+                style={{ flex: 1 }}
+                data={this.state?.notificationData}
+                renderItem={({ item }) => (
+                  <>
+                    <TouchableOpacity
+                      onPress={() => this.handleNotificationPress(item)}
+                      style={{
+                        borderWidth: 1,
+                        width: width * 0.9,
+                        borderRadius: 10,
+                        padding: width * 0.02,
+                        margin: width * 0.02,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <MaterialCommunityIcon
+                        name="notifications"
+                        size={width * 0.07}
+                        color="black"
+                        style={{
+                          marginRight: width * 0.01,
+                        }}
+                      />
+                      <View style={{ width: width * 0.7 }}>
+                        <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={item.sender_name} />
+                        <TextReuseableComponent title style={{ width: width * 0.8 }} value={item.message} />
+                      </View>
+                      <TouchableOpacity style={{ width: width * 0.07 }} onPress={() => this.handleDeleteNotification(item.id)}>
+                        <Feather
+                          name={'delete'}
+                          size={height * 0.035}
+                          color="#999"
+                        />
+                      </TouchableOpacity>
+                    </TouchableOpacity>
+                  </>
+                )}
+              />
+              {this.state?.notificationData?.length && <TouchableOpacity style={{ marginBottom: height * 0.02, marginTop: height * 0.02 }} onPress={() => this.handleClear()}>
+                <TextReuseableComponent title value={"Clear All"} />
+              </TouchableOpacity>}
+            </>
           )}
         </View>
       </View>

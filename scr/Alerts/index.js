@@ -111,7 +111,7 @@ export default class Splash extends Component {
   }
 
   fetchAlerts = async () => {
-    const propertyData = this.props.navigation.state.params.item.item;
+    const propertyData = this.props.navigation?.state?.params?.item?.item;
     const allAlertsRes = await API.get(`/alert/all/${propertyData?.id}`);
     if (allAlertsRes.data.bool) {
       let allAlerts = allAlertsRes.data.data;
@@ -270,7 +270,6 @@ export default class Splash extends Component {
   };
 
   handleDeleteContact = async (item, index) => {
-    console.log('item ---->', item);
     Alert.alert("Delete Contact?",
       "Contact will be deleted if you confirm.",
       [
@@ -283,24 +282,24 @@ export default class Splash extends Component {
           onPress: async () => {
             this.setState({ loader: true });
             const updateAlertStatus = await API.get(
-              `/alert/contact/delete/${item.id}`
+              `/alert/property/contact/delete/${item.id}`
             );
 
             if (updateAlertStatus?.data?.bool) {
               // fetch updated data
-              const allAlertsRes = await API.get(`/alert/all/${item?.property_id}`);
-              console.log('allAlertsRes alert', allAlertsRes);
+              const allAlertsRes = await API.get('/alert/property/contact/all');
               if (allAlertsRes.data.bool) {
-                console.log('deleted contact alert bool true');
-                let allAlerts = allAlertsRes.data.data;     
-                let alerts = [...allAlerts];
-                alerts.map((item, index) => {
-                  alerts[index].check = false;
-                });
+                let allAlerts = allAlertsRes?.data?.data;
+                const newAlerts = [
+                  {
+                    ...this.state.alertContacts,
+                    data: allAlerts,
+                  },
+                ]
+
                 this.setState({
                   loader: false,
-                  allAlerts: alerts,
-                  alertContacts: alerts,
+                  alertContacts: newAlerts,
                   contactModal: false,
                   currentIndex: '',
                   contactName: '',
@@ -311,7 +310,6 @@ export default class Splash extends Component {
                 this.setState({ loader: false });
                 alert(allAlertsRes.data.message);
               }
-
 
             } else {
               this.setState({ loader: false });
@@ -342,7 +340,6 @@ export default class Splash extends Component {
   };
 
   naviagateToEquip = () => {
-    // console.log('this.props.navigation.state.params', this.props.navigation.state.params);
     this.toggleModal();
     this.props.navigation.navigate('Equip', this.props.navigation.state.params);
   };
@@ -616,7 +613,7 @@ export default class Splash extends Component {
     return (
       <View>
           <SectionList
-            sections={this.state.alertContacts}
+            sections={this.state?.alertContacts}
             renderItem={({ item, index }) => (
               <View key={index} style={style.containerInner}>
                 <View style={style.viewAlignment}>
@@ -626,10 +623,10 @@ export default class Splash extends Component {
                     style={{ paddingRight: 5 }}
                   />
                   <View>
-                    <TextReuseableComponent title style={style.mainHeadiingItems} value={item.name} />
+                    <TextReuseableComponent title style={style.mainHeadiingItems} value={item?.name} />
                     <View style={style.viewAlignment}>
-                      <TextReuseableComponent title style={style.contactOtherInfo} value={item.email} />
-                      <TextReuseableComponent title style={style.contactOtherInfo} value={item.phone} />
+                      <TextReuseableComponent title style={style.contactOtherInfo} value={item?.email} />
+                      <TextReuseableComponent title style={style.contactOtherInfo} value={item?.phone} />
                     </View>
                   </View>
                 </View>

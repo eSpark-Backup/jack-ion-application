@@ -1329,7 +1329,7 @@ export default function AddEditProperty({
             <View style={styles.loactionSelectionMainView}>
               <View style={styles.loactionSelectionInnerView}>
                 <View style={styles.radialDisContainer}>
-                  <View style={{ flexDirection: 'row', width: width * 0.72, }}>
+                  {propertyData?.name && <View style={{ flexDirection: 'row', width: width * 0.72, }}>
                     <TextReuseableComponent heading style={{
                       textAlign: 'center',
                       width: width * 0.72,
@@ -1337,7 +1337,7 @@ export default function AddEditProperty({
                       paddingVertical: 10,
                       borderRadius: width * 0.03,
                     }} value={propertyData?.name} />
-                  </View>
+                  </View>}
                   <View style={{ marginBottom: height * 0.02 }}>
                   <TextReuseableComponent title style={[styles.radialDisHeading, { marginHorizontal: 10 }]} value={"ENTER ADDRESS BELOW"} />
                     </View>

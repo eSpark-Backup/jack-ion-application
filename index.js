@@ -11,13 +11,13 @@ import PushNotification from 'react-native-push-notification';
 
 LogBox.ignoreAllLogs(true);
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  // console.log('Message handled in the background!', remoteMessage);
+  console.log('Message handled in the background!', remoteMessage);
 });
 
 PushNotification.configure({
   onNotification: function (notification) {
-    // console.log('NOTIFICATION:', notification);
+    console.log('Message handled in the foreground!:', notification);
     notification.finish(PushNotificationIOS.FetchResult.NoData);
-  },
+  }
 });
 AppRegistry.registerComponent(appName, () => App);

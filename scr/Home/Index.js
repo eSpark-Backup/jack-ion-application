@@ -79,10 +79,10 @@ class Splash extends Component {
     SplashScreen.hide();
     this.requestLocationPermission();
     if (Platform.OS === 'android') {
-      this.onAppBootstrap();
       this.createChannels();
+      this.onAppBootstrap();
+      
       const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-        // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
         this.showNotifications(remoteMessage);
       });
       return unsubscribe;
@@ -134,6 +134,8 @@ class Splash extends Component {
       fcm_token: fcmToken,
     };
     await API.post('/user/set-fcm-token', tokenfcm);
+
+    
   }
 
   createChannels = () => {
@@ -143,13 +145,15 @@ class Splash extends Component {
     });
   };
 
-  showNotifications = (item) => {
+  showNotifications = (remoteMessage) => {
     PushNotification.localNotification({
       channelId: 'test-id',
-      title: item.notification.title,
-      message: item.notification.body,
+      title: remoteMessage?.data?.username,
+      message: remoteMessage?.data?.message,
     });
+    // PushNotification.getDeliveredNotifications((item) => console.log('items', item));
   };
+  
 
   render() {
     return (
