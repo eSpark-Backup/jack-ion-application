@@ -138,7 +138,7 @@ class Details extends React.Component {
 
   getTpanelData = async (id) => {
     const tPanelRes = await API.get(`/property/tpanel/${id}`);
-    console.log('TPANEL DATA', tPanelRes?.data?.data);
+    // console.log('TPANEL DATA', tPanelRes?.data?.data);
     if (tPanelRes?.data?.bool) {
       this.setState({
         tpanelData: tPanelRes?.data?.data?.unit,
@@ -148,7 +148,7 @@ class Details extends React.Component {
 
   getBunchData = async (id) => {
     const tBunchRes = await API.get(`/property/details-bunch/${id}`);
-    console.log('TBunch DATA', tBunchRes?.data?.data);
+    // console.log('TBunch DATA', tBunchRes?.data?.data);
     if (tBunchRes?.data?.bool) {
       this.setState({
         tBunchData: tBunchRes?.data?.data,
@@ -160,7 +160,7 @@ class Details extends React.Component {
     this.setState({ isLoading: true });
 
     const propertyRes = await API.get(`/property/${id}`);
-    console.log("propertyRes propertyRes", propertyRes)
+    // console.log("propertyRes propertyRes", propertyRes)
     const currPropData = propertyRes?.data?.data?.property;
     const utilityManufacturersArr =
       propertyRes?.data?.data?.property?.utility_manufacturers;
@@ -174,8 +174,8 @@ class Details extends React.Component {
 
     this.setState({ utilTypes, manus });
 
-    console.log('UTILITY TYPES', utilTypes);
-    console.log('MANUFACTURERS', manus);
+    // console.log('UTILITY TYPES', utilTypes);
+    // console.log('MANUFACTURERS', manus);
 
     let uMdata = currPropData.unit_mixes;
     let nOU = 0;

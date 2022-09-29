@@ -684,7 +684,6 @@ const mapStateToProps = (state, ownProps) => ({
   offset: state.propertyReducer.offset,
   listLoader: state.propertyReducer.listLoader,
   limitExceed: state.propertyReducer.limitExceed
-
 });
 
 const mapDispatchToProps = (dispatch) => {

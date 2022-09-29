@@ -108,7 +108,7 @@ export default class Splash extends Component {
   };
 
   render() {
-    console.log('PANEL DATA', this.props.navigation.state.params);
+    // console.log('PANEL DATA', this.props.navigation.state.params);
     return (
       <View style={style.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}

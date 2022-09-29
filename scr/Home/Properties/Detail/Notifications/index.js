@@ -149,7 +149,7 @@ export default class Splash extends Component {
       }
       return item.link.includes('properties') ? this.props.navigation.goBack() : null;
     }
-    return null;
+    return console.log("No data found in notification=", item);
   }
 
   handleDeleteNotification = async (itemId) => {
