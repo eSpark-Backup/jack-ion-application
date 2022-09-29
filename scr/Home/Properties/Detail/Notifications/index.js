@@ -172,8 +172,24 @@ export default class Splash extends Component {
     }
   }
 
-  handleClear = () => {
-    this.setState({ notificationData: [] })
+  handleClear =  async () => {
+    this.setState({ LoaderState: true });
+    const arrayOfIds = this.state.notificationData?.map(notification => notification?.id);
+    const clearAllNotifications = await API.post('/dashboard/delete-notification-by-id', { id: arrayOfIds });
+    if(clearAllNotifications?.data?.bool) {
+      const notificationsRes = await API.post(
+        '/property/equipment/meter/notification-show',
+      );
+      if (notificationsRes?.data?.bool) {
+        this.setState({ notificationData: notificationsRes?.data?.data?.notify, LoaderState: false });
+      } else {
+        alert(notificationsRes?.data?.message);
+        this.setState({ LoaderState: false });
+      }
+    } else {
+      alert(deleteNotificationById.data.message);
+      this.setState({ LoaderState: false });
+    }
   }
 
   render() {
