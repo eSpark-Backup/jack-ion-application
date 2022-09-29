@@ -370,7 +370,7 @@ export default function AddEditProperty({
       allManu.map((manuItem) => {
         if (manuItem?.utility_type[0]?.name != undefined) {
           if (some.name == manuItem?.utility_type[0]?.name) {
-            console.log('CHALA TRUE');
+            // console.log('CHALA TRUE');
             temp.push(manuItem);
             listSlide2[1].data = temp;
             setUtilAndManu(listSlide2);
@@ -454,7 +454,7 @@ export default function AddEditProperty({
   const deleteRow = async (index, id) => {
     if (type == 'Edit') {
       const delUnitMix = await API.post(`/property/unit-mix/unitMix/${id}`);
-      console.log('DELUNITMIX', delUnitMix);
+      // console.log('DELUNITMIX', delUnitMix);
       if (delUnitMix?.data?.bool) {
         let arr = [...unitMix];
         arr.splice(index, 1);
@@ -575,7 +575,7 @@ export default function AddEditProperty({
 
   const DeleteManufacture = (item) => {
     setLoadManuList(true);
-    console.log('DEVICE DATA', utilAndManu[0].data);
+    // console.log('DEVICE DATA', utilAndManu[0].data);
     checkManufacture(item);
   };
 
@@ -583,10 +583,10 @@ export default function AddEditProperty({
     const ManufacturersResponse = await API.get(
       '/property/equipment/manufacturer/all',
     );
-    console.log('ManufacturersResponse', ManufacturersResponse?.data);
+    // console.log('ManufacturersResponse', ManufacturersResponse?.data);
     animate();
     const delManu = await API.post(`/property/pivot/${item.id}`);
-    console.log('DELMANU', delManu);
+    // console.log('DELMANU', delManu);
 
     let manuData = [...allManuList];
     manuData = ManufacturersResponse?.data?.data;
@@ -595,13 +595,13 @@ export default function AddEditProperty({
       (sitem) => sitem.manufacturer_id !== item.manufacturer_id,
     );
 
-    console.log('ITEMS', items);
+    // console.log('ITEMS', items);
 
     let result = manuData.filter(
       (o1) => !items.some((o2) => o1.id === o2.manufacturer_id),
     );
 
-    console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
+    // console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
     setManufacturersArray(items);
     setAllManuList(result);
     setLoadManuList(false);
@@ -628,7 +628,7 @@ export default function AddEditProperty({
   };
 
   const selectMeterLocation = async () => {
-    console.log('Location ka batao', await SystemSetting.isLocationEnabled());
+    // console.log('Location ka batao', await SystemSetting.isLocationEnabled());
     setSelectLocation(true);
   };
 
@@ -638,7 +638,7 @@ export default function AddEditProperty({
   };
 
   const fetchAddressData = (searchdata) => {
-    console.log('SEARCH STR', searchdata);
+    // console.log('SEARCH STR', searchdata);
     const searchStr = ',';
     var searchStrLen = searchStr?.length;
     var startIndex = 0,
@@ -654,11 +654,11 @@ export default function AddEditProperty({
     const State = searchdata.slice(indices[1] + 2, indices[1] + 4);
     const ZipCode = searchdata.slice(indices[1] + 5, indices[2]);
 
-    console.log('DATA', indices);
-    console.log('Street', Street);
-    console.log('City', City);
-    console.log('State', State);
-    console.log('Zipcode', ZipCode);
+    // console.log('DATA', indices);
+    // console.log('Street', Street);
+    // console.log('City', City);
+    // console.log('State', State);
+    // console.log('Zipcode', ZipCode);
     setStreet(Street);
     setCity(City);
     setState(State);
@@ -718,7 +718,7 @@ export default function AddEditProperty({
   const openEditManu = async (item, index) => {
     animate();
 
-    console.log('get devices---> Open Edit');
+    // console.log('get devices---> Open Edit');
 
     let newArr = [...utilAndManu];
 
@@ -727,8 +727,8 @@ export default function AddEditProperty({
     newArr[1].select = item.name;
     newArr[1].selectId = item.manu_Id;
 
-    console.log('item.name', item.name);
-    console.log('item.id', item.manu_Id);
+    // console.log('item.name', item.name);
+    // console.log('item.id', item.manu_Id);
     setUtilAndManu(newArr);
     setCurrentManuIndex(index);
     setShowEditManufacturer(true);
@@ -778,7 +778,7 @@ export default function AddEditProperty({
       Toast.show('Please select a Utility Type', Toast.SHORT);
       return;
     } else {
-      console.log('MANUFACTURERS ARRAY', manufacturersArray);
+      // console.log('MANUFACTURERS ARRAY', manufacturersArray);
 
       for (let i = 0; i < manufacturersArray?.length; i++) {
         if (type == 'Add') {
@@ -787,7 +787,7 @@ export default function AddEditProperty({
             utility_type_id: manufacturersArray[i].utility_type_id,
           });
         } else {
-          console.log('ELSE CHALA');
+          // console.log('ELSE CHALA');
 
           utilAndManuIds.push({
             id: manufacturersArray[i].id ?? null,
@@ -797,7 +797,7 @@ export default function AddEditProperty({
           });
         }
       }
-      console.log('SELECTED UTILITY IDs', selectUtilIds);
+      // console.log('SELECTED UTILITY IDs', selectUtilIds);
       setError((oldState) => ({
         ...oldState,
         utilType: '',
@@ -842,14 +842,14 @@ export default function AddEditProperty({
         longitude: long,
       };
 
-      console.log('PROPDATA', propData);
+      // console.log('PROPDATA', propData);
       if (type == 'Add') {
         const res = await API.post(`/property/add`, propData);
-        console.log(res.data);
+        // console.log(res.data);
         if (res?.data?.bool) {
           clearInputs();
           addedSuccessfully();
-          console.log('PROPERTY RUNNINg');
+          // console.log('PROPERTY RUNNINg');
           setBtnLoading(false);
           Alert.alert('Success', 'Property Added Successfully');
         } else {
@@ -861,7 +861,7 @@ export default function AddEditProperty({
           `/property/update/${propertyData.id}`,
           propData,
         );
-        console.log(response?.data);
+        // console.log(response?.data);
         closeModal();
         if (response?.data?.bool) {
           addedSuccessfully();

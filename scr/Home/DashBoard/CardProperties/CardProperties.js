@@ -34,7 +34,7 @@ export const CardProperties = ({navigation}) => {
     setLoading(false);
   };
 
-  console.log("loading, properties", loading, properties)
+  // console.log("loading, properties", loading, properties)
   return (
     <View style={styles.main}>
        {Platform.OS == 'ios' && <CustumStatusBar />}

@@ -71,13 +71,13 @@ const {width, height} = Dimensions.get('window');
 
   getBillingCompany = () => {
     if (Platform.OS == 'android') {
-      console.log('chala');
+      // console.log('chala');
       this.context.getBillingCompany();
       this.setState({billCompanies: this.context.propitemList});
       this.setState({showList: true});
     }
     if (Platform.OS == 'ios') {
-      console.log('chala');
+      // console.log('chala');
       this.context.getBillingCompany();
       this.setState({billCompanies: this.context.propitemList});
       this.props.close();
@@ -114,7 +114,7 @@ const {width, height} = Dimensions.get('window');
         search: this.context.filterPropName,
         location: this.context.filterLocation,
       };
-      console.log('Filter data', data);
+      // console.log('Filter data', data);
       // this.context.filterData(data);
       this.props.fetchPropetry(data)
       this.props.close();
@@ -157,14 +157,14 @@ const {width, height} = Dimensions.get('window');
           this.setState({hasAccess: true});
           this.setState({isScannerVisible: true});
           this.setState({scan: true});
-          console.log('Access');
+          // console.log('Access');
         } else {
           this.setState({hasAccess: false});
           Alert.alert(
             "You don't have access for the Camera",
             'Kindly TurnOn Camera Permission from Settings to use Scanner',
           );
-          console.log('Denied');
+          // console.log('Denied');
         }
         return granted;
       } catch (err) {
@@ -180,7 +180,7 @@ const {width, height} = Dimensions.get('window');
               this.setState({hasAccess: true});
               this.setState({isScannerVisible: true});
               this.setState({scan: true});
-              console.log('Access');
+              // console.log('Access');
             }, 450);
           }
           if (result == RESULTS.DENIED) {

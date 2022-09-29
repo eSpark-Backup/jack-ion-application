@@ -96,7 +96,6 @@ export default class UpdateModal extends Component {
   };
 
   clearUpdateBuild = () => {
-    console.log('CHALA KIYA BSDK');
     this.setState((prevState) => ({
       ...prevState,
       error: {

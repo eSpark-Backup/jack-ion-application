@@ -303,9 +303,9 @@ const App = ({ navigation }) => {
 
   const getUnitDetail = async () => {
     const res = await API.get(`/property/equipment/unit/${testId}`);
-    console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
+    // console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     if (res.data?.bool) {
-      console.log("CHeck What the data is ?", res.data)
+      // console.log("CHeck What the data is ?", res.data)
       // setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
       setData(res.data);
       setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
@@ -324,7 +324,7 @@ const App = ({ navigation }) => {
     };
 
     const alertRes = await API.post(`/alert/recent`, alertData);
-    console.log('UNIT METER ALERT', alertRes.data?.data?.alert);
+    // console.log('UNIT METER ALERT', alertRes.data?.data?.alert);
     if (alertRes?.data?.bool) {
       const unitAlertData = alertRes.data?.data?.alert;
       setStatusInfo([
@@ -403,10 +403,10 @@ const App = ({ navigation }) => {
       data,
     );
 
-    console.log('Chart Data', chartRes?.data?.data);
+    // console.log('Chart Data', chartRes?.data?.data);
 
     if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
-      console.log('Chala Function');
+      // console.log('Chala Function');
 
       // gettingChartdata.current = true;
       getChartData(chartRes);
@@ -416,10 +416,10 @@ const App = ({ navigation }) => {
     setLoading(false);
   };
 
-  console.log('Getting Data..................??????????', propertyId);
+  // console.log('Getting Data..................??????????', propertyId);
 
   const getChartData = (chartRes) => {
-    console.log('Check Chala.....');
+    // console.log('Check Chala.....');
     let MeterUsage = [];
     let ReadData = [];
     let DataSet = [];
@@ -453,7 +453,7 @@ const App = ({ navigation }) => {
       Read7Days.push(bb);
     }
 
-    console.log('Simple Array', Usage7Days, Read7Days);
+    // console.log('Simple Array', Usage7Days, Read7Days);
     // console.log('Dataset Array', Math.max(...DataSet));
     // console.log('Total Usage', TotalUsage);
     // console.log('Merge Result', Math.max(...DataSet) - TotalUsage);
@@ -493,7 +493,7 @@ const App = ({ navigation }) => {
 
     const index = stringDates.indexOf(stringDate.toString());
 
-    console.log('String Date', index);
+    // console.log('String Date', index);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
@@ -544,12 +544,12 @@ const App = ({ navigation }) => {
     setMeterUsageData(Usage7DaysData);
     setDateData(Datadates);
     // setLoadChartData(false);
-    console.log(
-      'Chart Data Received',
-      Read7DaysData,
-      Usage7DaysData,
-      Datadates,
-    );
+    // console.log(
+    //   'Chart Data Received',
+    //   Read7DaysData,
+    //   Usage7DaysData,
+    //   Datadates,
+    // );
   };
 
   // console.log('Meter Read Data', getDataSetOne());
@@ -574,7 +574,7 @@ const App = ({ navigation }) => {
   const arrayOfUnits = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
-    console.log('METER NAME', arg);
+    // console.log('METER NAME', arg);
     switch (arg) {
       case 'hot water':
         return require('../../../../../../../Images/hot-water.png');
@@ -617,10 +617,10 @@ const App = ({ navigation }) => {
         ],
       };
 
-      console.log('Reason Picture', reasonData.picture);
+      // console.log('Reason Picture', reasonData.picture);
       reasonList.push(data);
     }
-    console.log('Reason List', reasonList);
+    // console.log('Reason List', reasonList);
 
     setMeterInfoData([
       {
@@ -735,7 +735,7 @@ const App = ({ navigation }) => {
         ],
       },
     ]);
-    console.log('unitMeterName ', unitMeterName);
+    // console.log('unitMeterName ', unitMeterName);
     setUnitData([
       {
         title: 'Unit',
@@ -875,7 +875,7 @@ const App = ({ navigation }) => {
         setDataSet(chartRes.data?.data?.dataset);
         getChartData(chartRes);
       } else {
-        console.log('Loading False');
+        // console.log('Loading False');
         setLoadChartData(false);
       }
     }
@@ -900,7 +900,7 @@ const App = ({ navigation }) => {
   const openEditModal = () => {
     meterTypes();
     setEditUnitModalVisible(true);
-    console.log(clc.cyan('chala'));
+    // console.log(clc.cyan('chala'));
   };
 
   const meterTypes = () => {

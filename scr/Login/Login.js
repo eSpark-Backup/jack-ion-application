@@ -82,9 +82,9 @@ class Login extends Component {
           .indexOf(userId);
         userDataUpdated = [...gotUserData];
       }
-      console.log('INDEX', index);
+      // console.log('INDEX', index);
 
-      console.log('userDataUpdated', userDataUpdated);
+      // console.log('userDataUpdated', userDataUpdated);
 
       let data = {
         id: userdata.id,
@@ -165,7 +165,7 @@ class Login extends Component {
               password: '}}UYLWG$q^YXe5#]',
             }}
             onSubmit={(values) => {
-              console.log(values);
+              // console.log(values);
               NetInfo.fetch().then((state) => {
                 // console.log('Is connected?', state.isConnected);
                 if (state.isConnected) {

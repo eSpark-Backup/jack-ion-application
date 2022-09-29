@@ -151,9 +151,9 @@ export default class RedirectMeter extends Component {
     if (e) {
       this.setState({searchLoading: true});
       const response = await API.post('/property/all', data);
-      console.log('Search property===>', response);
+      // console.log('Search property===>', response);
       this.setState({searchOffset: response.data.data.offset});
-      console.log('Bool Response', response?.data?.bool);
+      // console.log('Bool Response', response?.data?.bool);
       if (response?.data?.bool) {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         this.setState({propertyList: response.data.data.properties});
@@ -187,7 +187,7 @@ export default class RedirectMeter extends Component {
     if (this.state.loadFor) {
       this.setState({searchLoading: true});
       const response = await API.post('/property/all', prop);
-      console.log('Search more property===>', response?.data);
+      // console.log('Search more property===>', response?.data);
       if (response?.data?.bool) {
         if (
           this.state.searchOffset != response.data.data.offset &&
@@ -249,8 +249,8 @@ export default class RedirectMeter extends Component {
       success: response.data.bool,
     });
     if (response?.data?.bool) {
-      console.log('this.state.offset===>', this.state.offset);
-      console.log('response.data.data.offset===>', response.data.data.offset);
+      // console.log('this.state.offset===>', this.state.offset);
+      // console.log('response.data.data.offset===>', response.data.data.offset);
       if (
         this.state.offset != response.data.data.offset &&
         response.data.data.offset > 0
@@ -335,10 +335,10 @@ export default class RedirectMeter extends Component {
     const response = await API.post(
       `/property/equipment/building/all-buildings/${item.id}`,
     );
-    console.log('Check response buildings--->', response);
+    // console.log('Check response buildings--->', response);
     if (response?.ok == true) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      console.log('Check response buildings--->', response?.data);
+      // console.log('Check response buildings--->', response?.data);
       this.setState({dataBuild: response?.data?.data});
       this.setState({loaderBuildings: false});
       if (response?.data?.data?.length == 0) {
@@ -367,7 +367,7 @@ export default class RedirectMeter extends Component {
       `/property/equipment/unit/all-units`,
       data,
     );
-    console.log('unitResponse--->', unitResponse?.data?.data);
+    // console.log('unitResponse--->', unitResponse?.data?.data);
     if (unitResponse?.ok == true) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       this.setState({unitData: unitResponse?.data?.data, unitLoader: false});
@@ -400,7 +400,7 @@ export default class RedirectMeter extends Component {
     const antiIntersection = arr1.filter(
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
-    console.log('antiIntersection--->', antiIntersection);
+    // console.log('antiIntersection--->', antiIntersection);
     if (antiIntersection.length == 0) {
       alert('Meters are full please add new unit or add meter in someone else');
     } else {
@@ -466,7 +466,7 @@ export default class RedirectMeter extends Component {
   };
 
   handleFinishUnit = (v) => {
-    console.log('let check retur', v);
+    // console.log('let check retur', v);
     ToastAndroid.show('Awesome meter add finish it', ToastAndroid.SHORT);
     this.setState({unitModal: false, finish: false});
     this.getItemId(this.state.propertyDetails);
