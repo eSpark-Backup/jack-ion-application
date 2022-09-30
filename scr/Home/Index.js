@@ -23,6 +23,7 @@ import styles from './style';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import API from '../api/SeviceApi';
 import TextReuseableComponent from '../components/Text/index';
+import { pushNotification } from '../utils/helperFunction';
 
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
@@ -81,9 +82,10 @@ class Splash extends Component {
     if (Platform.OS === 'android') {
       this.createChannels();
       this.onAppBootstrap();
-      
+
       const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-        this.showNotifications(remoteMessage);
+        pushNotification(remoteMessage);
+        this.navigateToNotification(remoteMessage);
       });
       return unsubscribe;
     } else {
@@ -96,7 +98,7 @@ class Splash extends Component {
         this.onAppBootstrap();
         this.createChannels();
         const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-          this.showNotifications(remoteMessage);
+          pushNotification(remoteMessage);
         });
         return unsubscribe;
       }
@@ -104,7 +106,7 @@ class Splash extends Component {
   }
 
   backAction = () => {
-    if(this.props?.navigation?.isFocused()) {
+    if (this.props?.navigation?.isFocused()) {
       Alert.alert('Hold on!', 'Are you sure you want to go back?', [
         {
           text: 'Cancel',
@@ -135,7 +137,6 @@ class Splash extends Component {
     };
     await API.post('/user/set-fcm-token', tokenfcm);
 
-    
   }
 
   createChannels = () => {
@@ -145,15 +146,9 @@ class Splash extends Component {
     });
   };
 
-  showNotifications = (remoteMessage) => {
-    PushNotification.localNotification({
-      channelId: 'test-id',
-      title: remoteMessage?.data?.username,
-      message: remoteMessage?.data?.message,
-    });
-    // PushNotification.getDeliveredNotifications((item) => console.log('items', item));
+  navigateToNotification = (remoteMessage) => {
+    console.log('navigateToNotification');
   };
-  
 
   render() {
     return (

@@ -49,6 +49,7 @@ import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 
 import TextReuseableComponent from '../../../../components/Text/index';
+import { customSort } from '../../../../utils/helperFunction';
 
 const { width, height } = Dimensions.get('window');
 let buildListViewRef;
@@ -929,46 +930,6 @@ class Splash extends Component {
     this.setState({ getUtilities: unitResponse?.data?.data });
   };
 
-  _customSort(data, order) {
-    function isNumber(v) {
-      return (+v).toString() === v;
-    }
-    var sort = {
-      asc: function (a, b) {
-        var i = 0,
-          l = Math.min(a.value.length, b.value.length);
-
-        while (i < l && a.value[i] === b.value[i]) {
-          i++;
-        }
-        if (i === l) {
-          return a.value.length - b.value.length;
-        }
-        if (isNumber(a.value[i]) && isNumber(b.value[i])) {
-          return a.value[i] - b.value[i];
-        }
-        return a.value[i].localeCompare(b.value[i]);
-      },
-      desc: function (a, b) {
-        return sort.asc(b, a);
-      },
-    },
-      mapped = data.map(function ({ name }, i) {
-        var string = name.replace(/\d(?=[a-z])|[a-z](?=\.)/gi, '$&. .'),
-          string = name.replace(/\s/g, ''),
-          regex = /(\d+)|([^0-9.]+)/g,
-          m,
-          parts = [];
-        while ((m = regex.exec(string)) !== null) {
-          parts.push(m[0]);
-        }
-        return { index: i, value: parts, o: name, string: string };
-      });
-    mapped.sort(sort[order] || sort.asc);
-    return mapped.map(function (el) {
-      return data[el.index];
-    });
-  }
   handleAddBuilding = () => {
     this.setState({ isModalBuildVisible: false });
     this.checkData();
@@ -1558,7 +1519,7 @@ class Splash extends Component {
                       }}
                       numColumns={1}
                       initialNumToRender={realData.length}
-                      data={this._customSort(realData)}
+                      data={customSort(realData, null)}
                       renderItem={this._renderUnitList}
                       keyExtractor={(item) => item.id.toString()}
                     />

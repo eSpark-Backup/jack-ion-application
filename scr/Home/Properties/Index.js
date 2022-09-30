@@ -25,7 +25,6 @@ import { TextInput, Button } from 'react-native-paper';
 import ContextProp from './Context/propContext';
 import CustumStatusBar from '../../components/StatusBar';
 import NetInfo from '@react-native-community/netinfo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Components
 import { Fonts } from '../../utils/fonts';
@@ -51,6 +50,7 @@ import { fetchPropetry, loadMoreData } from '../../Store/Action/properties.actio
 import TextReuseableComponent from '../../components/Text/index';
 import Loader from '../../components/Loader';
 import Properties from '../../components/properties';
+import { addToRecent } from '../../utils/helperFunction';
 
 const { width, height } = Dimensions.get('window');
 
@@ -106,32 +106,9 @@ class Property extends Component {
     this.setState({ showFilter: true });
   };
 
-  addToRecent = async (item) => {
-    const userDataUnParsed = await AsyncStorage.getItem('users_data');
-    const userId = await AsyncStorage.getItem('user_id');
-    const userData = JSON.parse(userDataUnParsed);
-    let index = userData
-      .map((e) => {
-        return e.id;
-      })
-      .indexOf(Number(userId));
-    let ids = [...userData[index].recent_properties];
-    let found = ids.includes(item.id);
-    if (!found) {
-      if (ids.length > 9) {
-        ids.shift();
-      }
-      ids.push(item.id);
-      const userDataUpdated = [...userData];
-      userDataUpdated[index].recent_properties = ids;
-      const jsonData = JSON.stringify(userDataUpdated);
-      await AsyncStorage.setItem('users_data', jsonData);
-    }
-  };
-
   jumpToDetail = async ({ prop, item }) => {
     this.props.navigation.navigate('Detail', { item });
-    this.addToRecent(prop.item);
+    addToRecent(prop.item);
     this.selectedProp(prop);
     this.setState({ showSearch: false });
   };
@@ -141,12 +118,12 @@ class Property extends Component {
   };
   jumpToEquip = ({ prop, item }) => {
     this.props.navigation.navigate('Equip', { item });
-    this.addToRecent(prop.item);
+    addToRecent(prop.item);
     this.selectedProp(prop);
   };
   jumpToAlerts = ({ prop, item }) => {
     this.props.navigation.navigate('Alerts', { item });
-    this.addToRecent(prop.item);
+    addToRecent(prop.item);
     this.selectedProp(prop);
   };
 

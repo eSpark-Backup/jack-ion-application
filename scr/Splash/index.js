@@ -10,6 +10,7 @@ import { Fonts } from '../utils/fonts';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistore, store } from '../Store/store';
+import NavigtionService from '../../navigationService';
 
 // import Drawer from "../../scr/Navigation/index";
 
@@ -63,7 +64,9 @@ class Main extends Component {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistore}>
             <SafeAreaProvider>
-              <RootNav />
+              <RootNav ref={(navigatorRef) => {
+          NavigtionService.setTopLevelNavigator(navigatorRef);
+          }} />
             </SafeAreaProvider>
           </PersistGate>
         </Provider>
