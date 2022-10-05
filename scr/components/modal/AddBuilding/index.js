@@ -107,7 +107,6 @@ export default function AddbuildingModal({
   };
 
   const addInput = (value, i) => {
-    // console.log('vindex--->>', vindex)
     setState((oldState) => ({
       ...oldState,
       newUnit: value,
@@ -226,7 +225,6 @@ export default function AddbuildingModal({
           name: state.unitsArray[i].name,
         });
       }
-      // console.log('looppdata--->',loopData)
       if (type == 'Multiple') {
         handleAddbuildingApi({
           building_id: buildData.buildId,
@@ -245,14 +243,12 @@ export default function AddbuildingModal({
   };
 
   const handleAddbuildingApi = async (data) => {
-    // console.log('check data-->', data)
     if (type == 'Multiple') {
       const unitResponse = await API.post(
         `/property/equipment/unit/add-multiple-units`,
         data,
       );
         dispatch(fetchPropetry())
-      // console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         reRun();
@@ -265,7 +261,6 @@ export default function AddbuildingModal({
         data,
       );
       dispatch(fetchPropetry())
-      // console.log('buildResponse--->', unitResponse);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         reRun();

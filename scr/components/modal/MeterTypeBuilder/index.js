@@ -99,8 +99,6 @@ export default class MeterTypeBuilder extends Component {
   };
   getToken = async () => { };
   onChangeTypeBuilder = (e, index) => {
-    // console.log('index: ' + index);
-    // console.log('property name: ' + e.target.value);
     let newArr = [...this.state.meterTypeInputs]; // copying the old datas array
     newArr[index].input = e; // replace e.target.value with whatever you want to change it to
     this.setState({ meterTypeInputs: newArr }, () =>
@@ -237,13 +235,11 @@ export default class MeterTypeBuilder extends Component {
         newArr[index].error = ''; // replace e.target.value with whatever you want to change it to
         this.setState({ meterTypeInputs: newArr });
       });
-      console.log('measureOfUnit Of_______', this.state.meterTypeData);
 
       const unitResponse = await API.post(
         `/property/equipment/type/add-type`,
         this.state.meterTypeData,
       );
-      console.log('addtype response--->', unitResponse);
       if (unitResponse?.ok) {
         this.setState({ measureOfUnit: unitResponse?.data?.data }, () =>
           console.log('measureOfUnit Of_______', this.state.measureOfUnit),
@@ -288,10 +284,7 @@ export default class MeterTypeBuilder extends Component {
   };
 
   meterTypeClose = () => {
-    // this.setState({
-    //   isModalMeterVisible: false,
-    //   measureOfUnitName: '',
-    // });
+
     this.setState(
       (prevState) => ({
         ...prevState,
@@ -367,8 +360,6 @@ export default class MeterTypeBuilder extends Component {
                     </Pressable>
                   </View>
                 </View>
-                {/* Box Body */}
-                {/* //TodoY: Meter Box Body */}
                 <View
                   style={{
                     height: height * 0.4,
@@ -382,7 +373,6 @@ export default class MeterTypeBuilder extends Component {
                             <SearchableDropdown
                               onItemSelect={(item, indexy) => {
                                 this.hideSuggestion(index, item.name);
-                                console.log('kuch', indexy);
                               }}
                               containerStyle={{ padding: width * 0.03 }}
                               itemStyle={{
@@ -411,7 +401,6 @@ export default class MeterTypeBuilder extends Component {
                                   borderRadius: width * 0.015,
                                 },
                                 onTextChange: (text) => {
-                                  // console.log(text);
                                   this.onChangeTypeBuilder(text, index);
                                 },
                                 value: setTimeout(() => item.input, 200),

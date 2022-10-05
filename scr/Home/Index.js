@@ -25,6 +25,7 @@ import API from '../api/SeviceApi';
 import TextReuseableComponent from '../components/Text/index';
 import { pushNotification } from '../utils/helperFunction';
 
+import navigationService from '../../navigationService';
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
 class Splash extends Component {
@@ -83,11 +84,31 @@ class Splash extends Component {
       this.createChannels();
       this.onAppBootstrap();
 
-      const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-        pushNotification(remoteMessage);
-        this.navigateToNotification(remoteMessage);
+      PushNotification.configure({
+        onNotification: function (notification) {
+          pushNotification(notification);
+          const clicked = notification?.userInteraction;
+
+          if (clicked) {
+            PushNotification.removeAllDeliveredNotifications();
+            if(notification?.message.includes('Meter')) {
+                const regex = /\d+/g;
+                const matches = notification?.message.match(regex);  // creates array from matches
+                const idInNumber = Number(matches[0]);
+                const item = { id: idInNumber ? idInNumber : Number(notification?.data?.id) }
+                navigationService.navigate("Equip", { item: { item: item } })
+            } else {
+                const regex = /\d+/g;
+                const matches = notification?.message.match(regex);  // creates array from matches
+                const idInNumber = Number(matches[0]);
+                const item = { id: idInNumber ? idInNumber : Number(notification?.data?.id) }
+                navigationService.navigate("Detail", { item: { item: item } })
+            }
+          } else {
+            console.log('Notification Delievered', notification);
+          }
+        }
       });
-      return unsubscribe;
     } else {
       const authStatus = await messaging().requestPermission();
       const enabled =
@@ -146,9 +167,6 @@ class Splash extends Component {
     });
   };
 
-  navigateToNotification = (remoteMessage) => {
-    console.log('navigateToNotification');
-  };
 
   render() {
     return (

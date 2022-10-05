@@ -293,7 +293,6 @@ const App = ({ navigation }) => {
     propertyLat,
     propertyLong,
   } = navigation.state.params; //? Dynamic Ids
-  // console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
 
@@ -303,18 +302,10 @@ const App = ({ navigation }) => {
 
   const getUnitDetail = async () => {
     const res = await API.get(`/property/equipment/unit/${testId}`);
-    // console.log('UNIT KI DETAILS>>>>>>>', res.data?.data?.unit);
     if (res.data?.bool) {
-      // console.log("CHeck What the data is ?", res.data)
-      // setUnitMeterName(res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name);
       setData(res.data);
       setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
-      // console.log(
-      //   'GET Meter Name',
-      //   res.data?.data?.unit?.unit_meter[0]?.meter_name[0].name,
-      // );
     }
-    // let unitData = res.data?.data?.unit?.unit_meter?.[0];
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
 
@@ -324,7 +315,6 @@ const App = ({ navigation }) => {
     };
 
     const alertRes = await API.post(`/alert/recent`, alertData);
-    // console.log('UNIT METER ALERT', alertRes.data?.data?.alert);
     if (alertRes?.data?.bool) {
       const unitAlertData = alertRes.data?.data?.alert;
       setStatusInfo([
@@ -345,48 +335,6 @@ const App = ({ navigation }) => {
       ]);
     }
 
-    // setUnitData([
-    //   {
-    //     title: 'Unit',
-    //     icon: 'home',
-    //     type: 'ionicon',
-    //     data: [
-    //       {
-    //         leftIcon: 'home',
-    //         leftName: 'Name',
-    //         rightIcon: null,
-    //         rightName: res.data?.data?.unit?.name ?? 'N/A',
-    //         type: 'feather',
-    //         typeRight: 'feather',
-    //       },
-    //       {
-    //         leftIcon: null,
-    //         leftName: 'Utility Type',
-    //         rightIcon: null,
-    //         rightName: unitMeter?.meter_name[0]?.name,
-    //         type: 'ionicon',
-    //         typeRight: 'feather',
-    //       },
-    //       {
-    //         leftIcon: 'building',
-    //         leftName: 'Building',
-    //         rightIcon: null,
-    //         rightName: buildingName ?? 'Bluegrass MHP',
-    //         type: 'font-awesome-5',
-    //         typeRight: 'feather',
-    //       },
-    //       {
-    //         leftIcon: 'ios-clipboard-outline',
-    //         leftName: 'Notes',
-    //         rightIcon: 'chevron-right',
-    //         rightName: null,
-    //         type: 'ionicon',
-    //         typeRight: 'feather',
-    //       },
-    //     ],
-    //   },
-    // ]);
-
     const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const todayDate = new Date();
     let data = {
@@ -396,17 +344,12 @@ const App = ({ navigation }) => {
 
     setLoadChartData(true);
 
-    // console.log('Body Object', data);
-
     const chartRes = await API.post(
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
 
-    // console.log('Chart Data', chartRes?.data?.data);
-
     if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
-      // console.log('Chala Function');
 
       // gettingChartdata.current = true;
       getChartData(chartRes);
@@ -416,10 +359,7 @@ const App = ({ navigation }) => {
     setLoading(false);
   };
 
-  // console.log('Getting Data..................??????????', propertyId);
-
   const getChartData = (chartRes) => {
-    // console.log('Check Chala.....');
     let MeterUsage = [];
     let ReadData = [];
     let DataSet = [];
@@ -452,11 +392,6 @@ const App = ({ navigation }) => {
       Usage7Days.push(aa);
       Read7Days.push(bb);
     }
-
-    // console.log('Simple Array', Usage7Days, Read7Days);
-    // console.log('Dataset Array', Math.max(...DataSet));
-    // console.log('Total Usage', TotalUsage);
-    // console.log('Merge Result', Math.max(...DataSet) - TotalUsage);
 
     const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let readDates = [];
@@ -493,8 +428,6 @@ const App = ({ navigation }) => {
 
     const index = stringDates.indexOf(stringDate.toString());
 
-    // console.log('String Date', index);
-
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
       usageDates.push({
@@ -506,7 +439,6 @@ const App = ({ navigation }) => {
         y: 0,
       });
     }
-    // console.log('Dates__________', usageDates);
 
     for (var i = 1; i <= 7; i++) {
       newDate = new Date(date.getTime() + i * 1000 * 60 * 60 * 24);
@@ -531,38 +463,15 @@ const App = ({ navigation }) => {
     ];
     Usage7DaysData.sort((a, b) => a.x - b.x);
     Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1));
-    // console.log(
-    //   'Array After Merge Usage',
-    //   Usage7DaysData.sort(function (a, b) {
-    //     return a.x - b.x;
-    //   }),
-    //   'Array After Merge Read',
-    //   Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
-    // );
 
     setMeterReadData(Read7DaysData);
     setMeterUsageData(Usage7DaysData);
     setDateData(Datadates);
-    // setLoadChartData(false);
-    // console.log(
-    //   'Chart Data Received',
-    //   Read7DaysData,
-    //   Usage7DaysData,
-    //   Datadates,
-    // );
   };
-
-  // console.log('Meter Read Data', getDataSetOne());
-  // console.log('Chart Data Received', meterReadData, meterUsageData, dateData);
-
-  // const getChartData = () => {
-
-  // }
 
   const getMeterTypes = async () => {
     const res = await API.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
-    // console.log('All Meters', res.data?.data);
   };
 
   const getToken = async () => {
@@ -574,7 +483,6 @@ const App = ({ navigation }) => {
   const arrayOfUnits = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
-    // console.log('METER NAME', arg);
     switch (arg) {
       case 'hot water':
         return require('../../../../../../../Images/hot-water.png');
@@ -592,7 +500,6 @@ const App = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // console.log('Kia ha unitMeter', data);
     let reasonList = [];
     for (let i = 0; i < unitMeter?.reasons?.length; i++) {
       let reasonData = unitMeter?.reasons[i];
@@ -617,10 +524,8 @@ const App = ({ navigation }) => {
         ],
       };
 
-      // console.log('Reason Picture', reasonData.picture);
       reasonList.push(data);
     }
-    // console.log('Reason List', reasonList);
 
     setMeterInfoData([
       {
@@ -635,24 +540,6 @@ const App = ({ navigation }) => {
         leftIcon: null,
         type: 'feather',
       },
-      // {
-      //   leftText: 'Unit of Measure',
-      //   rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
-      // {
-      //   leftText: 'Multiplier',
-      //   rightText: unitMeter?.type?.multiplier ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
-      // {
-      //   leftText: 'Size',
-      //   rightText: unitMeter?.type?.size ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
       {
         leftText: 'Device Serial',
         rightText: unitMeter?.device_serial_number ?? 'N/A',
@@ -660,30 +547,16 @@ const App = ({ navigation }) => {
         leftType: 'ionicon',
         type: 'feather',
       },
-      // {
-      //   leftText: 'Custom ID',
-      //   rightText: unitMeter?.custom_meter_id ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
-      // {
-      //   leftText: 'IMR',
-      //   rightText: 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
     ]);
     setReasonsData([
       {
         title: 'Reasons',
-        // img: meterSwitcher(),
         data: reasonList,
       },
     ]);
     setMeterTypeData([
       {
         title: 'Hot Water Meter',
-        // img: meterSwitcher(),
         data: [
           {
             leftName: 'Type',
@@ -728,14 +601,12 @@ const App = ({ navigation }) => {
           {
             leftName: 'Recent Alert',
             rightIcon: 'chevron-down',
-            // rightName: unitMeter?.device_serial_number ?? 'N/A',
             type: 'feather',
             rightIcon2: null,
           },
         ],
       },
     ]);
-    // console.log('unitMeterName ', unitMeterName);
     setUnitData([
       {
         title: 'Unit',
@@ -777,43 +648,6 @@ const App = ({ navigation }) => {
         ],
       },
     ]);
-    // setStatusInfo([
-    //   {
-    //     leftText: 'Pulses',
-    //     rightText: unitMeter?.meter_read?.meter_reading
-    //       ? unitMeter?.meter_read?.meter_reading
-    //       : 0,
-    //     icon: null,
-    //     bold: false,
-    //   },
-    //   {
-    //     leftText: 'Meter Port',
-    //     rightText: 'Port 1',
-    //     icon: 'chevron-down',
-    //     bold: true,
-    //     type: 'feather',
-    //   },
-    //   {
-    //     leftText: 'Signal Type',
-    //     rightText: 'Pulse',
-    //     icon: 'chevron-down',
-    //     bold: true,
-    //     type: 'feather',
-    //   },
-    //   {
-    //     leftText: 'Temperature',
-    //     rightText: '59 F',
-    //     icon: null,
-    //     bold: false,
-    //   },
-    //   {
-    //     leftText: 'Battery',
-    //     rightText: 'Approx.7 Years',
-    //     icon: null,
-    //     bold: false,
-    //   },
-    // ]);
-
     if (data.length != 0) {
       setLoading(false);
     }
@@ -837,7 +671,6 @@ const App = ({ navigation }) => {
   };
 
   const handleMeterSelect = async (data) => {
-    // console.log('Kia ha unitMeter', data);
     if (data.id != unitMeter?.id) {
       setUnitMeter(data);
       setUnitMeterName('data.meter_name[0].name');
@@ -867,15 +700,9 @@ const App = ({ navigation }) => {
         data?.meter_read?.meter_reading > 0 &&
         chartRes.data?.data?.dataset.length > 0
       ) {
-        // console.log('Function Chala Kia');
-
-        // console.log('Date', date);
-
-        // console.log('Chart Data', chartRes.data?.data?.dataset[0]);
         setDataSet(chartRes.data?.data?.dataset);
         getChartData(chartRes);
       } else {
-        // console.log('Loading False');
         setLoadChartData(false);
       }
     }
@@ -900,7 +727,6 @@ const App = ({ navigation }) => {
   const openEditModal = () => {
     meterTypes();
     setEditUnitModalVisible(true);
-    // console.log(clc.cyan('chala'));
   };
 
   const meterTypes = () => {
@@ -910,7 +736,6 @@ const App = ({ navigation }) => {
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
 
-    // console.log('please', antiIntersection);
     setEditMeterTypes(antiIntersection);
   };
   const confirmUnitDelete = () => {
@@ -943,7 +768,6 @@ const App = ({ navigation }) => {
       `/property/equipment/unit/unit-meter/${unitMeter.id}`,
     );
     getToken();
-    // console.log('Check response', response?.data);
     alert(response?.data?.message);
   };
 

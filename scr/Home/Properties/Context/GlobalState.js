@@ -1,27 +1,25 @@
 import React from 'react';
 import Context from './propContext';
 import NetInfo from '@react-native-community/netinfo';
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import API from '../../../api/SeviceApi';
 
 class GlobalState extends React.Component {
   componentDidMount() {
     NetInfo.fetch().then((state) => {
-      // console.log('Connection type', state.type);
-      // console.log('Is connected?', state.isConnected);
       !state.isConnected
-        ? this.setState({isLoading: false})
-        : this.setState({isLoading: true});
+        ? this.setState({ isLoading: false })
+        : this.setState({ isLoading: true });
     });
   }
 
   clearData = () => {
-    this.setState({propList: []});
+    this.setState({ propList: [] });
   };
 
   checkData = async () => {
-    this.setState({biller: ''});
-    this.setState({isLoading: true, filterDataName: '', filterWork: false});
+    this.setState({ biller: '' });
+    this.setState({ isLoading: true, filterDataName: '', filterWork: false });
 
     let data = {
       offset: 0,
@@ -31,18 +29,18 @@ class GlobalState extends React.Component {
       offset: response?.data?.data?.offset,
     });
     if (response?.data?.bool) {
-      this.setState({propList: response.data.data.properties});
-      this.setState({limitExceed: false});
-      this.setState({isLoading: false});
+      this.setState({ propList: response.data.data.properties });
+      this.setState({ limitExceed: false });
+      this.setState({ isLoading: false });
     } else {
       Alert.alert(response?.data?.message);
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
   loadMoreData = async () => {
     if (!this.state.limitExceed) {
-      this.setState({listLoader: true});
+      this.setState({ listLoader: true });
     }
     let data = {
       offset: this.state.offset,
@@ -64,38 +62,37 @@ class GlobalState extends React.Component {
         let data = [...this.state.propList];
         let data2 = response.data.data.properties;
         data.push(...data2);
-        this.setState({propList: data});
+        this.setState({ propList: data });
         this.setState({
           listLoader: false,
           offset: response?.data?.data?.offset,
         });
-        this.setState({limitExceed: false});
+        this.setState({ limitExceed: false });
       } else {
-        this.setState({limitExceed: true});
-        this.setState({listLoader: false});
+        this.setState({ limitExceed: true });
+        this.setState({ listLoader: false });
       }
     } else {
       Alert.alert(response?.data?.message);
-      this.setState({listLoader: false});
+      this.setState({ listLoader: false });
     }
   };
 
   filterData = async (sort) => {
-    this.setState({biller: sort.billing, filterWork: true, isLoading: true});
+    this.setState({ biller: sort.billing, filterWork: true, isLoading: true });
     const response = await API.post('/property/all', sort);
-    // console.log('FIlter property===>', response);
     if (response?.data?.bool) {
       this.setState({
         propList: response.data.data.properties,
         filterDataName: sort.name,
         offset: response?.data?.data?.offset,
       });
-      // console.log('FIltered property===>', response.data.data.properties);
-      this.setState({limitExceed: false});
-      this.setState({isLoading: false});
+
+      this.setState({ limitExceed: false });
+      this.setState({ isLoading: false });
     } else {
       Alert.alert('Error', response.data.message);
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
@@ -123,8 +120,7 @@ class GlobalState extends React.Component {
   };
 
   addProp = async (info) => {
-    // console.log('PROPERTY INFORMATION--------->', info);
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const data = {
       name: info.propName,
       latitude: info.propLat,
@@ -148,9 +144,7 @@ class GlobalState extends React.Component {
       contact_phone: info.propContactPhone,
       contact_email: info.propContactEmail,
     };
-    // console.log('data--->', data);
     API.post('/property/add', data).then((res) => {
-      // console.log(res.data);
       if (res?.data?.bool) {
         this.checkData();
       } else {
@@ -160,24 +154,16 @@ class GlobalState extends React.Component {
   };
 
   getBillingCompany = async () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const response = await API.get('/property/billing-company/all');
-    // console.log(
-    //   'Check billing company response',
-    //   response?.data?.data?.billingCompany,
-    // );
     this.setState({
       itemList: response?.data?.data?.billingCompany,
     });
   };
 
   getManagementCompany = async () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const response = await API.get('/property/management-company/all');
-    // console.log(
-    //   'Check management company response',
-    //   response?.data?.data?.managementCompany,
-    // );
     let list = response?.data?.data?.managementCompany;
     let filter = [];
     for (let i = 0; i < list.length; i++) {
@@ -194,40 +180,37 @@ class GlobalState extends React.Component {
   };
 
   searchProperties = async (e) => {
-    this.setState({loadFor: e});
+    this.setState({ loadFor: e });
     let data = {
       offset: 0,
       search: e,
     };
 
     if (e) {
-      this.setState({searchLoading: true});
+      this.setState({ searchLoading: true });
       const response = await API.post('/property/all', data);
-      // console.log('Search property===>', response);
-      this.setState({searchOffset: response?.data?.data?.offset});
+      this.setState({ searchOffset: response?.data?.data?.offset });
       if (response?.data?.bool) {
-        this.setState({searchList: response?.data?.data?.properties});
-        // console.log('Search property===>', response.data.data.properties);
-        this.setState({searchLoading: false});
+        this.setState({ searchList: response?.data?.data?.properties });
+        this.setState({ searchLoading: false });
       } else {
         Alert.alert(response?.data?.message);
-        this.setState({searchLoading: false});
+        this.setState({ searchLoading: false });
       }
     } else {
-      this.setState({searchList: []});
+      this.setState({ searchList: [] });
     }
   };
 
   loadSearchData = async () => {
-    this.setState({searchLoading: true});
+    this.setState({ searchLoading: true });
     let prop = {
       offset: this.state.searchOffset,
       search: this.state.loadFor,
     };
     if (this.state.loadFor) {
-      this.setState({searchLoading: true});
+      this.setState({ searchLoading: true });
       const response = await API.post('/property/all', prop);
-      console.log('Search more property===>', response);
       if (response?.data?.bool) {
         if (
           this.state.searchOffset != response?.data?.data?.offset &&
@@ -236,65 +219,62 @@ class GlobalState extends React.Component {
           let data = [...this.state.searchList];
           let data2 = response.data.data.properties;
           data.push(...data2);
-          this.setState({searchList: data});
+          this.setState({ searchList: data });
           this.setState({
             searchLoading: false,
             searchOffset: response?.data?.data?.offset,
           });
         }
         setTimeout(() => {
-          // console.log('Check Searh Loader', this.state.searchLoading);
           if (this.state.searchLoading) {
-            this.setState({searchLoading: false});
+            this.setState({ searchLoading: false });
           }
         }, 3000);
       } else {
         Alert.alert(response?.data?.message);
-        this.setState({searchLoading: false});
+        this.setState({ searchLoading: false });
       }
     } else {
-      this.setState({searchList: []});
+      this.setState({ searchList: [] });
     }
   };
 
   loadLoader = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
   };
 
   stopLoader = () => {
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
   };
 
   dontLoad = () => {
-    this.setState({loadData: false});
+    this.setState({ loadData: false });
   };
 
   doLoad = () => {
-    // console.log('LOAD KO TRUE KARO');
-    this.setState({loadData: true});
+    this.setState({ loadData: true });
   };
 
   clearSearchList = () => {
-    this.setState({searchList: []});
+    this.setState({ searchList: [] });
   };
 
   updateBiller = (val) => {
-    this.setState({biller: val});
+    this.setState({ biller: val });
   };
 
   updateFilterSerial = (e) => {
-    this.setState({filterSerial: e});
+    this.setState({ filterSerial: e });
   };
   updateFilterProperty = (e) => {
-    this.setState({filterPropName: e});
+    this.setState({ filterPropName: e });
   };
 
   updateFilterLocation = (e) => {
-    this.setState({filterLocation: e});
+    this.setState({ filterLocation: e });
   };
 
   render() {
-    // console.log('LOADDATA GLOBALSTATE', this.state.loadData);
 
     return (
       <>
@@ -340,4 +320,4 @@ class GlobalState extends React.Component {
   }
 }
 
-export {GlobalState};
+export { GlobalState };

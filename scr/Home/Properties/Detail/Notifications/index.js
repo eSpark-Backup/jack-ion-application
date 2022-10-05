@@ -44,13 +44,11 @@ export default class Splash extends Component {
       '/property/equipment/meter/notification-show',
     );
 
-    // console.log('Notifications Response', notificationsRes?.data);
     if (notificationsRes?.data?.bool) {
       this.setState({ notificationData: notificationsRes?.data?.data?.notify });
     }
 
     this.setState({ LoaderState: false });
-    // console.log('this.state.notificationData ==', this.state.notificationData);
   }
 
   notificationFilterApi = async (code) => {
@@ -61,7 +59,6 @@ export default class Splash extends Component {
         { code: code },
       );
 
-      // console.log('Notifications Response', notificationsRes?.data);
       if (notificationsRes?.data?.bool) {
         this.setState({ notificationData: notificationsRes?.data?.data?.notify });
       }
@@ -72,7 +69,6 @@ export default class Splash extends Component {
         '/property/equipment/meter/notification-show',
       );
 
-      // console.log('Notifications Response', notificationsRes?.data);
       if (notificationsRes?.data?.bool) {
         this.setState({ notificationData: notificationsRes?.data?.data?.notify });
       }
@@ -92,35 +88,27 @@ export default class Splash extends Component {
   onPressFilterItem = (value) => {
     switch (value) {
       case 'Property':
-        // console.log('Property');
         this.notificationFilterApi(202);
         break;
       case 'Building':
-        // console.log('Building');
         this.notificationFilterApi(302);
         break;
       case 'Unit':
-        // console.log('Unit');
         this.notificationFilterApi(402);
         break;
       case 'Meter_type':
-        // console.log('Meter_type');
         this.notificationFilterApi(201);
         break;
       case 'Manufacturer':
-        // console.log('Manufacturer');
         this.notificationFilterApi(602);
         break;
       case 'Device':
-        // console.log('Device');
         this.notificationFilterApi(702);
         break;
       case 'Reset':
-        // console.log('Reset');
         this.notificationFilterApi();
         break;
       default:
-        // console.log('Unknown');
         break;
     }
     this.closeMenu();
@@ -154,7 +142,7 @@ export default class Splash extends Component {
 
   handleDeleteNotification = async (itemId) => {
     this.setState({ LoaderState: true });
-    const deleteNotificationById = await API.post('/dashboard/delete-notification-by-id', { id: itemId });
+    const deleteNotificationById = await API.post('/dashboard/delete-notification-by-id', { id: [itemId] });
 
     if (deleteNotificationById.data.bool) {
       const notificationsRes = await API.post(
@@ -162,6 +150,7 @@ export default class Splash extends Component {
       );
       if (notificationsRes?.data?.bool) {
         this.setState({ notificationData: notificationsRes?.data?.data?.notify, LoaderState: false });
+        alert(deleteNotificationById?.data?.message);
       } else {
         alert(notificationsRes?.data?.message);
         this.setState({ LoaderState: false });
@@ -172,11 +161,11 @@ export default class Splash extends Component {
     }
   }
 
-  handleClear =  async () => {
+  handleClear = async () => {
     this.setState({ LoaderState: true });
     const arrayOfIds = this.state.notificationData?.map(notification => notification?.id);
     const clearAllNotifications = await API.post('/dashboard/delete-notification-by-id', { id: arrayOfIds });
-    if(clearAllNotifications?.data?.bool) {
+    if (clearAllNotifications?.data?.bool) {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
       );

@@ -201,9 +201,7 @@ export default function AddEditProperty({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // console.log('CurrLocate', currLocate);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    // console.log('AGAY BRHA');
     callApi();
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -220,13 +218,7 @@ export default function AddEditProperty({
   }, []);
 
   if (flag && !propertyFlag) {
-    // console.log('flag true');
     if (propertyData) {
-      // console.log('PROPERTY DATA', propertyData);
-      // console.log(
-      //   'utility_manufacturers DATA',
-      //   propertyData.utility_manufacturers,
-      // );
       const Manufactures = propertyData.utility_manufacturers;
 
       let newArr = [...manufacturersArray];
@@ -238,7 +230,6 @@ export default function AddEditProperty({
           utility_type: Manufactures[i].utility_type.name,
           utility_type_id: Manufactures[i].utility_type.id,
         });
-        // console.log('newArr Batao', newArr);
       }
       setManufacturersArray(newArr);
 
@@ -268,8 +259,6 @@ export default function AddEditProperty({
         nOU = nOU + Number(uMdata[i].no_of_units);
         tGD = tGD + Number(singleTGD);
       }
-      // console.log('NOU', nOU);
-      // console.log('TGD', tGD);
       setSumNoOfUnit(nOU);
       setSumTotalGalDay(tGD);
     }
@@ -279,7 +268,6 @@ export default function AddEditProperty({
 
   const _keyboardDidShow = () => {
     animate();
-    // console.log('KEYBORD SHOW');
     if (dropDownShow[2].value) {
       setAvoidMargin(0.35);
       setAvoidKeyboard(true);
@@ -345,22 +333,16 @@ export default function AddEditProperty({
   };
 
   const AddTypes = (item) => {
-    // console.log('PUSHING', item);
     const items = selectAddManuUtil;
     items.push(item);
-    // console.log('PUSHED', items);
     setSelectAddManuUtil(items);
-    // console.log('AFTER PUSHED');
     forceUpdate();
   };
 
   const getData = async (some, index) => {
-    // console.log('get devices--->', some);
-
     let listSlide = [...utilAndManu]; // copying the old datas array
     listSlide[index].select = some?.name; // replace e.target.value with whatever you want to change it to
     listSlide[index].selectId = some?.id; // replace e.target.value with whatever you want to change it to
-    // console.log('XX___--->>', some?.name);
     if (index == 0) {
       let allManu = [...allManuList];
 
@@ -370,7 +352,6 @@ export default function AddEditProperty({
       allManu.map((manuItem) => {
         if (manuItem?.utility_type[0]?.name != undefined) {
           if (some.name == manuItem?.utility_type[0]?.name) {
-            // console.log('CHALA TRUE');
             temp.push(manuItem);
             listSlide2[1].data = temp;
             setUtilAndManu(listSlide2);
@@ -382,7 +363,6 @@ export default function AddEditProperty({
       updateData[1].selectId = '';
       setUtilAndManu(updateData);
     }
-
     setUtilAndManu(listSlide);
   };
 
@@ -454,7 +434,6 @@ export default function AddEditProperty({
   const deleteRow = async (index, id) => {
     if (type == 'Edit') {
       const delUnitMix = await API.post(`/property/unit-mix/unitMix/${id}`);
-      // console.log('DELUNITMIX', delUnitMix);
       if (delUnitMix?.data?.bool) {
         let arr = [...unitMix];
         arr.splice(index, 1);
@@ -575,7 +554,6 @@ export default function AddEditProperty({
 
   const DeleteManufacture = (item) => {
     setLoadManuList(true);
-    // console.log('DEVICE DATA', utilAndManu[0].data);
     checkManufacture(item);
   };
 
@@ -583,10 +561,8 @@ export default function AddEditProperty({
     const ManufacturersResponse = await API.get(
       '/property/equipment/manufacturer/all',
     );
-    // console.log('ManufacturersResponse', ManufacturersResponse?.data);
     animate();
     const delManu = await API.post(`/property/pivot/${item.id}`);
-    // console.log('DELMANU', delManu);
 
     let manuData = [...allManuList];
     manuData = ManufacturersResponse?.data?.data;
@@ -595,13 +571,10 @@ export default function AddEditProperty({
       (sitem) => sitem.manufacturer_id !== item.manufacturer_id,
     );
 
-    // console.log('ITEMS', items);
-
     let result = manuData.filter(
       (o1) => !items.some((o2) => o1.id === o2.manufacturer_id),
     );
 
-    // console.log(clc.redBright('Kia hai all manufacs', JSON.stringify(result)));
     setManufacturersArray(items);
     setAllManuList(result);
     setLoadManuList(false);
@@ -628,7 +601,6 @@ export default function AddEditProperty({
   };
 
   const selectMeterLocation = async () => {
-    // console.log('Location ka batao', await SystemSetting.isLocationEnabled());
     setSelectLocation(true);
   };
 
@@ -638,7 +610,6 @@ export default function AddEditProperty({
   };
 
   const fetchAddressData = (searchdata) => {
-    // console.log('SEARCH STR', searchdata);
     const searchStr = ',';
     var searchStrLen = searchStr?.length;
     var startIndex = 0,
@@ -654,11 +625,6 @@ export default function AddEditProperty({
     const State = searchdata.slice(indices[1] + 2, indices[1] + 4);
     const ZipCode = searchdata.slice(indices[1] + 5, indices[2]);
 
-    // console.log('DATA', indices);
-    // console.log('Street', Street);
-    // console.log('City', City);
-    // console.log('State', State);
-    // console.log('Zipcode', ZipCode);
     setStreet(Street);
     setCity(City);
     setState(State);
@@ -718,8 +684,6 @@ export default function AddEditProperty({
   const openEditManu = async (item, index) => {
     animate();
 
-    // console.log('get devices---> Open Edit');
-
     let newArr = [...utilAndManu];
 
     newArr[0].select = item.utility_type;
@@ -727,8 +691,6 @@ export default function AddEditProperty({
     newArr[1].select = item.name;
     newArr[1].selectId = item.manu_Id;
 
-    // console.log('item.name', item.name);
-    // console.log('item.id', item.manu_Id);
     setUtilAndManu(newArr);
     setCurrentManuIndex(index);
     setShowEditManufacturer(true);
@@ -739,7 +701,6 @@ export default function AddEditProperty({
 
     const selectManuIds = [];
     const utilAndManuIds = [];
-    // this.setState({btnLoading: true});
     if (!Name) {
       setError((oldState) => ({
         ...oldState,
@@ -778,7 +739,6 @@ export default function AddEditProperty({
       Toast.show('Please select a Utility Type', Toast.SHORT);
       return;
     } else {
-      // console.log('MANUFACTURERS ARRAY', manufacturersArray);
 
       for (let i = 0; i < manufacturersArray?.length; i++) {
         if (type == 'Add') {
@@ -787,8 +747,6 @@ export default function AddEditProperty({
             utility_type_id: manufacturersArray[i].utility_type_id,
           });
         } else {
-          // console.log('ELSE CHALA');
-
           utilAndManuIds.push({
             id: manufacturersArray[i].id ?? null,
             manufacturer_name: manufacturersArray[i].manufacturer_id,
@@ -797,7 +755,6 @@ export default function AddEditProperty({
           });
         }
       }
-      // console.log('SELECTED UTILITY IDs', selectUtilIds);
       setError((oldState) => ({
         ...oldState,
         utilType: '',
@@ -819,8 +776,6 @@ export default function AddEditProperty({
       setSelectLocation(false);
       setBtnLoading(true);
 
-      // console.log('Before', this.state.info.propName);
-      // const info = { ...this.state.info, propName: 'Good HAI' }
       let propData = {
         name: Name,
         street: Street,
@@ -842,14 +797,11 @@ export default function AddEditProperty({
         longitude: long,
       };
 
-      // console.log('PROPDATA', propData);
       if (type == 'Add') {
         const res = await API.post(`/property/add`, propData);
-        // console.log(res.data);
         if (res?.data?.bool) {
           clearInputs();
           addedSuccessfully();
-          // console.log('PROPERTY RUNNINg');
           setBtnLoading(false);
           Alert.alert('Success', 'Property Added Successfully');
         } else {
@@ -861,7 +813,6 @@ export default function AddEditProperty({
           `/property/update/${propertyData.id}`,
           propData,
         );
-        // console.log(response?.data);
         closeModal();
         if (response?.data?.bool) {
           addedSuccessfully();
@@ -1040,7 +991,6 @@ export default function AddEditProperty({
                       multi={true}
                       selectedItems={selectAddManuUtil}
                       onItemSelect={(item) => {
-                        console.log('Test', item);
                         AddTypes(item);
                       }}
                       containerStyle={styles.dropDownContainer}
@@ -1242,8 +1192,6 @@ export default function AddEditProperty({
   };
 
   const doneAddType = async (val, temp) => {
-    console.log('Show Add Type', showAddType);
-
     if (showAddType == 'Utility Type' || val == 'Utility') {
       let data = {
         name: addUtility,
@@ -1258,7 +1206,6 @@ export default function AddEditProperty({
         data,
       );
       if (UtilityResponse?.data?.bool) {
-        console.log('datachecckk-->>', UtilityResponse?.data?.data);
         animate();
         if (!temp) {
           this.setState({
@@ -1271,7 +1218,6 @@ export default function AddEditProperty({
           cancelAddType();
         }
 
-        // this.getToken();
         callApi();
 
         alert(UtilityResponse?.data?.message);
@@ -1281,7 +1227,6 @@ export default function AddEditProperty({
         setLoadingStateDev(false);
       }
     } else if (showAddType == 'Manufacturer' || val == 'Manufacturer') {
-      console.log('chala');
       let utilIds = [];
       for (let i = 0; i < selectAddManuUtil?.length; i++) {
         utilIds.push(selectAddManuUtil[i].id);
@@ -1296,10 +1241,7 @@ export default function AddEditProperty({
         data,
       );
       if (ManufacturersResponse?.data?.bool) {
-        // this.setState({loadManufacturers: true});
-        console.log('datachecckk-->>', ManufacturersResponse?.data?.data);
         animate();
-        // this.getToken();
         callApi();
         cancelAddType();
         setLoadingStateDev(false);
@@ -1368,7 +1310,6 @@ export default function AddEditProperty({
                     disableScroll={false}
                     onPress={(data, details) => {
                       catchLocation(details.geometry.location);
-                      console.log('DETAILS', details);
                       fetchAddressData(details?.formatted_address);
                       setLocationBtn(details?.formatted_address);
                     }}
@@ -1486,7 +1427,6 @@ export default function AddEditProperty({
                       </Pressable>
                     </View>
                   </View>
-                  {/* Box Body */}
                   <KeyboardAwareScrollView
                     style={{ flex: 1, width: '90%', backgroundColor: '#fff' }}
                     contentContainerStyle={{ backgroundColor: '#fff' }}

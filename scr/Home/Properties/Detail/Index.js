@@ -129,16 +129,16 @@ class Details extends React.Component {
     this.setState({ isLoading: true });
     Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
 
-    const propertyData = this.props.navigation.state.params.item.item;
-    this.getPropertyDetails(propertyData?.id);
-    this.getMetersLocation(propertyData?.id);
-    this.getTpanelData(propertyData?.id);
-    this.getBunchData(propertyData?.id)
+    this.setPropertyData();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.navigation.state.params.item.item !== prevProps.navigation.state.params.item.item) {
+      this.setPropertyData();
+    }
+  }
   getTpanelData = async (id) => {
     const tPanelRes = await API.get(`/property/tpanel/${id}`);
-    // console.log('TPANEL DATA', tPanelRes?.data?.data);
     if (tPanelRes?.data?.bool) {
       this.setState({
         tpanelData: tPanelRes?.data?.data?.unit,
@@ -148,7 +148,6 @@ class Details extends React.Component {
 
   getBunchData = async (id) => {
     const tBunchRes = await API.get(`/property/details-bunch/${id}`);
-    // console.log('TBunch DATA', tBunchRes?.data?.data);
     if (tBunchRes?.data?.bool) {
       this.setState({
         tBunchData: tBunchRes?.data?.data,
@@ -156,11 +155,18 @@ class Details extends React.Component {
     }
   };
 
+  setPropertyData = () => {
+    const propertyData = this.props.navigation.state.params.item.item;
+    this.getPropertyDetails(propertyData?.id);
+    this.getMetersLocation(propertyData?.id);
+    this.getTpanelData(propertyData?.id);
+    this.getBunchData(propertyData?.id)
+  }
+
   getPropertyDetails = async (id) => {
     this.setState({ isLoading: true });
 
     const propertyRes = await API.get(`/property/${id}`);
-    // console.log("propertyRes propertyRes", propertyRes)
     const currPropData = propertyRes?.data?.data?.property;
     const utilityManufacturersArr =
       propertyRes?.data?.data?.property?.utility_manufacturers;
@@ -173,10 +179,6 @@ class Details extends React.Component {
     });
 
     this.setState({ utilTypes, manus });
-
-    // console.log('UTILITY TYPES', utilTypes);
-    // console.log('MANUFACTURERS', manus);
-
     let uMdata = currPropData.unit_mixes;
     let nOU = 0;
     let tGD = 0;
@@ -263,7 +265,6 @@ class Details extends React.Component {
 
   enableLocation = async () => {
     const location = await SystemSetting.isLocationEnabled();
-    console.log('GPS', location);
     if (!location) {
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -318,7 +319,6 @@ class Details extends React.Component {
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      // this.getPropertyDetails(this.state.propertyId);
       const propertyRes = await API.get(`/property/${this.state.propertyId}`);
 
       this.setState({ propertyData: propertyRes?.data?.data?.property });
@@ -423,7 +423,6 @@ class Details extends React.Component {
   };
 
   toggleflag = () => {
-    console.log('TOGGLEFLAG');
     this.setState({ propertyflag: false });
   };
 
@@ -431,7 +430,6 @@ class Details extends React.Component {
     const { onlineUnits, offlineUnits, notInstalledUnits, tBunchData, propertyData } = this.state;
     return (
       <>
-        {/* {Platform.OS == 'ios' && <CustumStatusBar />} */}
         <CustumStatusBar />
         <View style={styles.container}>
           <AddEditProperty
@@ -673,7 +671,6 @@ class Details extends React.Component {
                 <View style={styles.infoViewContainer}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Other Details"} />
                   <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: width * 0.8 }}>
-
                     <TextReuseableComponent title style={[
                       styles.dataFieldText,
                       { width: '40%', textAlign: 'left' },
@@ -733,6 +730,7 @@ class Details extends React.Component {
                         style={{ flexDirection: 'row' }}>
                         {this.state?.manus?.map((item, index) => (
                           <View
+                            key={index}
                             style={{
                               justifyContent: 'center',
                               textAlign: 'center',

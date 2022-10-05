@@ -246,7 +246,6 @@ class Splash extends Component {
       "property_id": this?.props?.navigation?.state?.params?.item?.item?.id
     }
     const result = await API.post('/gateway/attach-gateway', data)
-    console.log(result)
     if (result?.ok) {
       if (result?.data?.bool) {
         this.checkData()
@@ -999,7 +998,6 @@ class Splash extends Component {
                 type={RNCamera.Constants.Type.back}
                 autoFocus="on"
                 onBarCodeRead={(e) => {
-                  console.log("e e e", e)
                   this.setState({ serialNumber: e?.data, isVisible: false })
                 }}
                 captureAudio={false}

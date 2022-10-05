@@ -201,7 +201,6 @@ export default function UnitEdit({
       value: '',
     },
   ]);
-  // console.log('METERLISTDATA', meterListData);
   const helperDefaultData = useRef([]);
 
   const [selectUtil, setSelectUtil] = useState([]);
@@ -404,11 +403,9 @@ export default function UnitEdit({
     if (Platform.OS == 'ios') {
       request(PERMISSIONS.IOS.CAMERA)
         .then((result) => {
-          // console.log('kia hai result camera ka', result);
           if (result == RESULTS.GRANTED) {
             cameraLaunch(type);
           } else {
-            // console.log('Denied',)
             Alert.alert(
               "You don't have access for the Camera",
               'To Change the Permission Open Settings',
@@ -758,21 +755,15 @@ export default function UnitEdit({
     const AttachedToResponse = await API.get(
       '/property/equipment/attached_to/attach',
     );
-    // console.log('AttachedToResponse_________', AttachedToResponse?.data?.data);
     setAttachedToData(AttachedToResponse?.data?.data);
     const reasoneResponce = await API.get(
       '/property/equipment/unit/option-reasons/all',
     );
 
     setReasons(reasoneResponce?.data?.data);
-    // console.log('reasons_________', reasoneResponce?.data?.data);
-
-    // xxx
 
     let UtilArray = [...defaultUtilityType];
     let ManuArray = [...defaultManuLis];
-    // console.log('Utility DATA', UtilArray);
-    // console.log('SLIDE DATA', ManuArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);
@@ -781,7 +772,6 @@ export default function UnitEdit({
         if (manuItem?.utility_type[0]?.name != undefined) {
           if (item.name == manuItem?.utility_type[0]?.name) {
             let listSlide = [...slide1]; // copying the old datas array
-            // console.log('MANUITEM BATA', manuItem.devices[0].model_nos);
             listSlide[0].data.push(manuItem);
             if (manuItem.devices.length > 0) {
               listSlide[1].data = manuItem.devices;
@@ -1038,10 +1028,6 @@ export default function UnitEdit({
       meters: meterData,
     };
 
-    // console.log('Meter Data 1', unitDetails?.unit?.id);
-    // console.log('Meter Data 2', meterData[1].reasons);
-    // console.log('data--->', data);
-    // console.log('data meters--->', data.meters);
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await API.post(
         `/property/equipment/unit/add-unit`,
@@ -1052,23 +1038,15 @@ export default function UnitEdit({
         setIsActivityLoader(false);
         alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
-        // console.log('datachecckk-->>', unitResponse?.data?.data);
       } else {
         setIsActivityLoader(false);
         alert(unitResponse?.data?.message);
       }
-      // console.log('Add unit response', unitResponse?.data);
     } else {
-      // console.log('EDIT CHALA');
       const unitResponse = await API.post(
         `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
         data,
       );
-      // console.log(
-      //   'Unitmeterchecckk-->>',
-      //   unitResponse?.data?.data?.unit?.unit_meter,
-      // );
-      // console.log('update data check-->>', unitResponse?.data);
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         setIsActivityLoader(false);
@@ -1176,9 +1154,7 @@ export default function UnitEdit({
   };
 
   const doSome = (item, index) => {
-    // let UtilArray = typeof items !== 'undefined' ? [...items] : [...selectUtil];
     let ManuArray = [...defaultManuLis];
-    // console.log('Utility DATA', UtilArray);
     let empSlide = [...slide1]; // copying the old datas array
     empSlide[0].data = [];
     setSlide1(empSlide);

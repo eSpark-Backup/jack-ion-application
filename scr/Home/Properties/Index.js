@@ -214,14 +214,12 @@ class Property extends Component {
         (position) => {
           var lat = parseFloat(position.coords.latitude);
           var long = parseFloat(position.coords.longitude);
-          // this.setState({lat: lat, long: long});
           Geocoder.from({
             latitude: lat,
             longitude: long,
           })
             .then((json) => {
               var locationName = json.results[0].formatted_address;
-              // this.fetchAddressData(locationName);
               this.setState({
                 locationBtn: locationName,
               });
@@ -319,7 +317,6 @@ class Property extends Component {
     if (response?.data?.bool) {
       this.setState({ currentIndex: null });
       alert(response?.data?.message);
-      // this.context.checkData();
       this.props?.fetchPropetry();
       this.setState({ propertyList: this.context.propList });
     } else {
@@ -373,11 +370,9 @@ class Property extends Component {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      // console.log("state", state.isInternetReachable)
       this.setState({ noInternet: !state.isInternetReachable });
       if (state.isConnected) {
         this.closeAddProp();
-        // this.context.checkData();
         this.setState({ propertyList: this.context.propList });
       } else {
         console.log('unsubscribe function called');
@@ -387,10 +382,7 @@ class Property extends Component {
     unsubscribe();
   };
   onRefresh = async () => {
-    // this.setState({ fetching: true });
-    // await this.sleep(2000);
     this.setState({ isPullDownShow: true });
-    // this.context.checkData();
     this.props?.fetchPropetry();
   };
   hidePullDown = () => {
@@ -410,7 +402,6 @@ class Property extends Component {
   };
 
   render() {
-    // console.log('this.props.isLoading', this.props.isLoading);
     if (!this.props.isLoading) {
       this.hidePullDown();
     }
@@ -603,22 +594,8 @@ class Property extends Component {
               <TextReuseableComponent title value={"Check Your Internet Connection"} />
             ) : this.props.isLoading ? (
               <>
-              {this.state.shimmers.map((item) => this.renderShimmers(item))}
+                {this.state.shimmers.map((item) => this.renderShimmers(item))}
               </>
-              // <ScrollView
-              //   scrollEnabled={false}
-              //   showsVerticalScrollIndicator={false}>
-              //   {this.state.shimmers.map((item) => this.renderShimmers(item))}
-              // </ScrollView>
-              // <>
-              //   <TextReuseableComponent value={"Loading..."}/>
-              //   <FlatList 
-              //     data={this.state.shimmers}
-              //     renderItems={({item}) => {
-              //       return this.renderShimmers(item)
-              //     }}
-              //   />
-              // </>
             ) : this.props.propList.length < 1 && !this.props.isLoading ? (
               <TextReuseableComponent title value={"No Properties to Show"} />
             ) : (

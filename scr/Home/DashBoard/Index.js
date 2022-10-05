@@ -94,12 +94,10 @@ export default class Splash extends Component {
   }
 
   async componentDidMount() {
-    // console.log('What we Get', this.props.navigation);
     this.setState({ loadData: true });
     const userDataUnParsed = await AsyncStorage.getItem('users_data');
     const userId = await AsyncStorage.getItem('user_id');
     const userData = JSON.parse(userDataUnParsed);
-    // console.log('USERDATA', userData);
     let index = userData
       .map((e) => {
         return e.id;
@@ -119,8 +117,6 @@ export default class Splash extends Component {
     }
     const PortfolioRes = await API.get(`/dashboard/portfolio-chart`);
 
-    // console.log('ProtfolioRes New', PortfolioRes?.data?.data?.new);
-    // console.log('ProtfolioRes New', PortfolioRes?.data?.data?.total);
     if (PortfolioRes.data?.bool) {
       this.setState({
         newProperties: PortfolioRes?.data?.data?.new,
@@ -129,7 +125,6 @@ export default class Splash extends Component {
     }
 
     const cardRes = await API.get(`/dashboard/cards`);
-    // console.log('cardRes', cardRes);
     if (cardRes?.data?.bool) {
       this.setState({
         onlineProps: cardRes?.data?.data?.property_status[0],
@@ -191,15 +186,11 @@ export default class Splash extends Component {
   };
 
   deleteProperty = async (id, index) => {
-    // console.log('ID', id);
     const response = await API.post(`/property/delete/${id}`);
-    // console.log('response', response.data?.bool);
     if (response?.data?.bool) {
-      // console.log('Chala FUnction');
       const userDataUpdated = [...this.state.userCurrentData];
       let ids = [...this.state.userCurrentData[index].recent_properties];
       ids.splice(index, 1);
-      // console.log('IDS', ids);
       userDataUpdated[this.state.userCurrentIndex].recent_properties = ids;
       const jsonData = JSON.stringify(userDataUpdated);
       await AsyncStorage.setItem('users_data', jsonData);

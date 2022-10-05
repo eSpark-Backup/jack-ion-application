@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Dimensions,
@@ -6,18 +6,16 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import {styles} from './style';
+import { styles } from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchPropetry} from '../../../Store/Action/properties.action';
-import {FlatList} from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import API from '../../../api/SeviceApi';
 import CustumStatusBar from '../../../components/StatusBar';
 
 import TextReuseableComponent from '../../../components/Text/index';
 
-const {height, width} = Dimensions.get('screen');
-export const CardProperties = ({navigation}) => {
+const { height, width } = Dimensions.get('screen');
+export const CardProperties = ({ navigation }) => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState([]);
 
@@ -34,20 +32,19 @@ export const CardProperties = ({navigation}) => {
     setLoading(false);
   };
 
-  // console.log("loading, properties", loading, properties)
   return (
     <View style={styles.main}>
-       {Platform.OS == 'ios' && <CustumStatusBar />}
+      {Platform.OS == 'ios' && <CustumStatusBar />}
       <View style={styles.headingContainer}>
         <View style={styles.headingInner}>
           <MaterialCommunityIcons
             name="arrow-left"
             size={height * 0.04}
             color="white"
-            style={{right: 85}}
+            style={{ right: 85 }}
             onPress={() => navigation?.goBack()}
           />
-          <View style={{flexDirection: 'row', alignItems: 'center', right: 15}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', right: 15 }}>
             <TextReuseableComponent title style={styles.mainHeadiing} value={"Properties"} />
           </View>
         </View>
@@ -56,7 +53,7 @@ export const CardProperties = ({navigation}) => {
       <View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 45}}>
+          contentContainerStyle={{ paddingBottom: 45 }}>
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={true}
@@ -64,16 +61,16 @@ export const CardProperties = ({navigation}) => {
             <View>
               <View style={styles.tableHeader}>
                 {[
-                  {title: 'Name', key: 'name'},
+                  { title: 'Name', key: 'name' },
                   {
                     title: 'Address',
                     key: 'city',
                   },
-                  {title: 'Owner', key: 'owner'},
-                  {title: 'Number of Building', key: 'building_count'},
-                  {title: 'Number of Alert', key: 'alert_count'},
-                  {title: 'Numnber of Unit', key: 'unit_count'},
-                  {title: 'Date', key: 'createdAt'},
+                  { title: 'Owner', key: 'owner' },
+                  { title: 'Number of Building', key: 'building_count' },
+                  { title: 'Number of Alert', key: 'alert_count' },
+                  { title: 'Numnber of Unit', key: 'unit_count' },
+                  { title: 'Date', key: 'createdAt' },
                 ].map((value, index) => {
                   return (
                     <>
@@ -98,9 +95,10 @@ export const CardProperties = ({navigation}) => {
               </View>
               <FlatList
                 data={properties || []}
-                renderItem={({item, index}) => {
+                renderItem={({ item, index }) => {
                   return (
                     <View
+                      key={index}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',

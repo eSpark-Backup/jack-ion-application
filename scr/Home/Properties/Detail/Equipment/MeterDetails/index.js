@@ -220,7 +220,6 @@ const App = ({navigation}) => {
   const tickValues = getTickValues();
 
   const {buildingName, propertyName, meterInfo} = navigation.state.params; //? Dynamic Ids
-  // console.log('aya kuch ++', navigation.state.params.unitId);
 
   const testId = navigation.state.params.unitId;
 
@@ -264,15 +263,12 @@ const App = ({navigation}) => {
     unitData.meters = meters;
     unitData.defaultRadial_dist = defaultDis * 1000;
 
-    // unitData['meters'] = unitData['unit_meter'];
     delete unitData['unit_meter']; // Delete old key
 
-    // console.log('UNIT DATA', unitData);
     const UpdateData = await API.post(
       `/property/equipment/unit/update-unit/${testId}`,
       unitData,
     );
-    // console.log('UPDATE DATA RES', UpdateData.data);
     if (UpdateData?.data?.bool) {
       setInstallStatusView(false);
       setLoading(true);
@@ -281,7 +277,6 @@ const App = ({navigation}) => {
         `/property/equipment/unit/get-meter-info`,
         {device_serial_number: meterInfo.device_serial_number},
       );
-      // console.log('meterResponse DATA RES', meterResponse?.data);
       if (meterResponse?.data?.bool) {
         getToken(meterResponse?.data?.data?.meterinfo);
       }
@@ -290,23 +285,15 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async (meterData) => {
     const res = await API.get(`/property/equipment/unit/${testId}`);
-    // console.log('Kia ha Response Data', res.data?.data?.unit?.unit_meter?.[0]);
     setData(res.data);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
-    // console.log('Kia ha Meter INfo Data', meterInfo);
-    // console.log(
-    //   'Kia ha Meter Index',
-    //   unitMeterArr.findIndex((i) => i.id == meterInfo.id),
-    // );
     if (meterData) {
-      // console.log('DATA RECEIVED');
       setUnitMeter(meterData);
       if (meterData.installation_status == 2) {
         setInstallStatusView(true);
       }
     } else {
-      // console.log('DATA Not RECEIVED');
       setUnitMeter(meterInfo);
       if (meterInfo.installation_status == 2) {
         setInstallStatusView(true);
@@ -326,10 +313,8 @@ const App = ({navigation}) => {
       `/property/equipment/meter-reading/chart-meter-all/${unitMeterId}`,
       data,
     );
-    // console.log('Chart Data', chartRes.data?.data);
 
     if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
-      // console.log('Chala Function');
 
       getChartData(chartRes);
     }
@@ -339,7 +324,6 @@ const App = ({navigation}) => {
   };
 
   const getChartData = (chartRes) => {
-    // console.log('CHECK Chala.....');
     let MeterUsage = [];
     let ReadData = [];
     let DataSet = [];
@@ -372,8 +356,6 @@ const App = ({navigation}) => {
       Usage7Days.push(aa);
       Read7Days.push(bb);
     }
-
-    // console.log('Simple Array', Usage7Days, Read7Days);
 
     const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let readDates = [];
@@ -444,25 +426,14 @@ const App = ({navigation}) => {
       ...readDates.filter((d) => !dates.has(d.x.toString())),
     ];
 
-    // console.log(
-    //   'Array After Merge Usage',
-    //   Usage7DaysData.sort(function (a, b) {
-    //     return a.x - b.x;
-    //   }),
-    //   'Array After Merge Read',
-    //   Read7DaysData.sort((a, b) => (a.x > b.x ? 1 : -1)),
-    // );
-
     setMeterReadData(Read7DaysData);
     setMeterUsageData(Usage7DaysData);
     setDateData(Datadates);
-    // setLoadChartData(false);
   };
 
   const getMeterTypes = async () => {
     const res = await API.get('/property/equipment/meter/all-meters');
     setMeterListArray(res.data?.data);
-    // console.log('All Meters', res.data?.data);
   };
 
   const getToken = async (data) => {
@@ -506,7 +477,6 @@ const App = ({navigation}) => {
   };
 
   useEffect(() => {
-    // console.log('Kia ha unitMeter', data);
     let reasonList = [];
     for (let i = 0; i < unitMeter?.reasons?.length; i++) {
       let reasonData = unitMeter?.reasons[i];
@@ -531,10 +501,8 @@ const App = ({navigation}) => {
         ],
       };
 
-      // console.log('Reason Picture', reasonData.picture);
       reasonList.push(data);
     }
-    // console.log('Reason List', reasonList);
 
     setMeterInfoData([
       {
@@ -549,24 +517,6 @@ const App = ({navigation}) => {
         leftIcon: null,
         type: 'feather',
       },
-      // {
-      //   leftText: 'Unit of Measure',
-      //   rightText: unitMeter?.type?.unit_of_measure ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
-      // {
-      //   leftText: 'Multiplier',
-      //   rightText: unitMeter?.type?.multiplier ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
-      // {
-      //   leftText: 'Size',
-      //   rightText: unitMeter?.type?.size ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
       {
         leftText: 'Meter Serial',
         rightText: unitMeter?.meter_serial_number ?? 'N/A',
@@ -574,30 +524,16 @@ const App = ({navigation}) => {
         leftType: 'ionicon',
         type: 'feather',
       },
-      // {
-      //   leftText: 'Custom ID',
-      //   rightText: unitMeter?.custom_meter_id ?? 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
-      // {
-      //   leftText: 'IMR',
-      //   rightText: 'N/A',
-      //   leftIcon: null,
-      //   type: 'feather',
-      // },
     ]);
     setReasonsData([
       {
         title: 'Reasons',
-        // img: meterSwitcher(),
         data: reasonList,
       },
     ]);
     setMeterTypeData([
       {
         title: 'Hot Water Meter',
-        // img: meterSwitcher(),
         data: [
           {
             leftName: 'Type',
@@ -1150,7 +1086,6 @@ const App = ({navigation}) => {
     );
   };
 
-  // console.log(clc.red('data', JSON.stringify(data.data)));
 
   if (loading) {
     return <Loader />;

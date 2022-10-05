@@ -158,7 +158,6 @@ export default class Splash extends Component {
   fetchAlertSettings = async () => {
     const propertyData = this.props.navigation.state.params.item.item;
     const alertsRes = await API.get(`/alert/property/${propertyData?.id}`);
-    // console.log('Alert Results', alertsRes.data.data);
     if (alertsRes.data.bool) {
       const allowedIds = alertsRes.data?.data?.alert_type?.alert_type_id;
       allowedIds.map((item) => {
@@ -195,7 +194,6 @@ export default class Splash extends Component {
       `alert/property/update/${propertyData?.id}`,
       AlertIds,
     );
-    // console.log('UPDATE API DATA', updateAlertStatus.data.data);
     if (updateAlertStatus.data.bool) {
       this.fetchAlertSettings();
       this.setState({ loader: false });
@@ -381,8 +379,6 @@ export default class Splash extends Component {
       dismissModal: true,
       alertIds: selectedIds,
     });
-
-    // console.log('Selected Ids', selectedIds.length);
   };
 
   checkAllAlert = () => {
@@ -409,7 +405,6 @@ export default class Splash extends Component {
       property_id: propertyId,
     };
     const dismissAlert = await API.post('/alert/dismiss/add', data);
-    // console.log('RESPONSE', dismissAlert.data);
     if (dismissAlert.data.bool) {
       this.setState({ dismissModal: false, dismissNote: '' });
       this.fetchAlerts();
