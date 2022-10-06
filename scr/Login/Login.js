@@ -221,7 +221,7 @@ class Login extends Component {
                   />
                   <TextInput
                     value={values.password}
-                    secureTextEntry={this.state.showPassword ? false : true }
+                    secureTextEntry={!this.state.showPassword}
                     placeholder="Enter Password"
                     underlineColorAndroid="transparent"
                     onChangeText={handleChange('password')}
