@@ -43,6 +43,7 @@ class Login extends Component {
       errName: '',
       errPass: '',
       isLoading: false,
+      showPassword: false
     };
   }
 
@@ -220,7 +221,7 @@ class Login extends Component {
                   />
                   <TextInput
                     value={values.password}
-                    secureTextEntry
+                    secureTextEntry={this.state.showPassword ? false : true }
                     placeholder="Enter Password"
                     underlineColorAndroid="transparent"
                     onChangeText={handleChange('password')}
@@ -228,6 +229,13 @@ class Login extends Component {
                     onBlur={() => setFieldTouched('password')}
                     placeholderTextColor="#5B5B61"
                     style={styles.input}
+                  />
+                  <FontAwesome5
+                    onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                    name={`${this.state.showPassword ? 'eye-slash' : 'eye'}`}
+                    color="#06012B"
+                    size={width * 0.035}
+                    style={{ padding: 5 }}
                   />
                 </View>
                 <View style={styles.errorView}>
