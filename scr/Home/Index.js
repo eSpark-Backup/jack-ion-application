@@ -106,7 +106,7 @@ class Splash extends Component {
                 const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
                 const idInNumber =matches ? Number(matches[0]) : null;
                 const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-                const idFromData = data?.property?.id;
+                const idFromData = data?.id;
                 const item = { id: idInNumber ? idInNumber : idFromData }
                 navigationService.navigate("Detail", { item: { item: item } })
             }
