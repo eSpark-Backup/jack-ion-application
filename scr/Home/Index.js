@@ -85,23 +85,29 @@ class Splash extends Component {
       this.onAppBootstrap();
 
       PushNotification.configure({
-        onNotification: function (notification) {
+        onNotification: async function (notification) {
           pushNotification(notification);
           const clicked = notification?.userInteraction;
 
           if (clicked) {
             PushNotification.removeAllDeliveredNotifications();
-            if(notification?.message.includes('Meter')) {
+            if(notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
+              console.log('Notification Clicked', notification);
                 const regex = /\d+/g;
-                const matches = notification?.message.match(regex);  // creates array from matches
-                const idInNumber = Number(matches[0]);
-                const item = { id: idInNumber ? idInNumber : Number(notification?.data?.id) }
+                const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
+                const idInNumber = matches ? Number(matches[0]) : null;    
+                const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+                const idFromData = data?.property?.id;
+                // const item = { id: 266 }
+                const item = { id: idInNumber ? idInNumber : idFromData }
                 navigationService.navigate("Equip", { item: { item: item } })
             } else {
                 const regex = /\d+/g;
-                const matches = notification?.message.match(regex);  // creates array from matches
-                const idInNumber = Number(matches[0]);
-                const item = { id: idInNumber ? idInNumber : Number(notification?.data?.id) }
+                const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
+                const idInNumber =matches ? Number(matches[0]) : null;
+                const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+                const idFromData = data?.property?.id;
+                const item = { id: idInNumber ? idInNumber : idFromData }
                 navigationService.navigate("Detail", { item: { item: item } })
             }
           } else {

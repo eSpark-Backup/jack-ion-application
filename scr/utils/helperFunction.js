@@ -66,10 +66,16 @@ export function customDropDown(props) {
 }
 
 export function pushNotification(notification) {
+  const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+  const regex = /\d+/g;
+  const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
+  const idInNumber = matches ? Number(matches[0]) : null;
+  const id = data ? data?.property?.id : idInNumber;
+
   return PushNotification.localNotification({
     channelId: 'test-id',
     title: notification?.title,
-    message: notification?.userInteraction ? notification?.message : `${notification?.title} with id ${notification?.data?.id}`,
+    message: notification?.userInteraction ? notification?.message : `${notification?.title} with id ${ id }`,
   });
 }
 
