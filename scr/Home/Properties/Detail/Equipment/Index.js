@@ -137,6 +137,12 @@ class Splash extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.navigation.state.params.item.item !== prevProps.navigation.state.params.item.item) {
+      this.checkData();
+    }
+  }
+
   onFocusFunction = () => {
     this.getToken();
     this.setState({ isModalVisible: false });
