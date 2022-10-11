@@ -70,7 +70,7 @@ export function pushNotification(notification) {
   const regex = /\d+/g;
   const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
   const idInNumber = matches ? Number(matches[0]) : null;
-  const id = data ? data?.property?.id : idInNumber;
+  const id = data ? data?.property?.id || data?.id : idInNumber;
 
   return PushNotification.localNotification({
     channelId: 'test-id',
