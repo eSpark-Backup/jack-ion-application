@@ -167,9 +167,7 @@ export default class Login extends Component {
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('Login'),
-                setTimeout(() => {
-                  this.setState({errName: '', errPass: ''});
-                }, 100);
+              this.setState({errName: '', errPass: ''});
             }}>
             <TextReuseableComponent title value={"Already have an account? Login!"} />
           </TouchableOpacity>

@@ -84,9 +84,7 @@ export default class SearchableDropDown extends Component {
       this.props.onChangeText ||
       this.props.textInputProps.onChangeText;
     if (onTextChange && typeof onTextChange === 'function') {
-      setTimeout(() => {
-        onTextChange(searchedText);
-      }, 0);
+      onTextChange(searchedText);
     }
   };
 
@@ -106,11 +104,7 @@ export default class SearchableDropDown extends Component {
           <View
             style={{flex: 0.1, flexDirection: 'row', alignItems: 'flex-end'}}>
             <TouchableOpacity
-              onPress={() =>
-                setTimeout(() => {
-                  this.props.onRemoveItem(item, index);
-                }, 0)
-              }
+              onPress={() => this.props.onRemoveItem(item, index)}
               style={{
                 backgroundColor: '#f16d6b',
                 alignItems: 'center',
@@ -128,9 +122,7 @@ export default class SearchableDropDown extends Component {
         <TouchableOpacity
           onPress={() => {
             this.setState({item: item});
-            setTimeout(() => {
-              this.props.onItemSelect(item);
-            }, 0);
+            this.props.onItemSelect(item);
           }}
           style={{...this.props.itemStyle, flex: 1, flexDirection: 'row'}}>
           <View
@@ -146,13 +138,11 @@ export default class SearchableDropDown extends Component {
           onPress={() => {
             this.setState({item: item, focus: false});
             Keyboard.dismiss();
-            setTimeout(() => {
               this.props.onItemSelect(item);
               if (this.props.resetValue) {
                 this.setState({focus: true, item: defaultItemValue});
                 this.input.focus();
               }
-            }, 0);
           }}>
           {this.props.selectedItems &&
           this.props.selectedItems.length > 0 &&
@@ -338,11 +328,7 @@ export default class SearchableDropDown extends Component {
                 }}>
                 <TextReuseableComponent title style={{color: '#555'}} value={item.name} />
                 <TouchableOpacity
-                  onPress={() =>
-                    setTimeout(() => {
-                      this.props.onRemoveItem(item, index);
-                    }, 0)
-                  }
+                  onPress={() => this.props.onRemoveItem(item, index)}
                   style={{
                     backgroundColor: '#f16d6b',
                     alignItems: 'center',

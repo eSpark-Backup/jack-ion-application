@@ -1,4 +1,4 @@
-import React, {Component, Fragment, version} from 'react';
+import React, { Component, Fragment, version } from 'react';
 import {
   View,
   Image,
@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 //Packages
-import {Header, Button, Icon} from 'react-native-elements';
+import { Header, Button, Icon } from 'react-native-elements';
 import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Build from 'react-native-vector-icons/FontAwesome5';
 import Check from 'react-native-vector-icons/Feather';
@@ -23,21 +23,21 @@ import Home from 'react-native-vector-icons/FontAwesome5';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Loader from '../../../../../components/Loader';
 import ContextProp from '../../../Context/propContext';
-import {DotsLoader} from 'react-native-indicator';
+import { DotsLoader } from 'react-native-indicator';
 import TextTicker from 'react-native-text-ticker';
 import EditUnit from '../Units/modals/UnitEdit';
 import AddBuilding from '../../../../../components/modal/AddBuilding/index';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInput from '../../../../../components/TextInput';
 
 // Components
-import {Fonts} from '../../../../../utils/fonts';
+import { Fonts } from '../../../../../utils/fonts';
 import TextReuseableComponent from '../../../../../components/Text/index';
 
 import styles from './style';
 import CustumStatusBar from '../../../../../components/StatusBar';
 import API from '../../../../../api/SeviceApi';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default class RedirectMeter extends Component {
   static contextType = ContextProp;
@@ -119,10 +119,10 @@ export default class RedirectMeter extends Component {
   getToken = async () => {
     const token = await EncryptedStorage.getItem('user_token');
 
-    this.setState({loader: false});
+    this.setState({ loader: false });
 
     const res = await API.get('/property/equipment/meter/all-meters');
-    this.setState({meterList: res.data?.data}, () =>
+    this.setState({ meterList: res.data?.data }, () =>
       console.log('All Meters', this.state.meterList),
     );
   };
@@ -143,22 +143,22 @@ export default class RedirectMeter extends Component {
     }
   };
   searchProperties = async (e) => {
-    this.setState({loadFor: e});
+    this.setState({ loadFor: e });
     let data = {
       offset: 0,
       search: e,
     };
     if (e) {
-      this.setState({searchLoading: true});
+      this.setState({ searchLoading: true });
       const response = await API.post('/property/all', data);
-      this.setState({searchOffset: response.data.data.offset});
+      this.setState({ searchOffset: response.data.data.offset });
       if (response?.data?.bool) {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        this.setState({propertyList: response.data.data.properties});
-        this.setState({searchLoading: false});
+        this.setState({ propertyList: response.data.data.properties });
+        this.setState({ searchLoading: false });
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({searchLoading: false});
+        this.setState({ searchLoading: false });
       }
     } else {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -176,13 +176,13 @@ export default class RedirectMeter extends Component {
     }
   };
   loadSearchData = async () => {
-    this.setState({searchLoading: true});
+    this.setState({ searchLoading: true });
     let prop = {
       offset: this.state.searchOffset,
       search: this.state.loadFor,
     };
     if (this.state.loadFor) {
-      this.setState({searchLoading: true});
+      this.setState({ searchLoading: true });
       const response = await API.post('/property/all', prop);
       if (response?.data?.bool) {
         if (
@@ -192,7 +192,7 @@ export default class RedirectMeter extends Component {
           let data = [...this.state.propertyList];
           let data2 = response.data.data.properties;
           data.push(...data2);
-          this.setState({propertyList: data});
+          this.setState({ propertyList: data });
           this.setState({
             searchLoading: false,
             searchOffset: response.data.data.offset,
@@ -200,20 +200,20 @@ export default class RedirectMeter extends Component {
         }
         setTimeout(() => {
           if (this.state.searchLoading) {
-            this.setState({searchLoading: false});
+            this.setState({ searchLoading: false });
           }
         }, 3000);
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({searchLoading: false});
+        this.setState({ searchLoading: false });
       }
     } else {
-      this.setState({propertyList: []});
+      this.setState({ propertyList: [] });
     }
   };
 
   checkData = async () => {
-    this.setState({loader: true});
+    this.setState({ loader: true });
     let data = {
       offset: 0,
     };
@@ -223,18 +223,18 @@ export default class RedirectMeter extends Component {
       offset: response.data.data.offset,
     });
     if (response?.data?.bool) {
-      this.setState({propertyList: response.data.data.properties});
-      this.setState({limitExceed: false});
-      this.setState({loader: false});
+      this.setState({ propertyList: response.data.data.properties });
+      this.setState({ limitExceed: false });
+      this.setState({ loader: false });
     } else {
       Alert.alert('Error', 'Network Issues');
-      this.setState({loader: false});
+      this.setState({ loader: false });
     }
   };
 
   loadMoreData = async () => {
     if (!this.state.limitExceed) {
-      this.setState({propertyListLoader: true});
+      this.setState({ propertyListLoader: true });
     }
     let data = {
       offset: this.state.offset,
@@ -251,19 +251,19 @@ export default class RedirectMeter extends Component {
         let data = [...this.state.propList];
         let data2 = response.data.data.properties;
         data.push(...data2);
-        this.setState({propList: data});
+        this.setState({ propList: data });
         this.setState({
           propertyListLoader: false,
           offset: response.data.data.offset,
         });
-        this.setState({limitExceed: false});
+        this.setState({ limitExceed: false });
       } else {
-        this.setState({limitExceed: true});
-        this.setState({propertyListLoader: false});
+        this.setState({ limitExceed: true });
+        this.setState({ propertyListLoader: false });
       }
     } else {
       Alert.alert('Error', 'Network Issues');
-      this.setState({propertyListLoader: false});
+      this.setState({ propertyListLoader: false });
     }
   };
 
@@ -272,26 +272,26 @@ export default class RedirectMeter extends Component {
       return (+v).toString() === v;
     }
     var sort = {
-        asc: function (a, b) {
-          var i = 0,
-            l = Math.min(a.value.length, b.value.length);
+      asc: function (a, b) {
+        var i = 0,
+          l = Math.min(a.value.length, b.value.length);
 
-          while (i < l && a.value[i] === b.value[i]) {
-            i++;
-          }
-          if (i === l) {
-            return a.value.length - b.value.length;
-          }
-          if (isNumber(a.value[i]) && isNumber(b.value[i])) {
-            return a.value[i] - b.value[i];
-          }
-          return a.value[i].localeCompare(b.value[i]);
-        },
-        desc: function (a, b) {
-          return sort.asc(b, a);
-        },
+        while (i < l && a.value[i] === b.value[i]) {
+          i++;
+        }
+        if (i === l) {
+          return a.value.length - b.value.length;
+        }
+        if (isNumber(a.value[i]) && isNumber(b.value[i])) {
+          return a.value[i] - b.value[i];
+        }
+        return a.value[i].localeCompare(b.value[i]);
       },
-      mapped = data.map(function ({name}, i) {
+      desc: function (a, b) {
+        return sort.asc(b, a);
+      },
+    },
+      mapped = data.map(function ({ name }, i) {
         var string = name.replace(/\d(?=[a-z])|[a-z](?=\.)/gi, '$&. .'),
           string = name.replace(/\s/g, ''),
           regex = /(\d+)|([^0-9.]+)/g,
@@ -300,7 +300,7 @@ export default class RedirectMeter extends Component {
         while ((m = regex.exec(string)) !== null) {
           parts.push(m[0]);
         }
-        return {index: i, value: parts, o: name, string: string};
+        return { index: i, value: parts, o: name, string: string };
       });
     mapped.sort(sort[order] || sort.asc);
     return mapped.map(function (el) {
@@ -329,14 +329,14 @@ export default class RedirectMeter extends Component {
     );
     if (response?.ok == true) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      this.setState({dataBuild: response?.data?.data});
-      this.setState({loaderBuildings: false});
+      this.setState({ dataBuild: response?.data?.data });
+      this.setState({ loaderBuildings: false });
       if (response?.data?.data?.length == 0) {
-        this.setState({buildingId: '', unitData: []});
+        this.setState({ buildingId: '', unitData: [] });
       }
     } else {
       alert('Network Issue');
-      this.setState({loaderBuildings: false});
+      this.setState({ loaderBuildings: false });
     }
   };
 
@@ -359,7 +359,7 @@ export default class RedirectMeter extends Component {
     );
     if (unitResponse?.ok == true) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      this.setState({unitData: unitResponse?.data?.data, unitLoader: false});
+      this.setState({ unitData: unitResponse?.data?.data, unitLoader: false });
       let arry = unitResponse?.data?.data;
       let lastElement = arry[arry.length - 1];
       this.setState({
@@ -368,7 +368,7 @@ export default class RedirectMeter extends Component {
       });
     } else {
       alert('Network Issue');
-      this.setState({unitLoader: false});
+      this.setState({ unitLoader: false });
     }
   };
 
@@ -398,7 +398,7 @@ export default class RedirectMeter extends Component {
           unit: data, // update the value of specific key
         },
       }));
-      this.setState({unitModal: true});
+      this.setState({ unitModal: true });
     }
   };
 
@@ -425,7 +425,7 @@ export default class RedirectMeter extends Component {
 
   handleAddBuilding = () => {
     ToastAndroid.show('Building add successfully', ToastAndroid.SHORT);
-    this.setState({buildModal: false});
+    this.setState({ buildModal: false });
     this.getItemId(this.state.propertyDetails);
   };
   handleAddUnit = () => {
@@ -453,7 +453,7 @@ export default class RedirectMeter extends Component {
 
   handleFinishUnit = (v) => {
     ToastAndroid.show('Awesome meter add finish it', ToastAndroid.SHORT);
-    this.setState({unitModal: false, finish: false});
+    this.setState({ unitModal: false, finish: false });
     this.getItemId(this.state.propertyDetails);
     this.getBuildingId(this.state.buildingDetails);
     this.setState({
@@ -470,18 +470,18 @@ export default class RedirectMeter extends Component {
           <Header
             leftComponent={{
               text: 'Close',
-              style: {fontSize: width * 0.05, color: '#000'},
+              style: { fontSize: width * 0.05, color: '#000' },
               onPress: () => this.props.navigation.goBack(),
             }}
             centerComponent={
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <TextReuseableComponent title value={"Add meter directly"} />
               </View>
             }
             backgroundColor="#fff"
             containerStyle={styles.headerContainer}
           />
-          <View style={{height: height * 0.85}}>
+          <View style={{ height: height * 0.85 }}>
             <View
               style={{
                 ...styles.boxConatainer,
@@ -499,7 +499,7 @@ export default class RedirectMeter extends Component {
                   />
                   <TextReuseableComponent title style={styles.propertiesText} value={"Properties"} />
                 </View>
-                <View style={{width: '100%'}}>
+                <View style={{ width: '100%' }}>
                   <View style={styles.currentReadContainer}>
                     <View style={styles.inputFilterView}>
                       <TextInput
@@ -526,13 +526,13 @@ export default class RedirectMeter extends Component {
                     {this.state.propertyList.length != 0 ? (
                       <View style={styles.filterUtility}>
                         <FlatList
-                          style={{width: width * 0.9}}
+                          style={{ width: width * 0.9 }}
                           data={this.state.propertyList}
                           showsVerticalScrollIndicator={false}
                           numColumns={1}
                           initialNumToRender={this.state.propertyList.length}
                           keyExtractor={(item, index) => index.toString()}
-                          renderItem={({item}) => (
+                          renderItem={({ item }) => (
                             <TouchableOpacity
                               onPress={() =>
                                 !this.state.finish ? null : this.getItemId(item)
@@ -543,8 +543,8 @@ export default class RedirectMeter extends Component {
                                   size={width * 0.04}
                                   color="#115b72"
                                 />
-                                <View style={{marginLeft: width * 0.01}}>
-                                  <View style={{width: width * 0.6}}>
+                                <View style={{ marginLeft: width * 0.01 }}>
+                                  <View style={{ width: width * 0.6 }}>
                                     <TextTicker
                                       style={styles.propText}
                                       repeatSpacer={width * 0.6}
@@ -556,7 +556,7 @@ export default class RedirectMeter extends Component {
                                     </TextTicker>
                                   </View>
 
-                                  <View style={{width: width * 0.6}}>
+                                  <View style={{ width: width * 0.6 }}>
                                     <TextTicker
                                       style={styles.dimTextTicker}
                                       repeatSpacer={width * 0.6}
@@ -618,9 +618,9 @@ export default class RedirectMeter extends Component {
                   </View>
                   {this.state.propertyId ? (
                     <TouchableOpacity
-                      style={{zIndex: 1}}
+                      style={{ zIndex: 1 }}
                       onPress={() =>
-                        this.setState({buildModal: !this.state.buildModal})
+                        this.setState({ buildModal: !this.state.buildModal })
                       }>
                       <Icon
                         name="plus-circle"
@@ -631,7 +631,7 @@ export default class RedirectMeter extends Component {
                     </TouchableOpacity>
                   ) : null}
                 </View>
-                <View style={{width: '100%'}}>
+                <View style={{ width: '100%' }}>
                   <View style={styles.currentReadContainer}>
                     {!this.state.propertyId ? (
                       <View style={styles.buildingDefaultView}>
@@ -644,13 +644,13 @@ export default class RedirectMeter extends Component {
                     ) : this.state.dataBuild.length != 0 ? (
                       <View style={[styles.filterUtility]}>
                         <FlatList
-                          style={{width: width * 0.9}}
+                          style={{ width: width * 0.9 }}
                           data={this._customSort(this.state.dataBuild)}
                           showsVerticalScrollIndicator={false}
                           numColumns={1}
                           initialNumToRender={this.state.dataBuild.length}
                           keyExtractor={(item, index) => index.toString()}
-                          renderItem={({item}) => (
+                          renderItem={({ item }) => (
                             <TouchableOpacity
                               onPress={() =>
                                 !this.state.finish
@@ -663,8 +663,8 @@ export default class RedirectMeter extends Component {
                                   size={width * 0.04}
                                   color="#115b72"
                                 />
-                                <View style={{marginLeft: width * 0.01}}>
-                                  <View style={{width: width * 0.6}}>
+                                <View style={{ marginLeft: width * 0.01 }}>
+                                  <View style={{ width: width * 0.6 }}>
                                     <TextTicker
                                       style={styles.propText}
                                       duration={6000}
@@ -706,7 +706,7 @@ export default class RedirectMeter extends Component {
                         </View>
                         <TouchableOpacity
                           onPress={() =>
-                            this.setState({buildModal: !this.state.buildModal})
+                            this.setState({ buildModal: !this.state.buildModal })
                           }>
                           <Icon
                             name="plus-circle"
@@ -741,7 +741,7 @@ export default class RedirectMeter extends Component {
                   </View>
                   {this.state.buildingId ? (
                     <TouchableOpacity
-                      style={{zIndex: 1}}
+                      style={{ zIndex: 1 }}
                       onPress={this.handleAddUnit}>
                       <Icon
                         name="plus-circle"
@@ -752,7 +752,7 @@ export default class RedirectMeter extends Component {
                     </TouchableOpacity>
                   ) : null}
                 </View>
-                <View style={{width: '100%'}}>
+                <View style={{ width: '100%' }}>
                   <View style={styles.currentReadContainer}>
                     {!this.state.buildingId ? (
                       <View style={styles.unitsDefaultView}>
@@ -765,13 +765,13 @@ export default class RedirectMeter extends Component {
                     ) : this.state.unitData.length != 0 ? (
                       <View style={[styles.filterUtility]}>
                         <FlatList
-                          style={{width: width * 0.9}}
+                          style={{ width: width * 0.9 }}
                           data={this._customSort(this.state.unitData)}
                           showsVerticalScrollIndicator={false}
                           numColumns={1}
                           initialNumToRender={this.state.unitData.length}
                           keyExtractor={(item, index) => index.toString()}
-                          renderItem={({item}) => (
+                          renderItem={({ item }) => (
                             <TouchableOpacity
                               onPress={() =>
                                 !this.state.finish ? null : this.getUnitId(item)
@@ -782,8 +782,8 @@ export default class RedirectMeter extends Component {
                                   size={width * 0.04}
                                   color="#115b72"
                                 />
-                                <View style={{marginLeft: width * 0.01}}>
-                                  <View style={{width: width * 0.6}}>
+                                <View style={{ marginLeft: width * 0.01 }}>
+                                  <View style={{ width: width * 0.6 }}>
                                     <TextTicker
                                       style={styles.propText}
                                       duration={6000}
@@ -813,7 +813,7 @@ export default class RedirectMeter extends Component {
                       </View>
                     ) : (
                       <View style={styles.emptyunitsContainer}>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{ flexDirection: 'row' }}>
                           <TextReuseableComponent title style={styles.emptyUnitsText} value={"No units found add new unit"} />
                           <Build
                             name="hand-point-right"
@@ -838,8 +838,8 @@ export default class RedirectMeter extends Component {
           </View>
           <EditUnit
             flag={this.state.flag}
-            enableFlag={() => this.setState({flag: true})}
-            disableFlag={() => this.setState({flag: false})}
+            enableFlag={() => this.setState({ flag: true })}
+            disableFlag={() => this.setState({ flag: false })}
             modalVisible={this.state.unitModal}
             type={this.state.unitModalType}
             propertyId={this.state.propertyId}
@@ -847,21 +847,21 @@ export default class RedirectMeter extends Component {
             propertyLong={this.state.propertyLong}
             modalName="Add meter"
             meterMenuVisible={this.state.editUnitMenuVisible}
-            showMenu={() => this.setState({editUnitMenuVisible: true})}
-            hideMenu={() => this.setState({editUnitMenuVisible: false})}
-            closeModal={() => this.setState({unitModal: !this.state.unitModal})}
+            showMenu={() => this.setState({ editUnitMenuVisible: true })}
+            hideMenu={() => this.setState({ editUnitMenuVisible: false })}
+            closeModal={() => this.setState({ unitModal: !this.state.unitModal })}
             reRun={this.handleFinishUnit}
             meterTypes={this.state.meterTypesList}
             buildingName={this.state.buildginName}
             buildingId={this.state.buildingId}
             unitDetails={this.state.unitDetails}
-            itemPressHandle={() => this.setState({editUnitMenuVisible: false})}
+            itemPressHandle={() => this.setState({ editUnitMenuVisible: false })}
           />
           <AddBuilding
             modalVisible={this.state.buildModal}
             type="meterDirect"
             modalName="New Building"
-            closeModal={() => this.setState({buildModal: false})}
+            closeModal={() => this.setState({ buildModal: false })}
             reRun={this.handleAddBuilding}
             propertyId={this.state.propertyId}
           />

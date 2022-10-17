@@ -1114,7 +1114,7 @@ export default function AddEditProperty({
                         onTextChange: (text) => {
                           onChangeUtilAndManu(text, index);
                         },
-                        value: setTimeout(() => item.select, 200),
+                        value: item.select,
                         defaultValue: item.select,
                       }}
                       listProps={{
@@ -1858,7 +1858,7 @@ export default function AddEditProperty({
                             onTextChange: (text) => {
                               setOwnerName(text);
                             },
-                            value: setTimeout(() => ownerName, 200),
+                            value: ownerName,
                             defaultValue: ownerName,
                           }}
                           listProps={{

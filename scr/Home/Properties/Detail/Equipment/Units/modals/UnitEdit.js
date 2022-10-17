@@ -1632,7 +1632,7 @@ export default function UnitEdit({
                   //   setVerticalOffs(-180);
                   //   console.log('chala onFoucs');
                   // },
-                  value: setTimeout(() => attachedTo, 200),
+                  value: attachedTo,
                   defaultValue: attachedTo,
                 }}
                 listProps={{
@@ -2590,7 +2590,7 @@ export default function UnitEdit({
                                     onTextChange: (text) => {
                                       onChangeNewDevice(text, index);
                                     },
-                                    value: setTimeout(() => item.select, 200),
+                                    value: item.select,
                                     defaultValue: item.select,
                                   }}
                                   listProps={{
@@ -2896,10 +2896,7 @@ export default function UnitEdit({
                                             setSelectedUtil(text);
                                             setSelectedUtilId(null);
                                           },
-                                          value: setTimeout(
-                                            () => selectedUtil,
-                                            200,
-                                          ),
+                                          value: selectedUtil,
                                           defaultValue: selectedUtil,
                                         }}
                                         listProps={{
@@ -3032,10 +3029,7 @@ export default function UnitEdit({
                                           //   console.log('Focused slide1 items');
                                           //   setScroll(true);
                                           // },
-                                          value: setTimeout(
-                                            () => item.select,
-                                            200,
-                                          ),
+                                          value: item.select,
                                           defaultValue: item.select,
                                         }}
                                         listProps={{
@@ -3312,10 +3306,7 @@ export default function UnitEdit({
                                                       index,
                                                     );
                                                   },
-                                                  value: setTimeout(
-                                                    () => item.select,
-                                                    200,
-                                                  ),
+                                                  value: item.select,
                                                   defaultValue: item.select,
                                                 }}
                                                 listProps={{
@@ -3675,10 +3666,7 @@ export default function UnitEdit({
                                                   // this.onChangeNewDevice(text, index);
                                                   console.log('tes', text);
                                                 },
-                                                value: setTimeout(
-                                                  () => selectedDevice?.name,
-                                                  200,
-                                                ),
+                                                value: selectedDevice?.name,
                                                 defaultValue:
                                                   selectedDevice?.name,
                                               }}
@@ -4067,7 +4055,7 @@ export default function UnitEdit({
                                   onTextChange: (text) => {
                                     setReasonText(text);
                                   },
-                                  value: setTimeout(() => reasonText, 200),
+                                  value: reasonText,
                                   defaultValue: reasonText,
                                 }}
                                 listProps={{

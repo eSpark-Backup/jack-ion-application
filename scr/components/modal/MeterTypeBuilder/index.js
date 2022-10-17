@@ -403,7 +403,7 @@ export default class MeterTypeBuilder extends Component {
                                 onTextChange: (text) => {
                                   this.onChangeTypeBuilder(text, index);
                                 },
-                                value: setTimeout(() => item.input, 200),
+                                value: item.input,
                                 defaultValue: item.input,
                               }}
                               listProps={{

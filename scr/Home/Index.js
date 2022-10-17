@@ -90,9 +90,9 @@ class Splash extends Component {
           const clicked = notification?.userInteraction;
 
           if (clicked) {
+            // console.log('Notification Clicked', notification);
             PushNotification.removeAllDeliveredNotifications();
             if(notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
-              console.log('Notification Clicked', notification);
                 const regex = /\d+/g;
                 const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
                 const idInNumber = matches ? Number(matches[0]) : null;    
