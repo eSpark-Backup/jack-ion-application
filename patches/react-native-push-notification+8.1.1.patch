@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-push-notification/android/src/main/java/com/dieam/reactnativepushnotification/modules/RNPushNotificationHelper.java b/node_modules/react-native-push-notification/android/src/main/java/com/dieam/reactnativepushnotification/modules/RNPushNotificationHelper.java
+index 248ff08..4e16081 100644
+--- a/node_modules/react-native-push-notification/android/src/main/java/com/dieam/reactnativepushnotification/modules/RNPushNotificationHelper.java
++++ b/node_modules/react-native-push-notification/android/src/main/java/com/dieam/reactnativepushnotification/modules/RNPushNotificationHelper.java
+@@ -411,7 +411,7 @@ public class RNPushNotificationHelper {
+ 
+             notification.setStyle(style);
+ 
+-            Intent intent = new Intent(context, intentClass);
++            Intent intent = new Intent(context, Class.forName("com.com.ionenergy.ionmeter.MainActivity"));
+             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+             bundle.putBoolean("foreground", this.isApplicationInForeground());
+             bundle.putBoolean("userInteraction", true);

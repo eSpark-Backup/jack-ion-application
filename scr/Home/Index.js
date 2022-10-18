@@ -17,6 +17,7 @@ import { withNavigation } from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import navigationService from '../../navigationService';
 
 // Components
 import styles from './style';
@@ -25,7 +26,6 @@ import API from '../api/SeviceApi';
 import TextReuseableComponent from '../components/Text/index';
 import { pushNotification } from '../utils/helperFunction';
 
-import navigationService from '../../navigationService';
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
 class Splash extends Component {
@@ -83,38 +83,38 @@ class Splash extends Component {
     if (Platform.OS === 'android') {
       this.createChannels();
       this.onAppBootstrap();
-
       PushNotification.configure({
         onNotification: async function (notification) {
-          pushNotification(notification);
+          notification?.userInteraction ? null : pushNotification(notification);
           const clicked = notification?.userInteraction;
 
           if (clicked) {
+            console.log('Notification Clicked', notification);
             PushNotification.removeAllDeliveredNotifications();
-            if(notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
-              console.log('Notification Clicked', notification);
-                const regex = /\d+/g;
-                const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
-                const idInNumber = matches ? Number(matches[0]) : null;    
-                const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-                const idFromData = data?.property?.id;
-                // const item = { id: 266 }
-                const item = { id: idInNumber ? idInNumber : idFromData }
-                navigationService.navigate("Equip", { item: { item: item } })
+            if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
+              const regex = /\d+/g;
+              const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
+              const idInNumber = matches ? Number(matches[0]) : null;
+              const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+              const idFromData = data?.property?.id;
+              // const item = { id: 266 }
+              const item = { id: idInNumber ? idInNumber : idFromData }
+              navigationService.navigate("Equip", { item: { item: item } })
             } else {
-                const regex = /\d+/g;
-                const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
-                const idInNumber =matches ? Number(matches[0]) : null;
-                const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-                const idFromData = data?.id;
-                const item = { id: idInNumber ? idInNumber : idFromData }
-                navigationService.navigate("Detail", { item: { item: item } })
+              const regex = /\d+/g;
+              const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
+              const idInNumber = matches ? Number(matches[0]) : null;
+              const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+              const idFromData = data?.id;
+              const item = { id: idInNumber ? idInNumber : idFromData }
+              navigationService.navigate("Detail", { item: { item: item } })
             }
           } else {
             console.log('Notification Delievered', notification);
           }
         }
       });
+      
     } else {
       const authStatus = await messaging().requestPermission();
       const enabled =
