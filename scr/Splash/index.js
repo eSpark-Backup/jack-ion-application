@@ -65,7 +65,7 @@ class Main extends Component {
           <PersistGate loading={null} persistor={persistore}>
             <SafeAreaProvider>
               <RootNav ref={(navigatorRef) => {
-          NavigtionService.setTopLevelNavigator(navigatorRef);
+          NavigtionService.setTopLevelNavigator(navigatorRef)
           }} />
             </SafeAreaProvider>
           </PersistGate>
