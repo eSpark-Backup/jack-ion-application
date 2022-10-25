@@ -10,8 +10,6 @@ export default styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-
-    // alignItems:'center',
   },
   headerContainer: {
     width: width * 1,
@@ -236,10 +234,6 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.025,
     color: '#001522',
-    // textShadowOffset: {
-    //   width: width * 0.002,
-    //   height: height * 0.002,
-    // },
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },
@@ -251,10 +245,6 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.035,
     color: '#001522',
-    // textShadowOffset: {
-    //   width: width * 0.002,
-    //   height: height * 0.002,
-    // },
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },
@@ -293,7 +283,6 @@ export default styles = StyleSheet.create({
   insideBottonView: {
     alignItems: 'center',
     justifyContent: 'center',
-    // height: height * 0.06,
   },
   meterReaderBotton: {
     width: width * 0.9,
@@ -318,11 +307,8 @@ export default styles = StyleSheet.create({
    skeletonMainContainer: {
     width: width,
     height: height,
-    // marginVertical: height * 0.01,
-    // justifyContent: 'center',
   },
   skeletonInnerContainer: {
-    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
   },
@@ -333,24 +319,26 @@ export default styles = StyleSheet.create({
   },
   skeletonTitleContainer: {
     width: width * 0.9,
-    // height: height * 0.06,
-    // borderRadius: 4,
     marginBottom: height * 0.02,
     flexDirection: 'row',
-    // alignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'space-around',
   },
   skeletonTitleLeft: {
-    width: height * 0.065,
-    height: height * 0.065,
+    width: height * 0.04,
+    height: height * 0.04,
+    borderRadius: 25,
   },
   skeletonTitleMiddle: {
-    width: height * 0.2,
+    width: height * 0.325,
     height: height * 0.065,
+    borderRadius: 10,
   },
   skeletonTitleRight: {
-    width: height * 0.065,
-    height: height * 0.065,
+    width: height * 0.035,
+    height: height * 0.035,
+    flexDirection: 'row',
+    textAlign: 'center',
   },
   skeletonTpanelContainer: {
     width: width * 0.9,
