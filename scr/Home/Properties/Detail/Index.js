@@ -32,6 +32,8 @@ import Drawer from '../../../components/modal/Drawer/index';
 import ContextProp from '../Context/propContext';
 import { TextInput, FAB, HelperText } from 'react-native-paper';
 import Geocoder from 'react-native-geocoding';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+
 import {
   check,
   openSettings,
@@ -91,6 +93,16 @@ class Details extends React.Component {
       companiesLoader: false,
       selectLocation: false,
       selectAddManuUtil: [],
+      shimmers: [
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+      ],
       unitMixes: [],
       tpanelData: [],
       tBunchData: null,
@@ -426,6 +438,23 @@ class Details extends React.Component {
     this.setState({ propertyflag: false });
   };
 
+  renderShimmers = (item) => (
+    <View key={item.id} style={styles.skeletonMainContainer}>
+      <SkeletonPlaceholder>
+        <View style={styles.skeletonInnerContainer}>
+          <View style={styles.skeletonMapContainer} />
+          <View style={styles.skeletonTitleContainer}>
+            <View style={styles.skeletonTitleLeft}></View>
+            <View style={styles.skeletonTitleMiddle}></View>
+            <View style={styles.skeletonTitleRight}></View>
+          </View>
+          <View style={styles.skeletonTpanelContainer} />
+          <View style={styles.skeletonGatewayContainer} />
+        </View>
+      </SkeletonPlaceholder>
+    </View>
+  );
+
   render() {
     const { onlineUnits, offlineUnits, notInstalledUnits, tBunchData, propertyData } = this.state;
     return (
@@ -447,7 +476,7 @@ class Details extends React.Component {
             flag={this.state.propertyflag}
             toggleflag={this.toggleflag}
           />
-          {this.state.isLoading && <Loader />}
+          
           <Drawer
             isVisible={this.state.isModalVisible}
             onCancel={this.toggleModal}
@@ -518,6 +547,7 @@ class Details extends React.Component {
               <TextReuseableComponent title style={styles.mainHeadiing} value={"Details"} />
             </View>
           </View>
+          {(this.state.listData.name == "undefined" || !this.state.listData.name) && this.state.shimmers.map((item) => this.renderShimmers(item))}
           <ScrollView
             style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}

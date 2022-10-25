@@ -12,7 +12,6 @@ import {
   Alert,
   PermissionsAndroid,
   Linking,
-  ScrollView,
   FlatList,
 } from 'react-native';
 
@@ -91,7 +90,7 @@ class Property extends Component {
     }
   }
   async componentDidMount() {
-    this.props?.fetchPropetry();
+    // this.props?.fetchPropetry();
     this.onFocusFunction();
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       if (this.context.propList) {
@@ -107,24 +106,24 @@ class Property extends Component {
   };
 
   jumpToDetail = async ({ prop, item }) => {
+    this.setState({ showSearch: false });
+    this.selectedProp(prop);
     this.props.navigation.navigate('Detail', { item });
     addToRecent(prop.item);
-    this.selectedProp(prop);
-    this.setState({ showSearch: false });
   };
   jumpFromSearch = ({ prop, item }) => {
-    this.props.navigation.navigate('Detail', { item });
     this.setState({ showSearch: false });
+    this.props.navigation.navigate('Detail', { item });
   };
   jumpToEquip = ({ prop, item }) => {
+    this.selectedProp(prop);
     this.props.navigation.navigate('Equip', { item });
     addToRecent(prop.item);
-    this.selectedProp(prop);
   };
   jumpToAlerts = ({ prop, item }) => {
+    this.selectedProp(prop);
     this.props.navigation.navigate('Alerts', { item });
     addToRecent(prop.item);
-    this.selectedProp(prop);
   };
 
   selectedProp = (prop) => {
