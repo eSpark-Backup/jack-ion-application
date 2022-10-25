@@ -315,4 +315,53 @@ export default styles = StyleSheet.create({
     color: 'white',
     fontFamily: Fonts.BalooChettan2,
   },
+   skeletonMainContainer: {
+    width: width,
+    height: height,
+    // marginVertical: height * 0.01,
+    // justifyContent: 'center',
+  },
+  skeletonInnerContainer: {
+    // flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  skeletonMapContainer: {
+    width: width,
+    height: height * 0.5,
+    marginBottom: height * 0.02
+  },
+  skeletonTitleContainer: {
+    width: width * 0.9,
+    // height: height * 0.06,
+    // borderRadius: 4,
+    marginBottom: height * 0.02,
+    flexDirection: 'row',
+    // alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  skeletonTitleLeft: {
+    width: height * 0.065,
+    height: height * 0.065,
+  },
+  skeletonTitleMiddle: {
+    width: height * 0.2,
+    height: height * 0.065,
+  },
+  skeletonTitleRight: {
+    width: height * 0.065,
+    height: height * 0.065,
+  },
+  skeletonTpanelContainer: {
+    width: width * 0.9,
+    height: height * 0.1,
+    borderRadius: 15,
+    marginBottom: height * 0.02
+  },
+  skeletonGatewayContainer: {
+    marginBottom: height * 0.02,
+    width: width * 0.9,
+    height: height * 0.1,
+    borderRadius: 15,
+  },
 });

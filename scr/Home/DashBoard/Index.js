@@ -21,6 +21,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { VictoryArea, VictoryAxis, VictoryPie } from 'victory-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 // Components
 import { Fonts } from '../../utils/fonts';
@@ -75,6 +76,16 @@ export default class Splash extends Component {
       offlineStatic: 0,
       recentProps: false,
       recentProperties: [],
+      shimmers: [
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+      ],
       newProperties: [],
       totProperties: [],
       initialPosition: {
@@ -228,6 +239,24 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({ recentProps: !this.state.recentProps });
   };
+
+  renderShimmers = (item) => (
+    <View key={item.id} style={styles.skeletonMainContainer}>
+      <SkeletonPlaceholder>
+        <View style={styles.skeletonInnerContainer}>
+          <View style={styles.skeletonMapContainer} />
+          <View style={styles.skeletonTitleContainer}>
+            <View style={styles.skeletonTitleLeft}></View>
+            <View style={styles.skeletonTitleMiddle}></View>
+            <View style={styles.skeletonTitleRight}></View>
+          </View>
+          <View style={styles.skeletonTpanelContainer} />
+          <View style={styles.skeletonGatewayContainer} />
+        </View>
+      </SkeletonPlaceholder>
+    </View>
+  );
+
   render() {
     const {
       onlineProps,
@@ -256,7 +285,8 @@ export default class Splash extends Component {
     !this.state.recentProps ? (upDownNearby = 'down') : (upDownNearby = 'up');
     return (
       <View style={styles.container}>
-        {loadData && <Loader />}
+
+        {/* {loadData && <Loader />} */}
         {Platform.OS == 'ios' && <CustumStatusBar />}
         {/* <View style={styles.headingContainer}> */}
         <View style={styles.headingInner}>
@@ -279,8 +309,7 @@ export default class Splash extends Component {
           </View>
           <View style={{ width: width * 0.1 }} />
         </View>
-        {/* </View> */}
-        <View style={{ flex: 1 }}>
+        {loadData ? this.state.shimmers.map((item) => this.renderShimmers(item)) : <View style={{ flex: 1 }}>
           <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <View
               style={{
@@ -641,7 +670,8 @@ export default class Splash extends Component {
               </View>
             </View>
           </ScrollView>
-        </View>
+        </View>}
+        
       </View>
     );
   }
