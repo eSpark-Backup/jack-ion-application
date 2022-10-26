@@ -330,7 +330,7 @@ export default styles = StyleSheet.create({
     borderRadius: 25,
   },
   skeletonTitleMiddle: {
-    width: height * 0.325,
+    width: height * 0.3,
     height: height * 0.065,
     borderRadius: 10,
   },

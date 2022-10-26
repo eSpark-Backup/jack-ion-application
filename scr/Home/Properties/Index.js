@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   View,
@@ -53,7 +53,7 @@ import { addToRecent } from '../../utils/helperFunction';
 
 const { width, height } = Dimensions.get('window');
 
-class Property extends Component {
+class Property extends PureComponent {
   static contextType = ContextProp;
   constructor() {
     super();
@@ -106,24 +106,24 @@ class Property extends Component {
   };
 
   jumpToDetail = async ({ prop, item }) => {
+    await addToRecent(prop.item);
     this.setState({ showSearch: false });
     this.selectedProp(prop);
     this.props.navigation.navigate('Detail', { item });
-    addToRecent(prop.item);
   };
   jumpFromSearch = ({ prop, item }) => {
     this.setState({ showSearch: false });
     this.props.navigation.navigate('Detail', { item });
   };
-  jumpToEquip = ({ prop, item }) => {
+  jumpToEquip = async ({ prop, item }) => {
+    await addToRecent(prop.item);
     this.selectedProp(prop);
     this.props.navigation.navigate('Equip', { item });
-    addToRecent(prop.item);
   };
-  jumpToAlerts = ({ prop, item }) => {
+  jumpToAlerts = async ({ prop, item }) => {
+    await addToRecent(prop.item);
     this.selectedProp(prop);
     this.props.navigation.navigate('Alerts', { item });
-    addToRecent(prop.item);
   };
 
   selectedProp = (prop) => {
@@ -140,7 +140,6 @@ class Property extends Component {
       location: this.context.filterLocation,
     };
     this.props.loadMoreData(data)
-    // await this.context.loadMoreData();
   };
 
   cleardata = (prop) => {
@@ -340,30 +339,32 @@ class Property extends Component {
       </SkeletonPlaceholder>
     </View>
   );
-  _renderPropList = (prop) => {
-    if (
-      prop.index == this.props.propList.length - 1 &&
-      !this.state.stopLoader
-    ) {
-      this.setState({ stopLoader: true });
-    }
-    return (
-      <View style={styles.propListContainer}>
-        <Properties
-          prop={prop}
-          routerIcon={false}
-          warningIcon={false}
-          jumpFromSearch={null}
-          selectedProp={this.selectedProp}
-          currentIndex={this.state.currentIndex}
-          jumpToDetail={this.jumpToDetail}
-          jumpToEquip={this.jumpToEquip}
-          jumpToAlerts={this.jumpToAlerts}
-          confirmDelete={this.confirmDelete}
-        />
-      </View>
-    );
-  };
+
+  // _renderPropList = (prop, index) => {
+  //   if (
+  //     prop.index == this.props.propList.length - 1 &&
+  //     !this.state.stopLoader
+  //   ) {
+  //     this.setState({ stopLoader: true });
+  //   }
+  //   console.log(`property_index_${index}`)
+  //   return (
+  //       <View key={`property_index_${prop.index}`} style={styles.propListContainer}>
+  //       <Properties
+  //         prop={{"alert_count": 0, "building_count": 1, "city": "Louisville", "contact_email": "abc@ion.com", "contact_name": "Amelia Otto", "contact_phone": "5555555555", "created_at": "10/05/22 12:10:17 PM", "created_by": "1", "created_by_name": "super admin", "custom_id": "", "gateway": false, "id": 330, "installation_count": 1, "latitude": 38.2506068, "longitude": -85.6143952, "meter_count": 3, "name": "Amelia One", "owner": "Dominium", "owner_id": 12, "property_id": 0, "radial_dist": 0.1, "st": "Kentucky", "street": "7400 South Park Place", "unit_actual_count": 24, "unit_count": 200, "unit_mix_count": 3, "unit_mixes": [[Object], [Object], [Object]], "utility_manufacturers": [[Object]], "zipcode": "40222"}}
+  //         routerIcon={false}
+  //         warningIcon={false}
+  //         jumpFromSearch={null}
+  //         selectedProp={this.selectedProp}
+  //         currentIndex={this.state.currentIndex}
+  //         jumpToDetail={this.jumpToDetail}
+  //         jumpToEquip={this.jumpToEquip}
+  //         jumpToAlerts={this.jumpToAlerts}
+  //         confirmDelete={this.confirmDelete}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -397,7 +398,7 @@ class Property extends Component {
         },
       });
       this.setState({ isPullDownShow: false });
-    }, 5000);
+    }, 3000);
   };
 
   render() {
@@ -604,23 +605,53 @@ class Property extends Component {
                   <TextReuseableComponent title style={styles.pullDownText} value={"Pull down to refresh"} />
                 </View>
                 <FlatList
-                  data={this.props.propList}
-                  renderItem={this._renderPropList}
-                  removeClippedSubviews={false}
-                  maxToRenderPerBatch={150}
+                  // ListFooterComponent={() => (
+                  //   <View style={styles.footerText}>
+                  //     {this.props.listLoader && <ActivityIndicator color="#25dAE1" size="large" />}
+                  //     {this.props.limitExceed && <TextReuseableComponent>No more articles at the moment</TextReuseableComponent>}
+                  //   </View>
+                  // )}
                   windowSize={100}
+                  onEndReachedThreshold={0.2}
+                  onEndReached={() => this.LoadData()}
+                  keyExtractor={(item, index) => index.toString()}
                   onRefresh={this.onRefresh}
                   refreshing={this.state.refreshing}
-                  keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
                   ListFooterComponent={() =>
                     this.props.listLoader ? (
                       <ActivityIndicator color="#25dAE1" size="large" />
                     ) : null
                   }
-                  onEndReachedThreshold={width * 0.0001}
-                  onMomentumScrollEnd={() => this.LoadData()}
-                // onEndReached={() => this.LoadData()}
+                  data={this.props.propList}
+                  renderItem={({ item, index }) => {
+                    return (
+                      <View key={`property_index_${index}`} style={styles.propListContainer}>
+                        <Properties
+                          prop={{ item, index }}
+                          routerIcon={false}
+                          warningIcon={false}
+                          jumpFromSearch={null}
+                          selectedProp={this.selectedProp}
+                          currentIndex={this.state.currentIndex}
+                          jumpToDetail={this.jumpToDetail}
+                          jumpToEquip={this.jumpToEquip}
+                          jumpToAlerts={this.jumpToAlerts}
+                          confirmDelete={this.confirmDelete}
+                        />
+                      </View>
+                    );
+                  }}
+                // removeClippedSubviews={false}
+                // maxToRenderPerBatch={150}
+                // ListFooterComponent={() =>
+                //   this.props.listLoader ? (
+                //     <ActivityIndicator color="#25dAE1" size="large" />
+                //   ) : null
+                // }
+                // onEndReachedThreshold={width * 0.0001}
+                // onMomentumScrollEnd={() => !this.props.limitExceed && this.LoadData()}
+
                 />
               </View>
             )}
