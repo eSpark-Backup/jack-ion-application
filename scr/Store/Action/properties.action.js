@@ -49,7 +49,7 @@ export const loadMoreData = (data) => {
         response?.data?.data?.offset > 0
       ) {
         const payload = {
-          propList: getUniqueListBy([...getState().propertyReducer.propList , ...response?.data?.data?.properties], 'id'),
+          propList:[...getState().propertyReducer.propList , ...response?.data?.data?.properties],
           offset: response?.data?.data?.offset,
           limitExceed: false,
         };

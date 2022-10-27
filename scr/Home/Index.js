@@ -24,6 +24,8 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 import API from '../api/SeviceApi';
 import TextReuseableComponent from '../components/Text/index';
 import { pushNotification } from '../utils/helperFunction';
+import { connect } from 'react-redux';
+import { fetchPropetry, loadMoreData } from '../Store/Action/properties.action';
 
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
@@ -132,6 +134,7 @@ class Splash extends Component {
         return unsubscribe;
       }
     }
+    this.props.fetchPropetry();
   }
 
   backAction = () => {
@@ -226,4 +229,20 @@ class Splash extends Component {
   }
 }
 
-export default withNavigation(Splash);
+const mapStateToProps = (state, ownProps) => ({
+  propList: state.propertyReducer.propList,
+  isLoading: state.propertyReducer.isLoading,
+  offset: state.propertyReducer.offset,
+  listLoader: state.propertyReducer.listLoader,
+  limitExceed: state.propertyReducer.limitExceed
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    fetchPropetry: () => dispatch(fetchPropetry()),
+    loadMoreData: (data) => dispatch(loadMoreData(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(Splash));

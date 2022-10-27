@@ -233,7 +233,7 @@ export default styles = StyleSheet.create({
   skeletonMainContainer: {
     width: width * 0.9,
     height: height * 0.09,
-    marginVertical: height * 0.01,
+    marginVertical: height * 0.005,
     justifyContent: 'center',
   },
   skeletonInnerContainer: {
