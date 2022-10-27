@@ -17,7 +17,6 @@ import { withNavigation } from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import navigationService from '../../navigationService';
 
 // Components
 import styles from './style';
@@ -37,8 +36,8 @@ class Splash extends Component {
     ),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       down: false,
     };
@@ -69,6 +68,9 @@ class Splash extends Component {
   }
 
   async componentDidMount() {
+    messaging().onNotificationOpenedApp(async (notification) => {
+      console.log('Initial notification', notification );
+    });
     const token = await EncryptedStorage.getItem('user_token');
 
     if (token != null) {
@@ -84,13 +86,13 @@ class Splash extends Component {
       this.createChannels();
       this.onAppBootstrap();
       PushNotification.configure({
-        onNotification: async function (notification) {
+        onNotification: async (notification) => {
           notification?.userInteraction ? null : pushNotification(notification);
           const clicked = notification?.userInteraction;
+          notification?.id ? PushNotification.cancelLocalNotification(`${notification?.id}`) : null;
 
           if (clicked) {
             console.log('Notification Clicked', notification);
-            PushNotification.removeAllDeliveredNotifications();
             if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
               const regex = /\d+/g;
               const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
@@ -99,7 +101,7 @@ class Splash extends Component {
               const idFromData = data?.property?.id;
               // const item = { id: 266 }
               const item = { id: idInNumber ? idInNumber : idFromData }
-              navigationService.navigate("Equip", { item: { item: item } })
+              this.props.navigation.navigate("Equip", { item: { item: item } })
             } else {
               const regex = /\d+/g;
               const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
@@ -107,7 +109,7 @@ class Splash extends Component {
               const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
               const idFromData = data?.id;
               const item = { id: idInNumber ? idInNumber : idFromData }
-              navigationService.navigate("Detail", { item: { item: item } })
+              this.props.navigation.navigate("Detail", { item: { item: item } })
             }
           } else {
             console.log('Notification Delievered', notification);

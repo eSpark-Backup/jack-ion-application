@@ -804,7 +804,7 @@ class Details extends React.Component {
                     showsVerticalScrollIndicator={false}
                     style={{ width: width * 0.8, height: height * 0.4, marginVertical: height * 0.01 }}>
                     {this.state.unitMixes.map((item, index) => (
-                      <View style={styles.unitMixesValuesContainer}>
+                      <View key={index} style={styles.unitMixesValuesContainer}>
                         <TextReuseableComponent title style={styles.unitMixesValues} value={index + 1} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.br} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.ba} />
