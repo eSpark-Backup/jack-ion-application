@@ -612,8 +612,8 @@ class Property extends PureComponent {
                   //   </View>
                   // )}
                   windowSize={100}
-                  onEndReachedThreshold={0.2}
-                  onEndReached={() => this.LoadData()}
+                  // onEndReachedThreshold={0.2}
+                  // onEndReached={() => this.LoadData()}
                   keyExtractor={(item, index) => index.toString()}
                   onRefresh={this.onRefresh}
                   refreshing={this.state.refreshing}
@@ -649,8 +649,8 @@ class Property extends PureComponent {
                 //     <ActivityIndicator color="#25dAE1" size="large" />
                 //   ) : null
                 // }
-                // onEndReachedThreshold={width * 0.0001}
-                // onMomentumScrollEnd={() => !this.props.limitExceed && this.LoadData()}
+                onEndReachedThreshold={0.2}
+                onMomentumScrollEnd={() => !this.props.limitExceed && this.LoadData()}
 
                 />
               </View>
