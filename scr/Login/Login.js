@@ -163,7 +163,7 @@ class Login extends Component {
           <Formik
             initialValues={{
               email: 'test2@gmail.com',
-              password: '}}UYLWG$q^YXe5#]',
+              password: 'vv>h}7~#Kf}QtpAx',
             }}
             onSubmit={(values) => {
               // console.log(values);
