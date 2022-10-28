@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import Splash from './splash';
 import AuthNav from '../../navigation';
@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistore, store } from '../Store/store';
 import NavigtionService from '../../navigationService';
+import FlashMessage from "react-native-flash-message";
 
 // import Drawer from "../../scr/Navigation/index";
 
@@ -24,7 +25,7 @@ class Main extends Component {
       isLoading: true,
     };
     setTimeout(() => {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }, 3000);
   }
 
@@ -39,10 +40,10 @@ class Main extends Component {
       console.log('value kia ha', value);
       if (value !== null) {
         value == '1'
-          ? this.setState({currentScreen: 'Home'})
-          : this.setState({currentScreen: 'Login'});
+          ? this.setState({ currentScreen: 'Home' })
+          : this.setState({ currentScreen: 'Login' });
       } else {
-        this.setState({currentScreen: 'Login'});
+        this.setState({ currentScreen: 'Login' });
       }
     } catch (e) {
       console.log('error at getting', e);
@@ -65,8 +66,9 @@ class Main extends Component {
           <PersistGate loading={null} persistor={persistore}>
             <SafeAreaProvider>
               <RootNav ref={(navigatorRef) => {
-          NavigtionService.setTopLevelNavigator(navigatorRef)
-          }} />
+                NavigtionService.setTopLevelNavigator(navigatorRef)
+              }} />
+              <FlashMessage ref="myLocalFlashMessage" position="top" />
             </SafeAreaProvider>
           </PersistGate>
         </Provider>

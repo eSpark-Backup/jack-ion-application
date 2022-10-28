@@ -1,5 +1,6 @@
-import PushNotification from 'react-native-push-notification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import navigationService from '../../navigationService';
 
 export function getUniqueListBy(arr, key) {
   return [...new Map(arr.map(item => [item[key], item])).values()]
@@ -66,16 +67,42 @@ export function customDropDown(props) {
 }
 
 export function pushNotification(notification) {
+  console.log('Notification delievered', notification);
   const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
   const regex = /\d+/g;
   const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
   const idInNumber = matches ? Number(matches[0]) : null;
   const id = data ? data?.property?.id || data?.id : idInNumber;
 
-  return PushNotification.localNotification({
-    channelId: 'test-id',
-    title: notification?.title,
-    message: notification?.userInteraction ? notification?.message : `${notification?.title} with id ${ id }`,
+  return showMessage({
+    message: notification?.title,
+    description: notification?.userInteraction ? notification?.message : `${notification?.title || notification?.notification?.title} with id ${ id }`,
+    type: "success",
+    backgroundColor: "gray", // background color
+    color: "black", // text color
+    onPress: () => {
+      /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
+      hideMessage();
+      console.log('Notification Clicked', notification);
+      if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
+        const regex = /\d+/g;
+        const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
+        const idInNumber = matches ? Number(matches[0]) : null;
+        const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+        const idFromData = data?.property?.id;
+        // const item = { id: 266 }
+        const item = { id: idInNumber ? idInNumber : idFromData }
+        navigationService.navigate("Equip", { item: { item: item } })
+      } else {
+        const regex = /\d+/g;
+        const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
+        const idInNumber = matches ? Number(matches[0]) : null;
+        const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+        const idFromData = data?.id;
+        const item = { id: idInNumber ? idInNumber : idFromData }
+        navigationService.navigate("Detail", { item: { item: item } })
+      }
+    },
   });
 }
 

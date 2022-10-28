@@ -71,7 +71,8 @@ class Splash extends Component {
 
   async componentDidMount() {
     messaging().onNotificationOpenedApp(async (notification) => {
-      console.log('Initial notification', notification );
+      console.log('Initial notification', notification);
+      // pushNotification(notification);
     });
     const token = await EncryptedStorage.getItem('user_token');
 
@@ -85,7 +86,6 @@ class Splash extends Component {
     SplashScreen.hide();
     this.requestLocationPermission();
     if (Platform.OS === 'android') {
-      this.createChannels();
       this.onAppBootstrap();
       PushNotification.configure({
         onNotification: async (notification) => {
@@ -118,7 +118,6 @@ class Splash extends Component {
           }
         }
       });
-      
     } else {
       const authStatus = await messaging().requestPermission();
       const enabled =
@@ -171,12 +170,6 @@ class Splash extends Component {
 
   }
 
-  createChannels = () => {
-    PushNotification.createChannel({
-      channelId: 'test-id',
-      channelName: 'Test-channel',
-    });
-  };
 
 
   render() {
