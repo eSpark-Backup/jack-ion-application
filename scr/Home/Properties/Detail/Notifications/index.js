@@ -265,6 +265,7 @@ export default class Splash extends Component {
             <>
               <FlatList
                 style={{ flex: 1 }}
+                showsVerticalScrollIndicator={false}
                 data={this.state?.notificationData}
                 renderItem={({ item }) => (
                   <>
@@ -287,11 +288,11 @@ export default class Splash extends Component {
                           marginRight: width * 0.01,
                         }}
                       />
-                      <View style={{ width: width * 0.7 }}>
+                      <View style={{ width: width * 0.68 }}>
                         <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={item.sender_name} />
-                        <TextReuseableComponent title style={{ width: width * 0.8 }} value={item.message} />
+                        <TextReuseableComponent title style={{ width: width * 0.65 }} value={item.message} />
                       </View>
-                      <TouchableOpacity style={{ width: width * 0.07 }} onPress={() => this.handleDeleteNotification(item.id)}>
+                      <TouchableOpacity style={{ width: width * 0.09 }} onPress={() => this.handleDeleteNotification(item.id)}>
                         <Feather
                           name={'delete'}
                           size={height * 0.035}
