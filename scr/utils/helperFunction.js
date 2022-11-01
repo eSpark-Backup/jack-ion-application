@@ -67,7 +67,7 @@ export function customDropDown(props) {
 }
 
 export function pushNotification(notification) {
-  console.log('Notification delievered', notification);
+  // console.log('Notification delievered', notification);
   const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
   const regex = /\d+/g;
   const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
@@ -83,7 +83,7 @@ export function pushNotification(notification) {
     onPress: () => {
       /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
       hideMessage();
-      console.log('Notification Clicked', notification);
+      // console.log('Notification Clicked', notification);
       if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
         const regex = /\d+/g;
         const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches

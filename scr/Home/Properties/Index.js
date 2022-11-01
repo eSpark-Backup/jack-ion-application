@@ -398,7 +398,7 @@ class Property extends PureComponent {
         },
       });
       this.setState({ isPullDownShow: false });
-    }, 3000);
+    }, 5000);
   };
 
   render() {
