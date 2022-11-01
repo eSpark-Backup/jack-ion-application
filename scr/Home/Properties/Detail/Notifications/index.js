@@ -12,6 +12,8 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
 import Feather from 'react-native-vector-icons/Feather';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+
 
 // Components
 import styles from './style';
@@ -34,6 +36,16 @@ export default class Splash extends Component {
       LoaderState: true,
       visible: false,
       notificationData: [],
+      shimmers: [
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+      ],
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -119,6 +131,7 @@ export default class Splash extends Component {
   }
 
   handleNotificationPress = (item) => {
+    console.log('include properties', item)
     if (item.link) {
       const wordRes = this.findWord("equipment", item.link);
       const regex = /\d+/g;
@@ -180,6 +193,23 @@ export default class Splash extends Component {
       this.setState({ LoaderState: false });
     }
   }
+
+  renderShimmers = (item) => (
+    <View key={item.id} style={styles.skeletonMainContainer}>
+      <SkeletonPlaceholder>
+        <View style={styles.skeletonInnerContainer}>
+          <View style={styles.skeletonIcon} />
+          <View>
+            <View style={styles.skeletonDescription} />
+            <View style={styles.skeletonTitle} />
+          </View>
+          <View style={styles.skeletonEquipsContainer}>
+            <View style={styles.skeletonBuilds} />
+          </View>
+        </View>
+      </SkeletonPlaceholder>
+    </View>
+  );
 
   render() {
     let upDownMeter;
@@ -255,7 +285,7 @@ export default class Splash extends Component {
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {this.state.LoaderState ? (
-            <Loader />
+            this.state.shimmers.map((item) => this.renderShimmers(item))
           ) : this.state?.notificationData?.length < 1 ? (
             <TextReuseableComponent title style={{
               textAlign: 'center',

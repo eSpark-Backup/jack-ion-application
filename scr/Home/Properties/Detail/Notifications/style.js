@@ -145,4 +145,45 @@ export default styles = StyleSheet.create({
     fontSize: width * 0.05,
     color: 'purple',
   },
+  skeletonMainContainer: {
+    width: width * 0.9,
+    height: height * 0.09,
+    marginVertical: height * 0.005,
+    justifyContent: 'center',
+  },
+  skeletonInnerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  skeletonIcon: {
+    width: width * 0.1,
+    height: height * 0.045,
+    borderRadius: 4,
+    marginLeft: 4,
+  },
+  skeletonTitle: {
+    width: width * 0.5,
+    height: height * 0.03,
+    borderRadius: 4,
+  },
+  skeletonDescription: {
+    marginBottom: width * 0.03,
+    width: width * 0.4,
+    height: height * 0.015,
+    borderRadius: 4,
+  },
+  skeletonEquipsContainer: {flexDirection: 'row'},
+  skeletonBuilds: {
+    width: width * 0.1,
+    height: height * 0.045,
+    borderRadius: 4,
+    marginRight: 4,
+  },
+  skeletonUnits: {
+    width: width * 0.04,
+    height: height * 0.045,
+    borderRadius: 4,
+    marginLeft: 4,
+  },
 });
