@@ -67,7 +67,6 @@ export function customDropDown(props) {
 }
 
 export function pushNotification(notification) {
-  // console.log('Notification delievered', notification);
   const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
   const regex = /\d+/g;
   const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
@@ -83,25 +82,13 @@ export function pushNotification(notification) {
     onPress: () => {
       /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
       hideMessage();
-      // console.log('Notification Clicked', notification);
-      if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
-        const regex = /\d+/g;
-        const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
-        const idInNumber = matches ? Number(matches[0]) : null;
-        const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-        const idFromData = data?.property?.id;
-        // const item = { id: 266 }
-        const item = { id: idInNumber ? idInNumber : idFromData }
-        navigationService.navigate("Equip", { item: { item: item } })
-      } else {
-        const regex = /\d+/g;
-        const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
-        const idInNumber = matches ? Number(matches[0]) : null;
-        const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-        const idFromData = data?.id;
-        const item = { id: idInNumber ? idInNumber : idFromData }
-        navigationService.navigate("Detail", { item: { item: item } })
-      }
+      if (notification?.message?.includes('unit')) {
+          const item = { id: data?.property?.id || data?.id }
+          navigationService.navigate("Equip", { item: { item: item } })
+        } else {
+          const item = { id: data?.property?.id || data?.id }
+          navigationService.navigate("Detail", { item: { item: item } })
+        }
     },
   });
 }

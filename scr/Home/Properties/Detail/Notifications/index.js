@@ -130,27 +130,48 @@ export default class Splash extends Component {
     return RegExp('\\b' + word + '\\b').test(str)
   }
 
-  handleNotificationPress = (item) => {
-    console.log('include properties', item)
-    if (item.link) {
-      const wordRes = this.findWord("equipment", item.link);
-      const regex = /\d+/g;
-      const matches = item.link.match(regex);  // creates array from matches
+  handleNotificationPress = (notification) => {
+    console.log(' notificationData', notification)
+    if (notification.link) {
+        const wordRes = this.findWord("equipment", notification.link);
+        const regex = /\d+/g;
+        const matches = notification.link.match(regex);  // creates array from matches
+  
+        if (wordRes && matches.length) {
 
-      if (wordRes && matches.length) {
-        const id = matches[0];
-        const newItem = {
-          item: {
+          const id = matches[0];
+          const newItem = {
             item: {
-              id
+              item: {
+                id
+              }
             }
           }
+
+          return this.props.navigation.navigate("Equip", newItem);
         }
-        return this.props.navigation.navigate("Equip", newItem);
+        const id = matches[0];
+          const newItem = {
+            item: {
+              item: {
+                id
+              }
+            }
+          }
+
+        return this.props.navigation.navigate("Detail", newItem);
       }
-      return item.link.includes('properties') ? this.props.navigation.goBack() : null;
-    }
-    return console.log("No data found in notification=", item);
+      return console.log("No data found in notification=", notification);
+    // if (notification?.message?.includes('unit')) {
+    //   const idFromData = data?.propertyId;
+    //   const item = { id: idFromData }
+    //   this.props.navigation.navigate("Equip", { item: { item: item } })
+    // } else {
+    //   const idFromData = data?.propertyId;
+    //   const item = { id: idFromData }
+    //   this.props.navigation.navigate("Detail", { item: { item: item } })
+    // }
+    // 
   }
 
   handleDeleteNotification = async (itemId) => {
