@@ -413,13 +413,13 @@ PODS:
     - React
   - RNCAsyncStorage (1.17.2):
     - React-Core
-  - RNCCheckbox (0.5.9):
+  - RNCCheckbox (0.5.12):
     - React-Core
   - RNCMaskedView (0.2.6):
     - React-Core
   - RNCPushNotificationIOS (1.10.1):
     - React-Core
-  - RNDateTimePicker (6.3.1):
+  - RNDateTimePicker (5.1.0):
     - React-Core
   - RNFBApp (13.0.1):
     - Firebase/CoreOnly (= 8.9.1)
@@ -713,7 +713,7 @@ SPEC CHECKSUMS:
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: b2fa09ec43c883bc7b0092435d64751c5d12cb30
+  FBReactNativeSpec: 0215903696c176862714e8f47ba655b43817f093
   Firebase: fb5114cd2bf96e2ff7bcb01d0d9a156cf5fd2f07
   FirebaseCore: c5aab092d9c4b8efea894946166b04c9d9ef0e68
   FirebaseCoreDiagnostics: 56fb7216d87e0e6ec2feddefa9d8a392fe8b2c18
@@ -777,10 +777,10 @@ SPEC CHECKSUMS:
   ReactCommon: cfe2b7fd20e0dbd2d1185cd7d8f99633fbc5ff05
   ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
   RNCAsyncStorage: 303e413908008375ebec268aed419e4b23f61527
-  RNCCheckbox: 6369808337432cdbd5025d62ceced2480b4c51df
+  RNCCheckbox: ed1b4ca295475b41e7251ebae046360a703b6eb5
   RNCMaskedView: c298b644a10c0c142055b3ae24d83879ecb13ccd
   RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
-  RNDateTimePicker: 95e0cb71cba4c2f08c62444029f834e6168a2b96
+  RNDateTimePicker: 1dd15d7ed1ab7d999056bc77879a42920d139c12
   RNFBApp: dda844e7084b590eb3d9bec1b2115cabbe4bc40e
   RNFBMessaging: 037ec36b58b6f68e9b2ae83c189eb388eaf48822
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211

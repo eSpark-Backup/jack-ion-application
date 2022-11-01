@@ -370,7 +370,7 @@ class Property extends PureComponent {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      this.setState({ noInternet: !state.isInternetReachable });
+      this.setState({ noInternet: !state.isConnected });
       if (state.isConnected) {
         this.closeAddProp();
         this.setState({ propertyList: this.context.propList });

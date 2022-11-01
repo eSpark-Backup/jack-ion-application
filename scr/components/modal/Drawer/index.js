@@ -75,7 +75,7 @@ export default class DrawerModal extends Component {
         backdropColor="black"
         statusBarTranslucent
         style={styles.modalContainer}>
-        <CustumStatusBar backColor />
+        {Platform.OS ==  "android" && <CustumStatusBar backColor />}
         <View style={styles.drawerMainContainer}>
           <View
             style={{
@@ -99,8 +99,9 @@ export default class DrawerModal extends Component {
                 color="#25AAE1ec"
               />
               <TextReuseableComponent
+                adjustsFontSizeToFit={true}
                 heading
-                style={{ marginLeft: 10 }}
+                style={{ marginLeft: 10, fontSize: height * 0.03}}
                 value={`${propertyName}`}
               />
             </View>

@@ -126,7 +126,7 @@ class Splash extends Component {
 
       if (enabled) {
         this.onAppBootstrap();
-        this.createChannels();
+        // this.createChannels();
         const unsubscribe = messaging().onMessage(async (remoteMessage) => {
           pushNotification(remoteMessage);
         });

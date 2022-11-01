@@ -408,7 +408,7 @@ export default class Splash extends Component {
                 value={this.state.hasCameraAccess}
               />
             </View>
-            <View style={style.containerInner}>
+            {Platform.OS == "android" && <View style={style.containerInner}>
               <View>
                 <TextReuseableComponent title style={style.mainHeadiingItems} value={"File Storage"} />
                 <TextReuseableComponent title style={style.sideHeadingItems} value={"Upload profile and property photos"} />
@@ -420,7 +420,7 @@ export default class Splash extends Component {
                 onValueChange={this.requestStoragePermission}
                 value={this.state.hasStorageAccess}
               />
-            </View>
+            </View>}
             {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>Cloud Scanner</Text>
