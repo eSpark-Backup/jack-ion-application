@@ -224,7 +224,9 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation ("com.facebook.react:react-native") version {
+        strictly "0.64.0"
+    }  // From node_modules
      // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
     implementation 'com.google.firebase:firebase-core:9.6.1'
@@ -238,7 +240,7 @@ dependencies {
     implementation 'com.facebook.fresco:animated-webp:2.0.0'
     implementation 'com.facebook.fresco:webpsupport:2.0.0'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation'com.facebook.soloader:soloader:0.9.0+'
+    implementation'com.facebook.soloader:soloader:0.9.0'
 
     implementation project(':react-native-system-setting')
     implementation(project(':react-native-maps')){
