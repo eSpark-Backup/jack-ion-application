@@ -101,7 +101,7 @@ export default class DrawerModal extends Component {
               <TextReuseableComponent
                 adjustsFontSizeToFit={true}
                 heading
-                style={{ marginLeft: 10, fontSize: height * 0.03}}
+                style={{ marginLeft: 10, fontSize: height * 0.028}}
                 value={`${propertyName}`}
               />
             </View>
