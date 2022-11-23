@@ -57,7 +57,10 @@ class Main extends Component {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistore}>
             <SafeAreaProvider>
-              <AuthNav />
+              <AuthNav ref={(navigatorRef) => {
+                NavigtionService.setTopLevelNavigator(navigatorRef)
+              }} />
+              <FlashMessage ref="myLocalFlashMessage" position="top" />
             </SafeAreaProvider>
           </PersistGate>
         </Provider>
