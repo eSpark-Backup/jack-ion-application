@@ -76,9 +76,8 @@ export function pushNotification(notification) {
   return showMessage({
     message: notification?.title,
     description: notification?.userInteraction ? notification?.message : `${notification?.title || notification?.notification?.title} with id ${ id }`,
-    type: "success",
-    backgroundColor: "gray", // background color
-    color: "black", // text color
+    type: "info",
+    color: "white", // text color
     onPress: () => {
       /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
       hideMessage();
