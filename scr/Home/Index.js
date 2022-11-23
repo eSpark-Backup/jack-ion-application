@@ -89,6 +89,8 @@ class Splash extends Component {
       this.onAppBootstrap();
       PushNotification.configure({
         onNotification: async (notification) => {
+          // console.log('Notification woke from sleep', notification);
+
           notification?.userInteraction ? null : pushNotification(notification);
           const clicked = notification?.userInteraction;
           notification?.id ? PushNotification.cancelLocalNotification(`${notification?.id}`) : null;
@@ -103,7 +105,8 @@ class Splash extends Component {
               const idFromData = data?.property?.id;
               // const item = { id: 266 }
               const item = { id: idInNumber ? idInNumber : idFromData }
-              this.props.navigation.navigate("Equip", { item: { item: item } })
+              // console.log('data from click', data);
+              this.props.navigation.navigate("Equip", { item: { item: data.property } })
             } else {
               const regex = /\d+/g;
               const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
@@ -111,7 +114,8 @@ class Splash extends Component {
               const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
               const idFromData = data?.id;
               const item = { id: idInNumber ? idInNumber : idFromData }
-              this.props.navigation.navigate("Detail", { item: { item: item } })
+              // console.log('data from click prop', data);
+              this.props.navigation.navigate("Detail", { item: { item: data } })
             }
           } else {
             console.log('Notification Delievered', notification);

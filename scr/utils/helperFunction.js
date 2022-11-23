@@ -82,11 +82,9 @@ export function pushNotification(notification) {
       /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
       hideMessage();
       if (notification?.message?.includes('unit')) {
-          const item = { id: data?.property?.id || data?.id }
-          navigationService.navigate("Equip", { item: { item: item } })
+          navigationService.navigate("Equip", { item: { item: data.property } })
         } else {
-          const item = { id: data?.property?.id || data?.id }
-          navigationService.navigate("Detail", { item: { item: item } })
+          navigationService.navigate("Detail", { item: { item: data } })
         }
     },
   });
