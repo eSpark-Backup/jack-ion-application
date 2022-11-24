@@ -590,9 +590,7 @@ class Property extends PureComponent {
             ) : null}
           </View>
           <View style={styles.propertyList}>
-            {this.state.noInternet ? (
-              <TextReuseableComponent title value={"Check Your Internet Connection"} />
-            ) : this.props.isLoading ? (
+            {this.props.isLoading ? (
               <>
                 {this.state.shimmers.map((item) => this.renderShimmers(item))}
               </>
@@ -605,19 +603,16 @@ class Property extends PureComponent {
                   <TextReuseableComponent title style={styles.pullDownText} value={"Pull down to refresh"} />
                 </View>
                 <FlatList
-                  // ListFooterComponent={() => (
-                  //   <View style={styles.footerText}>
-                  //     {this.props.listLoader && <ActivityIndicator color="#25dAE1" size="large" />}
-                  //     {this.props.limitExceed && <TextReuseableComponent>No more articles at the moment</TextReuseableComponent>}
-                  //   </View>
-                  // )}
                   windowSize={100}
-                  // onEndReachedThreshold={0.2}
-                  // onEndReached={() => this.LoadData()}
                   keyExtractor={(item, index) => index.toString()}
                   onRefresh={this.onRefresh}
                   refreshing={this.state.refreshing}
                   showsVerticalScrollIndicator={false}
+                  ListEmptyComponent={
+                  <View style={{ height: height * .7,   justifyContent: 'center' }} >
+                    <TextReuseableComponent title value={"Check Your Internet Connection"} />
+                  </View>
+                  }
                   ListFooterComponent={() =>
                     this.props.listLoader ? (
                       <ActivityIndicator color="#25dAE1" size="large" />
