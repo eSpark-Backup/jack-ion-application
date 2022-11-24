@@ -133,35 +133,35 @@ export default class Splash extends Component {
   handleNotificationPress = (notification) => {
     console.log(' notificationData', notification)
     if (notification.link) {
-        const wordRes = this.findWord("equipment", notification.link);
-        const regex = /\d+/g;
-        const matches = notification.link.match(regex);  // creates array from matches
-  
-        if (wordRes && matches.length) {
+      const wordRes = this.findWord("equipment", notification.link);
+      const regex = /\d+/g;
+      const matches = notification.link.match(regex);  // creates array from matches
 
-          const id = matches[0];
-          const newItem = {
-            item: {
-              item: {
-                id
-              }
-            }
-          }
+      if (wordRes && matches.length) {
 
-          return this.props.navigation.navigate("Equip", newItem);
-        }
         const id = matches[0];
-          const newItem = {
+        const newItem = {
+          item: {
             item: {
-              item: {
-                id
-              }
+              id
             }
           }
+        }
 
-        return this.props.navigation.navigate("Detail", newItem);
+        return this.props.navigation.navigate("Equip", newItem);
       }
-      return console.log("No data found in notification=", notification);
+      const id = matches[0];
+      const newItem = {
+        item: {
+          item: {
+            id
+          }
+        }
+      }
+
+      return this.props.navigation.navigate("Detail", newItem);
+    }
+    return console.log("No data found in notification=", notification);
     // if (notification?.message?.includes('unit')) {
     //   const idFromData = data?.propertyId;
     //   const item = { id: idFromData }
@@ -326,24 +326,23 @@ export default class Splash extends Component {
                         borderWidth: 1,
                         width: width * 0.9,
                         borderRadius: 10,
-                        padding: width * 0.02,
+                        padding: width * 0.01,
                         margin: width * 0.02,
                         flexDirection: 'row',
                         alignItems: 'center',
+                        justifyContent: 'space-around'
                       }}>
                       <MaterialCommunityIcon
                         name="notifications"
-                        size={width * 0.07}
+                        size={height * 0.035}
                         color="black"
-                        style={{
-                          marginRight: width * 0.01,
-                        }}
                       />
-                      <View style={{ width: width * 0.68 }}>
-                        <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={item.sender_name} />
-                        <TextReuseableComponent title style={{ width: width * 0.65 }} value={item.message} />
+                      <View style={{ width: width * 0.55}}>
+                        <TextReuseableComponent title style={{ fontSize: 11, textTransform: 'capitalize', color: '#25aae1' }} value={item.sender_name} />
+                        <TextReuseableComponent title style={{ fontSize: 11 }} value={item.message} />
+                        <TextReuseableComponent title style={{ fontSize: 10 }} value={item.time_diff} />
                       </View>
-                      <TouchableOpacity style={{ width: width * 0.09 }} onPress={() => this.handleDeleteNotification(item.id)}>
+                      <TouchableOpacity style={{ width: width * 0.08 }} onPress={() => this.handleDeleteNotification(item.id)}>
                         <Feather
                           name={'delete'}
                           size={height * 0.035}

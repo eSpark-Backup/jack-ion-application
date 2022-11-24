@@ -94,7 +94,7 @@ const Properties = ({
                 <View style={styles.buildUnitCountContainer}>
                     <FontAwesome5Icon
                         name="house-user"
-                        size={width * 0.04}
+                        size={width * 0.039}
                         color="#115b72"
                     />
                     <TextReuseableComponent title style={styles.buildUnitCount} value={prop?.item?.unit_actual_count} />
