@@ -33,7 +33,7 @@ import Modal from 'react-native-modal';
 import AddEditProperty from '../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import Geocoder from 'react-native-geocoding';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {
   check,

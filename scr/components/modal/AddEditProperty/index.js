@@ -22,7 +22,7 @@ import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import SystemSetting from 'react-native-system-setting';
 
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';

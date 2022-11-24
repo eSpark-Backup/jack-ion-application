@@ -44,7 +44,7 @@ import {
 } from 'react-native-permissions';
 import * as Progress from 'react-native-progress';
 import * as ImagePicker from 'react-native-image-picker';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import { getDistance } from 'geolib';
 import MapView, {
   PROVIDER_GOOGLE,
@@ -1800,6 +1800,9 @@ export default function UnitEdit({
             },
           },
         ]);
+      },
+      (error) => {
+        console.log("error Geoloaction", error);
       },
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
     );
