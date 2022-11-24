@@ -338,9 +338,9 @@ export default class Splash extends Component {
                         color="black"
                       />
                       <View style={{ width: width * 0.55}}>
-                        <TextReuseableComponent title style={{ fontSize: 11, textTransform: 'capitalize', color: '#25aae1' }} value={item.sender_name} />
-                        <TextReuseableComponent title style={{ fontSize: 11 }} value={item.message} />
-                        <TextReuseableComponent title style={{ fontSize: 10 }} value={item.time_diff} />
+                        <TextReuseableComponent title style={{ fontSize: 10, textTransform: 'capitalize', color: '#25aae1' }} value={item.sender_name} />
+                        <TextReuseableComponent title style={{ fontSize: 12 }} value={item.message} />
+                        <TextReuseableComponent title style={{ fontSize: 8 }} value={item.time_diff} />
                       </View>
                       <TouchableOpacity style={{ width: width * 0.08 }} onPress={() => this.handleDeleteNotification(item.id)}>
                         <Feather
@@ -353,9 +353,11 @@ export default class Splash extends Component {
                   </>
                 )}
               />
-              {this.state?.notificationData?.length && <TouchableOpacity style={{ marginBottom: height * 0.02, marginTop: height * 0.02 }} onPress={() => this.handleClear()}>
+              {this.state?.notificationData?.length && <View style={{borderTopWidth: 1, height: height * 0.05, width: width * 1, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={() => this.handleClear()}>
                 <TextReuseableComponent title value={"Clear All"} />
-              </TouchableOpacity>}
+              </TouchableOpacity>
+                </View>}
             </>
           )}
         </View>
