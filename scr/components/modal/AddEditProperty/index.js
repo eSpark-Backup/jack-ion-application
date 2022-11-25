@@ -96,6 +96,7 @@ export default function AddEditProperty({
   const [unitMixIndex, setUnitMixIndex] = useState(null);
   const [unitMixFlag, setUnitMixFlag] = useState(false);
   const [ownerData, setOwnerData] = useState([]);
+  const [additional_contacts, setAdditionalContacts] = useState([]);
   const [ownerId, setOwnerId] = useState('');
   const [ownerName, setOwnerName] = useState('');
   const [contactName, setContactName] = useState('');
@@ -374,6 +375,10 @@ export default function AddEditProperty({
       Toast.show('Please add Unit Count first', Toast.SHORT);
     }
   };
+
+  const handleAddContact = () => {
+    console.log('add contact clicked')
+  }
 
   const AddNewRow = () => {
     if (unitMixes[2].value < 1) {
@@ -777,6 +782,7 @@ export default function AddEditProperty({
       setBtnLoading(true);
 
       let propData = {
+        additional_contacts,
         name: Name,
         street: Street,
         st: State,
@@ -1470,6 +1476,16 @@ export default function AddEditProperty({
                           error={error.property}
                           style={{ ...styles.input, width: '99.99%' }}
                         />
+                        {/* <Text_Input
+                          placeholder="Enter Street Name*"
+                          value={Street}
+                          hide={!dropDownShow[0].value}
+                          onChangeText={(text) => {
+                            setStreet(text);
+                          }}
+                          error={error.street}
+                          style={{ ...styles.input, width: '99.99%' }}
+                        /> */}
                       </View>
                       {error.property ? (
                         <HelperText type="error" visible={error.property}>
@@ -1865,61 +1881,67 @@ export default function AddEditProperty({
                             nestedScrollEnabled: true,
                           }}
                         />
+                        {/* <View style={styles.input}>
+                          <TextReuseableComponent style={{marginBottom: 6 }} value={"Contact Person"} />
+                        </View> */}
                       </View>
-                      <View
-                        style={[
-                          styles.inputContainer,
-                          {
-                            height: dropDownShow[3].value ? width * 0.18 : 0,
-                            overflow: 'hidden',
-                          },
-                        ]}>
-                        <Text_Input
-                          placeholder="Contact Name"
-                          style={styles.input}
-                          hide={!dropDownShow[3].value}
-                          value={contactName}
-                          onChangeText={(text) => {
-                            setContactName(text);
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={[
-                          styles.inputContainer,
-                          {
-                            height: dropDownShow[3].value ? width * 0.18 : 0,
-                            overflow: 'hidden',
-                          },
-                        ]}>
-                        <Text_Input
-                          placeholder="Contact Phone"
-                          style={styles.input}
-                          hide={!dropDownShow[3].value}
-                          value={contactPhone}
-                          onChangeText={(text) => {
-                            setContactPhone(text);
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={[
-                          styles.inputContainer,
-                          {
-                            height: dropDownShow[3].value ? width * 0.18 : 0,
-                            overflow: 'hidden',
-                          },
-                        ]}>
-                        <Text_Input
-                          placeholder="Email"
-                          style={styles.input}
-                          hide={!dropDownShow[3].value}
-                          value={contactEmail}
-                          onChangeText={(text) => {
-                            setContactEmail(text);
-                          }}
-                        />
-                      </View>
+                        <View
+                          style={[
+                            styles.inputContainer,
+                            {
+                              height: dropDownShow[3].value ? width * 0.18 : 0,
+                              overflow: 'hidden',
+                            },
+                          ]}>
+                          <Text_Input
+                            placeholder="Contact Name"
+                            style={styles.input}
+                            hide={!dropDownShow[3].value}
+                            value={contactName}
+                            onChangeText={(text) => {
+                              setContactName(text);
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={[
+                            styles.inputContainer,
+                            {
+                              height: dropDownShow[3].value ? width * 0.18 : 0,
+                              overflow: 'hidden',
+                            },
+                          ]}>
+                          <Text_Input
+                            placeholder="Contact Phone"
+                            style={styles.input}
+                            hide={!dropDownShow[3].value}
+                            value={contactPhone}
+                            onChangeText={(text) => {
+                              setContactPhone(text);
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={[
+                            styles.inputContainer,
+                            {
+                              height: dropDownShow[3].value ? width * 0.18 : 0,
+                              overflow: 'hidden',
+                            },
+                          ]}>
+                          <Text_Input
+                            placeholder="Email"
+                            style={styles.input}
+                            hide={!dropDownShow[3].value}
+                            value={contactEmail}
+                            onChangeText={(text) => {
+                              setContactEmail(text);
+                            }}
+                          />
+                          {/* <TouchableOpacity style={styles.input} onPress={handleAddContact}>
+                            <TextReuseableComponent style={{ marginTop: 1 }} value={"+ Add Additional Contact"} />
+                          </TouchableOpacity> */}
+                        </View>
                     </View>
                   </KeyboardAwareScrollView>
                   {/* Box Header */}
