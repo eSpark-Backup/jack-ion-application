@@ -539,7 +539,7 @@ export default class Splash extends Component {
           <SectionList
             sections={alertsType}
             renderItem={({ item, index }) => (
-              <View style={style.containerInner}>
+              <View style={style.containerInnerNotifications}>
                 <View>
                   <TextReuseableComponent title style={style.mainHeadiingItems} value={item.name} />
                   <TextReuseableComponent title style={style.sideHeadingItems} value={item.description} />
@@ -610,19 +610,19 @@ export default class Splash extends Component {
           <SectionList
             sections={this.state?.alertContacts}
             renderItem={({ item, index }) => (
-              <View key={index} style={style.containerInner}>
+              <View key={index} style={style.containerInnerNotifications}>
                 <View style={style.viewAlignment}>
                   <Feather
                     name="user"
                     size={height * 0.04}
-                    style={{ paddingRight: 5 }}
+                    style={{ paddingRight: 5, color: '#25AAE1ec' }}
                   />
                   <View>
                     <TextReuseableComponent title style={style.mainHeadiingItems} value={item?.name} />
                     <View style={style.viewAlignment}>
                       <TextReuseableComponent title style={style.contactOtherInfo} value={item?.email} />
-                      <TextReuseableComponent title style={style.contactOtherInfo} value={item?.phone} />
                     </View>
+                    <TextReuseableComponent title style={style.contactOtherInfo} value={item?.phone} />
                   </View>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
@@ -973,7 +973,7 @@ export default class Splash extends Component {
           style={{
             width: width,
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
           }}>
           <TouchableOpacity
             onPress={() => this.setState({ activeTab: 'alert' })}
