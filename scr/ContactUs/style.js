@@ -143,4 +143,19 @@ export default styles = StyleSheet.create({
   emailText: {
     fontSize: width * 0.05,
   },
+  chatModule: {
+    // backgroundColor: '#25AAE1ec',
+    bottom: 20,
+    // borderRadius: width * 0.2,
+    // flexDirection: 'row',
+    // width: width * 0.15,
+    // height: width * 0.15,
+    // justifyContent: 'center',
+    right: 20,
+    position: 'absolute',
+  },
+  chatText: {
+    color: 'white',
+    textAlignVertical: 'center',
+  }
 });

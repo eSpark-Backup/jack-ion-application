@@ -9,6 +9,8 @@ import Equip from './Properties/Detail/Equipment/Units';
 import Charts from './Properties/Detail/Charts/Index';
 import Notifications from './Properties/Detail/Notifications/index';
 import Support from '../ContactUs/Index';
+import Chat from '../components/chat/Chat';
+import ChatDetails from '../components/chat/ChatDetails';
 import Setting from '../settings/Index';
 import Filter from './Properties/Filter';
 import Alerts from '../Alerts/index';
@@ -61,6 +63,8 @@ const RouteConfigs = {
   Charts,
   Support,
   Setting,
+  Chat,
+  ChatDetails,
   Filter,
   U_Details,
   Notifications,
@@ -75,7 +79,7 @@ const RouteConfigs = {
   Battery,
   Temperature,
   Network,
-  Profile
+  Profile,
 };
 
 const IonNavigator = createStackNavigator(RouteConfigs, IonNavigatorConfig);

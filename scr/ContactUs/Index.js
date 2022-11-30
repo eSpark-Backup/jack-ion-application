@@ -14,7 +14,7 @@ import Phone from 'react-native-vector-icons/Feather';
 import Email from 'react-native-vector-icons/Feather';
 import TabIcon from 'react-native-vector-icons/MaterialIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
-import RNBeep from 'react-native-a-beep';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Components
 import { Fonts } from '../utils/fonts';
@@ -53,6 +53,10 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     this.setState({ nearby: !this.state.nearby, nearDown: !this.state.nearDown });
   };
+
+  handleChatClick = () => {
+     this.props.navigation.navigate("Chat");
+  }
   render() {
     let upDownMeter;
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
@@ -125,11 +129,11 @@ export default class Splash extends Component {
             </View>
             <View style={styles.insideBottonView}>
               <TextReuseableComponent title style={{
-                  fontSize: width * 0.05,
-                  color: 'black',
-                  fontFamily: Fonts.BalooChettan2,
-                  paddingTop: 20,
-                }} value={"or send us an email"} />
+                fontSize: width * 0.05,
+                color: 'black',
+                fontFamily: Fonts.BalooChettan2,
+                paddingTop: 20,
+              }} value={"or send us an email"} />
               <TouchableOpacity
                 style={{
                   flexDirection: 'row',
@@ -146,8 +150,19 @@ export default class Splash extends Component {
                 />
                 <TextReuseableComponent title style={styles.emailText} value={"jackhowell@ionenergysolutions.com"} />
               </TouchableOpacity>
+              <View>
+              </View>
             </View>
           </View>
+        </View>
+        <View style={styles.chatModule}>
+          <TouchableOpacity onPress={() => this.handleChatClick()}>
+            <MaterialCommunityIcons
+              name="chat-outline"
+              size={width * 0.15}
+              color="#25AAE1ec"
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );

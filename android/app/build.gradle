@@ -231,6 +231,11 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
     implementation 'com.google.firebase:firebase-core:9.6.1'
     // Declare the dependencies for the Firebase Cloud Messaging and Analytics libraries
+
+    // Add the dependency for the Realtime Database library
+    implementation 'com.google.firebase:firebase-database'
+    implementation project(path: ":@react-native-firebase_app")
+    implementation "com.google.firebase:firebase-auth:16.4.6"
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'

@@ -26,6 +26,9 @@ import TextReuseableComponent from '../components/Text/index';
 import { pushNotification } from '../utils/helperFunction';
 import { connect } from 'react-redux';
 import { fetchPropetry, loadMoreData } from '../Store/Action/properties.action';
+// import { Loader } from '../components/Loader';
+// import { FirebaseService } from '../components/chat/firebase/FirebaseService';
+// const firebaseService = new FirebaseService();
 
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
@@ -42,6 +45,7 @@ class Splash extends Component {
     super(props);
     this.state = {
       down: false,
+      // user: null
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -68,8 +72,20 @@ class Splash extends Component {
         });
     }
   }
+  // async firebaseLogin () {
+  //   await firebaseService.signIn()
+  //     .then(({ user, error }) => {
+  //       if (error) {
+  //         Alert.alert('Something went wrong')
+  //         return
+  //       }
+  //       console.log('user', user)
+  //       this.setState({user})
+  //     })
+  // }
 
   async componentDidMount() {
+    // this.firebaseLogin();
     messaging().onNotificationOpenedApp(async (notification) => {
       console.log('Initial notification', notification);
       // pushNotification(notification);
