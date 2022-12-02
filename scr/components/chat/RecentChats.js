@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextInput, View, Dimensions } from 'react-native';
-import TextReuseableComponent from '../../components/Text';
 
 const { width, height } = Dimensions.get('window');
 

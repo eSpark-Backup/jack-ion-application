@@ -62,10 +62,10 @@ const ChatDetails = () => {
 
         const subscriber = firestore()
             .collection("Messages")
-            .orderBy('created_at', 'asc')
+            .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
                 dispatchMessages({ type: 'add', payload: snapshot.docs })
-                // console.log('snapshot');
+                console.log('snapshot', snapshot.docs);
             })
 
         return () => subscriber(); // unsubscribe on unmount
@@ -156,11 +156,11 @@ const ChatDetails = () => {
                                 return item.id
                             }}
                             renderItem={function ({ item }) {
-                                console.log('item', item);
+                                // console.log('item', item);
                                 const data = item.data();
                                 const side = data.senderEmail == userEmail ? 'sent' : 'received';
-                                console.log('data.senderEmail', data.senderEmail);
-                                console.log('userEmail', userEmail);
+                                // console.log('data.senderEmail', data.senderEmail);
+                                // console.log('userEmail', userEmail);
                                 return (
                                     <UserContext.Provider value={user}>
                                         <MessageCard mode={side} message={data.message} />

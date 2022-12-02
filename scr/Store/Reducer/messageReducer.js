@@ -4,7 +4,7 @@ export function messagesReducer(state, action) {
 
     switch (action.type) {
         case 'add':
-            console.log('reducer called', action.payload);
+            // console.log('reducer called', action.payload);
             // return action.payload;
             return unionWith(state, action.payload, function (a, b) {
                 return a.id === b.id

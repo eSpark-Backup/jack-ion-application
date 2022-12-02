@@ -22,28 +22,24 @@ export default styles = StyleSheet.create({
   tabContainerView: {
 
   },
+  allChatsMainContainer: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    // width: "90%"
+  },  
   activeTabContainerView: {
     alignItems: 'center',
     width: '50%',
   },
   tabContainer: {
-    // width: '50%',
     backgroundColor: '#25AAE1ec',
     padding: 10,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // width: 130,
     borderRadius: 6
   },
   activeTabContainer: {
-    // width: 130,
     backgroundColor: '#fff',
     padding: 10,
-    // alignItems: 'center',
-    // justifyContent: 'center',
     borderRadius: 6,
-    // backgroundColor: 'blue'
-    // elevation: width * 0.005,
   },
   input: {
     height: 30,
@@ -57,13 +53,12 @@ export default styles = StyleSheet.create({
     height: height * 0.08,
     alignItems: "center",
     padding: 10,
-    // backgroundColor: 'blue'
+    marginVertical: 1,
   },
   iconContainer: {
     width: "15%",
   },
   innerContainerIcon: {
-    // borderWidth: 1,
     height: 46,
     width: 46,
     borderRadius: 49,
@@ -73,30 +68,22 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nameContainer: {
-    width: "60%",
+    width: "50%",
+    height: '100%',
     justifyContent: 'center',
-
+    // backgroundColor: 'red'
   },
   timeContainer: {
-    width: "20%",
+    width: "30%",
+    height: '100%',
     alignItems: "flex-end",
-    justifyContent: 'center',
-
   },
   chatDetailsContainer: {
     flex: 1,
-    // backgroundColor: 'blue'
-    // flexDirection: 'column',
     justifyContent: 'flex-start',
-    // height: height * 0.5,
-    // padding: 10
   },
   chatDetailsView: {
-    padding: 5,
-    // position: 'absolute'
-    // backgroundColor: 'gray',
-
-    // height: '80%'    
+    padding: 5, 
   },
   messageReceivedContainer: {
     backgroundColor: "gray",

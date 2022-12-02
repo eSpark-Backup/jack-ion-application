@@ -1,12 +1,16 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import navigationService from '../../../navigationService';
+import TextReuseableComponent from '../../components/Text';
 import styles from './styles';
 
-const ChatCard = () => {
+const { width, height } = Dimensions.get('window');
 
-    return <View style={styles.allChatsMainContainer}>
+const ChatCard = (props) => {
+    const { id, name, assignedProperty } = props.data;
+
+    return <View key={id} style={styles.allChatsMainContainer}>
         <TouchableOpacity onPress={() => navigationService.navigate("ChatDetails")}>
             <View style={styles.chatCardContainer}>
                 <View style={styles.iconContainer}>
@@ -16,19 +20,15 @@ const ChatCard = () => {
                 </View>
                 <View style={styles.nameContainer}>
                     <View>
-                        <TextReuseableComponent heading value={"Andy"} />
+                        <TextReuseableComponent style={{ fontSize: 15 }} value={name} />
                     </View>
                     <View>
-                        <TextReuseableComponent value={"Hello from the other side"} />
+                        <TextReuseableComponent style={{ fontSize: 10 }} value={"Let's Start a Conversation!"} />
                     </View>
                 </View>
                 <View style={styles.timeContainer}>
-                    <View style={{ top: 0 }}>
-                        <TextReuseableComponent heading value={"..."} />
-                    </View>
-                    <View style={{ marginTop: 7 }}>
-                        <TextReuseableComponent value={"17:36:00"} />
-                    </View>
+                    <TextReuseableComponent style={{ fontSize: 18 }} value={"..."} />
+                    <TextReuseableComponent style={{ fontSize: 10 }} value={assignedProperty.substring(0, 13)} />
                 </View>
             </View>
         </TouchableOpacity>
