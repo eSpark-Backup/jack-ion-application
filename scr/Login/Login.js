@@ -158,46 +158,6 @@ class Login extends Component {
           console.error(error);
         });
 
-      const data = {
-        userName: response.data.data.user.name,
-        userEmail: response.data.data.user.email,
-        userRole: response.data.data.user.role,
-        userRoleId: response.data.data.user.role_id,
-        userId: response.data.data.user.id,
-        reciepientsList: "Andy"
-      }
-
-      firestore()
-        .collection('Users')
-        .get()
-        .then(querySnapshot => {
-          const isNewUser = querySnapshot?.docs?.filter((doc) => doc?.data()?.userId === response.data.data.user.id);
-
-            if(!isNewUser?.length || querySnapshot?.docs?.length === 0) {
-              console.log('is new user (if)')
-              createUser()
-            } else {
-              console.log('is nott new user')
-              return null;
-            }
-        });
-
-      const createUser = () => {
-        firestore()
-          .collection('Users')
-          .add(data)
-          .then(() => {
-            console.log(response.data.data.user.name, 'User Added !');
-          });
-      }
-
-
-
-
-
-
-
-
       this.setState({
         errName: '',
         errPass: '',

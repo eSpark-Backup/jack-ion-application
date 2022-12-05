@@ -14,14 +14,14 @@ import firestore from '@react-native-firebase/firestore';
 
 import { UserContext } from '../../context/MainContext';
 import { messagesReducer } from '../../Store/Reducer/messageReducer';
-import firebaseService from '../../services/index';
+import API from '../../api/SeviceApi';
 const { width, height } = Dimensions.get('window');
 
 const ChatDetails = ({ navigation }) => {
     const [message, setMessage] = useState("");
     const [messagesForMe, setMessagesForMe] = useState([]);
     const [listOfReciepients, setListOfReciepients] = useState([]);
-    
+
     const [messages, dispatchMessages] = useReducer(messagesReducer, [])
     const [isLoading, setIsLoading] = useState(false);
     const uid = useContext(UserContext);
@@ -57,48 +57,27 @@ const ChatDetails = ({ navigation }) => {
     }
 
     useEffect(() => {
-        // console.log('navigation', navigation.state.params.item);
-
         setSelectedUser(navigation.state.params.item)
-          firestore()
-            .collection('Users')
-            .get()
-            .then(querySnapshot => {
-              const newListOfReciepients = querySnapshot?.docs?.filter((doc) => doc?.data()?.userId !== userDataForMessaging?.id);
-            //   console.log('newList of recipients', newListOfReciepients);
-              setListOfReciepients(newListOfReciepients)
-    
-                // if(listOfReciepients?.length || querySnapshot?.docs?.length === 0) {
-                //   console.log('is new user (if)')
-                //   createUser()
-                // } else {
-                //   console.log('is nott new user')
-                //   return null;
-                // }
-            });
-    
-        //   const createUser = () => {
-        //     firestore()
-        //       .collection('Users')
-        //       .add(data)
-        //       .then(() => {
-        //         console.log(response.data.data.user.name, 'User Added !');
-        //       });
-        //   }
+        fetchAllUsers();
 
         const subscriber = firestore()
             .collection("Messages")
             .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
-                // dispatchMessages({ type: 'add', payload: snapshot.docs })
                 setMessagesForMe(snapshot.docs);
-                // console.log('messagesForMe', messagesForMe);
                 messageForMe();
             })
-        // console.log('snapshott', listOfChats);
 
         return () => subscriber(); // unsubscribe on unmount
     }, [])
+
+    const fetchAllUsers = async () => {
+        const response = await API.get(`/get-all-users`);
+        if (response?.data?.bool) {
+        } else {
+            console.log("response, ERROR")
+        }
+    }
 
     const messageForMe = () => {
         const newArr = [...messagesForMe];
@@ -115,101 +94,43 @@ const ChatDetails = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        
-        // console.log('user details', userDataForMessaging);
         const subscriber = firestore()
             .collection("Messages")
             .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
                 dispatchMessages({ type: 'add', payload: snapshot.docs })
-                // console.log('snapshot', snapshot.docs);
             })
 
         return () => subscriber(); // unsubscribe on unmount
     }, [])
 
-
-
-    // useEffect(() => {
-    //     firestore()
-    //         .collection('Messages')
-    //         .orderBy('created_at', 'desc')
-    //         .get()
-    //         .then(querySnapshot => {
-    //             // console.log('Total Messages: ', querySnapshot);
-    //             // console.log('userName reducer', userName);
-    //             // setMessages(querySnapshot?.docs)
-    //             dispatchMessages({ type: 'add', payload: querySnapshot?.docs })
-    //             console.log('userEmail ',  userEmail);
-    //             // querySnapshot.forEach(documentSnapshot => {
-    //             //     console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-    //             // });
-    //         });
-
-
-
-
-    //     // function onResult(QuerySnapshot) {
-    //     //     console.log('Got Messages collection result.', QuerySnapshot);
-    //     // }
-
-    //     // function onError(error) {
-    //     //     console.error(error);
-    //     // }
-
-    //     // const subscribe = firestore().collection('Messages').onSnapshot(onResult, onError);
-
-    //     // return () => subscribe();
-    //     // console.log("messages", messages);
-    //     // console.log("userDataForMessaging", userDataForMessaging);
-    // },
-    //     [message]
-    // )
-
     const handleCrossClick = () => {
-        // console.log('handle cross click', navigationService);
         navigationService.navigate("Chat")
     }
 
     const handleSend = () => {
         setIsLoading(true)
-        const data = { 
-            message, 
-            created_at: new Date(), 
-            senderName: userDataForMessaging?.name, 
-            senderEmail: userDataForMessaging?.email, 
-            senderRole: userDataForMessaging?.role, 
-            senderRoleId: userDataForMessaging?.role_id, 
-            senderId: userDataForMessaging?.id, 
-            reciepientId: listOfReciepients[0]?.data()?.userId,
-            reciepientName: listOfReciepients[0]?.data()?.userName,
-            reciepientEmail: listOfReciepients[0]?.data()?.userEmail,
+        const data = {
+            message,
+            created_at: new Date(),
+            senderName: userDataForMessaging?.name,
+            senderEmail: userDataForMessaging?.email,
+            senderRole: userDataForMessaging?.role,
+            senderRoleId: userDataForMessaging.role_id,
+            senderId: userDataForMessaging?.id,
+            reciepientId: navigation.state.params.item?.id,
+            reciepientName: navigation.state.params.item?.name,
+            reciepientEmail: navigation.state.params.item?.email,
         }
         firestore()
             .collection('Messages')
             .add(data)
             .then(() => {
-                console.log('Message added!', listOfReciepients[0]?.data());
+                console.log('Message added!', data);
                 setIsLoading(false)
                 setMessage("");
             });
 
-
-
-            // "_data":{
-            //     "created_at":[
-            //        "Object"
-            //     ],
-            //     "message":"Hallo",
-            //     "reciepientEmail":"test2@gmail.com",
-            //     "reciepientId":25,
-            //     "reciepientName":"Test2",
-            //     "senderEmail":"test4@gmail.com",
-            //     "senderId":17,
-            //     "senderName":"test4",
-            //     "senderRole":"technician",
-            //     "senderRoleId":"4"
-            //  }
     }
 
 
@@ -248,8 +169,6 @@ const ChatDetails = ({ navigation }) => {
                                 const data = item.data();
 
                                 const side = data.senderEmail == userEmail ? 'sent' : 'received';
-                                // console.log('data.senderEmail', data.senderEmail);
-                                // console.log('userEmail', userEmail);
                                 return (
                                     <UserContext.Provider value={user}>
                                         <MessageCard mode={side} message={data.message} />

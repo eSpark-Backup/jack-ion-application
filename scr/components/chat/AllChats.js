@@ -6,6 +6,7 @@ import ChatCard from './ChatCard';
 import TextReuseableComponent from '../../components/Text';
 
 import firestore from '@react-native-firebase/firestore';
+import API from '../../api/SeviceApi';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,35 +19,27 @@ const AllChats = () => {
 
     useEffect(() => {
 
-        firestore()
-            .collection('Users')
-            .get()
-            .then(querySnapshot => {
-                const otherThanMe = querySnapshot?.docs?.filter((doc) => doc?.data()?.userId !== userDataForMessaging?.id);
-                setListOfAvailableForChat(otherThanMe);
-                // if(!isNewUser?.length || querySnapshot?.docs?.length === 0) {
-                console.log('setAvailableForChat', userDataForMessaging);
-                //   createUser()
-                // } else {
-                //   console.log('is nott new user')
-                //   return null;
-                // }
-            });
+        fetchAllUsers();
 
         const subscriber = firestore()
             .collection("Messages")
             .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
-                // dispatchMessages({ type: 'add', payload: snapshot.docs })
                 setListOfChats(snapshot.docs);
-                console.log('snapshot', snapshot.docs);
-                // messageForMe();
             })
-        // console.log('snapshott', listOfChats);
 
         return () => subscriber(); // unsubscribe on unmount
     }, [])
 
+    const fetchAllUsers = async () => {
+        const response = await API.get(`/get-all-users`);
+        if (response?.data?.bool) {
+            console.log('response.data.data', response.data.data)
+            setListOfAvailableForChat(response.data.data)
+        } else {
+            console.log("response, ERROR")
+        }
+    }
 
     return (<View>
         <View style={{
