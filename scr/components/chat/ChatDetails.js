@@ -17,17 +17,20 @@ import { messagesReducer } from '../../Store/Reducer/messageReducer';
 import firebaseService from '../../services/index';
 const { width, height } = Dimensions.get('window');
 
-const ChatDetails = () => {
+const ChatDetails = ({ navigation }) => {
     const [message, setMessage] = useState("");
-    // const [messages, setMessages] = useState([]);
+    const [messagesForMe, setMessagesForMe] = useState([]);
+    const [listOfReciepients, setListOfReciepients] = useState([]);
+    
     const [messages, dispatchMessages] = useReducer(messagesReducer, [])
     const [isLoading, setIsLoading] = useState(false);
     const uid = useContext(UserContext);
     const [user, setUser] = useState();
+    const [selectedUser, setSelectedUser] = useState();
     // Set an initializing state whilst Firebase connects
     const [initializing, setInitializing] = useState(true);
     const userReducer = useSelector((state) => state.userReducer);
-    const userUidForMessaging = userReducer.userUidForMessaging;
+    const userDataForMessaging = userReducer.userDataForMessaging;
     const userName = useSelector((state) => state.userReducer.user.name);
     const userEmail = useSelector((state) => state.userReducer.user.email);
     const userData = useSelector((state) => state.userReducer.user);
@@ -54,18 +57,72 @@ const ChatDetails = () => {
     }
 
     useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return () => subscriber(); // unsubscribe on unmount
-    }, []);
+        // console.log('navigation', navigation.state.params.item);
 
-    useEffect(() => {
+        setSelectedUser(navigation.state.params.item)
+          firestore()
+            .collection('Users')
+            .get()
+            .then(querySnapshot => {
+              const newListOfReciepients = querySnapshot?.docs?.filter((doc) => doc?.data()?.userId !== userDataForMessaging?.id);
+            //   console.log('newList of recipients', newListOfReciepients);
+              setListOfReciepients(newListOfReciepients)
+    
+                // if(listOfReciepients?.length || querySnapshot?.docs?.length === 0) {
+                //   console.log('is new user (if)')
+                //   createUser()
+                // } else {
+                //   console.log('is nott new user')
+                //   return null;
+                // }
+            });
+    
+        //   const createUser = () => {
+        //     firestore()
+        //       .collection('Users')
+        //       .add(data)
+        //       .then(() => {
+        //         console.log(response.data.data.user.name, 'User Added !');
+        //       });
+        //   }
 
         const subscriber = firestore()
             .collection("Messages")
             .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
+                // dispatchMessages({ type: 'add', payload: snapshot.docs })
+                setMessagesForMe(snapshot.docs);
+                // console.log('messagesForMe', messagesForMe);
+                messageForMe();
+            })
+        // console.log('snapshott', listOfChats);
+
+        return () => subscriber(); // unsubscribe on unmount
+    }, [])
+
+    const messageForMe = () => {
+        const newArr = [...messagesForMe];
+        const myMessages = newArr.map((msg) => {
+            // console.log('msg', msg);
+            return msg.reciepient == "Andy";
+
+        })
+    }
+
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return () => subscriber(); // unsubscribe on unmount
+    }, []);
+
+    useEffect(() => {
+        
+        // console.log('user details', userDataForMessaging);
+        const subscriber = firestore()
+            .collection("Messages")
+            .orderBy("created_at", "desc")
+            .onSnapshot(function (snapshot) {
                 dispatchMessages({ type: 'add', payload: snapshot.docs })
-                console.log('snapshot', snapshot.docs);
+                // console.log('snapshot', snapshot.docs);
             })
 
         return () => subscriber(); // unsubscribe on unmount
@@ -104,7 +161,7 @@ const ChatDetails = () => {
 
     //     // return () => subscribe();
     //     // console.log("messages", messages);
-    //     // console.log("userUidForMessaging", userUidForMessaging);
+    //     // console.log("userDataForMessaging", userDataForMessaging);
     // },
     //     [message]
     // )
@@ -116,14 +173,43 @@ const ChatDetails = () => {
 
     const handleSend = () => {
         setIsLoading(true)
+        const data = { 
+            message, 
+            created_at: new Date(), 
+            senderName: userDataForMessaging?.name, 
+            senderEmail: userDataForMessaging?.email, 
+            senderRole: userDataForMessaging?.role, 
+            senderRoleId: userDataForMessaging?.role_id, 
+            senderId: userDataForMessaging?.id, 
+            reciepientId: listOfReciepients[0]?.data()?.userId,
+            reciepientName: listOfReciepients[0]?.data()?.userName,
+            reciepientEmail: listOfReciepients[0]?.data()?.userEmail,
+        }
         firestore()
             .collection('Messages')
-            .add({ message, userUidForMessaging, created_at: new Date(), sender: userName, reciepient: "Andy", senderEmail: userData?.email })
+            .add(data)
             .then(() => {
-                console.log('Message added!');
+                console.log('Message added!', listOfReciepients[0]?.data());
                 setIsLoading(false)
                 setMessage("");
             });
+
+
+
+            // "_data":{
+            //     "created_at":[
+            //        "Object"
+            //     ],
+            //     "message":"Hallo",
+            //     "reciepientEmail":"test2@gmail.com",
+            //     "reciepientId":25,
+            //     "reciepientName":"Test2",
+            //     "senderEmail":"test4@gmail.com",
+            //     "senderId":17,
+            //     "senderName":"test4",
+            //     "senderRole":"technician",
+            //     "senderRoleId":"4"
+            //  }
     }
 
 
@@ -142,6 +228,9 @@ const ChatDetails = () => {
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
             <Button onPress={handleCrossClick}>X</Button>
         </View>
+        <View>
+            <TextReuseableComponent value={selectedUser?.name} />
+        </View>
         <View style={styles.chatDetailsView}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -156,8 +245,8 @@ const ChatDetails = () => {
                                 return item.id
                             }}
                             renderItem={function ({ item }) {
-                                // console.log('item', item);
                                 const data = item.data();
+
                                 const side = data.senderEmail == userEmail ? 'sent' : 'received';
                                 // console.log('data.senderEmail', data.senderEmail);
                                 // console.log('userEmail', userEmail);

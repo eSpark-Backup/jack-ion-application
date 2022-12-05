@@ -6,7 +6,7 @@ const initialState = {
   resetPassToken: '',
   userId: null,
   authToken: null,
-  userUidForMessaging: null,
+  userDataForMessaging: null,
 }
 
 export const userReducer = (state = initialState, action) => {
@@ -29,7 +29,7 @@ export const userReducer = (state = initialState, action) => {
       console.log('uid dispatched', payload);
       return {
         ...state,
-        userUidForMessaging: payload,
+        userDataForMessaging: payload,
       }
 
     case ERROR:

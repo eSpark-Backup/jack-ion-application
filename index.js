@@ -10,26 +10,26 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { store } from './scr/Store/store';
 
-function dispatchUid(uid) {
-return {
-  type: "FETCH_USER_UID_FOR_MESSAGING",
-  payload: uid
-}
-}
+// function dispatchUid(uid) {
+// return {
+//   type: "FETCH_USER_UID_FOR_MESSAGING",
+//   payload: uid
+// }
+// }
 
-auth()
-  .signInAnonymously()
-  .then((data) => {
-    console.log('User signed in anonymously', data);
-    store.dispatch(dispatchUid(data.user.uid));
-  })
-  .catch(error => {
-    if (error.code === 'auth/operation-not-allowed') {
-      console.log('Enable anonymous in your firebase console.');
-    }
+// auth()
+//   .signInAnonymously()
+//   .then((data) => {
+//     console.log('User signed in anonymously', data);
+//     store.dispatch(dispatchUid(data.user.uid));
+//   })
+//   .catch(error => {
+//     if (error.code === 'auth/operation-not-allowed') {
+//       console.log('Enable anonymous in your firebase console.');
+//     }
 
-    console.error(error);
-  });
+//     console.error(error);
+//   });
 
 // import { pushNotification } from './scr/utils/helperFunction';
 LogBox.ignoreAllLogs(true);

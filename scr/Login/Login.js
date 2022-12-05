@@ -25,6 +25,10 @@ import { connect } from 'react-redux';
 import { userLogin } from '../Store/Action/user.action';
 import TextReuseableComponent from '../components/Text/index';
 
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { store } from '../Store/store';
+
 const { width, height } = Dimensions.get('window');
 
 const clc = require('cli-color');
@@ -119,8 +123,81 @@ class Login extends Component {
         response.data.data.user.role_id,
         response.data.data.user.id,
       ); //todo: Token Saved at this point
-      this.props.login({...response?.data?.data?.user, token: response?.data?.data?.token})
+      this.props.login({ ...response?.data?.data?.user, token: response?.data?.data?.token })
       this.props.navigation.navigate('Home');
+
+      function dispatchUid(uid) {
+        return {
+          type: "FETCH_USER_UID_FOR_MESSAGING",
+          payload: uid
+        }
+      }
+
+      auth()
+        .signInAnonymously()
+        .then((data) => {
+          const uid = data?.user?.uid;
+          const payload = {
+            name: response.data.data.user.name,
+            email: response.data.data.user.email,
+            id: response.data.data.user.id,
+            role: response.data.data.user.role,
+            role_id: response.data.data.user.role_id,
+            uidForMessaging: uid
+          }
+          // console.log('dispatchUid(data.user.uid)', dispatchUid(payload));
+
+          store.dispatch(dispatchUid(payload));
+
+        })
+        .catch(error => {
+          if (error.code === 'auth/operation-not-allowed') {
+            console.log('Enable anonymous in your firebase console.');
+          }
+
+          console.error(error);
+        });
+
+      const data = {
+        userName: response.data.data.user.name,
+        userEmail: response.data.data.user.email,
+        userRole: response.data.data.user.role,
+        userRoleId: response.data.data.user.role_id,
+        userId: response.data.data.user.id,
+        reciepientsList: "Andy"
+      }
+
+      firestore()
+        .collection('Users')
+        .get()
+        .then(querySnapshot => {
+          const isNewUser = querySnapshot?.docs?.filter((doc) => doc?.data()?.userId === response.data.data.user.id);
+
+            if(!isNewUser?.length || querySnapshot?.docs?.length === 0) {
+              console.log('is new user (if)')
+              createUser()
+            } else {
+              console.log('is nott new user')
+              return null;
+            }
+        });
+
+      const createUser = () => {
+        firestore()
+          .collection('Users')
+          .add(data)
+          .then(() => {
+            console.log(response.data.data.user.name, 'User Added !');
+          });
+      }
+
+
+
+
+
+
+
+
       this.setState({
         errName: '',
         errPass: '',
@@ -155,7 +232,7 @@ class Login extends Component {
             />
           </View>
           <View style={{ marginBottom: height * 0.05 }}>
-          <Text style={styles.titleText}>
+            <Text style={styles.titleText}>
               Sign In into
               <Text style={styles.highlightText}> ION</Text>
             </Text>

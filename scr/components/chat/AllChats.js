@@ -1,37 +1,51 @@
 import { Dimensions, View, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import ChatCard from './ChatCard';
 import TextReuseableComponent from '../../components/Text';
+
+import firestore from '@react-native-firebase/firestore';
 
 const { width, height } = Dimensions.get('window');
 
 const AllChats = () => {
     const [listOfChats, setListOfChats] = useState([]);
-    const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([{
-        id: 1,
-        name: "Andy",
-        assignedProperty: "ION Energy"
-    },
-    {
-        id: 1,
-        name: "Molly",
-        assignedProperty: "Test Property"
-    },
-    {
-        id: 1,
-        name: "Steieve",
-        assignedProperty: "World Trade Center"
-    },
-    {
-        id: 1,
-        name: "Gru",
-        assignedProperty: "Stanton Oaks Apartments"
-    },
-    {
-        id: 1,
-        name: "Eugene Flitzherbert",
-        assignedProperty: "ION Energy"
-    }]);
+    const [messagesForMe, setMessagesForMe] = useState([]);
+    const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([]);
+    const userReducer = useSelector((state) => state.userReducer);
+    const userDataForMessaging = userReducer.userDataForMessaging;
+
+    useEffect(() => {
+
+        firestore()
+            .collection('Users')
+            .get()
+            .then(querySnapshot => {
+                const otherThanMe = querySnapshot?.docs?.filter((doc) => doc?.data()?.userId !== userDataForMessaging?.id);
+                setListOfAvailableForChat(otherThanMe);
+                // if(!isNewUser?.length || querySnapshot?.docs?.length === 0) {
+                console.log('setAvailableForChat', userDataForMessaging);
+                //   createUser()
+                // } else {
+                //   console.log('is nott new user')
+                //   return null;
+                // }
+            });
+
+        const subscriber = firestore()
+            .collection("Messages")
+            .orderBy("created_at", "desc")
+            .onSnapshot(function (snapshot) {
+                // dispatchMessages({ type: 'add', payload: snapshot.docs })
+                setListOfChats(snapshot.docs);
+                console.log('snapshot', snapshot.docs);
+                // messageForMe();
+            })
+        // console.log('snapshott', listOfChats);
+
+        return () => subscriber(); // unsubscribe on unmount
+    }, [])
 
 
     return (<View>
@@ -47,8 +61,8 @@ const AllChats = () => {
                 placeholder="Find People to chat"
             />
         </View>
-        <View style={{ margin: 10}}>
-        <TextReuseableComponent value={"List of Available People for Chat."} />
+        <View style={{ margin: 10 }}>
+            <TextReuseableComponent value={"List of Available People for Chat."} />
         </View>
         <View>
             {listOfAvailabeForChat?.map((chat) => {
