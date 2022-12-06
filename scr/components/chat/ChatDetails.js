@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useReducer } from 'react'
+import React, { useState, useEffect, useContext, useReducer, useRef } from 'react'
 import { View, Dimensions, FlatList, SafeAreaView, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
@@ -17,6 +17,7 @@ import API from '../../api/SeviceApi';
 const { width, height } = Dimensions.get('window');
 
 const ChatDetails = ({ navigation }) => {
+    const scrollViewRef = useRef();
     const [message, setMessage] = useState("");
     const [messagesForMe, setMessagesForMe] = useState([]);
     const [listOfReciepients, setListOfReciepients] = useState([]);
@@ -67,7 +68,11 @@ const ChatDetails = ({ navigation }) => {
             .collection("Messages")
             .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
-                dispatchMessages({ type: 'add', payload: snapshot.docs })
+                const filteredMessages = snapshot.docs?.filter((msg) => {
+                    return msg.data()?.senderEmail === userDataForMessaging?.email || msg.data()?.reciepientEmail === userDataForMessaging?.email;
+                })
+                console.log('msg', filteredMessages);
+                dispatchMessages({ type: 'add', payload: filteredMessages })
             })
 
         return () => subscriber(); // unsubscribe on unmount
@@ -119,40 +124,37 @@ const ChatDetails = ({ navigation }) => {
             <Button onPress={handleCrossClick}>X</Button>
         </View>
         <View>
-            <TextReuseableComponent heading style={{ textAlign: "center", color: 'blue'}} value={selectedUser?.name} />
+            <TextReuseableComponent heading style={{ textAlign: "center", color: 'blue' }} value={selectedUser?.name} />
         </View>
         <View style={styles.chatDetailsView}>
             <ScrollView
+                ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                 showsVerticalScrollIndicator={false}
                 style={{ height: height * 0.745 }}
             >
                 <SafeAreaView>
-                    <View>
+                    <View >
                         <FlatList
                             inverted
                             data={messages}
-                            ListEmptyComponent={() => {
-                                return <View>
-                                    <TextReuseableComponent value={"Start a Conversation!"} />
-                                </View>
-                            }}
                             keyExtractor={function (item) {
                                 return item.id
                             }}
                             renderItem={function ({ item }) {
                                 const data = item.data();
-                                const loggedInUserEmail = userEmail;
                                 const clickedUserEmail = selectedUser.email;
                                 const reciepientEmail = data?.reciepientEmail;
                                 const senderEmail = data?.senderEmail;
-                                if (senderEmail == clickedUserEmail || reciepientEmail == clickedUserEmail || clickedUserEmail == loggedInUserEmail) {
 
+                                if (clickedUserEmail == senderEmail || clickedUserEmail == reciepientEmail) {
                                     const side = senderEmail == userEmail ? 'sent' : 'received';
                                     return (
                                         <UserContext.Provider value={user}>
                                             <MessageCard mode={side} message={data.message} />
                                         </UserContext.Provider>
                                     )
+                                } else {
+                                    return null;
                                 }
                             }}
                         />
