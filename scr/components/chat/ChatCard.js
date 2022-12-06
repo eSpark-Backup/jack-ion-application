@@ -8,14 +8,14 @@ import styles from './styles';
 const { width, height } = Dimensions.get('window');
 
 const ChatCard = (props) => {
-    const { id, name, role_id } = props.data;
+    const { id, name, role_id, last_message } = props.data;
     
     return <View key={id} style={styles.allChatsMainContainer}>
         <TouchableOpacity onPress={() => navigationService.navigate("ChatDetails", { item: props.data })}>
             <View style={styles.chatCardContainer}>
                 <View style={styles.iconContainer}>
                     <View style={styles.innerContainerIcon}>
-                        <TextReuseableComponent heading value={"A"} />
+                        <TextReuseableComponent heading value={name.substring(0, 1).toUpperCase()} />
                     </View>
                 </View>
                 <View style={styles.nameContainer}>
@@ -23,12 +23,12 @@ const ChatCard = (props) => {
                         <TextReuseableComponent style={{ fontSize: 15 }} value={name} />
                     </View>
                     <View>
-                        <TextReuseableComponent style={{ fontSize: 10 }} value={role_id == 4 ? "Technician" : "Admin"} />
+                        <TextReuseableComponent style={{ fontSize: 10 }} value={last_message} />
                     </View>
                 </View>
                 <View style={styles.timeContainer}>
                     <TextReuseableComponent style={{ fontSize: 18 }} value={"..."} />
-                    {/* <TextReuseableComponent style={{ fontSize: 10 }} value={assignedProperty.substring(0, 13)} /> */}
+                    <TextReuseableComponent style={{ fontSize: 10 }} value={role_id == 4 ? "Technician" : "Admin"} />
                 </View>
             </View>
         </TouchableOpacity>

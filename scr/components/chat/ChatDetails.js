@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext, useReducer } from 'react'
-import { View, Dimensions, FlatList, SafeAreaView } from 'react-native';
+import { View, Dimensions, FlatList, SafeAreaView, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
 import TextInput from '../TextInput';
 import TextReuseableComponent from '../../components/Text/index';
 import navigationService from '../../../navigationService';
 import styles from './styles';
-import { ScrollView } from 'react-native-gesture-handler';
 import MessageCard from './MessageCard';
 
 import auth from '@react-native-firebase/auth';
@@ -56,37 +55,6 @@ const ChatDetails = ({ navigation }) => {
         if (initializing) setInitializing(false);
     }
 
-    useEffect(() => {
-        setSelectedUser(navigation.state.params.item)
-        fetchAllUsers();
-
-        const subscriber = firestore()
-            .collection("Messages")
-            .orderBy("created_at", "desc")
-            .onSnapshot(function (snapshot) {
-                setMessagesForMe(snapshot.docs);
-                messageForMe();
-            })
-
-        return () => subscriber(); // unsubscribe on unmount
-    }, [])
-
-    const fetchAllUsers = async () => {
-        const response = await API.get(`/get-all-users`);
-        if (response?.data?.bool) {
-        } else {
-            console.log("response, ERROR")
-        }
-    }
-
-    const messageForMe = () => {
-        const newArr = [...messagesForMe];
-        const myMessages = newArr.map((msg) => {
-            // console.log('msg', msg);
-            return msg.reciepient == "Andy";
-
-        })
-    }
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -94,6 +62,7 @@ const ChatDetails = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
+        setSelectedUser(navigation.state.params.item)
         const subscriber = firestore()
             .collection("Messages")
             .orderBy("created_at", "desc")
@@ -150,7 +119,7 @@ const ChatDetails = ({ navigation }) => {
             <Button onPress={handleCrossClick}>X</Button>
         </View>
         <View>
-            <TextReuseableComponent value={selectedUser?.name} />
+            <TextReuseableComponent heading style={{ textAlign: "center", color: 'blue'}} value={selectedUser?.name} />
         </View>
         <View style={styles.chatDetailsView}>
             <ScrollView
@@ -162,18 +131,29 @@ const ChatDetails = ({ navigation }) => {
                         <FlatList
                             inverted
                             data={messages}
+                            ListEmptyComponent={() => {
+                                return <View>
+                                    <TextReuseableComponent value={"Start a Conversation!"} />
+                                </View>
+                            }}
                             keyExtractor={function (item) {
                                 return item.id
                             }}
                             renderItem={function ({ item }) {
                                 const data = item.data();
+                                const loggedInUserEmail = userEmail;
+                                const clickedUserEmail = selectedUser.email;
+                                const reciepientEmail = data?.reciepientEmail;
+                                const senderEmail = data?.senderEmail;
+                                if (senderEmail == clickedUserEmail || reciepientEmail == clickedUserEmail || clickedUserEmail == loggedInUserEmail) {
 
-                                const side = data.senderEmail == userEmail ? 'sent' : 'received';
-                                return (
-                                    <UserContext.Provider value={user}>
-                                        <MessageCard mode={side} message={data.message} />
-                                    </UserContext.Provider>
-                                )
+                                    const side = senderEmail == userEmail ? 'sent' : 'received';
+                                    return (
+                                        <UserContext.Provider value={user}>
+                                            <MessageCard mode={side} message={data.message} />
+                                        </UserContext.Provider>
+                                    )
+                                }
                             }}
                         />
                     </View>

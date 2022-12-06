@@ -1,4 +1,4 @@
-import { Dimensions, View, TextInput } from 'react-native';
+import { Dimensions, View, TextInput, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -59,7 +59,11 @@ const AllChats = () => {
         </View>
         <View>
             {listOfAvailabeForChat?.map((chat) => {
-                return <ChatCard data={chat} />
+                return <View>
+                    <ScrollView>
+                        <ChatCard data={chat} />
+                    </ScrollView>
+                </View>
             })}
         </View>
     </View>);
