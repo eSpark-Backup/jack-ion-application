@@ -390,6 +390,8 @@ class Property extends PureComponent {
     if (!this.context.filterWork && this.state.filterWork) {
       this.setState({ filterWork: false });
     }
+  console.log('this.props.propList?.length', this.props.propList?.length);
+  console.log('this.props.limitExceed', this.props.limitExceed);
     return (
       <>
         <CustumStatusBar />

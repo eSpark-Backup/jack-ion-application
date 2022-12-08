@@ -89,15 +89,13 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: width * 0.03,
     paddingVertical: width * 0.015,
-    borderRadius: width * 0.005,
-    // elevation:width * .01,
+    borderRadius: width * 0.04,
     marginBottom: height * 0.015,
     elevation: width * 0.01,
   },
   mainHeadiingItems: {
     fontFamily: Fonts.BalsamiqSansRegular,
-    fontSize: width * 0.058,
-    color: '#000000',
+    color: '#25AAE1ec',
   },
   mainHeadiingReset: {
     fontFamily: Fonts.BalsamiqSansRegular,

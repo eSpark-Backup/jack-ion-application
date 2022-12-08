@@ -22,35 +22,17 @@ import {
 } from 'react-native';
 
 //Packages
-import LinearGradient from 'react-native-linear-gradient';
-import Menu from 'react-native-vector-icons/Entypo';
-import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
-import Search from 'react-native-vector-icons/EvilIcons';
-import Properties from 'react-native-vector-icons/FontAwesome5';
 import TabIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Back from 'react-native-vector-icons/MaterialIcons';
-import Tool from 'react-native-vector-icons/Entypo';
-import Cast from 'react-native-vector-icons/Feather';
-import Scan from 'react-native-vector-icons/Ionicons';
-import Test from 'react-native-vector-icons/Entypo';
 import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import Loader from '../components/Loader';
-import {withNavigation} from 'react-navigation';
 import {PERMISSIONS, check, RESULTS} from 'react-native-permissions';
 
 import Modal from 'react-native-modal';
 
-// Components
-import {Fonts} from '../utils/fonts';
-
 import styles from './style';
-import {Ellipse} from 'react-native-svg';
-import {ceil, set} from 'react-native-reanimated';
 import style from '../Home/style';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import CustumStatusBar from '../components/StatusBar';
-import Toast from 'react-native-simple-toast';
 import API from '../api/SeviceApi';
 const {width, height} = Dimensions.get('window');
 
@@ -269,13 +251,17 @@ class Tools extends Component {
     return (
       <View style={{flex: 1}}>
         <CustumStatusBar />
-        {/* <StatusBar backgroundColor="#fff" /> */}
+        <View style={styles.headingContainer}>
+          <View style={styles.headingInner}>
+            <TabIcon name="toolbox" color="white" size={height * 0.03} style={style.settingIcon} />
+            <TextReuseableComponent title style={styles.mainHeadiing} value={"Tools"} />
+          </View>
+        </View>
         <View style={[styles.container]}>
           {this.state.loader ? <Loader /> : null}
           <Modal
             animationIn="bounceInUp"
             animationOut="bounceInDown"
-            // backdropColor='black'
             backdropOpacity={5}
             statusBarTranslucent
             isVisible={this.state.isVisible}>
@@ -300,16 +286,9 @@ class Tools extends Component {
                   autoFocus="on"
                   onBarCodeRead={this.onSuccess}
                   captureAudio={false}
-                  // onGoogleVisionBarcodesDetected={this.onSuccess}
-                  // androidCameraPermissionOptions={{
-                  //   title: "Open Camera",
-                  //   message: "Open Open",
-                  //   buttonPositive: 'OK',
-                  //   buttonNegative: "Not Ok",
-                  // }}
                 >
                   <BarcodeMask outerMaskOpacity={0} />
-                  {/* <View style={{ height: height * .3, width: width * .6, borderWidth: width * .006, borderColor: 'yellow' }} /> */}
+                  
                 </RNCamera>
                 <View
                   style={{
@@ -350,35 +329,7 @@ class Tools extends Component {
             )}
           </Modal>
           <StatusBar backgroundColor="white" barStyle="default" hidden />
-          {/* <View style={styles.headingContainer}>
-            <View style={styles.headingInner}>
-              <Tool
-                name="tools"
-                size={height * 0.03}
-                color="white"
-                style={styles.toolIcon}
-              />
-              <Text style={styles.mainHeadiing}>Tools</Text>
-            </View>
-          </View> */}
           <View style={styles.toolContainer}>
-            {/* <Animated.View
-              style={{
-                transform: [{scale: springValue}],
-              }}>
-              <TouchableOpacity
-                style={styles.toolButton}
-                onPress={() => Toast.show('Work in Progess')}>
-                <Image
-                  source={require('../../Images/profileBack.jpg')}
-                  style={styles.toolImage}
-                />
-                <Cast name="cast" size={height * 0.06} color="white" />
-                <View>
-                  <Text style={styles.toolName}>Direct Connect</Text>
-                </View>
-              </TouchableOpacity>
-            </Animated.View> */}
             <Animated.View
               style={{
                 transform: [{scale: springValue}],
@@ -396,23 +347,6 @@ class Tools extends Component {
                 </View>
               </TouchableOpacity>
             </Animated.View>
-            {/* <Animated.View
-              style={{
-                transform: [{scale: springValue}],
-              }}>
-              <TouchableOpacity
-                style={styles.toolButton}
-                onPress={() => Toast.show('Work in Progess')}>
-                <Image
-                  source={require('../../Images/profileBack.jpg')}
-                  style={styles.toolImage}
-                />
-                <Test name="signal" size={height * 0.06} color="white" />
-                <View>
-                  <Text style={styles.toolName}>Test Connect</Text>
-                </View>
-              </TouchableOpacity>
-            </Animated.View> */}
           </View>
         </View>
       </View>

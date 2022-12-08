@@ -99,27 +99,27 @@ export const Profile = ({navigation}) => {
         <View style={styles.detailsContainer}>
           <View style={styles.detailItem}>
             <TextReuseableComponent title value={"Name:"} />
-            <TextReuseableComponent title value={user.name || '-'} />
+            <TextReuseableComponent title value={user?.name || '-'} />
           </View>
           <View style={styles.detailItem}>
             <TextReuseableComponent title value={"Email:"} />
-            <TextReuseableComponent title value={user.email || '-'} />
+            <TextReuseableComponent title value={user?.email || '-'} />
           </View>
           <View style={styles.detailItem}>
             <TextReuseableComponent title value={"Role:"} />
-            <TextReuseableComponent title value={user.role || '-'} />
+            <TextReuseableComponent title value={user?.role || '-'} />
           </View>
           <View style={styles.detailItem}>
             <TextReuseableComponent title value={"Address:"} />
-            <TextReuseableComponent title value={user.address || '-'} />
+            <TextReuseableComponent title value={user?.address || '-'} />
           </View>
           <View style={styles.detailItem}>
             <TextReuseableComponent title value={"Country:"} />
-            <TextReuseableComponent title value={user.country || '-'} />
+            <TextReuseableComponent title value={user?.country || '-'} />
           </View>
           <View style={[styles.detailItem, {borderBottomColor: "#fff"}]}>
             <TextReuseableComponent title value={"City:"} />
-            <TextReuseableComponent title value={user.city || '-'} />
+            <TextReuseableComponent title value={user?.city || '-'} />
           </View>
         </View>
         

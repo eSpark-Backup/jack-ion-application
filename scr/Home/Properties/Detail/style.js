@@ -139,7 +139,6 @@ export default styles = StyleSheet.create({
     paddingHorizontal: width * 0.02,
   },
   clientNameHeading: {
-    fontSize: height * 0.025,
     fontFamily: Fonts.ComfortaaRegular,
   },
   clientDataEdit: {

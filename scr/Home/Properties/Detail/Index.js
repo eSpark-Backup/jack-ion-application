@@ -621,7 +621,7 @@ class Details extends React.Component {
                 <Properties name="home-city-outline" size={width * 0.1} style={{ color: '#25AAE1ec' }} />
                 <TextReuseableComponent title style={styles.clientNameHeading} value={this.state.listData.name == null
                   ? 'Untitled'
-                  : this.state.listData.name} />
+                  : this.state.listData.name.substring(0, 28)} />
                 <Pressable
                   style={styles.clientDataEdit}
                   onPress={() => this.enableLocation()}
