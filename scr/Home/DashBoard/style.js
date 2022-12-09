@@ -97,7 +97,7 @@ export default styles = StyleSheet.create({
     width: width * 0.035,
     height: width * 0.035,
     borderRadius: 100,
-    backgroundColor: '#175CA1',
+    backgroundColor: '#3e95c7',
     marginHorizontal: 1,
   },
   onlineText: {

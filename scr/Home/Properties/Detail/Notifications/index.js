@@ -353,11 +353,21 @@ export default class Splash extends Component {
                   </>
                 )}
               />
-              {this.state?.notificationData?.length && <View style={{borderTopWidth: 1, height: height * 0.05, width: width * 1, alignItems: 'center', justifyContent: 'center'}}>
+              {this.state?.notificationData?.length && <View style={{ 
+                borderRadius: width * 0.02, 
+                height: height * 0.05, 
+                width: width * 0.2, 
+                marginBottom: 20, 
+                backgroundColor: '#25aae1', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'absolute', 
+                bottom: 0 
+                }}>
                 <TouchableOpacity onPress={() => this.handleClear()}>
-                <TextReuseableComponent title value={"Clear All"} />
-              </TouchableOpacity>
-                </View>}
+                  <TextReuseableComponent title style={{color: 'white'}} value={"Clear All"} />
+                </TouchableOpacity>
+              </View>}
             </>
           )}
         </View>

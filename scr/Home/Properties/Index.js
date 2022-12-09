@@ -462,7 +462,10 @@ class Property extends PureComponent {
           </View>
           <View style={styles.headingContainer}>
             <View style={styles.headingInner}>
-              <TouchableOpacity
+              {/* 
+              Adding properties is only available for Super Admin from the website. Not from the mobile app.
+              */}
+              {/* <TouchableOpacity
                 onPress={() => this.enableLocation()}
                 style={styles.addBotton}>
                 <MaterialIcon
@@ -471,7 +474,7 @@ class Property extends PureComponent {
                   color="black"
                   maxOpacity={0.5}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <MaterialCommunityIcons
                 name="home-city-outline"
                 size={width * 0.08}

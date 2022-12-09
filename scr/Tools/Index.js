@@ -27,6 +27,26 @@ import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import Loader from '../components/Loader';
 import {PERMISSIONS, check, RESULTS} from 'react-native-permissions';
+import Back from 'react-native-vector-icons/MaterialIcons';
+import Tool from 'react-native-vector-icons/Entypo';
+import Cast from 'react-native-vector-icons/Feather';
+import Scan from 'react-native-vector-icons/Ionicons';
+import Test from 'react-native-vector-icons/Entypo';
+import LinearGradient from 'react-native-linear-gradient';
+import Menu from 'react-native-vector-icons/Entypo';
+import Signal from 'react-native-vector-icons/MaterialCommunityIcons';
+import Search from 'react-native-vector-icons/EvilIcons';
+import Properties from 'react-native-vector-icons/FontAwesome5';
+
+import {withNavigation} from 'react-navigation';
+
+// Components
+import {Fonts} from '../utils/fonts';
+
+import {Ellipse} from 'react-native-svg';
+import {ceil, set} from 'react-native-reanimated';
+
+import Toast from 'react-native-simple-toast';
 
 import Modal from 'react-native-modal';
 

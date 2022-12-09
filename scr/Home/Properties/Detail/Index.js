@@ -656,14 +656,14 @@ class Details extends React.Component {
                     {propertyData?.gateway ?
                       <View style={{ justifyContent: 'flex-end' }}>
                         <TextReuseableComponent title style={{
-                          textAlign: 'right',
+                          textAlign: 'left',
                           fontSize: height * 0.022,
                           fontFamily: Fonts.Montserrat,
                         }} value={`${propertyData?.gateway?.serial_number} Synced`} />
                       </View>
                       :
                       <>
-                        <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={"No Gateway Programmed!"} />
+                        <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'left' }]} value={"No Gateway Programmed!"} />
                       </>}
                   </View>
                 </View>
@@ -673,7 +673,7 @@ class Details extends React.Component {
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"ADDRESS"} />
                   <View style={[styles.infoViewInner, { height: 'auto' }]}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll', textAlign: 'right' }]} value={`${this.state.listData.street == null
+                    <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll', textAlign: 'left' }]} value={`${this.state.listData.street == null
                       ? ''
                       : this.state.listData.street
                       } ${this.state.listData.city == null
@@ -822,10 +822,10 @@ class Details extends React.Component {
                 <View style={[styles.infoViewContainer, { height: height * 0.4 }]}>
                   <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Unit Mixes"} />
                   <View style={styles.unitMixesHeadContainer}>
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"#"} />
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"BR"} />
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"BA"} />
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"# Units"} />
+                    <TextReuseableComponent title style={styles.unitmixesHeadSmall} value={"#"} />
+                    <TextReuseableComponent title style={styles.unitmixesHeadSmall} value={"BR"} />
+                    <TextReuseableComponent title style={styles.unitmixesHeadSmall} value={"BA"} />
+                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"#Units"} />
                     <TextReuseableComponent title style={styles.unitMixesHeads} value={"G/U/D"} />
                     <TextReuseableComponent title style={styles.unitMixesHeads} value={"T/G/D"} />
                   </View>
@@ -835,9 +835,9 @@ class Details extends React.Component {
                     style={{ width: width * 0.8, height: height * 0.4, marginVertical: height * 0.01 }}>
                     {this.state.unitMixes.map((item, index) => (
                       <View key={index} style={styles.unitMixesValuesContainer}>
-                        <TextReuseableComponent title style={styles.unitMixesValues} value={index + 1} />
-                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.br} />
-                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.ba} />
+                        <TextReuseableComponent title style={styles.unitmixesValueSmall} value={index + 1} />
+                        <TextReuseableComponent title style={styles.unitmixesValueSmall} value={item.br} />
+                        <TextReuseableComponent title style={styles.unitmixesValueSmall} value={item.ba} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.gud} />
                         <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units * item.gud} />
@@ -920,7 +920,7 @@ class Details extends React.Component {
                       { x: offlineUnits, y: offlineUnits },
                       { x: notInstalledUnits, y: notInstalledUnits },
                     ]}
-                    colorScale={['#175CA1', '#ff1414', '#dcdcdc']}
+                    colorScale={['#3e95c7', '#ff1414', '#dcdcdc']}
                     style={{
                       labels: {
                         fill: 'white',
