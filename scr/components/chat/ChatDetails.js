@@ -13,6 +13,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import { UserContext } from '../../context/MainContext';
 import { messagesReducer } from '../../Store/Reducer/messageReducer';
+import _ from "lodash";
 import API from '../../api/SeviceApi';
 const { width, height } = Dimensions.get('window');
 
@@ -35,20 +36,6 @@ const ChatDetails = ({ navigation }) => {
     const userEmail = useSelector((state) => state.userReducer.user.email);
     const userData = useSelector((state) => state.userReducer.user);
     // const userEmail = useSelector((state) => state.userReducer.user.email)
-    const mock = [
-        { id: 1, message: 'Hello', mode: 'sent', },
-        { id: 2, message: 'Hi!', mode: 'received' },
-        { id: 3, message: 'Hello', mode: 'sent' },
-        { id: 4, message: 'Hi!', mode: 'received' },
-        { id: 5, message: 'Hello', mode: 'sent' },
-        { id: 6, message: 'Hi!', mode: 'received' },
-        { id: 7, message: 'Hello', mode: 'sent' },
-        { id: 8, message: 'Hi!', mode: 'received' },
-        { id: 9, message: 'Hello', mode: 'sent' },
-        { id: 10, message: 'Hi!', mode: 'received' },
-        { id: 11, message: 'Hello', mode: 'sent' },
-        { id: 12, message: 'Hi!', mode: 'received' },
-    ]
 
     // Handle user state changes
     function onAuthStateChanged(user) {
@@ -71,8 +58,10 @@ const ChatDetails = ({ navigation }) => {
                 const filteredMessages = snapshot.docs?.filter((msg) => {
                     return msg.data()?.senderEmail === userDataForMessaging?.email || msg.data()?.reciepientEmail === userDataForMessaging?.email;
                 })
-                console.log('msg', filteredMessages);
-                dispatchMessages({ type: 'add', payload: filteredMessages })
+                const isEqual = _.isEqual(filteredMessages, messages);
+                if(!isEqual) {
+                     dispatchMessages({ type: 'delete', payload: filteredMessages })
+                }
             })
 
         return () => subscriber(); // unsubscribe on unmount
@@ -86,6 +75,7 @@ const ChatDetails = ({ navigation }) => {
         setIsLoading(true)
         const data = {
             message,
+            messageId: _.uniqueId(userDataForMessaging?.id),
             created_at: new Date(),
             senderName: userDataForMessaging?.name,
             senderEmail: userDataForMessaging?.email,
@@ -150,7 +140,7 @@ const ChatDetails = ({ navigation }) => {
                                     const side = senderEmail == userEmail ? 'sent' : 'received';
                                     return (
                                         <UserContext.Provider value={user}>
-                                            <MessageCard mode={side} message={data.message} />
+                                            <MessageCard mode={side} data={data} />
                                         </UserContext.Provider>
                                     )
                                 } else {

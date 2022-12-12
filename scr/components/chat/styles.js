@@ -87,21 +87,28 @@ export default styles = StyleSheet.create({
     padding: 5,
   },
   messageReceivedContainer: {
-    backgroundColor: "gray",
-    width: width * 0.4,
-    borderRadius: height * 0.06,
-    padding: 10,
-    marginVertical: 8
+    display: "flex",
+    marginVertical: 8,
+    display: "flex",
+    flexDirection: "row",
   },
   messageSentContainer: {
-    backgroundColor: "#25AAE1ec",
-    // height: 20,
-    width: width * 0.4,
+    alignSelf: 'flex-end',
+    marginVertical: 6,
+    display: "flex",
+    flexDirection: "row"
+  },
+  messageRecievedInner: {
+    backgroundColor: "gray",
     borderRadius: height * 0.06,
     padding: 15,
-    // justifyContent: 'flex-end',
-    alignSelf: 'flex-end',
-    marginVertical: 6
+    width: width * 0.4,
+  },
+  messageSentInner: {
+    backgroundColor: "#25AAE1ec",
+    borderRadius: height * 0.06,
+    padding: 15,
+    width: width * 0.4,
   },
   chatDetailsInput: {
     flexDirection: 'row',

@@ -14,6 +14,8 @@ export function messagesReducer(state, action) {
 
                 return bData.created_at.seconds - aData.created_at.seconds
             })
+        case 'delete':
+            return action.payload;
         default:
             throw new Error('Action type is not implemented!')
     }
