@@ -395,7 +395,7 @@ export default class Splash extends Component {
           style={{height: height * 1, width: width * 1}}
           showsVerticalScrollIndicator={false}>
           <View style={style.containView}>
-            <View style={style.containerInner}>
+            <TouchableOpacity onPress={this.requestCameraPermission} style={style.containerInner}>
               <View>
                 <TextReuseableComponent title style={style.mainHeadiingItems} value={"Camera Access"} />
                 <TextReuseableComponent title style={style.sideHeadingItems} value={"Scan equipment and take photos"} />
@@ -404,11 +404,11 @@ export default class Splash extends Component {
                 trackColor={{false: 'lightgray', true: '#25AAE1'}}
                 thumbColor={'#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={this.requestCameraPermission}
+                
                 value={this.state.hasCameraAccess}
               />
-            </View>
-            {Platform.OS == "android" && <View style={style.containerInner}>
+            </TouchableOpacity>
+            {Platform.OS == "android" && <TouchableOpacity onPress={this.requestStoragePermission} style={style.containerInner}>
               <View>
                 <TextReuseableComponent title style={style.mainHeadiingItems} value={"File Storage"} />
                 <TextReuseableComponent title style={style.sideHeadingItems} value={"Upload profile and property photos"} />
@@ -417,10 +417,10 @@ export default class Splash extends Component {
                 trackColor={{false: 'lightgray', true: '#25AAE1'}}
                 thumbColor={'#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={this.requestStoragePermission}
+                // onValueChange={this.requestStoragePermission}
                 value={this.state.hasStorageAccess}
               />
-            </View>}
+            </TouchableOpacity>}
             {/* <View style={style.containerInner}>
               <View>
                 <Text style={style.mainHeadiingItems}>Cloud Scanner</Text>

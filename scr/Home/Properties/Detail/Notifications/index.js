@@ -325,7 +325,7 @@ export default class Splash extends Component {
                       style={{
                         borderWidth: 1,
                         width: width * 0.9,
-                        borderRadius: 10,
+                        borderRadius: width * 0.04,
                         padding: width * 0.01,
                         margin: width * 0.02,
                         flexDirection: 'row',
@@ -335,9 +335,9 @@ export default class Splash extends Component {
                       <MaterialCommunityIcon
                         name="notifications"
                         size={height * 0.035}
-                        color="black"
+                        color="gray"
                       />
-                      <View style={{ width: width * 0.55}}>
+                      <View style={{ width: width * 0.55 }}>
                         <TextReuseableComponent title style={{ fontSize: 10, textTransform: 'capitalize', color: '#25aae1' }} value={item.sender_name} />
                         <TextReuseableComponent title style={{ fontSize: 12 }} value={item.message} />
                         <TextReuseableComponent title style={{ fontSize: 8 }} value={item.time_diff} />
@@ -345,7 +345,7 @@ export default class Splash extends Component {
                       <TouchableOpacity style={{ width: width * 0.08 }} onPress={() => this.handleDeleteNotification(item.id)}>
                         <Feather
                           name={'delete'}
-                          size={height * 0.035}
+                          size={height * 0.025}
                           color="#999"
                         />
                       </TouchableOpacity>
@@ -353,11 +353,21 @@ export default class Splash extends Component {
                   </>
                 )}
               />
-              {this.state?.notificationData?.length && <View style={{borderTopWidth: 1, height: height * 0.05, width: width * 1, alignItems: 'center', justifyContent: 'center'}}>
+              {this.state?.notificationData?.length && <View style={{ 
+                borderRadius: width * 0.02, 
+                height: height * 0.05, 
+                width: width * 0.2, 
+                marginBottom: 20, 
+                backgroundColor: '#25aae1', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'absolute', 
+                bottom: 0 
+                }}>
                 <TouchableOpacity onPress={() => this.handleClear()}>
-                <TextReuseableComponent title value={"Clear All"} />
-              </TouchableOpacity>
-                </View>}
+                  <TextReuseableComponent title style={{color: 'white'}} value={"Clear All"} />
+                </TouchableOpacity>
+              </View>}
             </>
           )}
         </View>

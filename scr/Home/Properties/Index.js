@@ -185,7 +185,11 @@ class Property extends PureComponent {
           },
         );
       },
-      (error) => console.log('geo location', error),
+      (error) => {
+        console.log('geo location', error);
+        this.context.stopLoader();
+        this.setState({ Loading: false });
+      },
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
     );
   };
@@ -224,7 +228,11 @@ class Property extends PureComponent {
             })
             .catch((error) => console.warn(error));
         },
-        (error) => console.log('geo locations', error),
+        (error) => {
+          console.log('geo locations', error);
+          this.context.stopLoader();
+          this.setState({ Loading: false });
+        },
         { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
       );
       if (Platform.OS == 'ios') {
@@ -340,32 +348,6 @@ class Property extends PureComponent {
     </View>
   );
 
-  // _renderPropList = (prop, index) => {
-  //   if (
-  //     prop.index == this.props.propList.length - 1 &&
-  //     !this.state.stopLoader
-  //   ) {
-  //     this.setState({ stopLoader: true });
-  //   }
-  //   console.log(`property_index_${index}`)
-  //   return (
-  //       <View key={`property_index_${prop.index}`} style={styles.propListContainer}>
-  //       <Properties
-  //         prop={{"alert_count": 0, "building_count": 1, "city": "Louisville", "contact_email": "abc@ion.com", "contact_name": "Amelia Otto", "contact_phone": "5555555555", "created_at": "10/05/22 12:10:17 PM", "created_by": "1", "created_by_name": "super admin", "custom_id": "", "gateway": false, "id": 330, "installation_count": 1, "latitude": 38.2506068, "longitude": -85.6143952, "meter_count": 3, "name": "Amelia One", "owner": "Dominium", "owner_id": 12, "property_id": 0, "radial_dist": 0.1, "st": "Kentucky", "street": "7400 South Park Place", "unit_actual_count": 24, "unit_count": 200, "unit_mix_count": 3, "unit_mixes": [[Object], [Object], [Object]], "utility_manufacturers": [[Object]], "zipcode": "40222"}}
-  //         routerIcon={false}
-  //         warningIcon={false}
-  //         jumpFromSearch={null}
-  //         selectedProp={this.selectedProp}
-  //         currentIndex={this.state.currentIndex}
-  //         jumpToDetail={this.jumpToDetail}
-  //         jumpToEquip={this.jumpToEquip}
-  //         jumpToAlerts={this.jumpToAlerts}
-  //         confirmDelete={this.confirmDelete}
-  //       />
-  //     </View>
-  //   );
-  // };
-
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   onFocusFunction = () => {
@@ -408,6 +390,8 @@ class Property extends PureComponent {
     if (!this.context.filterWork && this.state.filterWork) {
       this.setState({ filterWork: false });
     }
+  console.log('this.props.propList?.length', this.props.propList?.length);
+  console.log('this.props.limitExceed', this.props.limitExceed);
     return (
       <>
         <CustumStatusBar />
@@ -478,7 +462,10 @@ class Property extends PureComponent {
           </View>
           <View style={styles.headingContainer}>
             <View style={styles.headingInner}>
-              <TouchableOpacity
+              {/* 
+              Adding properties is only available for Super Admin from the website. Not from the mobile app.
+              */}
+              {/* <TouchableOpacity
                 onPress={() => this.enableLocation()}
                 style={styles.addBotton}>
                 <MaterialIcon
@@ -487,7 +474,7 @@ class Property extends PureComponent {
                   color="black"
                   maxOpacity={0.5}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <MaterialCommunityIcons
                 name="home-city-outline"
                 size={width * 0.08}
@@ -609,9 +596,9 @@ class Property extends PureComponent {
                   refreshing={this.state.refreshing}
                   showsVerticalScrollIndicator={false}
                   ListEmptyComponent={
-                  <View style={{ height: height * .7,   justifyContent: 'center' }} >
-                    <TextReuseableComponent title value={"Check Your Internet Connection"} />
-                  </View>
+                    <View style={{ height: height * .7, justifyContent: 'center' }} >
+                      <TextReuseableComponent title value={"Check Your Internet Connection"} />
+                    </View>
                   }
                   ListFooterComponent={() =>
                     this.props.listLoader ? (
@@ -637,16 +624,8 @@ class Property extends PureComponent {
                       </View>
                     );
                   }}
-                // removeClippedSubviews={false}
-                // maxToRenderPerBatch={150}
-                // ListFooterComponent={() =>
-                //   this.props.listLoader ? (
-                //     <ActivityIndicator color="#25dAE1" size="large" />
-                //   ) : null
-                // }
-                onEndReachedThreshold={0.2}
-                onMomentumScrollEnd={() => !this.props.limitExceed && this.LoadData()}
-
+                  onEndReachedThreshold={0.2}
+                  onMomentumScrollEnd={() => !this.props.limitExceed && this.LoadData()}
                 />
               </View>
             )}

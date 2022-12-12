@@ -139,7 +139,6 @@ export default styles = StyleSheet.create({
     paddingHorizontal: width * 0.02,
   },
   clientNameHeading: {
-    fontSize: height * 0.025,
     fontFamily: Fonts.ComfortaaRegular,
   },
   clientDataEdit: {
@@ -188,6 +187,12 @@ export default styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white'
   },
+  unitmixesHeadSmall: {
+    width: width * 0.1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white'
+  },
   unitMixesValuesContainer: {
     width: '100%',
     justifyContent: 'space-around',
@@ -199,6 +204,10 @@ export default styles = StyleSheet.create({
   },
   unitMixesValues: {
     width: width * 0.14,
+    textAlign: 'center',
+  },
+  unitmixesValueSmall: {
+    width: width * 0.1,
     textAlign: 'center',
   },
   sumUnitMixes: {
@@ -520,7 +529,7 @@ export default styles = StyleSheet.create({
     width: width * 0.035,
     height: width * 0.035,
     borderRadius: 100,
-    backgroundColor: '#175CA1',
+    backgroundColor: '#3e95c7',
     marginHorizontal: 5
   },
   onlineText: {

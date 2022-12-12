@@ -42,14 +42,14 @@ const Properties = ({
                         prop?.index === currentIndex ? 0 : width * 0.008,
                     borderBottomRightRadius:
                         prop?.index === currentIndex ? 0 : width * 0.008,
-                }
+                }, {height: height * 0.08}
             ]}
             onPress={jumpFromSearch ? () => jumpFromSearch({ prop, item: prop }) : () => selectedProp(prop)}>
             <MaterialCommunityIcons
                 name="home-city-outline"
                 size={width * 0.09}
                 style={{ marginHorizontal: 15 }}
-                color="#115b72"
+                color="#3e95c7"
             />
             <View style={{ width: width * 0.5, position: 'absolute', left: width * 0.16 }}>
                 <View style={{ width: width * 0.5 }}>
@@ -87,7 +87,7 @@ const Properties = ({
                     <FontAwesome5Icon
                         name="building"
                         size={width * 0.04}
-                        color="#115b72"
+                        color="#3e95c7"
                     />
                     <TextReuseableComponent title style={styles.buildUnitCount} value={prop?.item?.building_count} />
                 </View>
@@ -95,7 +95,7 @@ const Properties = ({
                     <FontAwesome5Icon
                         name="house-user"
                         size={width * 0.039}
-                        color="#115b72"
+                        color="#3e95c7"
                     />
                     <TextReuseableComponent title style={styles.buildUnitCount} value={prop?.item?.unit_actual_count} />
                 </View>
@@ -104,7 +104,7 @@ const Properties = ({
                         <MaterialIcon
                             name="router"
                             size={width * 0.05}
-                            color="#115b72"
+                            color="#3e95c7"
                         />
                     </View>
                 }
@@ -112,7 +112,7 @@ const Properties = ({
                     <MaterialIcons
                         name="warning"
                         size={width * 0.04}
-                        color="#115b72"
+                        color="#3e95c7"
                     />
                     <TextReuseableComponent title style={styles.buildUnitCount} value={prop.item.alert_count} />
                 </View>}
@@ -251,9 +251,9 @@ const styles = StyleSheet.create({
     },
     buildUnitCount: {
         fontSize: width * 0.035,
-        color: '#001522',
-        textShadowRadius: width * 0.005,
-        textShadowColor: '#09BAF2',
+        color: '#09BAF2',
+        // textShadowRadius: width * 0.005,
+        // textShadowColor: '#09BAF2',
     },
     animatedDetailView: {
         width: width * 0.9,

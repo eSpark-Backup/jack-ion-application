@@ -469,7 +469,7 @@ export default class Splash extends Component {
                     { x: onlineProps, y: onlineProps },
                     { x: offlineProps, y: offlineProps },
                   ]}
-                  colorScale={['#175CA1', '#DCDCDC']}
+                  colorScale={['#3e95c7', '#DCDCDC']}
                   style={{
                     labels: {
                       fill: 'white',
@@ -536,7 +536,7 @@ export default class Splash extends Component {
                           <VictoryArea
                             interpolation="catmullRom"
                             data={newProperties}
-                            style={{ data: { fill: '#175CA199' } }}
+                            style={{ data: { fill: '#3e95c7' } }}
                           />}
                       </View>
                       <VictoryAxis
@@ -610,7 +610,7 @@ export default class Splash extends Component {
                     <View style={{ width: width * 0.37 }}>
                       <TextReuseableComponent heading style={{
                         fontWeight: 'bold',
-                        color: '#175CA1',
+                        color: '#3e95c7',
                         textAlign: 'center',
                       }} value={totalProperties} />
                       <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Properties"} />
@@ -634,7 +634,7 @@ export default class Splash extends Component {
                         width: width * 0.37
                       }}>
                       <TextReuseableComponent heading style={{
-                        color: '#175CA1',
+                        color: '#3e95c7',
                         fontWeight: 'bold',
                         textAlign: 'center',
                       }} value={totalUnits} />
@@ -660,7 +660,7 @@ export default class Splash extends Component {
                       }}>
                       <TextReuseableComponent heading style={{
                         fontWeight: 'bold',
-                        color: '#175CA1',
+                        color: '#3e95c7',
                         textAlign: 'center',
                       }} value={totalDevices} />
                       <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Devices"} />
