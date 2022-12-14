@@ -1,4 +1,4 @@
-import { ERROR, FETCHING, FETCH_USER_SUCCESS, LOGOUT_REQUEST, FETCH_USER_UID_FOR_MESSAGING } from "../constants"
+import { ERROR, FETCHING, FETCH_USER_SUCCESS, LOGOUT_REQUEST } from "../constants"
 
 const initialState = {
   user: null,
@@ -23,13 +23,6 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: payload,
         isLoading: false
-      }
-
-    case FETCH_USER_UID_FOR_MESSAGING:
-      console.log('uid dispatched', payload);
-      return {
-        ...state,
-        userDataForMessaging: payload,
       }
 
     case ERROR:

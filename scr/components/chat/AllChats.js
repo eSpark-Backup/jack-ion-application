@@ -1,6 +1,8 @@
 import { Dimensions, View, TextInput, ScrollView } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import Search from 'react-native-vector-icons/EvilIcons';
+
 
 import ChatCard from './ChatCard';
 import TextReuseableComponent from '../../components/Text';
@@ -14,7 +16,6 @@ const AllChats = () => {
     const scrollViewRef = useRef();
     const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([]);
     const userReducer = useSelector((state) => state.userReducer);
-    const userDataForMessaging = userReducer.userDataForMessaging;
 
     useEffect(() => {
         fetchAllUsers();
@@ -30,28 +31,50 @@ const AllChats = () => {
     }
 
     return (<View>
+        
         <ScrollView >
             <View style={{
-                borderWidth: 1.5,
-                marginVertical: 20,
-                width: "90%",
-                borderRadius: width * 0.02,
+                width: width * 0.9,
+                height: height * 0.06,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                borderRadius: width * 0.01,
+                elevation: 5,
+                flexDirection: 'row',
                 alignSelf: 'center',
-                backgroundColor: 'white'
             }}>
+                <Search
+                    name="search"
+                    size={height * 0.04}
+                    style={{ marginLeft: width * 0.05 }}
+                    color="gray"
+                />
                 <TextInput
-                    placeholder="Find People to chat"
+                    placeholderTextColor="gray"
+                    placeholder="Search"
+                    style={{
+                        width: width * 0.7,
+                        height: height * 0.07,
+                        borderBottomColor: '#25AAE1ec',
+                        fontSize: width * 0.04,
+                        color: 'white',
+                    }}
+                    onChangeText={(e) => console.log('clicked', e)}
                 />
             </View>
             <View style={{ margin: 10 }}>
                 <TextReuseableComponent value={"List of Available People for Chat."} />
             </View>
-            <View>
-                {listOfAvailabeForChat?.filter((user) => user.id !== userDataForMessaging?.id)?.map((chat) => {
+            <View  style={{height: height * 0.54 }}>
+                <ScrollView>
+
+                {listOfAvailabeForChat?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
                     return <>
                         <ChatCard data={chat} />
                     </>
                 })}
+                </ScrollView>
             </View>
         </ScrollView>
     </View>);

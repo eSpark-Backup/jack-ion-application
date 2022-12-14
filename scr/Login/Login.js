@@ -126,38 +126,6 @@ class Login extends Component {
       this.props.login({ ...response?.data?.data?.user, token: response?.data?.data?.token })
       this.props.navigation.navigate('Home');
 
-      function dispatchUid(uid) {
-        return {
-          type: "FETCH_USER_UID_FOR_MESSAGING",
-          payload: uid
-        }
-      }
-
-      auth()
-        .signInAnonymously()
-        .then((data) => {
-          const uid = data?.user?.uid;
-          const payload = {
-            name: response.data.data.user.name,
-            email: response.data.data.user.email,
-            id: response.data.data.user.id,
-            role: response.data.data.user.role,
-            role_id: response.data.data.user.role_id,
-            uidForMessaging: uid
-          }
-          // console.log('dispatchUid(data.user.uid)', dispatchUid(payload));
-
-          store.dispatch(dispatchUid(payload));
-
-        })
-        .catch(error => {
-          if (error.code === 'auth/operation-not-allowed') {
-            console.log('Enable anonymous in your firebase console.');
-          }
-
-          console.error(error);
-        });
-
       this.setState({
         errName: '',
         errPass: '',
