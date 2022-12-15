@@ -7,10 +7,8 @@ import TextReuseableComponent from '../../components/Text/index';
 import styles from './styles';
 import MessageCard from './MessageCard';
 
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-import { UserContext } from '../../context/MainContext';
 import { messagesReducer } from '../../Store/Reducer/messageReducer';
 
 import Back from 'react-native-vector-icons/MaterialIcons';
@@ -22,7 +20,6 @@ const ChatDetails = ({ navigation }) => {
     const [message, setMessage] = useState(false);
 
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
-    const [user, setUser] = useState();
     const [selectedUser, setSelectedUser] = useState();
     // Set an initializing state whilst Firebase connects
     const [initializing, setInitializing] = useState(true);
@@ -33,16 +30,6 @@ const ChatDetails = ({ navigation }) => {
     // When the user recieves a new message, push a notification to the user and show a message badge according to the number of new messages.
     // The list of Users available for chat should show the new message badge with message counter.
 
-    function onAuthStateChanged(user) {
-        setUser(user);
-        if (initializing) setInitializing(false);
-    }
-
-
-    useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return () => subscriber(); // unsubscribe on unmount
-    }, []);
 
     useEffect(() => {
         setSelectedUser(navigation.state.params.item)
@@ -86,18 +73,6 @@ const ChatDetails = ({ navigation }) => {
                 setMessage(false);
             });
 
-    }
-
-
-
-    if (initializing) return null;
-
-    if (!user) {
-        return (
-            <View>
-                <TextReuseableComponent value={"User not Logged in."} />
-            </View>
-        );
     }
 
     return (<View style={styles.chatDetailsContainer}>
@@ -148,9 +123,7 @@ const ChatDetails = ({ navigation }) => {
                                 if (clickedUserEmail == senderEmail || clickedUserEmail == reciepientEmail) {
                                     const side = senderEmail == userReducer?.user?.email ? 'sent' : 'received';
                                     return (
-                                        <UserContext.Provider value={user}>
                                             <MessageCard mode={side} data={data} />
-                                        </UserContext.Provider>
                                     )
                                 } else {
                                     return null;
