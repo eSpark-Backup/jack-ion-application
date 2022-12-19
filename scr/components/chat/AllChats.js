@@ -1,5 +1,5 @@
 import { Dimensions, View, TextInput, ScrollView } from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Search from 'react-native-vector-icons/EvilIcons';
 
@@ -13,7 +13,6 @@ import API from '../../api/SeviceApi';
 const { width, height } = Dimensions.get('window');
 
 const AllChats = () => {
-    const scrollViewRef = useRef();
     const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([]);
     const userReducer = useSelector((state) => state.userReducer);
 
@@ -70,9 +69,7 @@ const AllChats = () => {
                 <ScrollView>
 
                 {listOfAvailabeForChat?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
-                    return <>
-                        <ChatCard data={chat} />
-                    </>
+                    return <ChatCard key={chat.id} data={chat} />
                 })}
                 </ScrollView>
             </View>

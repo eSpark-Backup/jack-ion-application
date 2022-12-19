@@ -33,8 +33,6 @@ const RecentChats = () => {
         return () => subscriber(); // unsubscribe on unmount
     }, [])
 
-    console.log('search input', searchInput);
-
     const fetchAllUsers = async (filteredMessages) => {
         const response = await API.get(`/get-all-users`);
         if (response?.data?.bool) {
@@ -98,9 +96,7 @@ const RecentChats = () => {
                     <ScrollView>
 
                         {listOfRecentUsers?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
-                            return <>
-                                <ChatCard data={chat} />
-                            </>
+                            return <ChatCard key={chat.id} data={chat} />
                         })}
                     </ScrollView>
                 </View>

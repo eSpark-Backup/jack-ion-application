@@ -73,6 +73,9 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     elevation: width * 0.01,
     flexDirection: 'row',
+    display:'flex',
+    justifyContent: "space-between",
+    padding: 10,
   },
   mainHeadiing: {
     fontFamily: Fonts.BalsamiqSansRegular,
@@ -113,13 +116,17 @@ export default styles = StyleSheet.create({
     display: "flex",
     marginVertical: 8,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "row", 
+    // backgroundColor: "red",
+    // width: width * 0.4,
+    // height: height * 0.1
   },
   messageSentContainer: {
     alignSelf: 'flex-end',
     marginVertical: 6,
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    // width: width * 0.4
   },
   messageRecievedInner: {
     backgroundColor: "#cccecf",

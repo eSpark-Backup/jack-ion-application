@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useReducer, useRef } from 'react'
+import React, { useState, useEffect, useReducer, useRef } from 'react'
 import { View, Dimensions, FlatList, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
@@ -10,7 +10,6 @@ import MessageCard from './MessageCard';
 import firestore from '@react-native-firebase/firestore';
 
 import { messagesReducer } from '../../Store/Reducer/messageReducer';
-
 import Back from 'react-native-vector-icons/MaterialIcons';
 import _ from "lodash";
 const { width, height } = Dimensions.get('window');
@@ -22,7 +21,6 @@ const ChatDetails = ({ navigation }) => {
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
     const [selectedUser, setSelectedUser] = useState();
     // Set an initializing state whilst Firebase connects
-    const [initializing, setInitializing] = useState(true);
     const userReducer = useSelector((state) => state.userReducer);
 
     // Handle user state changes
@@ -49,6 +47,22 @@ const ChatDetails = ({ navigation }) => {
         return () => subscriber(); // unsubscribe on unmount
     }, [])
 
+    const renderItem = ({ item }) => {
+        const data = item.data();
+        const clickedUserEmail = selectedUser.email;
+        const reciepientEmail = data?.reciepientEmail;
+        const senderEmail = data?.senderEmail;
+
+        if (clickedUserEmail == senderEmail || clickedUserEmail == reciepientEmail) {
+            const side = senderEmail == userReducer?.user?.email ? 'sent' : 'received';
+            return (
+                    <MessageCard mode={side} data={data} />
+            )
+        } else {
+            return null;
+        }
+    }
+
 
     const handleSend = () => {
         setMessage(false)
@@ -72,77 +86,69 @@ const ChatDetails = ({ navigation }) => {
                 console.log('Message added!', data);
                 setMessage(false);
             });
-
     }
+    
+    return (
+        <View style={styles.chatDetailsContainer}>
 
-    return (<View style={styles.chatDetailsContainer}>
-        <View style={styles.headingContainer}>
-            <View style={[styles.headingInner]}>
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{
-                        // width: width * 0.15,
-                        height: height * 0.06,
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        display: 'flex',
-                        flexDirection: "row"
-                    }}>
-                    <Back
-                        size={width * 0.07}
-                        color="white"
-                        name="keyboard-backspace"
-                    />
-                    <TextReuseableComponent title style={styles.mainHeadiing} value={"Chats"} />
-                </TouchableOpacity>
-                <View style={{ display: 'flex', justifyContent: "flex-end", marginLeft: width * 0.20}}>
-                <TextReuseableComponent title style={{ color: "white" }} value={selectedUser?.name} />
+            <View style={styles.headingContainer}>
+                <View style={[styles.headingInner]}>
+                    <View>
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={{
+                            // width: width * 0.15,
+                            height: height * 0.06,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            display: 'flex',
+                            flexDirection: "row"
+                        }}>
+                        <Back
+                            size={width * 0.07}
+                            color="white"
+                            name="keyboard-backspace"
+                        />
+                        {/* <TextReuseableComponent title style={styles.mainHeadiing} value={"Chats"} /> */}
+                    </TouchableOpacity>
+                    </View>
+                    <View style={{ display: 'flex', justifyContent: "center"}}>
+                        <TextReuseableComponent title style={{ color: "white" }} value={selectedUser?.name} />
+                    </View>
+                    <View style={{display: "flex", justifyContent: "flex-end"}}>
+
+                    </View>
                 </View>
             </View>
-        </View>
-        <View style={styles.chatDetailsView}>
-            <ScrollView
-                ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}
-                showsVerticalScrollIndicator={false}
-                style={{ height: height * 0.75 }}
-            >
-                <SafeAreaView>
-                    <View >
-                        <FlatList
-                            inverted
-                            data={messages}
-                            keyExtractor={function (item) {
-                                return item.id
-                            }}
-                            renderItem={function ({ item }) {
-                                const data = item.data();
-                                const clickedUserEmail = selectedUser.email;
-                                const reciepientEmail = data?.reciepientEmail;
-                                const senderEmail = data?.senderEmail;
-
-                                if (clickedUserEmail == senderEmail || clickedUserEmail == reciepientEmail) {
-                                    const side = senderEmail == userReducer?.user?.email ? 'sent' : 'received';
-                                    return (
-                                            <MessageCard mode={side} data={data} />
-                                    )
-                                } else {
-                                    return null;
-                                }
-                            }}
-                        />
-                    </View>
-                </SafeAreaView>
-            </ScrollView>
-        </View>
-        <View style={styles.chatDetailsInput}>
-            <View style={styles.chatInputContainer}>
-                <TextInput style={styles.chatInput} value={message} onChangeText={setMessage} placeholder="Write you message" />
+            <View style={styles.chatDetailsView}>
+                <ScrollView
+                    ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}
+                    showsVerticalScrollIndicator={false}
+                    style={{ height: height * 0.78 }}
+                >
+                    <SafeAreaView>
+                        <View >
+                            <FlatList
+                                inverted
+                                data={messages}
+                                keyExtractor={(item) => {
+                                    return item.id
+                                }}
+                                renderItem={renderItem}
+                            />
+                        </View>
+                    </SafeAreaView>
+                </ScrollView>
             </View>
-            <View>
-                <Button onPress={handleSend} disabled={!message}>Send</Button>
+            <View style={styles.chatDetailsInput}>
+                <View style={styles.chatInputContainer}>
+                    <TextInput style={styles.chatInput} value={message} onChangeText={setMessage} placeholder="Write you message" />
+                </View>
+                <View>
+                    <Button onPress={handleSend} disabled={!message}>Send</Button>
+                </View>
             </View>
-        </View>
-    </View>);
+        </View>);
 }
 
 export default ChatDetails;
