@@ -26,6 +26,8 @@ import TextReuseableComponent from '../components/Text/index';
 import { pushNotification } from '../utils/helperFunction';
 import { connect } from 'react-redux';
 import { fetchPropetry, loadMoreData } from '../Store/Action/properties.action';
+import { fetchUserDataForMessaging } from '../Store/Action/user.action';
+import firestore from '@react-native-firebase/firestore';
 // import { Loader } from '../components/Loader';
 // import { FirebaseService } from '../components/chat/firebase/FirebaseService';
 // const firebaseService = new FirebaseService();
@@ -72,20 +74,17 @@ class Splash extends Component {
         });
     }
   }
-  // async firebaseLogin () {
-  //   await firebaseService.signIn()
-  //     .then(({ user, error }) => {
-  //       if (error) {
-  //         Alert.alert('Something went wrong')
-  //         return
-  //       }
-  //       console.log('user', user)
-  //       this.setState({user})
-  //     })
-  // }
-
+  fetchMessages = async () => {
+    const snapshot = await firestore().collection('Messages').get()
+    let newArray = [];
+    snapshot?.docs?.forEach((queryDocSnapshot) => {
+      const profile = queryDocSnapshot.data();
+      const { ref, ...profileSerialisable } = profile;
+      newArray.push(profileSerialisable);
+    });
+    this.props.fetchUserDataForMessaging(newArray);
+  }
   async componentDidMount() {
-    // this.firebaseLogin();
     messaging().onNotificationOpenedApp(async (notification) => {
       console.log('Initial notification', notification);
       // pushNotification(notification);
@@ -154,6 +153,7 @@ class Splash extends Component {
       }
     }
     this.props.fetchPropetry();
+    this.fetchMessages();
   }
 
   backAction = () => {
@@ -247,7 +247,8 @@ const mapStateToProps = (state, ownProps) => ({
   isLoading: state.propertyReducer.isLoading,
   offset: state.propertyReducer.offset,
   listLoader: state.propertyReducer.listLoader,
-  limitExceed: state.propertyReducer.limitExceed
+  limitExceed: state.propertyReducer.limitExceed,
+  user: state
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -255,6 +256,7 @@ const mapDispatchToProps = (dispatch) => {
     // dispatching plain actions
     fetchPropetry: () => dispatch(fetchPropetry()),
     loadMoreData: (data) => dispatch(loadMoreData(data)),
+    fetchUserDataForMessaging: (data) => dispatch(fetchUserDataForMessaging(data))
   };
 };
 

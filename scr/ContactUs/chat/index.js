@@ -63,8 +63,9 @@ const ChatScreen = ({ navigation }) => {
                     <TouchableOpacity
                         activeOpacity={.8}
                         onPress={() => setActiveTab("Recent Chats")}
-                        style={activeTab == "Recent Chats" ? styles.activeTabContainer : styles.tabContainer}>
-                        <TextReuseableComponent title style={{ color: activeTab == "Recent Chats" ? "#25AAE1ec" : "#fff" }} value={"Recent Chats"} />
+                        style={activeTab == "Recent Chats" ? styles.tabContainer :
+                            styles.activeTabContainer}>
+                        <TextReuseableComponent title style={{ color: activeTab == "Recent Chats" ? "#fff" : "#25AAE1ec" }} value={"Recent Chats"} />
                     </TouchableOpacity>
                     {/* {activeTab == "Recent Chats" && <View style={{ height: 4, width: 150, backgroundColor: 'black', borderBottomLeftRadius: 150, borderBottomRightRadius: 150, marginTop: 10 }} />} */}
                 </View>
@@ -72,8 +73,9 @@ const ChatScreen = ({ navigation }) => {
                     <TouchableOpacity
                         activeOpacity={.8}
                         onPress={() => setActiveTab("All Chats")}
-                        style={activeTab == "All Chats" ? styles.activeTabContainer : styles.tabContainer}>
-                        <TextReuseableComponent title style={{ color: activeTab == "All Chats" ? "#25AAE1ec" : "#fff" }} value={"All Chats"} />
+                        style={activeTab == "All Chats" ? styles.tabContainer :
+                            styles.activeTabContainer}>
+                        <TextReuseableComponent title style={{ color: activeTab == "All Chats" ? "#fff" : "#25AAE1ec" }} value={"All Chats"} />
                     </TouchableOpacity>
                     {/* {activeTab == "All Chats" && <View style={{ height: 4, width: 150, backgroundColor: 'black', borderBottomLeftRadius: 150, borderBottomRightRadius: 150, marginTop: 10 }} />} */}
                 </View>

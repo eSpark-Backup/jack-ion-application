@@ -185,24 +185,12 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    // elevation: width * 0.01,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
   },
   propText: {
     textTransform: 'capitalize',
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.025,
     color: '#001522',
-    // textShadowOffset: {
-    //   width: width * 0.002,
-    //   height: height * 0.002,
-    // },
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },
@@ -214,10 +202,6 @@ export default styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat,
     fontSize: width * 0.035,
     color: '#001522',
-    // textShadowOffset: {
-    //   width: width * 0.002,
-    //   height: height * 0.002,
-    // },
     textShadowRadius: width * 0.005,
     textShadowColor: '#09BAF2',
   },
@@ -233,7 +217,6 @@ export default styles = StyleSheet.create({
   skeletonMainContainer: {
     width: width * 0.9,
     height: height * 0.09,
-    marginVertical: height * 0.005,
     justifyContent: 'center',
   },
   skeletonInnerContainer: {
@@ -271,7 +254,6 @@ export default styles = StyleSheet.create({
     marginLeft: 4,
   },
 
-  // Property list styling
   propListContainer:{
     alignItems: 'center',
     marginVertical: height * 0.01,
@@ -302,8 +284,6 @@ export default styles = StyleSheet.create({
     width: width * 0.9,
     alignItems: 'center',
     backgroundColor: '#ffffff50',
-    // borderBottomLeftRadius: width * 0.01,
-    // borderBottomRightRadius: width * 0.01,
     borderWidth: width * 0.001,
   },
   animatedDetailShown:{

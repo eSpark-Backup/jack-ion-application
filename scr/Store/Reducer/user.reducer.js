@@ -1,4 +1,4 @@
-import { ERROR, FETCHING, FETCH_USER_SUCCESS, LOGOUT_REQUEST } from "../constants"
+import { ERROR, FETCHING, FETCH_USER_SUCCESS, LOGOUT_REQUEST, FETCH_FIREBASE_MESSAGES } from "../constants"
 
 const initialState = {
   user: null,
@@ -24,7 +24,11 @@ export const userReducer = (state = initialState, action) => {
         user: payload,
         isLoading: false
       }
-
+    case FETCH_FIREBASE_MESSAGES:
+        return {
+          ...state,
+          userDataForMessaging: payload
+        }
     case ERROR:
       return {
         ...state,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useRef } from 'react'
-import { View, Dimensions, FlatList, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Dimensions, FlatList, SafeAreaView, ScrollView, TouchableOpacity, Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
 import TextInput from '../TextInput';
@@ -17,7 +17,7 @@ const { width, height } = Dimensions.get('window');
 const ChatDetails = ({ navigation }) => {
     const scrollViewRef = useRef();
     const [message, setMessage] = useState(false);
-
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
     const [selectedUser, setSelectedUser] = useState();
     // Set an initializing state whilst Firebase connects
@@ -28,6 +28,26 @@ const ChatDetails = ({ navigation }) => {
     // When the user recieves a new message, push a notification to the user and show a message badge according to the number of new messages.
     // The list of Users available for chat should show the new message badge with message counter.
 
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true);
+            },
+        );
+
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false);
+            },
+        );
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     useEffect(() => {
         setSelectedUser(navigation.state.params.item)
@@ -35,7 +55,7 @@ const ChatDetails = ({ navigation }) => {
             .collection("Messages")
             .orderBy("created_at", "desc")
             .onSnapshot(function (snapshot) {
-                const filteredMessages = snapshot.docs?.filter((msg) => {
+                const filteredMessages = snapshot?.docs?.filter((msg) => {
                     return msg.data()?.senderEmail === userReducer?.user?.email || msg.data()?.reciepientEmail === userReducer?.user?.email;
                 })
                 const isEqual = _.isEqual(filteredMessages, messages);
@@ -55,8 +75,20 @@ const ChatDetails = ({ navigation }) => {
 
         if (clickedUserEmail == senderEmail || clickedUserEmail == reciepientEmail) {
             const side = senderEmail == userReducer?.user?.email ? 'sent' : 'received';
+
+            var jobskill_query = firestore().collection('Messages').where('messageId', '==', data?.messageId);
+            jobskill_query.get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (side == "received" && !doc.data().seen) {
+                        console.log('Seen updated!');
+                        return doc.ref.update({ seen: true });
+                    } else {
+                        return null
+                    }
+                });
+            });
             return (
-                    <MessageCard mode={side} data={data} />
+                <MessageCard mode={side} data={data} />
             )
         } else {
             return null;
@@ -78,6 +110,7 @@ const ChatDetails = ({ navigation }) => {
             reciepientId: navigation.state.params.item?.id,
             reciepientName: navigation.state.params.item?.name,
             reciepientEmail: navigation.state.params.item?.email,
+            seen: false,
         }
         firestore()
             .collection('Messages')
@@ -87,66 +120,58 @@ const ChatDetails = ({ navigation }) => {
                 setMessage(false);
             });
     }
-    
+
     return (
         <View style={styles.chatDetailsContainer}>
-
-            <View style={styles.headingContainer}>
+            <View style={[styles.headingContainer, { height: isKeyboardVisible ? "10%" : "7%" }]}>
                 <View style={[styles.headingInner]}>
                     <View>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        style={{
-                            // width: width * 0.15,
-                            height: height * 0.06,
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            display: 'flex',
-                            flexDirection: "row"
-                        }}>
-                        <Back
-                            size={width * 0.07}
-                            color="white"
-                            name="keyboard-backspace"
-                        />
-                        {/* <TextReuseableComponent title style={styles.mainHeadiing} value={"Chats"} /> */}
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={{
+                                height: height * 0.06,
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                display: 'flex',
+                                flexDirection: "row"
+                            }}>
+                            <Back
+                                size={width * 0.07}
+                                color="white"
+                                name="keyboard-backspace"
+                            />
+                        </TouchableOpacity>
                     </View>
-                    <View style={{ display: 'flex', justifyContent: "center"}}>
+                    <View style={{ display: 'flex', justifyContent: "center" }}>
                         <TextReuseableComponent title style={{ color: "white" }} value={selectedUser?.name} />
                     </View>
-                    <View style={{display: "flex", justifyContent: "flex-end"}}>
-
+                    <View style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <TextReuseableComponent value={"..."} />
                     </View>
                 </View>
             </View>
             <View style={styles.chatDetailsView}>
-                <ScrollView
-                    ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}
-                    showsVerticalScrollIndicator={false}
-                    style={{ height: height * 0.78 }}
-                >
-                    <SafeAreaView>
-                        <View >
-                            <FlatList
-                                inverted
-                                data={messages}
-                                keyExtractor={(item) => {
-                                    return item.id
-                                }}
-                                renderItem={renderItem}
-                            />
+                <SafeAreaView >
+                    <View style={{ height: isKeyboardVisible ? "84%" : "90%" }} >
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            inverted
+                            data={messages}
+                            keyExtractor={(item) => {
+                                return item.id
+                            }}
+                            renderItem={renderItem}
+                        />
+                    </View>
+                    <View style={styles.chatDetailsInput}>
+                        <View style={styles.chatInputContainer}>
+                            <TextInput style={styles.chatInput} value={message} onChangeText={setMessage} placeholder="Write you message" />
                         </View>
-                    </SafeAreaView>
-                </ScrollView>
-            </View>
-            <View style={styles.chatDetailsInput}>
-                <View style={styles.chatInputContainer}>
-                    <TextInput style={styles.chatInput} value={message} onChangeText={setMessage} placeholder="Write you message" />
-                </View>
-                <View>
-                    <Button onPress={handleSend} disabled={!message}>Send</Button>
-                </View>
+                        <View style={{ backgroundColor: "#a6e9ff", marginLeft: 10, borderRadius: 10 }}>
+                            <Button onPress={handleSend} disabled={!message}>Send</Button>
+                        </View>
+                    </View>
+                </SafeAreaView>
             </View>
         </View>);
 }

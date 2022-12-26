@@ -7,7 +7,7 @@ import styles from './styles';
 const { width, height } = Dimensions.get('window');
 
 const ChatCard = (props) => {
-    const { id, name, role_id, last_message } = props.data;
+    const { id, name, role_id, last_message, unReadMessages } = props.data;
 
     return <View key={id} style={styles.allChatsMainContainer}>
         <TouchableOpacity onPress={() => navigationService.navigate("ChatDetails", { item: props.data })}>
@@ -26,7 +26,19 @@ const ChatCard = (props) => {
                     </View>
                 </View>
                 <View style={styles.timeContainer}>
-                    <TextReuseableComponent style={{ fontSize: 18 }} value={"..."} />
+                    {unReadMessages > 0 && <View 
+                    style={{ 
+                    backgroundColor: "#25AAE1ec", 
+                    width: 17, 
+                    height: 17, 
+                    borderRadius: 17, 
+                    display: 'flex',
+                    alignItems: "center",
+                     }}
+                     >
+                        <TextReuseableComponent value={unReadMessages} />
+                        </View>
+                    }
                     <TextReuseableComponent style={{ fontSize: 10 }} value={role_id == 4 ? "Technician" : "Admin"} />
                 </View>
             </View>

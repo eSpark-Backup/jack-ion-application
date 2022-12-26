@@ -2,8 +2,7 @@ import { Dimensions, View, TextInput, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Search from 'react-native-vector-icons/EvilIcons';
-
-
+import _ from "lodash";
 import ChatCard from './ChatCard';
 import TextReuseableComponent from '../../components/Text';
 
@@ -17,20 +16,42 @@ const AllChats = () => {
     const userReducer = useSelector((state) => state.userReducer);
 
     useEffect(() => {
-        fetchAllUsers();
+        const subscriber = firestore()
+            .collection("Messages")
+            .orderBy("created_at", "desc")
+            .onSnapshot(async (snapshot) => {
+                const response = await API.get(`/get-all-users`);
+                if (response?.data?.bool) {
+                    setListOfAvailableForChat(response.data.data);
+                    const filteredMessages = snapshot?.docs?.filter((msg) => {
+                        return msg.data()?.senderEmail === userReducer?.user.email || msg.data()?.reciepientEmail === userReducer?.user.email;
+                    })
+                    const isEqual = _.isEqual(filteredMessages, userReducer?.userDataForMessaging);
+                    if (!isEqual) {
+                        const newListOfTechnicians = response.data.data?.map((tech) => {
+                            const unSeen = filteredMessages?.filter((msg) => !msg.data()?.seen);
+                            const lastMessage = filteredMessages?.filter((msg) => {
+                                return msg?.data()?.senderEmail == tech?.email || msg?.data()?.reciepientEmail == tech?.email;
+                            });
+                            return {
+                                ...tech,
+                                unReadMessages: unSeen?.filter((msg) => {
+                                    return !msg?.data()?.seen && msg?.data()?.senderEmail == tech?.email
+                                })?.length ?? 0,
+                                last_message: lastMessage ? lastMessage?.[lastMessage.length - 1]?.data()?.message : "Lets Start a Conversation"
+                            }
+                        })
+                        setListOfAvailableForChat(newListOfTechnicians)
+                    }
+                } else {
+                    console.log("response, ERROR")
+                }
+            })
+
+        return () => subscriber(); // unsubscribe on unmount
     }, [])
 
-    const fetchAllUsers = async () => {
-        const response = await API.get(`/get-all-users`);
-        if (response?.data?.bool) {
-            setListOfAvailableForChat(response.data.data)
-        } else {
-            console.log("response, ERROR")
-        }
-    }
-
     return (<View>
-        
         <ScrollView >
             <View style={{
                 width: width * 0.9,
@@ -65,12 +86,12 @@ const AllChats = () => {
             <View style={{ margin: 10 }}>
                 <TextReuseableComponent value={"List of Available People for Chat."} />
             </View>
-            <View  style={{height: height * 0.54 }}>
+            <View style={{ height: height * 0.54 }}>
                 <ScrollView>
 
-                {listOfAvailabeForChat?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
-                    return <ChatCard key={chat.id} data={chat} />
-                })}
+                    {listOfAvailabeForChat?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
+                        return <ChatCard key={chat.id} data={chat} />
+                    })}
                 </ScrollView>
             </View>
         </ScrollView>
