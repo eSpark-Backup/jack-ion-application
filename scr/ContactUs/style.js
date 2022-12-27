@@ -9,7 +9,7 @@ const { width, height } = Dimensions.get('window');
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
 
     // alignItems:'center',
   },
@@ -157,5 +157,5 @@ export default styles = StyleSheet.create({
   chatText: {
     color: 'white',
     textAlignVertical: 'center',
-  }
+  },
 });

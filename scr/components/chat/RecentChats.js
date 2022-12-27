@@ -13,7 +13,7 @@ import API from '../../api/SeviceApi';
 
 const { width, height } = Dimensions.get('window');
 
-const RecentChats = () => {
+const RecentChats = ({handleChatDetailsClick}) => {
     const [listOfRecentUsers, setListOfRecentUsers] = useState([]);
     const [searchInput, setSearchInput] = useState(null);
 
@@ -96,7 +96,7 @@ const RecentChats = () => {
                     <ScrollView>
 
                         {listOfRecentUsers?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
-                            return <ChatCard key={chat.id} data={chat} />
+                            return <ChatCard key={chat.id} data={chat} handleChatDetailsClick={handleChatDetailsClick} />
                         })}
                     </ScrollView>
                 </View>

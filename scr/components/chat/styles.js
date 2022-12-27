@@ -37,7 +37,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#25AAE1ec',
     padding: 10,
     borderRadius: 6,
-    width: 120,
+    width: width * 0.4,
     display: "flex",
     alignItems: "center"
   },
@@ -45,7 +45,7 @@ export default styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
     borderRadius: 6,
-    width: 120,
+    width: width * 0.4,
     display: "flex",
     alignItems: "center"
   },
@@ -110,7 +110,7 @@ export default styles = StyleSheet.create({
   chatDetailsContainer: {
     flex: 1,
     justifyContent: 'flex-start',
-    height: height * 0.7
+    height: height * 0.9
   },
   chatDetailsView: {
     padding: 5,
@@ -165,15 +165,15 @@ export default styles = StyleSheet.create({
   //   padding: 5
   // },
   messageRecievedInner: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: height * 0.02,
+    backgroundColor: "white",
+    borderRadius: height * 0.01,
     padding: 15,
     maxWidth: width * 0.7,
   },
   
   messageSentInner: {
     backgroundColor: "#a6e9ff",
-    borderRadius: height * 0.02,
+    borderRadius: height * 0.01,
     padding: 15,
     maxWidth: width * 0.7,
     display: 'flex',
@@ -206,7 +206,6 @@ export default styles = StyleSheet.create({
   chatInput: {
     height: height * 0.05,
     borderWidth: 0,
-    // backgroundColor: "#f2f2f2",
     color: "black"
     // borderRadius: width * 0.1
   },

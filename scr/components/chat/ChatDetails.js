@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useRef } from 'react'
-import { View, Dimensions, FlatList, SafeAreaView, ScrollView, TouchableOpacity, Keyboard } from 'react-native';
+import { View, Dimensions, FlatList, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
 import TextInput from '../TextInput';
@@ -12,14 +12,14 @@ import firestore from '@react-native-firebase/firestore';
 import { messagesReducer } from '../../Store/Reducer/messageReducer';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import _ from "lodash";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const { width, height } = Dimensions.get('window');
 
-const ChatDetails = ({ navigation }) => {
+const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
     const scrollViewRef = useRef();
     const [message, setMessage] = useState(false);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
-    const [selectedUser, setSelectedUser] = useState();
     // Set an initializing state whilst Firebase connects
     const userReducer = useSelector((state) => state.userReducer);
 
@@ -28,29 +28,28 @@ const ChatDetails = ({ navigation }) => {
     // When the user recieves a new message, push a notification to the user and show a message badge according to the number of new messages.
     // The list of Users available for chat should show the new message badge with message counter.
 
+    // useEffect(() => {
+    //     const keyboardDidShowListener = Keyboard.addListener(
+    //         'keyboardDidShow',
+    //         () => {
+    //             setKeyboardVisible(true);
+    //         },
+    //     );
+
+    //     const keyboardDidHideListener = Keyboard.addListener(
+    //         'keyboardDidHide',
+    //         () => {
+    //             setKeyboardVisible(false);
+    //         },
+    //     );
+
+    //     return () => {
+    //         keyboardDidHideListener.remove();
+    //         keyboardDidShowListener.remove();
+    //     };
+    // }, []);
+
     useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            () => {
-                setKeyboardVisible(true);
-            },
-        );
-
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                setKeyboardVisible(false);
-            },
-        );
-
-        return () => {
-            keyboardDidHideListener.remove();
-            keyboardDidShowListener.remove();
-        };
-    }, []);
-
-    useEffect(() => {
-        setSelectedUser(navigation.state.params.item)
         const subscriber = firestore()
             .collection("Messages")
             .orderBy("created_at", "desc")
@@ -69,7 +68,7 @@ const ChatDetails = ({ navigation }) => {
 
     const renderItem = ({ item }) => {
         const data = item.data();
-        const clickedUserEmail = selectedUser.email;
+        const clickedUserEmail = selectedChat?.item?.email;
         const reciepientEmail = data?.reciepientEmail;
         const senderEmail = data?.senderEmail;
 
@@ -107,9 +106,9 @@ const ChatDetails = ({ navigation }) => {
             senderRole: userReducer?.user?.role,
             senderRoleId: userReducer?.user.role_id,
             senderId: userReducer?.user?.id,
-            reciepientId: navigation.state.params.item?.id,
-            reciepientName: navigation.state.params.item?.name,
-            reciepientEmail: navigation.state.params.item?.email,
+            reciepientId: selectedChat.item?.id,
+            reciepientName: selectedChat.item?.name,
+            reciepientEmail: selectedChat.item?.email,
             seen: false,
         }
         firestore()
@@ -121,13 +120,140 @@ const ChatDetails = ({ navigation }) => {
             });
     }
 
-    return (
-        <View style={styles.chatDetailsContainer}>
-            <View style={[styles.headingContainer, { height: isKeyboardVisible ? "10%" : "7%" }]}>
+    return (<View className="chat-container" style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", flex: 1 }}>
+        <SafeAreaView>
+            {/* <View style={{ backgroundColor: "white", display: "flex", flexDirection: "row", justifyContent: "space-between", elevation: 10, width: width }}>
+                <View>
+                    <TouchableOpacity
+                        onPress={() => selectedChat.goBack()}
+                        style={{
+                            height: height * 0.06,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            display: 'flex',
+                            flexDirection: "row",
+                            marginLeft: 10,
+                        }}>
+                        <Back
+                            size={width * 0.07}
+                            color="black"
+                            name="keyboard-backspace"
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={{ display: 'flex', justifyContent: "center" }}>
+                    <TextReuseableComponent title style={{ color: "black" }} value={selectedChat?.item??.name} />
+                </View>
+                <View style={{ display: "flex", justifyContent: "flex-end" }}>
+                </View>
+            </View> */}
+            <View style={{
+                width: width * 1,
+                height: height * 0.07,
+                backgroundColor: '#25AAE1ec',
+                elevation: width * 0.01,
+            }}>
+                <View style={{
+                    display: "flex",
+                    flex: 1,
+                    justifyContent: 'space-between',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    width: width * 0.9
+                }}>
+                    <View>
+                        <TouchableOpacity onPress={() => handleChatDetailsClick("Chat")} >
+                            <Back
+                                size={width * 0.07}
+                                color="white"
+                                name="keyboard-backspace"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    {/* <Help
+                        name="help-circle"
+                        size={width * 0.07}
+                        color="white"
+                        style={{
+                            marginRight: width * 0.01,
+                        }}
+                    /> */}
+                    <TextReuseableComponent title style={{
+                        fontSize: height * 0.025,
+                        color: 'white',
+                    }} value={selectedChat?.item?.name} />
+                    <View>
+
+                        {/* <TextReuseableComponent title style={{
+                        fontSize: height * 0.03,
+                        color: 'white',
+                    }} value={selectedChat?.item??.name} /> */}
+                    </View>
+                </View>
+            </View>
+            <KeyboardAvoidingView  style={{ flex: 1 }}  >
+                <View style={{ height: '100%', }} >
+                    <View style={{ padding: 10, flex: 1 }}>
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            inverted
+                            data={messages}
+                            keyExtractor={(item) => {
+                                return item.id
+                            }}
+                            renderItem={renderItem}
+                        />
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                height: height * 0.06,
+                                borderRadius: height * 0.06,
+                                backgroundColor: "white",
+                                alignItems: "center",
+                                alignSelf: 'center',
+                                padding: 10,
+                                marginRight: 10
+                            }}>
+                            <View style={{ width: width * 0.75 }}>
+                                <TextInput
+                                    style={{
+                                        height: height * 0.05,
+                                        borderWidth: 0,
+                                        color: "black",
+                                        backgroundColor: "white"
+                                    }} value={message} onChangeText={setMessage} placeholder="Write you message" />
+                            </View>
+                        </View>
+                        <View style={{ height: height * 0.05, justifyContent: "center" }} >
+                            <TouchableOpacity onPress={handleSend}>
+                                <MaterialCommunityIcons
+                                    value={"Send"}
+                                    name={"send-circle"}
+                                    size={width * 0.08}
+                                    color={"blue"}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
+    </View>);
+}
+
+export default ChatDetails;
+
+
+{/* <View style={styles.chatDetailsContainer}>
+             <View style={[styles.headingContainer, { height: isKeyboardVisible ? "10%" : "7%" }]}>
                 <View style={[styles.headingInner]}>
                     <View>
                         <TouchableOpacity
-                            onPress={() => navigation.goBack()}
+                            onPress={() => selectedChat.goBack()}
                             style={{
                                 height: height * 0.06,
                                 justifyContent: 'flex-start',
@@ -143,7 +269,7 @@ const ChatDetails = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={{ display: 'flex', justifyContent: "center" }}>
-                        <TextReuseableComponent title style={{ color: "white" }} value={selectedUser?.name} />
+                        <TextReuseableComponent title style={{ color: "white" }} value={selectedChat?.item??.name} />
                     </View>
                     <View style={{ display: "flex", justifyContent: "flex-end" }}>
                         <TextReuseableComponent value={"..."} />
@@ -173,7 +299,4 @@ const ChatDetails = ({ navigation }) => {
                     </View>
                 </SafeAreaView>
             </View>
-        </View>);
-}
-
-export default ChatDetails;
+        </View> */}

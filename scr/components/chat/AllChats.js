@@ -11,7 +11,7 @@ import API from '../../api/SeviceApi';
 
 const { width, height } = Dimensions.get('window');
 
-const AllChats = () => {
+const AllChats = ({ handleChatDetailsClick }) => {
     const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([]);
     const userReducer = useSelector((state) => state.userReducer);
 
@@ -38,7 +38,7 @@ const AllChats = () => {
                                 unReadMessages: unSeen?.filter((msg) => {
                                     return !msg?.data()?.seen && msg?.data()?.senderEmail == tech?.email
                                 })?.length ?? 0,
-                                last_message: lastMessage ? lastMessage?.[lastMessage.length - 1]?.data()?.message : "Lets Start a Conversation"
+                                last_message: lastMessage ? lastMessage?.[0]?.data()?.message : "Lets Start a Conversation"
                             }
                         })
                         setListOfAvailableForChat(newListOfTechnicians)
@@ -86,11 +86,11 @@ const AllChats = () => {
             <View style={{ margin: 10 }}>
                 <TextReuseableComponent value={"List of Available People for Chat."} />
             </View>
-            <View style={{ height: height * 0.54 }}>
+            <View>
                 <ScrollView>
 
                     {listOfAvailabeForChat?.filter((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
-                        return <ChatCard key={chat.id} data={chat} />
+                        return <ChatCard key={chat.id} data={chat} handleChatDetailsClick={handleChatDetailsClick} />
                     })}
                 </ScrollView>
             </View>

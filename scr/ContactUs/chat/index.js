@@ -6,13 +6,10 @@ import TextReuseableComponent from '../../components/Text';
 import RecentChats from '../../components/chat/RecentChats';
 import AllChats from '../../components/chat/AllChats';
 import styles from '../../components/chat/styles';
-import Help from 'react-native-vector-icons/Feather';
-
+import Back from 'react-native-vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get('window');
 
-
-
-const ChatScreen = ({ navigation }) => {
+const ChatScreen = ({ navigation, handleChatDetailsClick }) => {
     const [activeTab, setActiveTab] = useState("Recent Chats");
 
     return (
@@ -20,39 +17,48 @@ const ChatScreen = ({ navigation }) => {
             <View style={{
                 width: width * 1,
                 height: height * 0.07,
+                backgroundColor: '#25AAE1ec',
+                elevation: width * 0.01,
             }}>
                 <View style={{
+                    display: "flex",
                     flex: 1,
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
+                    alignSelf: 'center',
                     alignItems: 'center',
-                    backgroundColor: '#25AAE1ec',
-                    elevation: width * 0.01,
                     flexDirection: 'row',
+                    width: width * 0.9
                 }}>
-                    <View style={{ display: 'flex', position: 'absolute', left: 20, top: 10 }}>
-                        <TouchableOpacity onPress={() => navigation.navigate("Support")}>
-                            <TextReuseableComponent heading value={"X"} style={{ color: "white" }} />
+                    <View>
+                        <TouchableOpacity onPress={() => handleChatDetailsClick("Support")} >
+                            <Back
+                                size={width * 0.07}
+                                color="white"
+                                name="keyboard-backspace"
+                            />
                         </TouchableOpacity>
                     </View>
-                    <Help
+                    {/* <Help
                         name="help-circle"
                         size={width * 0.07}
                         color="white"
                         style={{
                             marginRight: width * 0.01,
                         }}
-                    />
+                    /> */}
                     <TextReuseableComponent title style={{
-                        fontSize: height * 0.035,
+                        fontSize: height * 0.03,
                         color: 'white',
-                    }} value={"Support"} />
+                    }} value={"Chats"} />
+                    <View>
+                    </View>
                 </View>
             </View>
-            <View style={styles.chatContainer}>
+            {/* <View style={styles.chatContainer}>
                 <View style={styles.chatHeading}>
                     <TextReuseableComponent style={{ fontWeight: "bold" }} heading value={"Chats"} />
                 </View>
-            </View>
+            </View> */}
             <View style={{
                 width: '100%',
                 flexDirection: 'row',
@@ -81,8 +87,8 @@ const ChatScreen = ({ navigation }) => {
                 </View>
             </View>
             <View >
-                {activeTab == "Recent Chats" && <RecentChats />}
-                {activeTab == "All Chats" && <AllChats />}
+                {activeTab == "Recent Chats" && <RecentChats handleChatDetailsClick={handleChatDetailsClick} />}
+                {activeTab == "All Chats" && <AllChats handleChatDetailsClick={handleChatDetailsClick} />}
             </View>
         </View>
     );

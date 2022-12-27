@@ -63,7 +63,6 @@ const RouteConfigs = {
   Charts,
   Support,
   Setting,
-  Chat,
   ChatDetails,
   Filter,
   U_Details,

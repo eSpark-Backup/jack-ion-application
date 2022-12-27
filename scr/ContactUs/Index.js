@@ -21,6 +21,8 @@ import { Fonts } from '../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../components/StatusBar';
 import TextReuseableComponent from '../../scr/components/Text/index';
+import ChatScreen from './chat';
+import ChatDetails from '../components/chat/ChatDetails';
 
 const { width, height } = Dimensions.get('window');
 const IC_ARR_DOWN = require('../../Images/down.png');
@@ -40,6 +42,10 @@ export default class Splash extends Component {
       points: 80,
       expanded: false,
       asdf: false,
+      supportScreen: true,
+      chatScreen: false,
+      chatDetailsScreen: false,
+      selectedChat: null
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -55,7 +61,10 @@ export default class Splash extends Component {
   };
 
   handleChatClick = () => {
-     this.props.navigation.navigate("Chat");
+     this.setState({ supportScreen: false, chatScreen: true, chatDetailsScreen: false });
+  }
+  handleChatDetailsClick = (screen, selectedChat) => {
+    this.setState({ supportScreen: screen == "Support" ? true : false, chatScreen: screen == "Chat" ? true : false, chatDetailsScreen: screen == "ChatDetails" ? true : false, selectedChat: selectedChat ? selectedChat : null });
   }
   render() {
     let upDownMeter;
@@ -67,10 +76,10 @@ export default class Splash extends Component {
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
 
-        <View style={styles.headingContainer}>
+        {this.state.supportScreen && <><View style={styles.headingContainer}>
           <View style={[styles.headingInner]}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => this.props.navigation.navigate("Home")}
               style={{
                 width: width * 0.15,
                 height: height * 0.06,
@@ -91,7 +100,7 @@ export default class Splash extends Component {
               }}>
               <Help
                 name="help-circle"
-                size={width * 0.07}
+                size={width * 0.06}
                 color="white"
                 style={{
                   marginRight: width * 0.01,
@@ -163,7 +172,9 @@ export default class Splash extends Component {
               color="#25AAE1ec"
             />
           </TouchableOpacity>
-        </View>
+        </View></>}
+        {this.state.chatScreen && <ChatScreen handleChatDetailsClick={this.handleChatDetailsClick} />}
+        {this.state.chatDetailsScreen && <ChatDetails selectedChat={this.state.selectedChat} handleChatDetailsClick={this.handleChatDetailsClick} />}
       </View>
     );
   }
