@@ -167,10 +167,11 @@ export default class Splash extends Component {
         <View style={styles.chatModule}>
           <TouchableOpacity onPress={() => this.handleChatClick()}>
             <MaterialCommunityIcons
-              name="chat-outline"
+              name="chat-processing-outline"
               size={width * 0.15}
               color="#25AAE1ec"
             />
+            <TextReuseableComponent style={{textAlign: "center"}} value={"Chat"} />
           </TouchableOpacity>
         </View></>}
         {this.state.chatScreen && <ChatScreen handleChatDetailsClick={this.handleChatDetailsClick} />}

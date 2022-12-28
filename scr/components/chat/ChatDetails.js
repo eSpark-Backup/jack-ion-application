@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react'
-import { View, Dimensions, FlatList, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import React, { useState, useEffect, useReducer } from 'react'
+import { View, Dimensions, FlatList, SafeAreaView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Button } from 'react-native-paper';
 import TextInput from '../TextInput';
 import TextReuseableComponent from '../../components/Text/index';
 import styles from './styles';
@@ -16,9 +15,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const { width, height } = Dimensions.get('window');
 
 const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
-    const scrollViewRef = useRef();
     const [message, setMessage] = useState(false);
-    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [error, setError] = useState(false);
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
     // Set an initializing state whilst Firebase connects
     const userReducer = useSelector((state) => state.userReducer);
@@ -27,27 +25,6 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
     // Make sure to update the messages when ever the messages in firestore database changes. Forexample when the messages are added or removed.
     // When the user recieves a new message, push a notification to the user and show a message badge according to the number of new messages.
     // The list of Users available for chat should show the new message badge with message counter.
-
-    // useEffect(() => {
-    //     const keyboardDidShowListener = Keyboard.addListener(
-    //         'keyboardDidShow',
-    //         () => {
-    //             setKeyboardVisible(true);
-    //         },
-    //     );
-
-    //     const keyboardDidHideListener = Keyboard.addListener(
-    //         'keyboardDidHide',
-    //         () => {
-    //             setKeyboardVisible(false);
-    //         },
-    //     );
-
-    //     return () => {
-    //         keyboardDidHideListener.remove();
-    //         keyboardDidShowListener.remove();
-    //     };
-    // }, []);
 
     useEffect(() => {
         const subscriber = firestore()
@@ -96,7 +73,8 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
 
 
     const handleSend = () => {
-        setMessage(false)
+        if(message) {
+            setMessage(false)
         const data = {
             message,
             messageId: _.uniqueId(userReducer?.user?.id),
@@ -118,35 +96,16 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                 console.log('Message added!', data);
                 setMessage(false);
             });
+        }else {
+            setError(true)
+            setTimeout(() => {
+                setError(false)
+            }, 1000)
+        }
     }
 
     return (<View className="chat-container" style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", flex: 1 }}>
         <SafeAreaView>
-            {/* <View style={{ backgroundColor: "white", display: "flex", flexDirection: "row", justifyContent: "space-between", elevation: 10, width: width }}>
-                <View>
-                    <TouchableOpacity
-                        onPress={() => selectedChat.goBack()}
-                        style={{
-                            height: height * 0.06,
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            display: 'flex',
-                            flexDirection: "row",
-                            marginLeft: 10,
-                        }}>
-                        <Back
-                            size={width * 0.07}
-                            color="black"
-                            name="keyboard-backspace"
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ display: 'flex', justifyContent: "center" }}>
-                    <TextReuseableComponent title style={{ color: "black" }} value={selectedChat?.item??.name} />
-                </View>
-                <View style={{ display: "flex", justifyContent: "flex-end" }}>
-                </View>
-            </View> */}
             <View style={{
                 width: width * 1,
                 height: height * 0.07,
@@ -171,24 +130,11 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                             />
                         </TouchableOpacity>
                     </View>
-                    {/* <Help
-                        name="help-circle"
-                        size={width * 0.07}
-                        color="white"
-                        style={{
-                            marginRight: width * 0.01,
-                        }}
-                    /> */}
                     <TextReuseableComponent title style={{
                         fontSize: height * 0.025,
                         color: 'white',
                     }} value={selectedChat?.item?.name} />
                     <View>
-
-                        {/* <TextReuseableComponent title style={{
-                        fontSize: height * 0.03,
-                        color: 'white',
-                    }} value={selectedChat?.item??.name} /> */}
                     </View>
                 </View>
             </View>
@@ -205,36 +151,45 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                             renderItem={renderItem}
                         />
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                    <View 
+                    style={{ 
+                        flexDirection: "row", 
+                        alignItems: "center", 
+                        justifyContent: "center", 
+                        backgroundColor: "white",
+                        elevation: 10,
+                        padding: 7
+                        }}
+                        >
                         <View
                             style={{
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                height: height * 0.06,
-                                borderRadius: height * 0.06,
-                                backgroundColor: "white",
+                                height: height * 0.05,
+                                borderRadius: height * 0.05,
+                                backgroundColor: "#f2f2f2",
                                 alignItems: "center",
                                 alignSelf: 'center',
                                 padding: 10,
-                                marginRight: 10
+                                marginRight: 10,
+                                width: width * 0.80
                             }}>
                             <View style={{ width: width * 0.75 }}>
                                 <TextInput
                                     style={{
-                                        height: height * 0.05,
+                                        height: height * 0.04,
                                         borderWidth: 0,
-                                        color: "black",
-                                        backgroundColor: "white"
-                                    }} value={message} onChangeText={setMessage} placeholder="Write you message" />
+                                        backgroundColor: "#f2f2f2"
+                                    }} value={message} onChangeText={setMessage} placeholder="Write you message" placeholderTextColor={ error ? "red" : null} />
                             </View>
                         </View>
                         <View style={{ height: height * 0.05, justifyContent: "center" }} >
-                            <TouchableOpacity onPress={handleSend}>
+                            <TouchableOpacity onPress={handleSend} disabled={!message}>
                                 <MaterialCommunityIcons
                                     value={"Send"}
-                                    name={"send-circle"}
+                                    name={"send"}
                                     size={width * 0.08}
-                                    color={"blue"}
+                                    color={!message ? "gray" : "#25AAE1ec"}
                                 />
                             </TouchableOpacity>
                         </View>
