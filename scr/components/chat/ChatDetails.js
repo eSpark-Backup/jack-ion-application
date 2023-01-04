@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useReducer } from 'react'
-import { View, Dimensions, FlatList, SafeAreaView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useReducer, useRef } from 'react'
+import { View, Dimensions, FlatList, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import TextInput from '../TextInput';
 import TextReuseableComponent from '../../components/Text/index';
 import styles from './styles';
 import MessageCard from './MessageCard';
-
-import firestore from '@react-native-firebase/firestore';
+import API from '../../api/SeviceApi';
 
 import { messagesReducer } from '../../Store/Reducer/messageReducer';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import _ from "lodash";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment/moment';
 const { width, height } = Dimensions.get('window');
 
 const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
@@ -20,87 +20,112 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
     // Set an initializing state whilst Firebase connects
     const userReducer = useSelector((state) => state.userReducer);
+    let fetchable = userReducer?.userDataForMessaging;
+    const flatList1 = useRef();
 
     // Handle user state changes
     // Make sure to update the messages when ever the messages in firestore database changes. Forexample when the messages are added or removed.
     // When the user recieves a new message, push a notification to the user and show a message badge according to the number of new messages.
     // The list of Users available for chat should show the new message badge with message counter.
 
-    useEffect(() => {
-        const subscriber = firestore()
-            .collection("Messages")
-            .orderBy("created_at", "desc")
-            .onSnapshot(function (snapshot) {
-                const filteredMessages = snapshot?.docs?.filter((msg) => {
-                    return msg.data()?.senderEmail === userReducer?.user?.email || msg.data()?.reciepientEmail === userReducer?.user?.email;
-                })
-                const isEqual = _.isEqual(filteredMessages, messages);
-                if (!isEqual) {
-                    dispatchMessages({ type: 'delete', payload: filteredMessages })
-                }
-            })
-
-        return () => subscriber(); // unsubscribe on unmount
-    }, [])
+    useEffect(async () => {
+        try {
+            const allMessagesResponse = await API.post(`/get-all-user-messages`, {
+                "reciver_id": selectedChat?.item?.id,
+                "sender_id": userReducer?.user?.id
+            });
+            console.log('user reducer as', fetchable);
+            dispatchMessages({ type: 'delete', payload: allMessagesResponse?.data?.data?.messages });
+        } catch (error) {
+            console.log('not true found', error);
+            Alert.alert(error)
+        }
+    }, [fetchable])
 
     const renderItem = ({ item }) => {
-        const data = item.data();
-        const clickedUserEmail = selectedChat?.item?.email;
-        const reciepientEmail = data?.reciepientEmail;
-        const senderEmail = data?.senderEmail;
-
-        if (clickedUserEmail == senderEmail || clickedUserEmail == reciepientEmail) {
-            const side = senderEmail == userReducer?.user?.email ? 'sent' : 'received';
-
-            var jobskill_query = firestore().collection('Messages').where('messageId', '==', data?.messageId);
-            jobskill_query.get().then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    if (side == "received" && !doc.data().seen) {
-                        console.log('Seen updated!');
-                        return doc.ref.update({ seen: true });
-                    } else {
-                        return null
-                    }
-                });
-            });
-            return (
-                <MessageCard mode={side} data={data} />
-            )
-        } else {
-            return null;
+        const side = item?.user_id == userReducer?.user?.id ? "sent" : "received";
+        if (item) {
+            return <MessageCard mode={side} data={item} selectedChat={selectedChat} />
         }
     }
 
-
-    const handleSend = () => {
-        if(message) {
-            setMessage(false)
-        const data = {
-            message,
-            messageId: _.uniqueId(userReducer?.user?.id),
-            created_at: new Date(),
-            senderName: userReducer?.user?.name,
-            senderEmail: userReducer?.user?.email,
-            senderRole: userReducer?.user?.role,
-            senderRoleId: userReducer?.user.role_id,
-            senderId: userReducer?.user?.id,
-            reciepientId: selectedChat.item?.id,
-            reciepientName: selectedChat.item?.name,
-            reciepientEmail: selectedChat.item?.email,
-            seen: false,
-        }
-        firestore()
-            .collection('Messages')
-            .add(data)
-            .then(() => {
-                console.log('Message added!', data);
+    const handleSend = async () => {
+        console.log('selected chat ', selectedChat);
+        setMessage(false)
+        if (selectedChat?.item?.last_message?.last_message) {
+            const time = moment().format("hh:mm:ss");
+            const newData = {
+                time: time,
+                chat_room_id: selectedChat?.item?.last_message?.id,
+                message,
+                reciver_id: selectedChat?.item?.id,
+                user_id: userReducer?.user?.id
+            }
+            console.log('data', newData);
+            try {
+                const send_message = await API.post(`/send-message`, newData);
                 setMessage(false);
-            });
-        }else {
-            setError(true)
-            setTimeout(() => {
-                setError(false)
-            }, 1000)
+                if(send_message?.data?.bool) {
+                    const reciever = selectedChat?.item?.id;
+                        const sender = userReducer?.user?.id;
+                        const allMessagesResponse = await API.post(`/get-all-user-messages`, {
+                            "sender_id": sender,
+                            "reciver_id": reciever
+                        });
+                        if(allMessagesResponse?.data?.bool) { 
+                            dispatchMessages({ type: 'delete', payload: allMessagesResponse?.data?.data?.messages })
+                            console.log('Updated Messages dispatched!') 
+                        } else {
+                            Alert.alert(allMessagesResponse?.data?.message);
+                        }
+                }
+            } catch (error) {
+                console.log('error', error);
+            }
+        } else {
+            try {
+                console.log('creating chatroom!');
+                const create_chatroom = await API.post(`/craete-room`, {
+                    "reciver_id": selectedChat?.item?.id,
+                    "sender_id": userReducer?.user?.id
+                });
+                if(create_chatroom?.data?.bool) {
+                    console.log('create chatroom', create_chatroom?.data?.data);
+                    const time = moment().format("hh:mm:ss");
+                    const newData = {
+                        time: time,
+                        chat_room_id: create_chatroom?.data?.data?.id,
+                        message,
+                        reciver_id: selectedChat?.item?.id,
+                        user_id: userReducer?.user?.id
+                    }
+                    const send_message = await API.post(`/send-message`, newData);
+
+                    if(send_message?.data?.bool) {
+                        setMessage(false);
+                        const reciever = selectedChat?.item?.id;
+                        const sender = userReducer?.user?.id;
+                        const allMessagesResponse = await API.post(`/get-all-user-messages`, {
+                            "sender_id": sender,
+                            "reciver_id": reciever
+                        });
+                        console.log('reciever', reciever);
+                        console.log('sender', sender);
+                        if(allMessagesResponse?.data?.bool) { 
+                            dispatchMessages({ type: 'delete', payload: allMessagesResponse?.data?.data?.messages })
+                            console.log('Updated Messages dispatched!')
+                        } else {
+                            Alert.alert(allMessagesResponse?.data?.message);
+                        }
+                    } else {
+                        Alert.alert("Message sending failed")
+                    }
+                } else {
+                    Alert.alert("Create chat room failed");
+                }
+            } catch (error) {
+                console.log('error creating room', error);
+            }
         }
     }
 
@@ -138,12 +163,13 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                     </View>
                 </View>
             </View>
-            <KeyboardAvoidingView  style={{ flex: 1 }}  >
+            <KeyboardAvoidingView style={{ flex: 1 }}  >
                 <View style={{ height: '100%', }} >
                     <View style={{ padding: 10, flex: 1 }}>
                         <FlatList
                             showsVerticalScrollIndicator={false}
-                            inverted
+                            ref={flatList1}
+                            onContentSizeChange={() => flatList1?.current?.scrollToEnd()}
                             data={messages}
                             keyExtractor={(item) => {
                                 return item.id
@@ -151,16 +177,16 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                             renderItem={renderItem}
                         />
                     </View>
-                    <View 
-                    style={{ 
-                        flexDirection: "row", 
-                        alignItems: "center", 
-                        justifyContent: "center", 
-                        backgroundColor: "white",
-                        elevation: 10,
-                        padding: 7
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "white",
+                            elevation: 10,
+                            padding: 7
                         }}
-                        >
+                    >
                         <View
                             style={{
                                 flexDirection: "row",
@@ -180,7 +206,7 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                                         height: height * 0.04,
                                         borderWidth: 0,
                                         backgroundColor: "#f2f2f2"
-                                    }} value={message} onChangeText={setMessage} placeholder="Write you message" placeholderTextColor={ error ? "red" : null} />
+                                    }} value={message} onChangeText={setMessage} placeholder="Write you message" placeholderTextColor={error ? "red" : null} />
                             </View>
                         </View>
                         <View style={{ height: height * 0.05, justifyContent: "center" }} >
@@ -201,57 +227,3 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
 }
 
 export default ChatDetails;
-
-
-{/* <View style={styles.chatDetailsContainer}>
-             <View style={[styles.headingContainer, { height: isKeyboardVisible ? "10%" : "7%" }]}>
-                <View style={[styles.headingInner]}>
-                    <View>
-                        <TouchableOpacity
-                            onPress={() => selectedChat.goBack()}
-                            style={{
-                                height: height * 0.06,
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                display: 'flex',
-                                flexDirection: "row"
-                            }}>
-                            <Back
-                                size={width * 0.07}
-                                color="white"
-                                name="keyboard-backspace"
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ display: 'flex', justifyContent: "center" }}>
-                        <TextReuseableComponent title style={{ color: "white" }} value={selectedChat?.item??.name} />
-                    </View>
-                    <View style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <TextReuseableComponent value={"..."} />
-                    </View>
-                </View>
-            </View>
-            <View style={styles.chatDetailsView}>
-                <SafeAreaView >
-                    <View style={{ height: isKeyboardVisible ? "84%" : "90%" }} >
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            inverted
-                            data={messages}
-                            keyExtractor={(item) => {
-                                return item.id
-                            }}
-                            renderItem={renderItem}
-                        />
-                    </View>
-                    <View style={styles.chatDetailsInput}>
-                        <View style={styles.chatInputContainer}>
-                            <TextInput style={styles.chatInput} value={message} onChangeText={setMessage} placeholder="Write you message" />
-                        </View>
-                        <View style={{ backgroundColor: "#a6e9ff", marginLeft: 10, borderRadius: 10 }}>
-                            <Button onPress={handleSend} disabled={!message}>Send</Button>
-                        </View>
-                    </View>
-                </SafeAreaView>
-            </View>
-        </View> */}

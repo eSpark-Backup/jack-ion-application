@@ -27,10 +27,6 @@ import { pushNotification } from '../utils/helperFunction';
 import { connect } from 'react-redux';
 import { fetchPropetry, loadMoreData } from '../Store/Action/properties.action';
 import { fetchUserDataForMessaging } from '../Store/Action/user.action';
-import firestore from '@react-native-firebase/firestore';
-// import { Loader } from '../components/Loader';
-// import { FirebaseService } from '../components/chat/firebase/FirebaseService';
-// const firebaseService = new FirebaseService();
 
 const { width, height } = Dimensions.get('window');
 let fcmToken = '';
@@ -74,16 +70,6 @@ class Splash extends Component {
         });
     }
   }
-  fetchMessages = async () => {
-    const snapshot = await firestore().collection('Messages').get()
-    let newArray = [];
-    snapshot?.docs?.forEach((queryDocSnapshot) => {
-      const profile = queryDocSnapshot.data();
-      const { ref, ...profileSerialisable } = profile;
-      newArray.push(profileSerialisable);
-    });
-    this.props.fetchUserDataForMessaging(newArray);
-  }
   async componentDidMount() {
     messaging().onNotificationOpenedApp(async (notification) => {
       console.log('Initial notification', notification);
@@ -104,37 +90,43 @@ class Splash extends Component {
       this.onAppBootstrap();
       PushNotification.configure({
         onNotification: async (notification) => {
-          // console.log('Notification woke from sleep', notification);
-
-          notification?.userInteraction ? null : pushNotification(notification);
-          const clicked = notification?.userInteraction;
-          notification?.id ? PushNotification.cancelLocalNotification(`${notification?.id}`) : null;
-
-          if (clicked) {
-            console.log('Notification Clicked', notification);
-            if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
-              const regex = /\d+/g;
-              const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
-              const idInNumber = matches ? Number(matches[0]) : null;
-              const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-              const idFromData = data?.property?.id;
-              // const item = { id: 266 }
-              const item = { id: idInNumber ? idInNumber : idFromData }
-              // console.log('data from click', data);
-              this.props.navigation.navigate("Equip", { item: { item: data.property } })
-            } else {
-              const regex = /\d+/g;
-              const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
-              const idInNumber = matches ? Number(matches[0]) : null;
-              const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-              const idFromData = data?.id;
-              const item = { id: idInNumber ? idInNumber : idFromData }
-              // console.log('data from click prop', data);
-              this.props.navigation.navigate("Detail", { item: { item: data } })
-            }
+          console.log('Notification woke from sleep', notification);
+          if (notification?.data?.type == "chat") {
+            this.props.fetchUserDataForMessaging(!this.props.user?.userReducer?.userDataForMessaging);
+            pushNotification(notification)
           } else {
-            console.log('Notification Delievered', notification);
+            // notification?.data?.type == "chat" && this.props.fetchUserDataForMessaging(true);
+            notification?.userInteraction ? null : pushNotification(notification);
+            const clicked = notification?.userInteraction;
+            notification?.id ? PushNotification.cancelLocalNotification(`${notification?.id}`) : null;
+
+            if (clicked) {
+              console.log('Notification Clicked', notification);
+              if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {
+                const regex = /\d+/g;
+                const matches = notification?.message ? notification?.message?.match(regex) : null;  // creates array from matches
+                const idInNumber = matches ? Number(matches[0]) : null;
+                const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+                const idFromData = data?.property?.id;
+                // const item = { id: 266 }
+                const item = { id: idInNumber ? idInNumber : idFromData }
+                // console.log('data from click', data);
+                this.props.navigation.navigate("Equip", { item: { item: data.property } })
+              } else {
+                const regex = /\d+/g;
+                const matches = notification?.message ? notification?.message?.match(regex) : null; // creates array from matches
+                const idInNumber = matches ? Number(matches[0]) : null;
+                const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+                const idFromData = data?.id;
+                const item = { id: idInNumber ? idInNumber : idFromData }
+                // console.log('data from click prop', data);
+                this.props.navigation.navigate("Detail", { item: { item: data } })
+              }
+            } else {
+              console.log('Notification Delievered', notification);
+            }
           }
+
         }
       });
     } else {
@@ -153,7 +145,6 @@ class Splash extends Component {
       }
     }
     this.props.fetchPropetry();
-    this.fetchMessages();
   }
 
   backAction = () => {

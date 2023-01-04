@@ -61,10 +61,18 @@ export default class Splash extends Component {
   };
 
   handleChatClick = () => {
-     this.setState({ supportScreen: false, chatScreen: true, chatDetailsScreen: false });
+     this.setState({ supportScreen: false, 
+      chatScreen: true, 
+      chatDetailsScreen: false 
+    });
   }
   handleChatDetailsClick = (screen, selectedChat) => {
-    this.setState({ supportScreen: screen == "Support" ? true : false, chatScreen: screen == "Chat" ? true : false, chatDetailsScreen: screen == "ChatDetails" ? true : false, selectedChat: selectedChat ? selectedChat : null });
+    this.setState({ 
+      supportScreen: screen == "Support" ? true : false, 
+      chatScreen: screen == "Chat" ? true : false, 
+      chatDetailsScreen: screen == "ChatDetails" ? true : false, 
+      selectedChat: selectedChat ? selectedChat : null 
+    });
   }
   render() {
     let upDownMeter;

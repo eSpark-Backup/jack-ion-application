@@ -57,13 +57,19 @@ export default styles = StyleSheet.create({
   chatCardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: height * 0.08,
+    height: height * 0.073,
     alignItems: "center",
     padding: 10,
-    marginVertical: 1,
+    marginVertical: 3,
+    backgroundColor: "white", 
+    borderRadius: width * 0.01,
+    elevation: 2,
   },
   iconContainer: {
-    width: "15%",
+    width: width * 0.11,
+    height: height * 0.06,
+    alignItems: "center",
+    justifyContent: 'center',
   },
   headingContainer: {
     width: width * 1,
@@ -84,10 +90,9 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
   },
   innerContainerIcon: {
-    height: 46,
-    width: 46,
-    borderRadius: 49,
-    alignSelf: 'flex-start',
+    width: width * 0.09,
+    height: width * 0.09,
+    borderRadius: width * 0.09,
     alignItems: "center",
     backgroundColor: 'gray',
     justifyContent: 'center',
@@ -101,6 +106,7 @@ export default styles = StyleSheet.create({
     width: "30%",
     height: '100%',
     alignItems: "flex-end",
+    justifyContent: "center"
   },
   chatDetailsContainer: {
     flex: 1,

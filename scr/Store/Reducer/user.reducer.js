@@ -6,7 +6,7 @@ const initialState = {
   resetPassToken: '',
   userId: null,
   authToken: null,
-  userDataForMessaging: null,
+  userDataForMessaging: false,
 }
 
 export const userReducer = (state = initialState, action) => {

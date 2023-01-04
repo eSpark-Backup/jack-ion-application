@@ -86,7 +86,6 @@ class Tools extends Component {
   }
 
   onSuccess = async (e) => {
-    // console.log('meter info ---->', e);
     this.setState({scan: false});
     this.setState({scanning: true});
     const check = e.data.substring(0);
@@ -97,7 +96,6 @@ class Tools extends Component {
       `/property/equipment/unit/get-meter-info`,
       data,
     );
-    // console.log('Get Unit Id', meterResponse);
     const unitId = meterResponse?.data?.data?.meterinfo?.unit_id;
     if (meterResponse?.data?.bool) {
       this.setState({loader: true});
@@ -111,10 +109,8 @@ class Tools extends Component {
         `/property/equipment/building/${buildingId}`,
       );
 
-      // console.log('Get Building Name', buildingResponse);
       let buildingName = buildingResponse?.data?.data?.building?.name;
       let propertyName = buildingResponse?.data?.data?.building?.property_name;
-      // this.toggleModal();
 
       this.setState({loader: false, isVisible: !this.state.isVisible}, () =>
         this.props.navigation.navigate('MeterDetails', {
@@ -125,33 +121,11 @@ class Tools extends Component {
         }),
       );
     } else {
-      // this.toggleModal();
       this.setState({loader: false, isVisible: !this.state.isVisible}, () =>
         this.props.navigation.navigate('RedirectMeter', {meterSerial: e?.data}),
       );
     }
-
-    // console.log('Barcode Values', response);
-
-    // console.log('scanned' + check);
     this.setState({barcodes: e});
-    // console.log('Barcodes' + this.state.barcodes);
-    // this.setState({
-    //   result: e,
-    //   scan: false,
-    //   scanResult: true,
-    // });
-    // if (check == 'http') {
-    //   Linking.openURL(e.data).catch((err) =>
-    //     console.error('An error occured', err),
-    //   );
-    // } else {
-    //   this.setState({
-    //     result: e,
-    //     scan: false,
-    //     scanResult: true,
-    //   });
-    // }
   };
   scanAgain = () => {
     this.setState({
@@ -161,7 +135,6 @@ class Tools extends Component {
   };
 
   componentDidMount() {
-    // console.log('What we Get tools',this.props.navigation.navigate('MeterDetails'))
     this.subs = [
       this.props.navigation.addListener('didFocus', () =>
         Animated.spring(this.state.springValue, {
@@ -259,11 +232,6 @@ class Tools extends Component {
         useNativeDriver: true,
       }).start();
     }, 10);
-    // Animated.timing(this.state.animatedValue, {
-    //   toValue: 1,
-    //   duration: 1000,
-    //   useNativeDriver: true
-    // }).start();
   };
   render() {
     let {animatedValue, springValue} = this.state;

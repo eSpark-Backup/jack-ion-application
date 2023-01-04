@@ -539,7 +539,7 @@ export default class Splash extends Component {
           <SectionList
             sections={alertsType}
             renderItem={({ item, index }) => (
-              <View style={style.containerInnerNotifications}>
+              <View style={style.containerInner}>
                 <View>
                   <TextReuseableComponent title style={style.mainHeadiingItems} value={item.name} />
                   <TextReuseableComponent title style={style.sideHeadingItems} value={item.description} />

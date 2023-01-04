@@ -10,7 +10,7 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get('window');
 
 const ChatScreen = ({ navigation, handleChatDetailsClick }) => {
-    const [activeTab, setActiveTab] = useState("Recent Chats");
+    const [activeTab, setActiveTab] = useState('All Chats');
 
     return (
         <View style={{ height: height }}>
@@ -38,14 +38,6 @@ const ChatScreen = ({ navigation, handleChatDetailsClick }) => {
                             />
                         </TouchableOpacity>
                     </View>
-                    {/* <Help
-                        name="help-circle"
-                        size={width * 0.07}
-                        color="white"
-                        style={{
-                            marginRight: width * 0.01,
-                        }}
-                    /> */}
                     <TextReuseableComponent title style={{
                         fontSize: height * 0.03,
                         color: 'white',
@@ -54,11 +46,6 @@ const ChatScreen = ({ navigation, handleChatDetailsClick }) => {
                     </View>
                 </View>
             </View>
-            {/* <View style={styles.chatContainer}>
-                <View style={styles.chatHeading}>
-                    <TextReuseableComponent style={{ fontWeight: "bold" }} heading value={"Chats"} />
-                </View>
-            </View> */}
             <View style={{
                 width: '100%',
                 flexDirection: 'row',
@@ -68,26 +55,24 @@ const ChatScreen = ({ navigation, handleChatDetailsClick }) => {
                 <View style={styles.activeTabContainerView}>
                     <TouchableOpacity
                         activeOpacity={.8}
+                        onPress={() => setActiveTab("All Chats")}
+                        style={activeTab == "All Chats" ? styles.tabContainer :
+                            styles.activeTabContainer}>
+                        <TextReuseableComponent title style={{ color: activeTab == "All Chats" ? "#fff" : "#25AAE1ec" }} value={"All Users"} />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.activeTabContainerView}>
+                    <TouchableOpacity
+                        activeOpacity={.8}
                         onPress={() => setActiveTab("Recent Chats")}
                         style={activeTab == "Recent Chats" ? styles.tabContainer :
                             styles.activeTabContainer}>
                         <TextReuseableComponent title style={{ color: activeTab == "Recent Chats" ? "#fff" : "#25AAE1ec" }} value={"Recent Chats"} />
                     </TouchableOpacity>
-                    {/* {activeTab == "Recent Chats" && <View style={{ height: 4, width: 150, backgroundColor: 'black', borderBottomLeftRadius: 150, borderBottomRightRadius: 150, marginTop: 10 }} />} */}
-                </View>
-                <View style={styles.activeTabContainerView}>
-                    <TouchableOpacity
-                        activeOpacity={.8}
-                        onPress={() => setActiveTab("All Chats")}
-                        style={activeTab == "All Chats" ? styles.tabContainer :
-                            styles.activeTabContainer}>
-                        <TextReuseableComponent title style={{ color: activeTab == "All Chats" ? "#fff" : "#25AAE1ec" }} value={"All Chats"} />
-                    </TouchableOpacity>
-                    {/* {activeTab == "All Chats" && <View style={{ height: 4, width: 150, backgroundColor: 'black', borderBottomLeftRadius: 150, borderBottomRightRadius: 150, marginTop: 10 }} />} */}
                 </View>
             </View>
             <View >
-                {activeTab == "Recent Chats" && <RecentChats handleChatDetailsClick={handleChatDetailsClick} />}
+                <RecentChats active={activeTab == "Recent Chats" ? true : false} handleChatDetailsClick={handleChatDetailsClick} />
                 {activeTab == "All Chats" && <AllChats handleChatDetailsClick={handleChatDetailsClick} />}
             </View>
         </View>
