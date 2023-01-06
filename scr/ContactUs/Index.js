@@ -35,8 +35,8 @@ export default class Splash extends Component {
       <TabIcon name="contact-mail" color={tintColor} size={width * 0.05} />
     ),
   };
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       down: false,
       points: 80,
@@ -51,6 +51,18 @@ export default class Splash extends Component {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
+
+  componentDidMount = () => {
+    if (this.props?.navigation?.state?.params?.item) {
+      // console.log('props', this.props.navigation.state.params?.item);
+      // console.log('selectedChat', this.state.selectedChat);
+      let item = this.props.navigation.state.params.item;
+      item["id"] = this.props.navigation.state.params?.item?.sender_id
+      item["name"] = this.props.navigation.state.params?.item?.sender_name;
+      this.handleChatDetailsClick("ChatDetails", this.props.navigation.state.params ? this.props.navigation.state.params : this.state.selectedChat)
+    }
+  }
+
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     this.setState({ meter: !this.state.meter, meterDown: !this.state.meterDown });

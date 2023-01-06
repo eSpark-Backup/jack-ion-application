@@ -155,10 +155,12 @@ const ChatDetails = ({ handleChatDetailsClick, selectedChat }) => {
                             />
                         </TouchableOpacity>
                     </View>
+                    <View style={{marginRight: 30}}>
                     <TextReuseableComponent title style={{
                         fontSize: height * 0.025,
                         color: 'white',
                     }} value={selectedChat?.item?.name} />
+                    </View>
                     <View>
                     </View>
                 </View>

@@ -8,7 +8,6 @@ import TextReuseableComponent from '../../components/Text';
 
 import API from '../../api/SeviceApi';
 import { RectButton, Swipeable } from 'react-native-gesture-handler';
-
 const { width, height } = Dimensions.get('window');
 
 const RecentChats = ({ handleChatDetailsClick, active }) => {
@@ -29,7 +28,6 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
     }, [searchInput, fetchable])
 
     const handleDelete = () => {
-        // console.log('listOfRecentUsers[swipeInd].last_message?.id', listOfRecentUsers[swipeInd].last_message?.id);
         const deleteMessage = async () => {
             const deleteChat = await API.post("/delete-chat", { id: listOfRecentUsers[swipeInd].last_message?.id });
             if (deleteChat?.data?.bool) {
@@ -60,7 +58,7 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
                     swipRef1?.current?.close();
                 }, 500);
             }, 100);
-        }else{
+        } else {
             setSwipeInd(null)
             setFirstRend(false)
             swipRef?.current?.close();
@@ -70,7 +68,6 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
     }, [active])
 
     const fetchAllUsers = async () => {
-        // console.log('listOfRecentUsers', listOfRecentUsers);
         try {
             const response = await API.get(`/get-all-users`);
             if (response?.data?.bool) {
@@ -80,7 +77,9 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
                     return res;
                 }
                 const filteredUsers = response.data?.data?.filter((user) => (user.last_message?.reciver == userReducer?.user?.id && user?.last_message?.last_message !== null) || (user.last_message?.sender == userReducer?.user?.id && user?.last_message?.last_message !== null));
-                !searchInput == "" && searchInput ? handleSearch() : setListOfRecentUsers(filteredUsers);
+                const reallyRecentUsers = filteredUsers?.sort((a, b) => new Date(b.last_message?.updated_at) - new Date(a.last_message?.updated_at) );
+                // console.log('userReducer?.user?.id', reallyRecentUsers);
+                !searchInput == "" && searchInput ? handleSearch() : setListOfRecentUsers(reallyRecentUsers);
             } else {
                 Alert.alert("List Fetching failed!")
             }
@@ -150,15 +149,12 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
             </View>
             <View style={{ margin: 10, marginLeft: 20 }}>
                 <TextReuseableComponent value={listOfRecentUsers.length > 0 ? "List of Users you recently chatted with." : "You have not chatted with anyone yet. Select All Chats to start a Conversation."} />
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false} >
-                <View style={{ width: width * 0.97, alignSelf: "center" }}>
+            </View >
+            <View style={{ width: width * 0.97, height: height * 0.6, alignSelf: "center" }} >
+                <ScrollView showsVerticalScrollIndicator={false} >
                     {listOfRecentUsers?.map((chat, index) => {
-                        // console.log('index', index, swipeInd, active)
                         return <Swipeable key={chat.id}
-                            // ref={index == swipeInd ? swipRef : swipRef1}
                             ref={index == swipeInd ? swipRef : active && swipeInd == null && index == 0 ? swipRef1 : swipRef2}
-                            // ref={index == 0 ? swipRef1 : null}
                             renderRightActions={(progress, dragX) => renderLeftActions(progress, dragX, index)}
                             onSwipeableRightOpen={() => {
                                 console.log('open');
@@ -169,14 +165,13 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
                                 } else {
                                     setFirstRend(true)
                                 }
-
                             }}
                         >
                             <ChatCard key={chat.id} animate={active} index={index} data={chat} handleChatDetailsClick={handleChatDetailsClick} />
                         </Swipeable>
                     })}
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </View>
         </View>
     );
 }

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { View, Dimensions, TouchableOpacity } from 'react-native';
 import TextReuseableComponent from '../../components/Text';
@@ -7,6 +8,8 @@ const { width, height } = Dimensions.get('window');
 
 const ChatCard = (props) => {
     const { id, name, role_id, last_message } = props.data;
+    const fromNow = moment(last_message?.updated_at).fromNow();
+    // console.log('from now', fromNow);
     const handleChatDetailsClick = props.handleChatDetailsClick;
 
     return <View key={id} style={styles.allChatsMainContainer}>
@@ -26,7 +29,8 @@ const ChatCard = (props) => {
                     </View>
                 </View>
                 <View style={styles.timeContainer}>
-                    <TextReuseableComponent style={{ fontSize: 10 }} value={role_id == 4 ? "Technician" : "Admin"} />
+                    <TextReuseableComponent style={{ fontSize: 11 }} value={role_id == 4 ? "Technician" : "Admin"} />
+                    <TextReuseableComponent style={{ fontSize: 10 }} value={fromNow} />
                 </View>
             </View>
         </TouchableOpacity>

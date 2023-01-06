@@ -134,6 +134,7 @@ export default class Splash extends Component {
     console.log(' notificationData', notification)
     if (notification.link) {
       const wordRes = this.findWord("equipment", notification.link);
+      const wordChat = this.findWord("userHelp", notification.link);
       const regex = /\d+/g;
       const matches = notification.link.match(regex);  // creates array from matches
 
@@ -149,6 +150,9 @@ export default class Splash extends Component {
         }
 
         return this.props.navigation.navigate("Equip", newItem);
+      }
+      if(wordChat) {
+        return this.props.navigation.navigate("Support", { item: notification } );
       }
       const id = matches[0];
       const newItem = {

@@ -27,7 +27,7 @@ const AllChats = ({ handleChatDetailsClick }) => {
                     const chatName = chat?.name?.toString()?.toLowerCase();
                     return chatName?.startsWith(inputValue)
                 });
-                console.log('setListOfAvailableForChat', res);
+                // console.log('setListOfAvailableForChat', res);
                 setListOfAvailableForChat(res);
                 return res;
             }
@@ -73,8 +73,8 @@ const AllChats = ({ handleChatDetailsClick }) => {
         <View style={{ margin: 10, marginLeft: 20 }}>
             <TextReuseableComponent value={"List of Available People for Chat."} />
         </View>
-        <ScrollView showsVerticalScrollIndicator={false} >
-            <View style={{ width: width * 0.97, alignSelf: "center" }}>
+        <View style={{ width: width * 0.97, height: height * 0.6, alignSelf: "center" }}>
+            <ScrollView showsVerticalScrollIndicator={false} >
                 {listOfAvailabeForChat?.filter?.((user) => user.id !== userReducer?.user?.id)?.map((chat) => {
                     const { id, name, role_id, last_message, unReadMessages } = chat;
                     return <View key={id} style={styles.allChatsMainContainer}>
@@ -100,8 +100,8 @@ const AllChats = ({ handleChatDetailsClick }) => {
                         </TouchableOpacity>
                     </View>
                 })}
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     </View>);
 }
 

@@ -31,7 +31,7 @@ const MessageCard = ({ data, mode, selectedChat }) => {
                                 fontSize: 10, alignSelf: mode == "received" ? "flex-start" : "flex-end",
                                 marginRight: 10
                             }}
-                            value={data?.created_at ? moment(data?.created_at).utc().format("MM/DD/YY hh:mm:ss") : null}
+                            value={data?.created_at ? moment(data?.created_at).format("MM/DD/YY hh:mm:ss") : null}
                         />
                         {/* {mode == "sent" && <MaterialCommunityIcons
                                 style={{ alignSelf: mode == "received" ? "flex-start" : "flex-end" }} value={data?.seen ? "Seen" : "Delievered"}

@@ -38,10 +38,12 @@ const ChatScreen = ({ navigation, handleChatDetailsClick }) => {
                             />
                         </TouchableOpacity>
                     </View>
+                    <View style={{marginRight: 30}}>
                     <TextReuseableComponent title style={{
                         fontSize: height * 0.03,
                         color: 'white',
                     }} value={"Chats"} />
+                    </View>
                     <View>
                     </View>
                 </View>
