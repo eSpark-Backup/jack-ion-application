@@ -35,16 +35,17 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
             } else {
                 console.log('message not deleted', deleteChat?.data?.message);
                 Alert.alert("Deletion failed!");
+                swipRef?.current?.close()
             }
 
         }
         Alert.alert('Becareful', 'Are you sure to delete Message permanently?', [
-            { text: 'No', style: 'cancel', onPress: () => swipRef.current.close() },
+            { text: 'No', style: 'cancel', onPress: () => swipRef?.current?.close() },
             {
                 text: 'Yes',
                 onPress: () => {
+                    // swipRef?.current?.close()
                     deleteMessage();
-                    swipRef1.current.close();
                 },
             },
         ]);

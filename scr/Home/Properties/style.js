@@ -9,7 +9,7 @@ const {width, height} = Dimensions.get('window');
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f2f2f2',
   },
   headerContainer: {
     width: width * 1,
@@ -258,7 +258,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: height * 0.01,
     backgroundColor: 'white',
-    elevation: 5,
+    // elevation: 5,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

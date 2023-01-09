@@ -67,38 +67,56 @@ export function customDropDown(props) {
 }
 
 export function pushNotification(notification) {
-  const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
-  const regex = /\d+/g;
-  const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
-  const idInNumber = matches ? Number(matches[0]) : null;
-  const id = data ? data?.property?.id || data?.id : idInNumber;
+  if (notification?.data?.type == "chat") {
+    return showMessage({
+      message: "You have a new Message!",
+      description: notification?.message || "Click to Navigate",
+      type: "info",
+      color: "white",
+      duration: 3000,
+      hideOnPress: true,
+      onPress: () => {
+        navigationService.navigate("Support");
+      }
+    })
+  } else {
+    const data = notification?.data?.id ? JSON.parse(notification?.data?.id) : null;
+    const regex = /\d+/g;
+    const matches = notification?.message ? notification?.message.match(regex) : null;  // creates array from matches
+    const idInNumber = matches ? Number(matches[0]) : null;
+    const id = data ? data?.property?.id || data?.id : idInNumber;
 
-  return showMessage({
-    message: notification?.title,
-    description: notification?.userInteraction ? notification?.message : `${notification?.title || notification?.notification?.title} with id ${ id }`,
-    type: "info",
-    color: "white", // text color
-    onPress: () => {
-      /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
-      hideMessage();
-      if (notification?.message?.includes('unit')) {
+    return showMessage({
+      message: notification?.title,
+      description: 
+      notification?.userInteraction ? 
+      notification?.message : 
+      `${notification?.title || notification?.notification?.title} with id ${id}`,
+      type: "info",
+      color: "white", // text color
+      duration: 3000,
+      hideOnPress: true,
+      onPress: () => {
+        /* THIS FUNC/CB WILL BE CALLED AFTER MESSAGE PRESS */
+        if (notification?.message?.includes('unit')) {
           navigationService.navigate("Equip", { item: { item: data.property } })
         } else {
           navigationService.navigate("Detail", { item: { item: data } })
         }
-    },
-  });
+      },
+    });
+  }
 }
 
 export const formatAMPM = (date) => {
   var getTodayDate = date?.getDate();
   var getTodayMonth = date?.getMonth() + 1;
   var getTodayFullYear = date?.getFullYear();
-  
+
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? 'pm' : 'am';
-  
+
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
   minutes = minutes < 10 ? '0' + minutes : minutes;

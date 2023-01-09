@@ -46,7 +46,8 @@ export default styles = StyleSheet.create({
     borderRadius: 6,
     width: width * 0.4,
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
+    elevation: 5
   },
   input: {
     height: 30,

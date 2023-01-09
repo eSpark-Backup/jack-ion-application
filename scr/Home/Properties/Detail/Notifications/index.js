@@ -329,7 +329,8 @@ export default class Splash extends Component {
                       style={{
                         borderWidth: 1,
                         width: width * 0.9,
-                        borderRadius: width * 0.04,
+                        borderRadius: width * 0.02,
+                        backgroundColor: "white",
                         padding: width * 0.01,
                         margin: width * 0.02,
                         flexDirection: 'row',
