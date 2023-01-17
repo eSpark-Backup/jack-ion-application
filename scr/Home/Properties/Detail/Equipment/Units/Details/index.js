@@ -17,9 +17,11 @@ import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import { View as MotiView } from 'moti';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Loader from '../../../../../../components/Loader';
 import { Svg, G } from 'react-native-svg';
+import { Icon as Iconx } from 'react-native-elements';
 
 import {
   VictoryChart,
@@ -70,6 +72,7 @@ const App = ({ navigation }) => {
   const [meterTypeData, setMeterTypeData] = useState([]);
   const [remoteReaderData, setRemoteReaderData] = useState([]);
   const [unitData, setUnitData] = useState([]);
+  const [addMeterModalVisible, setAddMeterModalVisible] = useState(false);
   const [editUnitModalVisible, setEditUnitModalVisible] = useState(false);
   const [editUnitMenuVisible, setEditUnitMenuVisible] = useState(false);
   const [meterListArray, setMeterListArray] = useState([]);
@@ -82,6 +85,7 @@ const App = ({ navigation }) => {
   const [meterUsageData, setMeterUsageData] = useState([]);
   const [dateData, setDateData] = useState([]);
   const [loadChartData, setLoadChartData] = useState(false);
+  const [selectedMeterForEdit, setSelectedMeterForEdit] = useState(null);
 
   let DataDates = ['Nov 09 09 PM', 'Nov 09 10 PM'];
 
@@ -480,7 +484,7 @@ const App = ({ navigation }) => {
   };
 
   const iconSize = width * 0.08;
-  const arrayOfUnits = data?.data?.unit?.unit_meter;
+  const arrayOfMeter = data?.data?.unit?.unit_meter;
 
   const typeSwitcher = (arg) => {
     switch (arg) {
@@ -550,8 +554,8 @@ const App = ({ navigation }) => {
     ]);
     setReasonsData([
       {
-        title: 'Reasons',
-        data: reasonList,
+        title: 'Meters',
+        data: arrayOfMeter,
       },
     ]);
     setMeterTypeData([
@@ -731,7 +735,7 @@ const App = ({ navigation }) => {
 
   const meterTypes = () => {
     let arr1 = [...meterListArray];
-    let arr2 = [...arrayOfUnits];
+    let arr2 = [...arrayOfMeter];
     const antiIntersection = arr1.filter(
       (item1) => !arr2.some((item2) => item1.id === item2.meter_id),
     );
@@ -752,20 +756,20 @@ const App = ({ navigation }) => {
     alert(response?.data?.message);
     navigation.goBack();
   };
-  const confirmDelete = () => {
+  const confirmDelete = (id) => {
     Alert.alert('Delete Meter', 'Are you sure you want to Delete?', [
       {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => deleteMeter() },
+      { text: 'Yes', onPress: () => deleteMeter(id) },
     ]);
   };
 
-  const deleteMeter = async () => {
+  const deleteMeter = async (id) => {
     setDangerView(!dangerView);
     const response = await API.post(
-      `/property/equipment/unit/unit-meter/${unitMeter.id}`,
+      `/property/equipment/unit/unit-meter/${id}`,
     );
     getToken();
     alert(response?.data?.message);
@@ -1142,6 +1146,11 @@ const App = ({ navigation }) => {
     );
   };
 
+  const handleMeterAdd = () => {
+    console.log('Clicked')
+    setAddMeterModalVisible(!addMeterModalVisible)
+  }
+
   if (loading) {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
@@ -1158,7 +1167,7 @@ const App = ({ navigation }) => {
           meterMenuVisible={editUnitMenuVisible}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
-          meterTypes={arrayOfUnits}
+          meterTypes={arrayOfMeter}
           modalName="Edit Unit"
           buildingName={buildingName}
           buildingId={buildingId}
@@ -1271,7 +1280,7 @@ const App = ({ navigation }) => {
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
           reRun={() => getToken()}
-          meterTypes={arrayOfUnits}
+          meterTypes={arrayOfMeter}
           modalName="Edit Unit"
           runLoading={() => setLoading(true)}
           runLoadingFailed={() => setLoading(false)}
@@ -1286,6 +1295,29 @@ const App = ({ navigation }) => {
             ToastAndroid.show('Unit edit successfully', ToastAndroid.SHORT);
             setEditUnitModalVisible(false);
           }}
+          selectedMeterForEdit={selectedMeterForEdit}
+        />
+        <EditUnit
+          flag={flag}
+          propertyId={propertyId}
+          propertyLat={propertyLat}
+          propertyLong={propertyLong}
+          enableFlag={() => setFlag(true)}
+          disableFlag={() => setFlag(false)}
+          modalVisible={addMeterModalVisible}
+          closeModal={() => setAddMeterModalVisible(!addMeterModalVisible)}
+          reRun={() => getToken()}
+          meterTypes={arrayOfMeter}
+          buildingName={buildingName}
+          buildingId={buildingId}
+          unitDetails={data.data}
+          addMeterUnitMix={data?.data?.unit?.unit_mix}
+          addMeterUnitMixId={data?.data?.unit?.unit_mix_id}
+          addNewMeter={addMeterModalVisible}
+          handleEditUnit={() => {
+            setAddMeterModalVisible(!addMeterModalVisible)
+          }}
+        
         />
         <Header
           leftComponent={{
@@ -1308,6 +1340,7 @@ const App = ({ navigation }) => {
             text: 'Edit',
             style: styles.headerText,
             onPress: () => {
+              setSelectedMeterForEdit({ item: null, index: null });
               openEditModal();
             },
           }}
@@ -1316,6 +1349,7 @@ const App = ({ navigation }) => {
         />
 
         <ScrollView
+          showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
           onContentSizeChange={() => {
             if (dangerView) {
@@ -1323,117 +1357,6 @@ const App = ({ navigation }) => {
             }
           }}>
           <View style={styles.container}>
-            {!headView && (
-              <MotiView
-                from={{
-                  opacity: 0,
-                  translateX: -500,
-                }}
-                animate={{
-                  opacity: 1,
-                  translateX: 0,
-                }}
-                style={styles.currentReadContainer}>
-                <TextReuseableComponent title style={{ color: '#5c5c5ccf' }} value={"CURRENT READ"} />
-                <View style={styles.currentReadInnerContainer}>
-                  <TextReuseableComponent heading style={{
-                    color: '#639CC7',
-                    fontSize: iconSize,
-                  }} value={`${unitMeter?.meter_read?.meter_reading
-                    ? unitMeter?.meter_read?.meter_reading
-                    : 0} Gallons`} />
-                  <RightArrow
-                    name="chevron-thin-right"
-                    size={iconSize}
-                    // color={typeColor(unitMeter?.meter_name)}
-                    color={'#639CC7'}
-                    style={styles.rightedIcon}
-                    onPress={() => setHeadView(!headView)}
-                  />
-                </View>
-                <View style={styles.flexRow}>
-                  <Check name="check" size={width * 0.05} color="#0fc908" />
-                  <TextReuseableComponent title style={{ color: '#5c5c5ccf' }} value={unitMeter?.time_diff
-                    ? 'As of ' + unitMeter?.time_diff
-                    : 'As of 5 hours ago'} />
-                </View>
-              </MotiView>
-            )}
-            {headView && (
-              <MotiView
-                from={{
-                  opacity: 0,
-                  translateX: 500,
-                }}
-                animate={{
-                  opacity: 1,
-                  translateX: 0,
-                }}
-                style={[
-                  styles.currentReadContainer,
-                  { alignItems: 'center', justifyContent: 'center' },
-                ]}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                  }}>
-                  <RightArrow
-                    name="chevron-thin-left"
-                    size={iconSize}
-                    // color={typeColor(unitMeter?.meter_name)}
-                    color={'#639CC7'}
-                    style={styles.rightedIcon}
-                    onPress={() => setHeadView(!headView)}
-                  />
-                  <View>
-                    <TextReuseableComponent title style={styles.greyText} value={"PULSES"} />
-                    <TextReuseableComponent title value={unitMeter?.meter_read?.meter_reading
-                      ? unitMeter?.meter_read?.meter_reading
-                      : 0} />
-                  </View>
-                  <TextReuseableComponent title style={styles.symbolStyle} value={"x"} />
-                  <View>
-                    <TextReuseableComponent title style={styles.greyText} value={"MULTIPLIER"} />
-                    <TextReuseableComponent title style={[styles.text, { color: '#639CC7' }]} value={"1"} />
-                  </View>
-                  <TextReuseableComponent title style={styles.symbolStyle} value={"+"} />
-                  <View>
-                    <TextReuseableComponent title style={styles.greyText} value={"IMR"} />
-                    <TextReuseableComponent title style={[styles.text, { color: '#639CC7' }]} value={unitMeter?.initial_meter_reading
-                      ? unitMeter?.initial_meter_reading
-                      : 0} />
-                  </View>
-                  <TextReuseableComponent title style={styles.symbolStyle} value={"="} />
-                  <View>
-                    <TextReuseableComponent title style={styles.greyText} value={"CURRENT READ"} />
-                    <TextReuseableComponent title style={[styles.text, { color: '#639CC7' }]} value={unitMeter?.meter_read?.meter_reading
-                      ? unitMeter?.meter_read?.meter_reading +
-                      unitMeter?.initial_meter_reading
-                      : 0} />
-                  </View>
-                </View>
-              </MotiView>
-            )}
-            <View>
-              <Button
-                title="Quick Actions"
-                titleStyle={{ color: '#000' }}
-                icon={
-                  <Radio
-                    name="radio"
-                    size={width * 0.06}
-                    // color="#fff"
-                    color="#000"
-                    style={{ marginRight: width * 0.025 }}
-                  />
-                }
-                buttonStyle={{
-                  // backgroundColor: typeColor(unitMeter?.meter_name),
-                  backgroundColor: 'transparent',
-                }}
-                onPress={() => console.log('Quick Actions Press')}
-              />
-            </View>
             {/*
         //* Unit List
         */}
@@ -1458,26 +1381,64 @@ const App = ({ navigation }) => {
                 </>
               )}
             />
-            {/*
-        //* Remote Reader List
-        */}
+
+            {/* Usage and Danger zone was here. */}
             <SectionList
               style={styles.sectionStyle}
               contentContainerStyle={styles.sectionContainer}
-              sections={remoteReaderData}
+              sections={reasonsData}
               keyExtractor={(item, index) => item + index}
-              renderItem={renderRemoteList}
+              renderItem={({ item, index }) => {
+                // console.log('item:', item);
+                return <TouchableOpacity
+                  onPress={() => {
+                    LayoutAnimation.configureNext({
+                      duration: 300,
+                      create: {
+                        type: LayoutAnimation.Types.easeInEaseOut,
+                        property: LayoutAnimation.Properties.opacity,
+                      },
+                      update: {
+                        type: LayoutAnimation.Types.easeInEaseOut,
+                      },
+                    }),
+                      setSelectedMeterForEdit({ item, index });
+                    openEditModal();
+                  }}
+                  style={styles.meterContainer}>
+                  <TextReuseableComponent title style={
+                    styles.meterDesciptionHeading
+                  } value={"Meter-" + (index + 1)} />
+                  <TouchableOpacity
+                    onPress={() => confirmDelete(item?.id)}
+                    style={{
+                      zIndex: 1,
+                      backgroundColor: '#fff',
+                    }}>
+                    <MaterialCommunityIcons
+                      name="trash-can-outline"
+                      size={width * 0.07}
+                    />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              }}
               renderSectionHeader={({ section: { title, img } }) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <TextReuseableComponent heading value={title} />
-                    <Image source={img} style={styles.sectionImgStyle} />
+                    <TextReuseableComponent heading value={"Meters"} />
+                    <TouchableOpacity onPress={() => handleMeterAdd()} style={{ width: width * 0.085 }}>
+                      <TextReuseableComponent heading value={"+"} />
+                    </TouchableOpacity>
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
                 </>
               )}
             />
-            {openedStatus ? (
+          </View>
+        </ScrollView>
+        {/* <View style={styles.footerStyle}>
+
+          {openedStatus ? (
               <FlatList
                 style={styles.statusList}
                 data={statusInfo}
@@ -1487,318 +1448,9 @@ const App = ({ navigation }) => {
                   <Divider style={[styles.listDivider, { marginTop: 0 }]} />
                 )}
               />
-            ) : null}
+            ) : null} 
 
-            {/*
-        //* Reasons List
-        */}
-            {reasonsData[0].data.length > 0 && (
-              <SectionList
-                style={styles.sectionStyle}
-                contentContainerStyle={styles.sectionContainer}
-                sections={reasonsData}
-                keyExtractor={(item, index) => item + index}
-                renderItem={renderReasonData}
-                renderSectionHeader={({ section: { title, img } }) => (
-                  <>
-                    <View style={styles.sectionTitle}>
-                      <TextReuseableComponent heading value={title} />
-                    </View>
-                    <Divider style={styles.sectionTitleDivider} />
-                  </>
-                )}
-              />
-            )}
-
-            {/*
-        //* Meter Type List
-        */}
-            <SectionList
-              style={styles.sectionStyle}
-              contentContainerStyle={styles.sectionContainer}
-              sections={meterTypeData}
-              keyExtractor={(item, index) => item + index}
-              renderItem={renderMeterType}
-              renderSectionHeader={({ section: { title, img } }) => (
-                <>
-                  <View style={styles.sectionTitle}>
-                    <TextReuseableComponent heading value={unitMeter?.utility_type_name?.name ?? 'N/A'} />
-                    <Image
-                      source={img}
-                      resizeMode="contain"
-                      style={styles.sectionImgStyle}
-                    />
-                  </View>
-                  <Divider style={styles.sectionTitleDivider} />
-                </>
-              )}
-            />
-            {opened ? (
-              <FlatList
-                style={styles.statusList}
-                data={meterInfoData}
-                keyExtractor={(item, index) => item + index}
-                renderItem={renderMeterInfo}
-                ItemSeparatorComponent={() => (
-                  <Divider style={[styles.listDivider, { marginTop: 0 }]} />
-                )}
-              />
-            ) : null}
-            <View>
-              <View style={styles.usageTextContainer}>
-                <TextReuseableComponent heading value={"Usage"} />
-                <Icon
-                  name="bar-chart"
-                  type="fontisto"
-                  size={iconSize}
-                  style={styles.centerIcon}
-                />
-              </View>
-              <Divider
-                style={[
-                  styles.sectionTitleDivider,
-                  {
-                    left: width * 0.05,
-                  },
-                ]}
-              />
-              {/*
-              //todo: Add Chart here 
-              */}
-              <View style={{ alignItems: 'center' }}>
-                {meterReadData.length > 0 ? (
-                  <Svg style={styled.parent}>
-                    <G transform={'translate(0, -10)'}>
-                      {/* <VictoryChart> */}
-
-                      <VictoryBar
-                        // data={dataSetTwo}
-                        data={
-                          meterUsageData.length > 0
-                            ? meterUsageData
-                            : dataSetTwo
-                        }
-                        barWidth={width * 0.1}
-                        standalone={false}
-                        domainPadding={{
-                          x: width * 0.05,
-                        }}
-                        labels={({ datum, index }) => `${datum.y}`}
-                        style={{
-                          data: { fill: '#DFDFDF' },
-                          labels: {
-                            fontSize: width * 0.02,
-                          },
-                        }}
-                        labelComponent={<VictoryLabel dy={15} />}
-                      />
-
-                      {/* Dependent axis for data set one. */}
-                      <VictoryAxis
-                        dependentAxis
-                        domain={[
-                          dataSet?.length > 0 && meterUsage.length > 0
-                            ? Math.max(...meterUsage) > 0
-                              ? dataSet[0] - Math.max(...meterUsage)
-                              : 0
-                            : 0,
-                          // 11,
-                          dataSet?.length > 0
-                            ? dataSet[dataSet?.length - 1]
-                            : 0,
-                        ]}
-                        offsetX={50}
-                        orientation="left"
-                        standalone={false}
-                        style={styled.axisOne}
-                      />
-
-                      {/* Dataset one */}
-                      <VictoryLine
-                        data={
-                          meterReadData.length > 0 ? meterReadData : dataSetOne
-                        }
-                        // data={dataSetOne}
-                        domainPadding={{ x: [width * 0.05, 0], y: [1, 1] }}
-                        domain={
-                          readDate.length > 0 && meterReadData.length > 0
-                            ? {
-                              x: [
-                                meterReadData[0]?.x,
-                                meterReadData[meterReadData.length - 1]?.x,
-                              ],
-                              y: [
-                                meterUsage.length > 0
-                                  ? Math.max(...meterUsage) > 0
-                                    ? dataSet[0] - Math.max(...meterUsage)
-                                    : 0
-                                  : 0,
-                                // 16,
-                                dataSet?.length > 0
-                                  ? dataSet[dataSet?.length - 1]
-                                  : 0,
-                              ],
-                            }
-                            : {
-                              x: [
-                                new Date(2021, 10, 13),
-                                new Date(2021, 10, 19),
-                              ],
-                              y: [
-                                dataSet?.length > 0 ? dataSet[0] : 0,
-                                // 11,
-
-                                dataSet?.length > 0
-                                  ? dataSet[dataSet?.length - 1]
-                                  : 0,
-                              ],
-                            }
-                        }
-                        interpolation="monotoneX"
-                        scale={{ x: 'time', y: 'linear' }}
-                        standalone={false}
-                        style={styled.lineOne}
-                      />
-
-                      {/* Dependent axis for data set two. */}
-                      <VictoryAxis
-                        dependentAxis
-                        domain={[
-                          Math.max(...meterUsage) < 1 ? -1 : 0,
-                          // 6,
-                          meterUsage.length > 0 ? Math.max(...meterUsage) : 0,
-                        ]}
-                        orientation="right"
-                        standalone={false}
-                        style={styled.axisTwo}
-                      // tickFormat={(x) => `${x / 1000000}`}
-                      />
-
-                      <VictoryAxis
-                        scale="time"
-                        standalone={false}
-                        style={styled.axisYears}
-                        // tickValues={tickValues}
-                        tickValues={dateData.length > 0 ? dateData : tickValues}
-                        tickFormat={(date) =>
-                          months[date.getMonth()] +
-                          ' ' +
-                          (date.getDate() > 9
-                            ? `${date.getDate()}`
-                            : `0${date.getDate()}`)
-                        }
-                        domainPadding={{ x: width * 0.05, y: height * 0.5 }}
-                      />
-                      {/* </VictoryChart> */}
-                    </G>
-                  </Svg>
-                ) : (
-                  <View
-                    style={{
-                      height: height * 0.3,
-                      justifyContent: 'center',
-                    }}>
-                    <TextReuseableComponent title value={loadChartData
-                      ? 'Loading Data...'
-                      : 'No Data for this Week'} />
-                  </View>
-                )}
-
-                <View style={styles.legendContainer}>
-                  <View style={styles.flexRow}>
-                    <View style={styles.meterUsageBox} />
-                    <TextReuseableComponent title value={"Meter Usage"} />
-                  </View>
-                  <View style={styles.flexRow}>
-                    <View style={styles.meterReadBox} />
-                    <TextReuseableComponent title value={"Meter Read"} />
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View>
-              <View style={styles.usageTextContainer}>
-                <TextReuseableComponent heading value={"Danger Zone"} />
-                <Icon
-                  name={dangerView ? 'chevron-down' : 'chevron-right'}
-                  type="feather"
-                  size={iconSize}
-                  color="#000"
-                  onPress={() => {
-                    setDangerView(!dangerView);
-                  }}
-                />
-              </View>
-              <Divider style={styles.dangerHeader} />
-              {!dangerView ? (
-                <View />
-              ) : (
-                <View style={styles.dangerView}>
-                  <Button
-                    onPress={confirmDelete}
-                    title={`Delete ${unitMeter?.device?.name ?? 'N/A'}`}
-                    buttonStyle={styles.dangerBtn}
-                  />
-                  <Button
-                    onPress={confirmUnitDelete}
-                    title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
-                    buttonStyle={styles.dangerBtn}
-                  />
-                </View>
-              )}
-            </View>
-          </View>
-        </ScrollView>
-        <View style={styles.footerStyle}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {arrayOfUnits &&
-              arrayOfUnits.map((item, index) => (
-                <TouchableOpacity
-                  style={[
-                    styles.meterStyle,
-                    {
-                      // borderColor: typeColor(item.meter_name),
-                      borderColor: '#639CC7',
-                    },
-                  ]}
-                  onPress={() => {
-                    handleMeterSelect(item);
-                    setDangerView(false);
-                  }}>
-                  {item.id == unitMeter?.id && (
-                    <View
-                      style={[styles.meterInner, { backgroundColor: '#639CC7' }]}>
-                      <Check
-                        name="check"
-                        style={{ marginLeft: width * 0.005 }}
-                        size={width * 0.02}
-                        color="#fff"
-                      />
-                    </View>
-                  )}
-                  {/* <Image
-                    source={typeSwitcher(item.meter_name)}
-                    style={styles.meterImg}
-                  /> */}
-                  <View
-                    style={{
-                      height: width * 0.15,
-                      width: width * 0.14,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <TextReuseableComponent title style={[
-                      styles.emptyMeterText,
-                      {
-                        width: width * 0.14,
-                        textAlignVertical: 'center',
-                      },
-                    ]} value={item?.utility_type_name?.name ?? 'N/A'} />
-                  </View>
-                </TouchableOpacity>
-              ))}
-          </ScrollView>
-        </View>
+        </View> */}
       </View>
     );
   }
