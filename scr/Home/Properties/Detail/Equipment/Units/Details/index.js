@@ -644,8 +644,8 @@ const App = ({ navigation }) => {
           {
             leftIcon: 'ios-clipboard-outline',
             leftName: 'Notes',
-            rightIcon: 'chevron-right',
-            rightName: null,
+            rightIcon: null,
+            rightName: data?.data?.unit?.notes ?? 'N/A',
             type: 'ionicon',
             typeRight: 'feather',
           },
