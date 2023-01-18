@@ -268,17 +268,17 @@ class Login extends Component {
 
           <View style={{ marginTop: height * 0.05 }}>
             <TouchableOpacity
-              disabled
               onPress={() => {
                 this.props.navigation.navigate('SignUp');
                 setTimeout(() => {
                   this.setState({ errName: '', errPass: '' });
                 }, 100);
               }}>
+                <TextReuseableComponent title style={[styles.bottomText, { color: '#35AFE2', marginBottom: 10 }]} value={"Forgot Password?"} />
+                </TouchableOpacity>
               <View style={{ width: width * 0.75, alignItems: 'center' }}>
                 <TextReuseableComponent title style={styles.bottomText} value={"Not a Member Yet? Contact Administrator"} />
               </View>
-            </TouchableOpacity>
           </View>
         </View>
         {/* <StatusBar
