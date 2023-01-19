@@ -4852,10 +4852,10 @@ export default function UnitEdit({
                             justifyContent: 'center',
                             textAlign: 'center',
                           }}>
-                          <TextReuseableComponent title value={meterInfo?.meter_read?.meter_reading == null ||
-                            meterInfo?.meter_read?.meter_reading == ''
+                          <TextReuseableComponent title value={meterInfo?.meter_read?.meter_usage == null ||
+                            meterInfo?.meter_read?.meter_usage == ''
                             ? '--'
-                            : meterInfo?.meter_read?.meter_reading} />
+                            : meterInfo?.meter_read?.meter_usage} />
                         </View>
                       </View>
                     </View>
@@ -4878,10 +4878,10 @@ export default function UnitEdit({
                             justifyContent: 'center',
                             textAlign: 'center',
                           }}>
-                          <TextReuseableComponent title value={meterInfo?.meter_read?.meter_usage == null ||
-                            meterInfo?.meter_read?.meter_usage == ''
+                          <TextReuseableComponent title value={meterInfo?.meter_read?.meter_reading == null ||
+                            meterInfo?.meter_read?.meter_reading == ''
                             ? '--'
-                            : meterInfo?.meter_read?.meter_usage} />
+                            : meterInfo?.meter_read?.meter_reading} />
                         </View>
                       </View>
                     </View>
