@@ -284,7 +284,8 @@ const App = ({navigation}) => {
   };
 
   const getUnitDetail = async (meterData) => {
-    const res = await API.get(`/property/equipment/unit/${testId}`);
+    try {
+      const res = await API.get(`/property/equipment/unit/${testId}`);
     setData(res.data);
     let unitMeterId = res.data?.data?.unit?.unit_meter[0]?.id;
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
@@ -321,6 +322,9 @@ const App = ({navigation}) => {
     setLoadChartData(false);
 
     setLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   const getChartData = (chartRes) => {

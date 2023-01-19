@@ -6,11 +6,10 @@ const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
   },
   logoContainer: {
+    marginTop: height * 0.058,
     marginBottom: height * 0.04,
   },
   textInputContainer: {
@@ -32,6 +31,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#35AFE2',
     borderRadius: height * 0.05,
     elevation: height * 0.009,
+  },
+  highlightText: {
+    fontWeight: 'bold',
+    fontSize: height * 0.02,
+    color: '#35AFE2',
   },
 });
 
