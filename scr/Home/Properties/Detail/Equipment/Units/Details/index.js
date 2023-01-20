@@ -353,7 +353,7 @@ const App = ({ navigation }) => {
       data,
     );
 
-    if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
+    if (unitMeterArr?.length > 0 && chartRes.data?.data?.dataset?.length > 0) {
 
       // gettingChartdata.current = true;
       getChartData(chartRes);
@@ -652,7 +652,7 @@ const App = ({ navigation }) => {
         ],
       },
     ]);
-    if (data.length != 0) {
+    if (data?.length != 0) {
       setLoading(false);
     }
   }, [unitMeter, data]);

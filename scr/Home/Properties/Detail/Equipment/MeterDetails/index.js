@@ -315,7 +315,7 @@ const App = ({navigation}) => {
       data,
     );
 
-    if (unitMeterArr.length > 0 && chartRes.data?.data?.dataset.length > 0) {
+    if (unitMeterArr?.length > 0 && chartRes.data?.data?.dataset?.length > 0) {
 
       getChartData(chartRes);
     }
@@ -665,7 +665,7 @@ const App = ({navigation}) => {
         ],
       },
     ]);
-    if (data.length != 0) {
+    if (data?.length != 0) {
       setLoading(false);
     }
   }, [unitMeter]);
@@ -1302,7 +1302,7 @@ const App = ({navigation}) => {
             {/*
         //* Reasons List
         */}
-            {reasonsData[0].data.length > 0 && (
+            {reasonsData[0].data?.length > 0 && (
               <SectionList
                 style={styles.sectionStyle}
                 contentContainerStyle={styles.sectionContainer}
@@ -1380,7 +1380,7 @@ const App = ({navigation}) => {
               //todo: Add Chart here 
               */}
               <View style={styles.centerIcon}>
-                {meterReadData.length > 0 ? (
+                {meterReadData?.length > 0 ? (
                   <Svg style={styled.parent}>
                     <G transform={'translate(0, -10)'}>
                       {/* <VictoryChart> */}
@@ -1388,7 +1388,7 @@ const App = ({navigation}) => {
                       <VictoryBar
                         // data={dataSetTwo}
                         data={
-                          meterUsageData.length > 0
+                          meterUsageData?.length > 0
                             ? meterUsageData
                             : dataSetTwo
                         }
@@ -1411,7 +1411,7 @@ const App = ({navigation}) => {
                       <VictoryAxis
                         dependentAxis
                         domain={[
-                          dataSet?.length > 0 && meterUsage.length > 0
+                          dataSet?.length > 0 && meterUsage?.length > 0
                             ? Math.max(...meterUsage) > 0
                               ? dataSet[0] - Math.max(...meterUsage)
                               : 0
@@ -1430,19 +1430,19 @@ const App = ({navigation}) => {
                       {/* Dataset one */}
                       <VictoryLine
                         data={
-                          meterReadData.length > 0 ? meterReadData : dataSetOne
+                          meterReadData?.length > 0 ? meterReadData : dataSetOne
                         }
                         // data={dataSetOne}
                         domainPadding={{x: [width * 0.05, 0], y: [1, 1]}}
                         domain={
-                          readDate.length > 0 && meterReadData.length > 0
+                          readDate?.length > 0 && meterReadData?.length > 0
                             ? {
                                 x: [
                                   meterReadData[0]?.x,
-                                  meterReadData[meterReadData.length - 1]?.x,
+                                  meterReadData[meterReadData?.length - 1]?.x,
                                 ],
                                 y: [
-                                  meterUsage.length > 0
+                                  meterUsage?.length > 0
                                     ? Math.max(...meterUsage) > 0
                                       ? dataSet[0] - Math.max(...meterUsage)
                                       : 0
@@ -1480,7 +1480,7 @@ const App = ({navigation}) => {
                         domain={[
                           Math.max(...meterUsage) < 1 ? -1 : 0,
                           // 6,
-                          meterUsage.length > 0 ? Math.max(...meterUsage) : 0,
+                          meterUsage?.length > 0 ? Math.max(...meterUsage) : 0,
                         ]}
                         orientation="right"
                         standalone={false}
@@ -1493,7 +1493,7 @@ const App = ({navigation}) => {
                         standalone={false}
                         style={styled.axisYears}
                         // tickValues={tickValues}
-                        tickValues={dateData.length > 0 ? dateData : tickValues}
+                        tickValues={dateData?.length > 0 ? dateData : tickValues}
                         tickFormat={(date) =>
                           months[date.getMonth()] +
                           ' ' +
