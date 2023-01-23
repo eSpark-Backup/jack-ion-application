@@ -186,11 +186,8 @@ export default function UnitEdit({
     {
       id: 0,
       error: '',
-      name: 'Device Serial Number*',
-      value:
-        type == 'meterDirect' || type == 'addMeterDirect'
-          ? unitDetails?.unit?.meterSerial
-          : '',
+      name: 'Attached To',
+      value: '',
     },
     {
       id: 1,
@@ -201,8 +198,11 @@ export default function UnitEdit({
     {
       id: 2,
       error: '',
-      name: 'Attached To',
-      value: '',
+      name: 'Device Serial Number*',
+      value:
+        type == 'meterDirect' || type == 'addMeterDirect'
+          ? unitDetails?.unit?.meterSerial
+          : '',
     },
   ]);
   const helperDefaultData = useRef([]);
@@ -485,7 +485,7 @@ export default function UnitEdit({
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     if (type == 'meterDirect' || type == 'addMeterDirect') {
       let newArr = [...slide2]; // copying the old datas array
-      newArr[0].value = unitDetails?.unit?.meterSerial; // replace e.target.value with whatever you want to change it to
+      newArr[2].value = unitDetails?.unit?.meterSerial; // replace e.target.value with whatever you want to change it to
       // newArr[index].deviceSerialError = ''; // replace e.target.value with whatever you want to change it to
       setSlide2(newArr);
     }
@@ -1145,7 +1145,7 @@ export default function UnitEdit({
 
   const checkingSerial = async () => {
     let data = {
-      device_serial_number: slide2[0].value,
+      device_serial_number: slide2[2].value,
     };
     const SerialResponse = await API.post(
       '/property/equipment/unit/get-meter-info',
@@ -1236,7 +1236,7 @@ export default function UnitEdit({
       );
       if (dis > radialDis) {
 
-        Toast.show('Add Meter inside the permises of Property', Toast.SHORT);
+        Toast.show('Add Meter inside the premises of Property', Toast.SHORT);
       } else {
         LayoutAnimation.configureNext({
           duration: 300,
@@ -1400,7 +1400,7 @@ export default function UnitEdit({
       id: devEdit ? selectedDevId : null,
       // meter_name: [{id: newMeter.id, name: newMeter.name}],
       // model_no_id: slide1[2].selectId,
-      device_serial_number: slide2[0].value,
+      device_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
       initial_meter_reading: slide2[1].value,
       latitude: lat,
@@ -1529,7 +1529,6 @@ export default function UnitEdit({
   };
 
   const renderSlide3 = (item, index) => {
-    // console.log('index check slider 3 ---> ',index)
     if (index == 1 && item.value == null) {
       let newArr = [...slide2]; // copying the old datas array
       newArr[index].value = '0'; // replace e.target.value with whatever you want to change it to
@@ -1537,23 +1536,21 @@ export default function UnitEdit({
     }
     return (
       <View style={{ width: width * 0.8 }} key={item.id}>
-        {index < 2 && (
+        {index > 0 && (<>
           <TextReuseableComponent title style={[styles.meterDesciptionHeading, { top: width * 0.01 }]} value={item.name} />
-        )}
-        {index < 2 && (
           <Text_Input
             placeholder={item.name}
             value={index == 1 && item.value == null ? '0' : item.value}
             keyboardType={index == 1 ? 'numeric' : 'default'}
             error={item.error}
             right={
-              index == 0 &&
+              index == 2 &&
               (type == 'meterDirect' || type == 'addMeterDirect' ? null : (
                 <TextInput.Icon
                   disabled={
                     devEdit
                       ? true
-                      : (index == 0 && type == 'meterDirect') ||
+                      : (index == 2 && type == 'meterDirect') ||
                         type == 'addMeterDirect'
                         ? true
                         : false
@@ -1563,7 +1560,7 @@ export default function UnitEdit({
                       disabled={
                         devEdit
                           ? true
-                          : (index == 0 && type == 'meterDirect') ||
+                          : (index == 2 && type == 'meterDirect') ||
                             type == 'addMeterDirect'
                             ? true
                             : false
@@ -1596,8 +1593,10 @@ export default function UnitEdit({
               marginVertical: width * 0.02,
             }}
           />
+        </>
         )}
-        {index == 2 && showAddType !== 'Attached To' ? (
+
+        {index == 0 && showAddType !== 'Attached To' ? (
           <View style={{ margin: 0 }}>
             <TextReuseableComponent title style={[styles.meterDesciptionHeading]} value={"Attached To*"} />
             <View
@@ -1683,7 +1682,7 @@ export default function UnitEdit({
             </View>
           </View>
         ) : (
-          index == 2 && (
+          index == 0 && (
             <View style={{ borderTopWidth: 2, paddingVertical: 10 }}>
               <View>
                 <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`Add New ${showAddType}`} />
@@ -4225,7 +4224,6 @@ export default function UnitEdit({
                       </View>
                     )
                   ) : null}
-
                   <View
                     style={{
                       height: width * 0.2,
@@ -4286,8 +4284,8 @@ export default function UnitEdit({
                                     selectedUtilId != null
                                     ? '#25AAE1ec'
                                     : sliderNumber == 2 &&
-                                      slide2[0].value &&
                                       slide2[1].value &&
+                                      slide2[2].value &&
                                       attachedToId != null
                                       ? '#25AAE1ec'
                                       : sliderNumber == 3
@@ -4321,7 +4319,7 @@ export default function UnitEdit({
                                 selectedUtilId != null
                                 ? false
                                 : sliderNumber == 2 &&
-                                  slide2[0].value &&
+                                  slide2[2].value &&
                                   slide2[1].value &&
                                   attachedToId != null
                                   ? false
