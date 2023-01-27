@@ -493,7 +493,8 @@ export default function UnitEdit({
 
   useEffect(() => {
     if (addNewMeter) {
-      // setSliderNumber(1)
+      setSliderNumber(2)
+      setSliderProgress(sliderProgress + 0.25);
       setUnitMixId(addMeterUnitMixId)
       setSelectedUnitMix(addMeterUnitMix)
       enableLocation()
@@ -720,7 +721,7 @@ export default function UnitEdit({
 
     let defaultUtilityType = [];
 
-    if (defaultUnitData.ok) {
+    if (defaultUnitData.ok && !oldDev) {
       const some = defaultUnitData?.data?.data?.default_meter_device;
 
       setSelectedUtil(some.utility_type_name[0].name);
@@ -1089,7 +1090,7 @@ export default function UnitEdit({
       },
     });
     let matchUnit;
-    if (type == 'add') {
+    if (type == 'add' || addNewMeter || !devEdit) {
       matchUnit = unitsArray?.filter((e) => e.name == state.lastUnitData);
       setSliderNumber(2)
       setSliderProgress(sliderProgress + 0.25);
@@ -1163,7 +1164,7 @@ export default function UnitEdit({
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      if (type == "add") {
+      if (type == "add" || !devEdit) {
         setSliderNumber(5);
         setSliderProgress(sliderProgress + 0.75);
       } else {
@@ -1501,9 +1502,7 @@ export default function UnitEdit({
       };
     });
     if (editMeterIndex != null) {
-      let data = [...meterData];
-      data[editMeterIndex] = meterVals;
-      setMeterData(loopData);
+      setMeterData(meterListData);
     } else {
       loopData.push(meterVals);
       setMeterData(loopData);
@@ -1547,24 +1546,24 @@ export default function UnitEdit({
               index == 2 &&
               (type == 'meterDirect' || type == 'addMeterDirect' ? null : (
                 <TextInput.Icon
-                  disabled={
-                    devEdit
-                      ? true
-                      : (index == 2 && type == 'meterDirect') ||
-                        type == 'addMeterDirect'
-                        ? true
-                        : false
-                  }
+                  // disabled={
+                  //   devEdit
+                  //     ? true
+                  //     : (index == 2 && type == 'meterDirect') ||
+                  //       type == 'addMeterDirect'
+                  //       ? true
+                  //       : false
+                  // }
                   name={() => (
                     <TouchableOpacity
-                      disabled={
-                        devEdit
-                          ? true
-                          : (index == 2 && type == 'meterDirect') ||
-                            type == 'addMeterDirect'
-                            ? true
-                            : false
-                      }
+                      // disabled={
+                      //   devEdit
+                      //     ? true
+                      //     : (index == 2 && type == 'meterDirect') ||
+                      //       type == 'addMeterDirect'
+                      //       ? true
+                      //       : false
+                      // }
                       onPress={() => toggleScanner(index)}
                       style={{ zIndex: 1 }}>
                       <Ionicons name="scan" size={width * 0.06} />
@@ -1580,14 +1579,14 @@ export default function UnitEdit({
                   : onChangeMultipleField(text, index)
                 : onChangeMultipleField(text, index)
             }
-            disabled={
-              devEdit
-                ? true
-                : (index == 0 && type == 'meterDirect') ||
-                  type == 'addMeterDirect'
-                  ? true
-                  : false
-            }
+            // disabled={
+            //   devEdit
+            //     ? true
+            //     : (index == 0 && type == 'meterDirect') ||
+            //       type == 'addMeterDirect'
+            //       ? true
+            //       : false
+            // }
             style={{
               ...styles.meterInput,
               marginVertical: width * 0.02,
@@ -2013,8 +2012,8 @@ export default function UnitEdit({
     });
     slide2?.map((item, index) => {
       let newArr = [...slide2];
-      newArr[0].value = '';
       newArr[1].value = '0';
+      newArr[2].value = '';
       // newArr[2].value = '';
     });
     setNewMeter((oldState) => ({
@@ -2286,8 +2285,8 @@ export default function UnitEdit({
     });
 
     let newArr = [...slide2];
-    newArr[0].value = data.device_serial_number;
     newArr[1].value = data.initial_meter_reading;
+    newArr[2].value = data.device_serial_number;
 
     let deviceData = [...slide1];
     deviceData[0].selectId = data.device.manufacturer_id;
@@ -4478,6 +4477,16 @@ export default function UnitEdit({
                         borderless: true,
                         // radius: width * 0.03,
                       }}>
+                      {meterInfo ? <TouchableOpacity onPress={() => {
+                        getMeterData(meterInfo, meterNum);
+                        enableLocation(true);
+                      }} style={{
+                        borderRadius: width * 0.02,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }} >
+                        <TextReuseableComponent heading style={{ color: 'black' }} value={"Edit"} />
+                      </TouchableOpacity> : null}
                     </View>
                   </View>
                 </View>
@@ -4562,25 +4571,6 @@ export default function UnitEdit({
                       <TextReuseableComponent title style={styles.desciptionHeading} value={"UNIT MIX*"} />
                     </View>
                     <View style={{ zIndex: 1 }}>
-                      {/* {unitMixIcon ? (
-                        <FontAwesome
-                          name="chevron-up"
-                          style={{
-                            position: 'absolute',
-                            left: width * 0.3,
-                            top: width * 0.07,
-                          }}
-                        />
-                      ) : (
-                        <FontAwesome
-                          name="chevron-down"
-                          style={{
-                            position: 'absolute',
-                            left: width * 0.3,
-                            top: width * 0.07,
-                          }}
-                        />
-                      )} */}
                     </View>
                     <View style={[styles.inputContainer]}>
                       <Searchable_Dropdown
@@ -4638,6 +4628,21 @@ export default function UnitEdit({
                           {error.errorUnitMix}
                         </HelperText>
                       ) : null}
+                    </View>
+                    <View>
+                      <TouchableOpacity onPress={() => {
+                        addDeviceInUnit()
+                      }} style={{
+                        borderRadius: width * 0.02,
+                        padding: 10,
+                        marginBottom: 20,
+                        marginTop: 20,
+                        backgroundColor: '#25aae1',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }} >
+                        <TextReuseableComponent title style={{ color: 'white' }} value={"Save Unit"} />
+                      </TouchableOpacity>
                     </View>
                   </View>
                   <View
@@ -4785,105 +4790,9 @@ export default function UnitEdit({
                       alignItems: 'flex-end',
                     }}>
                     <View style={styles.footerBtn}>
-                      {/* <View style={styles.addUnitBtnContainer}>
-                        <TouchableOpacity
-                          onPress={() =>
-                            Alert.alert(
-                              'Alert',
-                              'Are you sure you want to clear current selected data',
-                              [
-                                {text: 'No', style: 'cancel'},
-                                {
-                                  text: 'Yes',
-                                  onPress: changeUtilityAndToggle,
-                                },
-                              ],
-                            )
-                          }>
-                          <View style={styles.cancelBotton}>
-                            <MaterialCommunityIcons name="close" color="black" size={18} />
-                            <TextReuseableComponent title style={{color: 'black'}} value={"Cancel"} />
-                          </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleAddNewUnit}>
-                          <View style={styles.submitBotton}>
-                            <MaterialCommunityIcons
-                              name={
-                                type == 'meterDirect' ||
-                                type == 'addMeterDirect' ||
-                                type == 'add'
-                                  ? 'plus'
-                                  : 'pencil-plus'
-                              }
-                              color="white"
-                              size={18}
-                            />
-                            <TextReuseableComponent title style={{color: 'white'}} value={type == 'meterDirect' ||
-                              type == 'addMeterDirect' ||
-                              type == 'add'
-                                ? 'Add Unit'
-                                : 'Edit Unit'} />
-                          </View>
-                        </TouchableOpacity>
-                      </View> */}
                     </View>
                   </View>
                 </View> : <View style={{ marginTop: 20 }}>
-                  <View style={styles.infoViewContainer}>
-                    <TextReuseableComponent title style={styles.dataFieldHeadings} value={"USAGE"} />
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                      }}>
-                      {console.log('data', meterInfo?.meter_read)}
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '60%', textAlign: 'left' },
-                      ]} value={"Meter Reading:"} />
-                      <View style={{ width: '40%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.meter_read?.meter_usage == null ||
-                            meterInfo?.meter_read?.meter_usage == ''
-                            ? '--'
-                            : meterInfo?.meter_read?.meter_usage} />
-                        </View>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                      }}>
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '60%', textAlign: 'left' },
-                      ]} value={"Initial Reading:"} />
-                      <View style={{ width: '40%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.meter_read?.meter_reading == null ||
-                            meterInfo?.meter_read?.meter_reading == ''
-                            ? '--'
-                            : meterInfo?.meter_read?.meter_reading} />
-                        </View>
-                      </View>
-                    </View>
-                  </View>
 
                   <View style={styles.infoViewContainer}>
                     <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Details"} />
@@ -4909,86 +4818,6 @@ export default function UnitEdit({
                             meterInfo?.attachedTo_name == ''
                             ? '--'
                             : meterInfo?.attachedTo_name} />
-                        </View>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                      }}>
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '45%', textAlign: 'left' },
-                      ]} value={"Utility Type:"} />
-                      <View style={{ width: '55%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.utility_type_name?.name == null ||
-                            meterInfo?.utility_type_name?.name == ''
-                            ? '--'
-                            : meterInfo?.utility_type_name?.name} />
-                        </View>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                        marginBottom: height * 0.01,
-                      }}>
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '45%', textAlign: 'left' },
-                      ]} value={"Device Name:"} />
-                      <View style={{ width: '55%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.device?.name == null ||
-                            meterInfo?.device?.name == ''
-                            ? '--'
-                            : meterInfo?.device?.name} />
-                        </View>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                        marginBottom: height * 0.01,
-                      }}>
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '45%', textAlign: 'left' },
-                      ]} value={"Manufacturer:"} />
-                      <View style={{ width: '55%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.device?.manufacturer == null ||
-                            meterInfo?.device?.manufacturer == ''
-                            ? '--'
-                            : meterInfo?.device?.manufacturer} />
                         </View>
                       </View>
                     </View>
@@ -5098,26 +4927,28 @@ export default function UnitEdit({
                         </View>
                       </View>
                     </View>
-
+                    {/* <View>
+                      <TouchableOpacity onPress={() => {
+                        // setSliderNumber(2)
+                        // setSliderProgress(sliderProgress + 0.25)
+                        getMeterData(meterInfo, meterNum);
+                        enableLocation(true);
+                      }} style={{
+                        borderRadius: width * 0.02,
+                        padding: 5,
+                        paddingRight: 10,
+                        paddingLeft: 10,
+                        marginBottom: 20,
+                        marginTop: 20,
+                        backgroundColor: '#25aae1',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }} >
+                        <TextReuseableComponent title style={{ color: 'white' }} value={"Add Meter Details"} />
+                      </TouchableOpacity>
+                    </View> */}
                   </View>
                 </View>}
-
-
-                {meterInfo ? <TouchableOpacity onPress={() => {
-                  getMeterData(meterInfo, meterNum);
-                  enableLocation(true);
-                }} style={{
-                  borderRadius: width * 0.02,
-                  padding: 10,
-                  marginBottom: 20,
-                  backgroundColor: '#25aae1',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'absolute',
-                  bottom: 0
-                }} >
-                  <TextReuseableComponent title style={{ color: 'white' }} value={"Edit Details"} />
-                </TouchableOpacity> : null}
               </View>
             )}
           </KeyboardAwareScrollView>

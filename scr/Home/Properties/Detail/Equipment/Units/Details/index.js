@@ -314,7 +314,7 @@ const App = ({ navigation }) => {
     let unitMeterArr = res.data?.data?.unit?.unit_meter;
 
     let alertData = {
-      id: res.data?.data?.unit?.unit_meter?.[0].id,
+      id: res.data?.data?.unit?.unit_meter?.[0]?.id,
       pid: propertyId,
     };
 
@@ -626,14 +626,6 @@ const App = ({ navigation }) => {
             typeRight: 'feather',
           },
           {
-            leftIcon: null,
-            leftName: 'Utility Type',
-            rightIcon: null,
-            rightName: unitMeter?.device?.name ?? 'N/A',
-            type: 'ionicon',
-            typeRight: 'feather',
-          },
-          {
             leftIcon: 'building',
             leftName: 'Building',
             rightIcon: null,
@@ -743,7 +735,7 @@ const App = ({ navigation }) => {
     setEditMeterTypes(antiIntersection);
   };
   const confirmUnitDelete = () => {
-    Alert.alert('Delete Unit', 'Are you sure you want to Delete?', [
+    Alert.alert('Delete Unit', 'Are you sure you want to Delete this Unit?', [
       {
         text: 'No',
         style: 'cancel',
@@ -1147,7 +1139,6 @@ const App = ({ navigation }) => {
   };
 
   const handleMeterAdd = () => {
-    console.log('Clicked')
     setAddMeterModalVisible(!addMeterModalVisible)
   }
 
@@ -1201,6 +1192,27 @@ const App = ({ navigation }) => {
           containerStyle={styles.headerContainerStyle}
         />
         <View style={{ flex: 1 }}>
+          <EditUnit
+            flag={flag}
+            propertyId={propertyId}
+            propertyLat={propertyLat}
+            propertyLong={propertyLong}
+            enableFlag={() => setFlag(true)}
+            disableFlag={() => setFlag(false)}
+            modalVisible={addMeterModalVisible}
+            closeModal={() => setAddMeterModalVisible(!addMeterModalVisible)}
+            reRun={() => getToken()}
+            meterTypes={arrayOfMeter}
+            buildingName={buildingName}
+            buildingId={buildingId}
+            unitDetails={data.data}
+            addMeterUnitMix={data?.data?.unit?.unit_mix}
+            addMeterUnitMixId={data?.data?.unit?.unit_mix_id}
+            addNewMeter={addMeterModalVisible}
+            handleEditUnit={() => {
+              setAddMeterModalVisible(!addMeterModalVisible)
+            }}
+          />
           <SectionList
             style={{ marginTop: height * 0.02 }}
             contentContainerStyle={styles.sectionContainer}
@@ -1243,7 +1255,7 @@ const App = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.addMeterButtonContainer}>
-            <TouchableOpacity onPress={openEditModal}>
+            <TouchableOpacity onPress={() => handleMeterAdd()}>
               <Icon
                 name="plus-circle"
                 type="feather"
