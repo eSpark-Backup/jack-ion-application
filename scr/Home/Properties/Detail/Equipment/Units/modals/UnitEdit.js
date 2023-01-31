@@ -133,6 +133,7 @@ export default function UnitEdit({
   const [modelArr, setModelArr] = useState([]);
   const [addProductNo, setAddProductNo] = useState('');
   const [scroll, setScroll] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
   const [slide1, setSlide1] = useState([
     {
       id: 0,
@@ -293,6 +294,7 @@ export default function UnitEdit({
     errorUnitMix: '',
   });
   const [meterName, setMeterName] = useState(1);
+  const [editMeterDetailsScreen, setEditMeterDetailsScreen] = useState(false);
 
   const verticalOffset = useRef(-180);
 
@@ -1309,7 +1311,7 @@ export default function UnitEdit({
     }
   };
 
-  const finishSlider = () => {
+  const finishSlider = (data) => {
     setLoadMeters(true);
     LayoutAnimation.configureNext({
       duration: 300,
@@ -1326,13 +1328,12 @@ export default function UnitEdit({
 
     setShowAddMeterSlider(false);
     setImmediate(() => {
-      addDeviceInUnit()
+      addDeviceInUnit(data)
     });
 
 
   };
-
-  const addDeviceInUnit = async () => {
+  const addDeviceInUnit = async (mData) => {
     setIsActivityLoader(true);
 
     let data = {
@@ -1340,7 +1341,7 @@ export default function UnitEdit({
       building_id: buildingId,
       defaultRadial_dist: radialDis,
       unit_mix_id: unitMixId,
-      meters: meterData,
+      meters: mData ? mData : meterData,
     };
     if (type == 'add' || type == 'addMeterDirect') {
       const unitResponse = await API.post(
@@ -1367,6 +1368,8 @@ export default function UnitEdit({
         setIsActivityLoader(false);
         // alert(unitResponse?.data?.message);
         reRun(unitResponse?.data?.data);
+        setEditMeterDetailsScreen(false);
+        setUpdateStatus(false)
         cancelMeter();
       } else {
         setIsActivityLoader(false);
@@ -1503,6 +1506,7 @@ export default function UnitEdit({
     });
     if (editMeterIndex != null) {
       setMeterData(meterListData);
+      finishSlider(meterListData)
     } else {
       loopData.push(meterVals);
       setMeterData(loopData);
@@ -1606,7 +1610,6 @@ export default function UnitEdit({
               }}>
               <Searchable_Dropdown
                 onItemSelect={(item) => {
-                  // getDevice(item, index);
                   setAttachedToId(item.id);
                   setAttachedTo(item.name);
                 }}
@@ -2026,6 +2029,8 @@ export default function UnitEdit({
     setExistingDev(false);
     setEditMeterIndex(null);
     setShowAddMeterSlider(false);
+    setEditMeterDetailsScreen(false);
+    setUpdateStatus(false)
   };
 
   const showAddNewType = (value) => {
@@ -2268,7 +2273,7 @@ export default function UnitEdit({
     setProductNo(data.device.product_desc);
     setAttachedToId(data.attachedTo_id);
     setAttachedTo(data.attachedTo_name);
-    if (data.installation_status == 1) {
+    if (data.installation_status == 1 || data.installation_status == 'Complete') {
       setInstallationStatus(data.installation_status);
       setStatusAnimation(true);
     } else {
@@ -4016,211 +4021,236 @@ export default function UnitEdit({
                         source={require('../../../../../../../Images/aniLoad.gif')}
                       />
                     ) : (
-                      <View style={styles.reasonFileContainer}>
-                        {installationStatus == 1 && statusAnimation == true && (
-                          <View style={{ alignItems: 'center' }}>
-                            <Video
-                              source={require('../../../../../../../Images/checkmarkv.mp4')}
-                              repeat
-                              style={{
-                                width: width * 0.3,
-                                height: width * 0.3,
-                              }}
-                              resizeMode="contain"
-                              controls={false}
-                            />
-                            <TextReuseableComponent title style={{
-                              color: '#00B1DC',
-                            }} value={"Installation Successful"} />
-                            <TextReuseableComponent title value={"Meter is installed Successfully"} />
-                          </View>
-                        )}
-                        {installationStatus == 2 && statusAnimation == true && (
-                          <View style={{ alignItems: 'center' }}>
-                            <Image
-                              resizeMode="contain"
-                              resizeMethod="auto"
-                              style={{
-                                width: width * 0.3,
-                                height: width * 0.3,
-                              }}
-                              source={require('../../../../../../../Images/cross.gif')}
-                            />
-                            <TextReuseableComponent title style={{
-                              color: '#FF0000',
-                            }} value={"Installation not Succeed"} />
-                            <TextReuseableComponent title value={"Meter is not installed"} />
-                          </View>
-                        )}
-                        {installationStatus == 2 && statusAnimation == false && (
-                          <View style={{ flex: 1 }}>
-                            <View
-                              style={{
-                                width: width * 0.8,
-                              }}>
-                              <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason*"} />
-                              <Searchable_Dropdown
-                                onItemSelect={(item) => {
-                                  setReasonText(item.name);
-                                  setReasonId(item.id);
-                                }}
-                                containerStyle={{
-                                  marginVertical: width * 0.02,
-                                }}
-                                itemStyle={{
-                                  padding: width * 0.027,
-                                  backgroundColor: 'rgb(247, 247, 247)',
-                                  borderColor: '#bbb',
-                                  borderWidth: width * 0.0015,
-                                  borderRadius: width * 0.015,
-                                  // padding: width * 0.027,
-                                  // backgroundColor: '#fff',
-                                  // borderColor: '#bbb',
-                                  // borderWidth: width * 0.0015,
-                                  // borderRadius: width * 0.015,
-                                  // margin: width * 0.005,
-                                }}
-                                itemTextStyle={{ color: '#222' }}
-                                itemsContainerStyle={{ maxHeight: width * 0.25 }}
-                                items={reasons}
-                                resetValue={false}
-                                textInputProps={{
-                                  placeholder: 'Select Reasons',
-                                  underlineColorAndroid: 'transparent',
-                                  trueIcon: 'chevron-up',
-                                  falseIcon: 'chevron-down',
-                                  style: {
-                                    margin: 0,
-                                    borderRadius: width * 0.015,
-                                    height: width * 0.13,
-                                    backgroundColor: '#F6F6F6',
-                                    borderWidth: width * 0.0019,
-                                  },
-                                  onTextChange: (text) => {
-                                    setReasonText(text);
-                                  },
-                                  value: setTimeout(() => reasonText, 200),
-                                  defaultValue: reasonText,
-                                }}
-                                listProps={{
-                                  nestedScrollEnabled: true,
-                                }}
-                              />
-                              <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason Description*"} />
-                              <Text_Input
-                                placeholder="Describe Your Reason"
-                                value={reasonDes}
+                      <>
+                        <View style={styles.reasonFileContainer}>
+                          {installationStatus == 1 && statusAnimation == true && (
+                            <View style={{ alignItems: 'center' }}>
+                              <Video
+                                source={require('../../../../../../../Images/checkmarkv.mp4')}
+                                repeat
                                 style={{
-                                  ...styles.meterInput,
-                                  marginVertical: width * 0.02,
+                                  width: width * 0.3,
+                                  height: width * 0.3,
                                 }}
-                                onChangeText={(text) => {
-                                  setReasonDes(text);
-                                }}
+                                resizeMode="contain"
+                                controls={false}
                               />
+                              <TextReuseableComponent title style={{
+                                color: '#00B1DC',
+                              }} value={"Installation Successful"} />
+                              <TextReuseableComponent title value={"Meter is installed Successfully"} />
                             </View>
+                          )}
+                          {installationStatus == 2 && statusAnimation == true && (
+                            <View style={{ alignItems: 'center' }}>
+                              <Image
+                                resizeMode="contain"
+                                resizeMethod="auto"
+                                style={{
+                                  width: width * 0.3,
+                                  height: width * 0.3,
+                                }}
+                                source={require('../../../../../../../Images/cross.gif')}
+                              />
+                              <TextReuseableComponent title style={{
+                                color: '#FF0000',
+                              }} value={"Installation not Succeed"} />
+                              <TextReuseableComponent title value={"Meter is not installed"} />
+                            </View>
+                          )}
+                          {installationStatus == 2 && statusAnimation == false && (
+                            <View style={{ flex: 1 }}>
+                              <View
+                                style={{
+                                  width: width * 0.8,
+                                }}>
+                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason*"} />
+                                <Searchable_Dropdown
+                                  onItemSelect={(item) => {
+                                    setReasonText(item.name);
+                                    setReasonId(item.id);
+                                  }}
+                                  containerStyle={{
+                                    marginVertical: width * 0.02,
+                                  }}
+                                  itemStyle={{
+                                    padding: width * 0.027,
+                                    backgroundColor: 'rgb(247, 247, 247)',
+                                    borderColor: '#bbb',
+                                    borderWidth: width * 0.0015,
+                                    borderRadius: width * 0.015,
+                                    // padding: width * 0.027,
+                                    // backgroundColor: '#fff',
+                                    // borderColor: '#bbb',
+                                    // borderWidth: width * 0.0015,
+                                    // borderRadius: width * 0.015,
+                                    // margin: width * 0.005,
+                                  }}
+                                  itemTextStyle={{ color: '#222' }}
+                                  itemsContainerStyle={{ maxHeight: width * 0.25 }}
+                                  items={reasons}
+                                  resetValue={false}
+                                  textInputProps={{
+                                    placeholder: 'Select Reasons',
+                                    underlineColorAndroid: 'transparent',
+                                    trueIcon: 'chevron-up',
+                                    falseIcon: 'chevron-down',
+                                    style: {
+                                      margin: 0,
+                                      borderRadius: width * 0.015,
+                                      height: width * 0.13,
+                                      backgroundColor: '#F6F6F6',
+                                      borderWidth: width * 0.0019,
+                                    },
+                                    onTextChange: (text) => {
+                                      setReasonText(text);
+                                    },
+                                    value: setTimeout(() => reasonText, 200),
+                                    defaultValue: reasonText,
+                                  }}
+                                  listProps={{
+                                    nestedScrollEnabled: true,
+                                  }}
+                                />
+                                <TextReuseableComponent title style={styles.meterDesciptionHeading} value={"Reason Description*"} />
+                                <Text_Input
+                                  placeholder="Describe Your Reason"
+                                  value={reasonDes}
+                                  style={{
+                                    ...styles.meterInput,
+                                    marginVertical: width * 0.02,
+                                  }}
+                                  onChangeText={(text) => {
+                                    setReasonDes(text);
+                                  }}
+                                />
+                              </View>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                <View>
+                                  <TouchableOpacity
+                                    onPress={() =>
+                                      requestCameraPermission('reason')
+                                    }
+                                    style={[styles.button, { width: width * 0.1 }]}>
+                                    <Ionicons
+                                      name="camera"
+                                      size={width * 0.05}
+                                      color="#3E4A4F"
+                                    />
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => imageGalleryLaunch('reason')}
+                                    style={[styles.button, { width: width * 0.1 }]}>
+                                    <Ionicons
+                                      name="images"
+                                      size={width * 0.05}
+                                      color="#3E4A4F"
+                                    />
+                                  </TouchableOpacity>
+                                </View>
+                                <View style={styles.imageListContainer}>
+                                  {reasonPath.length > 0 ? (
+                                    <ScrollView
+                                      horizontal
+                                      showsHorizontalScrollIndicator={false}>
+                                      <View
+                                        style={{ flexDirection: 'row', flex: 1 }}>
+                                        {reasonPath?.map(({ uri, index }) => (
+                                          <View style={styles.imageContainer}>
+                                            <TouchableOpacity
+                                              onPress={() =>
+                                                removeImage(uri, 'reason')
+                                              }
+                                              style={styles.imageRemovebtn}>
+                                              <Ionicons
+                                                name="close-circle"
+                                                size={width * 0.07}
+                                              />
+                                            </TouchableOpacity>
+                                            <Image
+                                              resizeMode="cover"
+                                              style={{
+                                                alignSelf: 'center',
+                                                height: width * 0.25,
+                                                width: width * 0.25,
+                                              }}
+                                              source={{ uri: uri }}
+                                              key={index}
+                                            />
+                                          </View>
+                                        ))}
+                                      </View>
+                                    </ScrollView>
+                                  ) : (
+                                    <TextReuseableComponent title style={{ textAlign: 'center' }} value={"No Image Uploaded"} />
+                                  )}
+                                </View>
+                              </View>
+                            </View>
+                          )}
+                          {installationStatus == 0 && statusAnimation == false || updateStatus && (
                             <View
                               style={{
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
+                                flex: 1,
+                                // backgroundColor: 'yellow',
+                                justifyContent: 'flex-start',
+                                alignItems: 'flex-start',
                               }}>
-                              <View>
-                                <TouchableOpacity
-                                  onPress={() =>
-                                    requestCameraPermission('reason')
-                                  }
-                                  style={[styles.button, { width: width * 0.1 }]}>
-                                  <Ionicons
-                                    name="camera"
-                                    size={width * 0.05}
-                                    color="#3E4A4F"
-                                  />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  onPress={() => imageGalleryLaunch('reason')}
-                                  style={[styles.button, { width: width * 0.1 }]}>
-                                  <Ionicons
-                                    name="images"
-                                    size={width * 0.05}
-                                    color="#3E4A4F"
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                              <View style={styles.imageListContainer}>
-                                {reasonPath.length > 0 ? (
-                                  <ScrollView
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}>
-                                    <View
-                                      style={{ flexDirection: 'row', flex: 1 }}>
-                                      {reasonPath?.map(({ uri, index }) => (
-                                        <View style={styles.imageContainer}>
-                                          <TouchableOpacity
-                                            onPress={() =>
-                                              removeImage(uri, 'reason')
-                                            }
-                                            style={styles.imageRemovebtn}>
-                                            <Ionicons
-                                              name="close-circle"
-                                              size={width * 0.07}
-                                            />
-                                          </TouchableOpacity>
-                                          <Image
-                                            resizeMode="cover"
-                                            style={{
-                                              alignSelf: 'center',
-                                              height: width * 0.25,
-                                              width: width * 0.25,
-                                            }}
-                                            source={{ uri: uri }}
-                                            key={index}
-                                          />
-                                        </View>
-                                      ))}
-                                    </View>
-                                  </ScrollView>
-                                ) : (
-                                  <TextReuseableComponent title style={{ textAlign: 'center' }} value={"No Image Uploaded"} />
-                                )}
-                              </View>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  sendInstallationStatus(1)
+                                  setStatusAnimation(true);
+                                  setUpdateStatus(false)
+                                }}
+                                style={[
+                                  styles.attemptBtn,
+                                  { backgroundColor: 'green' },
+                                ]}>
+                                <TextReuseableComponent title style={styles.attemptText} value={"Attempted and installed"} />
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  setInstallationStatus(2);
+                                  setStatusAnimation(true);
+                                  setUpdateStatus(false)
+                                  setTimeout(() => {
+                                    setStatusAnimation(false);
+                                    setEditMeterDetailsScreen(false);
+                                    // setLetsFinish(true);
+                                  }, 2000);
+                                }}
+                                style={[
+                                  styles.attemptBtn,
+                                  { backgroundColor: '#f00' },
+                                ]}>
+                                <TextReuseableComponent title style={styles.attemptText} value={"Attempted but incomplete"} />
+                              </TouchableOpacity>
                             </View>
-                          </View>
-                        )}
-                        {installationStatus == 0 && statusAnimation == false && (
-                          <View
-                            style={{
-                              flex: 1,
-                              // backgroundColor: 'yellow',
-                              justifyContent: 'flex-start',
-                              alignItems: 'flex-start',
-                            }}>
-                            <TouchableOpacity
-                              onPress={() => sendInstallationStatus(1)}
-                              style={[
-                                styles.attemptBtn,
-                                { backgroundColor: 'green' },
-                              ]}>
-                              <TextReuseableComponent title style={styles.attemptText} value={"Attempted and installed"} />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => {
-                                setInstallationStatus(2);
-                                setStatusAnimation(true);
-                                setLetsFinish(true);
-                                setTimeout(() => {
-                                  setStatusAnimation(false);
-                                }, 5000);
-                              }}
-                              style={[
-                                styles.attemptBtn,
-                                { backgroundColor: '#f00' },
-                              ]}>
-                              <TextReuseableComponent title style={styles.attemptText} value={"Attempted but incomplete"} />
-                            </TouchableOpacity>
-                          </View>
-                        )}
-                      </View>
+                          )}
+
+                        </View>
+                        {sliderNumber == 5 && editMeterDetailsScreen && <TouchableOpacity onPress={() => {
+                          setEditMeterDetailsScreen(true)
+                          finishSlider()
+                        }} style={{
+                          backgroundColor: '#25aae1',
+                          borderRadius: width * 0.02,
+                          padding: 10,
+                          width: width * 0.95,
+                          // flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: "absolute",
+                          bottom: 30
+                        }} >
+                          <TextReuseableComponent title style={{ color: 'white' }} value={"Save Changes"} />
+                        </TouchableOpacity>}
+                      </>
                     )
                   ) : null}
                   <View
@@ -4234,7 +4264,14 @@ export default function UnitEdit({
                     {doneAnimation || checkSerial || hideBtn ? (
                       !hideBtn ? (
                         doneAnimation ? (
-                          <TextReuseableComponent title style={[styles.buttonText, { width: width * 0.7 }]} value={`${newMeter.name.charAt(0).toUpperCase()} ${newMeter.name.slice(1).toLowerCase()} Meter added successfully checking installation status...`} />
+                          <TextReuseableComponent title 
+                          style={[styles.buttonText, { width: width * 0.7 }]} 
+                          value={`
+                          ${newMeter.name.charAt(0).toUpperCase()} 
+                          ${newMeter.name.slice(1).toLowerCase()} 
+                          Meter added successfully checking installation status...
+                          `} 
+                          />
                         ) : (
                           <TextReuseableComponent title style={[styles.buttonText, { width: width * 0.7 }]} value={"Please wait while checking Device Serial Number..."} />
                         )
@@ -4250,7 +4287,8 @@ export default function UnitEdit({
                           height: width * 0.12,
                           zIndex: 1,
                         }}>
-                        {sliderNumber > 1 && (
+                        {sliderNumber > 1 && 
+                        (sliderNumber == 5 && !editMeterDetailsScreen) && (
                           <TouchableOpacity
                             onPress={slideBacker}
                             style={[
@@ -4268,7 +4306,7 @@ export default function UnitEdit({
                             />
                           </TouchableOpacity>
                         )}
-                        {showAddType == false && (
+                        {showAddType == false && !editMeterDetailsScreen && (
                           <TouchableOpacity
                             style={[
                               styles.doneButton,
@@ -4346,6 +4384,28 @@ export default function UnitEdit({
                             />
                           </TouchableOpacity>
                         )}
+                        {sliderNumber == 2 && editMeterDetailsScreen && <TouchableOpacity onPress={() => {
+                          setEditMeterDetailsScreen(true)
+                          setLetsFinish(true)
+
+                          // setTimeout(() => {
+                          //   finishSlider()
+                          // }, 5000);
+                        }} style={{
+                          borderRadius: width * 0.02,
+                          padding: 10,
+                          width: width * 0.95,
+                          // flex: 1,
+                          backgroundColor: '#25aae1',
+                          flexDirection: "row",
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }} >
+                          <TextReuseableComponent title style={{
+                            color: 'white',
+                            justifyContent: 'center',
+                          }} value={"Save Changes"} />
+                        </TouchableOpacity>}
                       </View>
                     )}
                   </View>
@@ -4468,7 +4528,11 @@ export default function UnitEdit({
                         styles.modalHeading
                       } value={"Cancel"} />
                     </Pressable>
-                    <TextReuseableComponent title style={[styles.modalHeading, { top: 8 }]} value={meterInfo ? "Meter-" + (meterNum + 1) : modalName} />
+                    <TextReuseableComponent title
+                      style={[
+                        styles.modalHeading, { top: 8 }
+                      ]}
+                      value={meterInfo ? "Meter-" + (meterNum + 1) : modalName} />
                     <View
                       style={{ marginRight: 5, top: 8, width: width * .15 }}
                       onPress={handleAddNewUnit}
@@ -4480,12 +4544,14 @@ export default function UnitEdit({
                       {meterInfo ? <TouchableOpacity onPress={() => {
                         getMeterData(meterInfo, meterNum);
                         enableLocation(true);
+                        setUpdateStatus(true);
                       }} style={{
-                        borderRadius: width * 0.02,
                         alignItems: 'center',
                         justifyContent: 'center',
                       }} >
-                        <TextReuseableComponent heading style={{ color: 'black' }} value={"Edit"} />
+                        <TextReuseableComponent title style={
+                          styles.modalHeading
+                        } value={"Edit"} />
                       </TouchableOpacity> : null}
                     </View>
                   </View>
@@ -4793,9 +4859,55 @@ export default function UnitEdit({
                     </View>
                   </View>
                 </View> : <View style={{ marginTop: 20 }}>
-
                   <View style={styles.infoViewContainer}>
-                    <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Details"} />
+
+                    <View style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: 'center',
+                      borderBottomWidth: width * 0.003,
+                      marginVertical: height * 0.01,
+                      paddingBottom: 5,
+                      // marginHorizontal: 15,
+                      width: width * .8
+                    }}>
+                      <TextReuseableComponent title style={{
+                        flex: 1,
+                        color: '#25AAE1ec',
+                        fontFamily: Fonts.Montserrat,
+                        borderColor: 'black',
+                        textTransform: 'uppercase',
+                        textAlign: 'center',
+                      }} value={"Meter Details"} />
+                      <TouchableOpacity
+                        onPress={() => {
+                          setEditMeterDetailsScreen(true)
+                          setSliderNumber(2)
+                          setSliderProgress(sliderProgress + 0.25)
+                          getMeterData(meterInfo, meterNum);
+                          enableLocation(true); 
+                        }}
+                        style={{
+                          position: 'absolute',
+                          right: 0,
+                          borderRadius: width * 0.02,
+                          paddingHorizontal: 10,
+                          // backgroundColor: '#25aae1',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <MaterialIcons
+                          name="edit"
+                          color="black"
+                          size={width * 0.045}
+                        />
+                        {/* <TextReuseableComponent title style={{
+                          color: 'black',
+                        }} value={"Edit"} /> */}
+                      </TouchableOpacity>
+                    </View>
+
                     <View
                       style={{
                         flexDirection: 'row',
@@ -4803,6 +4915,7 @@ export default function UnitEdit({
                         width: width * 0.8,
                         alignItems: 'center',
                         marginVertical: height * 0.01,
+                        marginBottom: height * 0.01,
                       }}>
                       <TextReuseableComponent title style={[
                         styles.dataFieldText,
@@ -4834,7 +4947,32 @@ export default function UnitEdit({
                       <TextReuseableComponent title style={[
                         styles.dataFieldText,
                         { width: '45%', textAlign: 'left' },
-                      ]} value={"Serial Number:"} />
+                      ]} value={"Initial Meter Reading:"} />
+                      <View style={{ width: '55%', alignItems: 'flex-end' }}>
+                        <View
+                          style={{
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                          }}>
+                          <TextReuseableComponent title value={meterInfo?.initial_meter_reading == null ||
+                            meterInfo?.initial_meter_reading == ''
+                            ? '--'
+                            : meterInfo?.initial_meter_reading} />
+                        </View>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        width: width * 0.8,
+                        alignItems: 'center',
+                        marginVertical: height * 0.01,
+                      }}>
+                      <TextReuseableComponent title style={[
+                        styles.dataFieldText,
+                        { width: '45%', textAlign: 'left' },
+                      ]} value={"Device Serial Number:"} />
                       <View style={{ width: '55%', alignItems: 'flex-end' }}>
                         <View
                           style={{
@@ -4848,60 +4986,56 @@ export default function UnitEdit({
                         </View>
                       </View>
                     </View>
+                  </View>
 
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                        marginBottom: height * 0.01,
-                      }}>
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '45%', textAlign: 'left' },
-                      ]} value={"Unit Name:"} />
-                      <View style={{ width: '55%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.unit_name == null ||
-                            meterInfo?.unit_name == ''
-                            ? '--'
-                            : meterInfo?.unit_name} />
-                        </View>
-                      </View>
+                  <View style={styles.infoViewContainer}>
+                    <View style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: 'center',
+                      borderBottomWidth: width * 0.003,
+                      marginVertical: height * 0.01,
+                      paddingBottom: 5,
+                      // marginHorizontal: 15,
+                      width: width * .8
+                    }}>
+                      <TextReuseableComponent title style={{
+                        flex: 1,
+                        color: '#25AAE1ec',
+                        fontFamily: Fonts.Montserrat,
+                        borderColor: 'black',
+                        textTransform: 'uppercase',
+                        textAlign: 'center',
+                      }} value={"Installation Status"} />
+                      <TouchableOpacity
+                        onPress={() => {
+                          // setEditMeterDetailsScreen(true);
+                          setUpdateStatus(true)
+                          setSliderNumber(5)
+                          setSliderProgress(sliderProgress + 0.75)
+                          getMeterData(meterInfo, meterNum);
+                          enableLocation(true);
+                        }}
+                        style={{
+                          position: 'absolute',
+                          right: 0,
+                          borderRadius: width * 0.02,
+                          paddingHorizontal: 10,
+                          // backgroundColor: '#25aae1',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <MaterialIcons
+                          name="edit"
+                          color="black"
+                          size={width * 0.045}
+                        />
+                        {/* <TextReuseableComponent title style={{
+                          color: 'black',
+                        }} value={"Edit"} /> */}
+                      </TouchableOpacity>
                     </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        width: width * 0.8,
-                        alignItems: 'center',
-                        marginVertical: height * 0.01,
-                      }}>
-                      <TextReuseableComponent title style={[
-                        styles.dataFieldText,
-                        { width: '45%', textAlign: 'left' },
-                      ]} value={"Building Name:"} />
-                      <View style={{ width: '55%', alignItems: 'flex-end' }}>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                          }}>
-                          <TextReuseableComponent title value={meterInfo?.building_name == null ||
-                            meterInfo?.building_name == ''
-                            ? '--'
-                            : meterInfo?.building_name} />
-                        </View>
-                      </View>
-                    </View>
-
                     <View
                       style={{
                         flexDirection: 'row',
@@ -4927,26 +5061,6 @@ export default function UnitEdit({
                         </View>
                       </View>
                     </View>
-                    {/* <View>
-                      <TouchableOpacity onPress={() => {
-                        // setSliderNumber(2)
-                        // setSliderProgress(sliderProgress + 0.25)
-                        getMeterData(meterInfo, meterNum);
-                        enableLocation(true);
-                      }} style={{
-                        borderRadius: width * 0.02,
-                        padding: 5,
-                        paddingRight: 10,
-                        paddingLeft: 10,
-                        marginBottom: 20,
-                        marginTop: 20,
-                        backgroundColor: '#25aae1',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }} >
-                        <TextReuseableComponent title style={{ color: 'white' }} value={"Add Meter Details"} />
-                      </TouchableOpacity>
-                    </View> */}
                   </View>
                 </View>}
               </View>
