@@ -29,10 +29,12 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
 
     const handleDelete = () => {
         const deleteMessage = async () => {
-            const deleteChat = await API.post("/delete-chat", { id: listOfRecentUsers[swipeInd].last_message?.id });
+            const chatRoomId = listOfRecentUsers[swipeInd]?.id;
+            const deleteChat = await API.post("/delete-chat", { roomChatId: chatRoomId });
             if (deleteChat?.data?.bool) {
                 console.log('message deleted', deleteChat?.data?.data);
             } else {
+                console.log('chatRoomId', chatRoomId);
                 console.log('message not deleted', deleteChat?.data?.message);
                 Alert.alert("Deletion failed!");
                 swipRef?.current?.close()

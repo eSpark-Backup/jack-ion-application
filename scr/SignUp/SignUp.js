@@ -19,6 +19,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import TextReuseableComponent from '../components/Text/index';
 import { ActivityIndicator } from 'react-native';
 import { Text } from 'react-native';
+import API from '../api/SeviceApi';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,6 +32,7 @@ export default class SignUp extends Component {
       pass: '',
       errName: '',
       errPass: '',
+      otp: '',
       newPassScreen: false,
       verifyOtpScreen: false,
       sendCodeScreen: false,
@@ -42,7 +44,7 @@ export default class SignUp extends Component {
     };
   }
 
-  _checkCredentials = () => {
+  _checkCredentials = async () => {
     if (this.state.email === '') {
       this.setState({
         errName: '*This Field cannot be empty',
@@ -50,20 +52,32 @@ export default class SignUp extends Component {
       });
       setTimeout(() => this.setState({ name: "", pass: "", errName: "", errPass: "" }), 1000)
     } else {
+      this.setState({ isLoading: true });
+      const email = this.state.email;
+      const generateCode = await API.post('/auth/generate-code-email', { email });
+      console.log('generated', generateCode?.data)
 
-      this.setState({
-        name: '',
-        pass: '',
-        errName: '',
-        errPass: '',
-        otp: '',
-        newPassScreen: false,
-        verifyOtpScreen: true
-      });
+      if (generateCode?.data?.bool) {
+        this.setState({
+          isLoading: false,
+          verifyOtpScreen: true
+        });
+      } else {
+        this.setState({
+          email: '',
+          errName: generateCode?.data?.message,
+        });
+        setTimeout(() => {
+          this.setState({
+            errName: '',
+            isLoading: false,
+          });
+        }, 3000)
+      }
     }
   };
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     if (this.state.verifyPass1 === '' || this.state.verifyPass2 === '') {
       this.setState({
         errPass: '*This Field cannot be empty',
@@ -72,14 +86,48 @@ export default class SignUp extends Component {
         errPass: ''
       }), 1000)
     } else {
-      this.setState({
-        isLoading: true,
-        verifyPass1: '',
-        verifyPass2: ''
-      });
-      setTimeout(() => this.setState({
-        isLoading: false,
-      }), 3000)
+      this.setState({ isLoading: true });
+      const verifyPass1 = this.state.verifyPass1;
+      const verifyPass2 = this.state.verifyPass2;
+      const email = this.state.email;
+      const createPassword = await API.post('/auth/change-forget-password', { email: email, newPassword: verifyPass1, confirmPassword: verifyPass2 });
+
+      if (createPassword?.data?.bool) {
+        this.setState({
+          name: '',
+          email: '',
+          pass: '',
+          errName: '',
+          errPass: '',
+          otp: '',
+          newPassScreen: true,
+          verifyOtpScreen: false,
+          sendCodeScreen: false,
+          showPassword1: false,
+          showPassword2: false,
+          isLoading: false,
+          verifyPass1: '',
+          verifyPass2: ''
+        });
+        Alert.alert("Password changed successfully!")
+        
+          setTimeout(() => {
+            this.props.navigation.navigate('Login')
+            this.setState({ newPassScreen: false})
+          }, 3000);
+      } else {
+        this.setState({
+          verifyPass1: '',
+          verifyPass2: '',
+          errPass: "Password was not created!",
+          isLoading: false,
+        });
+        setTimeout(() => {
+          this.setState({
+            errPass: '',
+          });
+        }, 3000)
+      }
     }
   }
 
@@ -141,9 +189,9 @@ export default class SignUp extends Component {
                 this._checkCredentials();
               }}>
               <View style={styles.buttonContainer}>
-                <TextReuseableComponent title style={{
+                {this.state.isLoading ? <ActivityIndicator color="white" size="small" /> : <TextReuseableComponent title style={{
                   color: '#fff',
-                }} value={"Send Code"} />
+                }} value={"Send Code"} />}
               </View>
             </TouchableOpacity></>}
           {this.state.newPassScreen && <>
@@ -269,7 +317,7 @@ export default class SignUp extends Component {
             </View>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => {
+              onPress={async () => {
                 if (this.state.otp === '') {
                   this.setState({
                     errName: '*This Field cannot be empty',
@@ -282,32 +330,72 @@ export default class SignUp extends Component {
                     otp: ''
                   }), 1000)
                 } else {
-                  this.setState({
-                    name: '',
-                    pass: '',
-                    errName: '',
-                    errPass: '',
-                    otp: '',
-                    newPassScreen: true,
-                    verifyOtpScreen: false
-                  });
+                  this.setState({ isLoading: true });
+                  const otp = this.state.otp;
+                  const email = this.state.email;
+                  const verifyCode = await API.post('/auth/check-otp', { email: email, otp: otp });
+                  console.log('verifyCode', verifyCode?.data)
+
+                  if (verifyCode?.data?.bool) {
+                    this.setState({
+                      name: '',
+                      pass: '',
+                      errName: '',
+                      errPass: '',
+                      otp: '',
+                      newPassScreen: true,
+                      verifyOtpScreen: false,
+                      sendCodeScreen: false,
+                      showPassword1: false,
+                      showPassword2: false,
+                      isLoading: false,
+                      verifyPass1: '',
+                      verifyPass2: ''
+                    });
+                  } else {
+                    this.setState({
+                      otp: '',
+                      errName: "OTP did not match!",
+                      isLoading: false,
+                    });
+                    setTimeout(() => {
+                      this.setState({
+                        errName: '',
+                      });
+                    }, 3000)
+                  }
                 }
               }}>
               <View style={styles.buttonContainer}>
-                <TextReuseableComponent title style={{
+                {this.state.isLoading ? <ActivityIndicator color="white" size="small" /> : <TextReuseableComponent title style={{
                   color: '#fff',
-                }} value={"Verify Code"} />
+                }} value={"Verify Code"} />}
               </View>
             </TouchableOpacity></>}
           <View style={{ marginTop: height * 0.05 }}>
             <Text>
               Already have an account?
-                <Text onPress={() => {
-                  this.props.navigation.navigate('Login'),
-                    setTimeout(() => {
-                      this.setState({ errName: '', errPass: '' });
-                    }, 100);
-                }} style={styles.highlightText}> Login!</Text>
+              <Text onPress={() => {
+                this.props.navigation.navigate('Login'),
+                  setTimeout(() => {
+                    this.setState({
+                      name: '',
+                      email: '',
+                      pass: '',
+                      errName: '',
+                      errPass: '',
+                      otp: '',
+                      newPassScreen: true,
+                      verifyOtpScreen: false,
+                      sendCodeScreen: false,
+                      showPassword1: false,
+                      showPassword2: false,
+                      isLoading: false,
+                      verifyPass1: '',
+                      verifyPass2: ''
+                    });
+                  }, 100);
+              }} style={styles.highlightText}> Login!</Text>
             </Text>
 
           </View>
