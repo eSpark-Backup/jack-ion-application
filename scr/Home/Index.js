@@ -91,15 +91,18 @@ class Splash extends Component {
       PushNotification.configure({
         onNotification: async (notification) => {
           console.log('Notification woke from sleep', notification);
-          if (notification?.data?.type == "chat") {
-            this.props.fetchUserDataForMessaging(!this.props.user?.userReducer?.userDataForMessaging);
-            pushNotification(notification)
+          if (notification?.data?.type == "chat" || notification?.data?.type == "delete-chat") {
+            if(notification?.data?.type == "chat") {
+              this.props.fetchUserDataForMessaging(!this.props.user?.userReducer?.userDataForMessaging);
+              pushNotification(notification)
+            } else {
+              this.props.fetchUserDataForMessaging(!this.props.user?.userReducer?.userDataForMessaging);
+            }
           } else {
             // notification?.data?.type == "chat" && this.props.fetchUserDataForMessaging(true);
             notification?.userInteraction ? null : pushNotification(notification);
             const clicked = notification?.userInteraction;
             notification?.id ? PushNotification.cancelLocalNotification(`${notification?.id}`) : null;
-
             if (clicked) {
               console.log('Notification Clicked', notification);
               if (notification?.data?.title?.includes('Meter') || notification?.message?.includes('Meter')) {

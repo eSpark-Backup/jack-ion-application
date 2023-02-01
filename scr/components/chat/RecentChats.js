@@ -34,19 +34,16 @@ const RecentChats = ({ handleChatDetailsClick, active }) => {
             if (deleteChat?.data?.bool) {
                 console.log('message deleted', deleteChat?.data?.data);
             } else {
-                console.log('chatRoomId', chatRoomId);
                 console.log('message not deleted', deleteChat?.data?.message);
                 Alert.alert("Deletion failed!");
-                swipRef?.current?.close()
             }
-
         }
         Alert.alert('Becareful', 'Are you sure to delete Message permanently?', [
             { text: 'No', style: 'cancel', onPress: () => swipRef?.current?.close() },
             {
                 text: 'Yes',
                 onPress: () => {
-                    // swipRef?.current?.close()
+                    swipRef?.current?.close()
                     deleteMessage();
                 },
             },
