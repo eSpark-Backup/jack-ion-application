@@ -1395,12 +1395,15 @@ class Splash extends Component {
                   }
                   reRun={() => this.checkData()}
                   meterTypes={this.state.unitMeters}
-                  modalName="Edit Unit"
+                  // modalName="Edit Unit"
                   buildingName={this.state.buildingData.name}
                   buildingId={this.state.editBuildId}
                   unitDetails={this.state.unitDatax.data}
-                  unitMixesId={this.state.unitMixesId}
-                  userRole={this.state.userRole}
+                  // unitMixesId={this.state.unitMixesId}
+                  // userRole={this.state.userRole}
+                  addMeterUnitMix={this.state.unitDatax.data}
+                  addMeterUnitMixId={this.state.unitMixesId}
+                  addNewMeter={this.state.isEditUnitModalVisible}
                 />
                 <AddBuilding
                   unitCount={this.state.unitCount}

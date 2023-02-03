@@ -294,7 +294,7 @@ export default function UnitEdit({
     errorUnitMix: '',
   });
   const [meterName, setMeterName] = useState(1);
-  const [editMeterDetailsScreen, setEditMeterDetailsScreen] = useState(false);
+  const [editMeter, setEditMeter] = useState(false);
 
   const verticalOffset = useRef(-180);
 
@@ -311,7 +311,7 @@ export default function UnitEdit({
     setInstallationStatus(status);
     setStatusAnimation(true);
     setTimeout(() => {
-      setLetsFinish(true);
+      // setLetsFinish(true);
       setHideBtn(false);
     }, 4000);
   };
@@ -474,7 +474,13 @@ export default function UnitEdit({
     callApi();
 
     let arr2 = meterTypes;
-    setMeterListData(arr2);
+
+    const update = arr2?.map((meter) => {
+      meter["defaultLatitude"] = propertyLat;
+      meter["defaultLongitude"] = propertyLong;
+      return meter;
+    })
+    setMeterListData(update);
 
 
   }, [modalVisible]);
@@ -538,6 +544,7 @@ export default function UnitEdit({
       setDoneAnimation(true);
       setTimeout(() => {
         setDoneAnimation(false);
+        setStatusAnimation(false);
       }, 5000);
     }
   }, [sliderNumber]);
@@ -1254,6 +1261,7 @@ export default function UnitEdit({
         setSliderNumber(sliderNumber + 1);
         setSliderProgress(sliderProgress + 0.25);
       }
+      setStatusAnimation(false);
     } else {
       if (sliderNumber == 1) {
         // let UtilArray = [...selectUtil];
@@ -1312,6 +1320,7 @@ export default function UnitEdit({
   };
 
   const finishSlider = (data) => {
+    console.log('Finish SLider data:', data);
     setLoadMeters(true);
     LayoutAnimation.configureNext({
       duration: 300,
@@ -1359,22 +1368,27 @@ export default function UnitEdit({
         cancelMeter();
       }
     } else {
-      const unitResponse = await API.post(
-        `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
-        data,
-      );
-      if (unitResponse?.data?.bool) {
-        changeUtilityAndToggle();
-        setIsActivityLoader(false);
-        // alert(unitResponse?.data?.message);
-        reRun(unitResponse?.data?.data);
-        setEditMeterDetailsScreen(false);
-        setUpdateStatus(false)
-        cancelMeter();
-      } else {
-        setIsActivityLoader(false);
-        alert(unitResponse?.data?.message);
-        cancelMeter();
+      try {
+        console.log("unitDetails?.unit?.id", unitDetails?.unit?.id);
+        const unitResponse = await API.post(
+          `/property/equipment/unit/update-unit/${unitDetails?.unit?.id}`,
+          data,
+        );
+        console.log('payload data', data)
+        if (unitResponse?.data?.bool) {
+          console.log('Update Unit Response', unitResponse?.data?.bool)
+          changeUtilityAndToggle();
+          setIsActivityLoader(false);
+          // alert(unitResponse?.data?.message);
+          reRun(unitResponse?.data?.data);
+          cancelMeter();
+        } else {
+          setIsActivityLoader(false);
+          alert(unitResponse?.data?.message);
+          cancelMeter();
+        }  
+      } catch (error) {
+        console.log('error', error);
       }
     }
   }
@@ -1402,7 +1416,7 @@ export default function UnitEdit({
       },
 
       id: devEdit ? selectedDevId : null,
-      // meter_name: [{id: newMeter.id, name: newMeter.name}],
+      meter_name: [{ id: newMeter.id, name: newMeter.name }],
       // model_no_id: slide1[2].selectId,
       device_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
@@ -1505,6 +1519,7 @@ export default function UnitEdit({
       };
     });
     if (editMeterIndex != null) {
+      console.log("meterListData: ", meterListData);
       setMeterData(meterListData);
       finishSlider(meterListData)
     } else {
@@ -2029,8 +2044,7 @@ export default function UnitEdit({
     setExistingDev(false);
     setEditMeterIndex(null);
     setShowAddMeterSlider(false);
-    setEditMeterDetailsScreen(false);
-    setUpdateStatus(false)
+    setEditMeter(true);
   };
 
   const showAddNewType = (value) => {
@@ -2317,6 +2331,21 @@ export default function UnitEdit({
 
   };
 
+  // console.log("showAddMeterSlider =", showAddMeterSlider)
+  // console.log("select Location    =", selectLocation)
+  // console.log("add New Type       =", addNewType)
+  // console.log("slider Number      =", sliderNumber)
+  // console.log("doneAnimation      =", doneAnimation)
+  // console.log("installationStatus =", installationStatus)
+  // console.log("statusAnimation    =", statusAnimation)
+  // console.log("updateStatus", updateStatus)
+  // console.log("installationStatus", installationStatus)
+  // console.log("statusAnimation", statusAnimation)
+  // console.log("Edit MEter", editMeter)
+  // console.log("Add new MEter", addNewMeter)
+  // console.log("Slider number", sliderNumber)
+  // console.log("Show add Type", showAddType)
+
   const slideBacker = () => {
     setSliderNumber(sliderNumber - 1);
     setSliderProgress(sliderProgress - 0.25);
@@ -2360,7 +2389,7 @@ export default function UnitEdit({
               marginBottom: scroll ? 150 : 0,
               backgroundColor: '#fff',
             }}>
-            {showAddMeterSlider || addNewMeter ? (
+            {showAddMeterSlider ? (
               selectLocation ? (
                 <View
                   style={{
@@ -2838,7 +2867,7 @@ export default function UnitEdit({
                     </View>
                     <View style={{ height: 5 }} />
                   </View>
-                  {sliderNumber == 1 || (addNewMeter && sliderNumber == 1) ? (
+                  {sliderNumber == 1 ? (
                     <View
                       style={{
                         flex: 1,
@@ -4021,7 +4050,13 @@ export default function UnitEdit({
                         source={require('../../../../../../../Images/aniLoad.gif')}
                       />
                     ) : (
-                      <>
+                      <View style={{
+                        flex: 1,
+                        width: width * 0.85,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        // backgroundColor: 'red',
+                      }}>
                         <View style={styles.reasonFileContainer}>
                           {installationStatus == 1 && statusAnimation == true && (
                             <View style={{ alignItems: 'center' }}>
@@ -4193,7 +4228,7 @@ export default function UnitEdit({
                               </View>
                             </View>
                           )}
-                          {installationStatus == 0 && statusAnimation == false || updateStatus && (
+                          {(installationStatus == 0 || installationStatus == "Complete") && statusAnimation == false && (
                             <View
                               style={{
                                 flex: 1,
@@ -4205,7 +4240,7 @@ export default function UnitEdit({
                                 onPress={() => {
                                   sendInstallationStatus(1)
                                   setStatusAnimation(true);
-                                  setUpdateStatus(false)
+                                  // setUpdateStatus(false)
                                 }}
                                 style={[
                                   styles.attemptBtn,
@@ -4220,7 +4255,6 @@ export default function UnitEdit({
                                   setUpdateStatus(false)
                                   setTimeout(() => {
                                     setStatusAnimation(false);
-                                    setEditMeterDetailsScreen(false);
                                     // setLetsFinish(true);
                                   }, 2000);
                                 }}
@@ -4234,163 +4268,8 @@ export default function UnitEdit({
                           )}
 
                         </View>
-                        {sliderNumber == 5 && editMeterDetailsScreen && <TouchableOpacity onPress={() => {
-                          setEditMeterDetailsScreen(true)
-                          finishSlider()
-                        }} style={{
-                          backgroundColor: '#25aae1',
-                          borderRadius: width * 0.02,
-                          padding: 10,
-                          width: width * 0.95,
-                          // flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          position: "absolute",
-                          bottom: 30
-                        }} >
-                          <TextReuseableComponent title style={{ color: 'white' }} value={"Save Changes"} />
-                        </TouchableOpacity>}
-                      </>
-                    )
-                  ) : null}
-                  <View
-                    style={{
-                      height: width * 0.2,
-                      width: width * 0.85,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      // backgroundColor: 'red',
-                    }}>
-                    {doneAnimation || checkSerial || hideBtn ? (
-                      !hideBtn ? (
-                        doneAnimation ? (
-                          <TextReuseableComponent title 
-                          style={[styles.buttonText, { width: width * 0.7 }]} 
-                          value={`
-                          ${newMeter.name.charAt(0).toUpperCase()} 
-                          ${newMeter.name.slice(1).toLowerCase()} 
-                          Meter added successfully checking installation status...
-                          `} 
-                          />
-                        ) : (
-                          <TextReuseableComponent title style={[styles.buttonText, { width: width * 0.7 }]} value={"Please wait while checking Device Serial Number..."} />
-                        )
-                      ) : null
-                    ) : (
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          position: 'absolute',
-                          width: width * 0.95,
-                          height: width * 0.12,
-                          zIndex: 1,
-                        }}>
-                        {sliderNumber > 1 && 
-                        (sliderNumber == 5 && !editMeterDetailsScreen) && (
-                          <TouchableOpacity
-                            onPress={slideBacker}
-                            style={[
-                              styles.doneButton,
-                              {
-                                position: 'relative',
-                                right: 0,
-                                bottom: 0,
-                              },
-                            ]}>
-                            <Icon
-                              size={width * 0.07}
-                              color="#fff"
-                              name={'navigate-before'}
-                            />
-                          </TouchableOpacity>
-                        )}
-                        {showAddType == false && !editMeterDetailsScreen && (
-                          <TouchableOpacity
-                            style={[
-                              styles.doneButton,
-                              {
-                                right: 0,
-                                bottom: 0,
-                                backgroundColor:
-                                  sliderNumber == 1 &&
-                                    slide1[0].selectId &&
-                                    slide1[1].selectId &&
-                                    selectedUtil &&
-                                    selectedUtilId != null
-                                    ? '#25AAE1ec'
-                                    : sliderNumber == 2 &&
-                                      slide2[1].value &&
-                                      slide2[2].value &&
-                                      attachedToId != null
-                                      ? '#25AAE1ec'
-                                      : sliderNumber == 3
-                                        ? '#25AAE1ec'
-                                        : sliderNumber == 4 &&
-                                          lat != undefined &&
-                                          long != undefined
-                                          ? '#25AAE1ec'
-                                          : (sliderNumber == 5 &&
-                                            installationStatus == 1) ||
-                                            (sliderNumber == 5 &&
-                                              installationStatus == 2 &&
-                                              reasonId &&
-                                              reasonDes)
-                                            ? '#25AAE1ec'
-                                            : '#D0D0D0',
-                              },
-                            ]}
-                            onPress={
-                              userRole == 2
-                                ? finishSlider
-                                : sliderNumber == 5
-                                  ? finishSlider
-                                  : changeSlider
-                            }
-                            disabled={
-                              sliderNumber == 1 &&
-                                slide1[0].selectId &&
-                                slide1[1].selectId &&
-                                selectedUtil &&
-                                selectedUtilId != null
-                                ? false
-                                : sliderNumber == 2 &&
-                                  slide2[2].value &&
-                                  slide2[1].value &&
-                                  attachedToId != null
-                                  ? false
-                                  : sliderNumber == 3
-                                    ? false
-                                    : sliderNumber == 4 &&
-                                      lat != undefined &&
-                                      long != undefined
-                                      ? false
-                                      : (sliderNumber == 5 &&
-                                        installationStatus == 1) ||
-                                        (sliderNumber == 5 &&
-                                          installationStatus == 2 &&
-                                          reasonId &&
-                                          reasonDes)
-                                        ? false
-                                        : true
-                            }>
-                            <Icon
-                              size={width * 0.07}
-                              color="#fff"
-                              name={
-                                sliderNumber == 5 ? 'check' : 'navigate-next'
-                              }
-                            />
-                          </TouchableOpacity>
-                        )}
-                        {sliderNumber == 2 && editMeterDetailsScreen && <TouchableOpacity onPress={() => {
-                          setEditMeterDetailsScreen(true)
+                        {sliderNumber == 5 && !addNewMeter && !editMeter && statusAnimation == true && <TouchableOpacity onPress={() => {
                           setLetsFinish(true)
-
-                          // setTimeout(() => {
-                          //   finishSlider()
-                          // }, 5000);
                         }} style={{
                           borderRadius: width * 0.02,
                           padding: 10,
@@ -4401,14 +4280,170 @@ export default function UnitEdit({
                           alignItems: 'center',
                           justifyContent: 'center',
                         }} >
-                          <TextReuseableComponent title style={{
-                            color: 'white',
-                            justifyContent: 'center',
-                          }} value={"Save Changes"} />
+                          <TextReuseableComponent title style={{ color: 'white' }} value={"Save Changes"} />
                         </TouchableOpacity>}
                       </View>
-                    )}
-                  </View>
+
+                    )
+                  ) : null}
+
+                  {doneAnimation || checkSerial || hideBtn ? (
+                    !hideBtn ? (
+                      doneAnimation ? (
+                        <TextReuseableComponent title
+                          style={[styles.buttonText, { width: width * 0.7 }]}
+                          value={`Meter added successfully checking installation status...`}
+                        />
+                      ) : (
+                        <TextReuseableComponent title style={[styles.buttonText, { width: width * 0.7 }]} value={"Please wait while checking Device Serial Number..."} />
+                      )
+                    ) : null
+                  ) : (
+                    <>
+                      {editMeter || addNewMeter ? <View
+                        style={{
+                          height: width * 0.2,
+                          width: width * 0.85,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <View
+                          style={{
+                            // flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            position: 'absolute',
+                            width: width * 0.95,
+                            height: width * 0.12,
+                            zIndex: 1,
+                          }}>
+                          {sliderNumber > 1 && (
+                            <TouchableOpacity
+                              onPress={slideBacker}
+                              style={[
+                                styles.doneButton,
+                                {
+                                  position: 'relative',
+                                  right: 0,
+                                  bottom: 0,
+                                },
+                              ]}>
+                              <Icon
+                                size={width * 0.07}
+                                color="#fff"
+                                name={'navigate-before'}
+                              />
+                            </TouchableOpacity>
+                          )}
+                          {showAddType == false && (
+                            <TouchableOpacity
+                              style={[
+                                styles.doneButton,
+                                {
+                                  right: 0,
+                                  bottom: 0,
+                                  backgroundColor:
+                                    sliderNumber == 1 &&
+                                      slide1[0].selectId &&
+                                      slide1[1].selectId &&
+                                      selectedUtil &&
+                                      selectedUtilId != null
+                                      ? '#25AAE1ec'
+                                      : sliderNumber == 2 &&
+                                        slide2[1].value &&
+                                        slide2[2].value &&
+                                        attachedToId != null
+                                        ? '#25AAE1ec'
+                                        : sliderNumber == 3
+                                          ? '#25AAE1ec'
+                                          : sliderNumber == 4 &&
+                                            lat != undefined &&
+                                            long != undefined
+                                            ? '#25AAE1ec'
+                                            : (sliderNumber == 5 &&
+                                              installationStatus == 1) ||
+                                              (sliderNumber == 5 &&
+                                                installationStatus == 2 &&
+                                                reasonId &&
+                                                reasonDes)
+                                              ? '#25AAE1ec'
+                                              : '#D0D0D0',
+                                },
+                              ]}
+                              onPress={
+                                userRole == 2
+                                  ? finishSlider
+                                  : sliderNumber == 5
+                                    ? () => {
+                                      if (editMeterIndex == null) {
+                                        finishSlider()
+                                      }else{
+                                        setLetsFinish(true);
+                                      }
+                                    }
+                                    : changeSlider
+                              }
+                              disabled={
+                                sliderNumber == 1 &&
+                                  slide1[0].selectId &&
+                                  slide1[1].selectId &&
+                                  selectedUtil &&
+                                  selectedUtilId != null
+                                  ? false
+                                  : sliderNumber == 2 &&
+                                    slide2[2].value &&
+                                    slide2[1].value &&
+                                    attachedToId != null
+                                    ? false
+                                    : sliderNumber == 3
+                                      ? false
+                                      : sliderNumber == 4 &&
+                                        lat != undefined &&
+                                        long != undefined
+                                        ? false
+                                        : (sliderNumber == 5 &&
+                                          installationStatus == 1) ||
+                                          (sliderNumber == 5 &&
+                                            installationStatus == 2 &&
+                                            reasonId &&
+                                            reasonDes)
+                                          ? false
+                                          : true
+                              }>
+                              <Icon
+                                size={width * 0.07}
+                                color="#fff"
+                                name={
+                                  sliderNumber == 5 ? 'check' : 'navigate-next'
+                                }
+                              />
+                            </TouchableOpacity>
+                          )}
+                        </View>
+                      </View> : null}
+                      {sliderNumber != 5 && !addNewMeter && !editMeter && <TouchableOpacity onPress={() => {
+                        setLetsFinish(true)
+
+                        // setTimeout(() => {
+                        //   finishSlider()
+                        // }, 5000);
+                      }} style={{
+                        borderRadius: width * 0.02,
+                        padding: 10,
+                        width: width * 0.95,
+                        // flex: 1,
+                        backgroundColor: '#25aae1',
+                        flexDirection: "row",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }} >
+                        <TextReuseableComponent title style={{
+                          color: 'white',
+                          justifyContent: 'center',
+                        }} value={"Save Changes"} />
+                      </TouchableOpacity>}
+                    </>
+                  )}
                 </View>
               )
             ) : defaultScreen ? (
@@ -4544,7 +4579,7 @@ export default function UnitEdit({
                       {meterInfo ? <TouchableOpacity onPress={() => {
                         getMeterData(meterInfo, meterNum);
                         enableLocation(true);
-                        setUpdateStatus(true);
+                        setEditMeter(true);
                       }} style={{
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -4711,7 +4746,7 @@ export default function UnitEdit({
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <View
+                  {/* <View
                     style={{
                       flex: 10,
                       alignItems: 'center',
@@ -4730,7 +4765,6 @@ export default function UnitEdit({
                           alignItems: 'center',
                           flexWrap: 'wrap',
                           padding: 5,
-                          // backgroundColor: 'yellow'
                         },
                       ]}>
                       <ScrollView showsVerticalScrollIndicator={false} >
@@ -4756,8 +4790,6 @@ export default function UnitEdit({
                                       type: LayoutAnimation.Types.easeInEaseOut,
                                     },
                                   }),
-                                    // setShowAddMeterSlider(true),
-                                    // setDefaultScreen(true),
                                     getMeterData(item, index);
                                   enableLocation(true);
                                 }}
@@ -4784,7 +4816,6 @@ export default function UnitEdit({
                         style={{
                           alignItems: 'center',
                           justifyContent: 'flex-end',
-                          // marginTop: width * 0.05,
                         }}>
                         {type == 'addMeterDirect' || type == 'meterDirect' ? (
                           meterData.length == 1 ? (
@@ -4847,7 +4878,7 @@ export default function UnitEdit({
                         )}
                       </View>
                     </View>
-                  </View>
+                  </View> */}
                   <View
                     style={{
                       // backgroundColor: 'pink',
@@ -4881,11 +4912,11 @@ export default function UnitEdit({
                       }} value={"Meter Details"} />
                       <TouchableOpacity
                         onPress={() => {
-                          setEditMeterDetailsScreen(true)
+                          setEditMeter(false)
                           setSliderNumber(2)
                           setSliderProgress(sliderProgress + 0.25)
                           getMeterData(meterInfo, meterNum);
-                          enableLocation(true); 
+                          enableLocation(true);
                         }}
                         style={{
                           position: 'absolute',
@@ -5009,8 +5040,8 @@ export default function UnitEdit({
                       }} value={"Installation Status"} />
                       <TouchableOpacity
                         onPress={() => {
-                          // setEditMeterDetailsScreen(true);
-                          setUpdateStatus(true)
+                          setEditMeter(false)
+                          setStatusAnimation(false);
                           setSliderNumber(5)
                           setSliderProgress(sliderProgress + 0.75)
                           getMeterData(meterInfo, meterNum);
@@ -5114,7 +5145,7 @@ export default function UnitEdit({
           </View>
         )}
       </Modal>
-    </View>
+    </View >
   );
 }
 
@@ -5383,7 +5414,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonText: {
-    // textAlign: 'center',
+    textAlign: 'center',
     fontSize: width * 0.03,
     fontFamily: Fonts.Montserrat,
     color: '#3E4A4F',
