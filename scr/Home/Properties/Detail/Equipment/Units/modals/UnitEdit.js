@@ -1518,14 +1518,14 @@ export default function UnitEdit({
             })),
       };
     });
-    if (editMeterIndex != null) {
-      console.log("meterListData: ", meterListData);
-      setMeterData(meterListData);
-      finishSlider(meterListData)
-    } else {
-      loopData.push(meterVals);
-      setMeterData(loopData);
-    }
+    finishSlider(meterListData)
+    // if (editMeterIndex != null) {
+    //   console.log("meterListData: ", meterListData);
+    //   setMeterData(meterListData);
+    // } else {
+    //   loopData.push(meterVals);
+    //   setMeterData(loopData);
+    // }
     setLetsUpdateMeterData(false);
   };
 
@@ -4375,11 +4375,13 @@ export default function UnitEdit({
                                   ? finishSlider
                                   : sliderNumber == 5
                                     ? () => {
-                                      if (editMeterIndex == null) {
-                                        finishSlider()
-                                      }else{
-                                        setLetsFinish(true);
-                                      }
+                                      setLetsFinish(true);
+                                      // if (editMeterIndex == null) {
+                                      //   console.log('editMeterIndex.,.....',)
+                                      //   finishSlider()
+                                      // } else {
+                                      //   setLetsFinish(true);
+                                      // }
                                     }
                                     : changeSlider
                               }
@@ -4591,7 +4593,7 @@ export default function UnitEdit({
                     </View>
                   </View>
                 </View>
-                {!meterInfo || meterInfo == null ? <View
+                {!addNewMeter && !meterInfo || meterInfo == null ? <View
                   style={{
                     flex: 1,
                     // backgroundColor: 'pink',
@@ -4889,7 +4891,8 @@ export default function UnitEdit({
                     <View style={styles.footerBtn}>
                     </View>
                   </View>
-                </View> : <View style={{ marginTop: 20 }}>
+                </View> : null}
+                {!addNewMeter && meterInfo ? <View style={{ marginTop: 20 }}>
                   <View style={styles.infoViewContainer}>
 
                     <View style={{
@@ -5093,7 +5096,7 @@ export default function UnitEdit({
                       </View>
                     </View>
                   </View>
-                </View>}
+                </View> : null}
               </View>
             )}
           </KeyboardAwareScrollView>
