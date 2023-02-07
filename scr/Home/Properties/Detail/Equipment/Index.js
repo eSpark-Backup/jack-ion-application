@@ -788,7 +788,7 @@ class Splash extends Component {
                     color: 'white',
                   }} value={"View"} />
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => this._openEditUnit(unit?.item?.id)}
                   style={{
                     margin: width * 0.01,
@@ -803,7 +803,7 @@ class Splash extends Component {
                   <TextReuseableComponent title style={{
                     color: 'white',
                   }} value={"Edit"} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
 
               <TouchableOpacity
@@ -1404,6 +1404,16 @@ class Splash extends Component {
                   addMeterUnitMix={this.state.unitDatax.data}
                   addMeterUnitMixId={this.state.unitMixesId}
                   addNewMeter={this.state.isEditUnitModalVisible}
+                  fromPAD={true}
+                  navigation={this.props.navigation}
+                  navigateTo={{
+                    unitId: "",
+                    buildingName: this.state.buildingData.name,
+                    buildingId: this.state.editBuildId,
+                    propertyId: this.props.navigation.state.params.item.item.id,
+                    propertyLat: this.props.navigation.state.params.item.item.latitude,
+                    propertyLong: this.props.navigation.state.params.item.item.longitude,
+                  }}
                 />
                 <AddBuilding
                   unitCount={this.state.unitCount}

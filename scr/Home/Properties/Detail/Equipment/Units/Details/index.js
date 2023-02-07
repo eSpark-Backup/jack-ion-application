@@ -627,6 +627,14 @@ const App = ({ navigation }) => {
           },
           {
             leftIcon: 'building',
+            leftName: 'Property Name',
+            rightIcon: null,
+            rightName: data?.data?.unit?.name ?? 'Bluegrass MHP',
+            type: 'font-awesome-5',
+            typeRight: 'feather',
+          },
+          {
+            leftIcon: 'building',
             leftName: 'Building',
             rightIcon: null,
             rightName: buildingName ?? 'Bluegrass MHP',
@@ -837,7 +845,7 @@ const App = ({ navigation }) => {
               <TextReuseableComponent title style={[
                 styles.listText,
                 {
-                  color: index == 1 ? typeColor(item.rightName) : '#000',
+                  color: '#000',
                 },
               ]} value={item.rightName} />
             )}
@@ -1329,7 +1337,7 @@ const App = ({ navigation }) => {
           handleEditUnit={() => {
             setAddMeterModalVisible(!addMeterModalVisible)
           }}
-        
+
         />
         <Header
           leftComponent={{
@@ -1387,7 +1395,7 @@ const App = ({ navigation }) => {
                       type={type}
                       size={iconSize}
                       style={styles.centerIcon}
-                    />
+                      />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
                 </>
