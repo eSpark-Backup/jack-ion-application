@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Dimensions,
@@ -11,17 +11,17 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import { Header, Button, Icon } from 'react-native-elements';
+import {Header, Button, Icon} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
-import { View as MotiView } from 'moti';
+import {View as MotiView} from 'moti';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Loader from '../../../../../../components/Loader';
-import { Svg, G } from 'react-native-svg';
-import { Icon as Iconx } from 'react-native-elements';
+import {Svg, G} from 'react-native-svg';
+import {Icon as Iconx} from 'react-native-elements';
 
 import {
   VictoryChart,
@@ -31,29 +31,29 @@ import {
   VictoryBar,
   VictoryLine,
 } from 'victory-native';
-import { Fonts } from '../../../../../../utils/fonts';
+import {Fonts} from '../../../../../../utils/fonts';
 import TextReuseableComponent from '../../../../../../components/Text/index';
 
 import EditUnit from '../modals/UnitEdit';
 // Components
 import styles from './style';
-import { Checkbox, Divider } from 'react-native-paper';
-import { color } from 'react-native-reanimated';
+import {Checkbox, Divider} from 'react-native-paper';
+import {color} from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
 import style from './style';
 import API from '../../../../../../api/SeviceApi';
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export const MyToolTip = (value, position) => {
   return (
-    <View style={{ height: 50, width: 50, backgroundColor: 'pink' }}>
+    <View style={{height: 50, width: 50, backgroundColor: 'pink'}}>
       <TextReuseableComponent title value={value.y} />
     </View>
   );
 };
 
-const App = ({ navigation }) => {
+const App = ({navigation}) => {
   const scrollViewRef = useRef();
   const gettingChartdata = useRef(false);
 
@@ -212,9 +212,9 @@ const App = ({ navigation }) => {
 
       // INDEPENDENT AXIS
       axisYears: {
-        axis: { stroke: 'black', strokeWidth: 1 },
+        axis: {stroke: 'black', strokeWidth: 1},
         ticks: {
-          size: ({ tick }) => {
+          size: ({tick}) => {
             const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
             return tickSize;
           },
@@ -230,7 +230,7 @@ const App = ({ navigation }) => {
 
       // DATA SET ONE
       axisOne: {
-        axis: { stroke: BLUE_COLOR, strokeWidth: 1 },
+        axis: {stroke: BLUE_COLOR, strokeWidth: 1},
         ticks: {
           strokeWidth: 0,
         },
@@ -247,7 +247,7 @@ const App = ({ navigation }) => {
         fontStyle: 'italic',
       },
       lineOne: {
-        data: { stroke: '#5D84B6', strokeWidth: 2 },
+        data: {stroke: '#5D84B6', strokeWidth: 2},
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
@@ -258,8 +258,8 @@ const App = ({ navigation }) => {
 
       // DATA SET TWO
       axisTwo: {
-        axis: { stroke: RED_COLOR, strokeWidth: 1 },
-        ticks: { strokeWidth: 0 },
+        axis: {stroke: RED_COLOR, strokeWidth: 1},
+        ticks: {strokeWidth: 0},
         tickLabels: {
           fill: 'gray',
           // fontFamily: 'inherit',
@@ -274,12 +274,12 @@ const App = ({ navigation }) => {
         fontStyle: 'italic',
       },
       lineTwo: {
-        data: { stroke: 'gray', strokeWidth: 4.5 },
+        data: {stroke: 'gray', strokeWidth: 4.5},
       },
 
       // HORIZONTAL LINE
       lineThree: {
-        data: { stroke: '#e95f46', strokeWidth: 2 },
+        data: {stroke: '#e95f46', strokeWidth: 2},
       },
     };
   };
@@ -293,6 +293,7 @@ const App = ({ navigation }) => {
     unitId,
     buildingName,
     buildingId,
+    propertyName,
     propertyId,
     propertyLat,
     propertyLong,
@@ -354,7 +355,6 @@ const App = ({ navigation }) => {
     );
 
     if (unitMeterArr?.length > 0 && chartRes.data?.data?.dataset?.length > 0) {
-
       // gettingChartdata.current = true;
       getChartData(chartRes);
     }
@@ -629,7 +629,7 @@ const App = ({ navigation }) => {
             leftIcon: 'building',
             leftName: 'Property Name',
             rightIcon: null,
-            rightName: data?.data?.unit?.name ?? 'Bluegrass MHP',
+            rightName: propertyName ?? 'Bluegrass MHP',
             type: 'font-awesome-5',
             typeRight: 'feather',
           },
@@ -641,14 +641,14 @@ const App = ({ navigation }) => {
             type: 'font-awesome-5',
             typeRight: 'feather',
           },
-          {
-            leftIcon: 'ios-clipboard-outline',
-            leftName: 'Notes',
-            rightIcon: null,
-            rightName: data?.data?.unit?.notes ?? 'N/A',
-            type: 'ionicon',
-            typeRight: 'feather',
-          },
+          // {
+          //   leftIcon: 'ios-clipboard-outline',
+          //   leftName: 'Notes',
+          //   rightIcon: null,
+          //   rightName: data?.data?.unit?.notes ?? 'N/A',
+          //   type: 'ionicon',
+          //   typeRight: 'feather',
+          // },
         ],
       },
     ]);
@@ -748,7 +748,7 @@ const App = ({ navigation }) => {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => deleteUnit() },
+      {text: 'Yes', onPress: () => deleteUnit()},
     ]);
   };
   const deleteUnit = async () => {
@@ -762,7 +762,7 @@ const App = ({ navigation }) => {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => deleteMeter(id) },
+      {text: 'Yes', onPress: () => deleteMeter(id)},
     ]);
   };
 
@@ -775,79 +775,79 @@ const App = ({ navigation }) => {
     alert(response?.data?.message);
   };
 
-  const renderUnitList = ({ item, index }) => {
+  const renderUnitList = ({item, index}) => {
     return data?.data?.unit?.unit_meter?.length == 0 ? (
-      index == 1 ? null : (
-        <View style={styles.listOuter}>
-          <View style={styles.listContainer}>
-            <View style={styles.flexRow}>
-              {index == 1 ? (
-                <Image
-                  source={require('../../../../../../../Images/remote-reader.png')}
-                  style={styles.imgHeader}
-                />
-              ) : (
-                <Icon
-                  name={item.leftIcon}
-                  type={item.type}
-                  size={width * 0.05}
-                  color={'#000'}
-                  style={{ marginRight: width * 0.03 }}
-                />
-              )}
-              <TextReuseableComponent title style={styles.listText} value={item.leftName} />
-            </View>
-            <View style={styles.flexRow}>
-              {item.rightName == null ? null : (
-                <TextReuseableComponent title style={[
+      <View style={styles.listOuter}>
+        <View style={styles.listContainer}>
+          <View style={styles.flexRow}>
+            <Icon
+              name={item.leftIcon}
+              type={item.type}
+              size={width * 0.05}
+              color={'#000'}
+              style={{marginRight: width * 0.03}}
+            />
+            <TextReuseableComponent
+              title
+              style={styles.listText}
+              value={item.leftName}
+            />
+          </View>
+          <View style={styles.flexRow}>
+            {item.rightName == null ? null : (
+              <TextReuseableComponent
+                title
+                style={[
                   styles.listText,
                   {
-                    color: index == 1 ? typeColor(item.rightName) : '#000',
+                    color: '#000',
                   },
-                ]} value={item.rightName} />
-              )}
-              {item.rightIcon == null ? null : (
-                <Icon
-                  name={item.rightIcon}
-                  type={item.typeRight}
-                  size={width * 0.05}
-                  color="#000"
-                  style={styles.centerIcon}
-                />
-              )}
-            </View>
+                ]}
+                value={item.rightName}
+              />
+            )}
+            {item.rightIcon == null ? null : (
+              <Icon
+                name={item.rightIcon}
+                type={item.typeRight}
+                size={width * 0.05}
+                color="#000"
+                style={styles.centerIcon}
+              />
+            )}
           </View>
-          <Divider style={styles.listDivider} />
         </View>
-      )
+        <Divider style={styles.listDivider} />
+      </View>
     ) : (
       <View style={styles.listOuter}>
         <View style={styles.listContainer}>
           <View style={styles.flexRow}>
-            {index == 1 ? (
-              <Image
-                source={require('../../../../../../../Images/remote-reader.png')}
-                style={styles.imgHeader}
-              />
-            ) : (
-              <Icon
-                name={item.leftIcon}
-                type={item.type}
-                size={width * 0.05}
-                color={'#000'}
-                style={{ marginRight: width * 0.03 }}
-              />
-            )}
-            <TextReuseableComponent title style={styles.listText} value={item.leftName} />
+            <Icon
+              name={item.leftIcon}
+              type={item.type}
+              size={width * 0.05}
+              color={'#000'}
+              style={{marginRight: width * 0.03}}
+            />
+            <TextReuseableComponent
+              title
+              style={styles.listText}
+              value={item.leftName}
+            />
           </View>
           <View style={styles.flexRow}>
             {item.rightName == null ? null : (
-              <TextReuseableComponent title style={[
-                styles.listText,
-                {
-                  color: '#000',
-                },
-              ]} value={item.rightName} />
+              <TextReuseableComponent
+                title
+                style={[
+                  styles.listText,
+                  {
+                    color: '#000',
+                  },
+                ]}
+                value={item.rightName}
+              />
             )}
             {item.rightIcon == null ? null : (
               <Icon
@@ -865,24 +865,29 @@ const App = ({ navigation }) => {
     );
   };
 
-  const renderRemoteList = ({ item, index }) => {
-    return (
-      unitMeter?.device_serial_number ? (
-        <TouchableOpacity
-          disabled={item.leftName == 'Recent Alert' ? false : true}
-          onPress={() => {
-            openStatusView(), setDangerView(false);
-          }}>
-          <View style={styles.listOuter}>
-            <View style={styles.listContainer}>
-              <View style={styles.flexRow}>
-                <TextReuseableComponent title style={styles.listText} value={item.leftName} />
-              </View>
-              <View style={styles.flexRow}>
-                <View style={styles.flexColoum}>
-                  <View style={{ flexDirection: 'row-reverse' }}>
-                    {item.rightName == null ? null : (
-                      <TextReuseableComponent title style={[
+  const renderRemoteList = ({item, index}) => {
+    return unitMeter?.device_serial_number ? (
+      <TouchableOpacity
+        disabled={item.leftName == 'Recent Alert' ? false : true}
+        onPress={() => {
+          openStatusView(), setDangerView(false);
+        }}>
+        <View style={styles.listOuter}>
+          <View style={styles.listContainer}>
+            <View style={styles.flexRow}>
+              <TextReuseableComponent
+                title
+                style={styles.listText}
+                value={item.leftName}
+              />
+            </View>
+            <View style={styles.flexRow}>
+              <View style={styles.flexColoum}>
+                <View style={{flexDirection: 'row-reverse'}}>
+                  {item.rightName == null ? null : (
+                    <TextReuseableComponent
+                      title
+                      style={[
                         styles.listText,
                         {
                           backgroundColor:
@@ -895,41 +900,46 @@ const App = ({ navigation }) => {
                           borderRadius: 5,
                           padding: 2,
                         },
-                      ]} value={item.rightName} />
-                    )}
-                    {item.rightIcon2 == null ? null : (
-                      <Icon
-                        name={item.rightIcon2}
-                        type={item.type}
-                        size={width * 0.05}
-                        color={
-                          unitMeter?.installation_status == 1
-                            ? '#0fc908'
-                            : '#f00'
-                        }
-                        style={{ marginRight: width * 0.01 }}
-                      />
-                    )}
-                  </View>
-                  {item.text ? (
-                    <TextReuseableComponent title style={[styles.listGreyText, { textAlign: 'right' }]} value={item.text} />
-                  ) : null}
+                      ]}
+                      value={item.rightName}
+                    />
+                  )}
+                  {item.rightIcon2 == null ? null : (
+                    <Icon
+                      name={item.rightIcon2}
+                      type={item.type}
+                      size={width * 0.05}
+                      color={
+                        unitMeter?.installation_status == 1 ? '#0fc908' : '#f00'
+                      }
+                      style={{marginRight: width * 0.01}}
+                    />
+                  )}
                 </View>
-                {item.rightIcon == null ? null : (
-                  <Icon
-                    name={item.rightIcon}
-                    type={item.type}
-                    size={width * 0.05}
-                    color="#000"
-                    style={styles.centerIcon}
+                {item.text ? (
+                  <TextReuseableComponent
+                    title
+                    style={[styles.listGreyText, {textAlign: 'right'}]}
+                    value={item.text}
                   />
-                )}
+                ) : null}
               </View>
+              {item.rightIcon == null ? null : (
+                <Icon
+                  name={item.rightIcon}
+                  type={item.type}
+                  size={width * 0.05}
+                  color="#000"
+                  style={styles.centerIcon}
+                />
+              )}
             </View>
-            <Divider style={styles.listDivider} />
           </View>
-        </TouchableOpacity>
-      ) : <View />
+          <Divider style={styles.listDivider} />
+        </View>
+      </TouchableOpacity>
+    ) : (
+      <View />
     );
   };
 
@@ -948,7 +958,7 @@ const App = ({ navigation }) => {
     setOpenedStatus(!openedStatus);
   };
 
-  const renderReasonData = ({ item, index }) => {
+  const renderReasonData = ({item, index}) => {
     return (
       <View>
         <TouchableOpacity
@@ -958,12 +968,16 @@ const App = ({ navigation }) => {
           <View style={styles.listOuter}>
             <View style={styles.listContainer}>
               <View style={styles.flexRow}>
-                <TextReuseableComponent title style={styles.listText} value={item.leftName} />
+                <TextReuseableComponent
+                  title
+                  style={styles.listText}
+                  value={item.leftName}
+                />
               </View>
               <View style={styles.flexRow}>
                 <View style={styles.flexColoum}>
                   <View
-                    style={{ flexDirection: 'row-reverse', width: width * 0.6 }}>
+                    style={{flexDirection: 'row-reverse', width: width * 0.6}}>
                     {item.rightName == null ? null : (
                       <TextTicker
                         duration={6000}
@@ -1002,7 +1016,7 @@ const App = ({ navigation }) => {
             keyExtractor={(item, index) => item + index}
             renderItem={renderReasonInfo}
             ItemSeparatorComponent={() => (
-              <Divider style={[styles.listDivider, { marginTop: 0 }]} />
+              <Divider style={[styles.listDivider, {marginTop: 0}]} />
             )}
           />
         ) : null}
@@ -1010,7 +1024,7 @@ const App = ({ navigation }) => {
     );
   };
 
-  const renderMeterType = ({ item, index }) => {
+  const renderMeterType = ({item, index}) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -1019,12 +1033,16 @@ const App = ({ navigation }) => {
         <View style={styles.listOuter}>
           <View style={styles.listContainer}>
             <View style={styles.flexRow}>
-              <TextReuseableComponent title style={styles.listText} value={item.leftName} />
+              <TextReuseableComponent
+                title
+                style={styles.listText}
+                value={item.leftName}
+              />
             </View>
             <View style={styles.flexRow}>
               <View style={styles.flexColoum}>
                 <View
-                  style={{ flexDirection: 'row-reverse', width: width * 0.6 }}>
+                  style={{flexDirection: 'row-reverse', width: width * 0.6}}>
                   {item.rightName == null ? null : (
                     <TextTicker
                       duration={6000}
@@ -1058,12 +1076,16 @@ const App = ({ navigation }) => {
     );
   };
 
-  const renderReasonInfo = ({ item }) => {
+  const renderReasonInfo = ({item}) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
           <View style={styles.flexRow}>
-            <TextReuseableComponent title style={styles.listInnerText} value={item.leftText} />
+            <TextReuseableComponent
+              title
+              style={styles.listInnerText}
+              value={item.leftText}
+            />
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
@@ -1086,19 +1108,27 @@ const App = ({ navigation }) => {
                 }}
               />
             ) : (
-              <TextReuseableComponent title style={styles.listInnerText} value={item.rightText} />
+              <TextReuseableComponent
+                title
+                style={styles.listInnerText}
+                value={item.rightText}
+              />
             )}
           </View>
         </View>
       </View>
     );
   };
-  const renderMeterInfo = ({ item }) => {
+  const renderMeterInfo = ({item}) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
           <View style={styles.flexRow}>
-            <TextReuseableComponent title style={styles.listInnerText} value={item.leftText} />
+            <TextReuseableComponent
+              title
+              style={styles.listInnerText}
+              value={item.leftText}
+            />
             {item.leftIcon == null ? null : (
               <Icon
                 name={item.leftIcon}
@@ -1110,28 +1140,40 @@ const App = ({ navigation }) => {
             )}
           </View>
           <View style={styles.flexRow}>
-            <TextReuseableComponent title style={styles.listInnerText} value={item.rightText} />
+            <TextReuseableComponent
+              title
+              style={styles.listInnerText}
+              value={item.rightText}
+            />
           </View>
         </View>
       </View>
     );
   };
 
-  const renderStatusInfo = ({ item }) => {
+  const renderStatusInfo = ({item}) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
           <View style={styles.flexRow}>
-            <TextReuseableComponent title style={styles.listGreyText} value={item.leftText} />
+            <TextReuseableComponent
+              title
+              style={styles.listGreyText}
+              value={item.leftText}
+            />
           </View>
           <View style={styles.flexRow}>
-            <TextReuseableComponent title style={[
-              styles.listInnerText,
-              {
-                color: item.bold ? '#000' : '#8c8c8c',
-                textTransform: 'capitalize',
-              },
-            ]} value={item.rightText} />
+            <TextReuseableComponent
+              title
+              style={[
+                styles.listInnerText,
+                {
+                  color: item.bold ? '#000' : '#8c8c8c',
+                  textTransform: 'capitalize',
+                },
+              ]}
+              value={item.rightText}
+            />
             {item.icon == null ? null : (
               <Icon
                 name={item.icon}
@@ -1147,14 +1189,14 @@ const App = ({ navigation }) => {
   };
 
   const handleMeterAdd = () => {
-    setAddMeterModalVisible(!addMeterModalVisible)
-  }
+    setAddMeterModalVisible(!addMeterModalVisible);
+  };
 
   if (loading) {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <EditUnit
           flag={flag}
           propertyId={propertyId}
@@ -1175,7 +1217,7 @@ const App = ({ navigation }) => {
         <Header
           leftComponent={{
             text: 'Close',
-            style: { fontSize: width * 0.05, color: '#000' },
+            style: {fontSize: width * 0.05, color: '#000'},
             onPress: () => navigation.goBack(),
           }}
           centerComponent={
@@ -1186,7 +1228,7 @@ const App = ({ navigation }) => {
                 color="#000"
                 style={styles.leftedIcon}
               />
-              <TextReuseableComponent title value={"Units Details"} />
+              <TextReuseableComponent title value={'Units Details'} />
             </View>
           }
           rightComponent={{
@@ -1199,7 +1241,7 @@ const App = ({ navigation }) => {
           backgroundColor="#fff"
           containerStyle={styles.headerContainerStyle}
         />
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <EditUnit
             flag={flag}
             propertyId={propertyId}
@@ -1218,19 +1260,23 @@ const App = ({ navigation }) => {
             addMeterUnitMixId={data?.data?.unit?.unit_mix_id}
             addNewMeter={addMeterModalVisible}
             handleEditUnit={() => {
-              setAddMeterModalVisible(!addMeterModalVisible)
+              setAddMeterModalVisible(!addMeterModalVisible);
             }}
           />
           <SectionList
-            style={{ marginTop: height * 0.02 }}
+            style={{marginTop: height * 0.02}}
             contentContainerStyle={styles.sectionContainer}
             sections={unitData}
             keyExtractor={(item, index) => item + index}
             renderItem={renderUnitList}
-            renderSectionHeader={({ section: { title, icon, type } }) => (
+            renderSectionHeader={({section: {title, icon, type}}) => (
               <>
                 <View style={styles.sectionTitle}>
-                  <TextReuseableComponent title style={styles.sectionText} value={title} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.sectionText}
+                    value={title}
+                  />
                   <Icon
                     name={icon}
                     type={type}
@@ -1243,7 +1289,11 @@ const App = ({ navigation }) => {
             )}
           />
           <View>
-            <TextReuseableComponent subHeading style={styles.emptyMeterText} value={'No meter in this unit.\nAdd meter with edit option'} />
+            <TextReuseableComponent
+              subHeading
+              style={styles.emptyMeterText}
+              value={'No meter in this unit.\nAdd meter with edit option'}
+            />
             <View style={styles.metersImgContainer}>
               <Image
                 source={require('../../../../../../../Images/meter-hot.png')}
@@ -1278,7 +1328,7 @@ const App = ({ navigation }) => {
             <Button
               onPress={confirmUnitDelete}
               title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
-              buttonStyle={{ backgroundColor: '#e24b4b' }}
+              buttonStyle={{backgroundColor: '#e24b4b'}}
             />
           </View>
         </View>
@@ -1286,7 +1336,7 @@ const App = ({ navigation }) => {
     );
   } else {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <EditUnit
           flag={flag}
           propertyId={propertyId}
@@ -1335,14 +1385,13 @@ const App = ({ navigation }) => {
           addMeterUnitMixId={data?.data?.unit?.unit_mix_id}
           addNewMeter={addMeterModalVisible}
           handleEditUnit={() => {
-            setAddMeterModalVisible(!addMeterModalVisible)
+            setAddMeterModalVisible(!addMeterModalVisible);
           }}
-
         />
         <Header
           leftComponent={{
             text: 'Close',
-            style: { fontSize: width * 0.05, color: '#000' },
+            style: {fontSize: width * 0.05, color: '#000'},
             onPress: () => navigation.goBack(),
           }}
           centerComponent={
@@ -1353,14 +1402,14 @@ const App = ({ navigation }) => {
                 color="#000"
                 style={styles.rightedIcon}
               />
-              <TextReuseableComponent title value={"Units Details"} />
+              <TextReuseableComponent title value={'Units Details'} />
             </View>
           }
           rightComponent={{
             text: 'Edit',
             style: styles.headerText,
             onPress: () => {
-              setSelectedMeterForEdit({ item: null, index: null });
+              setSelectedMeterForEdit({item: null, index: null});
               openEditModal();
             },
           }}
@@ -1373,7 +1422,7 @@ const App = ({ navigation }) => {
           ref={scrollViewRef}
           onContentSizeChange={() => {
             if (dangerView) {
-              scrollViewRef.current.scrollToEnd({ animated: true });
+              scrollViewRef.current.scrollToEnd({animated: true});
             }
           }}>
           <View style={styles.container}>
@@ -1386,7 +1435,7 @@ const App = ({ navigation }) => {
               sections={unitData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderUnitList}
-              renderSectionHeader={({ section: { title, icon, type } }) => (
+              renderSectionHeader={({section: {title, icon, type}}) => (
                 <>
                   <View style={styles.sectionTitle}>
                     <TextReuseableComponent heading value={title} />
@@ -1395,7 +1444,7 @@ const App = ({ navigation }) => {
                       type={type}
                       size={iconSize}
                       style={styles.centerIcon}
-                      />
+                    />
                   </View>
                   <Divider style={styles.sectionTitleDivider} />
                 </>
@@ -1408,46 +1457,52 @@ const App = ({ navigation }) => {
               contentContainerStyle={styles.sectionContainer}
               sections={reasonsData}
               keyExtractor={(item, index) => item + index}
-              renderItem={({ item, index }) => {
+              renderItem={({item, index}) => {
                 // console.log('item:', item);
-                return <TouchableOpacity
-                  onPress={() => {
-                    LayoutAnimation.configureNext({
-                      duration: 300,
-                      create: {
-                        type: LayoutAnimation.Types.easeInEaseOut,
-                        property: LayoutAnimation.Properties.opacity,
-                      },
-                      update: {
-                        type: LayoutAnimation.Types.easeInEaseOut,
-                      },
-                    }),
-                      setSelectedMeterForEdit({ item, index });
-                    openEditModal();
-                  }}
-                  style={styles.meterContainer}>
-                  <TextReuseableComponent title style={
-                    styles.meterDesciptionHeading
-                  } value={"Meter-" + (index + 1)} />
+                return (
                   <TouchableOpacity
-                    onPress={() => confirmDelete(item?.id)}
-                    style={{
-                      zIndex: 1,
-                      backgroundColor: '#fff',
-                    }}>
-                    <MaterialCommunityIcons
-                      name="trash-can-outline"
-                      size={width * 0.07}
+                    onPress={() => {
+                      LayoutAnimation.configureNext({
+                        duration: 300,
+                        create: {
+                          type: LayoutAnimation.Types.easeInEaseOut,
+                          property: LayoutAnimation.Properties.opacity,
+                        },
+                        update: {
+                          type: LayoutAnimation.Types.easeInEaseOut,
+                        },
+                      }),
+                        setSelectedMeterForEdit({item, index});
+                      openEditModal();
+                    }}
+                    style={styles.meterContainer}>
+                    <TextReuseableComponent
+                      title
+                      style={styles.meterDesciptionHeading}
+                      value={'Meter-' + (index + 1)}
                     />
+                    <TouchableOpacity
+                      onPress={() => confirmDelete(item?.id)}
+                      style={{
+                        zIndex: 1,
+                        backgroundColor: '#fff',
+                      }}>
+                      <MaterialCommunityIcons
+                        name="trash-can-outline"
+                        size={width * 0.07}
+                      />
+                    </TouchableOpacity>
                   </TouchableOpacity>
-                </TouchableOpacity>
+                );
               }}
-              renderSectionHeader={({ section: { title, img } }) => (
+              renderSectionHeader={({section: {title, img}}) => (
                 <>
                   <View style={styles.sectionTitle}>
-                    <TextReuseableComponent heading value={"Meters"} />
-                    <TouchableOpacity onPress={() => handleMeterAdd()} style={{ width: width * 0.085 }}>
-                      <TextReuseableComponent heading value={"+"} />
+                    <TextReuseableComponent heading value={'Meters'} />
+                    <TouchableOpacity
+                      onPress={() => handleMeterAdd()}
+                      style={{width: width * 0.085}}>
+                      <TextReuseableComponent heading value={'+'} />
                     </TouchableOpacity>
                   </View>
                   <Divider style={styles.sectionTitleDivider} />

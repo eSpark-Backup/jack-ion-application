@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Dimensions,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 //Packages
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,22 +20,22 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import { VictoryArea, VictoryAxis, VictoryPie } from 'victory-native';
+import {VictoryArea, VictoryAxis, VictoryPie} from 'victory-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 // Components
-import { Fonts } from '../../utils/fonts';
+import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../../components/StatusBar';
 import TextTicker from 'react-native-text-ticker';
 import Loader from '../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../api/SeviceApi';
-import Svg, { G } from 'react-native-svg';
+import Svg, {G} from 'react-native-svg';
 import TextReuseableComponent from '../../components/Text/index';
 import Properties from '../../components/properties';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 70.0322;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -43,7 +43,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default class Splash extends Component {
   static navigationOptions = {
     title: 'Home',
-    tabBarIcon: ({ tintColor }) => (
+    tabBarIcon: ({tintColor}) => (
       <AntDesign name="home" color={tintColor} size={height * 0.04} />
     ),
   };
@@ -77,14 +77,14 @@ export default class Splash extends Component {
       recentProps: false,
       recentProperties: [],
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
       newProperties: [],
       totProperties: [],
@@ -97,7 +97,7 @@ export default class Splash extends Component {
       userCurrentIndex: null,
       userCurrentData: [],
       showNewProperties: true,
-      showTotalProperties: true
+      showTotalProperties: true,
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -105,7 +105,7 @@ export default class Splash extends Component {
   }
 
   async componentDidMount() {
-    this.setState({ loadData: true });
+    this.setState({loadData: true});
     const userDataUnParsed = await AsyncStorage.getItem('users_data');
     const userId = await AsyncStorage.getItem('user_id');
     const userData = JSON.parse(userDataUnParsed);
@@ -114,7 +114,7 @@ export default class Splash extends Component {
         return e.id;
       })
       .indexOf(Number(userId));
-    this.setState({ userCurrentIndex: index, userCurrentData: userData });
+    this.setState({userCurrentIndex: index, userCurrentData: userData});
     let data = {
       ids: userData[index].recent_properties,
     };
@@ -170,19 +170,19 @@ export default class Splash extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
-  jumpToDetail = ({ prop, item }) => {
-    this.props.navigation.navigate('Detail', { item });
+  jumpToDetail = ({prop, item}) => {
+    this.props.navigation.navigate('Detail', {item});
     this.selectedProp(prop);
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
   };
 
-  jumpToEquip = ({ prop, item }) => {
-    this.props.navigation.navigate('Equip', { item });
+  jumpToEquip = ({prop, item}) => {
+    this.props.navigation.navigate('Equip', {item});
     this.selectedProp(prop);
   };
 
-  jumpToAlerts = ({ prop, item }) => {
-    this.props.navigation.navigate('Alerts', { item });
+  jumpToAlerts = ({prop, item}) => {
+    this.props.navigation.navigate('Alerts', {item});
     this.selectedProp(prop);
   };
 
@@ -192,7 +192,7 @@ export default class Splash extends Component {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => this.deleteProperty(id, index) },
+      {text: 'Yes', onPress: () => this.deleteProperty(id, index)},
     ]);
   };
 
@@ -205,10 +205,10 @@ export default class Splash extends Component {
       userDataUpdated[this.state.userCurrentIndex].recent_properties = ids;
       const jsonData = JSON.stringify(userDataUpdated);
       await AsyncStorage.setItem('users_data', jsonData);
-      this.setState({ currentIndex: null });
+      this.setState({currentIndex: null});
       alert(response?.data?.message);
       this.context.checkData();
-      this.setState({ propertyList: this.context.propList });
+      this.setState({propertyList: this.context.propList});
     }
   };
 
@@ -237,7 +237,7 @@ export default class Splash extends Component {
 
   changeLayoutRecent = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({ recentProps: !this.state.recentProps });
+    this.setState({recentProps: !this.state.recentProps});
   };
 
   renderShimmers = (item) => (
@@ -285,12 +285,11 @@ export default class Splash extends Component {
     !this.state.recentProps ? (upDownNearby = 'down') : (upDownNearby = 'up');
     return (
       <View style={styles.container}>
-
         {/* {loadData && <Loader />} */}
         {Platform.OS == 'ios' && <CustumStatusBar />}
         {/* <View style={styles.headingContainer}> */}
         <View style={styles.headingInner}>
-          <View style={{ width: width * 0.1 }} >
+          <View style={{width: width * 0.1}}>
             <MaterialCommunityIcons
               name="arrow-left"
               size={height * 0.04}
@@ -299,379 +298,490 @@ export default class Splash extends Component {
               onPress={() => this.props.navigation.goBack()}
             />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <MaterialCommunityIcons
               name="view-dashboard-outline"
               size={width * 0.07}
               color="white"
             />
-            <TextReuseableComponent title style={styles.mainHeadiing} value={"Dashboard"} />
+            <TextReuseableComponent
+              title
+              style={styles.mainHeadiing}
+              value={'Dashboard'}
+            />
           </View>
-          <View style={{ width: width * 0.1 }} />
+          <View style={{width: width * 0.1}} />
         </View>
-        {loadData ? this.state.shimmers.map((item) => this.renderShimmers(item)) : <View style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-            <View
-              style={{
-                width: width * 1,
-                height: height * 0.5,
-                backgroundColor: 'white',
-                // elevation: width * 0.02,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <MapView
-                style={styles.map}
-                // scrollEnabled={false}
-                initialRegion={{
-                  latitude: 39.0902,
-                  longitude: -102.0,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA,
-                }}
-                zoomEnabled={true}
-                provider={PROVIDER_GOOGLE}
-              >
-                {this.state.markers.length > 0 &&
-                  this.state.markers.map((marker) => (
-                    <Marker
-                      coordinate={{
-                        latitude: marker?.position?.lat,
-                        longitude: marker?.position?.lng,
-                      }}
-                      title={'Property Location'}
-                      draggable
-                    />
-                  ))}
-              </MapView>
-            </View>
-
-            <View>
-              <TouchableOpacity
-                style={styles.mainBotton}
-                activeOpacity={0.8}
-                onPress={this.changeLayoutRecent}>
-                <AntDesign
-                  name="clockcircleo"
-                  size={width * 0.06}
-                  style={{ left: width * 0.005 }}
-                />
-                <TextReuseableComponent title style={styles.mainBottonText} value={"Recently Viewed Properties"} />
-                <AntDesign name={upDownNearby} size={width * 0.035} />
-              </TouchableOpacity>
+        {loadData ? (
+          this.state.shimmers.map((item) => this.renderShimmers(item))
+        ) : (
+          <View style={{flex: 1}}>
+            <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
               <View
                 style={{
-                  height: this.state.recentProps ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}>
-                <View style={styles.insideBottonView}>
-                  {recentProperties.length < 1 ? (
-                    <TextReuseableComponent title value={"No Recent Properties"} />
-                  ) : (
-                    <FlatList
-                      style={{ marginTop: height * 0.01 }}
-                      data={recentProperties}
-                      renderItem={this._renderProperties}
-                    />
-                  )}
-                </View>
-              </View>
-
-              <View style={styles.mainDataContainer}>
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('CardProperties')
-                  }
-                  style={styles.infoViewContainer}>
-                  <View style={styles.infoViewLogo}>
-                    <MaterialCommunityIcons
-                      name="home-city-outline"
-                      size={width * 0.06}
-                      color="#eee"
-                    />
-                  </View>
-                  <View style={styles.infoUpperView}>
-                    <View style={{ alignItems: 'center' }}>
-                      <TextReuseableComponent title value={"Property"}  />
-                      <TextReuseableComponent title value={totalProperties}  />
-                    </View>
-                  </View>
-                  <View style={styles.infoLowerView}>
-                    <TextReuseableComponent title value={`${propertiesPercent}% | ${propertiesThisWeek} This Week`} />
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('CardBuildings')
-                  }
-                  style={styles.infoViewContainer}>
-                  <View
-                    style={{
-                      ...styles.infoViewLogo,
-                      backgroundColor: '#4ba64f',
-                    }}>
-                    <Ionicon
-                      name="md-business-outline"
-                      size={width * 0.06}
-                      color="#eee"
-                    />
-                  </View>
-                  <View style={styles.infoUpperView}>
-                    <View style={{ alignItems: 'center' }}>
-                      <TextReuseableComponent title value={"Buildings"} />
-                      <TextReuseableComponent title value={totalBuildings} />
-                    </View>
-                  </View>
-                  <View style={styles.infoLowerView}>
-                    <TextReuseableComponent title value={`${buildingsPercent}% | ${buildingsThisWeek} This Week`} />
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('CardMeters')}
-                  style={styles.infoViewContainer}>
-                  <View
-                    style={{
-                      ...styles.infoViewLogo,
-                      backgroundColor: '#227ce9',
-                    }}>
-                    <MaterialIcons
-                      name="person"
-                      color="#eee"
-                      size={width * 0.06}
-                    />
-                  </View>
-                  <View style={styles.infoUpperView}>
-                    <View style={{ alignItems: 'center' }}>
-                      <TextReuseableComponent title value={"Meters"} />
-                      <TextReuseableComponent title value={totalMeters} />
-                    </View>
-                  </View>
-                  <View style={styles.infoLowerView}>
-                    <TextReuseableComponent title value={`${metersPercent}% | ${metersThisWeek} This Week`} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: width * 1, alignItems: 'center' }}>
-                <TextReuseableComponent subHeading value={"Property Status"} />
-              </View>
-              <View style={styles.barView}>
-                <TextReuseableComponent title style={{ position: 'absolute' }} value={"Property Status"} />
-                <VictoryPie
-                  width={width * 0.75}
-                  height={width * 0.75}
-                  innerRadius={width * 0.35}
-                  labelRadius={width * 0.28}
-                  labels={({ datum }) => Math.round(datum._x)}
-                  padAngle={1}
-                  animate={{ duration: 400 }}
-                  data={[
-                    { x: onlineProps, y: onlineProps },
-                    { x: offlineProps, y: offlineProps },
-                  ]}
-                  colorScale={['#3e95c7', '#DCDCDC']}
-                  style={{
-                    labels: {
-                      fill: 'white',
-                      fontWeight: 'bold',
-                      alignItems: 'center',
-                    },
-                  }}
-                />
-              </View>
-              <View style={styles.onlineOfflineView}>
-                <TouchableOpacity
-                  style={{ flexDirection: 'row', padding: width * 0.01 }}
-                  onPress={() => {
-                    this.setState({
-                      onlineProps: onlineProps > 0 ? 0 : onlineStatic,
-                    });
-                  }}>
-                  <View style={styles.onlineView} />
-                  <TextReuseableComponent title style={styles.onlineText} value={"Online"} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ flexDirection: 'row', padding: width * 0.01 }}
-                  onPress={() =>
-                    this.setState({
-                      offlineProps: offlineProps > 0 ? 0 : offlineStatic,
-                    })
-                  }>
-                  <View style={styles.offlineView} />
-                  <TextReuseableComponent title style={styles.offlineText} value={"Not Installed"} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.portfolioHeading}>
-                <TextReuseableComponent subHeading value={"Portfolio Growth"} />
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                {newProperties.length > 0 && (
-                  <Svg
-                    style={{
-                      background: 'red',
-                      width: width,
-                      height: width * 0.75,
-                      fontFamily: "'Fira Sans', sans-serif",
-                    }}>
-                    <G>
-                      <VictoryAxis
-                        dependentAxis
-                        domain={[0, newProperties[0]]}
-                        offsetX={50}
-                        orientation="left"
-                        standalone={false}
-                        style={{
-                          axis: { strokeWidth: 1 },
-                        }}
-                      />
-                      <View style={{ position: 'absolute' }}>
-                        {this.state.showTotalProperties && <VictoryArea
-                          interpolation="natural"
-                          data={totProperties}
-                          style={{ data: { fill: '#DCDCDC' } }}
-                        />}
-                      </View>
-                      <View style={{ position: 'absolute' }}>
-                        {this.state.showNewProperties &&
-                          <VictoryArea
-                            interpolation="catmullRom"
-                            data={newProperties}
-                            style={{ data: { fill: '#3e95c7' } }}
-                          />}
-                      </View>
-                      <VictoryAxis
-                        dependentAxis
-                        domain={[0, totProperties[1]]}
-                        orientation="right"
-                        standalone={false}
-                        style={{
-                          axis: { strokeWidth: 1 },
-                        }}
-                      />
-                      <VictoryAxis
-                        standalone={false}
-                        style={{
-                          axis: { stroke: 'black', strokeWidth: 1 },
-                          tickLabels: {
-                            fill: 'transparent',
-                          },
-                        }}
-                      />
-                    </G>
-                  </Svg>
-                )}
-              </View>
-              <View
-                style={{
-                  ...styles.onlineOfflineView,
-                  marginVertical: height * 0.05,
-                }}>
-                <TouchableOpacity activeOpacity={.9} onPress={() => this.setState({ showNewProperties: !this.state.showNewProperties })} style={{ flexDirection: 'row' }}>
-                  <View style={styles.onlineView} />
-                  <TextReuseableComponent title style={[styles.onlineText, !this.state.showNewProperties && { textDecorationLine: 'line-through' }]} value={"New Properties"} />
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={.9} onPress={() => this.setState({ showTotalProperties: !this.state.showTotalProperties })} style={{ flexDirection: 'row' }}>
-                  <View style={styles.offlineView} />
-                  <TextReuseableComponent title style={[styles.offlineText, !this.state.showTotalProperties && { textDecorationLine: 'line-through' }]} value={"Total Properties"} />
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'column',
-                  justifyContent: 'space-evenly',
+                  width: width * 1,
+                  height: height * 0.5,
+                  backgroundColor: 'white',
+                  // elevation: width * 0.02,
                   alignItems: 'center',
-                  paddingTop: width * 0.03,
+                  justifyContent: 'center',
                 }}>
-                <TextReuseableComponent heading style={{
-                  color: '#2D2A2B',
-                  textAlign: 'center',
-                }} value={"You are \n Currently Serving"} />
+                <MapView
+                  style={styles.map}
+                  // scrollEnabled={false}
+                  initialRegion={{
+                    latitude: 39.0902,
+                    longitude: -102.0,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
+                  }}
+                  zoomEnabled={true}
+                  provider={PROVIDER_GOOGLE}>
+                  {this.state.markers.length > 0 &&
+                    this.state.markers.map((marker) => (
+                      <Marker
+                        coordinate={{
+                          latitude: marker?.position?.lat,
+                          longitude: marker?.position?.lng,
+                        }}
+                        title={'Property Location'}
+                        draggable
+                      />
+                    ))}
+                </MapView>
+              </View>
+
+              <View>
+                <TouchableOpacity
+                  style={styles.mainBotton}
+                  activeOpacity={0.8}
+                  onPress={this.changeLayoutRecent}>
+                  <AntDesign
+                    name="clockcircleo"
+                    size={width * 0.06}
+                    style={{left: width * 0.005}}
+                  />
+                  <TextReuseableComponent
+                    title
+                    style={styles.mainBottonText}
+                    value={'Recently Viewed Properties'}
+                  />
+                  <AntDesign name={upDownNearby} size={width * 0.035} />
+                </TouchableOpacity>
                 <View
                   style={{
-                    paddingTop: width * 0.1,
-                    justifyContent: 'space-between',
+                    height: this.state.recentProps ? 'auto' : 0,
+                    overflow: 'hidden',
                   }}>
-                  <View
-                    style={{
-                      height: height * 0.09,
-                      width: width * 0.75,
-                      alignSelf: 'center',
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                      marginVertical: height * 0.015,
-                    }}>
-                    <View style={{ width: width * 0.37, alignItems: 'center' }}>
+                  <View style={styles.insideBottonView}>
+                    {recentProperties.length < 1 ? (
+                      <TextReuseableComponent
+                        title
+                        value={'No Recent Properties'}
+                      />
+                    ) : (
+                      <FlatList
+                        style={{marginTop: height * 0.01}}
+                        data={recentProperties}
+                        renderItem={this._renderProperties}
+                      />
+                    )}
+                  </View>
+                </View>
+
+                <View style={styles.mainDataContainer}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('CardProperties')
+                    }
+                    style={styles.infoViewContainer}>
+                    <View style={styles.infoViewLogo}>
                       <MaterialCommunityIcons
                         name="home-city-outline"
-                        size={width * 0.15}
-                        color="#444444"
+                        size={width * 0.06}
+                        color="#eee"
                       />
                     </View>
-                    <View style={{ width: width * 0.37 }}>
-                      <TextReuseableComponent heading style={{
-                        fontWeight: 'bold',
-                        color: '#3e95c7',
-                        textAlign: 'center',
-                      }} value={totalProperties} />
-                      <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Properties"} />
+                    <View style={styles.infoUpperView}>
+                      <View style={{alignItems: 'center'}}>
+                        <TextReuseableComponent title value={'Property'} />
+                        <TextReuseableComponent title value={totalProperties} />
+                      </View>
                     </View>
-                  </View>
+                    <View style={styles.infoLowerView}>
+                      <TextReuseableComponent
+                        title
+                        value={`${propertiesPercent}% | ${propertiesThisWeek} This Week`}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('CardBuildings')
+                    }
+                    style={styles.infoViewContainer}>
+                    <View
+                      style={{
+                        ...styles.infoViewLogo,
+                        backgroundColor: '#4ba64f',
+                      }}>
+                      <Ionicon
+                        name="md-business-outline"
+                        size={width * 0.06}
+                        color="#eee"
+                      />
+                    </View>
+                    <View style={styles.infoUpperView}>
+                      <View style={{alignItems: 'center'}}>
+                        <TextReuseableComponent title value={'Buildings'} />
+                        <TextReuseableComponent title value={totalBuildings} />
+                      </View>
+                    </View>
+                    <View style={styles.infoLowerView}>
+                      <TextReuseableComponent
+                        title
+                        value={`${buildingsPercent}% | ${buildingsThisWeek} This Week`}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('CardMeters')}
+                    style={styles.infoViewContainer}>
+                    <View
+                      style={{
+                        ...styles.infoViewLogo,
+                        backgroundColor: '#227ce9',
+                      }}>
+                      <MaterialIcons
+                        name="person"
+                        color="#eee"
+                        size={width * 0.06}
+                      />
+                    </View>
+                    <View style={styles.infoUpperView}>
+                      <View style={{alignItems: 'center'}}>
+                        <TextReuseableComponent title value={'Meters'} />
+                        <TextReuseableComponent title value={totalMeters} />
+                      </View>
+                    </View>
+                    <View style={styles.infoLowerView}>
+                      <TextReuseableComponent
+                        title
+                        value={`${metersPercent}% | ${metersThisWeek} This Week`}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{width: width * 1, alignItems: 'center'}}>
+                  <TextReuseableComponent
+                    subHeading
+                    value={'Property Status'}
+                  />
+                </View>
+                <View style={styles.barView}>
+                  <TextReuseableComponent
+                    title
+                    style={{position: 'absolute'}}
+                    value={'Property Status'}
+                  />
+                  <VictoryPie
+                    width={width * 0.75}
+                    height={width * 0.75}
+                    innerRadius={width * 0.35}
+                    labelRadius={width * 0.28}
+                    labels={({datum}) => Math.round(datum._x)}
+                    padAngle={1}
+                    animate={{duration: 400}}
+                    data={[
+                      {x: onlineProps, y: onlineProps},
+                      {x: offlineProps, y: offlineProps},
+                    ]}
+                    colorScale={['#3e95c7', '#DCDCDC']}
+                    style={{
+                      labels: {
+                        fill: 'white',
+                        fontWeight: 'bold',
+                        alignItems: 'center',
+                      },
+                    }}
+                  />
+                </View>
+                <View style={styles.onlineOfflineView}>
+                  <TouchableOpacity
+                    style={{flexDirection: 'row', padding: width * 0.01}}
+                    onPress={() => {
+                      this.setState({
+                        onlineProps: onlineProps > 0 ? 0 : onlineStatic,
+                      });
+                    }}>
+                    <View style={styles.onlineView} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.onlineText}
+                      value={'Online'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{flexDirection: 'row', padding: width * 0.01}}
+                    onPress={() =>
+                      this.setState({
+                        offlineProps: offlineProps > 0 ? 0 : offlineStatic,
+                      })
+                    }>
+                    <View style={styles.offlineView} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.offlineText}
+                      value={'Not Installed'}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.portfolioHeading}>
+                  <TextReuseableComponent
+                    subHeading
+                    value={'Portfolio Growth'}
+                  />
+                </View>
+                <View style={{alignItems: 'center'}}>
+                  {newProperties.length > 0 && (
+                    <Svg
+                      style={{
+                        background: 'red',
+                        width: width,
+                        height: width * 0.75,
+                        fontFamily: "'Fira Sans', sans-serif",
+                      }}>
+                      <G>
+                        <VictoryAxis
+                          dependentAxis
+                          domain={[0, newProperties[0]]}
+                          offsetX={50}
+                          orientation="left"
+                          standalone={false}
+                          style={{
+                            axis: {strokeWidth: 1},
+                          }}
+                        />
+                        <View style={{position: 'absolute'}}>
+                          {this.state.showTotalProperties && (
+                            <VictoryArea
+                              interpolation="natural"
+                              data={totProperties}
+                              style={{data: {fill: '#DCDCDC'}}}
+                            />
+                          )}
+                        </View>
+                        <View style={{position: 'absolute'}}>
+                          {this.state.showNewProperties && (
+                            <VictoryArea
+                              interpolation="catmullRom"
+                              data={newProperties}
+                              style={{data: {fill: '#3e95c7'}}}
+                            />
+                          )}
+                        </View>
+                        <VictoryAxis
+                          dependentAxis
+                          domain={[0, totProperties[1]]}
+                          orientation="right"
+                          standalone={false}
+                          style={{
+                            axis: {strokeWidth: 1},
+                          }}
+                        />
+                        <VictoryAxis
+                          standalone={false}
+                          style={{
+                            axis: {stroke: 'black', strokeWidth: 1},
+                            tickLabels: {
+                              fill: 'transparent',
+                            },
+                          }}
+                        />
+                      </G>
+                    </Svg>
+                  )}
+                </View>
+                <View
+                  style={{
+                    ...styles.onlineOfflineView,
+                    marginVertical: height * 0.05,
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() =>
+                      this.setState({
+                        showNewProperties: !this.state.showNewProperties,
+                      })
+                    }
+                    style={{flexDirection: 'row'}}>
+                    <View style={styles.onlineView} />
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.onlineText,
+                        !this.state.showNewProperties && {
+                          textDecorationLine: 'line-through',
+                        },
+                      ]}
+                      value={'New Properties'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() =>
+                      this.setState({
+                        showTotalProperties: !this.state.showTotalProperties,
+                      })
+                    }
+                    style={{flexDirection: 'row'}}>
+                    <View style={styles.offlineView} />
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.offlineText,
+                        !this.state.showTotalProperties && {
+                          textDecorationLine: 'line-through',
+                        },
+                      ]}
+                      value={'Total Properties'}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
+                    paddingTop: width * 0.03,
+                  }}>
+                  <TextReuseableComponent
+                    heading
+                    style={{
+                      color: '#2D2A2B',
+                      textAlign: 'center',
+                    }}
+                    value={'You are \n Currently Serving'}
+                  />
                   <View
                     style={{
-                      height: height * 0.09,
-                      width: width * 0.75,
-                      alignSelf: 'center',
+                      paddingTop: width * 0.1,
                       justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      marginVertical: height * 0.015,
                     }}>
-                    <View style={{ width: width * 0.37, alignItems: 'center' }}>
-                      <Ionicon name="md-business-outline" size={width * 0.15} color="#444444" />
+                    <View
+                      style={{
+                        height: height * 0.09,
+                        width: width * 0.75,
+                        alignSelf: 'center',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        marginVertical: height * 0.015,
+                      }}>
+                      <View style={{width: width * 0.37, alignItems: 'center'}}>
+                        <MaterialCommunityIcons
+                          name="home-city-outline"
+                          size={width * 0.15}
+                          color="#444444"
+                        />
+                      </View>
+                      <View style={{width: width * 0.37}}>
+                        <TextReuseableComponent
+                          heading
+                          style={{
+                            fontWeight: 'bold',
+                            color: '#3e95c7',
+                            textAlign: 'center',
+                          }}
+                          value={totalProperties}
+                        />
+                        <TextReuseableComponent
+                          heading
+                          style={{textAlign: 'center'}}
+                          value={'Properties'}
+                        />
+                      </View>
                     </View>
                     <View
                       style={{
-                        width: width * 0.37
+                        height: height * 0.09,
+                        width: width * 0.75,
+                        alignSelf: 'center',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        marginVertical: height * 0.015,
                       }}>
-                      <TextReuseableComponent heading style={{
-                        color: '#3e95c7',
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                      }} value={totalUnits} />
-                      <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Units"} />
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      height: height * 0.09,
-                      width: width * 0.75,
-                      alignSelf: 'center',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      marginVertical: height * 0.015,
-                    }}>
-                    <View style={{width: width * 0.37, alignItems: 'center' }}>
-                      <FeatherIcon name="cast" size={width * 0.15} color="#444444" />
+                      <View style={{width: width * 0.37, alignItems: 'center'}}>
+                        <Ionicon
+                          name="md-business-outline"
+                          size={width * 0.15}
+                          color="#444444"
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: width * 0.37,
+                        }}>
+                        <TextReuseableComponent
+                          heading
+                          style={{
+                            color: '#3e95c7',
+                            fontWeight: 'bold',
+                            textAlign: 'center',
+                          }}
+                          value={totalUnits}
+                        />
+                        <TextReuseableComponent
+                          heading
+                          style={{textAlign: 'center'}}
+                          value={'Units'}
+                        />
+                      </View>
                     </View>
                     <View
                       style={{
-                        width: width * 0.37
+                        height: height * 0.09,
+                        width: width * 0.75,
+                        alignSelf: 'center',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        marginVertical: height * 0.015,
                       }}>
-                      <TextReuseableComponent heading style={{
-                        fontWeight: 'bold',
-                        color: '#3e95c7',
-                        textAlign: 'center',
-                      }} value={totalDevices} />
-                      <TextReuseableComponent heading style={{ textAlign: 'center' }} value={"Devices"} />
+                      <View style={{width: width * 0.37, alignItems: 'center'}}>
+                        <FeatherIcon
+                          name="cast"
+                          size={width * 0.15}
+                          color="#444444"
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: width * 0.37,
+                        }}>
+                        <TextReuseableComponent
+                          heading
+                          style={{
+                            fontWeight: 'bold',
+                            color: '#3e95c7',
+                            textAlign: 'center',
+                          }}
+                          value={totalDevices}
+                        />
+                        <TextReuseableComponent
+                          heading
+                          style={{textAlign: 'center'}}
+                          value={'Devices'}
+                        />
+                      </View>
                     </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </ScrollView>
-        </View>}
-        
+            </ScrollView>
+          </View>
+        )}
       </View>
     );
   }

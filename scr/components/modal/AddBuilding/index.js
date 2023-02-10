@@ -23,8 +23,8 @@ import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 
 import styles from './style';
 import API from '../../../api/SeviceApi';
-import { useDispatch } from 'react-redux';
-import { fetchPropetry } from '../../../Store/Action/properties.action';
+import {useDispatch} from 'react-redux';
+import {fetchPropetry} from '../../../Store/Action/properties.action';
 import TextReuseableComponent from '../../Text/index';
 const {width, height} = Dimensions.get('window');
 
@@ -39,6 +39,7 @@ export default function AddbuildingModal({
   buildData,
   unitCount,
   unitActualCount,
+  unitMixeId,
 }) {
   const [meterListArray, setMeterListArray] = useState([]);
   const [state, setState] = useState({
@@ -58,7 +59,7 @@ export default function AddbuildingModal({
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
     setState((oldState) => ({
       ...oldState,
@@ -80,6 +81,8 @@ export default function AddbuildingModal({
   }, [modalVisible]);
   // useEffect(() => {
   // }, [state.newUnit]);
+
+  console.log('unitMixeId', unitMixeId);
 
   const getLoopOfUnits = (text) => {
     const n = text == undefined ? 10 : text;
@@ -223,8 +226,10 @@ export default function AddbuildingModal({
       for (i = 0; i < state.unitsArray.length; i++) {
         loopData.push({
           name: state.unitsArray[i].name,
+          unit_mix_id: unitMixeId,
         });
       }
+      console.log('loopdata', loopData);
       if (type == 'Multiple') {
         handleAddbuildingApi({
           building_id: buildData.buildId,
@@ -248,7 +253,7 @@ export default function AddbuildingModal({
         `/property/equipment/unit/add-multiple-units`,
         data,
       );
-        dispatch(fetchPropetry())
+      dispatch(fetchPropetry());
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         reRun();
@@ -260,7 +265,7 @@ export default function AddbuildingModal({
         `/property/equipment/building/add-building`,
         data,
       );
-      dispatch(fetchPropetry())
+      dispatch(fetchPropetry());
       if (unitResponse?.data?.bool) {
         changeUtilityAndToggle();
         reRun();
@@ -295,7 +300,11 @@ export default function AddbuildingModal({
                     size={height * 0.05}
                     color="#5e5e5e"
                   />
-                  <TextReuseableComponent title style={styles.modalHeading} value={modalName} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.modalHeading}
+                    value={modalName}
+                  />
                   <Pressable
                     onPress={changeUtilityAndToggle}
                     android_ripple={{
@@ -373,7 +382,11 @@ export default function AddbuildingModal({
                     size={height * 0.02}
                     color="#5e5e5e"
                   />
-                  <TextReuseableComponent title style={styles.desciptionHeading} value={"# OF UNITS"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.desciptionHeading}
+                    value={'# OF UNITS'}
+                  />
                 </View>
                 <View
                   style={{
@@ -424,7 +437,7 @@ export default function AddbuildingModal({
                       onCheckColor="#25AAE1ec"
                       onTintColor="#25AAE1ec"
                     />
-                    <TextReuseableComponent title value={"Auto Increment"} />
+                    <TextReuseableComponent title value={'Auto Increment'} />
                   </View>
                 </View>
                 {error.units ? (
@@ -445,13 +458,17 @@ export default function AddbuildingModal({
                   <TouchableOpacity onPress={changeUtilityAndToggle}>
                     <View style={styles.cancelBotton}>
                       <Plus name="close" color="black" size={18} />
-                      <TextReuseableComponent title value={"Cancel"} />
+                      <TextReuseableComponent title value={'Cancel'} />
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={newBuilding}>
                     <View style={styles.submitBotton}>
                       <Plus name="plus" color="white" size={18} />
-                      <TextReuseableComponent title style={{color: 'white'}} value={`${type == 'Multiple' ? 'Add' : 'Add Building'}`} />
+                      <TextReuseableComponent
+                        title
+                        style={{color: 'white'}}
+                        value={`${type == 'Multiple' ? 'Add' : 'Add Building'}`}
+                      />
                     </View>
                   </TouchableOpacity>
                 </View>

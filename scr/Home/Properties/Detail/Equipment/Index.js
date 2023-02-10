@@ -1,4 +1,4 @@
-import React, { Component, Fragment, version } from 'react';
+import React, {Component, Fragment, version} from 'react';
 
 import {
   View,
@@ -24,18 +24,18 @@ import Feather from 'react-native-vector-icons/Feather';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
-import { TextInput, FAB, HelperText, Divider } from 'react-native-paper';
+import {TextInput, FAB, HelperText, Divider} from 'react-native-paper';
 import TextTicker from 'react-native-text-ticker';
-import { Icon as Iconx } from 'react-native-elements';
+import {Icon as Iconx} from 'react-native-elements';
 
 // Components
-import { Fonts } from '../../../../utils/fonts';
+import {Fonts} from '../../../../utils/fonts';
 import styles from './style';
 import ContextProp from '../../Context/propContext';
 import Filter from '../../Filter';
-import { ActivityIndicator } from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import EditUnit from './Units/modals/UnitEdit';
-import { Menu as MenuT, MenuItem, MenuDivider } from 'react-native-material-menu';
+import {Menu as MenuT, MenuItem, MenuDivider} from 'react-native-material-menu';
 import CustumStatusBar from '../../../../components/StatusBar';
 import API from '../../../../api/SeviceApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,17 +43,17 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import UpdateModal from '../../../../components/modal/UpdateModal';
 import Drawer from '../../../../components/modal/Drawer/index';
 import AddBuilding from '../../../../components/modal/AddBuilding/index';
-import { connect } from 'react-redux';
-import { fetchPropetry } from '../../../../Store/Action/properties.action';
-import { RNCamera } from 'react-native-camera';
+import {connect} from 'react-redux';
+import {fetchPropetry} from '../../../../Store/Action/properties.action';
+import {RNCamera} from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 
 import TextReuseableComponent from '../../../../components/Text/index';
-import { customSort } from '../../../../utils/helperFunction';
+import {customSort} from '../../../../utils/helperFunction';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 let buildListViewRef;
-let listViewRef
+let listViewRef;
 class Splash extends Component {
   static contextType = ContextProp;
   constructor() {
@@ -74,7 +74,7 @@ class Splash extends Component {
       loaderBuildings: true,
       buildingData: [],
       lastUnitData: '',
-      unitData: { unit: '' },
+      unitData: {unit: ''},
       editModal: false,
       buildingModalType: '',
       editBuilding: '',
@@ -93,11 +93,11 @@ class Splash extends Component {
       addMenuVisible: false,
       currUnitIndex: null,
       userRole: null,
-      FileArray: [{ name: 'Upload File' }, { name: 'Download File' }],
+      FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
       AddArray: [
-        { name: 'Add a Unit', func: this.selectAndCloseAdd },
-        { name: 'Add Multiple', func: this.selectAndCloseAddMultiple },
-        { name: 'Add a Building', func: this.selectAndCloseAddBuild },
+        {name: 'Add a Unit', func: this.selectAndCloseAdd},
+        {name: 'Add Multiple', func: this.selectAndCloseAddMultiple},
+        {name: 'Add a Building', func: this.selectAndCloseAddBuild},
       ],
       error: {
         buildingName: false,
@@ -108,16 +108,16 @@ class Splash extends Component {
       unitMeters: [],
       unitDatax: [],
       isEditUnitModalVisible: false,
-      activeTab: "units",
+      activeTab: 'units',
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
       gateway: false,
       loading: false,
@@ -138,21 +138,24 @@ class Splash extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.navigation.state.params.item.item !== prevProps.navigation.state.params.item.item) {
+    if (
+      this.props.navigation.state.params.item.item !==
+      prevProps.navigation.state.params.item.item
+    ) {
       this.checkData();
     }
   }
 
   onFocusFunction = () => {
     this.getToken();
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
   };
 
   getToken = async () => {
     this.checkData();
   };
   get_filterVal = async (serial, meterId) => {
-    this.setState({ showFilter: false });
+    this.setState({showFilter: false});
     this.filerUnits(serial, meterId);
   };
 
@@ -171,24 +174,25 @@ class Splash extends Component {
   );
 
   checkData = async () => {
-    this.setState({ filterWork: false, loader: true, loaderBuildings: true });
+    this.setState({filterWork: false, loader: true, loaderBuildings: true});
     const PropertyID = this.props.navigation.state.params.item.item.id;
     const PropRes = await API.get(`/property/${PropertyID}`);
     this.setState({
       unitCount: PropRes?.data?.data?.property?.unit_count,
       unitActualCount: PropRes?.data?.data?.property.unit_actual_count,
-      gateway: PropRes?.data?.data?.property?.gateway
+      gateway: PropRes?.data?.data?.property?.gateway,
     });
 
     const response = await API.post(
       `/property/equipment/building/all-buildings/${PropertyID}`,
     );
     const role = await AsyncStorage.getItem('user_role');
-    this.setState({ userRole: role });
+    this.setState({userRole: role});
+    console.log('building response', response.data);
 
     if (response?.ok == true) {
-      this.setState({ dataBuild: response?.data?.data });
-      this.setState({ loaderBuildings: false });
+      this.setState({dataBuild: response?.data?.data});
+      this.setState({loaderBuildings: false});
       if (response?.data?.data?.length != 0) {
         this.setState({
           buildingData: response?.data?.data[0],
@@ -202,9 +206,10 @@ class Splash extends Component {
           `/property/equipment/unit/all-units`,
           data,
         );
-        this.props.fetchPropetry()
+        console.log('unitResponse', unitResponse.data);
+        this.props.fetchPropetry();
         if (unitResponse?.ok == true) {
-          this.setState({ realData: unitResponse?.data?.data, loader: false });
+          this.setState({realData: unitResponse?.data?.data, loader: false});
           let arry = unitResponse?.data?.data;
           let lastElement = arry[arry.length - 1];
 
@@ -219,12 +224,12 @@ class Splash extends Component {
             unitData: {
               // object that we want to update
               ...prevState.unitData, // keep all other key-value pairs
-              unit: { name: lastElement?.name }, // update the value of specific key
+              unit: {name: lastElement?.name}, // update the value of specific key
             },
           }));
         } else {
           alert('Network Issue');
-          this.setState({ loader: false });
+          this.setState({loader: false});
         }
       } else {
         this.setState({
@@ -233,36 +238,36 @@ class Splash extends Component {
           newUnit: 'Unit-0',
         });
         // }
-        this.setState({ loader: false });
+        this.setState({loader: false});
       }
     } else {
       alert('Network Issue');
-      this.setState({ loaderBuildings: false });
+      this.setState({loaderBuildings: false});
     }
   };
 
   attachGateway = async () => {
     if (!this?.state?.serialNumber) {
-      alert('Serial number is required!')
-      return
+      alert('Serial number is required!');
+      return;
     }
-    this.setState({ loading: true })
+    this.setState({loading: true});
     const data = {
-      "serial_number": this.state.serialNumber,
-      "property_id": this?.props?.navigation?.state?.params?.item?.item?.id
-    }
-    const result = await API.post('/gateway/attach-gateway', data)
+      serial_number: this.state.serialNumber,
+      property_id: this?.props?.navigation?.state?.params?.item?.item?.id,
+    };
+    const result = await API.post('/gateway/attach-gateway', data);
     if (result?.ok) {
       if (result?.data?.bool) {
-        this.checkData()
+        this.checkData();
       } else {
-        alert(result?.data?.message)
+        alert(result?.data?.message);
       }
     } else {
-      alert(result?.data?.message)
+      alert(result?.data?.message);
     }
-    this.setState({ loading: false })
-  }
+    this.setState({loading: false});
+  };
 
   filerUnits = async (serial, id) => {
     let data = {
@@ -272,55 +277,55 @@ class Splash extends Component {
     };
 
     if (serial) {
-      this.setState({ loader: true });
+      this.setState({loader: true});
 
       const unitResponse = await API.post(
         `/property/equipment/unit/all-units`,
         data,
       );
       if (unitResponse?.data?.bool) {
-        this.setState({ loader: false });
+        this.setState({loader: false});
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({ loader: false });
+        this.setState({loader: false});
       }
     } else {
-      this.setState({ loader: true });
+      this.setState({loader: true});
       const unitResponse = await API.post(
         `/property/equipment/unit/all-units`,
         data,
       );
       if (unitResponse?.data?.bool) {
-        this.setState({ realData: unitResponse?.data?.data, loader: false });
-        this.setState({ loader: false });
+        this.setState({realData: unitResponse?.data?.data, loader: false});
+        this.setState({loader: false});
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({ loader: false });
+        this.setState({loader: false});
       }
     }
   };
 
   searchUnits = async (e) => {
-    this.setState({ loadFor: e });
+    this.setState({loadFor: e});
     let data = {
       building_id: this.state.editBuildId,
       search: e,
     };
     if (e) {
-      this.setState({ searchLoading: true });
+      this.setState({searchLoading: true});
       const unitResponse = await API.post(
         `/property/equipment/unit/all-units`,
         data,
       );
       if (unitResponse?.data?.bool) {
-        this.setState({ searchList: unitResponse.data.data });
-        this.setState({ searchLoading: false });
+        this.setState({searchList: unitResponse.data.data});
+        this.setState({searchLoading: false});
       } else {
         Alert.alert('Error', 'Network Issues');
-        this.setState({ searchLoading: false });
+        this.setState({searchLoading: false});
       }
     } else {
-      this.setState({ searchList: [] });
+      this.setState({searchList: []});
     }
   };
 
@@ -336,10 +341,10 @@ class Splash extends Component {
   };
 
   toggleModalUnit = () => {
-    this.setState({ isModalUnitVisible: !this.state.isModalUnitVisible });
+    this.setState({isModalUnitVisible: !this.state.isModalUnitVisible});
   };
   toggleModalBuild = () => {
-    this.setState({ isModalBuildVisible: !this.state.isModalBuildVisible });
+    this.setState({isModalBuildVisible: !this.state.isModalBuildVisible});
   };
   naviagateToDetail = () => {
     this.setState({
@@ -386,17 +391,16 @@ class Splash extends Component {
     );
   };
 
-
   selectAndCloseAdd = async () => {
     if (Platform.OS == 'ios') {
       setTimeout(() => {
         this.toggleModalUnit();
       }, 450);
-      this.setState({ addMenuVisible: false });
+      this.setState({addMenuVisible: false});
     }
     if (Platform.OS == 'android') {
       this.toggleModalUnit();
-      this.setState({ addMenuVisible: false });
+      this.setState({addMenuVisible: false});
     }
   };
   selectAndCloseAddMultiple = () => {
@@ -404,13 +408,13 @@ class Splash extends Component {
       setTimeout(() => {
         this.toggleModalBuild();
       }, 450);
-      this.setState({ addMenuVisible: false });
-      this.setState({ buildingModalType: 'Multiple' });
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: 'Multiple'});
     }
     if (Platform.OS == 'android') {
       this.toggleModalBuild();
-      this.setState({ addMenuVisible: false });
-      this.setState({ buildingModalType: 'Multiple' });
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: 'Multiple'});
     }
   };
   selectAndCloseAddBuild = () => {
@@ -418,22 +422,22 @@ class Splash extends Component {
       setTimeout(() => {
         this.toggleModalBuild();
       }, 450);
-      this.setState({ addMenuVisible: false });
-      this.setState({ buildingModalType: '' });
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: ''});
     }
     if (Platform.OS == 'android') {
       this.toggleModalBuild();
-      this.setState({ addMenuVisible: false });
-      this.setState({ buildingModalType: '' });
+      this.setState({addMenuVisible: false});
+      this.setState({buildingModalType: ''});
     }
   };
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({ meter: !this.state.meter, meter2: false });
+    this.setState({meter: !this.state.meter, meter2: false});
   };
   changeLayoutMeter2 = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({ meter2: !this.state.meter2, meter: false });
+    this.setState({meter2: !this.state.meter2, meter: false});
   };
 
   buildingEditOpen = (item) => {
@@ -447,11 +451,12 @@ class Splash extends Component {
 
   actionOnPress = (unit) => {
     if (this.state.showSearch) {
-      this.setState({ showSearch: false })
+      this.setState({showSearch: false});
       this.props.navigation.navigate('U_Details', {
         unitId: unit.item.id,
         buildingName: this.state.buildingData.name,
         buildingId: this.state.editBuildId,
+        propertyName: this.props.navigation.state.params.item.item.name,
         propertyId: this.props.navigation.state.params.item.item.id,
         propertyLat: this.props.navigation.state.params.item.item.latitude,
         propertyLong: this.props.navigation.state.params.item.item.longitude,
@@ -463,14 +468,18 @@ class Splash extends Component {
           unit.index === this.state.currUnitIndex ? null : unit.index,
       });
     }
-
   };
 
   goToDetails = (unit) => {
+    console.log(
+      'this.props.navigation.state.params',
+      this.props.navigation.state.params,
+    );
     this.props.navigation.navigate('U_Details', {
       unitId: unit.item.id,
       buildingName: this.state.buildingData.name,
       buildingId: this.state.editBuildId,
+      propertyName: this.props.navigation.state.params.item.item.name,
       propertyId: this.props.navigation.state.params.item.item.id,
       propertyLat: this.props.navigation.state.params.item.item.latitude,
       propertyLong: this.props.navigation.state.params.item.item.longitude,
@@ -485,14 +494,14 @@ class Splash extends Component {
   };
 
   deleteUnit = async (id) => {
-    this.setState({ loader: true });
+    this.setState({loader: true});
     const response = await API.post(`/property/equipment/unit/${id}`);
     if (response?.data?.bool) {
-      this.setState({ currUnitIndex: null });
+      this.setState({currUnitIndex: null});
       alert(response?.data?.message);
       this.checkData();
     } else {
-      this.setState({ loader: false });
+      this.setState({loader: false});
     }
   };
 
@@ -502,7 +511,7 @@ class Splash extends Component {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => this.deleteUnit(id) },
+      {text: 'Yes', onPress: () => this.deleteUnit(id)},
     ]);
   };
 
@@ -523,11 +532,10 @@ class Splash extends Component {
     }
   };
 
-
   _openEditUnit = async (unitId) => {
     const res = await API.get(`/property/equipment/unit/${unitId}`);
 
-    this.setState({ unitMixesId: res.data?.data?.unit?.unit_mix_id });
+    this.setState({unitMixesId: res.data?.data?.unit?.unit_mix_id});
     this.setState({
       currUnitIndex: null,
       unitMeters: res.data?.data?.unit?.unit_meter,
@@ -537,7 +545,7 @@ class Splash extends Component {
   };
 
   toggleModalEditUnit = () => {
-    this.setState({ isEditUnitModalVisible: !this.state.isEditUnitModalVisible });
+    this.setState({isEditUnitModalVisible: !this.state.isEditUnitModalVisible});
   };
 
   _renderUnitList = (unit) => {
@@ -558,7 +566,7 @@ class Splash extends Component {
                 borderRightWidth: 1,
                 borderBottomWidth:
                   unit.index === this.state.currUnitIndex &&
-                    unit?.item?.unit_meter?.length < 1
+                  unit?.item?.unit_meter?.length < 1
                     ? 0
                     : 1,
                 borderBottomLeftRadius:
@@ -573,7 +581,7 @@ class Splash extends Component {
                   name="house-user"
                   size={width * 0.07}
                   color="#3E4A4F"
-                  style={{ marginRight: width * 0.01 }}
+                  style={{marginRight: width * 0.01}}
                 />
                 <TextTicker
                   duration={6000}
@@ -586,7 +594,7 @@ class Splash extends Component {
               </View>
               <View style={styles.unitDetailContainer}>
                 {unit?.item?.unit_meter?.length ? (
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View style={styles.unitDetailInnerif}>
                       <Image
                         source={require('../../../../../Images/remote-reader.png')}
@@ -604,29 +612,37 @@ class Splash extends Component {
                             fontSize: width * 0.025,
                           },
                         ]}>
-                        {`${unit?.item?.unit_meter?.length}${unit?.item?.unit_meter?.length > 1
-                          ? ' Devices'
-                          : ' Device'
-                          }`}
+                        {`${unit?.item?.unit_meter?.length}${
+                          unit?.item?.unit_meter?.length > 1
+                            ? ' Devices'
+                            : ' Device'
+                        }`}
                       </TextTicker>
                     </View>
-                    {
-                      unit?.item?.unit_meter?.length ? <View style={styles.deviceInstalledIndicator}>
+                    {unit?.item?.unit_meter?.length ? (
+                      <View style={styles.deviceInstalledIndicator}>
                         <Feather
                           name="check"
                           size={width * 0.035}
                           color="green"
                         />
-                      </View> : null}
+                      </View>
+                    ) : null}
                   </View>
                 ) : (
-                  <TouchableOpacity onPress={() => this._openEditUnit(unit?.item?.id)} style={styles.unitDetailInnerElse}>
+                  <TouchableOpacity
+                    onPress={() => this._openEditUnit(unit?.item?.id)}
+                    style={styles.unitDetailInnerElse}>
                     <MaterialCommunityIcons
                       name="barcode-off"
                       size={width * 0.04}
                       style={styles.unitDetailInnerElseIcon}
                     />
-                    <TextReuseableComponent title style={styles.unitDetailInnerElseText} value={"Program a Device"} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitDetailInnerElseText}
+                      value={'Program a Device'}
+                    />
                   </TouchableOpacity>
                 )}
               </View>
@@ -669,7 +685,7 @@ class Splash extends Component {
                           {
                             minWidth: width * 0.15,
                             maxWidth: width * 0.25,
-                            color: "#25AAE1ec",
+                            color: '#25AAE1ec',
                             fontSize: width * 0.04,
                           },
                         ]}>
@@ -693,15 +709,20 @@ class Splash extends Component {
                           : 'Waiting For First Check In'}
                       </TextTicker>
                     </View>
-                    <View style={[styles.unitDetailInnerif, {
-                      width: width * 0.5,
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                    }]}>
-                      <View style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
+                    <View
+                      style={[
+                        styles.unitDetailInnerif,
+                        {
+                          width: width * 0.5,
+                          flexDirection: 'row',
+                          justifyContent: 'space-around',
+                        },
+                      ]}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
                         <TextTicker
                           duration={10000}
                           marqueeDelay={2000}
@@ -711,10 +732,12 @@ class Splash extends Component {
                               minWidth: width * 0.05,
                               maxWidth: width * 0.2,
                               fontSize: width * 0.025,
-                              marginRight: width * .005,
+                              marginRight: width * 0.005,
                             },
                           ]}>
-                          {item?.meter_read?.battery ? item?.meter_read?.battery : "No Record"}
+                          {item?.meter_read?.battery
+                            ? item?.meter_read?.battery
+                            : 'No Record'}
                         </TextTicker>
                         <Ionic
                           name="battery-dead"
@@ -722,11 +745,11 @@ class Splash extends Component {
                           color="black"
                         />
                       </View>
-                      <View style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-
-                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
                         <TextTicker
                           duration={10000}
                           marqueeDelay={2000}
@@ -737,11 +760,12 @@ class Splash extends Component {
                               minWidth: width * 0.05,
                               maxWidth: width * 0.2,
                               fontSize: width * 0.025,
-                              marginRight: width * .005,
-
+                              marginRight: width * 0.005,
                             },
                           ]}>
-                          {item?.meter_read?.temperature ? item?.meter_read?.temperature : "No Record"}
+                          {item?.meter_read?.temperature
+                            ? item?.meter_read?.temperature
+                            : 'No Record'}
                         </TextTicker>
                         <Ionic
                           name="thermometer-outline"
@@ -756,7 +780,7 @@ class Splash extends Component {
                         {
                           borderBottomWidth:
                             index < unit?.item?.unit_meter?.length - 1 &&
-                              unit?.item?.unit_meter?.length > 1
+                            unit?.item?.unit_meter?.length > 1
                               ? width * 0.004
                               : 0,
                         },
@@ -769,9 +793,9 @@ class Splash extends Component {
             <View
               style={[
                 styles.buildingEditBtn,
-                { justifyContent: 'space-between', borderWidth: 1 },
+                {justifyContent: 'space-between', borderWidth: 1},
               ]}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity
                   style={{
                     margin: width * 0.01,
@@ -784,9 +808,13 @@ class Splash extends Component {
                     color="white"
                     size={width * 0.04}
                   />
-                  <TextReuseableComponent title style={{
-                    color: 'white',
-                  }} value={"View"} />
+                  <TextReuseableComponent
+                    title
+                    style={{
+                      color: 'white',
+                    }}
+                    value={'View'}
+                  />
                 </TouchableOpacity>
                 {/* <TouchableOpacity
                   onPress={() => this._openEditUnit(unit?.item?.id)}
@@ -818,9 +846,13 @@ class Splash extends Component {
                   color="white"
                   size={width * 0.04}
                 />
-                <TextReuseableComponent title style={{
-                  color: 'white',
-                }} value={"Delete"} />
+                <TextReuseableComponent
+                  title
+                  style={{
+                    color: 'white',
+                  }}
+                  value={'Delete'}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -834,7 +866,7 @@ class Splash extends Component {
       <TouchableOpacity
         onPress={() => {
           this.showArrayItem(build);
-          buildListViewRef.scrollToIndex({ index: build.index });
+          buildListViewRef.scrollToIndex({index: build.index});
         }}
         style={[styles.infoTopViewContainer]}>
         <View style={[styles.infoTopViewInner]}>
@@ -843,27 +875,35 @@ class Splash extends Component {
             duration={6000}
             marqueeDelay={2000}
             repeatSpacer={width * 0.16}
-            style={[styles.dataFieldText, { width: width * 0.165 }]}>
+            style={[styles.dataFieldText, {width: width * 0.165}]}>
             {build.item.name}
           </TextTicker>
           {build.item.id == this.state.buildingData.id && (
             <View style={styles.buildingSelectIcon}>
               <Feather
                 name="check"
-                style={{ marginLeft: width * 0.005 }}
+                style={{marginLeft: width * 0.005}}
                 size={width * 0.02}
                 color="#fff"
               />
             </View>
           )}
         </View>
-        <TextReuseableComponent title style={styles.buildingUnitName} value={`${build.item.unit_count} Units`} />
+        <TextReuseableComponent
+          title
+          style={styles.buildingUnitName}
+          value={`${build.item.unit_count} Units`}
+        />
         <TouchableOpacity
           onPress={() => this.buildingEditOpen(build.item)}
           style={styles.buildingEditBtn}>
-          <TextReuseableComponent title style={{
-            color: 'white',
-          }} value={"Edit"} />
+          <TextReuseableComponent
+            title
+            style={{
+              color: 'white',
+            }}
+            value={'Edit'}
+          />
           <MaterialIcons name="edit" color="white" size={width * 0.04} />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -888,7 +928,7 @@ class Splash extends Component {
       data,
     );
     if (unitResponse?.ok == true) {
-      this.setState({ realData: unitResponse?.data?.data, loader: false });
+      this.setState({realData: unitResponse?.data?.data, loader: false});
       let arry = unitResponse?.data?.data;
       let lastElement = arry[arry.length - 1];
       this.setState({
@@ -906,50 +946,49 @@ class Splash extends Component {
         unitData: {
           // object that we want to update
           ...prevState.unitData, // keep all other key-value pairs
-          unit: { name: lastElement?.name }, // update the value of specific key
+          unit: {name: lastElement?.name}, // update the value of specific key
         },
       }));
     } else {
       alert('Network Issue');
-      this.setState({ loader: false });
+      this.setState({loader: false});
     }
   };
 
   changedFalse = () => {
-    this.setState({ changed: false });
+    this.setState({changed: false});
   };
 
   naviagateToEquip = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
   };
 
   openAndClear = () => {
-    this.setState({ showSearch: true });
-    this.setState({ searchList: [] });
+    this.setState({showSearch: true});
+    this.setState({searchList: []});
   };
 
   openFilter = async () => {
     this.context.getBillingCompany();
-    this.setState({ showFilter: true });
+    this.setState({showFilter: true});
     const unitResponse = await API.get(`/property/equipment/meter/all-meters`);
-    this.setState({ getUtilities: unitResponse?.data?.data });
+    this.setState({getUtilities: unitResponse?.data?.data});
   };
 
   handleAddBuilding = () => {
-    this.setState({ isModalBuildVisible: false });
+    this.setState({isModalBuildVisible: false});
     this.checkData();
   };
   handleUpdateBuilding = (cond, data) => {
     if (cond != null) {
       this.updateBuilding(cond, this.state.editBuildId, data);
-      this.setState({ editModal: false });
+      this.setState({editModal: false});
     } else {
-      this.setState({ editModal: false });
+      this.setState({editModal: false});
     }
   };
 
   updateBuilding = async (edit, id, params) => {
-
     if (edit) {
       const response = await API.post(
         `/property/equipment/building/update-building/${id}`,
@@ -970,10 +1009,17 @@ class Splash extends Component {
     }
   };
   render() {
-    const { result, scan, scanResult } = this.state;
+    console.log('this.state.loader', this.state.loader);
+    const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
-    const { loader, loaderBuildings, meterTypeInputs, gateway, activeTab } = this.state;
+    const {
+      loader,
+      loaderBuildings,
+      meterTypeInputs,
+      gateway,
+      activeTab,
+    } = this.state;
     return (
       <>
         <View style={styles.container}>
@@ -992,22 +1038,25 @@ class Splash extends Component {
                 borderRadius: width * 0.02,
                 marginTop: Platform.OS == 'ios' ? height * 0.03 : null,
               }}>
-              <TextReuseableComponent title style={{
-                color: 'white',
-                textAlign: 'center',
-              }} value={"Scan Barcode"} />
+              <TextReuseableComponent
+                title
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                }}
+                value={'Scan Barcode'}
+              />
               <RNCamera
                 ref={(ref) => {
                   this.camera = ref;
                 }}
-                style={{ flex: 1 }}
+                style={{flex: 1}}
                 type={RNCamera.Constants.Type.back}
                 autoFocus="on"
                 onBarCodeRead={(e) => {
-                  this.setState({ serialNumber: e?.data, isVisible: false })
+                  this.setState({serialNumber: e?.data, isVisible: false});
                 }}
-                captureAudio={false}
-              >
+                captureAudio={false}>
                 <BarcodeMask outerMaskOpacity={0} />
               </RNCamera>
               <View
@@ -1019,8 +1068,8 @@ class Splash extends Component {
                 <TouchableOpacity
                   onPress={() => {
                     this.setState({
-                      isVisible: !this.state?.isVisible
-                    })
+                      isVisible: !this.state?.isVisible,
+                    });
                   }}>
                   <View
                     style={{
@@ -1030,10 +1079,14 @@ class Splash extends Component {
                       justifyContent: 'center',
                       width: width * 0.4,
                     }}>
-                    <TextReuseableComponent title style={{
-                      textAlign: 'center',
-                      color: '#25AAE1',
-                    }} value={"Switch Off Scanner"} />
+                    <TextReuseableComponent
+                      title
+                      style={{
+                        textAlign: 'center',
+                        color: '#25AAE1',
+                      }}
+                      value={'Switch Off Scanner'}
+                    />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -1044,7 +1097,7 @@ class Splash extends Component {
             isVisible={this.state.editModal}
             title="Edit Building"
             doneBtnTitle="Update Building"
-            style={{ height: height * 0.55 }}
+            style={{height: height * 0.55}}
             reRun={this.handleUpdateBuilding}
             buildingData={{
               buildingId: this.state.editBuildId,
@@ -1065,7 +1118,9 @@ class Splash extends Component {
             naviagateToAlerts={this.naviagateToAlerts}
             naviagateToSupport={this.naviagateToSupport}
             navigateToReport={this.navigateToReport}
-            propertyName={this.props?.navigation?.state?.params?.item?.item?.name}
+            propertyName={
+              this.props?.navigation?.state?.params?.item?.item?.name
+            }
           />
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
@@ -1086,21 +1141,25 @@ class Splash extends Component {
                     onPress={
                       this.state.dataBuild == 0
                         ? () =>
-                          Alert.alert(
-                            'Alert',
-                            'No building found add building',
-                          )
+                            Alert.alert(
+                              'Alert',
+                              'No building found add building',
+                            )
                         : this.openAndClear
                     }>
                     <Search name="search" size={height * 0.04} color="white" />
-                    <TextReuseableComponent title style={{ color: 'white' }} value={"Search"} />
+                    <TextReuseableComponent
+                      title
+                      style={{color: 'white'}}
+                      value={'Search'}
+                    />
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
                   onPress={
                     this.state.dataBuild == 0
                       ? () =>
-                        Alert.alert('Alert', 'No building found add building')
+                          Alert.alert('Alert', 'No building found add building')
                       : this.openFilter
                   }
                   style={styles.filterButton}>
@@ -1119,17 +1178,20 @@ class Splash extends Component {
                 name="menu"
                 size={width * 0.08}
                 color="white"
-                style={{ position: 'absolute', left: width * 0.03 }}
+                style={{position: 'absolute', left: width * 0.03}}
                 onPress={this.toggleModal}
               />
-              <View
-                style={styles.headerIconContainer}>
+              <View style={styles.headerIconContainer}>
                 <Ionic
                   name="md-business-outline"
                   size={width * 0.06}
                   color="white"
                 />
-                <TextReuseableComponent title style={styles.mainHeadiing} value={"Equipments"} />
+                <TextReuseableComponent
+                  title
+                  style={styles.mainHeadiing}
+                  value={'Equipments'}
+                />
               </View>
             </View>
           </View>
@@ -1140,19 +1202,35 @@ class Splash extends Component {
               justifyContent: 'space-around',
             }}>
             <TouchableOpacity
-              activeOpacity={.8}
-              onPress={() => this.setState({ activeTab: "units" })}
-              style={activeTab == "units" ? styles.activeTabContainer : styles.tabContainer}>
-              <TextReuseableComponent title style={{ color: activeTab == "units" ? "#25AAE1ec" : "#fff" }} value={"Units"} />
+              activeOpacity={0.8}
+              onPress={() => this.setState({activeTab: 'units'})}
+              style={
+                activeTab == 'units'
+                  ? styles.activeTabContainer
+                  : styles.tabContainer
+              }>
+              <TextReuseableComponent
+                title
+                style={{color: activeTab == 'units' ? '#25AAE1ec' : '#fff'}}
+                value={'Units'}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              activeOpacity={.8}
-              onPress={() => this.setState({ activeTab: "network" })}
-              style={activeTab == "network" ? styles.activeTabContainer : styles.tabContainer}>
-              <TextReuseableComponent title style={{ color: activeTab == "network" ? "#25AAE1ec" : "#fff" }} value={"Network"} />
+              activeOpacity={0.8}
+              onPress={() => this.setState({activeTab: 'network'})}
+              style={
+                activeTab == 'network'
+                  ? styles.activeTabContainer
+                  : styles.tabContainer
+              }>
+              <TextReuseableComponent
+                title
+                style={{color: activeTab == 'network' ? '#25AAE1ec' : '#fff'}}
+                value={'Network'}
+              />
             </TouchableOpacity>
           </View>
-          {this.state.activeTab == 'units' ?
+          {this.state.activeTab == 'units' ? (
             <View style={styles.bodyContainer}>
               <View style={styles.mainDataContainer}>
                 <View style={styles.mainData}>
@@ -1165,7 +1243,8 @@ class Splash extends Component {
                             styles.dropDown,
                             {
                               borderColor:
-                                this.state.unitActualCount >= this.state.unitCount
+                                this.state.unitActualCount >=
+                                this.state.unitCount
                                   ? '#817e7e80'
                                   : '#3E4A4F',
                             },
@@ -1175,7 +1254,7 @@ class Splash extends Component {
                               ? true
                               : false
                           }
-                          onPress={() => this.setState({ addMenuVisible: true })}>
+                          onPress={() => this.setState({addMenuVisible: true})}>
                           <Feather
                             name="plus"
                             size={height * 0.025}
@@ -1185,16 +1264,20 @@ class Splash extends Component {
                                 : '#3E4A4F'
                             }
                           />
-                          <TextReuseableComponent title style={[
-                            styles.dropDownText,
-                            {
-                              color:
-                                this.state.unitActualCount >=
+                          <TextReuseableComponent
+                            title
+                            style={[
+                              styles.dropDownText,
+                              {
+                                color:
+                                  this.state.unitActualCount >=
                                   this.state.unitCount
-                                  ? '#817e7e80'
-                                  : '#3E4A4F',
-                            },
-                          ]} value={"Add"} />
+                                    ? '#817e7e80'
+                                    : '#3E4A4F',
+                              },
+                            ]}
+                            value={'Add'}
+                          />
                           <Feather
                             name="chevron-down"
                             size={height * 0.02}
@@ -1203,12 +1286,12 @@ class Splash extends Component {
                                 ? '#817e7e80'
                                 : '#3E4A4F'
                             }
-                            style={{ marginLeft: width * 0.02 }}
+                            style={{marginLeft: width * 0.02}}
                           />
                         </TouchableOpacity>
                       }
                       onRequestClose={() =>
-                        this.setState({ addMenuVisible: false })
+                        this.setState({addMenuVisible: false})
                       }>
                       {this.state.AddArray.map((item, index) => (
                         <MenuItem
@@ -1226,7 +1309,8 @@ class Splash extends Component {
                             {index < 2 ? (
                               <FontAwesome5
                                 color={
-                                  this.state.dataBuild.length == 0 && index !== 2
+                                  this.state.dataBuild.length == 0 &&
+                                  index !== 2
                                     ? '#817e7e80'
                                     : '#000'
                                 }
@@ -1258,26 +1342,34 @@ class Splash extends Component {
                                 }}
                               />
                             )}
-                            <TextReuseableComponent title style={[
-                              styles.dropDownListText,
-                              {
-                                color:
-                                  this.state.dataBuild.length == 0 &&
+                            <TextReuseableComponent
+                              title
+                              style={[
+                                styles.dropDownListText,
+                                {
+                                  color:
+                                    this.state.dataBuild.length == 0 &&
                                     index !== 2
-                                    ? '#817e7e80'
-                                    : '#000',
-                              },
-                            ]} value={item.name} />
+                                      ? '#817e7e80'
+                                      : '#000',
+                                },
+                              ]}
+                              value={item.name}
+                            />
                           </View>
                         </MenuItem>
                       ))}
                     </MenuT>
                     {!loader &&
                       this.state.unitActualCount >= this.state.unitCount && (
-                        <TextReuseableComponent title style={{
-                          textAlign: 'center',
-                          color: '#ff0000ff',
-                        }} value={"Unit Count Limit Exceed"} />
+                        <TextReuseableComponent
+                          title
+                          style={{
+                            textAlign: 'center',
+                            color: '#ff0000ff',
+                          }}
+                          value={'Unit Count Limit Exceed'}
+                        />
                       )}
                   </View>
 
@@ -1313,15 +1405,20 @@ class Splash extends Component {
                       </SkeletonPlaceholder>
                     </View>
                   ) : this.state.dataBuild.length == 0 ? (
-                    <View style={{ width: width * 0.55, justifyContent: 'center' }}>
-                      <TextReuseableComponent title style={styles.noDataStyling} value={"No data add Building"} />
+                    <View
+                      style={{width: width * 0.55, justifyContent: 'center'}}>
+                      <TextReuseableComponent
+                        title
+                        style={styles.noDataStyling}
+                        value={'No data add Building'}
+                      />
                     </View>
                   ) : (
                     <FlatList
                       ref={(ref) => {
                         buildListViewRef = ref;
                       }}
-                      style={{ height: width * 0.22 }}
+                      style={{height: width * 0.22}}
                       showsHorizontalScrollIndicator={false}
                       horizontal={true}
                       data={this.state.dataBuild}
@@ -1330,26 +1427,42 @@ class Splash extends Component {
                     />
                   )}
                 </View>
-                {this.state?.buildingData?.name && <View style={styles.buildingBadge}>
-                  <View>
-                    <FontAwesome5 name="building" size={width * 0.04} color="white" />
+                {this.state?.buildingData?.name && (
+                  <View style={styles.buildingBadge}>
+                    <View>
+                      <FontAwesome5
+                        name="building"
+                        size={width * 0.04}
+                        color="white"
+                      />
+                    </View>
+                    <View>
+                      <TextReuseableComponent
+                        title
+                        style={{color: 'white', marginLeft: width * 0.02}}
+                        value={`${
+                          this.state?.buildingData?.name
+                            ? this.state?.buildingData?.name
+                            : ''
+                        }`}
+                      />
+                    </View>
                   </View>
-                  <View>
-                    <TextReuseableComponent title style={{ color: 'white', marginLeft: width * 0.02 }} value={`${this.state?.buildingData?.name ? this.state?.buildingData?.name : ''}`} />
-                  </View>
-                </View>}
+                )}
 
                 <EditUnit
                   flag={this.state.flag}
-                  propertyId={this.props?.navigation?.state?.params?.item?.item?.id}
+                  propertyId={
+                    this.props?.navigation?.state?.params?.item?.item?.id
+                  }
                   propertyLat={
                     this.props.navigation.state.params?.item?.item?.latitude
                   }
                   propertyLong={
                     this.props.navigation.state.params?.item?.item?.longitude
                   }
-                  enableFlag={() => this.setState({ flag: true })}
-                  disableFlag={() => this.setState({ flag: false })}
+                  enableFlag={() => this.setState({flag: true})}
+                  disableFlag={() => this.setState({flag: false})}
                   modalVisible={this.state.isModalUnitVisible}
                   closeModal={() =>
                     this.setState({
@@ -1368,7 +1481,7 @@ class Splash extends Component {
                     <Iconx name="plus" type="feather" size={18} color="#fff" />
                   }
                   handleEditUnit={() => {
-                    this.setState({ isModalUnitVisible: false });
+                    this.setState({isModalUnitVisible: false});
                   }}
                   unitsArray={this.state.realData}
                   userRole={this.state.userRole}
@@ -1378,19 +1491,22 @@ class Splash extends Component {
                */}
                 <EditUnit
                   flag={this.state.flag}
-                  propertyId={this.props?.navigation?.state?.params?.item?.item?.id}
+                  propertyId={
+                    this.props?.navigation?.state?.params?.item?.item?.id
+                  }
                   propertyLat={
                     this.props.navigation?.state?.params?.item?.item?.latitude
                   }
                   propertyLong={
                     this.props.navigation.state.params?.item?.item?.longitude
                   }
-                  enableFlag={() => this.setState({ flag: true })}
-                  disableFlag={() => this.setState({ flag: false })}
+                  enableFlag={() => this.setState({flag: true})}
+                  disableFlag={() => this.setState({flag: false})}
                   modalVisible={this.state.isEditUnitModalVisible}
                   closeModal={() =>
                     this.setState({
-                      isEditUnitModalVisible: !this.state.isEditUnitModalVisible,
+                      isEditUnitModalVisible: !this.state
+                        .isEditUnitModalVisible,
                     })
                   }
                   reRun={() => this.checkData()}
@@ -1403,16 +1519,18 @@ class Splash extends Component {
                   // userRole={this.state.userRole}
                   addMeterUnitMix={this.state.unitDatax.data}
                   addMeterUnitMixId={this.state.unitMixesId}
-                  addNewMeter={this.state.isEditUnitModalVisible}
+                  addNewMeter={true}
                   fromPAD={true}
                   navigation={this.props.navigation}
                   navigateTo={{
-                    unitId: "",
+                    unitId: '',
                     buildingName: this.state.buildingData.name,
                     buildingId: this.state.editBuildId,
                     propertyId: this.props.navigation.state.params.item.item.id,
-                    propertyLat: this.props.navigation.state.params.item.item.latitude,
-                    propertyLong: this.props.navigation.state.params.item.item.longitude,
+                    propertyLat: this.props.navigation.state.params.item.item
+                      .latitude,
+                    propertyLong: this.props.navigation.state.params.item.item
+                      .longitude,
                   }}
                 />
                 <AddBuilding
@@ -1425,10 +1543,16 @@ class Splash extends Component {
                       ? 'Add Multiple Units'
                       : 'Add Building'
                   }
-                  closeModal={() => this.setState({ isModalBuildVisible: false })}
+                  closeModal={() => this.setState({isModalBuildVisible: false})}
                   reRun={this.handleAddBuilding}
-                  propertyId={this.props?.navigation?.state?.params?.item?.item?.id}
+                  propertyId={
+                    this.props?.navigation?.state?.params?.item?.item?.id
+                  }
                   lastUnitName={this.state.newUnit}
+                  unitMixeId={
+                    this.props.navigation.state.params.item.item.unit_mixes[0]
+                      .id
+                  }
                   buildData={{
                     buildingName: this.state.buildingData.name,
                     buildDes: this.state.editBuildDes,
@@ -1443,16 +1567,12 @@ class Splash extends Component {
                   changeChanged={this.changedFalse}
                   isVisible={this.state.showFilter}
                   close={() =>
-                    this.setState({ showFilter: !this.state.showFilter })
+                    this.setState({showFilter: !this.state.showFilter})
                   }
                   buildingName={this.state.buildingData.name}
                   buildiingId={this.state.editBuildId}
                   changed={this.state.changed}
-                  filterWork={(e) =>
-                    this.setState(
-                      { filterWork: e },
-                    )
-                  }
+                  filterWork={(e) => this.setState({filterWork: e})}
                 />
                 {this.state.showSearch ? (
                   <Modal
@@ -1463,7 +1583,11 @@ class Splash extends Component {
                     )}
                     <KeyboardAvoidingView behavior="padding">
                       <View style={styles.searchModalInner}>
-                        <Search name="search" size={width * 0.07} color="white" />
+                        <Search
+                          name="search"
+                          size={width * 0.07}
+                          color="white"
+                        />
                         <TextInput
                           underlineColor="transparent"
                           dense={true}
@@ -1481,13 +1605,14 @@ class Splash extends Component {
                             },
                           }}
                         />
-                        <View style={{ position: 'absolute', right: width * 0.1 }}>
+                        <View
+                          style={{position: 'absolute', right: width * 0.1}}>
                           {this.state.searchLoading ? (
                             <ActivityIndicator color="white" size="small" />
                           ) : null}
                         </View>
                         <TouchableOpacity
-                          onPress={() => this.setState({ showSearch: false })}>
+                          onPress={() => this.setState({showSearch: false})}>
                           <MaterialCommunityIcons
                             name="close"
                             color="white"
@@ -1497,7 +1622,7 @@ class Splash extends Component {
                       </View>
                       <View style={styles.searchDataListContainer}>
                         <FlatList
-                          style={{ marginBottom: width * 0.2 }}
+                          style={{marginBottom: width * 0.2}}
                           data={this.state.searchList}
                           renderItem={this._renderUnitList}
                           removeClippedSubviews={false}
@@ -1516,20 +1641,26 @@ class Splash extends Component {
                       width: width * 1,
                       alignItems: 'center',
                     }}>
-                    {this.state.shimmers.map((item) => this.renderShimmers(item))}
+                    {this.state.shimmers.map((item) =>
+                      this.renderShimmers(item),
+                    )}
                   </View>
                 ) : this.state.realData.length == 0 ? (
-                  <View style={{ width: width * 0.55, justifyContent: 'center' }}>
-                    <TextReuseableComponent title style={styles.noDataStyling} value={"No data add Unit"} />
+                  <View style={{width: width * 0.55, justifyContent: 'center'}}>
+                    <TextReuseableComponent
+                      title
+                      style={styles.noDataStyling}
+                      value={'No data add Unit'}
+                    />
                   </View>
                 ) : (
-                  <View style={{ width: width * 1, backgroundColor: '#F5F5F5' }}>
+                  <View style={{width: width * 1, backgroundColor: '#F5F5F5'}}>
                     <FlatList
                       ref={(ref) => {
                         listViewRef = ref;
                       }}
                       showsVerticalScrollIndicator={false}
-                      style={{ marginBottom: width * 0.35 }}
+                      style={{marginBottom: width * 0.35}}
                       contentContainerStyle={{
                         backgroundColor: '#F5F5F5',
                         alignItems: 'center',
@@ -1544,93 +1675,139 @@ class Splash extends Component {
                 )}
               </View>
             </View>
-            :
+          ) : (
             <View style={styles.bodyContainer}>
-              {!loader ? <>
-                {!gateway ?
-                  <View style={styles.addGatewayContainer}>
-                    <View style={{ marginVertical: 20 }}>
-                      <TextReuseableComponent title style={{ color: '#bdbdbd' }} value={"Program a Gateway"} />
+              {!loader ? (
+                <>
+                  {!gateway ? (
+                    <View style={styles.addGatewayContainer}>
+                      <View style={{marginVertical: 20}}>
+                        <TextReuseableComponent
+                          title
+                          style={{color: '#bdbdbd'}}
+                          value={'Program a Gateway'}
+                        />
+                      </View>
+                      <View>
+                        <View style={styles.textInputContainer}>
+                          <MaterialCommunityIcons
+                            onPress={() => {
+                              this.setState({
+                                isVisible: !this.state?.isVisible,
+                              });
+                            }}
+                            name="barcode-scan"
+                            color="#06012B"
+                            size={width * 0.035}
+                            style={{padding: 5}}
+                          />
+                          <TextInput
+                            value={this.state.serialNumber}
+                            keyboardType="default"
+                            placeholder="Enter Serial Number"
+                            placeholderTextColor="#5B5B61"
+                            underlineColorAndroid="transparent"
+                            onChangeText={(text) =>
+                              this.setState({serialNumber: text})
+                            }
+                            style={styles.input}
+                          />
+                        </View>
+                      </View>
+                      <TouchableOpacity
+                        style={{marginTop: width * 0.05}}
+                        activeOpacity={0.8}
+                        onPress={() => this.attachGateway()}>
+                        <View style={styles.buttonContainer}>
+                          {this.state.loading ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                          ) : (
+                            <TextReuseableComponent
+                              title
+                              style={styles.btnText}
+                              value={'Attach'}
+                            />
+                          )}
+                        </View>
+                      </TouchableOpacity>
                     </View>
-                    <View>
-                      <View style={styles.textInputContainer}>
+                  ) : (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <TextReuseableComponent
+                        title
+                        style={[styles.mainHeadiing, {color: '#000'}]}
+                        value={'Network Information'}
+                      />
+                      <TextReuseableComponent
+                        title
+                        style={[styles.mainHeadiing, {color: '#000'}]}
+                        value={gateway?.serial_number}
+                      />
+                      <TextReuseableComponent
+                        title
+                        style={[styles.mainHeadiing, {color: '#000'}]}
+                        value={'Synced'}
+                      />
+                      <View
+                        style={{
+                          marginVertical: 15,
+                          flexDirection: 'row',
+                          width: '50%',
+                          justifyContent: 'space-around',
+                        }}>
                         <MaterialCommunityIcons
-                          onPress={() => {
-                            this.setState({
-                              isVisible: !this.state?.isVisible
-                            })
-                          }}
-                          name="barcode-scan"
-                          color="#06012B"
-                          size={width * 0.035}
-                          style={{ padding: 5 }}
+                          name="ethernet"
+                          size={45}
+                          color={
+                            gateway?.eth?.connection ? '#25AAE1ec' : '#000'
+                          }
                         />
-                        <TextInput
-                          value={this.state.serialNumber}
-                          keyboardType="default"
-                          placeholder="Enter Serial Number"
-                          placeholderTextColor="#5B5B61"
-                          underlineColorAndroid="transparent"
-                          onChangeText={(text) => this.setState({ serialNumber: text })}
-                          style={styles.input}
+                        <MaterialCommunityIcons
+                          name="signal-cellular-outline"
+                          size={45}
+                          color={
+                            gateway?.cellular?.connection ? '#25AAE1ec' : '#000'
+                          }
+                        />
+                        <MaterialCommunityIcons
+                          name="wifi"
+                          size={45}
+                          color={
+                            gateway?.wifi?.connection ? '#25AAE1ec' : '#000'
+                          }
                         />
                       </View>
                     </View>
-                    <TouchableOpacity
-                      style={{ marginTop: width * 0.05 }}
-                      activeOpacity={0.8}
-                      onPress={() => this.attachGateway()}>
-                      <View style={styles.buttonContainer}>
-                        {this.state.loading ? (
-                          <ActivityIndicator size="small" color="#ffffff" />
-                        ) : (
-                          <TextReuseableComponent title style={styles.btnText} value={"Attach"} />
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  </View> :
-                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <TextReuseableComponent title style={[styles.mainHeadiing, { color: '#000' }]} value={"Network Information"} />
-                    <TextReuseableComponent title style={[styles.mainHeadiing, { color: '#000' }]} value={gateway?.serial_number} />
-                    <TextReuseableComponent title style={[styles.mainHeadiing, { color: '#000' }]} value={"Synced"} />
-                    <View style={{ marginVertical: 15, flexDirection: 'row', width: '50%', justifyContent: 'space-around' }}>
-                      <MaterialCommunityIcons
-                        name='ethernet'
-                        size={45}
-                        color={gateway?.eth?.connection ? "#25AAE1ec" : "#000"}
-                      />
-                      <MaterialCommunityIcons
-                        name='signal-cellular-outline'
-                        size={45}
-                        color={gateway?.cellular?.connection ? "#25AAE1ec" : "#000"}
-                      />
-                      <MaterialCommunityIcons
-                        name='wifi'
-                        size={45}
-                        color={gateway?.wifi?.connection ? "#25AAE1ec" : "#000"}
-                      />
-                    </View>
-                  </View>}
-              </> :
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  )}
+                </>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <ActivityIndicator size={'large'} color="#25AAE1ec" />
                 </View>
-              }
+              )}
             </View>
-          }
+          )}
         </View>
       </>
     );
   }
 }
 
-
 const mapDispatchToProps = (dispatch) => {
   return {
     // dispatching plain actions
     fetchPropetry: () => dispatch(fetchPropetry()),
-
   };
 };
 
-export default connect(null, mapDispatchToProps)(Splash)
+export default connect(null, mapDispatchToProps)(Splash);
