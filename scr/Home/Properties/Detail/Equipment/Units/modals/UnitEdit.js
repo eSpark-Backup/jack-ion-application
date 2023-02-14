@@ -92,6 +92,7 @@ export default function UnitEdit({
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [editMeterIndex, setEditMeterIndex] = useState(null);
+  const [unitMixLoader, setUnitMixLoader] = useState(false);
   const inputRef = useRef(null);
   const [defaultMeterValues, setDefaultMeterValues] = useState(false);
   const [defaultDeviceValues, setDefaultDeviceValues] = useState('');
@@ -513,6 +514,7 @@ export default function UnitEdit({
 
   useEffect(async () => {
     if (flag) {
+      setUnitMixLoader(true);
       setState((oldState) => ({
         ...oldState,
         lastUnitData: unitDetails?.unit?.name,
@@ -534,6 +536,7 @@ export default function UnitEdit({
               setSelectedUnitMix(item.name);
             }
           });
+          setUnitMixLoader(false);
         }
       }
     }
@@ -4974,6 +4977,7 @@ export default function UnitEdit({
                           items={unitMix}
                           resetValue={false}
                           onFocus={true}
+                          btnDisabled={unitMixLoader}
                           textInputProps={{
                             placeholder: 'Select Unit Mix',
                             underlineColorAndroid: 'transparent',

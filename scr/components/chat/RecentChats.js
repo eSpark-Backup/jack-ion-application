@@ -38,12 +38,14 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
   const handleDelete = () => {
     const deleteMessage = async () => {
       const chatRoomId = listOfRecentUsers[swipeInd]?.last_message?.id;
+      console.log('swipeInd ', swipeInd);
       console.log('chatroom ', chatRoomId);
       const deleteChat = await API.post('/delete-chat', {
         roomChatId: chatRoomId,
       });
       if (deleteChat?.data?.bool) {
         console.log('message deleted', deleteChat?.data?.data);
+        fetchAllUsers();
       } else {
         console.log('message not deleted', deleteChat?.data?.message);
         Alert.alert('Deletion failed!');
@@ -67,7 +69,7 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
         swipRef1?.current?.openRight();
         setTimeout(() => {
           swipRef1?.current?.close();
-        }, 500);
+        }, 400);
       }, 100);
     } else {
       setSwipeInd(null);
@@ -77,7 +79,7 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
       swipRef2?.current?.close();
     }
   }, [active]);
-
+  console.log('swipeInd', swipeInd);
   const fetchAllUsers = async () => {
     try {
       const response = await API.get(`/get-all-users`);
@@ -208,8 +210,8 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
                 }
                 onSwipeableRightOpen={() => {
                   console.log('open');
+                  setSwipeInd(index);
                   if (firstRend) {
-                    setSwipeInd(index);
                     swipRef1?.current?.close();
                     swipRef2?.current?.close();
                   } else {

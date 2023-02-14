@@ -70,6 +70,7 @@ class Splash extends Component {
       searchList: [],
       isModalVisible: false,
       isModalUnitVisible: false,
+      isModalBuildVisible: false,
       newUnit: 'Unit-1',
       loaderBuildings: true,
       buildingData: [],
@@ -176,11 +177,13 @@ class Splash extends Component {
   checkData = async () => {
     this.setState({filterWork: false, loader: true, loaderBuildings: true});
     const PropertyID = this.props.navigation.state.params.item.item.id;
-    const PropRes = await API.get(`/property/${PropertyID}`);
+    const PropertyDATA = this.props.navigation.state.params.item.item;
+
+    // const PropRes = await API.get(`/property/${PropertyID}`);
     this.setState({
-      unitCount: PropRes?.data?.data?.property?.unit_count,
-      unitActualCount: PropRes?.data?.data?.property.unit_actual_count,
-      gateway: PropRes?.data?.data?.property?.gateway,
+      unitCount: PropertyDATA.unit_count,
+      unitActualCount: PropertyDATA.unit_actual_count,
+      gateway: PropertyDATA.gateway,
     });
 
     const response = await API.post(
@@ -1450,115 +1453,129 @@ class Splash extends Component {
                   </View>
                 )}
 
-                <EditUnit
-                  flag={this.state.flag}
-                  propertyId={
-                    this.props?.navigation?.state?.params?.item?.item?.id
-                  }
-                  propertyLat={
-                    this.props.navigation.state.params?.item?.item?.latitude
-                  }
-                  propertyLong={
-                    this.props.navigation.state.params?.item?.item?.longitude
-                  }
-                  enableFlag={() => this.setState({flag: true})}
-                  disableFlag={() => this.setState({flag: false})}
-                  modalVisible={this.state.isModalUnitVisible}
-                  closeModal={() =>
-                    this.setState({
-                      isModalUnitVisible: !this.state.isModalUnitVisible,
-                    })
-                  }
-                  reRun={() => this.checkData()}
-                  meterTypes={[]}
-                  modalName="Add Unit"
-                  type={'add'}
-                  buildingName={this.state.buildingData.name}
-                  buildingId={this.state.editBuildId}
-                  unitDetails={this.state.unitData}
-                  doneBtnTitle="Add Unit"
-                  doneIcon={
-                    <Iconx name="plus" type="feather" size={18} color="#fff" />
-                  }
-                  handleEditUnit={() => {
-                    this.setState({isModalUnitVisible: false});
-                  }}
-                  unitsArray={this.state.realData}
-                  userRole={this.state.userRole}
-                />
+                {this.state.isModalUnitVisible && (
+                  <EditUnit
+                    flag={this.state.flag}
+                    propertyId={
+                      this.props?.navigation?.state?.params?.item?.item?.id
+                    }
+                    propertyLat={
+                      this.props.navigation.state.params?.item?.item?.latitude
+                    }
+                    propertyLong={
+                      this.props.navigation.state.params?.item?.item?.longitude
+                    }
+                    enableFlag={() => this.setState({flag: true})}
+                    disableFlag={() => this.setState({flag: false})}
+                    modalVisible={this.state.isModalUnitVisible}
+                    closeModal={() =>
+                      this.setState({
+                        isModalUnitVisible: !this.state.isModalUnitVisible,
+                      })
+                    }
+                    reRun={() => this.checkData()}
+                    meterTypes={[]}
+                    modalName="Add Unit"
+                    type={'add'}
+                    buildingName={this.state.buildingData.name}
+                    buildingId={this.state.editBuildId}
+                    unitDetails={this.state.unitData}
+                    doneBtnTitle="Add Unit"
+                    doneIcon={
+                      <Iconx
+                        name="plus"
+                        type="feather"
+                        size={18}
+                        color="#fff"
+                      />
+                    }
+                    handleEditUnit={() => {
+                      this.setState({isModalUnitVisible: false});
+                    }}
+                    unitsArray={this.state.realData}
+                    userRole={this.state.userRole}
+                  />
+                )}
                 {/*
                //! for edit unit
                */}
-                <EditUnit
-                  flag={this.state.flag}
-                  propertyId={
-                    this.props?.navigation?.state?.params?.item?.item?.id
-                  }
-                  propertyLat={
-                    this.props.navigation?.state?.params?.item?.item?.latitude
-                  }
-                  propertyLong={
-                    this.props.navigation.state.params?.item?.item?.longitude
-                  }
-                  enableFlag={() => this.setState({flag: true})}
-                  disableFlag={() => this.setState({flag: false})}
-                  modalVisible={this.state.isEditUnitModalVisible}
-                  closeModal={() =>
-                    this.setState({
-                      isEditUnitModalVisible: !this.state
-                        .isEditUnitModalVisible,
-                    })
-                  }
-                  reRun={() => this.checkData()}
-                  meterTypes={this.state.unitMeters}
-                  // modalName="Edit Unit"
-                  buildingName={this.state.buildingData.name}
-                  buildingId={this.state.editBuildId}
-                  unitDetails={this.state.unitDatax.data}
-                  // unitMixesId={this.state.unitMixesId}
-                  // userRole={this.state.userRole}
-                  addMeterUnitMix={this.state.unitDatax.data}
-                  addMeterUnitMixId={this.state.unitMixesId}
-                  addNewMeter={true}
-                  fromPAD={true}
-                  navigation={this.props.navigation}
-                  navigateTo={{
-                    unitId: '',
-                    buildingName: this.state.buildingData.name,
-                    buildingId: this.state.editBuildId,
-                    propertyId: this.props.navigation.state.params.item.item.id,
-                    propertyLat: this.props.navigation.state.params.item.item
-                      .latitude,
-                    propertyLong: this.props.navigation.state.params.item.item
-                      .longitude,
-                  }}
-                />
-                <AddBuilding
-                  unitCount={this.state.unitCount}
-                  unitActualCount={this.state.unitActualCount}
-                  modalVisible={this.state.isModalBuildVisible}
-                  type={this.state.buildingModalType}
-                  modalName={
-                    this.state.buildingModalType
-                      ? 'Add Multiple Units'
-                      : 'Add Building'
-                  }
-                  closeModal={() => this.setState({isModalBuildVisible: false})}
-                  reRun={this.handleAddBuilding}
-                  propertyId={
-                    this.props?.navigation?.state?.params?.item?.item?.id
-                  }
-                  lastUnitName={this.state.newUnit}
-                  unitMixeId={
-                    this.props.navigation.state.params.item.item.unit_mixes[0]
-                      .id
-                  }
-                  buildData={{
-                    buildingName: this.state.buildingData.name,
-                    buildDes: this.state.editBuildDes,
-                    buildId: this.state.editBuildId,
-                  }}
-                />
+                {this.state.isEditUnitModalVisible && (
+                  <EditUnit
+                    flag={this.state.flag}
+                    propertyId={
+                      this.props?.navigation?.state?.params?.item?.item?.id
+                    }
+                    propertyLat={
+                      this.props.navigation?.state?.params?.item?.item?.latitude
+                    }
+                    propertyLong={
+                      this.props.navigation.state.params?.item?.item?.longitude
+                    }
+                    enableFlag={() => this.setState({flag: true})}
+                    disableFlag={() => this.setState({flag: false})}
+                    modalVisible={this.state.isEditUnitModalVisible}
+                    closeModal={() =>
+                      this.setState({
+                        isEditUnitModalVisible: !this.state
+                          .isEditUnitModalVisible,
+                      })
+                    }
+                    reRun={() => this.checkData()}
+                    meterTypes={this.state.unitMeters}
+                    // modalName="Edit Unit"
+                    buildingName={this.state.buildingData.name}
+                    buildingId={this.state.editBuildId}
+                    unitDetails={this.state.unitDatax.data}
+                    // unitMixesId={this.state.unitMixesId}
+                    // userRole={this.state.userRole}
+                    addMeterUnitMix={this.state.unitDatax.data}
+                    addMeterUnitMixId={this.state.unitMixesId}
+                    addNewMeter={true}
+                    fromPAD={true}
+                    navigation={this.props.navigation}
+                    navigateTo={{
+                      unitId: '',
+                      buildingName: this.state.buildingData.name,
+                      buildingId: this.state.editBuildId,
+                      propertyId: this.props.navigation.state.params.item.item
+                        .id,
+                      propertyLat: this.props.navigation.state.params.item.item
+                        .latitude,
+                      propertyLong: this.props.navigation.state.params.item.item
+                        .longitude,
+                    }}
+                  />
+                )}
+                {this.state.isModalBuildVisible && (
+                  <AddBuilding
+                    unitCount={this.state.unitCount}
+                    unitActualCount={this.state.unitActualCount}
+                    modalVisible={this.state.isModalBuildVisible}
+                    type={this.state.buildingModalType}
+                    modalName={
+                      this.state.buildingModalType
+                        ? 'Add Multiple Units'
+                        : 'Add Building'
+                    }
+                    closeModal={() =>
+                      this.setState({isModalBuildVisible: false})
+                    }
+                    reRun={this.handleAddBuilding}
+                    propertyId={
+                      this.props?.navigation?.state?.params?.item?.item?.id
+                    }
+                    lastUnitName={this.state.newUnit}
+                    unitMixeId={
+                      this.props.navigation.state.params.item.item.unit_mixes[0]
+                        .id
+                    }
+                    buildData={{
+                      buildingName: this.state.buildingData.name,
+                      buildDes: this.state.editBuildDes,
+                      buildId: this.state.editBuildId,
+                    }}
+                  />
+                )}
                 <Filter
                   type="Units"
                   onReset={this.get_filterVal}

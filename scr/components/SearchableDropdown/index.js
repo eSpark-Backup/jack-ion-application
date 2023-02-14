@@ -120,7 +120,7 @@ export default class SearchableDropDown extends Component {
                 borderRadius: 100,
                 marginLeft: 10,
               }}>
-              <TextReuseableComponent title value={"X"} />
+              <TextReuseableComponent title value={'X'} />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -157,9 +157,17 @@ export default class SearchableDropDown extends Component {
           {this.props.selectedItems &&
           this.props.selectedItems.length > 0 &&
           this.props.selectedItems.find((x) => x.id === item.id) ? (
-            <TextReuseableComponent title style={{...this.props.itemTextStyle}} value={item.name} />
+            <TextReuseableComponent
+              title
+              style={{...this.props.itemTextStyle}}
+              value={item.name}
+            />
           ) : (
-            <TextReuseableComponent title style={{...this.props.itemTextStyle}} value={item.name} />
+            <TextReuseableComponent
+              title
+              style={{...this.props.itemTextStyle}}
+              value={item.name}
+            />
           )}
         </TouchableOpacity>
       );
@@ -267,6 +275,7 @@ export default class SearchableDropDown extends Component {
                   ? this.props.textInputProps.trueIcon
                   : this.props.textInputProps.falseIcon
               }
+              disabled={this.props.btnDisabled}
               onPress={this.toggleDropdown}
             />
           )
@@ -336,7 +345,11 @@ export default class SearchableDropDown extends Component {
                   padding: 8,
                   borderRadius: 15,
                 }}>
-                <TextReuseableComponent title style={{color: '#555'}} value={item.name} />
+                <TextReuseableComponent
+                  title
+                  style={{color: '#555'}}
+                  value={item.name}
+                />
                 <TouchableOpacity
                   onPress={() =>
                     setTimeout(() => {
@@ -352,7 +365,7 @@ export default class SearchableDropDown extends Component {
                     borderRadius: 100,
                     marginLeft: 10,
                   }}>
-                  <TextReuseableComponent title value={"X"} />
+                  <TextReuseableComponent title value={'X'} />
                 </TouchableOpacity>
               </View>
             );
