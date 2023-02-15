@@ -15,18 +15,21 @@ import styles from './styles';
 
 import firestore from '@react-native-firebase/firestore';
 import API from '../../api/SeviceApi';
+import {ActivityIndicator} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 
 const AllChats = ({handleChatDetailsClick}) => {
   const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([]);
   const [input, setInput] = useState('');
+  const [usersLoader, setUsersLoader] = useState(true);
   const userReducer = useSelector((state) => state.userReducer);
   let fetchable = userReducer?.userDataForMessaging;
 
   useEffect(async () => {
     const response = await API.get(`/get-all-users`);
     if (response?.data?.bool) {
+      setUsersLoader(false);
       const handleSearch = () => {
         const res = response.data.data?.filter((chat) => {
           const inputValue = input?.toString()?.toLowerCase();
@@ -88,57 +91,71 @@ const AllChats = ({handleChatDetailsClick}) => {
           height: height * 0.6,
           alignSelf: 'center',
         }}>
+        <View>
+          <ActivityIndicator size={20} />
+        </View>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {listOfAvailabeForChat
-            ?.filter?.((user) => user.id !== userReducer?.user?.id)
-            ?.map((chat) => {
-              const {id, name, role_id, last_message, unReadMessages} = chat;
-              return (
-                <View key={id} style={styles.allChatsMainContainer}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleChatDetailsClick('ChatDetails', {item: chat})
-                    }>
-                    <View style={styles.chatCardContainer}>
-                      <View style={styles.iconContainer}>
-                        <View style={styles.innerContainerIcon}>
-                          <TextReuseableComponent
-                            heading
-                            value={name?.substring(0, 1).toUpperCase()}
-                          />
+          {usersLoader ? (
+            <View
+              style={{
+                height: height * 0.5,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#25AAE1" />
+            </View>
+          ) : (
+            listOfAvailabeForChat
+              ?.filter?.((user) => user.id !== userReducer?.user?.id)
+              ?.map((chat) => {
+                const {id, name, role_id, last_message, unReadMessages} = chat;
+                return (
+                  <View key={id} style={styles.allChatsMainContainer}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleChatDetailsClick('ChatDetails', {item: chat})
+                      }>
+                      <View style={styles.chatCardContainer}>
+                        <View style={styles.iconContainer}>
+                          <View style={styles.innerContainerIcon}>
+                            <TextReuseableComponent
+                              heading
+                              value={name?.substring(0, 1).toUpperCase()}
+                            />
+                          </View>
                         </View>
-                      </View>
-                      <View style={styles.nameContainer}>
-                        <View>
-                          <TextReuseableComponent
-                            style={{fontSize: 15}}
-                            value={name}
-                          />
+                        <View style={styles.nameContainer}>
+                          <View>
+                            <TextReuseableComponent
+                              style={{fontSize: 15}}
+                              value={name}
+                            />
+                          </View>
+                          <View>
+                            <TextReuseableComponent
+                              style={{fontSize: 10}}
+                              value={
+                                typeof last_message == 'string'
+                                  ? last_message
+                                  : last_message?.last_message
+                                  ? last_message?.last_message
+                                  : "Let's Start a Conversation!"
+                              }
+                            />
+                          </View>
                         </View>
-                        <View>
+                        <View style={styles.timeContainer}>
                           <TextReuseableComponent
                             style={{fontSize: 10}}
-                            value={
-                              typeof last_message == 'string'
-                                ? last_message
-                                : last_message?.last_message
-                                ? last_message?.last_message
-                                : "Let's Start a Conversation!"
-                            }
+                            value={role_id == 4 ? 'Technician' : 'Admin'}
                           />
                         </View>
                       </View>
-                      <View style={styles.timeContainer}>
-                        <TextReuseableComponent
-                          style={{fontSize: 10}}
-                          value={role_id == 4 ? 'Technician' : 'Admin'}
-                        />
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
+                    </TouchableOpacity>
+                  </View>
+                );
+              })
+          )}
         </ScrollView>
       </View>
     </View>

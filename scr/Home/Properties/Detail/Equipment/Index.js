@@ -148,13 +148,10 @@ class Splash extends Component {
   }
 
   onFocusFunction = () => {
-    this.getToken();
+    this.checkData();
     this.setState({isModalVisible: false});
   };
 
-  getToken = async () => {
-    this.checkData();
-  };
   get_filterVal = async (serial, meterId) => {
     this.setState({showFilter: false});
     this.filerUnits(serial, meterId);
@@ -175,72 +172,58 @@ class Splash extends Component {
   );
 
   checkData = async () => {
-    this.setState({filterWork: false, loader: true, loaderBuildings: true});
+    this.setState({filterWork: false});
     const PropertyID = this.props.navigation.state.params.item.item.id;
     const PropertyDATA = this.props.navigation.state.params.item.item;
 
-    // const PropRes = await API.get(`/property/${PropertyID}`);
     this.setState({
       unitCount: PropertyDATA.unit_count,
       unitActualCount: PropertyDATA.unit_actual_count,
       gateway: PropertyDATA.gateway,
     });
-
+    console.log('Property ID', PropertyID);
     const response = await API.post(
       `/property/equipment/building/all-buildings/${PropertyID}`,
     );
     const role = await AsyncStorage.getItem('user_role');
     this.setState({userRole: role});
+    this.setState({loaderBuildings: false});
     console.log('building response', response.data);
 
     if (response?.ok == true) {
       this.setState({dataBuild: response?.data?.data});
-      this.setState({loaderBuildings: false});
       if (response?.data?.data?.length != 0) {
         this.setState({
           buildingData: response?.data?.data[0],
           editBuildDes: response?.data?.data[0].descriptions,
           editBuildId: response?.data?.data[0].id,
+          realData: response?.data?.data[0].units,
+          loader: false,
         });
-        const data = {
-          building_id: response?.data?.data[0].id,
-        };
-        const unitResponse = await API.post(
-          `/property/equipment/unit/all-units`,
-          data,
-        );
-        console.log('unitResponse', unitResponse.data);
-        this.props.fetchPropetry();
-        if (unitResponse?.ok == true) {
-          this.setState({realData: unitResponse?.data?.data, loader: false});
-          let arry = unitResponse?.data?.data;
-          let lastElement = arry[arry.length - 1];
 
-          this.setState({
-            lastUnitData:
-              lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
-            newUnit:
-              lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
-          });
-          this.setState((prevState) => ({
-            ...prevState,
-            unitData: {
-              // object that we want to update
-              ...prevState.unitData, // keep all other key-value pairs
-              unit: {name: lastElement?.name}, // update the value of specific key
-            },
-          }));
-        } else {
-          alert('Network Issue');
-          this.setState({loader: false});
-        }
+        let arry = response?.data?.data[0].units;
+        let lastElement = arry[arry.length - 1];
+
+        this.setState({
+          lastUnitData:
+            lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
+          newUnit:
+            lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
+        });
+        this.setState((prevState) => ({
+          ...prevState,
+          unitData: {
+            // object that we want to update
+            ...prevState.unitData, // keep all other key-value pairs
+            unit: {name: lastElement?.name}, // update the value of specific key
+          },
+        }));
       } else {
         this.setState({
           realData: [],
           lastUnitData: 'Unit-0',
           newUnit: 'Unit-0',
         });
-        // }
         this.setState({loader: false});
       }
     } else {
@@ -1012,7 +995,6 @@ class Splash extends Component {
     }
   };
   render() {
-    console.log('this.state.loader', this.state.loader);
     const {result, scan, scanResult} = this.state;
     const realData = this.state.realData;
     const realColor = this.state.hColor;
