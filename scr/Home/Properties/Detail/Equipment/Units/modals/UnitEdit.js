@@ -306,9 +306,9 @@ export default function UnitEdit({
     }
   };
 
-  console.log('addMeterUnitMixId', addMeterUnitMixId);
-  console.log('selectedUnitMix', selectedUnitMix);
-  console.log('meterInfo', meterInfo);
+  // console.log('addMeterUnitMixId', addMeterUnitMixId);
+  // console.log('selectedUnitMix', selectedUnitMix);
+  // console.log('meterInfo', meterInfo);
 
   const sendInstallationStatus = (status) => {
     setHideBtn(true);
@@ -467,13 +467,15 @@ export default function UnitEdit({
     }
   };
 
-  useUpdateEffect(async () => {
+  useEffect(async () => {
     if (type == 'add' || type == 'addMeterDirect') {
       setLoadMeters(false);
     } else {
       setMeterName(meterTypes.length + 1);
       setLoadMeters(true);
     }
+
+    console.log('update EFfect chala');
 
     callApi();
 
@@ -528,7 +530,7 @@ export default function UnitEdit({
       });
       setUnitMix(unitMixes);
       if (modalVisible) {
-        if (type != 'add' && !addNewMeter) {
+        if (unitMixesId && !addNewMeter) {
           console.log('yeh chala kia??', unitMixesId);
           setUnitMixId(unitMixesId);
           unitMixes?.map((item) => {
@@ -536,9 +538,9 @@ export default function UnitEdit({
               setSelectedUnitMix(item.name);
             }
           });
-          setUnitMixLoader(false);
         }
       }
+      setUnitMixLoader(false);
     }
     // callApi();
   }, [meterTypes, unitDetails, modalVisible]);
@@ -728,6 +730,7 @@ export default function UnitEdit({
     setReasons([]);
     setLoadManufacturers(true);
 
+    console.log('Getting Data');
     const defaultUnitData = await API.get(
       `/property/default-meter-device/${propertyId}`,
     );
@@ -1031,7 +1034,7 @@ export default function UnitEdit({
         errorUnits: '',
       }));
     }
-    if (unitMixId == null) {
+    if (unitMixId == null && unitMixId == undefined) {
       setError((oldState) => ({
         ...oldState,
         errorUnitMix: 'Please select Unit Mix',
@@ -1050,6 +1053,7 @@ export default function UnitEdit({
       alert('Select meter and continue');
       return;
     }
+    console.log('unitMixId', unitMixId);
     setIsActivityLoader(true);
     let data = {
       name: state.lastUnitData,
@@ -1347,6 +1351,8 @@ export default function UnitEdit({
   };
   const addDeviceInUnit = async (mData) => {
     setIsActivityLoader(true);
+
+    console.log('unitMixId', unitMixId);
 
     let data = {
       name: state.lastUnitData,
@@ -4213,7 +4219,9 @@ export default function UnitEdit({
                           // backgroundColor: 'red',
                         }}>
                         <View style={styles.reasonFileContainer}>
-                          {installationStatus == 1 && statusAnimation == true && (
+                          {(installationStatus == 1 &&
+                            statusAnimation == true) ||
+                          meterInfo?.installation_status == 'Complete' ? (
                             <View style={{alignItems: 'center'}}>
                               <Video
                                 source={require('../../../../../../../Images/checkmarkv.mp4')}
@@ -4237,7 +4245,7 @@ export default function UnitEdit({
                                 value={'Meter is installed Successfully'}
                               />
                             </View>
-                          )}
+                          ) : null}
                           {installationStatus == 2 && statusAnimation == true && (
                             <View style={{alignItems: 'center'}}>
                               <Image
@@ -4448,7 +4456,8 @@ export default function UnitEdit({
                           )}
                           {(installationStatus == 0 ||
                             installationStatus == 'Complete') &&
-                            statusAnimation == false && (
+                            statusAnimation == false &&
+                            meterInfo?.installation_status != 'Complete' && (
                               <View
                                 style={{
                                   flex: 1,
@@ -4607,6 +4616,8 @@ export default function UnitEdit({
                                         ? '#25AAE1ec'
                                         : (sliderNumber == 5 &&
                                             installationStatus == 1) ||
+                                          meterInfo?.installation_status ==
+                                            'Complete' ||
                                           (sliderNumber == 5 &&
                                             installationStatus == 2 &&
                                             reasonId &&
@@ -4650,6 +4661,8 @@ export default function UnitEdit({
                                     ? false
                                     : (sliderNumber == 5 &&
                                         installationStatus == 1) ||
+                                      meterInfo?.installation_status ==
+                                        'Complete' ||
                                       (sliderNumber == 5 &&
                                         installationStatus == 2 &&
                                         reasonId &&
@@ -5363,34 +5376,33 @@ export default function UnitEdit({
                           }}
                           value={'Installation Status'}
                         />
-                        <TouchableOpacity
-                          onPress={() => {
-                            setEditMeter(false);
-                            setStatusAnimation(false);
-                            setSliderNumber(5);
-                            setSliderProgress(sliderProgress + 0.75);
-                            getMeterData(meterInfo, meterNum);
-                            enableLocation(true);
-                          }}
-                          style={{
-                            position: 'absolute',
-                            right: 0,
-                            borderRadius: width * 0.02,
-                            paddingHorizontal: 10,
-                            // backgroundColor: '#25aae1',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <MaterialIcons
-                            name="edit"
-                            color="black"
-                            size={width * 0.045}
-                          />
-                          {/* <TextReuseableComponent title style={{
-                          color: 'black',
-                        }} value={"Edit"} /> */}
-                        </TouchableOpacity>
+                        {meterInfo?.installation_status == 'Incomplete' && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              setEditMeter(false);
+                              setStatusAnimation(false);
+                              setSliderNumber(5);
+                              setSliderProgress(sliderProgress + 0.75);
+                              getMeterData(meterInfo, meterNum);
+                              enableLocation(true);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              right: 0,
+                              borderRadius: width * 0.02,
+                              paddingHorizontal: 10,
+                              // backgroundColor: '#25aae1',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <MaterialIcons
+                              name="edit"
+                              color="black"
+                              size={width * 0.045}
+                            />
+                          </TouchableOpacity>
+                        )}
                       </View>
                       <View
                         style={{

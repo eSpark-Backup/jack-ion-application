@@ -307,6 +307,7 @@ const App = ({navigation}) => {
 
   const getUnitDetail = async () => {
     const res = await API.get(`/property/equipment/unit/${testId}`);
+    console.log('unit mixes', res.data?.data?.unit);
     if (res.data?.bool) {
       setData(res.data);
       setUnitMeter(res.data?.data?.unit?.unit_meter?.[0]);
@@ -1210,6 +1211,7 @@ const App = ({navigation}) => {
           reRun={() => getToken()}
           meterTypes={arrayOfMeter}
           modalName="Edit Unit"
+          unitMixesId={data.data?.unit?.unit_mix_id}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}

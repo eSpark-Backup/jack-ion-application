@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 
 import {
   View,
@@ -20,13 +20,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { TextInput, Button } from 'react-native-paper';
+import {TextInput, Button} from 'react-native-paper';
 import ContextProp from './Context/propContext';
 import CustumStatusBar from '../../components/StatusBar';
 import NetInfo from '@react-native-community/netinfo';
 
 // Components
-import { Fonts } from '../../utils/fonts';
+import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
@@ -43,15 +43,19 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import API from '../../api/SeviceApi';
-import { connect } from 'react-redux';
-import { fetchPropetry, loadMoreData } from '../../Store/Action/properties.action';
+import {connect} from 'react-redux';
+import {
+  fetchPropetry,
+  loadMoreData,
+} from '../../Store/Action/properties.action';
 
 import TextReuseableComponent from '../../components/Text/index';
 import Loader from '../../components/Loader';
 import Properties from '../../components/properties';
-import { addToRecent } from '../../utils/helperFunction';
+import {addToRecent} from '../../utils/helperFunction';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 class Property extends PureComponent {
   static contextType = ContextProp;
@@ -73,15 +77,16 @@ class Property extends PureComponent {
       markers: null,
       refreshing: false,
       isPullDownShow: true,
+      userRole: null,
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
     };
 
@@ -91,10 +96,13 @@ class Property extends PureComponent {
   }
   async componentDidMount() {
     // this.props?.fetchPropetry();
+    const role = await AsyncStorage.getItem('user_role');
+    this.setState({userRole: role});
+    console.log('ROLE', role);
     this.onFocusFunction();
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       if (this.context.propList) {
-        this.setState({ isPullDownShow: true });
+        this.setState({isPullDownShow: true});
         this.hidePullDown();
       }
     });
@@ -102,28 +110,28 @@ class Property extends PureComponent {
 
   openFilter = () => {
     this.context.getBillingCompany();
-    this.setState({ showFilter: true });
+    this.setState({showFilter: true});
   };
 
-  jumpToDetail = async ({ prop, item }) => {
+  jumpToDetail = async ({prop, item}) => {
     await addToRecent(prop.item);
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
     this.selectedProp(prop);
-    this.props.navigation.navigate('Detail', { item });
+    this.props.navigation.navigate('Detail', {item});
   };
-  jumpFromSearch = ({ prop, item }) => {
-    this.setState({ showSearch: false });
-    this.props.navigation.navigate('Detail', { item });
+  jumpFromSearch = ({prop, item}) => {
+    this.setState({showSearch: false});
+    this.props.navigation.navigate('Detail', {item});
   };
-  jumpToEquip = async ({ prop, item }) => {
-    await addToRecent(prop.item);
-    this.selectedProp(prop);
-    this.props.navigation.navigate('Equip', { item });
-  };
-  jumpToAlerts = async ({ prop, item }) => {
+  jumpToEquip = async ({prop, item}) => {
     await addToRecent(prop.item);
     this.selectedProp(prop);
-    this.props.navigation.navigate('Alerts', { item });
+    this.props.navigation.navigate('Equip', {item});
+  };
+  jumpToAlerts = async ({prop, item}) => {
+    await addToRecent(prop.item);
+    this.selectedProp(prop);
+    this.props.navigation.navigate('Alerts', {item});
   };
 
   selectedProp = (prop) => {
@@ -139,20 +147,20 @@ class Property extends PureComponent {
       search: this.context.filterPropName,
       location: this.context.filterLocation,
     };
-    this.props.loadMoreData(data)
+    this.props.loadMoreData(data);
   };
 
   cleardata = (prop) => {
-    this.jumpToDetail({ prop, item: prop });
+    this.jumpToDetail({prop, item: prop});
     this.context.clearData();
   };
 
   closeAndClear = () => {
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
     this.context.clearSearchList();
   };
   openAndClear = () => {
-    this.setState({ showSearch: true });
+    this.setState({showSearch: true});
     this.context.clearSearchList();
   };
 
@@ -180,26 +188,26 @@ class Property extends PureComponent {
           },
           () => {
             this.context.stopLoader();
-            this.setState({ Loading: false });
-            this.setState({ isAddPropVisible: true });
+            this.setState({Loading: false});
+            this.setState({isAddPropVisible: true});
           },
         );
       },
       (error) => {
         console.log('geo location', error);
         this.context.stopLoader();
-        this.setState({ Loading: false });
+        this.setState({Loading: false});
       },
-      { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
+      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
     );
   };
 
   enableLocation = async () => {
-    this.setState({ Loading: true });
+    this.setState({Loading: true});
     const location = await SystemSetting.isLocationEnabled();
     Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
       this.context.stopLoader();
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -231,9 +239,9 @@ class Property extends PureComponent {
         (error) => {
           console.log('geo locations', error);
           this.context.stopLoader();
-          this.setState({ Loading: false });
+          this.setState({Loading: false});
         },
-        { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
+        {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
       );
       if (Platform.OS == 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
@@ -280,7 +288,7 @@ class Property extends PureComponent {
 
       this._renderMap();
     } else {
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
       this.context.stopLoader();
       Alert.alert(
         `You don't have access for the Location`,
@@ -300,11 +308,11 @@ class Property extends PureComponent {
   };
 
   openAddProp = () => {
-    this.setState({ isAddPropVisible: true });
+    this.setState({isAddPropVisible: true});
   };
 
   closeAddProp = () => {
-    this.setState({ isAddPropVisible: false });
+    this.setState({isAddPropVisible: false});
   };
 
   confirmDelete = (id) => {
@@ -313,7 +321,7 @@ class Property extends PureComponent {
         text: 'No',
         style: 'cancel',
       },
-      { text: 'Yes', onPress: () => this.deleteProperty(id) },
+      {text: 'Yes', onPress: () => this.deleteProperty(id)},
     ]);
   };
 
@@ -321,10 +329,10 @@ class Property extends PureComponent {
     this.context.loadLoader();
     const response = await API.post(`/property/delete/${id}`);
     if (response?.data?.bool) {
-      this.setState({ currentIndex: null });
+      this.setState({currentIndex: null});
       alert(response?.data?.message);
       this.props?.fetchPropetry();
-      this.setState({ propertyList: this.context.propList });
+      this.setState({propertyList: this.context.propList});
     } else {
       this.context.stopLoader();
     }
@@ -352,10 +360,10 @@ class Property extends PureComponent {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      this.setState({ noInternet: !state.isConnected });
+      this.setState({noInternet: !state.isConnected});
       if (state.isConnected) {
         this.closeAddProp();
-        this.setState({ propertyList: this.context.propList });
+        this.setState({propertyList: this.context.propList});
       } else {
         console.log('unsubscribe function called');
       }
@@ -364,7 +372,7 @@ class Property extends PureComponent {
     unsubscribe();
   };
   onRefresh = async () => {
-    this.setState({ isPullDownShow: true });
+    this.setState({isPullDownShow: true});
     this.props?.fetchPropetry();
   };
   hidePullDown = () => {
@@ -379,7 +387,7 @@ class Property extends PureComponent {
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      this.setState({ isPullDownShow: false });
+      this.setState({isPullDownShow: false});
     }, 5000);
   };
 
@@ -388,10 +396,10 @@ class Property extends PureComponent {
       this.hidePullDown();
     }
     if (!this.context.filterWork && this.state.filterWork) {
-      this.setState({ filterWork: false });
+      this.setState({filterWork: false});
     }
-  // console.log('this.props.propList?.length', this.props.propList?.length);
-  // console.log('this.props.limitExceed', this.props.limitExceed);
+    // console.log('this.props.propList?.length', this.props.propList?.length);
+    // console.log('this.props.limitExceed', this.props.limitExceed);
     return (
       <>
         <CustumStatusBar />
@@ -427,7 +435,11 @@ class Property extends PureComponent {
                       size={height * 0.04}
                       color="white"
                     />
-                    <TextReuseableComponent title style={{ color: 'white', paddingLeft: width * 0.035 }} value={"Search"} />
+                    <TextReuseableComponent
+                      title
+                      style={{color: 'white', paddingLeft: width * 0.035}}
+                      value={'Search'}
+                    />
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -465,28 +477,34 @@ class Property extends PureComponent {
               {/* 
               Todo. Adding properties is only available for Super Admin from the website. Not from the mobile app.
               */}
-              <TouchableOpacity
-                onPress={() => this.enableLocation()}
-                style={styles.addBotton}>
-                <MaterialIcon
-                  name="add"
-                  size={width * 0.06}
-                  color="black"
-                  maxOpacity={0.5}
-                />
-              </TouchableOpacity>
+              {this.state.userRole != 4 && (
+                <TouchableOpacity
+                  onPress={() => this.enableLocation()}
+                  style={styles.addBotton}>
+                  <MaterialIcon
+                    name="add"
+                    size={width * 0.06}
+                    color="black"
+                    maxOpacity={0.5}
+                  />
+                </TouchableOpacity>
+              )}
               <MaterialCommunityIcons
                 name="home-city-outline"
                 size={width * 0.08}
                 color="white"
               />
-              <TextReuseableComponent title style={styles.mainHeadiing} value={"Properties"} />
+              <TextReuseableComponent
+                title
+                style={styles.mainHeadiing}
+                value={'Properties'}
+              />
             </View>
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}
-              close={() => this.setState({ showFilter: false })}
-              filterWork={() => this.setState({ filterWork: true })}
+              close={() => this.setState({showFilter: false})}
+              filterWork={() => this.setState({filterWork: true})}
             />
             {this.state.showSearch ? (
               <Modal
@@ -498,10 +516,10 @@ class Property extends PureComponent {
                   <CustumStatusBar backColor transparent />
                 )}
                 <KeyboardAvoidingView
-                  style={{ alignItems: 'center' }}
+                  style={{alignItems: 'center'}}
                   behavior="padding">
                   <View style={styles.searchModalInner}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <EvilIcon
                         name="search"
                         size={width * 0.07}
@@ -532,7 +550,7 @@ class Property extends PureComponent {
                       />
                     </View>
                     {/* </View> */}
-                    <View style={{ position: 'absolute', right: width * 0.1 }}>
+                    <View style={{position: 'absolute', right: width * 0.1}}>
                       {this.context.searchLoading ? (
                         <ActivityIndicator color="white" size="small" />
                       ) : null}
@@ -547,21 +565,23 @@ class Property extends PureComponent {
                   </View>
                   <View style={styles.searchList}>
                     <FlatList
-                      style={{ marginBottom: width * 0.2 }}
+                      style={{marginBottom: width * 0.2}}
                       data={this.context.searchList}
                       renderItem={(item) => {
-                        return <Properties
-                          prop={item}
-                          routerIcon={true}
-                          warningIcon={false}
-                          jumpFromSearch={this.jumpFromSearch}
-                          selectedProp={null}
-                          currentIndex={null}
-                          jumpToDetail={this.jumpToDetail}
-                          jumpToEquip={this.jumpToEquip}
-                          jumpToAlerts={this.jumpToAlerts}
-                          confirmDelete={this.confirmDelete}
-                        />
+                        return (
+                          <Properties
+                            prop={item}
+                            routerIcon={true}
+                            warningIcon={false}
+                            jumpFromSearch={this.jumpFromSearch}
+                            selectedProp={null}
+                            currentIndex={null}
+                            jumpToDetail={this.jumpToDetail}
+                            jumpToEquip={this.jumpToEquip}
+                            jumpToAlerts={this.jumpToAlerts}
+                            confirmDelete={this.confirmDelete}
+                          />
+                        );
                       }}
                       removeClippedSubviews={false}
                       maxToRenderPerBatch={150}
@@ -582,12 +602,28 @@ class Property extends PureComponent {
                 {this.state.shimmers.map((item) => this.renderShimmers(item))}
               </>
             ) : this.props.propList.length < 1 && !this.props.isLoading ? (
-              <TextReuseableComponent title value={"No Properties to Show"} />
+              <TextReuseableComponent title value={'No Properties to Show'} />
             ) : (
               <View>
-                <View style={[styles.pullDownContainer, { height: this.state.isPullDownShow ? height * .07 : height * 0, }]}>
-                  <Icon name="ios-arrow-down-sharp" color="black" size={height * 0.03} />
-                  <TextReuseableComponent title style={styles.pullDownText} value={"Pull down to refresh"} />
+                <View
+                  style={[
+                    styles.pullDownContainer,
+                    {
+                      height: this.state.isPullDownShow
+                        ? height * 0.07
+                        : height * 0,
+                    },
+                  ]}>
+                  <Icon
+                    name="ios-arrow-down-sharp"
+                    color="black"
+                    size={height * 0.03}
+                  />
+                  <TextReuseableComponent
+                    title
+                    style={styles.pullDownText}
+                    value={'Pull down to refresh'}
+                  />
                 </View>
                 <FlatList
                   windowSize={100}
@@ -596,8 +632,12 @@ class Property extends PureComponent {
                   refreshing={this.state.refreshing}
                   showsVerticalScrollIndicator={false}
                   ListEmptyComponent={
-                    <View style={{ height: height * .7, justifyContent: 'center' }} >
-                      <TextReuseableComponent title value={"Check Your Internet Connection"} />
+                    <View
+                      style={{height: height * 0.7, justifyContent: 'center'}}>
+                      <TextReuseableComponent
+                        title
+                        value={'Check Your Internet Connection'}
+                      />
                     </View>
                   }
                   ListFooterComponent={() =>
@@ -606,11 +646,13 @@ class Property extends PureComponent {
                     ) : null
                   }
                   data={this.props.propList}
-                  renderItem={({ item, index }) => {
+                  renderItem={({item, index}) => {
                     return (
-                      <View key={`property_index_${index}`} style={styles.propListContainer}>
+                      <View
+                        key={`property_index_${index}`}
+                        style={styles.propListContainer}>
                         <Properties
-                          prop={{ item, index }}
+                          prop={{item, index}}
                           routerIcon={false}
                           warningIcon={false}
                           jumpFromSearch={null}
@@ -625,7 +667,9 @@ class Property extends PureComponent {
                     );
                   }}
                   onEndReachedThreshold={0.2}
-                  onMomentumScrollEnd={() => !this.props.limitExceed && this.LoadData()}
+                  onMomentumScrollEnd={() =>
+                    !this.props.limitExceed && this.LoadData()
+                  }
                 />
               </View>
             )}
@@ -641,7 +685,7 @@ const mapStateToProps = (state, ownProps) => ({
   isLoading: state.propertyReducer.isLoading,
   offset: state.propertyReducer.offset,
   listLoader: state.propertyReducer.listLoader,
-  limitExceed: state.propertyReducer.limitExceed
+  limitExceed: state.propertyReducer.limitExceed,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -649,7 +693,6 @@ const mapDispatchToProps = (dispatch) => {
     // dispatching plain actions
     fetchPropetry: () => dispatch(fetchPropetry()),
     loadMoreData: (data) => dispatch(loadMoreData(data)),
-
   };
 };
 
