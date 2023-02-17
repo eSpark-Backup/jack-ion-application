@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Dimensions,
@@ -17,21 +17,21 @@ import Back from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Components
-import { Fonts } from '../utils/fonts';
+import {Fonts} from '../utils/fonts';
 import styles from './style';
 import CustumStatusBar from '../components/StatusBar';
 import TextReuseableComponent from '../../scr/components/Text/index';
 import ChatScreen from './chat';
 import ChatDetails from '../components/chat/ChatDetails';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const IC_ARR_DOWN = require('../../Images/down.png');
 const IC_ARR_UP = require('../../Images/up.png');
 
 export default class Splash extends Component {
   static navigationOptions = {
     title: 'Support',
-    tabBarIcon: ({ tintColor }) => (
+    tabBarIcon: ({tintColor}) => (
       <TabIcon name="contact-mail" color={tintColor} size={width * 0.05} />
     ),
   };
@@ -45,7 +45,7 @@ export default class Splash extends Component {
       supportScreen: true,
       chatScreen: false,
       chatDetailsScreen: false,
-      selectedChat: null
+      selectedChat: null,
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -57,35 +57,41 @@ export default class Splash extends Component {
       // console.log('props', this.props.navigation.state.params?.item);
       // console.log('selectedChat', this.state.selectedChat);
       let item = this.props.navigation.state.params.item;
-      item["id"] = this.props.navigation.state.params?.item?.sender_id
-      item["name"] = this.props.navigation.state.params?.item?.sender_name;
-      this.handleChatDetailsClick("ChatDetails", this.props.navigation.state.params ? this.props.navigation.state.params : this.state.selectedChat)
+      item['id'] = this.props.navigation.state.params?.item?.sender_id;
+      item['name'] = this.props.navigation.state.params?.item?.sender_name;
+      this.handleChatDetailsClick(
+        'ChatDetails',
+        this.props.navigation.state.params
+          ? this.props.navigation.state.params
+          : this.state.selectedChat,
+      );
     }
-  }
+  };
 
   changeLayoutMeter = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({ meter: !this.state.meter, meterDown: !this.state.meterDown });
+    this.setState({meter: !this.state.meter, meterDown: !this.state.meterDown});
   };
   changeLayoutNearby = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    this.setState({ nearby: !this.state.nearby, nearDown: !this.state.nearDown });
+    this.setState({nearby: !this.state.nearby, nearDown: !this.state.nearDown});
   };
 
   handleChatClick = () => {
-     this.setState({ supportScreen: false, 
-      chatScreen: true, 
-      chatDetailsScreen: false 
+    this.setState({
+      supportScreen: false,
+      chatScreen: true,
+      chatDetailsScreen: false,
     });
-  }
+  };
   handleChatDetailsClick = (screen, selectedChat) => {
-    this.setState({ 
-      supportScreen: screen == "Support" ? true : false, 
-      chatScreen: screen == "Chat" ? true : false, 
-      chatDetailsScreen: screen == "ChatDetails" ? true : false, 
-      selectedChat: selectedChat ? selectedChat : null 
+    this.setState({
+      supportScreen: screen == 'Support' ? true : false,
+      chatScreen: screen == 'Chat' ? true : false,
+      chatDetailsScreen: screen == 'ChatDetails' ? true : false,
+      selectedChat: selectedChat ? selectedChat : null,
     });
-  }
+  };
   render() {
     let upDownMeter;
     !this.state.meterDown ? (upDownMeter = 'up') : (upDownMeter = 'down');
@@ -96,106 +102,141 @@ export default class Splash extends Component {
       <View style={styles.container}>
         {Platform.OS == 'ios' && <CustumStatusBar />}
 
-        {this.state.supportScreen && <><View style={styles.headingContainer}>
-          <View style={[styles.headingInner]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Home")}
-              style={{
-                width: width * 0.15,
-                height: height * 0.06,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Back
-                size={width * 0.08}
-                color="white"
-                name="keyboard-backspace"
-              />
-            </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: width * 0.2,
-              }}>
-              <Help
-                name="help-circle"
-                size={width * 0.06}
-                color="white"
-                style={{
-                  marginRight: width * 0.01,
-                }}
-              />
-              <TextReuseableComponent title style={styles.mainHeadiing} value={"Support"} />
-            </View>
-          </View>
-        </View>
-        <View style={{ flex: 1 }}>
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                paddingTop: 40,
-              }}>
-              <TextReuseableComponent title style={styles.mainBottonText} value={"Feel free to give us a call"} />
-            </View>
-            <View>
-              <TouchableOpacity
-                style={[styles.insideBottonView, { flexDirection: 'row' }]}
-                onPress={() => {
-                  Linking.openURL(`tel:844 538 8203`);
-                }}>
-                <Phone
-                  name="phone"
-                  size={width * 0.07}
+        {this.state.supportScreen && (
+          <>
+            <View style={styles.headingContainer}>
+              <View style={[styles.headingInner]}>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('Home')}
                   style={{
-                    marginHorizontal: width * 0.01,
-                  }}
-                />
-                <TextReuseableComponent title style={{ fontSize: width * 0.09, }} value={"844-538-8203"} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.insideBottonView}>
-              <TextReuseableComponent title style={{
-                fontSize: width * 0.05,
-                color: 'black',
-                fontFamily: Fonts.BalooChettan2,
-                paddingTop: 20,
-              }} value={"or send us an email"} />
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() =>
-                  Linking.openURL('mailto:jackhowell@ionenergysolutions.com')
-                }>
-                <Email
-                  name="mail"
-                  size={width * 0.05}
-                  style={{ marginHorizontal: width * 0.01 }}
-                />
-                <TextReuseableComponent title style={styles.emailText} value={"jackhowell@ionenergysolutions.com"} />
-              </TouchableOpacity>
-              <View>
+                    width: width * 0.15,
+                    height: height * 0.06,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Back
+                    size={width * 0.08}
+                    color="white"
+                    name="keyboard-backspace"
+                  />
+                </TouchableOpacity>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: width * 0.2,
+                  }}>
+                  <Help
+                    name="help-circle"
+                    size={width * 0.06}
+                    color="white"
+                    style={{
+                      marginRight: width * 0.01,
+                    }}
+                  />
+                  <TextReuseableComponent
+                    title
+                    style={styles.mainHeadiing}
+                    value={'Support'}
+                  />
+                </View>
               </View>
             </View>
-          </View>
-        </View>
-        <View style={styles.chatModule}>
-          <TouchableOpacity onPress={() => this.handleChatClick()}>
-            <MaterialCommunityIcons
-              name="chat-processing-outline"
-              size={width * 0.15}
-              color="#25AAE1ec"
-            />
-            <TextReuseableComponent style={{textAlign: "center"}} value={"Chat"} />
-          </TouchableOpacity>
-        </View></>}
-        {this.state.chatScreen && <ChatScreen handleChatDetailsClick={this.handleChatDetailsClick} />}
-        {this.state.chatDetailsScreen && <ChatDetails selectedChat={this.state.selectedChat} handleChatDetailsClick={this.handleChatDetailsClick} />}
+            <View style={{flex: 1}}>
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    paddingTop: 40,
+                  }}>
+                  <TextReuseableComponent
+                    title
+                    style={styles.mainBottonText}
+                    value={'Feel free to give us a call'}
+                  />
+                </View>
+                <View>
+                  <TouchableOpacity
+                    style={[styles.insideBottonView, {flexDirection: 'row'}]}
+                    onPress={() => {
+                      Linking.openURL(`tel:844 538 8203`);
+                    }}>
+                    <Phone
+                      name="phone"
+                      size={width * 0.07}
+                      style={{
+                        marginHorizontal: width * 0.01,
+                      }}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={{fontSize: width * 0.09}}
+                      value={'844-538-8203'}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.insideBottonView}>
+                  <TextReuseableComponent
+                    title
+                    style={{
+                      fontSize: width * 0.05,
+                      color: 'black',
+                      fontFamily: Fonts.BalooChettan2,
+                      paddingTop: 20,
+                    }}
+                    value={'or send us an email'}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() =>
+                      Linking.openURL(
+                        'mailto:jackhowell@ionenergysolutions.com',
+                      )
+                    }>
+                    <Email
+                      name="mail"
+                      size={width * 0.05}
+                      style={{marginHorizontal: width * 0.01}}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.emailText}
+                      value={'jackhowell@ionenergysolutions.com'}
+                    />
+                  </TouchableOpacity>
+                  <View></View>
+                </View>
+              </View>
+            </View>
+            <View style={styles.chatModule}>
+              <TouchableOpacity onPress={() => this.handleChatClick()}>
+                <MaterialCommunityIcons
+                  name="chat-processing-outline"
+                  size={width * 0.15}
+                  color="#25AAE1ec"
+                />
+                <TextReuseableComponent
+                  style={{textAlign: 'center'}}
+                  value={'Chat'}
+                />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+        {this.state.chatScreen && (
+          <ChatScreen handleChatDetailsClick={this.handleChatDetailsClick} />
+        )}
+        {this.state.chatDetailsScreen && (
+          <ChatDetails
+            selectedChat={this.state.selectedChat}
+            handleChatDetailsClick={this.handleChatDetailsClick}
+          />
+        )}
       </View>
     );
   }

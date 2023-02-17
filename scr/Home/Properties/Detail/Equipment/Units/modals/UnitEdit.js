@@ -4812,7 +4812,7 @@ export default function UnitEdit({
                       size={height * 0.05}
                       color="#5e5e5e"
                     /> */}
-                    <Pressable
+                    <TouchableOpacity
                       style={{marginLeft: 5, top: 8}}
                       onPress={() =>
                         Alert.alert(
@@ -4826,18 +4826,16 @@ export default function UnitEdit({
                             },
                           ],
                         )
-                      }
-                      android_ripple={{
-                        color: '#5e5e5e',
-                        borderless: true,
-                        // radius: width * 0.03,
-                      }}>
+                      }>
                       <TextReuseableComponent
                         title
-                        style={styles.modalHeading}
+                        style={{
+                          color: 'black',
+                          fontFamily: Fonts.ComfortaaRegular,
+                        }}
                         value={'Cancel'}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                     <TextReuseableComponent
                       title
                       style={[styles.modalHeading, {top: 8}]}
@@ -4845,12 +4843,7 @@ export default function UnitEdit({
                     />
                     <View
                       style={{marginRight: 5, top: 8, width: width * 0.15}}
-                      onPress={handleAddNewUnit}
-                      android_ripple={{
-                        color: '#25AAE1',
-                        borderless: true,
-                        // radius: width * 0.03,
-                      }}>
+                      onPress={handleAddNewUnit}>
                       {meterInfo ? (
                         <TouchableOpacity
                           onPress={() => {
@@ -4864,7 +4857,10 @@ export default function UnitEdit({
                           }}>
                           <TextReuseableComponent
                             title
-                            style={styles.modalHeading}
+                            style={{
+                              color: 'black',
+                              fontFamily: Fonts.ComfortaaRegular,
+                            }}
                             value={'Edit'}
                           />
                         </TouchableOpacity>

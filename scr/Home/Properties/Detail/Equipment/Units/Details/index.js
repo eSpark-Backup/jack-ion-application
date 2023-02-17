@@ -1224,13 +1224,7 @@ const App = ({navigation}) => {
           }}
           centerComponent={
             <View style={styles.flexRow}>
-              <Home
-                name="home"
-                size={width * 0.05}
-                color="#000"
-                style={styles.leftedIcon}
-              />
-              <TextReuseableComponent title value={'Units Details'} />
+              <TextReuseableComponent heading value={'Unit Details'} />
             </View>
           }
           rightComponent={{
@@ -1398,13 +1392,7 @@ const App = ({navigation}) => {
           }}
           centerComponent={
             <View style={styles.flexRow}>
-              <Home
-                name="home"
-                size={width * 0.05}
-                color="#000"
-                style={styles.rightedIcon}
-              />
-              <TextReuseableComponent title value={'Units Details'} />
+              <TextReuseableComponent heading value={'Unit Details'} />
             </View>
           }
           rightComponent={{

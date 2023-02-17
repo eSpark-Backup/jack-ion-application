@@ -23,14 +23,14 @@ import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Folder from 'react-native-vector-icons/Feather';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icon, IconToggle } from 'react-native-material-ui';
-import { VictoryPie } from 'victory-native';
+import {Icon, IconToggle} from 'react-native-material-ui';
+import {VictoryPie} from 'victory-native';
 import Drawer from '../../../components/modal/Drawer/index';
 import ContextProp from '../Context/propContext';
-import { TextInput, FAB, HelperText } from 'react-native-paper';
+import {TextInput, FAB, HelperText} from 'react-native-paper';
 import Geocoder from 'react-native-geocoding';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
@@ -44,17 +44,17 @@ import {
 
 // Components
 import styles from './style';
-import { Fonts } from '../../../utils/fonts';
+import {Fonts} from '../../../utils/fonts';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import API from '../../../api/SeviceApi';
-import { connect } from 'react-redux';
-import { fetchPropetry } from '../../../Store/Action/properties.action';
+import {connect} from 'react-redux';
+import {fetchPropetry} from '../../../Store/Action/properties.action';
 import TextReuseableComponent from '../../../components/Text/index';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -94,14 +94,14 @@ class Details extends React.Component {
       selectLocation: false,
       selectAddManuUtil: [],
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
       unitMixes: [],
       tpanelData: [],
@@ -125,11 +125,11 @@ class Details extends React.Component {
         zipcode: '',
       },
       dropDownShow: [
-        { value: true },
-        { value: false },
-        { value: false },
-        { value: false },
-        { value: false },
+        {value: true},
+        {value: false},
+        {value: false},
+        {value: false},
+        {value: false},
       ],
     };
     if (Platform.OS === 'android') {
@@ -138,14 +138,17 @@ class Details extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
 
     this.setPropertyData();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.navigation.state.params.item.item !== prevProps.navigation.state.params.item.item) {
+    if (
+      this.props.navigation.state.params.item.item !==
+      prevProps.navigation.state.params.item.item
+    ) {
       this.setPropertyData();
     }
   }
@@ -172,11 +175,11 @@ class Details extends React.Component {
     this.getPropertyDetails(propertyData?.id);
     this.getMetersLocation(propertyData?.id);
     this.getTpanelData(propertyData?.id);
-    this.getBunchData(propertyData?.id)
-  }
+    this.getBunchData(propertyData?.id);
+  };
 
   getPropertyDetails = async (id) => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
 
     const propertyRes = await API.get(`/property/${id}`);
     const currPropData = propertyRes?.data?.data?.property;
@@ -190,7 +193,7 @@ class Details extends React.Component {
       manus.push(item.manufacturer.name);
     });
 
-    this.setState({ utilTypes, manus });
+    this.setState({utilTypes, manus});
     let uMdata = currPropData.unit_mixes;
     let nOU = 0;
     let tGD = 0;
@@ -249,12 +252,12 @@ class Details extends React.Component {
   };
 
   getMetersLocation = async (propertyId) => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     const metersLocation = await API.get(
       `/property/location-meters/${propertyId}`,
     );
     if (metersLocation?.data?.bool) {
-      this.setState({ markers: metersLocation?.data?.data, isLoading: false });
+      this.setState({markers: metersLocation?.data?.data, isLoading: false});
       let index = metersLocation?.data?.data?.length - 1;
       this.setState({
         propMarkers: metersLocation?.data?.data[index]?.property?.position,
@@ -333,10 +336,10 @@ class Details extends React.Component {
       });
       const propertyRes = await API.get(`/property/${this.state.propertyId}`);
 
-      this.setState({ propertyData: propertyRes?.data?.data?.property });
+      this.setState({propertyData: propertyRes?.data?.data?.property});
 
       if (propertyRes?.data?.bool) {
-        this.setState({ isEditPropVisible: true, propertyflag: true });
+        this.setState({isEditPropVisible: true, propertyflag: true});
         this.context.doLoad();
       }
     } else {
@@ -363,7 +366,7 @@ class Details extends React.Component {
       isLoading: true,
       isLoading: false,
     });
-    this.props.fetchPropetry()
+    this.props.fetchPropetry();
     this.getPropertyDetails(this.state.propertyId);
   };
 
@@ -430,12 +433,12 @@ class Details extends React.Component {
   };
 
   naviagateToSupport = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({isModalVisible: false});
     this.props.navigation.navigate('Support');
   };
 
   toggleflag = () => {
-    this.setState({ propertyflag: false });
+    this.setState({propertyflag: false});
   };
 
   renderShimmers = (item) => (
@@ -456,7 +459,13 @@ class Details extends React.Component {
   );
 
   render() {
-    const { onlineUnits, offlineUnits, notInstalledUnits, tBunchData, propertyData } = this.state;
+    const {
+      onlineUnits,
+      offlineUnits,
+      notInstalledUnits,
+      tBunchData,
+      propertyData,
+    } = this.state;
     return (
       <>
         <CustumStatusBar />
@@ -476,7 +485,7 @@ class Details extends React.Component {
             flag={this.state.propertyflag}
             toggleflag={this.toggleflag}
           />
-          
+
           <Drawer
             isVisible={this.state.isModalVisible}
             onCancel={this.toggleModal}
@@ -507,7 +516,7 @@ class Details extends React.Component {
                 <Search
                   name="search"
                   size={height * 0.04}
-                  style={{ marginLeft: width * 0.015 }}
+                  style={{marginLeft: width * 0.015}}
                   color="white"
                 />
                 <TextInput
@@ -516,7 +525,7 @@ class Details extends React.Component {
                   placeholderTextColor="white"
                   placeholder="Search"
                   style={styles.search}
-                  onChangeText={(e) => this.setState({ currentWei: e })}
+                  onChangeText={(e) => this.setState({currentWei: e})}
                   theme={{
                     colors: {
                       text: 'white',
@@ -542,14 +551,20 @@ class Details extends React.Component {
                 name="account-details-outline"
                 size={width * 0.08}
                 color="white"
-                style={{ top: height * 0.002 }}
+                style={{top: height * 0.002}}
               />
-              <TextReuseableComponent title style={styles.mainHeadiing} value={"Details"} />
+              <TextReuseableComponent
+                title
+                style={styles.mainHeadiing}
+                value={'Details'}
+              />
             </View>
           </View>
-          {(this.state.listData.name == "undefined" || !this.state.listData.name) && this.state.shimmers.map((item) => this.renderShimmers(item))}
+          {(this.state.listData.name == 'undefined' ||
+            !this.state.listData.name) &&
+            this.state.shimmers.map((item) => this.renderShimmers(item))}
           <ScrollView
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled
             keyboardShouldPersistTaps="handled">
@@ -584,44 +599,53 @@ class Details extends React.Component {
                 />
 
                 {this.state.markers?.length > 0 &&
-                  this.state.markers.map(
-                    (marker, index) =>
-                      marker?.position?.lat && (
-                        <Marker
-                          key={index}
-                          coordinate={{
-                            latitude: marker?.position?.lat,
-                            longitude: marker?.position?.lng,
-                          }}
+                  this.state.markers.map((marker, index) =>
+                    marker?.position?.lat ? (
+                      <Marker
+                        key={index}
+                        coordinate={{
+                          latitude: marker?.position?.lat,
+                          longitude: marker?.position?.lng,
+                        }}
+                        style={{
+                          zIndex: 5,
+                        }}
+                        title={'Meter'}>
+                        <View
                           style={{
-                            zIndex: 5,
-                          }}
-                          title={'Meter'}>
-                          <View
+                            width: width * 0.05,
+                            height: width * 0.05,
+                          }}>
+                          <Image
+                            source={require('../../../../Images/meter-icon.png')}
+                            resizeMode="center"
+                            // resizeMode="cover"
+                            resizeMethod="auto"
                             style={{
                               width: width * 0.05,
                               height: width * 0.05,
-                            }}>
-                            <Image
-                              source={require('../../../../Images/meter-icon.png')}
-                              resizeMode="center"
-                              // resizeMode="cover"
-                              resizeMethod="auto"
-                              style={{
-                                width: width * 0.05,
-                                height: width * 0.05,
-                              }}
-                            />
-                          </View>
-                        </Marker>
-                      ),
+                            }}
+                          />
+                        </View>
+                      </Marker>
+                    ) : null,
                   )}
               </MapView>
               <View style={styles.clientName}>
-                <Properties name="home-city-outline" size={width * 0.1} style={{ color: '#25AAE1ec' }} />
-                <TextReuseableComponent title style={styles.clientNameHeading} value={this.state.listData.name == null
-                  ? 'Untitled'
-                  : this.state.listData.name.substring(0, 28)} />
+                <Properties
+                  name="home-city-outline"
+                  size={width * 0.1}
+                  style={{color: '#25AAE1ec'}}
+                />
+                <TextReuseableComponent
+                  title
+                  style={styles.clientNameHeading}
+                  value={
+                    this.state.listData.name == null
+                      ? 'Untitled'
+                      : this.state.listData.name.substring(0, 28)
+                  }
+                />
                 <Pressable
                   style={styles.clientDataEdit}
                   onPress={() => this.enableLocation()}
@@ -629,153 +653,257 @@ class Details extends React.Component {
                     color: 'white',
                     radius: width * 0.1,
                   }}>
-                  <TextReuseableComponent title style={styles.editBottonText} value={"Edit"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.editBottonText}
+                    value={'Edit'}
+                  />
                 </Pressable>
               </View>
 
               <View style={styles.mainDataContainer}>
                 <TouchableOpacity
-                  style={{ ...styles.infoViewContainer, paddingHorizontal: 10 }}
+                  style={{...styles.infoViewContainer, paddingHorizontal: 10}}
                   onPress={() =>
-                    this.props.navigation.navigate(
-                      'Tpanel',
-                      {
-                        propertyData: this.props.navigation.state.params.item
-                          .item,
-                        tpanelData: this.state.tpanelData,
-                      },
-                    )
+                    this.props.navigation.navigate('Tpanel', {
+                      propertyData: this.props.navigation.state.params.item
+                        .item,
+                      tpanelData: this.state.tpanelData,
+                    })
                   }>
-                  <TextReuseableComponent title style={{ ...styles.dataFieldHeadings, borderBottomWidth: 0 }} value={"Tpanel"} />
+                  <TextReuseableComponent
+                    title
+                    style={{...styles.dataFieldHeadings, borderBottomWidth: 0}}
+                    value={'Tpanel'}
+                  />
                 </TouchableOpacity>
 
                 <View style={styles.infoViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Gateway"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'Gateway'}
+                  />
                   <View style={styles.infoViewInner}>
                     <Icon name="router" size={width * 0.06} />
-                    {propertyData?.gateway ?
-                      <View style={{ justifyContent: 'flex-end' }}>
-                        <TextReuseableComponent title style={{
-                          textAlign: 'left',
-                          fontSize: height * 0.022,
-                          fontFamily: Fonts.Montserrat,
-                        }} value={`${propertyData?.gateway?.serial_number} Synced`} />
+                    {propertyData?.gateway ? (
+                      <View style={{justifyContent: 'flex-end'}}>
+                        <TextReuseableComponent
+                          title
+                          style={{
+                            textAlign: 'left',
+                            fontSize: height * 0.022,
+                            fontFamily: Fonts.Montserrat,
+                          }}
+                          value={`${propertyData?.gateway?.serial_number} Synced`}
+                        />
                       </View>
-                      :
+                    ) : (
                       <>
-                        <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'left' }]} value={"No Gateway Programmed!"} />
-                      </>}
+                        <TextReuseableComponent
+                          title
+                          style={[styles.dataFieldText, {textAlign: 'left'}]}
+                          value={'No Gateway Programmed!'}
+                        />
+                      </>
+                    )}
                   </View>
                 </View>
 
-
                 <View style={styles.infoViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"ADDRESS"} />
-                  <View style={[styles.infoViewInner, { height: 'auto' }]}>
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'ADDRESS'}
+                  />
+                  <View style={[styles.infoViewInner, {height: 'auto'}]}>
                     <Locate name="map-pin" size={width * 0.06} />
-                    <TextReuseableComponent title style={[styles.dataFieldText, { overflow: 'scroll', textAlign: 'left' }]} value={`${this.state.listData.street == null
-                      ? ''
-                      : this.state.listData.street
-                      } ${this.state.listData.city == null
-                        ? ''
-                        : this.state.listData.city + ','
-                      } ${this.state.listData.st == null
-                        ? ''
-                        : this.state.listData.st
-                      } ${this.state.listData.zipcode == null
-                        ? ''
-                        : this.state.listData.zipcode
-                      }`} />
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {overflow: 'scroll', textAlign: 'left'},
+                      ]}
+                      value={`${
+                        this.state.listData.street == null
+                          ? ''
+                          : this.state.listData.street
+                      } ${
+                        this.state.listData.city == null
+                          ? ''
+                          : this.state.listData.city + ','
+                      } ${
+                        this.state.listData.st == null
+                          ? ''
+                          : this.state.listData.st
+                      } ${
+                        this.state.listData.zipcode == null
+                          ? ''
+                          : this.state.listData.zipcode
+                      }`}
+                    />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"CUSTOM ID"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'CUSTOM ID'}
+                  />
                   <View style={styles.infoViewInner}>
-                    <Folder name="folder" size={width * 0.06} style={{ textAlign: 'left' }} />
-                    <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={this.state.listData.custom_id == null ||
-                      this.state.listData.custom_id == ''
-                      ? '--'
-                      : this.state.listData.custom_id} />
+                    <Folder
+                      name="folder"
+                      size={width * 0.06}
+                      style={{textAlign: 'left'}}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={[styles.dataFieldText, {textAlign: 'right'}]}
+                      value={
+                        this.state.listData.custom_id == null ||
+                        this.state.listData.custom_id == ''
+                          ? '--'
+                          : this.state.listData.custom_id
+                      }
+                    />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Other Details"} />
-                  <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: width * 0.8 }}>
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: '40%', textAlign: 'left' },
-                    ]} value={"Unit Count:"} />
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: '60%', textAlign: 'right' },
-                    ]} value={this.state.listData.unit_count == null ||
-                      this.state.listData.unit_count == ''
-                      ? '--'
-                      : this.state.listData.unit_count} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'Other Details'}
+                  />
+                  <View
+                    style={{
+                      height: height * 0.05,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: width * 0.8,
+                    }}>
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {width: '40%', textAlign: 'left'},
+                      ]}
+                      value={'Unit Count:'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {width: '60%', textAlign: 'right'},
+                      ]}
+                      value={
+                        this.state.listData.unit_count == null ||
+                        this.state.listData.unit_count == ''
+                          ? '--'
+                          : this.state.listData.unit_count
+                      }
+                    />
                   </View>
 
-                  <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01, width: width * 0.8 }}>
-                      <TextReuseableComponent title style={[
+                  <View
+                    style={{
+                      height: height * 0.05,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      width: width * 0.8,
+                      alignItems: 'center',
+                      marginVertical: height * 0.01,
+                      width: width * 0.8,
+                    }}>
+                    <TextReuseableComponent
+                      title
+                      style={[
                         styles.dataFieldText,
-                        { width: '45%', textAlign: 'left' },
-                      ]} value={"Utility Type:"} />
-                    <View style={{ width: '55%', alignItems: 'flex-end' }}>
+                        {width: '45%', textAlign: 'left'},
+                      ]}
+                      value={'Utility Type:'}
+                    />
+                    <View style={{width: '55%', alignItems: 'flex-end'}}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        style={{ flexDirection: 'row' }}>
+                        style={{flexDirection: 'row'}}>
                         {this.state?.utilTypes?.map((item, index) => (
                           <View
                             key={index}
                             style={{
                               justifyContent: 'center',
                               textAlign: 'center',
-                              marginHorizontal: this.state?.utilTypes.length > 1 ? 5 : null,
+                              marginHorizontal:
+                                this.state?.utilTypes.length > 1 ? 5 : null,
                             }}>
-                            <TextReuseableComponent title style={[
-                              styles.dataFieldText,
-                              {
-                                width: null,
-                                textAlign: 'auto',
-                                borderWidth: 1,
-                                borderRadius: 5,
-                                padding: 3,
-                              },
-                            ]} value={item} />
+                            <TextReuseableComponent
+                              title
+                              style={[
+                                styles.dataFieldText,
+                                {
+                                  width: null,
+                                  textAlign: 'auto',
+                                  borderWidth: 1,
+                                  borderRadius: 5,
+                                  padding: 3,
+                                },
+                              ]}
+                              value={item}
+                            />
                           </View>
                         ))}
                       </ScrollView>
                     </View>
                   </View>
 
-                  <View style={{ height: height * 0.05, flexDirection: 'row', justifyContent: 'center', width: width * 0.8, alignItems: 'center', marginVertical: height * 0.01, marginBottom: height * 0.01, width: width * 0.8 }}>
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: '45%', textAlign: 'left' },
-                    ]} value={"Manufacturer:"} />
-                    <View style={{ width: '55%', alignItems: 'flex-end' }}>
+                  <View
+                    style={{
+                      height: height * 0.05,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      width: width * 0.8,
+                      alignItems: 'center',
+                      marginVertical: height * 0.01,
+                      marginBottom: height * 0.01,
+                      width: width * 0.8,
+                    }}>
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {width: '45%', textAlign: 'left'},
+                      ]}
+                      value={'Manufacturer:'}
+                    />
+                    <View style={{width: '55%', alignItems: 'flex-end'}}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        style={{ flexDirection: 'row' }}>
+                        style={{flexDirection: 'row'}}>
                         {this.state?.manus?.map((item, index) => (
                           <View
                             key={index}
                             style={{
                               justifyContent: 'center',
                               textAlign: 'center',
-                              marginHorizontal: this.state?.manus.length > 1 ? 5 : null,
+                              marginHorizontal:
+                                this.state?.manus.length > 1 ? 5 : null,
                             }}>
-                            <TextReuseableComponent title style={[
-                              styles.dataFieldText,
-                              {
-                                width: null,
-                                textAlign: 'auto',
-                                borderWidth: 1,
-                                borderRadius: 5,
-                                padding: 3,
-                              },
-                            ]} value={item} />
+                            <TextReuseableComponent
+                              title
+                              style={[
+                                styles.dataFieldText,
+                                {
+                                  width: null,
+                                  textAlign: 'auto',
+                                  borderWidth: 1,
+                                  borderRadius: 5,
+                                  padding: 3,
+                                },
+                              ]}
+                              value={item}
+                            />
                           </View>
                         ))}
                       </ScrollView>
@@ -784,131 +912,288 @@ class Details extends React.Component {
                 </View>
 
                 <View style={styles.infoViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Owner/Developer Name"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'Owner/Developer Name'}
+                  />
                   <View style={styles.infoViewInner}>
                     <Folder name="folder" size={width * 0.06} />
-                    <TextReuseableComponent title style={[styles.dataFieldText, { textAlign: 'right' }]} value={this.state.listData.owner == null ||
-                      this.state.listData.owner == ''
-                      ? '--'
-                      : this.state.listData.owner} />
+                    <TextReuseableComponent
+                      title
+                      style={[styles.dataFieldText, {textAlign: 'right'}]}
+                      value={
+                        this.state.listData.owner == null ||
+                        this.state.listData.owner == ''
+                          ? '--'
+                          : this.state.listData.owner
+                      }
+                    />
                   </View>
                 </View>
                 <View style={styles.infoViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Meter Count & Installation Status"} />
-                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: width * 0.4, textAlign: 'left' },
-                    ]} value={"Meter Count:"} />
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: width * 0.4, textAlign: 'right' },
-                    ]} value={this.state.meterCount == null ||
-                      this.state.meterCount == ''
-                      ? '--'
-                      : this.state.meterCount} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'Meter Count & Installation Status'}
+                  />
+                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'left'},
+                      ]}
+                      value={'Meter Count:'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.4, textAlign: 'right'},
+                      ]}
+                      value={
+                        this.state.meterCount == null ||
+                        this.state.meterCount == ''
+                          ? '--'
+                          : this.state.meterCount
+                      }
+                    />
                   </View>
-                  <View style={[styles.infoViewInner, { height: height * 0.06, justifyContent: 'space-between' }]}>
-                    <TextReuseableComponent subHeading style={[
-                      styles.dataFieldText,
-                      { width: width * 0.6, textAlign: 'left' },
-                    ]} value={"Complete Installations:"} />
-                    <TextReuseableComponent title style={[
-                      styles.dataFieldText,
-                      { width: width * 0.2, textAlign: 'right' },
-                    ]} value={this.state.installStatus === 'undefined/undefined' || this.state.installStatus == '' || this.state.installStatus == null ? '--' : this.state.installStatus} />
+                  <View
+                    style={[
+                      styles.infoViewInner,
+                      {height: height * 0.06, justifyContent: 'space-between'},
+                    ]}>
+                    <TextReuseableComponent
+                      subHeading
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.6, textAlign: 'left'},
+                      ]}
+                      value={'Complete Installations:'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={[
+                        styles.dataFieldText,
+                        {width: width * 0.2, textAlign: 'right'},
+                      ]}
+                      value={
+                        this.state.installStatus === 'undefined/undefined' ||
+                        this.state.installStatus == '' ||
+                        this.state.installStatus == null
+                          ? '--'
+                          : this.state.installStatus
+                      }
+                    />
                   </View>
                 </View>
-                <View style={[styles.infoViewContainer, { height: height * 0.4 }]}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Unit Mixes"} />
+                <View
+                  style={[styles.infoViewContainer, {height: height * 0.4}]}>
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'Unit Mixes'}
+                  />
                   <View style={styles.unitMixesHeadContainer}>
-                    <TextReuseableComponent title style={styles.unitmixesHeadSmall} value={"#"} />
-                    <TextReuseableComponent title style={styles.unitmixesHeadSmall} value={"BR"} />
-                    <TextReuseableComponent title style={styles.unitmixesHeadSmall} value={"BA"} />
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"#Units"} />
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"G/U/D"} />
-                    <TextReuseableComponent title style={styles.unitMixesHeads} value={"T/G/D"} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitmixesHeadSmall}
+                      value={'#'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitmixesHeadSmall}
+                      value={'BR'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitmixesHeadSmall}
+                      value={'BA'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitMixesHeads}
+                      value={'#Units'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitMixesHeads}
+                      value={'G/U/D'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.unitMixesHeads}
+                      value={'T/G/D'}
+                    />
                   </View>
                   <ScrollView
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                    style={{ width: width * 0.8, height: height * 0.4, marginVertical: height * 0.01 }}>
+                    style={{
+                      width: width * 0.8,
+                      height: height * 0.4,
+                      marginVertical: height * 0.01,
+                    }}>
                     {this.state.unitMixes.map((item, index) => (
                       <View key={index} style={styles.unitMixesValuesContainer}>
-                        <TextReuseableComponent title style={styles.unitmixesValueSmall} value={index + 1} />
-                        <TextReuseableComponent title style={styles.unitmixesValueSmall} value={item.br} />
-                        <TextReuseableComponent title style={styles.unitmixesValueSmall} value={item.ba} />
-                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units} />
-                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.gud} />
-                        <TextReuseableComponent title style={styles.unitMixesValues} value={item.no_of_units * item.gud} />
+                        <TextReuseableComponent
+                          title
+                          style={styles.unitmixesValueSmall}
+                          value={index + 1}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={styles.unitmixesValueSmall}
+                          value={item.br}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={styles.unitmixesValueSmall}
+                          value={item.ba}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={styles.unitMixesValues}
+                          value={item.no_of_units}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={styles.unitMixesValues}
+                          value={item.gud}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={styles.unitMixesValues}
+                          value={item.no_of_units * item.gud}
+                        />
                       </View>
                     ))}
                   </ScrollView>
                   <View style={styles.sumUnitMixes}>
-                    <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum # Units"} />
-                    <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"Sum T/G/D"} />
-                    <TextReuseableComponent title style={styles.sumUnitMixesHead} value={"ADC"} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.sumUnitMixesHead}
+                      value={'Sum # Units'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.sumUnitMixesHead}
+                      value={'Sum T/G/D'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      style={styles.sumUnitMixesHead}
+                      value={'ADC'}
+                    />
                   </View>
                   <View style={styles.sumUnitMixesValuesView}>
-                    <TextReuseableComponent title value={this.state.sumNoOfUnits} />
-                    <TextReuseableComponent title value={this.state.sumTotalGalDay} />
-                    <TextReuseableComponent title value={this.state.sumNoOfUnits > 0
-                      ? Math.round(
-                        this.state.sumTotalGalDay / this.state.sumNoOfUnits,
-                      )
-                      : 0} />
+                    <TextReuseableComponent
+                      title
+                      value={this.state.sumNoOfUnits}
+                    />
+                    <TextReuseableComponent
+                      title
+                      value={this.state.sumTotalGalDay}
+                    />
+                    <TextReuseableComponent
+                      title
+                      value={
+                        this.state.sumNoOfUnits > 0
+                          ? Math.round(
+                              this.state.sumTotalGalDay /
+                                this.state.sumNoOfUnits,
+                            )
+                          : 0
+                      }
+                    />
                   </View>
                 </View>
 
                 <View style={styles.contactViewContainer}>
-                  <TextReuseableComponent title style={styles.dataFieldHeadings} value={"Contact Info"} />
-                  {this.state.listData?.contact_name || this.state.listData?.contact_phone || this.state.listData?.contact_email ? <>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Icon
-                          name="account-box"
-                          size={height * 0.04}
-                          color="#444444"
-                          maxOpacity={0.1}
-                        />
+                  <TextReuseableComponent
+                    title
+                    style={styles.dataFieldHeadings}
+                    value={'Contact Info'}
+                  />
+                  {this.state.listData?.contact_name ||
+                  this.state.listData?.contact_phone ||
+                  this.state.listData?.contact_email ? (
+                    <>
+                      <View style={styles.contactInfoContainer}>
+                        <View style={styles.contactInfoInner}>
+                          <Icon
+                            name="account-box"
+                            size={height * 0.04}
+                            color="#444444"
+                            maxOpacity={0.1}
+                          />
+                        </View>
+                        <View style={styles.contactInfoText}>
+                          <TextReuseableComponent
+                            title
+                            value={this.state.listData?.contact_name}
+                          />
+                        </View>
                       </View>
-                      <View style={styles.contactInfoText}>
-                        <TextReuseableComponent title value={this.state.listData?.contact_name} />
+                      <View style={styles.contactInfoContainer}>
+                        <View style={styles.contactInfoInner}>
+                          <Icon
+                            name="phone"
+                            size={height * 0.04}
+                            color="#444444"
+                            maxOpacity={0.5}
+                          />
+                        </View>
+                        <View style={styles.contactInfoText}>
+                          <TextReuseableComponent
+                            title
+                            value={this.state.listData?.contact_phone}
+                          />
+                        </View>
                       </View>
+                      <View style={styles.contactInfoContainer}>
+                        <View style={styles.contactInfoInner}>
+                          <Icon
+                            name="mail-outline"
+                            size={height * 0.03}
+                            color="#444444"
+                            maxOpacity={0.5}
+                          />
+                        </View>
+                        <View style={styles.contactInfoText}>
+                          <TextReuseableComponent
+                            title
+                            value={this.state.listData?.contact_email}
+                          />
+                        </View>
+                      </View>
+                    </>
+                  ) : (
+                    <View
+                      style={{
+                        height: height * 0.2,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <TextReuseableComponent
+                        subHeading
+                        value={'No Contact Info Available'}
+                      />
                     </View>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Icon
-                          name="phone"
-                          size={height * 0.04}
-                          color="#444444"
-                          maxOpacity={0.5}
-                        />
-                      </View>
-                      <View style={styles.contactInfoText}>
-                        <TextReuseableComponent title value={this.state.listData?.contact_phone} />
-                      </View>
-                    </View>
-                    <View style={styles.contactInfoContainer}>
-                      <View style={styles.contactInfoInner}>
-                        <Icon
-                          name="mail-outline"
-                          size={height * 0.03}
-                          color="#444444"
-                          maxOpacity={0.5}
-                        />
-                      </View>
-                      <View style={styles.contactInfoText}>
-                        <TextReuseableComponent title value={this.state.listData?.contact_email} />
-                      </View>
-                    </View></> : <View style={{ height: height * 0.2, justifyContent: 'center', alignItems: 'center' }}>
-                    <TextReuseableComponent subHeading value={"No Contact Info Available"} />
-                  </View>}
+                  )}
                 </View>
                 <View style={styles.barView}>
-                  <TextReuseableComponent title style={{ position: 'absolute' }} value={onlineUnits == 0 && offlineUnits == 0
-                    ? 'No Installations'
-                    : 'Installation'} />
+                  <TextReuseableComponent
+                    title
+                    style={{position: 'absolute'}}
+                    value={
+                      onlineUnits == 0 && offlineUnits == 0
+                        ? 'No Installations'
+                        : 'Installation'
+                    }
+                  />
                   <VictoryPie
                     width={width * 0.75}
                     height={width * 0.75}
@@ -916,9 +1201,9 @@ class Details extends React.Component {
                     labelRadius={width * 0.28}
                     padAngle={1}
                     data={[
-                      { x: onlineUnits, y: onlineUnits },
-                      { x: offlineUnits, y: offlineUnits },
-                      { x: notInstalledUnits, y: notInstalledUnits },
+                      {x: onlineUnits, y: onlineUnits},
+                      {x: offlineUnits, y: offlineUnits},
+                      {x: notInstalledUnits, y: notInstalledUnits},
                     ]}
                     colorScale={['#3e95c7', '#ff1414', '#dcdcdc']}
                     style={{
@@ -931,42 +1216,121 @@ class Details extends React.Component {
                   />
                 </View>
                 <View style={styles.onlineOfflineView}>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View style={styles.onlineView} />
-                    <TextReuseableComponent title style={styles.onlineText} value={"Complete"} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.onlineText}
+                      value={'Complete'}
+                    />
                   </View>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View style={styles.offlineView} />
-                    <TextReuseableComponent title style={styles.offlineText} value={"Incomplete"} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.offlineText}
+                      value={'Incomplete'}
+                    />
                   </View>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{flexDirection: 'row'}}>
                     <View
                       style={{
                         ...styles.offlineView,
                         backgroundColor: '#dcdcdc',
                       }}
                     />
-                    <TextReuseableComponent title style={styles.offlineText} value={"Not Installed"} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.offlineText}
+                      value={'Not Installed'}
+                    />
                   </View>
                 </View>
                 <View style={styles.bunchContainer}>
                   <View style={styles.rowSpaceBtw}>
-                    <TextReuseableComponent title value={"Avg. Consumption Rate"} />
-                    <TextReuseableComponent title value={`${tBunchData?.avgConsumption || '0.00'} %`} />
+                    <TextReuseableComponent
+                      title
+                      value={'Avg. Consumption Rate'}
+                    />
+                    <TextReuseableComponent
+                      title
+                      value={`${tBunchData?.avgConsumption || '0.00'} %`}
+                    />
                   </View>
 
                   <View style={styles.rowSpaceEvenly}>
-                    <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', { propId: propertyData?.id })} style={[styles.bunchAlertContainer, { backgroundColor: '#3e89bf' }]}>
-                      <TextReuseableComponent title style={{ textTransform: 'capitalize', color: '#fff' }} value={"Soft:"} />
-                      <TextReuseableComponent title style={{ color: '#fff' }} value={tBunchData?.alert_level_count[0]?.alert_count || 0} />
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() =>
+                        this?.props?.navigation?.navigate(
+                          'ConsumptionComparison',
+                          {propId: propertyData?.id},
+                        )
+                      }
+                      style={[
+                        styles.bunchAlertContainer,
+                        {backgroundColor: '#3e89bf'},
+                      ]}>
+                      <TextReuseableComponent
+                        title
+                        style={{textTransform: 'capitalize', color: '#fff'}}
+                        value={'Soft:'}
+                      />
+                      <TextReuseableComponent
+                        title
+                        style={{color: '#fff'}}
+                        value={
+                          tBunchData?.alert_level_count[0]?.alert_count || 0
+                        }
+                      />
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', { propId: propertyData?.id })} style={[styles.bunchAlertContainer, { backgroundColor: '#FFC107' }]}>
-                      <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={"Medium:"} />
-                      <TextReuseableComponent title value={tBunchData?.alert_level_count[1]?.alert_count || 0} />
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() =>
+                        this?.props?.navigation?.navigate(
+                          'ConsumptionComparison',
+                          {propId: propertyData?.id},
+                        )
+                      }
+                      style={[
+                        styles.bunchAlertContainer,
+                        {backgroundColor: '#FFC107'},
+                      ]}>
+                      <TextReuseableComponent
+                        title
+                        style={{textTransform: 'capitalize'}}
+                        value={'Medium:'}
+                      />
+                      <TextReuseableComponent
+                        title
+                        value={
+                          tBunchData?.alert_level_count[1]?.alert_count || 0
+                        }
+                      />
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.8} onPress={() => this?.props?.navigation?.navigate('ConsumptionComparison', { propId: propertyData?.id })} style={[styles.bunchAlertContainer, { backgroundColor: '#DC3545' }]}>
-                      <TextReuseableComponent title style={{ textTransform: 'capitalize' }} value={"High:"} />
-                      <TextReuseableComponent title value={tBunchData?.alert_level_count[2]?.alert_count || 0} />
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() =>
+                        this?.props?.navigation?.navigate(
+                          'ConsumptionComparison',
+                          {propId: propertyData?.id},
+                        )
+                      }
+                      style={[
+                        styles.bunchAlertContainer,
+                        {backgroundColor: '#DC3545'},
+                      ]}>
+                      <TextReuseableComponent
+                        title
+                        style={{textTransform: 'capitalize'}}
+                        value={'High:'}
+                      />
+                      <TextReuseableComponent
+                        title
+                        value={
+                          tBunchData?.alert_level_count[2]?.alert_count || 0
+                        }
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -990,4 +1354,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Details)
+export default connect(mapStateToProps, mapDispatchToProps)(Details);
