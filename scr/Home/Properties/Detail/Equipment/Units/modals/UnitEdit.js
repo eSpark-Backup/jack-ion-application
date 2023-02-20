@@ -56,6 +56,7 @@ import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
 import API from '../../../../../../api/SeviceApi';
 
 import TextReuseableComponent from '../../../../../../components/Text/index';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -81,7 +82,6 @@ export default function UnitEdit({
   openModal,
   unitMixesId,
   type,
-  userRole,
   selectedMeterForEdit,
   addNewMeter,
   addMeterUnitMix,
@@ -249,6 +249,7 @@ export default function UnitEdit({
   const [selectedDevice, setSelectedDevice] = useState({});
   const [addModelNumber, setAddModelNumber] = useState('');
   const [noScroll, setNoScroll] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const [state, setState] = useState({
     isScannerVisible: false,
     hasAccess: false,
@@ -1656,7 +1657,7 @@ export default function UnitEdit({
                   setAttachedTo(item.name);
                 }}
                 containerStyle={{
-                  width: width * 0.7,
+                  width: userRole == 2 ? width * 0.7 : width * 0.8,
                 }}
                 itemStyle={{
                   padding: width * 0.027,
@@ -1681,17 +1682,15 @@ export default function UnitEdit({
                     margin: 0,
                     borderTopLeftRadius: width * 0.015,
                     borderBottomLeftRadius: width * 0.015,
-                    borderTopRigthRadius: 0,
-                    borderBottomRightRadius: 0,
+                    borderTopRightRadius: userRole == 2 ? 0 : width * 0.015,
+                    borderBottomRightRadius: userRole == 2 ? 0 : width * 0.015,
                     borderColor: 'black',
                     height: width * 0.13,
                     backgroundColor: '#F6F6F6',
                     borderTopWidth: width * 0.0019,
                     borderLeftWidth: width * 0.0019,
                     borderBottomWidth: width * 0.0019,
-                    borderRightWidth: 0,
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
+                    borderRightWidth: userRole == 2 ? 0 : width * 0.0019,
                   },
                   onTextChange: (text) => {
                     onChangeAttachedTo(text);
@@ -1707,22 +1706,24 @@ export default function UnitEdit({
                   nestedScrollEnabled: true,
                 }}
               />
-              <TouchableOpacity
-                style={{
-                  width: width * 0.1,
-                  backgroundColor: '#25AAE199',
-                  borderTopRightRadius: width * 0.015,
-                  borderBottomRightRadius: width * 0.015,
-                  borderTopWidth: width * 0.0019,
-                  borderRightWidth: width * 0.0019,
-                  borderBottomWidth: width * 0.0019,
-                  height: width * 0.134,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => showAddNewType('Attached To')}>
-                <Icon size={width * 0.06} color="#fff" name={'add'} />
-              </TouchableOpacity>
+              {userRole == 2 && (
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.1,
+                    backgroundColor: '#25AAE199',
+                    borderTopRightRadius: width * 0.015,
+                    borderBottomRightRadius: width * 0.015,
+                    borderTopWidth: width * 0.0019,
+                    borderRightWidth: width * 0.0019,
+                    borderBottomWidth: width * 0.0019,
+                    height: width * 0.134,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => showAddNewType('Attached To')}>
+                  <Icon size={width * 0.06} color="#fff" name={'add'} />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         ) : (
@@ -1954,7 +1955,13 @@ export default function UnitEdit({
     });
   };
 
+  const getUserRole = async () => {
+    const role = await AsyncStorage.getItem('user_role');
+    setUserRole(role);
+  };
+
   useEffect(() => {
+    getUserRole();
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setScroll(true);
     });
@@ -3111,7 +3118,7 @@ export default function UnitEdit({
                                         }}
                                         containerStyle={{
                                           width:
-                                            index > 0
+                                            index > 0 && userRole == 2
                                               ? width * 0.7
                                               : width * 0.8,
                                         }}
@@ -3174,11 +3181,23 @@ export default function UnitEdit({
                                             borderLeftWidth: width * 0.0019,
                                             borderBottomWidth: width * 0.0019,
                                             borderRightWidth:
-                                              index == 0 ? width * 0.0019 : 0,
+                                              index == 0
+                                                ? width * 0.0019
+                                                : userRole == 2
+                                                ? 0
+                                                : width * 0.0019,
                                             borderTopRightRadius:
-                                              index == 0 ? width * 0.015 : 0,
+                                              index == 0
+                                                ? width * 0.015
+                                                : userRole == 2
+                                                ? 0
+                                                : width * 0.015,
                                             borderBottomRightRadius:
-                                              index == 0 ? width * 0.015 : 0,
+                                              index == 0
+                                                ? width * 0.015
+                                                : userRole == 2
+                                                ? 0
+                                                : width * 0.015,
                                           },
                                           onTextChange: (text) => {
                                             onChangeManufacturer(text, index);
@@ -3197,7 +3216,7 @@ export default function UnitEdit({
                                           nestedScrollEnabled: true,
                                         }}
                                       />
-                                      {index > 0 && (
+                                      {index > 0 && userRole == 2 && (
                                         <TouchableOpacity
                                           style={{
                                             width: width * 0.1,
@@ -4627,7 +4646,7 @@ export default function UnitEdit({
                                   },
                                 ]}
                                 onPress={
-                                  userRole == 2
+                                  sliderNumber == 2 && userRole == 2
                                     ? finishSlider
                                     : sliderNumber == 5
                                     ? () => {

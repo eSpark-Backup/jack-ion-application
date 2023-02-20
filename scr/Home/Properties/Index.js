@@ -405,14 +405,16 @@ class Property extends PureComponent {
         <CustumStatusBar />
         <View style={styles.container}>
           {this.state.Loading && <Loader />}
-          <AddEditProperty
-            modalVisible={this.state.isAddPropVisible}
-            closeModal={this.closeAddProp}
-            currLocate={this.state.markers}
-            currAddr={this.state.locationBtn}
-            addedSuccessfully={this.onFocusFunction}
-            type={'Add'}
-          />
+          {this.state.isAddPropVisible && (
+            <AddEditProperty
+              modalVisible={this.state.isAddPropVisible}
+              closeModal={this.closeAddProp}
+              currLocate={this.state.markers}
+              currAddr={this.state.locationBtn}
+              addedSuccessfully={this.onFocusFunction}
+              type={'Add'}
+            />
+          )}
           <View style={styles.headerContainer}>
             <View style={styles.headerInner}>
               <TouchableOpacity

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import React, {useEffect, useReducer, useRef, useState} from 'react';
 
 import {
   View,
@@ -15,13 +15,13 @@ import {
   LogBox,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { Icon, IconToggle } from 'react-native-material-ui';
+import {Icon, IconToggle} from 'react-native-material-ui';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { TextInput, Button, FAB, HelperText } from 'react-native-paper';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {TextInput, Button, FAB, HelperText} from 'react-native-paper';
 import Slider from '@react-native-community/slider';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import MapView, {PROVIDER_GOOGLE, Circle} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import SystemSetting from 'react-native-system-setting';
 
@@ -35,8 +35,8 @@ import clc from 'cli-color';
 import API from '../../../api/SeviceApi';
 import Text_Input from '../../../components/TextInput/index';
 import Searchable_Dropdown from '../../../components/SearchableDropdown/index';
-import { useDispatch } from 'react-redux';
-import { fetchPropetry } from '../../../Store/Action/properties.action';
+import {useDispatch} from 'react-redux';
+import {fetchPropetry} from '../../../Store/Action/properties.action';
 
 import TextReuseableComponent from '../../Text/index';
 
@@ -51,7 +51,7 @@ export default function AddEditProperty({
   flag,
   toggleflag,
 }) {
-  const { width, height } = Dimensions.get('window');
+  const {width, height} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.0322;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -191,15 +191,14 @@ export default function AddEditProperty({
     devIdsArr: '',
   });
   const [dropDownShow, setDropDownShow] = useState([
-    { value: true },
-    { value: false },
-    { value: false },
-    { value: false },
-    { value: false },
+    {value: true},
+    {value: false},
+    {value: false},
+    {value: false},
+    {value: false},
   ]);
 
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -376,9 +375,11 @@ export default function AddEditProperty({
     }
   };
 
+  console.log('add edit properties');
+
   const handleAddContact = () => {
-    console.log('add contact clicked')
-  }
+    console.log('add contact clicked');
+  };
 
   const AddNewRow = () => {
     if (unitMixes[2].value < 1) {
@@ -744,7 +745,6 @@ export default function AddEditProperty({
       Toast.show('Please select a Utility Type', Toast.SHORT);
       return;
     } else {
-
       for (let i = 0; i < manufacturersArray?.length; i++) {
         if (type == 'Add') {
           utilAndManuIds.push({
@@ -831,7 +831,7 @@ export default function AddEditProperty({
         }
       }
 
-      dispatch(fetchPropetry())
+      dispatch(fetchPropetry());
     }
   };
 
@@ -861,11 +861,11 @@ export default function AddEditProperty({
     setAddNewType(false);
     setLocationBtn('');
     setDropDownShow([
-      { value: true },
-      { value: false },
-      { value: false },
-      { value: false },
-      { value: false },
+      {value: true},
+      {value: false},
+      {value: false},
+      {value: false},
+      {value: false},
     ]);
     setError({
       property: '',
@@ -894,7 +894,11 @@ export default function AddEditProperty({
         {addNewType && showAddType == 'Utility Type' ? (
           <View>
             <View>
-              <TextReuseableComponent title style={styles.addTypeHeading} value={`Add New ${showAddType} Type`} />
+              <TextReuseableComponent
+                title
+                style={styles.addTypeHeading}
+                value={`Add New ${showAddType} Type`}
+              />
             </View>
             <Text_Input
               placeholder={'Type New Utility Type Name'}
@@ -912,17 +916,25 @@ export default function AddEditProperty({
                 marginTop: width * 0.1,
               }}>
               <TouchableOpacity onPress={() => cancelAddType()}>
-                <TextReuseableComponent title style={styles.addTypeButtons} value={"Cancel"} />
+                <TextReuseableComponent
+                  title
+                  style={styles.addTypeButtons}
+                  value={'Cancel'}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => doneAddType('Utility', true)}
                 disabled={addUtility ? false : true}>
-                <TextReuseableComponent title style={[
-                  styles.addTypeButtons,
-                  {
-                    color: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                  },
-                ]} value={"Add"} />
+                <TextReuseableComponent
+                  title
+                  style={[
+                    styles.addTypeButtons,
+                    {
+                      color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                    },
+                  ]}
+                  value={'Add'}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -930,7 +942,11 @@ export default function AddEditProperty({
           addNewUType ? (
             <View>
               <View>
-                <TextReuseableComponent title style={styles.addTypeHeading} value={`Add New ${showAddType} Type`} />
+                <TextReuseableComponent
+                  title
+                  style={styles.addTypeHeading}
+                  value={`Add New ${showAddType} Type`}
+                />
               </View>
               <Text_Input
                 placeholder={'Type New Utility Type Name'}
@@ -948,18 +964,26 @@ export default function AddEditProperty({
                   marginTop: width * 0.1,
                 }}>
                 <TouchableOpacity onPress={() => cancelAddUType()}>
-                  <TextReuseableComponent title style={styles.addTypeButtons} value={"Cancel"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.addTypeButtons}
+                    value={'Cancel'}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => doneAddType('Utility', false)}
                   disabled={addUtility ? false : true}>
-                  <TextReuseableComponent title style={[
-                    styles.addTypeButtons,
-                    {
-                      color: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                      borderColor: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                    },
-                  ]} value={"Add"} />
+                  <TextReuseableComponent
+                    title
+                    style={[
+                      styles.addTypeButtons,
+                      {
+                        color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                        borderColor: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                      },
+                    ]}
+                    value={'Add'}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -973,7 +997,11 @@ export default function AddEditProperty({
               }}>
               <View>
                 <View>
-                  <TextReuseableComponent title style={styles.addTypeHeading} value={`Add New ${showAddType} Type`} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.addTypeHeading}
+                    value={`Add New ${showAddType} Type`}
+                  />
                 </View>
                 <Text_Input
                   placeholder={'Type New Manufacturer Name'}
@@ -985,7 +1013,11 @@ export default function AddEditProperty({
                   }}
                 />
                 <View>
-                  <TextReuseableComponent title style={styles.addTypeHeading} value={"Select Utility Type"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.addTypeHeading}
+                    value={'Select Utility Type'}
+                  />
                 </View>
                 <View>
                   <View
@@ -1031,12 +1063,16 @@ export default function AddEditProperty({
                   <View>
                     <FlatList
                       data={selectAddManuUtil}
-                      style={{ height: width * 0.15, width: width * 0.8 }}
+                      style={{height: width * 0.15, width: width * 0.8}}
                       horizontal
-                      renderItem={({ item }) => (
+                      renderItem={({item}) => (
                         <>
                           <View style={styles.utilListContainer}>
-                            <TextReuseableComponent title style={styles.utilListContainer} value={item.name} />
+                            <TextReuseableComponent
+                              title
+                              style={styles.utilListContainer}
+                              value={item.name}
+                            />
                             <TouchableOpacity
                               onPress={() => {
                                 const items = selectAddManuUtil.filter(
@@ -1047,13 +1083,17 @@ export default function AddEditProperty({
                               <Icon name="close" size={width * 0.05} />
                             </TouchableOpacity>
                           </View>
-                          <View style={{ width: 5 }} />
+                          <View style={{width: 5}} />
                         </>
                       )}
                     />
                     <View style={styles.addManuBtnContainer}>
                       <TouchableOpacity onPress={() => cancelAddType()}>
-                        <TextReuseableComponent title style={styles.addTypeButtons} value={"Cancel"} />
+                        <TextReuseableComponent
+                          title
+                          style={styles.addTypeButtons}
+                          value={'Cancel'}
+                        />
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => doneAddType('Manufacturer')}
@@ -1062,19 +1102,23 @@ export default function AddEditProperty({
                             ? false
                             : true
                         }>
-                        <TextReuseableComponent title style={[
-                          styles.addTypeButtons,
-                          {
-                            color:
-                              addManufacturer && selectAddManuUtil?.length > 0
-                                ? '#25AAE1ec'
-                                : '#d0d0d0',
-                            borderColor:
-                              addManufacturer && selectAddManuUtil?.length > 0
-                                ? '#25AAE1ec'
-                                : '#d0d0d0',
-                          },
-                        ]} value={"Add"} />
+                        <TextReuseableComponent
+                          title
+                          style={[
+                            styles.addTypeButtons,
+                            {
+                              color:
+                                addManufacturer && selectAddManuUtil?.length > 0
+                                  ? '#25AAE1ec'
+                                  : '#d0d0d0',
+                              borderColor:
+                                addManufacturer && selectAddManuUtil?.length > 0
+                                  ? '#25AAE1ec'
+                                  : '#d0d0d0',
+                            },
+                          ]}
+                          value={'Add'}
+                        />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -1093,7 +1137,11 @@ export default function AddEditProperty({
                     alignSelf: 'center',
                   }}
                   key={item.id}>
-                  <TextReuseableComponent title style={styles.meterDesciptionHeading} value={`${item.name}*`} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.meterDesciptionHeading}
+                    value={`${item.name}*`}
+                  />
                   <View style={styles.mainDropDownView}>
                     <Searchable_Dropdown
                       onItemSelect={(item) => {
@@ -1138,7 +1186,11 @@ export default function AddEditProperty({
             })}
             <View style={styles.bottomBtnContainer}>
               <TouchableOpacity onPress={() => cancelManu(flag)}>
-                <TextReuseableComponent title style={styles.addTypeButtons} value={"Cancel"} />
+                <TextReuseableComponent
+                  title
+                  style={styles.addTypeButtons}
+                  value={'Cancel'}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
@@ -1148,25 +1200,29 @@ export default function AddEditProperty({
                 }
                 disabled={
                   utilAndManu[0]?.selectId !== '' &&
-                    utilAndManu[1]?.selectId !== ''
+                  utilAndManu[1]?.selectId !== ''
                     ? false
                     : true
                 }>
-                <TextReuseableComponent title style={[
-                  styles.addTypeButtons,
-                  {
-                    color:
-                      utilAndManu[0]?.selectId !== '' &&
+                <TextReuseableComponent
+                  title
+                  style={[
+                    styles.addTypeButtons,
+                    {
+                      color:
+                        utilAndManu[0]?.selectId !== '' &&
                         utilAndManu[1]?.selectId !== ''
-                        ? '#25AAE1ec'
-                        : '#d0d0d0',
-                    borderColor:
-                      utilAndManu[0]?.selectId !== '' &&
+                          ? '#25AAE1ec'
+                          : '#d0d0d0',
+                      borderColor:
+                        utilAndManu[0]?.selectId !== '' &&
                         utilAndManu[1]?.selectId !== ''
-                        ? '#25AAE1ec'
-                        : '#d0d0d0',
-                  },
-                ]} value={flag == 'add' ? 'Add' : 'Edit'} />
+                          ? '#25AAE1ec'
+                          : '#d0d0d0',
+                    },
+                  ]}
+                  value={flag == 'add' ? 'Add' : 'Edit'}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -1180,17 +1236,21 @@ export default function AddEditProperty({
     );
   };
 
-  const renderManufacturerList = ({ item, index }) => {
+  const renderManufacturerList = ({item, index}) => {
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{flexDirection: 'row'}}>
         <TouchableOpacity
           onPress={() => openEditManu(item, index)}
-          style={[styles.manufacturersArrItem, { borderRadius: 5 }]}>
-          <TextReuseableComponent title style={{ color: '#787878' }} value={item.name} />
+          style={[styles.manufacturersArrItem, {borderRadius: 5}]}>
+          <TextReuseableComponent
+            title
+            style={{color: '#787878'}}
+            value={item.name}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => DeleteManufacture(item)}
-          style={[styles.manufacturersArrItemDel, { borderRadius: 5 }]}>
+          style={[styles.manufacturersArrItemDel, {borderRadius: 5}]}>
           <MaterialCommunityIcon name="delete" size={width * 0.08} />
         </TouchableOpacity>
       </View>
@@ -1270,25 +1330,34 @@ export default function AddEditProperty({
             margin: 0,
             bottom: avoidKeyboard ? width * avoidMargin : 0,
           }}
-          isVisible={modalVisible} 
-          onBackdropPress={closeModal}
-          >
+          isVisible={modalVisible}
+          onBackdropPress={closeModal}>
           {selectLocation ? (
             <View style={styles.loactionSelectionMainView}>
               <View style={styles.loactionSelectionInnerView}>
                 <View style={styles.radialDisContainer}>
-                  {propertyData?.name && <View style={{ flexDirection: 'row', width: width * 0.72, }}>
-                    <TextReuseableComponent heading style={{
-                      textAlign: 'center',
-                      width: width * 0.72,
-                      backgroundColor: 'white',
-                      paddingVertical: 10,
-                      borderRadius: width * 0.03,
-                    }} value={propertyData?.name} />
-                  </View>}
-                  <View style={{ marginBottom: height * 0.02 }}>
-                  <TextReuseableComponent title style={[styles.radialDisHeading, { marginHorizontal: 10 }]} value={"ENTER ADDRESS BELOW"} />
+                  {propertyData?.name && (
+                    <View style={{flexDirection: 'row', width: width * 0.72}}>
+                      <TextReuseableComponent
+                        heading
+                        style={{
+                          textAlign: 'center',
+                          width: width * 0.72,
+                          backgroundColor: 'white',
+                          paddingVertical: 10,
+                          borderRadius: width * 0.03,
+                        }}
+                        value={propertyData?.name}
+                      />
                     </View>
+                  )}
+                  <View style={{marginBottom: height * 0.02}}>
+                    <TextReuseableComponent
+                      title
+                      style={[styles.radialDisHeading, {marginHorizontal: 10}]}
+                      value={'ENTER ADDRESS BELOW'}
+                    />
+                  </View>
                   <GooglePlacesAutocomplete
                     placeholder="Address"
                     styles={{
@@ -1305,7 +1374,7 @@ export default function AddEditProperty({
                       textInputContainer: {
                         width: width * 0.65,
                         alignSelf: 'center',
-                      }
+                      },
                     }}
                     query={{
                       key: 'AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s',
@@ -1321,10 +1390,14 @@ export default function AddEditProperty({
                     }}
                     onFail={(error) => console.error(error)}
                   />
-                  <TextReuseableComponent title style={styles.radialDisHeading} value={"RADIAL DISTANCE (KM)*"} />
+                  <TextReuseableComponent
+                    title
+                    style={styles.radialDisHeading}
+                    value={'RADIAL DISTANCE (KM)*'}
+                  />
                   <View style={styles.radialDisSlider}>
                     <Slider
-                      style={{ width: width * 0.55, height: width * 0.08 }}
+                      style={{width: width * 0.55, height: width * 0.08}}
                       minimumValue={0.1}
                       maximumValue={1}
                       thumbTintColor="#25AAE1ec"
@@ -1336,10 +1409,12 @@ export default function AddEditProperty({
                       }
                       step={0.1}
                     />
-                    <TextReuseableComponent title style={styles.addTypeHeading} value={`${radialDis} KM`} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.addTypeHeading}
+                      value={`${radialDis} KM`}
+                    />
                   </View>
-
-
                 </View>
                 <TouchableOpacity
                   onPress={() => getCurrentLocation()}
@@ -1383,8 +1458,7 @@ export default function AddEditProperty({
                         provider={PROVIDER_GOOGLE}
                         showsUserLocation={true}
                         showsMyLocationButton={false}
-                        onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}
-                      >
+                        onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}>
                         <Circle
                           center={{
                             latitude: lat == 0 ? currLocate.lat : lat,
@@ -1416,7 +1490,11 @@ export default function AddEditProperty({
                         size={height * 0.05}
                         color="#5e5e5e"
                       />
-                      <TextReuseableComponent title style={styles.modalHeading} value={`${type == 'Add' ? 'New' : 'Edit'} Property`} />
+                      <TextReuseableComponent
+                        title
+                        style={styles.modalHeading}
+                        value={`${type == 'Add' ? 'New' : 'Edit'} Property`}
+                      />
                       <Pressable
                         onPress={clearInputs}
                         android_ripple={{
@@ -1434,16 +1512,20 @@ export default function AddEditProperty({
                     </View>
                   </View>
                   <KeyboardAwareScrollView
-                    style={{ flex: 1, width: '90%', backgroundColor: '#fff' }}
-                    contentContainerStyle={{ backgroundColor: '#fff' }}
+                    style={{flex: 1, width: '90%', backgroundColor: '#fff'}}
+                    contentContainerStyle={{backgroundColor: '#fff'}}
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                     nestedScrollEnabled={true}>
-                    <View style={{ flex: 1 }}>
+                    <View style={{flex: 1}}>
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(0)}>
-                        <TextReuseableComponent title style={styles.desciptionHeading} value={"Property Name & Address"} />
+                        <TextReuseableComponent
+                          title
+                          style={styles.desciptionHeading}
+                          value={'Property Name & Address'}
+                        />
                         <IonicIcon
                           name={
                             dropDownShow[0].value
@@ -1474,7 +1556,7 @@ export default function AddEditProperty({
                             }));
                           }}
                           error={error.property}
-                          style={{ ...styles.input, width: '99.99%' }}
+                          style={{...styles.input, width: '99.99%'}}
                         />
                         {/* <Text_Input
                           placeholder="Enter Street Name*"
@@ -1503,7 +1585,11 @@ export default function AddEditProperty({
                         <TouchableOpacity
                           onPress={selectMeterLocation}
                           style={styles.loactionBtn}>
-                          <TextReuseableComponent title style={styles.loactionBtnText} value={locationBtn ? locationBtn : currAddr} />
+                          <TextReuseableComponent
+                            title
+                            style={styles.loactionBtnText}
+                            value={locationBtn ? locationBtn : currAddr}
+                          />
                           <IonicIcon
                             name="location"
                             size={width * 0.05}
@@ -1514,7 +1600,11 @@ export default function AddEditProperty({
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(1)}>
-                        <TextReuseableComponent title style={[styles.desciptionHeading]} value={"Unit Count & Unit Mix"} />
+                        <TextReuseableComponent
+                          title
+                          style={[styles.desciptionHeading]}
+                          value={'Unit Count & Unit Mix'}
+                        />
                         <IonicIcon
                           name={
                             dropDownShow[1].value
@@ -1534,22 +1624,28 @@ export default function AddEditProperty({
                           <FlatList
                             data={unitMixes}
                             numColumns={2}
-                            renderItem={({ item, index }) => (
+                            renderItem={({item, index}) => (
                               <View
                                 style={{
                                   marginHorizontal: width * 0.05,
                                   marginVertical: width * 0.02,
                                 }}>
-                                <TextReuseableComponent title style={[
-                                  styles.addTypeHeading,
-                                  {
-                                    textTransform:
-                                      index < 2 ? 'none' : 'capitalize',
-                                    marginBottom: 0,
-                                    fontWeight: 'bold',
-                                    textAlign: index > 3 ? 'center' : 'left',
-                                  },
-                                ]} value={`${item.name} ${index == 2 || index == 3 ? '*' : ''}`} />
+                                <TextReuseableComponent
+                                  title
+                                  style={[
+                                    styles.addTypeHeading,
+                                    {
+                                      textTransform:
+                                        index < 2 ? 'none' : 'capitalize',
+                                      marginBottom: 0,
+                                      fontWeight: 'bold',
+                                      textAlign: index > 3 ? 'center' : 'left',
+                                    },
+                                  ]}
+                                  value={`${item.name} ${
+                                    index == 2 || index == 3 ? '*' : ''
+                                  }`}
+                                />
                                 <NumericInput
                                   value={item.value}
                                   onChange={(value) => {
@@ -1573,7 +1669,7 @@ export default function AddEditProperty({
                                   valueType="real"
                                   rounded
                                   textColor="#B0228C"
-                                  iconStyle={{ color: '#000' }}
+                                  iconStyle={{color: '#000'}}
                                   rightButtonBackgroundColor="#eee"
                                   leftButtonBackgroundColor="#eee"
                                 />
@@ -1588,18 +1684,22 @@ export default function AddEditProperty({
                               alignItems: 'center',
                               overflow: 'hidden',
                             }}>
-                            <TextReuseableComponent title style={[
-                              styles.addTypeHeading,
-                              {
-                                marginBottom: 0,
-                                fontWeight: 'bold',
-                              },
-                            ]} value={"Total/Gal/Day"} />
+                            <TextReuseableComponent
+                              title
+                              style={[
+                                styles.addTypeHeading,
+                                {
+                                  marginBottom: 0,
+                                  fontWeight: 'bold',
+                                },
+                              ]}
+                              value={'Total/Gal/Day'}
+                            />
                             <Text_Input
                               dense
                               editable={false}
                               hide={!dropDownShow[1].value}
-                              style={{ ...styles.input, width: width * 0.35 }}
+                              style={{...styles.input, width: width * 0.35}}
                               value={totalGalDay.toString()}
                             />
                           </View>
@@ -1612,11 +1712,19 @@ export default function AddEditProperty({
                               },
                             ]}>
                             <TouchableOpacity onPress={clearUnitMixData}>
-                              <TextReuseableComponent title style={styles.unitMixButtonText} value={"Cancel"} />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixButtonText}
+                                value={'Cancel'}
+                              />
                             </TouchableOpacity>
                             <TouchableOpacity
                               onPress={unitMixFlag ? editOldRow : AddNewRow}>
-                              <TextReuseableComponent title style={styles.unitMixButtonText} value={unitMixFlag ? 'Edit' : 'Add'} />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixButtonText}
+                                value={unitMixFlag ? 'Edit' : 'Add'}
+                              />
                             </TouchableOpacity>
                           </View>
                         </View>
@@ -1639,7 +1747,11 @@ export default function AddEditProperty({
                               alignItems: 'flex-end',
                               flexDirection: 'row',
                             }}>
-                            <TextReuseableComponent title style={styles.desciptionHeading} value={"Unit Count*"} />
+                            <TextReuseableComponent
+                              title
+                              style={styles.desciptionHeading}
+                              value={'Unit Count*'}
+                            />
                           </View>
                           <View
                             style={[
@@ -1664,17 +1776,33 @@ export default function AddEditProperty({
                             />
                           </View>
                           {unitMix.map((item, index) => (
-                            <View key={index} style={{ flexDirection: 'row' }}>
+                            <View key={index} style={{flexDirection: 'row'}}>
                               <TouchableOpacity
                                 style={styles.unitMixData}
                                 onPress={() => getRowData(item, index)}>
                                 <View style={styles.unitMixDataContainer}>
-                                  <TextReuseableComponent title style={styles.unitMixDataHeading} value={"# of Units"} />
-                                  <TextReuseableComponent title style={styles.unitMixDataValues} value={item.no_of_units} />
+                                  <TextReuseableComponent
+                                    title
+                                    style={styles.unitMixDataHeading}
+                                    value={'# of Units'}
+                                  />
+                                  <TextReuseableComponent
+                                    title
+                                    style={styles.unitMixDataValues}
+                                    value={item.no_of_units}
+                                  />
                                 </View>
                                 <View style={styles.unitMixDataContainer}>
-                                  <TextReuseableComponent title style={styles.unitMixDataHeading} value={"Total/Gal/Day"} />
-                                  <TextReuseableComponent title style={styles.unitMixDataValues} value={item.no_of_units * item.gud} />
+                                  <TextReuseableComponent
+                                    title
+                                    style={styles.unitMixDataHeading}
+                                    value={'Total/Gal/Day'}
+                                  />
+                                  <TextReuseableComponent
+                                    title
+                                    style={styles.unitMixDataValues}
+                                    value={item.no_of_units * item.gud}
+                                  />
                                 </View>
                               </TouchableOpacity>
                               <TouchableOpacity
@@ -1701,31 +1829,65 @@ export default function AddEditProperty({
                             }}
                             onPress={() => getRowData(item, index)}>
                             <View style={styles.unitMixDataContainer}>
-                              <TextReuseableComponent title style={styles.unitMixDataHeading} value={"Sum # Units"} />
-                              <TextReuseableComponent title style={styles.unitMixDataValues} value={sumNoOfUnit} />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixDataHeading}
+                                value={'Sum # Units'}
+                              />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixDataValues}
+                                value={sumNoOfUnit}
+                              />
                             </View>
                             <View style={styles.unitMixDataContainer}>
-                              <TextReuseableComponent title style={styles.unitMixDataHeading} value={"Sum Total/Gal/Day"} />
-                              <TextReuseableComponent title style={styles.unitMixDataValues} value={sumTotalGalDay} />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixDataHeading}
+                                value={'Sum Total/Gal/Day'}
+                              />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixDataValues}
+                                value={sumTotalGalDay}
+                              />
                             </View>
                             <View style={styles.unitMixDataContainer}>
-                              <TextReuseableComponent title style={styles.unitMixDataHeading} value={"ADC"} />
-                              <TextReuseableComponent title style={styles.unitMixDataValues} value={sumNoOfUnit > 0
-                                ? Math.round(sumTotalGalDay / sumNoOfUnit)
-                                : 0} />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixDataHeading}
+                                value={'ADC'}
+                              />
+                              <TextReuseableComponent
+                                title
+                                style={styles.unitMixDataValues}
+                                value={
+                                  sumNoOfUnit > 0
+                                    ? Math.round(sumTotalGalDay / sumNoOfUnit)
+                                    : 0
+                                }
+                              />
                             </View>
                           </View>
                           <TouchableOpacity
                             onPress={AddRow}
                             style={styles.addNewRowBtn}>
-                            <TextReuseableComponent title style={{ color: '#25AAE1ec' }} value={"Add New Rows"} />
+                            <TextReuseableComponent
+                              title
+                              style={{color: '#25AAE1ec'}}
+                              value={'Add New Rows'}
+                            />
                           </TouchableOpacity>
                         </View>
                       )}
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(2)}>
-                        <TextReuseableComponent title style={[styles.desciptionHeading]} value={"Utility Type & Manufacturer"} />
+                        <TextReuseableComponent
+                          title
+                          style={[styles.desciptionHeading]}
+                          value={'Utility Type & Manufacturer'}
+                        />
                         <IonicIcon
                           name={
                             dropDownShow[2].value
@@ -1757,17 +1919,17 @@ export default function AddEditProperty({
                                   ? showAddManufacturer || showEditManufacturer
                                     ? width * 0.7
                                     : manufacturersArray?.length > 0
-                                      ? 'auto'
-                                      : width * 0.2
+                                    ? 'auto'
+                                    : width * 0.2
                                   : 0,
                                 overflow: 'hidden',
                               }}>
                               {!showAddManufacturer && !showEditManufacturer && (
-                                <View style={{ paddingVertical: 10 }}>
+                                <View style={{paddingVertical: 10}}>
                                   {loadManuList ? (
                                     <ActivityIndicator
                                       size="large"
-                                      style={{ bottom: 15 }}
+                                      style={{bottom: 15}}
                                       color={'#25AAE1ec'}
                                     />
                                   ) : (
@@ -1797,7 +1959,11 @@ export default function AddEditProperty({
                                         color={'#25AAE1ec'}
                                       />
                                     ) : ( */}
-                                    <TextReuseableComponent title style={{ color: '#25AAE1ec' }} value={"Add Manufacturer"} />
+                                    <TextReuseableComponent
+                                      title
+                                      style={{color: '#25AAE1ec'}}
+                                      value={'Add Manufacturer'}
+                                    />
                                     {/* )} */}
                                   </TouchableOpacity>
                                 </View>
@@ -1818,7 +1984,11 @@ export default function AddEditProperty({
                       <TouchableOpacity
                         style={styles.desciptionContainer}
                         onPress={() => showMoreFn(3)}>
-                        <TextReuseableComponent title style={styles.desciptionHeading} value={"owner info & contact person"} />
+                        <TextReuseableComponent
+                          title
+                          style={styles.desciptionHeading}
+                          value={'owner info & contact person'}
+                        />
                         <IonicIcon
                           name={
                             dropDownShow[3].value
@@ -1885,63 +2055,63 @@ export default function AddEditProperty({
                           <TextReuseableComponent style={{marginBottom: 6 }} value={"Contact Person"} />
                         </View> */}
                       </View>
-                        <View
-                          style={[
-                            styles.inputContainer,
-                            {
-                              height: dropDownShow[3].value ? width * 0.18 : 0,
-                              overflow: 'hidden',
-                            },
-                          ]}>
-                          <Text_Input
-                            placeholder="Contact Name"
-                            style={styles.input}
-                            hide={!dropDownShow[3].value}
-                            value={contactName}
-                            onChangeText={(text) => {
-                              setContactName(text);
-                            }}
-                          />
-                        </View>
-                        <View
-                          style={[
-                            styles.inputContainer,
-                            {
-                              height: dropDownShow[3].value ? width * 0.18 : 0,
-                              overflow: 'hidden',
-                            },
-                          ]}>
-                          <Text_Input
-                            placeholder="Contact Phone"
-                            style={styles.input}
-                            hide={!dropDownShow[3].value}
-                            value={contactPhone}
-                            onChangeText={(text) => {
-                              setContactPhone(text);
-                            }}
-                          />
-                        </View>
-                        <View
-                          style={[
-                            styles.inputContainer,
-                            {
-                              height: dropDownShow[3].value ? width * 0.18 : 0,
-                              overflow: 'hidden',
-                            },
-                          ]}>
-                          <Text_Input
-                            placeholder="Email"
-                            style={styles.input}
-                            hide={!dropDownShow[3].value}
-                            value={contactEmail}
-                            onChangeText={(text) => {
-                              setContactEmail(text);
-                            }}
-                          />
-                          {/* <TouchableOpacity style={styles.input} onPress={handleAddContact}>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
+                            overflow: 'hidden',
+                          },
+                        ]}>
+                        <Text_Input
+                          placeholder="Contact Name"
+                          style={styles.input}
+                          hide={!dropDownShow[3].value}
+                          value={contactName}
+                          onChangeText={(text) => {
+                            setContactName(text);
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
+                            overflow: 'hidden',
+                          },
+                        ]}>
+                        <Text_Input
+                          placeholder="Contact Phone"
+                          style={styles.input}
+                          hide={!dropDownShow[3].value}
+                          value={contactPhone}
+                          onChangeText={(text) => {
+                            setContactPhone(text);
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={[
+                          styles.inputContainer,
+                          {
+                            height: dropDownShow[3].value ? width * 0.18 : 0,
+                            overflow: 'hidden',
+                          },
+                        ]}>
+                        <Text_Input
+                          placeholder="Email"
+                          style={styles.input}
+                          hide={!dropDownShow[3].value}
+                          value={contactEmail}
+                          onChangeText={(text) => {
+                            setContactEmail(text);
+                          }}
+                        />
+                        {/* <TouchableOpacity style={styles.input} onPress={handleAddContact}>
                             <TextReuseableComponent style={{ marginTop: 1 }} value={"+ Add Additional Contact"} />
                           </TouchableOpacity> */}
-                        </View>
+                      </View>
                     </View>
                   </KeyboardAwareScrollView>
                   {/* Box Header */}

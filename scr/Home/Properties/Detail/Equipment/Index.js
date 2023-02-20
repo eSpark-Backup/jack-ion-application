@@ -93,7 +93,6 @@ class Splash extends Component {
       fileMenuVisible: false,
       addMenuVisible: false,
       currUnitIndex: null,
-      userRole: null,
       FileArray: [{name: 'Upload File'}, {name: 'Download File'}],
       AddArray: [
         {name: 'Add a Unit', func: this.selectAndCloseAdd},
@@ -185,8 +184,7 @@ class Splash extends Component {
     const response = await API.post(
       `/property/equipment/building/all-buildings/${PropertyID}`,
     );
-    const role = await AsyncStorage.getItem('user_role');
-    this.setState({userRole: role});
+
     this.setState({loaderBuildings: false});
     console.log('building response', response.data);
 
@@ -1475,7 +1473,6 @@ class Splash extends Component {
                       this.setState({isModalUnitVisible: false});
                     }}
                     unitsArray={this.state.realData}
-                    userRole={this.state.userRole}
                   />
                 )}
                 {/*
@@ -1509,7 +1506,6 @@ class Splash extends Component {
                     buildingId={this.state.editBuildId}
                     unitDetails={this.state.unitDatax.data}
                     // unitMixesId={this.state.unitMixesId}
-                    // userRole={this.state.userRole}
                     addMeterUnitMix={this.state.unitDatax.data}
                     addMeterUnitMixId={this.state.unitMixesId}
                     addNewMeter={true}
