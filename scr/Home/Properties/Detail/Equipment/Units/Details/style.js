@@ -210,7 +210,7 @@ export default styles = StyleSheet.create({
     shadowRadius: 1.41,
   },
   meterDesciptionHeading: {
-    marginRight: width * 0.07,
+    marginLeft: 10,
     fontSize: width * 0.04,
     color: '#3E4A4F',
     textTransform: 'capitalize',

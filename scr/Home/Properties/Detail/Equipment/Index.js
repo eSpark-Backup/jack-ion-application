@@ -477,20 +477,82 @@ class Splash extends Component {
     });
   };
 
+  getUpdatePropertyData = async () => {
+    this.setState({loader: true, loaderBuildings: true});
+    const PropertyID = this.props.navigation.state.params.item.item.id;
+    const propertydata = await API.get(`/property/${PropertyID}`);
+    const PropertyDATA = propertydata?.data?.data?.property;
+
+    this.setState({
+      unitCount: PropertyDATA.unit_count,
+      unitActualCount: PropertyDATA.unit_actual_count,
+      gateway: PropertyDATA.gateway,
+    });
+
+    const response = await API.post(
+      `/property/equipment/building/all-buildings/${PropertyID}`,
+    );
+
+    this.setState({loaderBuildings: false});
+    console.log('building response', response.data);
+
+    if (response?.ok == true) {
+      this.setState({dataBuild: response?.data?.data});
+      if (response?.data?.data?.length != 0) {
+        this.setState({
+          buildingData: response?.data?.data[0],
+          editBuildDes: response?.data?.data[0].descriptions,
+          editBuildId: response?.data?.data[0].id,
+          realData: response?.data?.data[0].units,
+          loader: false,
+        });
+
+        let arry = response?.data?.data[0].units;
+        let lastElement = arry[arry.length - 1];
+
+        this.setState({
+          lastUnitData:
+            lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
+          newUnit:
+            lastElement?.name == undefined ? 'Unit-0' : lastElement?.name,
+        });
+        this.setState((prevState) => ({
+          ...prevState,
+          unitData: {
+            // object that we want to update
+            ...prevState.unitData, // keep all other key-value pairs
+            unit: {name: lastElement?.name}, // update the value of specific key
+          },
+        }));
+      } else {
+        this.setState({
+          realData: [],
+          lastUnitData: 'Unit-0',
+          newUnit: 'Unit-0',
+        });
+        this.setState({loader: false});
+      }
+    } else {
+      alert('Network Issue');
+      this.setState({loaderBuildings: false});
+    }
+
+    this.props.fetchPropetry();
+  };
+
   deleteUnit = async (id) => {
-    this.setState({loader: true});
     const response = await API.post(`/property/equipment/unit/${id}`);
     if (response?.data?.bool) {
       this.setState({currUnitIndex: null});
       alert(response?.data?.message);
-      this.checkData();
+      this.getUpdatePropertyData();
     } else {
       this.setState({loader: false});
     }
   };
 
   confirmDelete = (id) => {
-    Alert.alert('Delete Meter', 'Are you sure you want to Delete?', [
+    Alert.alert('Delete Unit', 'Are you sure you want to Delete?', [
       {
         text: 'No',
         style: 'cancel',
@@ -896,6 +958,7 @@ class Splash extends Component {
   };
 
   showArrayItem = async (build) => {
+    console.log('build', build.item.units);
     this.setState({
       loader: true,
       buildingData: build.item,
@@ -904,39 +967,59 @@ class Splash extends Component {
       changed: true,
       filterWork: false,
     });
-    const data = {
-      building_id: build.item.id,
-    };
-    const unitResponse = await API.post(
-      `/property/equipment/unit/all-units`,
-      data,
-    );
-    if (unitResponse?.ok == true) {
-      this.setState({realData: unitResponse?.data?.data, loader: false});
-      let arry = unitResponse?.data?.data;
-      let lastElement = arry[arry.length - 1];
-      this.setState({
-        lastUnitData:
-          lastElement?.name == undefined
-            ? this.state.newUnit
-            : lastElement?.name,
-        newUnit:
-          lastElement?.name == undefined
-            ? this.state.newUnit
-            : lastElement?.name,
-      });
-      this.setState((prevState) => ({
-        ...prevState,
-        unitData: {
-          // object that we want to update
-          ...prevState.unitData, // keep all other key-value pairs
-          unit: {name: lastElement?.name}, // update the value of specific key
-        },
-      }));
-    } else {
-      alert('Network Issue');
-      this.setState({loader: false});
-    }
+
+    this.setState({realData: build.item.units, loader: false});
+
+    let arry = build.item.units;
+    let lastElement = arry[arry.length - 1];
+    this.setState({
+      lastUnitData:
+        lastElement?.name == undefined ? this.state.newUnit : lastElement?.name,
+      newUnit:
+        lastElement?.name == undefined ? this.state.newUnit : lastElement?.name,
+    });
+    this.setState((prevState) => ({
+      ...prevState,
+      unitData: {
+        // object that we want to update
+        ...prevState.unitData, // keep all other key-value pairs
+        unit: {name: lastElement?.name}, // update the value of specific key
+      },
+    }));
+
+    // const data = {
+    //   building_id: build.item.id,
+    // };
+    // const unitResponse = await API.post(
+    //   `/property/equipment/unit/all-units`,
+    //   data,
+    // );
+    // if (unitResponse?.ok == true) {
+    //   this.setState({realData: unitResponse?.data?.data, loader: false});
+    //   let arry = unitResponse?.data?.data;
+    //   let lastElement = arry[arry.length - 1];
+    //   this.setState({
+    //     lastUnitData:
+    //       lastElement?.name == undefined
+    //         ? this.state.newUnit
+    //         : lastElement?.name,
+    //     newUnit:
+    //       lastElement?.name == undefined
+    //         ? this.state.newUnit
+    //         : lastElement?.name,
+    //   });
+    //   this.setState((prevState) => ({
+    //     ...prevState,
+    //     unitData: {
+    //       // object that we want to update
+    //       ...prevState.unitData, // keep all other key-value pairs
+    //       unit: {name: lastElement?.name}, // update the value of specific key
+    //     },
+    //   }));
+    // } else {
+    //   alert('Network Issue');
+    //   this.setState({loader: false});
+    // }
   };
 
   changedFalse = () => {
@@ -1453,7 +1536,7 @@ class Splash extends Component {
                         isModalUnitVisible: !this.state.isModalUnitVisible,
                       })
                     }
-                    reRun={() => this.checkData()}
+                    reRun={() => this.getUpdatePropertyData()}
                     meterTypes={[]}
                     modalName="Add Unit"
                     type={'add'}

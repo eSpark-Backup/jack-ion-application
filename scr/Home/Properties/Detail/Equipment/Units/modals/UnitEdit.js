@@ -4647,7 +4647,7 @@ export default function UnitEdit({
                                 ]}
                                 onPress={
                                   sliderNumber == 2 && userRole == 2
-                                    ? finishSlider
+                                    ? () => setLetsFinish(true)
                                     : sliderNumber == 5
                                     ? () => {
                                         setLetsFinish(true);

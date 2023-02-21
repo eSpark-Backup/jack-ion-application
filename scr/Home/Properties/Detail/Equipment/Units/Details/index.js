@@ -10,6 +10,7 @@ import {
   Image,
   Alert,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import {Header, Button, Icon} from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
@@ -18,6 +19,7 @@ import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
 import {View as MotiView} from 'moti';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Loader from '../../../../../../components/Loader';
 import {Svg, G} from 'react-native-svg';
@@ -62,6 +64,7 @@ const App = ({navigation}) => {
   const [opened, setOpened] = useState(false);
   const [openedStatus, setOpenedStatus] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadMeter, setLoadMeter] = useState(true);
   const [data, setData] = useState([]);
   const [unitMeter, setUnitMeter] = useState({});
   const [unitMeterName, setUnitMeterName] = useState('');
@@ -360,7 +363,7 @@ const App = ({navigation}) => {
       getChartData(chartRes);
     }
     setLoadChartData(false);
-
+    setLoadMeter(false);
     setLoading(false);
   };
 
@@ -1345,11 +1348,14 @@ const App = ({navigation}) => {
           showMenu={() => setEditUnitMenuVisible(true)}
           hideMenu={() => setEditUnitMenuVisible(false)}
           closeModal={() => setEditUnitModalVisible(!editUnitModalVisible)}
-          reRun={() => getToken()}
+          reRun={() => {
+            setLoadMeter(true);
+            getToken();
+          }}
           meterTypes={arrayOfMeter}
           modalName="Edit Unit"
-          runLoading={() => setLoading(true)}
-          runLoadingFailed={() => setLoading(false)}
+          runLoading={() => setLoadMeter(true)}
+          runLoadingFailed={() => setLoadMeter(false)}
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
@@ -1448,8 +1454,7 @@ const App = ({navigation}) => {
               sections={reasonsData}
               keyExtractor={(item, index) => item + index}
               renderItem={({item, index}) => {
-                // console.log('item:', item);
-                return (
+                return loadMeter ? null : (
                   <TouchableOpacity
                     onPress={() => {
                       LayoutAnimation.configureNext({
@@ -1466,11 +1471,29 @@ const App = ({navigation}) => {
                       openEditModal();
                     }}
                     style={styles.meterContainer}>
-                    <TextReuseableComponent
-                      title
-                      style={styles.meterDesciptionHeading}
-                      value={'Meter-' + (index + 1)}
-                    />
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Feather
+                        name={
+                          item.installation_status == 'Complete' ? 'check' : 'x'
+                        }
+                        size={width * 0.04}
+                        color={
+                          item.installation_status == 'Complete'
+                            ? 'green'
+                            : 'red'
+                        }
+                      />
+                      <TextReuseableComponent
+                        title
+                        style={styles.meterDesciptionHeading}
+                        value={'Meter-' + (index + 1)}
+                      />
+                    </View>
                     <TouchableOpacity
                       onPress={() => confirmDelete(item?.id)}
                       style={{
@@ -1499,6 +1522,16 @@ const App = ({navigation}) => {
                 </>
               )}
             />
+            {loadMeter && (
+              <View
+                style={{
+                  height: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#25AAE1" />
+              </View>
+            )}
           </View>
         </ScrollView>
         {/* <View style={styles.footerStyle}>

@@ -136,7 +136,11 @@ export default class UpdateModal extends Component {
                       size={height * 0.05}
                       color="#5e5e5e"
                     />
-                    <TextReuseableComponent title style={styles.modalHeading} value={title} />
+                    <TextReuseableComponent
+                      title
+                      style={styles.modalHeading}
+                      value={title}
+                    />
                     <Pressable
                       onPress={this.clearUpdateBuild}
                       android_ripple={{
@@ -162,7 +166,11 @@ export default class UpdateModal extends Component {
                         size={width * 0.04}
                         color="#5e5e5e"
                       />
-                      <TextReuseableComponent title style={styles.desciptionHeading} value={"BUILDING*"} />
+                      <TextReuseableComponent
+                        title
+                        style={styles.desciptionHeading}
+                        value={'BUILDING*'}
+                      />
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -199,7 +207,11 @@ export default class UpdateModal extends Component {
                       </HelperText>
                     ) : null}
                     <View style={styles.desciptionContainer}>
-                      <TextReuseableComponent title style={styles.desciptionHeading} value={"Building Despcription*"} />
+                      <TextReuseableComponent
+                        title
+                        style={styles.desciptionHeading}
+                        value={'Building Despcription'}
+                      />
                     </View>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -250,13 +262,21 @@ export default class UpdateModal extends Component {
                     <TouchableOpacity onPress={this.clearUpdateBuild}>
                       <View style={styles.cancelBotton}>
                         <Plus name="close" color="black" size={18} />
-                        <TextReuseableComponent title style={{color: 'black'}} value={"Cancel"} />
+                        <TextReuseableComponent
+                          title
+                          style={{color: 'black'}}
+                          value={'Cancel'}
+                        />
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this.editAlert}>
                       <View style={styles.saveUnitBotton}>
                         <Plus name="plus" color="white" size={18} />
-                        <TextReuseableComponent title style={{color: 'white'}} value={doneBtnTitle} />
+                        <TextReuseableComponent
+                          title
+                          style={{color: 'white'}}
+                          value={doneBtnTitle}
+                        />
                       </View>
                     </TouchableOpacity>
                   </View>
