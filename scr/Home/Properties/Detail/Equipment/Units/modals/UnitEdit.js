@@ -1184,13 +1184,9 @@ export default function UnitEdit({
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      if (type == 'add' || !devEdit) {
-        setSliderNumber(5);
-        setSliderProgress(sliderProgress + 0.75);
-      } else {
-        setSliderNumber(sliderNumber + 1);
-        setSliderProgress(sliderProgress + 0.25);
-      }
+
+      setSliderNumber(sliderNumber + 1);
+      setSliderProgress(sliderProgress + 0.25);
     } else {
       Alert.alert(
         'Device Serial Already Exists',
@@ -1272,6 +1268,9 @@ export default function UnitEdit({
         setSliderProgress(sliderProgress + 0.25);
       }
       setStatusAnimation(false);
+    } else if ((type == 'add' || !devEdit) && sliderNumber == 3) {
+      setSliderNumber(5);
+      setSliderProgress(sliderProgress + 0.75);
     } else {
       if (sliderNumber == 1) {
         // let UtilArray = [...selectUtil];
@@ -1446,7 +1445,7 @@ export default function UnitEdit({
       defaultLongitude: propertyLong,
       attachedTo_id: attachedToId,
       attachedTo_name: attachedTo,
-      thumbnail: filePath,
+      thumbnail: imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : null,
       installation_status: installationStatus,
       utility_type_id: selectedUtilId,
       reasons: [

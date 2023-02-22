@@ -26,6 +26,7 @@ import API from '../../../api/SeviceApi';
 import {useDispatch} from 'react-redux';
 import {fetchPropetry} from '../../../Store/Action/properties.action';
 import TextReuseableComponent from '../../Text/index';
+import {Alert} from 'react-native';
 const {width, height} = Dimensions.get('window');
 
 export default function AddbuildingModal({
@@ -218,7 +219,12 @@ export default function AddbuildingModal({
       }));
     }
     if (unitsTotal > unitCount) {
-      Toast.show(`Unit add limit is ${unitCount}`, Toast.SHORT);
+      Alert.alert(
+        'Unit Limit Exceeded',
+        `You can only add ${
+          unitCount - unitActualCount
+        } unit/s in this building`,
+      );
       return;
     } else {
       var loopData = [];

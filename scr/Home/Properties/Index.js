@@ -326,6 +326,7 @@ class Property extends PureComponent {
   };
 
   deleteProperty = async (id) => {
+    console.log('propertyid', id);
     this.context.loadLoader();
     const response = await API.post(`/property/delete/${id}`);
     if (response?.data?.bool) {
@@ -334,6 +335,7 @@ class Property extends PureComponent {
       this.props?.fetchPropetry();
       this.setState({propertyList: this.context.propList});
     } else {
+      alert(response.data.message);
       this.context.stopLoader();
     }
   };
@@ -581,7 +583,9 @@ class Property extends PureComponent {
                             jumpToDetail={this.jumpToDetail}
                             jumpToEquip={this.jumpToEquip}
                             jumpToAlerts={this.jumpToAlerts}
-                            confirmDelete={this.confirmDelete}
+                            confirmDelete={() =>
+                              this.confirmDelete(item?.item?.id)
+                            }
                           />
                         );
                       }}
@@ -663,7 +667,7 @@ class Property extends PureComponent {
                           jumpToDetail={this.jumpToDetail}
                           jumpToEquip={this.jumpToEquip}
                           jumpToAlerts={this.jumpToAlerts}
-                          confirmDelete={this.confirmDelete}
+                          confirmDelete={() => this.confirmDelete(item?.id)}
                         />
                       </View>
                     );

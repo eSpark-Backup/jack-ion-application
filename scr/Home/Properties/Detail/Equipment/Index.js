@@ -1044,7 +1044,7 @@ class Splash extends Component {
 
   handleAddBuilding = () => {
     this.setState({isModalBuildVisible: false});
-    this.checkData();
+    this.getUpdatePropertyData();
   };
   handleUpdateBuilding = (cond, data) => {
     if (cond != null) {
@@ -1063,14 +1063,16 @@ class Splash extends Component {
       );
 
       if (response?.data?.bool) {
-        this.onFocusFunction();
+        this.getUpdatePropertyData();
+        this.setState({isModalVisible: false});
         alert(response?.data?.message);
       }
     } else {
       const response = await API.post(`/property/equipment/building/${id}`);
 
       if (response?.data?.bool) {
-        this.onFocusFunction();
+        this.getUpdatePropertyData();
+        this.setState({isModalVisible: false});
         alert(response?.data?.message);
       }
     }
