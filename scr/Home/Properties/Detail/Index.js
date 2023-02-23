@@ -23,14 +23,14 @@ import Properties from 'react-native-vector-icons/MaterialCommunityIcons';
 import Search from 'react-native-vector-icons/EvilIcons';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Locate from 'react-native-vector-icons/Feather';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Folder from 'react-native-vector-icons/Feather';
 import Detail from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Icon, IconToggle} from 'react-native-material-ui';
-import {VictoryPie} from 'victory-native';
+import { Icon, IconToggle } from 'react-native-material-ui';
+import { VictoryPie } from 'victory-native';
 import Drawer from '../../../components/modal/Drawer/index';
 import ContextProp from '../Context/propContext';
-import {TextInput, FAB, HelperText} from 'react-native-paper';
+import { TextInput, FAB, HelperText } from 'react-native-paper';
 import Geocoder from 'react-native-geocoding';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
@@ -44,17 +44,17 @@ import {
 
 // Components
 import styles from './style';
-import {Fonts} from '../../../utils/fonts';
+import { Fonts } from '../../../utils/fonts';
 import CustumStatusBar from '../../../components/StatusBar';
 import Loader from '../../../components/Loader';
 import AddEditProperty from '../../../components/modal/AddEditProperty';
 import SystemSetting from 'react-native-system-setting';
 import API from '../../../api/SeviceApi';
-import {connect} from 'react-redux';
-import {fetchPropetry} from '../../../Store/Action/properties.action';
+import { connect } from 'react-redux';
+import { fetchPropetry } from '../../../Store/Action/properties.action';
 import TextReuseableComponent from '../../../components/Text/index';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -94,14 +94,14 @@ class Details extends React.Component {
       selectLocation: false,
       selectAddManuUtil: [],
       shimmers: [
-        {id: 1},
-        {id: 2},
-        {id: 3},
-        {id: 4},
-        {id: 5},
-        {id: 6},
-        {id: 7},
-        {id: 8},
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
       ],
       unitMixes: [],
       tpanelData: [],
@@ -125,11 +125,11 @@ class Details extends React.Component {
         zipcode: '',
       },
       dropDownShow: [
-        {value: true},
-        {value: false},
-        {value: false},
-        {value: false},
-        {value: false},
+        { value: true },
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
       ],
     };
     if (Platform.OS === 'android') {
@@ -138,7 +138,7 @@ class Details extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
 
     this.setPropertyData();
@@ -179,7 +179,7 @@ class Details extends React.Component {
   };
 
   getPropertyDetails = async (id) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     const propertyRes = await API.get(`/property/${id}`);
     const currPropData = propertyRes?.data?.data?.property;
@@ -193,7 +193,7 @@ class Details extends React.Component {
       manus.push(item.manufacturer.name);
     });
 
-    this.setState({utilTypes, manus});
+    this.setState({ utilTypes, manus });
     let uMdata = currPropData.unit_mixes;
     let nOU = 0;
     let tGD = 0;
@@ -227,7 +227,9 @@ class Details extends React.Component {
     });
 
     const transceiverRes = await API.get(`/property/transceivers/${id}`);
-
+    console.log('Transcievers', transceiverRes?.data?.data?.installs[0],
+      transceiverRes?.data?.data?.installs[1],
+      transceiverRes?.data?.data?.installs[2],);
     if (transceiverRes?.data?.bool) {
       this.setState({
         onlineUnits: transceiverRes?.data?.data?.installs[0],
@@ -252,12 +254,12 @@ class Details extends React.Component {
   };
 
   getMetersLocation = async (propertyId) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const metersLocation = await API.get(
       `/property/location-meters/${propertyId}`,
     );
     if (metersLocation?.data?.bool) {
-      this.setState({markers: metersLocation?.data?.data, isLoading: false});
+      this.setState({ markers: metersLocation?.data?.data, isLoading: false });
       let index = metersLocation?.data?.data?.length - 1;
       this.setState({
         propMarkers: metersLocation?.data?.data[index]?.property?.position,
@@ -336,10 +338,10 @@ class Details extends React.Component {
       });
       const propertyRes = await API.get(`/property/${this.state.propertyId}`);
 
-      this.setState({propertyData: propertyRes?.data?.data?.property});
+      this.setState({ propertyData: propertyRes?.data?.data?.property });
 
       if (propertyRes?.data?.bool) {
-        this.setState({isEditPropVisible: true, propertyflag: true});
+        this.setState({ isEditPropVisible: true, propertyflag: true });
         this.context.doLoad();
       }
     } else {
@@ -433,12 +435,12 @@ class Details extends React.Component {
   };
 
   naviagateToSupport = () => {
-    this.setState({isModalVisible: false});
+    this.setState({ isModalVisible: false });
     this.props.navigation.navigate('Support');
   };
 
   toggleflag = () => {
-    this.setState({propertyflag: false});
+    this.setState({ propertyflag: false });
   };
 
   renderShimmers = (item) => (
@@ -516,7 +518,7 @@ class Details extends React.Component {
                 <Search
                   name="search"
                   size={height * 0.04}
-                  style={{marginLeft: width * 0.015}}
+                  style={{ marginLeft: width * 0.015 }}
                   color="white"
                 />
                 <TextInput
@@ -525,7 +527,7 @@ class Details extends React.Component {
                   placeholderTextColor="white"
                   placeholder="Search"
                   style={styles.search}
-                  onChangeText={(e) => this.setState({currentWei: e})}
+                  onChangeText={(e) => this.setState({ currentWei: e })}
                   theme={{
                     colors: {
                       text: 'white',
@@ -551,7 +553,7 @@ class Details extends React.Component {
                 name="account-details-outline"
                 size={width * 0.08}
                 color="white"
-                style={{top: height * 0.002}}
+                style={{ top: height * 0.002 }}
               />
               <TextReuseableComponent
                 title
@@ -564,7 +566,7 @@ class Details extends React.Component {
             !this.state.listData.name) &&
             this.state.shimmers.map((item) => this.renderShimmers(item))}
           <ScrollView
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled
             keyboardShouldPersistTaps="handled">
@@ -635,7 +637,7 @@ class Details extends React.Component {
                 <Properties
                   name="home-city-outline"
                   size={width * 0.1}
-                  style={{color: '#25AAE1ec'}}
+                  style={{ color: '#25AAE1ec' }}
                 />
                 <TextReuseableComponent
                   title
@@ -663,7 +665,7 @@ class Details extends React.Component {
 
               <View style={styles.mainDataContainer}>
                 <TouchableOpacity
-                  style={{...styles.infoViewContainer, paddingHorizontal: 10}}
+                  style={{ ...styles.infoViewContainer, paddingHorizontal: 10 }}
                   onPress={() =>
                     this.props.navigation.navigate('Tpanel', {
                       propertyData: this.props.navigation.state.params.item
@@ -673,7 +675,7 @@ class Details extends React.Component {
                   }>
                   <TextReuseableComponent
                     title
-                    style={{...styles.dataFieldHeadings, borderBottomWidth: 0}}
+                    style={{ ...styles.dataFieldHeadings, borderBottomWidth: 0 }}
                     value={'Tpanel'}
                   />
                 </TouchableOpacity>
@@ -687,7 +689,7 @@ class Details extends React.Component {
                   <View style={styles.infoViewInner}>
                     <Icon name="router" size={width * 0.06} />
                     {propertyData?.gateway ? (
-                      <View style={{justifyContent: 'flex-end'}}>
+                      <View style={{ justifyContent: 'flex-end' }}>
                         <TextReuseableComponent
                           title
                           style={{
@@ -702,7 +704,7 @@ class Details extends React.Component {
                       <>
                         <TextReuseableComponent
                           title
-                          style={[styles.dataFieldText, {textAlign: 'left'}]}
+                          style={[styles.dataFieldText, { textAlign: 'left' }]}
                           value={'No Gateway Programmed!'}
                         />
                       </>
@@ -716,31 +718,27 @@ class Details extends React.Component {
                     style={styles.dataFieldHeadings}
                     value={'ADDRESS'}
                   />
-                  <View style={[styles.infoViewInner, {height: 'auto'}]}>
+                  <View style={[styles.infoViewInner, { height: 'auto' }]}>
                     <Locate name="map-pin" size={width * 0.06} />
                     <TextReuseableComponent
                       title
                       style={[
                         styles.dataFieldText,
-                        {overflow: 'scroll', textAlign: 'left'},
+                        { overflow: 'scroll', textAlign: 'left' },
                       ]}
-                      value={`${
-                        this.state.listData.street == null
+                      value={`${this.state.listData.street == null
                           ? ''
                           : this.state.listData.street
-                      } ${
-                        this.state.listData.city == null
+                        } ${this.state.listData.city == null
                           ? ''
                           : this.state.listData.city + ','
-                      } ${
-                        this.state.listData.st == null
+                        } ${this.state.listData.st == null
                           ? ''
                           : this.state.listData.st
-                      } ${
-                        this.state.listData.zipcode == null
+                        } ${this.state.listData.zipcode == null
                           ? ''
                           : this.state.listData.zipcode
-                      }`}
+                        }`}
                     />
                   </View>
                 </View>
@@ -754,14 +752,14 @@ class Details extends React.Component {
                     <Folder
                       name="folder"
                       size={width * 0.06}
-                      style={{textAlign: 'left'}}
+                      style={{ textAlign: 'left' }}
                     />
                     <TextReuseableComponent
                       title
-                      style={[styles.dataFieldText, {textAlign: 'right'}]}
+                      style={[styles.dataFieldText, { textAlign: 'right' }]}
                       value={
                         this.state.listData.custom_id == null ||
-                        this.state.listData.custom_id == ''
+                          this.state.listData.custom_id == ''
                           ? '--'
                           : this.state.listData.custom_id
                       }
@@ -786,7 +784,7 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '40%', textAlign: 'left'},
+                        { width: '40%', textAlign: 'left' },
                       ]}
                       value={'Unit Count:'}
                     />
@@ -794,11 +792,11 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '60%', textAlign: 'right'},
+                        { width: '60%', textAlign: 'right' },
                       ]}
                       value={
                         this.state.listData.unit_count == null ||
-                        this.state.listData.unit_count == ''
+                          this.state.listData.unit_count == ''
                           ? '--'
                           : this.state.listData.unit_count
                       }
@@ -819,15 +817,15 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '45%', textAlign: 'left'},
+                        { width: '45%', textAlign: 'left' },
                       ]}
                       value={'Utility Type:'}
                     />
-                    <View style={{width: '55%', alignItems: 'flex-end'}}>
+                    <View style={{ width: '55%', alignItems: 'flex-end' }}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        style={{flexDirection: 'row'}}>
+                        style={{ flexDirection: 'row' }}>
                         {this.state?.utilTypes?.map((item, index) => (
                           <View
                             key={index}
@@ -872,15 +870,15 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '45%', textAlign: 'left'},
+                        { width: '45%', textAlign: 'left' },
                       ]}
                       value={'Manufacturer:'}
                     />
-                    <View style={{width: '55%', alignItems: 'flex-end'}}>
+                    <View style={{ width: '55%', alignItems: 'flex-end' }}>
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        style={{flexDirection: 'row'}}>
+                        style={{ flexDirection: 'row' }}>
                         {this.state?.manus?.map((item, index) => (
                           <View
                             key={index}
@@ -921,10 +919,10 @@ class Details extends React.Component {
                     <Folder name="folder" size={width * 0.06} />
                     <TextReuseableComponent
                       title
-                      style={[styles.dataFieldText, {textAlign: 'right'}]}
+                      style={[styles.dataFieldText, { textAlign: 'right' }]}
                       value={
                         this.state.listData.owner == null ||
-                        this.state.listData.owner == ''
+                          this.state.listData.owner == ''
                           ? '--'
                           : this.state.listData.owner
                       }
@@ -937,12 +935,12 @@ class Details extends React.Component {
                     style={styles.dataFieldHeadings}
                     value={'Meter Count & Installation Status'}
                   />
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                  <View style={[styles.infoViewInner, { height: width * 0.07 }]}>
                     <TextReuseableComponent
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: width * 0.4, textAlign: 'left'},
+                        { width: width * 0.4, textAlign: 'left' },
                       ]}
                       value={'Meter Count:'}
                     />
@@ -950,11 +948,11 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: width * 0.4, textAlign: 'right'},
+                        { width: width * 0.4, textAlign: 'right' },
                       ]}
                       value={
                         this.state.meterCount == null ||
-                        this.state.meterCount == ''
+                          this.state.meterCount == ''
                           ? '--'
                           : this.state.meterCount
                       }
@@ -963,13 +961,13 @@ class Details extends React.Component {
                   <View
                     style={[
                       styles.infoViewInner,
-                      {height: height * 0.06, justifyContent: 'space-between'},
+                      { height: height * 0.06, justifyContent: 'space-between' },
                     ]}>
                     <TextReuseableComponent
                       subHeading
                       style={[
                         styles.dataFieldText,
-                        {width: width * 0.6, textAlign: 'left'},
+                        { width: width * 0.6, textAlign: 'left' },
                       ]}
                       value={'Complete Installations:'}
                     />
@@ -977,12 +975,12 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: width * 0.2, textAlign: 'right'},
+                        { width: width * 0.2, textAlign: 'right' },
                       ]}
                       value={
                         this.state.installStatus === 'undefined/undefined' ||
-                        this.state.installStatus == '' ||
-                        this.state.installStatus == null
+                          this.state.installStatus == '' ||
+                          this.state.installStatus == null
                           ? '--'
                           : this.state.installStatus
                       }
@@ -990,7 +988,7 @@ class Details extends React.Component {
                   </View>
                 </View>
                 <View
-                  style={[styles.infoViewContainer, {height: height * 0.4}]}>
+                  style={[styles.infoViewContainer, { height: height * 0.4 }]}>
                   <TextReuseableComponent
                     title
                     style={styles.dataFieldHeadings}
@@ -1102,9 +1100,9 @@ class Details extends React.Component {
                       value={
                         this.state.sumNoOfUnits > 0
                           ? Math.round(
-                              this.state.sumTotalGalDay /
-                                this.state.sumNoOfUnits,
-                            )
+                            this.state.sumTotalGalDay /
+                            this.state.sumNoOfUnits,
+                          )
                           : 0
                       }
                     />
@@ -1118,8 +1116,8 @@ class Details extends React.Component {
                     value={'Contact Info'}
                   />
                   {this.state.listData?.contact_name ||
-                  this.state.listData?.contact_phone ||
-                  this.state.listData?.contact_email ? (
+                    this.state.listData?.contact_phone ||
+                    this.state.listData?.contact_email ? (
                     <>
                       <View style={styles.contactInfoContainer}>
                         <View style={styles.contactInfoInner}>
@@ -1187,7 +1185,7 @@ class Details extends React.Component {
                 <View style={styles.barView}>
                   <TextReuseableComponent
                     title
-                    style={{position: 'absolute'}}
+                    style={{ position: 'absolute' }}
                     value={
                       onlineUnits == 0 && offlineUnits == 0
                         ? 'No Installations'
@@ -1200,10 +1198,11 @@ class Details extends React.Component {
                     innerRadius={width * 0.35}
                     labelRadius={width * 0.28}
                     padAngle={1}
+                    labels={({ datum }) => datum.y == 0 ? '' : datum.y}
                     data={[
-                      {x: onlineUnits, y: onlineUnits},
-                      {x: offlineUnits, y: offlineUnits},
-                      {x: notInstalledUnits, y: notInstalledUnits},
+                      { x: onlineUnits, y: onlineUnits },
+                      { x: offlineUnits, y: offlineUnits },
+                      { x: notInstalledUnits, y: notInstalledUnits },
                     ]}
                     colorScale={['#3e95c7', '#ff1414', '#dcdcdc']}
                     style={{
@@ -1216,7 +1215,7 @@ class Details extends React.Component {
                   />
                 </View>
                 <View style={styles.onlineOfflineView}>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View style={styles.onlineView} />
                     <TextReuseableComponent
                       title
@@ -1224,7 +1223,7 @@ class Details extends React.Component {
                       value={'Complete'}
                     />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View style={styles.offlineView} />
                     <TextReuseableComponent
                       title
@@ -1232,7 +1231,7 @@ class Details extends React.Component {
                       value={'Incomplete'}
                     />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View
                       style={{
                         ...styles.offlineView,
@@ -1264,21 +1263,21 @@ class Details extends React.Component {
                       onPress={() =>
                         this?.props?.navigation?.navigate(
                           'ConsumptionComparison',
-                          {propId: propertyData?.id},
+                          { propId: propertyData?.id },
                         )
                       }
                       style={[
                         styles.bunchAlertContainer,
-                        {backgroundColor: '#3e89bf'},
+                        { backgroundColor: '#3e89bf' },
                       ]}>
                       <TextReuseableComponent
                         title
-                        style={{textTransform: 'capitalize', color: '#fff'}}
+                        style={{ textTransform: 'capitalize', color: '#fff' }}
                         value={'Soft:'}
                       />
                       <TextReuseableComponent
                         title
-                        style={{color: '#fff'}}
+                        style={{ color: '#fff' }}
                         value={
                           tBunchData?.alert_level_count[0]?.alert_count || 0
                         }
@@ -1289,16 +1288,16 @@ class Details extends React.Component {
                       onPress={() =>
                         this?.props?.navigation?.navigate(
                           'ConsumptionComparison',
-                          {propId: propertyData?.id},
+                          { propId: propertyData?.id },
                         )
                       }
                       style={[
                         styles.bunchAlertContainer,
-                        {backgroundColor: '#FFC107'},
+                        { backgroundColor: '#FFC107' },
                       ]}>
                       <TextReuseableComponent
                         title
-                        style={{textTransform: 'capitalize'}}
+                        style={{ textTransform: 'capitalize' }}
                         value={'Medium:'}
                       />
                       <TextReuseableComponent
@@ -1313,16 +1312,16 @@ class Details extends React.Component {
                       onPress={() =>
                         this?.props?.navigation?.navigate(
                           'ConsumptionComparison',
-                          {propId: propertyData?.id},
+                          { propId: propertyData?.id },
                         )
                       }
                       style={[
                         styles.bunchAlertContainer,
-                        {backgroundColor: '#DC3545'},
+                        { backgroundColor: '#DC3545' },
                       ]}>
                       <TextReuseableComponent
                         title
-                        style={{textTransform: 'capitalize'}}
+                        style={{ textTransform: 'capitalize' }}
                         value={'High:'}
                       />
                       <TextReuseableComponent

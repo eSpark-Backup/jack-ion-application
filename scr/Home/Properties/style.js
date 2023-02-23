@@ -259,13 +259,13 @@ export default styles = StyleSheet.create({
     marginVertical: height * 0.01,
     backgroundColor: 'white',
     // elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
   },
   pullDownContainer:{
     width:width * 0.4,

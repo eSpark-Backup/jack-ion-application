@@ -5,8 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Search from 'react-native-vector-icons/EvilIcons';
 import _ from 'lodash';
 import ChatCard from './ChatCard';
@@ -15,11 +15,11 @@ import styles from './styles';
 
 import firestore from '@react-native-firebase/firestore';
 import API from '../../api/SeviceApi';
-import {ActivityIndicator} from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const AllChats = ({handleChatDetailsClick}) => {
+const AllChats = ({ handleChatDetailsClick }) => {
   const [listOfAvailabeForChat, setListOfAvailableForChat] = useState([]);
   const [input, setInput] = useState('');
   const [usersLoader, setUsersLoader] = useState(true);
@@ -65,7 +65,7 @@ const AllChats = ({handleChatDetailsClick}) => {
         <Search
           name="search"
           size={height * 0.04}
-          style={{marginLeft: width * 0.05}}
+          style={{ marginLeft: width * 0.05 }}
           color="gray"
         />
         <TextInput
@@ -82,7 +82,7 @@ const AllChats = ({handleChatDetailsClick}) => {
           onChangeText={setInput}
         />
       </View>
-      <View style={{margin: 10, marginLeft: 20}}>
+      <View style={{ margin: 10, marginLeft: 20 }}>
         <TextReuseableComponent value={'List of Available People for Chat.'} />
       </View>
       <View
@@ -91,9 +91,6 @@ const AllChats = ({handleChatDetailsClick}) => {
           height: height * 0.6,
           alignSelf: 'center',
         }}>
-        <View>
-          <ActivityIndicator size={20} />
-        </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           {usersLoader ? (
             <View
@@ -108,12 +105,12 @@ const AllChats = ({handleChatDetailsClick}) => {
             listOfAvailabeForChat
               ?.filter?.((user) => user.id !== userReducer?.user?.id)
               ?.map((chat) => {
-                const {id, name, role_id, last_message, unReadMessages} = chat;
+                const { id, name, role_id, last_message, unReadMessages } = chat;
                 return (
                   <View key={id} style={styles.allChatsMainContainer}>
                     <TouchableOpacity
                       onPress={() =>
-                        handleChatDetailsClick('ChatDetails', {item: chat})
+                        handleChatDetailsClick('ChatDetails', { item: chat })
                       }>
                       <View style={styles.chatCardContainer}>
                         <View style={styles.iconContainer}>
@@ -127,26 +124,26 @@ const AllChats = ({handleChatDetailsClick}) => {
                         <View style={styles.nameContainer}>
                           <View>
                             <TextReuseableComponent
-                              style={{fontSize: 15}}
+                              style={{ fontSize: 15 }}
                               value={name}
                             />
                           </View>
                           <View>
                             <TextReuseableComponent
-                              style={{fontSize: 10}}
+                              style={{ fontSize: 10 }}
                               value={
                                 typeof last_message == 'string'
                                   ? last_message
                                   : last_message?.last_message
-                                  ? last_message?.last_message
-                                  : "Let's Start a Conversation!"
+                                    ? last_message?.last_message
+                                    : "Let's Start a Conversation!"
                               }
                             />
                           </View>
                         </View>
                         <View style={styles.timeContainer}>
                           <TextReuseableComponent
-                            style={{fontSize: 10}}
+                            style={{ fontSize: 10 }}
                             value={role_id == 4 ? 'Technician' : 'Admin'}
                           />
                         </View>

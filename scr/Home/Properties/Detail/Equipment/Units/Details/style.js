@@ -1,8 +1,8 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Fonts} from '../../../../../../utils/fonts';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../../../../../../utils/fonts';
 
 //Files
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -10,14 +10,14 @@ export default styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
   },
-  text: {textAlign: 'center', fontSize: width * 0.03},
+  text: { textAlign: 'center', fontSize: width * 0.03 },
   currentReadContainer: {
     width: width,
     alignItems: 'center',
     marginVertical: width * 0.05,
     height: height * 0.15,
   },
-  headerContainerStyle: {borderBottomWidth: width * 0.003, elevation: 1},
+  headerContainerStyle: { borderBottomWidth: width * 0.003, elevation: 1 },
   imgHeader: {
     height: width * 0.055,
     width: width * 0.055,
@@ -36,28 +36,28 @@ export default styles = StyleSheet.create({
     marginVertical: height * 0.01,
     marginBottom: height * 0.06,
   },
-  listOuter: {paddingVertical: width * 0.02},
+  listOuter: { paddingVertical: width * 0.02 },
   listContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  listText: {textAlign: 'center', fontSize: width * 0.04},
-  listGreyText: {color: '#5c5c5ccf', fontSize: width * 0.04},
+  listText: { textAlign: 'center', fontSize: width * 0.04 },
+  listGreyText: { color: '#5c5c5ccf', fontSize: width * 0.04 },
   listDivider: {
     marginTop: height * 0.02,
     borderWidth: 0.2,
     width: width * 0.9,
     flexDirection: 'row',
   },
-  listInner: {backgroundColor: '#605c5c24'},
+  listInner: { backgroundColor: '#605c5c24' },
   listInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: width * 0.04,
   },
-  listInnerText: {fontSize: width * 0.035},
+  listInnerText: { fontSize: width * 0.035 },
   listInnerGreyText: {
     fontSize: width * 0.035,
     color: '#8c8c8c',
@@ -67,12 +67,12 @@ export default styles = StyleSheet.create({
     marginVertical: height * 0.015,
   },
 
-  rightedIcon: {alignSelf: 'center', marginRight: width * 0.01},
-  leftedIcon: {marginLeft: width * 0.03, alignSelf: 'center'},
+  rightedIcon: { alignSelf: 'center', marginRight: width * 0.01 },
+  leftedIcon: { marginLeft: width * 0.03, alignSelf: 'center' },
 
-  flexRow: {flexDirection: 'row'},
-  flexColoum: {flexDirection: 'column'},
-  centerIcon: {alignSelf: 'center'},
+  flexRow: { flexDirection: 'row' },
+  flexColoum: { flexDirection: 'column' },
+  centerIcon: { alignSelf: 'center' },
   currentReadInnerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -80,7 +80,7 @@ export default styles = StyleSheet.create({
     marginVertical: width * 0.01,
     paddingHorizontal: width * 0.04,
   },
-  greyText: {color: '#5c5c5ccf', fontSize: width * 0.03},
+  greyText: { color: '#5c5c5ccf', fontSize: width * 0.03 },
   symbolStyle: {
     marginHorizontal: width * 0.02,
     color: '#5c5c5ccf',
@@ -93,7 +93,7 @@ export default styles = StyleSheet.create({
     width: width,
     paddingHorizontal: width * 0.05,
   },
-  sectionText: {fontSize: width * 0.065},
+  sectionText: { fontSize: width * 0.065 },
   sectionTitle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -109,7 +109,7 @@ export default styles = StyleSheet.create({
     height: height * 0.05,
     width: height * 0.05,
   },
-  statusList: {width: width * 0.9, bottom: width * 0.02},
+  statusList: { width: width * 0.9, bottom: width * 0.02 },
   usageTextContainer: {
     flexDirection: 'row',
     marginTop: height * 0.07,
@@ -122,8 +122,8 @@ export default styles = StyleSheet.create({
     height: height * 0.3,
     width: width,
   },
-  chartPadding: {left: 40, bottom: 20, right: 40, top: 20},
-  legendContainer: {flexDirection: 'row', alignSelf: 'center'},
+  chartPadding: { left: 40, bottom: 20, right: 40, top: 20 },
+  legendContainer: { flexDirection: 'row', alignSelf: 'center' },
   meterUsageBox: {
     backgroundColor: 'gray',
     width: width * 0.03,
@@ -201,12 +201,12 @@ export default styles = StyleSheet.create({
     backgroundColor: 'white',
     // borderWidth: 1,
     borderRadius: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
     },
-    // shadowOpacity: 0.2,
+    shadowOpacity: 0.20,
     shadowRadius: 1.41,
   },
   meterDesciptionHeading: {

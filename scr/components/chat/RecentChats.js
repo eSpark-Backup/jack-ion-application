@@ -7,19 +7,19 @@ import {
   Animated,
   Alert,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Search from 'react-native-vector-icons/EvilIcons';
 
 import ChatCard from './ChatCard';
 import TextReuseableComponent from '../../components/Text';
 
 import API from '../../api/SeviceApi';
-import {RectButton, Swipeable} from 'react-native-gesture-handler';
-import {ActivityIndicator} from 'react-native';
-const {width, height} = Dimensions.get('window');
+import { RectButton, Swipeable } from 'react-native-gesture-handler';
+import { ActivityIndicator } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
-const RecentChats = ({handleChatDetailsClick, active}) => {
+const RecentChats = ({ handleChatDetailsClick, active }) => {
   const [listOfRecentUsers, setListOfRecentUsers] = useState([]);
   const [searchInput, setSearchInput] = useState(null);
   const [swipeInd, setSwipeInd] = useState(null);
@@ -55,7 +55,7 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
       setLoadChats(false);
     };
     Alert.alert('Becareful', 'Are you sure to delete Message permanently?', [
-      {text: 'No', style: 'cancel', onPress: () => swipRef?.current?.close()},
+      { text: 'No', style: 'cancel', onPress: () => swipRef?.current?.close() },
       {
         text: 'Yes',
         onPress: () => {
@@ -85,7 +85,7 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
   }, [active]);
 
   const fetchAllUsers = async () => {
-    setLoadChats(true);
+    listOfRecentUsers.length > 0 ? null : setLoadChats(true);
     try {
       const response = await API.get(`/get-all-users`);
       if (response?.data?.bool) {
@@ -130,14 +130,14 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
       <RectButton
         style={[
           styles.leftAction,
-          {justifyContent: 'center', alignItems: 'center'},
-        ]}>
-        <TouchableOpacity onPress={() => handleDelete()}>
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+        onPress={() => handleDelete()}>
           <Animated.Text
             style={[
               styles.actionText,
               {
-                transform: [{translateX: trans}],
+                transform: [{ translateX: trans }],
                 width: width * 0.2,
                 textAlign: 'center',
                 color: 'red',
@@ -145,13 +145,12 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
             ]}>
             Delete
           </Animated.Text>
-        </TouchableOpacity>
       </RectButton>
     );
   };
 
   return (
-    <View style={{display: active ? 'flex' : 'none'}}>
+    <View style={{ display: active ? 'flex' : 'none' }}>
       <View
         style={{
           width: width * 0.9,
@@ -167,7 +166,7 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
         <Search
           name="search"
           size={height * 0.04}
-          style={{marginLeft: width * 0.05}}
+          style={{ marginLeft: width * 0.05 }}
           color="gray"
         />
         <TextInput
@@ -184,7 +183,7 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
           onChangeText={setSearchInput}
         />
       </View>
-      <View style={{margin: 10, marginLeft: 20}}>
+      <View style={{ margin: 10, marginLeft: 20 }}>
         {!loadChats && (
           <TextReuseableComponent
             value={
@@ -220,8 +219,8 @@ const RecentChats = ({handleChatDetailsClick, active}) => {
                     index == swipeInd
                       ? swipRef
                       : active && swipeInd == null && index == 0
-                      ? swipRef1
-                      : swipRef2
+                        ? swipRef1
+                        : swipRef2
                   }
                   renderRightActions={(progress, dragX) =>
                     renderLeftActions(progress, dragX, index)

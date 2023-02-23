@@ -279,12 +279,19 @@ export default styles = StyleSheet.create({
   },
   infoViewContainer: {
     width: width * 0.9,
-    elevation: width * 0.03,
+    elevation: 2,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: height * 0.02,
     borderRadius: width * 0.05,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
   },
   infoViewInner: {
     height: height * 0.09,
