@@ -648,19 +648,16 @@ class Details extends React.Component {
                       : this.state.listData.name.substring(0, 28)
                   }
                 />
-                <Pressable
+                <TouchableOpacity
                   style={styles.clientDataEdit}
                   onPress={() => this.enableLocation()}
-                  android_ripple={{
-                    color: 'white',
-                    radius: width * 0.1,
-                  }}>
+                 >
                   <TextReuseableComponent
                     title
                     style={styles.editBottonText}
                     value={'Edit'}
                   />
-                </Pressable>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.mainDataContainer}>

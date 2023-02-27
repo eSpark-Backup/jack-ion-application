@@ -1,19 +1,19 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import API from '../../api/SeviceApi';
 import { getUniqueListBy } from '../../utils/helperFunction';
-import {FETCHED_PROPERTY, FETCHED_PROPERTY_LOADMORE, FETCHING_PROPERTY, FETCHING_PROPERTY_LOADMORE} from '../constants';
+import { FETCHED_PROPERTY, FETCHED_PROPERTY_LOADMORE, FETCHING_PROPERTY, FETCHING_PROPERTY_LOADMORE } from '../constants';
 
 export const fetchPropetry = (data) => {
   return async (dispatch) => {
-    dispatch({type: FETCHING_PROPERTY});
-
+    dispatch({ type: FETCHING_PROPERTY });
+    console.log('Property Fetched??');
     const response = await API.post(
       '/property/all',
       data
         ? data
         : {
-            offset: 0,
-          },
+          offset: 0,
+        },
     );
 
     if (response?.data?.bool) {
@@ -22,7 +22,7 @@ export const fetchPropetry = (data) => {
         offset: response?.data?.data?.offset,
         limitExceed: false,
       };
-      dispatch({type: FETCHED_PROPERTY, payload});
+      dispatch({ type: FETCHED_PROPERTY, payload });
     } else {
       Alert.alert(response?.data?.message);
       // this.setState({ isLoading: false });
@@ -32,15 +32,15 @@ export const fetchPropetry = (data) => {
 
 export const loadMoreData = (data) => {
   return async (dispatch, getState) => {
-    dispatch({type: FETCHING_PROPERTY_LOADMORE});
+    dispatch({ type: FETCHING_PROPERTY_LOADMORE });
 
     const response = await API.post(
       '/property/all',
       data
         ? data
         : {
-            offset: 0,
-          },
+          offset: 0,
+        },
     );
 
     if (response?.data?.bool) {
@@ -49,16 +49,16 @@ export const loadMoreData = (data) => {
         response?.data?.data?.offset > 0
       ) {
         const payload = {
-          propList:[...getState().propertyReducer.propList , ...response?.data?.data?.properties],
+          propList: [...getState().propertyReducer.propList, ...response?.data?.data?.properties],
           offset: response?.data?.data?.offset,
           limitExceed: false,
         };
-        dispatch({type: FETCHED_PROPERTY_LOADMORE, payload});
-      }else {
+        dispatch({ type: FETCHED_PROPERTY_LOADMORE, payload });
+      } else {
         const payload = {
-            limitExceed: true,
-          };
-          dispatch({type: FETCHED_PROPERTY_LOADMORE, payload});
+          limitExceed: true,
+        };
+        dispatch({ type: FETCHED_PROPERTY_LOADMORE, payload });
       }
 
     } else {

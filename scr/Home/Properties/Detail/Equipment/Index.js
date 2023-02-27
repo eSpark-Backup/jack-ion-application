@@ -1734,13 +1734,13 @@ class Splash extends Component {
                     />
                   </View>
                 ) : (
-                  <View style={{width: width * 1, backgroundColor: '#F5F5F5'}}>
+                  <View style={{flex: 1, width: width * 1, backgroundColor: '#f5f5f5'}}>
                     <FlatList
                       ref={(ref) => {
                         listViewRef = ref;
                       }}
                       showsVerticalScrollIndicator={false}
-                      style={{marginBottom: width * 0.35}}
+                      // style={{marginBottom: width * 0.35}}
                       contentContainerStyle={{
                         backgroundColor: '#F5F5F5',
                         alignItems: 'center',

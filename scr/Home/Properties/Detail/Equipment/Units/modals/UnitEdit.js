@@ -103,6 +103,7 @@ export default function UnitEdit({
   const [isActivityLoader, setIsActivityLoader] = useState(false);
   const [loadMeters, setLoadMeters] = useState(false);
   const [loadManufacturers, setLoadManufacturers] = useState(false);
+  const [loadAttachedTo, setLoadAttachedTo] = useState(false);
   const [attachedToId, setAttachedToId] = useState(null);
   const [attachedTo, setAttachedTo] = useState('');
   const [attachedToData, setAttachedToData] = useState([]);
@@ -730,6 +731,7 @@ export default function UnitEdit({
   const callApi = async (oldDev) => {
     setReasons([]);
     setLoadManufacturers(true);
+    setLoadAttachedTo(true);
 
     console.log('Getting Data');
     const defaultUnitData = await API.get(
@@ -792,6 +794,7 @@ export default function UnitEdit({
       '/property/equipment/attached_to/attach',
     );
     setAttachedToData(AttachedToResponse?.data?.data);
+    setLoadAttachedTo(false);
     const reasoneResponce = await API.get(
       '/property/equipment/unit/option-reasons/all',
     );
@@ -2397,9 +2400,13 @@ export default function UnitEdit({
   // console.log("instStatus", installationStatus)
 
   const slideBacker = () => {
-    setSliderNumber(sliderNumber - 1);
-    setSliderProgress(sliderProgress - 0.25);
-    setShowAddType(false);
+    if (sliderNumber == 5 && installationStatus > 0) {
+      setInstallationStatus(0)
+    } else {
+      setSliderNumber(sliderNumber - 1);
+      setSliderProgress(sliderProgress - 0.25);
+      setShowAddType(false);
+    }
   };
 
   const [verticalOffs, setVerticalOffs] = useState(-400);
@@ -3994,7 +4001,11 @@ export default function UnitEdit({
                           color="#25AAE1ec"
                           style={{ alignSelf: 'center', flex: 1 }}
                         />
-                      ) : (
+                      ) : loadAttachedTo ? <ActivityIndicator
+                        size="large"
+                        color="#25AAE1ec"
+                        style={{ alignSelf: 'center', flex: 1 }}
+                      /> : (
                         <View>
                           {slide2.map((item, index) =>
                             renderSlide3(item, index),
@@ -5809,11 +5820,19 @@ const styles = StyleSheet.create({
     height: width * 0.3,
     margin: 5,
     padding: 5,
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    borderWidth: 0,
+    borderWidth: 1,
     elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
   },
   imageContainer: {
     borderWidth: 2,

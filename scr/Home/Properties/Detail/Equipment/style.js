@@ -163,7 +163,7 @@ export default styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: width * 0.01,
     borderWidth: width * 0.001,
-    marginLeft: width * 0.02,
+    marginHorizontal: width * 0.02,
   },
   infoViewContainer: {
     width: width * 0.9,

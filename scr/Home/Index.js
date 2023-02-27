@@ -86,13 +86,14 @@ class Splash extends Component {
     );
     SplashScreen.hide();
     this.requestLocationPermission();
+    this.props.fetchPropetry();
     if (Platform.OS === 'android') {
       this.onAppBootstrap();
       PushNotification.configure({
         onNotification: async (notification) => {
           console.log('Notification woke from sleep', notification);
           if (notification?.data?.type == "chat" || notification?.data?.type == "delete-chat") {
-            if(notification?.data?.type == "chat") {
+            if (notification?.data?.type == "chat") {
               this.props.fetchUserDataForMessaging(!this.props.user?.userReducer?.userDataForMessaging);
               pushNotification(notification)
             } else {
@@ -147,7 +148,7 @@ class Splash extends Component {
         return unsubscribe;
       }
     }
-    this.props.fetchPropetry();
+
   }
 
   backAction = () => {
