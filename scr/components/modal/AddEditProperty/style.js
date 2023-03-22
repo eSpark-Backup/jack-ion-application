@@ -137,10 +137,9 @@ export default styles = StyleSheet.create({
     right: width * 0.03,
   },
   loactionPinContainer: {
-    width: width * 0.12,
-    top: width * 0.4,
+    width: 48,
+    height: 48,
     zIndex: 1,
-    position: 'absolute',
     alignItems: 'center',
   },
   mapView: {

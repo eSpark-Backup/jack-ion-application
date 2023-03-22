@@ -1629,8 +1629,8 @@ class Splash extends Component {
                     }
                     lastUnitName={this.state.newUnit}
                     unitMixeId={
-                      this.props.navigation.state.params.item.item.unit_mixes[0]
-                        .id
+                      this.props.navigation.state.params.item?.item
+                        ?.unit_mixes[0]?.id
                     }
                     buildData={{
                       buildingName: this.state.buildingData.name,
@@ -1734,7 +1734,12 @@ class Splash extends Component {
                     />
                   </View>
                 ) : (
-                  <View style={{flex: 1, width: width * 1, backgroundColor: '#f5f5f5'}}>
+                  <View
+                    style={{
+                      flex: 1,
+                      width: width * 1,
+                      backgroundColor: '#f5f5f5',
+                    }}>
                     <FlatList
                       ref={(ref) => {
                         listViewRef = ref;

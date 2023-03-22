@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Dimensions,
@@ -10,10 +10,9 @@ import {
 
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
+import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 import Feather from 'react-native-vector-icons/Feather';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-
 
 // Components
 import styles from './style';
@@ -23,7 +22,7 @@ import API from '../../../../api/SeviceApi';
 
 import TextReuseableComponent from '../../../../components/Text/index';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default class Splash extends Component {
   constructor() {
@@ -37,14 +36,14 @@ export default class Splash extends Component {
       visible: false,
       notificationData: [],
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
     };
     if (Platform.OS === 'android') {
@@ -57,44 +56,44 @@ export default class Splash extends Component {
     );
 
     if (notificationsRes?.data?.bool) {
-      this.setState({ notificationData: notificationsRes?.data?.data?.notify });
+      this.setState({notificationData: notificationsRes?.data?.data?.notify});
     }
 
-    this.setState({ LoaderState: false });
+    this.setState({LoaderState: false});
   }
 
   notificationFilterApi = async (code) => {
-    this.setState({ LoaderState: true });
+    this.setState({LoaderState: true});
     if (code) {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
-        { code: code },
+        {code: code},
       );
 
       if (notificationsRes?.data?.bool) {
-        this.setState({ notificationData: notificationsRes?.data?.data?.notify });
+        this.setState({notificationData: notificationsRes?.data?.data?.notify});
       }
 
-      this.setState({ LoaderState: false });
+      this.setState({LoaderState: false});
     } else {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
       );
 
       if (notificationsRes?.data?.bool) {
-        this.setState({ notificationData: notificationsRes?.data?.data?.notify });
+        this.setState({notificationData: notificationsRes?.data?.data?.notify});
       }
 
-      this.setState({ LoaderState: false });
+      this.setState({LoaderState: false});
     }
   };
 
   openMenu = () => {
-    this.setState({ visible: true });
+    this.setState({visible: true});
   };
 
   closeMenu = () => {
-    this.setState({ visible: false });
+    this.setState({visible: false});
   };
 
   onPressFilterItem = (value) => {
@@ -127,45 +126,44 @@ export default class Splash extends Component {
   };
 
   findWord(word, str) {
-    return RegExp('\\b' + word + '\\b').test(str)
+    return RegExp('\\b' + word + '\\b').test(str);
   }
 
   handleNotificationPress = (notification) => {
-    console.log(' notificationData', notification)
+    console.log(' notificationData', notification);
     if (notification.link) {
-      const wordRes = this.findWord("equipment", notification.link);
-      const wordChat = this.findWord("userHelp", notification.link);
+      const wordRes = this.findWord('equipment', notification.link);
+      const wordChat = this.findWord('userHelp', notification.link);
       const regex = /\d+/g;
-      const matches = notification.link.match(regex);  // creates array from matches
+      const matches = notification.link.match(regex); // creates array from matches
 
       if (wordRes && matches.length) {
-
         const id = matches[0];
         const newItem = {
           item: {
             item: {
-              id
-            }
-          }
-        }
+              id,
+            },
+          },
+        };
 
-        return this.props.navigation.navigate("Equip", newItem);
+        return this.props.navigation.navigate('Equip', newItem);
       }
-      if(wordChat) {
-        return this.props.navigation.navigate("Support", { item: notification } );
+      if (wordChat) {
+        return this.props.navigation.navigate('Support', {item: notification});
       }
       const id = matches[0];
       const newItem = {
         item: {
           item: {
-            id
-          }
-        }
-      }
+            id,
+          },
+        },
+      };
 
-      return this.props.navigation.navigate("Detail", newItem);
+      return this.props.navigation.navigate('Detail', newItem);
     }
-    return console.log("No data found in notification=", notification);
+    return console.log('No data found in notification=', notification);
     // if (notification?.message?.includes('unit')) {
     //   const idFromData = data?.propertyId;
     //   const item = { id: idFromData }
@@ -175,49 +173,63 @@ export default class Splash extends Component {
     //   const item = { id: idFromData }
     //   this.props.navigation.navigate("Detail", { item: { item: item } })
     // }
-    // 
-  }
+    //
+  };
 
   handleDeleteNotification = async (itemId) => {
-    this.setState({ LoaderState: true });
-    const deleteNotificationById = await API.post('/dashboard/delete-notification-by-id', { id: [itemId] });
+    this.setState({LoaderState: true});
+    const deleteNotificationById = await API.post(
+      '/dashboard/delete-notification-by-id',
+      {id: [itemId]},
+    );
 
     if (deleteNotificationById.data.bool) {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
       );
       if (notificationsRes?.data?.bool) {
-        this.setState({ notificationData: notificationsRes?.data?.data?.notify, LoaderState: false });
+        this.setState({
+          notificationData: notificationsRes?.data?.data?.notify,
+          LoaderState: false,
+        });
         alert(deleteNotificationById?.data?.message);
       } else {
         alert(notificationsRes?.data?.message);
-        this.setState({ LoaderState: false });
+        this.setState({LoaderState: false});
       }
     } else {
       alert(deleteNotificationById.data.message);
-      this.setState({ LoaderState: false });
+      this.setState({LoaderState: false});
     }
-  }
+  };
 
   handleClear = async () => {
-    this.setState({ LoaderState: true });
-    const arrayOfIds = this.state.notificationData?.map(notification => notification?.id);
-    const clearAllNotifications = await API.post('/dashboard/delete-notification-by-id', { id: arrayOfIds });
+    this.setState({LoaderState: true});
+    const arrayOfIds = this.state.notificationData?.map(
+      (notification) => notification?.id,
+    );
+    const clearAllNotifications = await API.post(
+      '/dashboard/delete-notification-by-id',
+      {id: arrayOfIds},
+    );
     if (clearAllNotifications?.data?.bool) {
       const notificationsRes = await API.post(
         '/property/equipment/meter/notification-show',
       );
       if (notificationsRes?.data?.bool) {
-        this.setState({ notificationData: notificationsRes?.data?.data?.notify, LoaderState: false });
+        this.setState({
+          notificationData: notificationsRes?.data?.data?.notify,
+          LoaderState: false,
+        });
       } else {
         alert(notificationsRes?.data?.message);
-        this.setState({ LoaderState: false });
+        this.setState({LoaderState: false});
       }
     } else {
       alert(deleteNotificationById.data.message);
-      this.setState({ LoaderState: false });
+      this.setState({LoaderState: false});
     }
-  }
+  };
 
   renderShimmers = (item) => (
     <View key={item.id} style={styles.skeletonMainContainer}>
@@ -265,8 +277,12 @@ export default class Splash extends Component {
                   marginRight: width * 0.01,
                 }}
               />
-              <TextReuseableComponent title style={styles.mainHeadiing} value={"Notifications"} />
-              <View style={{ flexDirection: 'row-reverse', flex: 1 }}>
+              <TextReuseableComponent
+                title
+                style={styles.mainHeadiing}
+                value={'Notifications'}
+              />
+              <View style={{flexDirection: 'row-reverse', flex: 1}}>
                 <Menu
                   visible={this.state.visible}
                   onDismiss={this.closeMenu}
@@ -308,21 +324,25 @@ export default class Splash extends Component {
             </View>
           </View>
         </View>
-        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View style={{flex: 1, alignItems: 'center'}}>
           {this.state.LoaderState ? (
             this.state.shimmers.map((item) => this.renderShimmers(item))
           ) : this.state?.notificationData?.length < 1 ? (
-            <TextReuseableComponent title style={{
-              textAlign: 'center',
-              marginTop: height * 0.3,
-            }} value={"No Notifications to show"} />
+            <TextReuseableComponent
+              title
+              style={{
+                textAlign: 'center',
+                marginTop: height * 0.3,
+              }}
+              value={'No Notifications to show'}
+            />
           ) : (
             <>
               <FlatList
-                style={{ flex: 1 }}
+                style={{flex: 1}}
                 showsVerticalScrollIndicator={false}
                 data={this.state?.notificationData}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                   <>
                     <TouchableOpacity
                       onPress={() => this.handleNotificationPress(item)}
@@ -330,24 +350,42 @@ export default class Splash extends Component {
                         borderWidth: 1,
                         width: width * 0.9,
                         borderRadius: width * 0.02,
-                        backgroundColor: "white",
+                        backgroundColor: 'white',
                         padding: width * 0.01,
                         margin: width * 0.02,
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'space-around'
+                        justifyContent: 'space-around',
                       }}>
                       <MaterialCommunityIcon
                         name="notifications"
                         size={height * 0.035}
                         color="gray"
                       />
-                      <View style={{ width: width * 0.55 }}>
-                        <TextReuseableComponent title style={{ fontSize: 10, textTransform: 'capitalize', color: '#25aae1' }} value={item.sender_name} />
-                        <TextReuseableComponent title style={{ fontSize: 12 }} value={item.message} />
-                        <TextReuseableComponent title style={{ fontSize: 8 }} value={item.time_diff} />
+                      <View style={{width: width * 0.55}}>
+                        <TextReuseableComponent
+                          title
+                          style={{
+                            fontSize: 10,
+                            textTransform: 'capitalize',
+                            color: '#25aae1',
+                          }}
+                          value={item.sender_name}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={{fontSize: 12}}
+                          value={item.message}
+                        />
+                        <TextReuseableComponent
+                          title
+                          style={{fontSize: 8}}
+                          value={item.time_diff}
+                        />
                       </View>
-                      <TouchableOpacity style={{ width: width * 0.08 }} onPress={() => this.handleDeleteNotification(item.id)}>
+                      <TouchableOpacity
+                        style={{width: width * 0.08}}
+                        onPress={() => this.handleDeleteNotification(item.id)}>
                         <Feather
                           name={'delete'}
                           size={height * 0.025}
@@ -358,21 +396,28 @@ export default class Splash extends Component {
                   </>
                 )}
               />
-              {this.state?.notificationData?.length && <View style={{ 
-                borderRadius: width * 0.02, 
-                height: height * 0.05, 
-                width: width * 0.2, 
-                marginBottom: 20, 
-                backgroundColor: '#25aae1', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                position: 'absolute', 
-                bottom: 0 
-                }}>
-                <TouchableOpacity onPress={() => this.handleClear()}>
-                  <TextReuseableComponent title style={{color: 'white'}} value={"Clear All"} />
-                </TouchableOpacity>
-              </View>}
+              {this.state?.notificationData?.length && (
+                <View
+                  style={{
+                    borderRadius: width * 0.02,
+                    height: height * 0.05,
+                    width: width * 0.2,
+                    marginBottom: 20,
+                    backgroundColor: '#25aae1',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'absolute',
+                    bottom: 0,
+                  }}>
+                  <TouchableOpacity onPress={() => this.handleClear()}>
+                    <TextReuseableComponent
+                      title
+                      style={{color: 'white'}}
+                      value={'Clear All'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
             </>
           )}
         </View>

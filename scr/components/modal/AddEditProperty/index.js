@@ -1437,45 +1437,43 @@ export default function AddEditProperty({
                 {currLocate != null ? (
                   <View style={styles.loactionPinContainer}>
                     <Icon
-                      size={width * 0.12}
+                      size={48}
                       color="#f00"
                       name={'location-pin'}
+                      style={{position: 'absolute', bottom: 20}}
                     />
                   </View>
                 ) : null}
-                {currLocate != null
-                  ? (console.log('CURRLOCATE', currLocate),
-                    (
-                      <MapView
-                        style={styles.mapView}
-                        region={{
-                          latitude: lat == 0 ? currLocate.lat : lat,
-                          longitude: long == 0 ? currLocate.lng : long,
-                          latitudeDelta: latDelta,
-                          longitudeDelta: longDelta,
-                        }}
-                        zoomEnabled={true}
-                        provider={PROVIDER_GOOGLE}
-                        showsUserLocation={true}
-                        showsMyLocationButton={false}
-                        onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}>
-                        <Circle
-                          center={{
-                            latitude: lat == 0 ? currLocate.lat : lat,
-                            longitude: long == 0 ? currLocate.lng : long,
-                          }}
-                          ref={circleRef}
-                          onLayout={() =>
-                            circleRef.current.setNativeProps({
-                              strokeColor: 'rgba(12,170,225,1)',
-                              fillColor: 'rgba(12,170,225,0.3)',
-                            })
-                          }
-                          radius={radialDis * 1000}
-                        />
-                      </MapView>
-                    ))
-                  : null}
+                {currLocate != null ? (
+                  <MapView
+                    style={styles.mapView}
+                    region={{
+                      latitude: lat == 0 ? currLocate.lat : lat,
+                      longitude: long == 0 ? currLocate.lng : long,
+                      latitudeDelta: latDelta,
+                      longitudeDelta: longDelta,
+                    }}
+                    zoomEnabled={true}
+                    provider={PROVIDER_GOOGLE}
+                    showsUserLocation={true}
+                    showsMyLocationButton={false}
+                    onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}>
+                    <Circle
+                      center={{
+                        latitude: lat == 0 ? currLocate.lat : lat,
+                        longitude: long == 0 ? currLocate.lng : long,
+                      }}
+                      ref={circleRef}
+                      onLayout={() =>
+                        circleRef.current.setNativeProps({
+                          strokeColor: 'rgba(12,170,225,1)',
+                          fillColor: 'rgba(12,170,225,0.3)',
+                        })
+                      }
+                      radius={radialDis * 1000}
+                    />
+                  </MapView>
+                ) : null}
               </View>
             </View>
           ) : (
