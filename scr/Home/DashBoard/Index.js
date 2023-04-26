@@ -490,12 +490,20 @@ export default class Splash extends Component {
                     height={width * 0.75}
                     innerRadius={width * 0.35}
                     labelRadius={width * 0.28}
-                    labels={({datum}) => Math.round(datum._x)}
+                    labels={({datum}) =>
+                      Math.round(datum._x) > 0 ? Math.round(datum._x) : null
+                    }
                     padAngle={1}
                     animate={{duration: 400}}
                     data={[
-                      {x: onlineProps, y: onlineProps},
-                      {x: offlineProps, y: offlineProps},
+                      {
+                        x: onlineProps > 0 ? onlineProps : 0,
+                        y: onlineProps > 0 ? onlineProps : 0,
+                      },
+                      {
+                        x: offlineProps > 0 ? offlineProps : 0,
+                        y: offlineProps > 0 ? offlineProps : 0,
+                      },
                     ]}
                     colorScale={['#3e95c7', '#DCDCDC']}
                     style={{
