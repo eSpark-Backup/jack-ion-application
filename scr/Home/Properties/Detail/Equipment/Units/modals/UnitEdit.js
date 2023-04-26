@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useReducer} from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -19,20 +19,20 @@ import {
   LogBox,
 } from 'react-native';
 
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Video from 'react-native-video';
 import SystemSetting from 'react-native-system-setting';
-import {Icon} from 'react-native-material-ui';
-import {TextInput, HelperText} from 'react-native-paper';
-import {DotsLoader, OpacityDotsLoader} from 'react-native-indicator';
+import { Icon } from 'react-native-material-ui';
+import { TextInput, HelperText } from 'react-native-paper';
+import { DotsLoader, OpacityDotsLoader } from 'react-native-indicator';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import RNBeep from 'react-native-a-beep';
 import {
@@ -45,11 +45,11 @@ import {
 import * as Progress from 'react-native-progress';
 import * as ImagePicker from 'react-native-image-picker';
 import Geolocation from 'react-native-geolocation-service';
-import {getDistance} from 'geolib';
-import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
+import { getDistance } from 'geolib';
+import MapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
 import clc from 'cli-color';
 
-import {Fonts} from '../../../../../../utils/fonts';
+import { Fonts } from '../../../../../../utils/fonts';
 import Searchable_Dropdown from '../../../../../../components/SearchableDropdown/index';
 import Text_Input from '../../../../../../components/TextInput';
 import useUpdateEffect from '../../../../../../hooks/useUpdateEffect';
@@ -58,7 +58,7 @@ import API from '../../../../../../api/SeviceApi';
 import TextReuseableComponent from '../../../../../../components/Text/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -89,6 +89,7 @@ export default function UnitEdit({
   fromPAD,
   navigation,
   navigateTo,
+  unitMixes
 }) {
   const [meterListData, setMeterListData] = useState([]);
   const [editMeterIndex, setEditMeterIndex] = useState(null);
@@ -213,7 +214,6 @@ export default function UnitEdit({
   const meterNum = selectedMeterForEdit?.index;
 
   const [selectUtil, setSelectUtil] = useState([]);
-  const [unitMix, setUnitMix] = useState([]);
   const [unitMixIcon, setUnitMixIcon] = useState(false);
   const [unitMixId, setUnitMixId] = useState(null);
   const [selectedUnitMix, setSelectedUnitMix] = useState('');
@@ -383,6 +383,7 @@ export default function UnitEdit({
   };
 
   const checkLocation = async (locationAccess, oldPos) => {
+    console.log('locationAccess', locationAccess);
     if (locationAccess) {
       LayoutAnimation.configureNext({
         duration: 300,
@@ -426,7 +427,7 @@ export default function UnitEdit({
               "You don't have access for the Camera",
               'To Change the Permission Open Settings',
               [
-                {text: 'Cancel', style: 'cancel'},
+                { text: 'Cancel', style: 'cancel' },
                 {
                   text: 'Open Settings',
                   onPress: () =>
@@ -454,7 +455,7 @@ export default function UnitEdit({
             "You don't have access for the Camera",
             'To Change the Permission Open Settings',
             [
-              {text: 'Cancel', style: 'cancel'},
+              { text: 'Cancel', style: 'cancel' },
               {
                 text: 'Open Settings',
                 onPress: async () =>
@@ -484,8 +485,10 @@ export default function UnitEdit({
     let arr2 = meterTypes;
 
     const update = arr2?.map((meter) => {
+      console.log('meter[installation_status]', meter['installation_status']);
       meter['defaultLatitude'] = propertyLat;
       meter['defaultLongitude'] = propertyLong;
+      meter['installation_status'] = meter['installation_status'] == 'Incomplete' ? 0 : meter['installation_status'] == 'Complete' ? 1 : meter['installation_status'];
       return meter;
     });
     setMeterListData(update);
@@ -523,17 +526,10 @@ export default function UnitEdit({
         ...oldState,
         lastUnitData: unitDetails?.unit?.name,
       }));
-      const propertyData = await API.get(`/property/${propertyId}`);
 
-      const Mixes = propertyData?.data?.data?.property?.unit_mixes;
-      const unitMixes = Mixes.map((item) => {
-        const {select_option: name, ...rest} = item;
-        return {name, ...rest};
-      });
-      setUnitMix(unitMixes);
+
       if (modalVisible) {
         if (unitMixesId && !addNewMeter) {
-          console.log('yeh chala kia??', unitMixesId);
           setUnitMixId(unitMixesId);
           unitMixes?.map((item) => {
             if (item.id == unitMixesId) {
@@ -716,7 +712,6 @@ export default function UnitEdit({
       errorUnits: '',
       errorUnitMix: '',
     }));
-    setUnitMix([]);
     setUnitMixId(null);
     setSelectedUnitMix('');
     closeModal();
@@ -816,8 +811,8 @@ export default function UnitEdit({
               listSlide[1].data = manuItem.devices;
               if (manuItem.devices[0].model_nos.length > 0) {
                 const modelNos = manuItem.devices[0].model_nos.map((item) => {
-                  const {model_no: name, ...rest} = item;
-                  return {name, ...rest};
+                  const { model_no: name, ...rest } = item;
+                  return { name, ...rest };
                 });
                 // listSlide[2].data = modelNos;
               }
@@ -944,8 +939,8 @@ export default function UnitEdit({
     if (index == 1) {
       const product_desc = some?.product_desc;
       const modelNos = some?.model_nos.map((item) => {
-        const {model_no: name, ...rest} = item;
-        return {name, ...rest};
+        const { model_no: name, ...rest } = item;
+        return { name, ...rest };
       });
       setProductNo(product_desc);
     }
@@ -954,7 +949,7 @@ export default function UnitEdit({
 
   const removeMeterAlert = (i, ind) => {
     Alert.alert('Becareful', 'Are you sure to delete meter permanently', [
-      {text: 'No', style: 'cancel'},
+      { text: 'No', style: 'cancel' },
       {
         text: 'Yes',
         onPress: () => removeMeter(i, ind),
@@ -1219,8 +1214,8 @@ export default function UnitEdit({
             // listSlide2[2].select = manuItem?.devices[0]?.model_nos[0]?.model_no; // replace e.target.value with whatever you want to change it to
             // listSlide2[2].selectId = manuItem?.devices[0]?.model_nos[0]?.id; // replace e.target.value with whatever you want to change it to
             const modelNos = manuItem.devices[0].model_nos.map((item) => {
-              const {model_no: name, ...rest} = item;
-              return {name, ...rest};
+              const { model_no: name, ...rest } = item;
+              return { name, ...rest };
             });
             // listSlide2[2].data = modelNos;
             setProductNo(manuItem?.devices[0]?.product_desc);
@@ -1437,7 +1432,7 @@ export default function UnitEdit({
       },
 
       id: devEdit ? selectedDevId : null,
-      meter_name: [{id: newMeter.id, name: newMeter.name}],
+      meter_name: [{ id: newMeter.id, name: newMeter.name }],
       // model_no_id: slide1[2].selectId,
       device_serial_number: slide2[2].value,
       device_id: slide1[1].selectId,
@@ -1510,7 +1505,7 @@ export default function UnitEdit({
         longitude: item.longitude,
         defaultLatitude: propertyLat,
         defaultLongitude: propertyLong,
-        ...(item.id != null && {id: item.id}),
+        ...(item.id != null && { id: item.id }),
         // id: item.id,
         attachedTo_id: item.attachedTo_id,
         thumbnail: imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : null,
@@ -1519,24 +1514,24 @@ export default function UnitEdit({
         ...(item.installation_status == 2 &&
           (type == 'add' || type == 'addMeterDirect'
             ? {
-                reason:
-                  item.reasons == undefined
-                    ? []
-                    : {
-                        options_reason_id:
-                          item?.reasons[0]?.options_reason_id == null
-                            ? 0
-                            : item?.reasons[0]?.options_reason_id,
-                        text_reason:
-                          item?.reasons[0]?.text_reason == null
-                            ? 0
-                            : item?.reasons[0]?.text_reason,
-                        picture: [`data:image/jpeg;base64,${reasonBase64s}`],
-                      },
-              }
+              reason:
+                item.reasons == undefined
+                  ? []
+                  : {
+                    options_reason_id:
+                      item?.reasons[0]?.options_reason_id == null
+                        ? 0
+                        : item?.reasons[0]?.options_reason_id,
+                    text_reason:
+                      item?.reasons[0]?.text_reason == null
+                        ? 0
+                        : item?.reasons[0]?.text_reason,
+                    picture: [`data:image/jpeg;base64,${reasonBase64s}`],
+                  },
+            }
             : {
-                reasons: item.reasons == undefined ? [] : newReasonArr,
-              })),
+              reasons: item.reasons == undefined ? [] : newReasonArr,
+            })),
       };
     });
     finishSlider(meterListData);
@@ -1574,12 +1569,12 @@ export default function UnitEdit({
       setSlide2(newArr);
     }
     return (
-      <View style={{width: width * 0.8}} key={item.id}>
+      <View style={{ width: width * 0.8 }} key={item.id}>
         {index > 0 && (
           <>
             <TextReuseableComponent
               title
-              style={[styles.meterDesciptionHeading, {top: width * 0.01}]}
+              style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}
               value={item.name}
             />
             <Text_Input
@@ -1610,7 +1605,7 @@ export default function UnitEdit({
                         //       : false
                         // }
                         onPress={() => toggleScanner(index)}
-                        style={{zIndex: 1}}>
+                        style={{ zIndex: 1 }}>
                         <Ionicons name="scan" size={width * 0.06} />
                       </TouchableOpacity>
                     )}
@@ -1641,7 +1636,7 @@ export default function UnitEdit({
         )}
 
         {index == 0 && showAddType !== 'Attached To' ? (
-          <View style={{margin: 0}}>
+          <View style={{ margin: 0 }}>
             <TextReuseableComponent
               title
               style={[styles.meterDesciptionHeading]}
@@ -1668,7 +1663,7 @@ export default function UnitEdit({
                   borderWidth: width * 0.0015,
                   borderRadius: width * 0.015,
                 }}
-                itemTextStyle={{color: '#222'}}
+                itemTextStyle={{ color: '#222' }}
                 itemsContainerStyle={{
                   maxHeight: width * 0.25,
                 }}
@@ -1730,7 +1725,7 @@ export default function UnitEdit({
           </View>
         ) : (
           index == 0 && (
-            <View style={{borderTopWidth: 2, paddingVertical: 10}}>
+            <View style={{ borderTopWidth: 2, paddingVertical: 10 }}>
               <View>
                 <TextReuseableComponent
                   title
@@ -1741,7 +1736,7 @@ export default function UnitEdit({
               <Text_Input
                 placeholder={'Type new Attached To'}
                 value={addAttached}
-                style={{...styles.meterInput, marginVertical: width * 0.02}}
+                style={{ ...styles.meterInput, marginVertical: width * 0.02 }}
                 onChangeText={(text) => {
                   setAddAttached(text);
                 }}
@@ -1777,12 +1772,12 @@ export default function UnitEdit({
                         addDevice[0].selectId &&
                         addDevice[1].selectId &&
                         addDevice[2].select
-                      ? false
-                      : showAddType == 'Utility' && addUtility
-                      ? false
-                      : showAddType == 'Attached To' && addAttached
-                      ? false
-                      : true
+                        ? false
+                        : showAddType == 'Utility' && addUtility
+                          ? false
+                          : showAddType == 'Attached To' && addAttached
+                            ? false
+                            : true
                   }>
                   <TextReuseableComponent
                     title
@@ -1794,12 +1789,12 @@ export default function UnitEdit({
                             addDevice[0].selectId &&
                             addDevice[1].selectId &&
                             addDevice[2].select
-                          ? '#25AAE1ec'
-                          : showAddType == 'Utility' && addUtility
-                          ? '#25AAE1ec'
-                          : showAddType == 'Attached To' && addAttached
-                          ? '#25AAE1ec'
-                          : '#D0D0D0',
+                            ? '#25AAE1ec'
+                            : showAddType == 'Utility' && addUtility
+                              ? '#25AAE1ec'
+                              : showAddType == 'Attached To' && addAttached
+                                ? '#25AAE1ec'
+                                : '#D0D0D0',
                       width: width * 0.15,
                       borderWidth: 2,
                       borderColor:
@@ -1809,12 +1804,12 @@ export default function UnitEdit({
                             addDevice[0].selectId &&
                             addDevice[1].selectId &&
                             addDevice[2].select
-                          ? '#25AAE1ec'
-                          : showAddType == 'Utility' && addUtility
-                          ? '#25AAE1ec'
-                          : showAddType == 'Attached To' && addAttached
-                          ? '#25AAE1ec'
-                          : '#D0D0D0',
+                            ? '#25AAE1ec'
+                            : showAddType == 'Utility' && addUtility
+                              ? '#25AAE1ec'
+                              : showAddType == 'Attached To' && addAttached
+                                ? '#25AAE1ec'
+                                : '#D0D0D0',
                       borderRadius: 5,
                       padding: 3,
                       textAlign: 'center',
@@ -1830,13 +1825,13 @@ export default function UnitEdit({
     );
   };
 
-  const renderSlide5 = ({item, index}) => {
+  const renderSlide5 = ({ item, index }) => {
     // console.log('index check slider 3 ---> ',index)
     return (
-      <View style={{width: width * 0.8}} key={item.id}>
+      <View style={{ width: width * 0.8 }} key={item.id}>
         <TextReuseableComponent
           title
-          style={[styles.meterDesciptionHeading, {top: width * 0.01}]}
+          style={[styles.meterDesciptionHeading, { top: width * 0.01 }]}
           value={item.name}
         />
         <Text_Input
@@ -1891,7 +1886,7 @@ export default function UnitEdit({
       (error) => {
         console.log('error Geoloaction', error);
       },
-      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
+      { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
     );
   };
 
@@ -2327,7 +2322,7 @@ export default function UnitEdit({
     setDefaultMeterValues(false);
     setDefaultDeviceValues(false);
     setNewMeterFlag(false);
-    unitMix?.map((item) => {
+    unitMixes?.map((item) => {
       if (item.id == data.unit_mix_id) {
         setSelectedUnitMix(item.name);
       }
@@ -2419,7 +2414,7 @@ export default function UnitEdit({
         hasBackdrop={true}
         backdropColor="black"
         statusBarTranslucent
-        style={{margin: 0}}
+        style={{ margin: 0 }}
         isVisible={modalVisible}>
         {isActivityLoader ? (
           <View styles={styles.boxInner}>
@@ -2435,12 +2430,12 @@ export default function UnitEdit({
               sliderNumber == 1
                 ? true
                 : sliderNumber == 2
-                ? true
-                : showAddType == 'Device'
-                ? true
-                : false
+                  ? true
+                  : showAddType == 'Device'
+                    ? true
+                    : false
             }
-            contentContainerStyle={{backgroundColor: '#fff'}}
+            contentContainerStyle={{ backgroundColor: '#fff' }}
             style={{
               flex: 1,
               marginBottom: scroll ? 150 : 0,
@@ -2479,7 +2474,7 @@ export default function UnitEdit({
                   </View>
                   <TouchableOpacity
                     onPress={() => getPropertyLocation()}
-                    style={[styles.doneButton, {bottom: width * 0.32}]}>
+                    style={[styles.doneButton, { bottom: width * 0.32 }]}>
                     <Icon
                       size={width * 0.07}
                       color="#fff"
@@ -2488,7 +2483,7 @@ export default function UnitEdit({
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => getCurrentLocation()}
-                    style={[styles.doneButton, {bottom: width * 0.18}]}>
+                    style={[styles.doneButton, { bottom: width * 0.18 }]}>
                     <Icon size={width * 0.07} color="#fff" name={'gps-fixed'} />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -2549,7 +2544,7 @@ export default function UnitEdit({
                         showsUserLocation={true}
                         showsMyLocationButton={false}
                         onRegionChangeComplete={(e, ges) => moveMarker(e, ges)}
-                        // onPress={(e) => this.getLocation(e)}
+                      // onPress={(e) => this.getLocation(e)}
                       >
                         <Marker
                           coordinate={{
@@ -2608,7 +2603,7 @@ export default function UnitEdit({
                           'Alert',
                           'Are you sure you want to clear current selected data',
                           [
-                            {text: 'No', style: 'cancel'},
+                            { text: 'No', style: 'cancel' },
                             {
                               text: 'Yes',
                               onPress: cancelAddNewType,
@@ -2650,7 +2645,7 @@ export default function UnitEdit({
                       </View>
                     )}
                     {showAddType == 'Device' && (
-                      <View style={{zIndex: 10}}>
+                      <View style={{ zIndex: 10 }}>
                         {addDevice &&
                           addDevice?.map((item, index) => (
                             <View
@@ -2682,28 +2677,28 @@ export default function UnitEdit({
                                     borderRadius: width * 0.015,
                                     margin: width * 0.005,
                                   }}
-                                  itemTextStyle={{color: '#222'}}
+                                  itemTextStyle={{ color: '#222' }}
                                   itemsContainerStyle={
                                     Platform.OS == 'android'
                                       ? {
-                                          height: width * 0.2,
-                                          zIndex: 1,
-                                          position: 'absolute',
-                                          width: width * 0.8,
-                                          top: width * 0.1,
-                                          flex: 1,
-                                          zIndex: 20,
-                                          backgroundColor: 'white',
-                                          elevation: width * 0.01,
-                                          shadowColor: '#000',
-                                          shadowOffset: {
-                                            width: 0,
-                                            height: 2,
-                                          },
-                                          shadowOpacity: 0.25,
-                                          shadowRadius: 3.84,
-                                        }
-                                      : {height: width * 0.2, zIndex: 1}
+                                        height: width * 0.2,
+                                        zIndex: 1,
+                                        position: 'absolute',
+                                        width: width * 0.8,
+                                        top: width * 0.1,
+                                        flex: 1,
+                                        zIndex: 20,
+                                        backgroundColor: 'white',
+                                        elevation: width * 0.01,
+                                        shadowColor: '#000',
+                                        shadowOffset: {
+                                          width: 0,
+                                          height: 2,
+                                        },
+                                        shadowOpacity: 0.25,
+                                        shadowRadius: 3.84,
+                                      }
+                                      : { height: width * 0.2, zIndex: 1 }
                                   }
                                   items={item.data}
                                   resetValue={false}
@@ -2830,12 +2825,12 @@ export default function UnitEdit({
                               addDevice[0].selectId &&
                               addDevice[1].selectId &&
                               addDevice[2].select
-                            ? '#25AAE1ec'
-                            : showAddType == 'Utility' && addUtility
-                            ? '#25AAE1ec'
-                            : showAddType == 'Attached To' && addAttached
-                            ? '#25AAE1ec'
-                            : '#D0D0D0',
+                              ? '#25AAE1ec'
+                              : showAddType == 'Utility' && addUtility
+                                ? '#25AAE1ec'
+                                : showAddType == 'Attached To' && addAttached
+                                  ? '#25AAE1ec'
+                                  : '#D0D0D0',
                       },
                     ]}
                     disabled={
@@ -2845,12 +2840,12 @@ export default function UnitEdit({
                           addDevice[0].selectId &&
                           addDevice[1].selectId &&
                           addDevice[2].select
-                        ? false
-                        : showAddType == 'Utility' && addUtility
-                        ? false
-                        : showAddType == 'Attached To' && addAttached
-                        ? false
-                        : true
+                          ? false
+                          : showAddType == 'Utility' && addUtility
+                            ? false
+                            : showAddType == 'Attached To' && addAttached
+                              ? false
+                              : true
                     }>
                     <Icon size={width * 0.07} color="#fff" name={'add'} />
                   </TouchableOpacity>
@@ -2884,9 +2879,8 @@ export default function UnitEdit({
                       <TextReuseableComponent
                         title
                         style={styles.meterDesciptionHeading}
-                        value={`Meter- ${
-                          newMeterFlag ? meterName : selectedMeter
-                        }`}
+                        value={`Meter- ${newMeterFlag ? meterName : selectedMeter
+                          }`}
                       />
                     </View>
                     {sliderNumber < 6 ? (
@@ -2904,7 +2898,7 @@ export default function UnitEdit({
                             'Alert',
                             'Are you sure you want to clear current selected data',
                             [
-                              {text: 'No', style: 'cancel'},
+                              { text: 'No', style: 'cancel' },
                               {
                                 text: 'Yes',
                                 onPress: cancelMeter,
@@ -2924,7 +2918,7 @@ export default function UnitEdit({
                       progress={sliderProgress}
                       width={width * 0.8}
                       color={'#25AAE1ec'}
-                      style={{marginBottom: width * 0.03}}
+                      style={{ marginBottom: width * 0.03 }}
                     />
                     <View
                       style={{
@@ -2948,18 +2942,18 @@ export default function UnitEdit({
                           sliderNumber == 1 && showAddType == ''
                             ? 'Utility Type & Device Info'
                             : sliderNumber == 2
-                            ? 'Attached To'
-                            : sliderNumber == 3
-                            ? 'Installation Image'
-                            : sliderNumber == 4
-                            ? 'GPS Location of Install'
-                            : sliderNumber == 5
-                            ? 'Install Status'
-                            : ''
+                              ? 'Attached To'
+                              : sliderNumber == 3
+                                ? 'Installation Image'
+                                : sliderNumber == 4
+                                  ? 'GPS Location of Install'
+                                  : sliderNumber == 5
+                                    ? 'Install Status'
+                                    : ''
                         }
                       />
                     </View>
-                    <View style={{height: 5}} />
+                    <View style={{ height: 5 }} />
                   </View>
                   {sliderNumber == 1 ? (
                     <View
@@ -2974,13 +2968,13 @@ export default function UnitEdit({
                         <ActivityIndicator
                           size="large"
                           color="#25AAE1ec"
-                          style={{alignSelf: 'center', flex: 1}}
+                          style={{ alignSelf: 'center', flex: 1 }}
                         />
                       ) : loadManufacturers ? (
                         <ActivityIndicator
                           size="large"
                           color="#25AAE1ec"
-                          style={{alignSelf: 'center', flex: 1}}
+                          style={{ alignSelf: 'center', flex: 1 }}
                         />
                       ) : (
                         <View>
@@ -3028,7 +3022,7 @@ export default function UnitEdit({
                                           borderWidth: width * 0.0015,
                                           borderRadius: width * 0.015,
                                         }}
-                                        itemTextStyle={{color: '#222'}}
+                                        itemTextStyle={{ color: '#222' }}
                                         itemsContainerStyle={{
                                           maxHeight: height * 0.08,
                                         }}
@@ -3094,7 +3088,7 @@ export default function UnitEdit({
                                 </View> */}
                               </>
                             ) : (
-                              <View style={{flex: 1, justifyContent: 'center'}}>
+                              <View style={{ flex: 1, justifyContent: 'center' }}>
                                 <ActivityIndicator
                                   size={'large'}
                                   color="#25AAE1ec"
@@ -3105,7 +3099,7 @@ export default function UnitEdit({
                               <View>
                                 {slide1?.map((item, index) => (
                                   <View
-                                    style={{width: width * 0.8}}
+                                    style={{ width: width * 0.8 }}
                                     key={item.id}>
                                     <TextReuseableComponent
                                       title
@@ -3135,7 +3129,7 @@ export default function UnitEdit({
                                           borderWidth: width * 0.0015,
                                           borderRadius: width * 0.015,
                                         }}
-                                        itemTextStyle={{color: '#222'}}
+                                        itemTextStyle={{ color: '#222' }}
                                         itemsContainerStyle={{
                                           maxHeight: height * 0.08,
                                         }}
@@ -3149,8 +3143,8 @@ export default function UnitEdit({
                                                 ? true
                                                 : false
                                               : defaultDeviceValues
-                                              ? false
-                                              : true,
+                                                ? false
+                                                : true,
 
                                           placeholder:
                                             index == 0
@@ -3158,18 +3152,18 @@ export default function UnitEdit({
                                                 ? item.name
                                                 : 'First Select Utility Type'
                                               : index == 1
-                                              ? slide1[1].data.length > 0
-                                                ? item.name
-                                                : 'No Device'
-                                              : index == 1
-                                              ? slide1[0].selectId
-                                                ? item.name
-                                                : 'First Select Manufacture'
-                                              : index == 2
-                                              ? slide1[1].selectId
-                                                ? item.name
-                                                : 'First Select Device'
-                                              : item.name,
+                                                ? slide1[1].data.length > 0
+                                                  ? item.name
+                                                  : 'No Device'
+                                                : index == 1
+                                                  ? slide1[0].selectId
+                                                    ? item.name
+                                                    : 'First Select Manufacture'
+                                                  : index == 2
+                                                    ? slide1[1].selectId
+                                                      ? item.name
+                                                      : 'First Select Device'
+                                                    : item.name,
                                           underlineColorAndroid: 'transparent',
                                           trueIcon: 'chevron-up',
                                           falseIcon: 'chevron-down',
@@ -3190,20 +3184,20 @@ export default function UnitEdit({
                                               index == 0
                                                 ? width * 0.0019
                                                 : userRole == 2
-                                                ? 0
-                                                : width * 0.0019,
+                                                  ? 0
+                                                  : width * 0.0019,
                                             borderTopRightRadius:
                                               index == 0
                                                 ? width * 0.015
                                                 : userRole == 2
-                                                ? 0
-                                                : width * 0.015,
+                                                  ? 0
+                                                  : width * 0.015,
                                             borderBottomRightRadius:
                                               index == 0
                                                 ? width * 0.015
                                                 : userRole == 2
-                                                ? 0
-                                                : width * 0.015,
+                                                  ? 0
+                                                  : width * 0.015,
                                           },
                                           onTextChange: (text) => {
                                             onChangeManufacturer(text, index);
@@ -3231,8 +3225,8 @@ export default function UnitEdit({
                                                 ? '#25AAE199'
                                                 : index == 2 &&
                                                   slide1[1].data.length > 0
-                                                ? '#25AAE199'
-                                                : '#D0D0D0',
+                                                  ? '#25AAE199'
+                                                  : '#D0D0D0',
                                             borderTopRightRadius: width * 0.015,
                                             borderBottomRightRadius:
                                               width * 0.015,
@@ -3248,8 +3242,8 @@ export default function UnitEdit({
                                               ? false
                                               : index == 2 &&
                                                 slide1[1].data.length > 0
-                                              ? false
-                                              : true
+                                                ? false
+                                                : true
                                           }
                                           onPress={() =>
                                             showAddNewType(item.name)
@@ -3369,42 +3363,42 @@ export default function UnitEdit({
                                           onPress={doneAddType}
                                           disabled={
                                             showAddType == 'Manufacturer' &&
-                                            addManufacturer
+                                              addManufacturer
                                               ? false
                                               : showAddType != 'Manufacturer' &&
                                                 addDevice[0].selectId &&
                                                 addDevice[1].selectId &&
                                                 addDevice[2].select
-                                              ? false
-                                              : showAddType == 'Utility' &&
-                                                addUtility
-                                              ? false
-                                              : showAddType == 'Attached To' &&
-                                                addAttached
-                                              ? false
-                                              : true
+                                                ? false
+                                                : showAddType == 'Utility' &&
+                                                  addUtility
+                                                  ? false
+                                                  : showAddType == 'Attached To' &&
+                                                    addAttached
+                                                    ? false
+                                                    : true
                                           }>
                                           <TextReuseableComponent
                                             title
                                             style={{
                                               color:
                                                 showAddType == 'Manufacturer' &&
-                                                addManufacturer
+                                                  addManufacturer
                                                   ? '#25AAE1ec'
                                                   : showAddType !=
-                                                      'Manufacturer' &&
+                                                    'Manufacturer' &&
                                                     addDevice[0].selectId &&
                                                     addDevice[1].selectId &&
                                                     addDevice[2].select
-                                                  ? '#25AAE1ec'
-                                                  : showAddType == 'Utility' &&
-                                                    addUtility
-                                                  ? '#25AAE1ec'
-                                                  : showAddType ==
-                                                      'Attached To' &&
-                                                    addAttached
-                                                  ? '#25AAE1ec'
-                                                  : '#D0D0D0',
+                                                    ? '#25AAE1ec'
+                                                    : showAddType == 'Utility' &&
+                                                      addUtility
+                                                      ? '#25AAE1ec'
+                                                      : showAddType ==
+                                                        'Attached To' &&
+                                                        addAttached
+                                                        ? '#25AAE1ec'
+                                                        : '#D0D0D0',
                                               width: width * 0.15,
                                               textAlign: 'center',
                                             }}
@@ -3465,9 +3459,9 @@ export default function UnitEdit({
                                                   borderWidth: width * 0.0015,
                                                   borderRadius: width * 0.015,
                                                 }}
-                                                itemTextStyle={{color: '#222'}}
+                                                itemTextStyle={{ color: '#222' }}
                                                 itemsContainerStyle={
-                                                  {maxHeight: height * 0.08}
+                                                  { maxHeight: height * 0.08 }
                                                   // Platform.OS == 'android'
                                                   //   ? {
                                                   //       height: width * 0.2,
@@ -3624,7 +3618,7 @@ export default function UnitEdit({
                                                       showsHorizontalScrollIndicator={
                                                         false
                                                       }
-                                                      renderItem={({item}) => (
+                                                      renderItem={({ item }) => (
                                                         <>
                                                           <View
                                                             style={{
@@ -3665,7 +3659,7 @@ export default function UnitEdit({
                                                             </TouchableOpacity>
                                                           </View>
                                                           <View
-                                                            style={{width: 5}}
+                                                            style={{ width: 5 }}
                                                           />
                                                         </>
                                                       )}
@@ -3737,64 +3731,64 @@ export default function UnitEdit({
                                           onPress={doneAddType}
                                           disabled={
                                             showAddType == 'Manufacturer' &&
-                                            addManufacturer
+                                              addManufacturer
                                               ? false
                                               : showAddType != 'Manufacturer' &&
                                                 addDevice[0].selectId &&
                                                 addDevice[1].select &&
                                                 modelArr.length > 0 &&
                                                 addProductNo != ''
-                                              ? // && addDevice[2].select
+                                                ? // && addDevice[2].select
                                                 false
-                                              : showAddType == 'Utility' &&
-                                                addUtility
-                                              ? false
-                                              : showAddType == 'Attached To' &&
-                                                addAttached
-                                              ? false
-                                              : true
+                                                : showAddType == 'Utility' &&
+                                                  addUtility
+                                                  ? false
+                                                  : showAddType == 'Attached To' &&
+                                                    addAttached
+                                                    ? false
+                                                    : true
                                           }>
                                           <TextReuseableComponent
                                             title
                                             style={{
                                               color:
                                                 showAddType == 'Manufacturer' &&
-                                                addManufacturer
+                                                  addManufacturer
                                                   ? '#25AAE1ec'
                                                   : showAddType !=
-                                                      'Manufacturer' &&
+                                                    'Manufacturer' &&
                                                     addDevice[0].selectId &&
                                                     addDevice[1].select &&
                                                     modelArr.length > 0 &&
                                                     addProductNo != ''
-                                                  ? '#25AAE1ec'
-                                                  : showAddType == 'Utility' &&
-                                                    addUtility
-                                                  ? '#25AAE1ec'
-                                                  : showAddType ==
-                                                      'Attached To' &&
-                                                    addAttached
-                                                  ? '#25AAE1ec'
-                                                  : '#D0D0D0',
+                                                    ? '#25AAE1ec'
+                                                    : showAddType == 'Utility' &&
+                                                      addUtility
+                                                      ? '#25AAE1ec'
+                                                      : showAddType ==
+                                                        'Attached To' &&
+                                                        addAttached
+                                                        ? '#25AAE1ec'
+                                                        : '#D0D0D0',
                                               borderColor:
                                                 showAddType == 'Manufacturer' &&
-                                                addManufacturer
+                                                  addManufacturer
                                                   ? '#25AAE1ec'
                                                   : showAddType !=
-                                                      'Manufacturer' &&
+                                                    'Manufacturer' &&
                                                     addDevice[0].selectId &&
                                                     addDevice[1].select &&
                                                     modelArr.length > 0 &&
                                                     addProductNo != ''
-                                                  ? '#25AAE1ec'
-                                                  : showAddType == 'Utility' &&
-                                                    addUtility
-                                                  ? '#25AAE1ec'
-                                                  : showAddType ==
-                                                      'Attached To' &&
-                                                    addAttached
-                                                  ? '#25AAE1ec'
-                                                  : '#D0D0D0',
+                                                    ? '#25AAE1ec'
+                                                    : showAddType == 'Utility' &&
+                                                      addUtility
+                                                      ? '#25AAE1ec'
+                                                      : showAddType ==
+                                                        'Attached To' &&
+                                                        addAttached
+                                                        ? '#25AAE1ec'
+                                                        : '#D0D0D0',
                                               width: width * 0.15,
                                               textAlign: 'center',
                                               borderWidth: 2,
@@ -3854,31 +3848,31 @@ export default function UnitEdit({
                                                 borderRadius: width * 0.015,
                                                 margin: width * 0.005,
                                               }}
-                                              itemTextStyle={{color: '#222'}}
+                                              itemTextStyle={{ color: '#222' }}
                                               itemsContainerStyle={
                                                 Platform.OS == 'android'
                                                   ? {
-                                                      height: width * 0.2,
-                                                      zIndex: 1,
-                                                      position: 'absolute',
-                                                      width: width * 0.8,
-                                                      top: width * 0.1,
-                                                      flex: 1,
-                                                      zIndex: 20,
-                                                      backgroundColor: 'white',
-                                                      elevation: width * 0.01,
-                                                      shadowColor: '#000',
-                                                      shadowOffset: {
-                                                        width: 0,
-                                                        height: 2,
-                                                      },
-                                                      shadowOpacity: 0.25,
-                                                      shadowRadius: 3.84,
-                                                    }
+                                                    height: width * 0.2,
+                                                    zIndex: 1,
+                                                    position: 'absolute',
+                                                    width: width * 0.8,
+                                                    top: width * 0.1,
+                                                    flex: 1,
+                                                    zIndex: 20,
+                                                    backgroundColor: 'white',
+                                                    elevation: width * 0.01,
+                                                    shadowColor: '#000',
+                                                    shadowOffset: {
+                                                      width: 0,
+                                                      height: 2,
+                                                    },
+                                                    shadowOpacity: 0.25,
+                                                    shadowRadius: 3.84,
+                                                  }
                                                   : {
-                                                      height: width * 0.2,
-                                                      zIndex: 1,
-                                                    }
+                                                    height: width * 0.2,
+                                                    zIndex: 1,
+                                                  }
                                               }
                                               items={devicesArray}
                                               resetValue={false}
@@ -3945,7 +3939,7 @@ export default function UnitEdit({
                                             }}>
                                             <TouchableOpacity
                                               onPress={cancelAddNewType}
-                                              // onPress={() => console.log('Cancel Press')}
+                                            // onPress={() => console.log('Cancel Press')}
                                             >
                                               <TextReuseableComponent
                                                 title
@@ -4000,13 +3994,13 @@ export default function UnitEdit({
                         <ActivityIndicator
                           size="large"
                           color="#25AAE1ec"
-                          style={{alignSelf: 'center', flex: 1}}
+                          style={{ alignSelf: 'center', flex: 1 }}
                         />
                       ) : loadAttachedTo ? (
                         <ActivityIndicator
                           size="large"
                           color="#25AAE1ec"
-                          style={{alignSelf: 'center', flex: 1}}
+                          style={{ alignSelf: 'center', flex: 1 }}
                         />
                       ) : (
                         <View>
@@ -4040,7 +4034,7 @@ export default function UnitEdit({
                       </TouchableOpacity>
                       <TextReuseableComponent
                         title
-                        style={[styles.buttonText, {opacity: 0.5}]}
+                        style={[styles.buttonText, { opacity: 0.5 }]}
                         value={'------------- OR --------------'}
                       />
                       <TouchableOpacity
@@ -4074,7 +4068,7 @@ export default function UnitEdit({
                               height: width * 0.35,
                               marginVertical: 5,
                             }}
-                            source={{uri: filePath}}
+                            source={{ uri: filePath }}
                           />
                         </View>
                       )}
@@ -4114,7 +4108,7 @@ export default function UnitEdit({
                           onPress={() => getPropertyLocation()}
                           style={[
                             styles.doneButton,
-                            {bottom: width * 0.15, right: width * 0.025},
+                            { bottom: width * 0.15, right: width * 0.025 },
                           ]}>
                           <Icon
                             size={width * 0.07}
@@ -4126,7 +4120,7 @@ export default function UnitEdit({
                           onPress={() => getCurrentLocation()}
                           style={[
                             styles.doneButton,
-                            {bottom: 5, right: width * 0.025},
+                            { bottom: 5, right: width * 0.025 },
                           ]}>
                           <Icon
                             size={width * 0.07}
@@ -4148,7 +4142,7 @@ export default function UnitEdit({
                               size={48}
                               color="#f00"
                               name={'location-pin'}
-                              style={{position: 'absolute', bottom: 20}}
+                              style={{ position: 'absolute', bottom: 20 }}
                             />
                           </View>
                         )}
@@ -4186,7 +4180,7 @@ export default function UnitEdit({
                               onRegionChangeComplete={(e, ges) =>
                                 moveMarker(e, ges)
                               }
-                              // onPress={(e) => this.getLocation(e)}
+                            // onPress={(e) => this.getLocation(e)}
                             >
                               <Marker
                                 coordinate={{
@@ -4253,8 +4247,8 @@ export default function UnitEdit({
                         <View style={styles.reasonFileContainer}>
                           {(installationStatus == 1 &&
                             statusAnimation == true) ||
-                          meterInfo?.installation_status == 'Complete' ? (
-                            <View style={{alignItems: 'center'}}>
+                            meterInfo?.installation_status == 'Complete' ? (
+                            <View style={{ alignItems: 'center' }}>
                               <Video
                                 source={require('../../../../../../../Images/checkmarkv.mp4')}
                                 repeat
@@ -4279,7 +4273,7 @@ export default function UnitEdit({
                             </View>
                           ) : null}
                           {installationStatus == 2 && statusAnimation == true && (
-                            <View style={{alignItems: 'center'}}>
+                            <View style={{ alignItems: 'center' }}>
                               <Image
                                 resizeMode="contain"
                                 resizeMethod="auto"
@@ -4304,7 +4298,7 @@ export default function UnitEdit({
                           )}
                           {installationStatus == 2 && statusAnimation == false && (
                             <>
-                              <View style={{flex: 1}}>
+                              <View style={{ flex: 1 }}>
                                 <View
                                   style={{
                                     width: width * 0.8,
@@ -4335,7 +4329,7 @@ export default function UnitEdit({
                                       // borderRadius: width * 0.015,
                                       // margin: width * 0.005,
                                     }}
-                                    itemTextStyle={{color: '#222'}}
+                                    itemTextStyle={{ color: '#222' }}
                                     itemsContainerStyle={{
                                       maxHeight: width * 0.25,
                                     }}
@@ -4393,7 +4387,7 @@ export default function UnitEdit({
                                       }
                                       style={[
                                         styles.button,
-                                        {width: width * 0.1},
+                                        { width: width * 0.1 },
                                       ]}>
                                       <Ionicons
                                         name="camera"
@@ -4407,7 +4401,7 @@ export default function UnitEdit({
                                       }
                                       style={[
                                         styles.button,
-                                        {width: width * 0.1},
+                                        { width: width * 0.1 },
                                       ]}>
                                       <Ionicons
                                         name="images"
@@ -4426,7 +4420,7 @@ export default function UnitEdit({
                                             flexDirection: 'row',
                                             flex: 1,
                                           }}>
-                                          {reasonPath?.map(({uri, index}) => (
+                                          {reasonPath?.map(({ uri, index }) => (
                                             <View style={styles.imageContainer}>
                                               <TouchableOpacity
                                                 onPress={() =>
@@ -4445,7 +4439,7 @@ export default function UnitEdit({
                                                   height: width * 0.25,
                                                   width: width * 0.25,
                                                 }}
-                                                source={{uri: uri}}
+                                                source={{ uri: uri }}
                                                 key={index}
                                               />
                                             </View>
@@ -4455,7 +4449,7 @@ export default function UnitEdit({
                                     ) : (
                                       <TextReuseableComponent
                                         title
-                                        style={{textAlign: 'center'}}
+                                        style={{ textAlign: 'center' }}
                                         value={'No Image Uploaded'}
                                       />
                                     )}
@@ -4479,7 +4473,7 @@ export default function UnitEdit({
                                   }}>
                                   <TextReuseableComponent
                                     title
-                                    style={{color: 'white'}}
+                                    style={{ color: 'white' }}
                                     value={'Save Changes'}
                                   />
                                 </TouchableOpacity>
@@ -4505,7 +4499,7 @@ export default function UnitEdit({
                                   }}
                                   style={[
                                     styles.attemptBtn,
-                                    {backgroundColor: 'green'},
+                                    { backgroundColor: 'green' },
                                   ]}>
                                   <TextReuseableComponent
                                     title
@@ -4525,7 +4519,7 @@ export default function UnitEdit({
                                   }}
                                   style={[
                                     styles.attemptBtn,
-                                    {backgroundColor: '#f00'},
+                                    { backgroundColor: '#f00' },
                                   ]}>
                                   <TextReuseableComponent
                                     title
@@ -4556,7 +4550,7 @@ export default function UnitEdit({
                               }}>
                               <TextReuseableComponent
                                 title
-                                style={{color: 'white'}}
+                                style={{ color: 'white' }}
                                 value={'Save Changes'}
                               />
                             </TouchableOpacity>
@@ -4570,13 +4564,13 @@ export default function UnitEdit({
                       doneAnimation ? (
                         <TextReuseableComponent
                           title
-                          style={[styles.buttonText, {width: width * 0.7}]}
+                          style={[styles.buttonText, { width: width * 0.7 }]}
                           value={`Meter added successfully checking installation status...`}
                         />
                       ) : (
                         <TextReuseableComponent
                           title
-                          style={[styles.buttonText, {width: width * 0.7}]}
+                          style={[styles.buttonText, { width: width * 0.7 }]}
                           value={
                             'Please wait while checking Device Serial Number...'
                           }
@@ -4630,39 +4624,39 @@ export default function UnitEdit({
                                     bottom: 0,
                                     backgroundColor:
                                       sliderNumber == 1 &&
-                                      slide1[0].selectId &&
-                                      slide1[1].selectId &&
-                                      selectedUtil &&
-                                      selectedUtilId != null
+                                        slide1[0].selectId &&
+                                        slide1[1].selectId &&
+                                        selectedUtil &&
+                                        selectedUtilId != null
                                         ? '#25AAE1ec'
                                         : sliderNumber == 2 &&
                                           slide2[1].value &&
                                           slide2[2].value &&
                                           attachedToId != null
-                                        ? '#25AAE1ec'
-                                        : sliderNumber == 3
-                                        ? '#25AAE1ec'
-                                        : sliderNumber == 4 &&
-                                          lat != undefined &&
-                                          long != undefined
-                                        ? '#25AAE1ec'
-                                        : (sliderNumber == 5 &&
-                                            installationStatus == 1) ||
-                                          meterInfo?.installation_status ==
-                                            'Complete' ||
-                                          (sliderNumber == 5 &&
-                                            installationStatus == 2 &&
-                                            reasonId &&
-                                            reasonDes)
-                                        ? '#25AAE1ec'
-                                        : '#D0D0D0',
+                                          ? '#25AAE1ec'
+                                          : sliderNumber == 3
+                                            ? '#25AAE1ec'
+                                            : sliderNumber == 4 &&
+                                              lat != undefined &&
+                                              long != undefined
+                                              ? '#25AAE1ec'
+                                              : (sliderNumber == 5 &&
+                                                installationStatus == 1) ||
+                                                meterInfo?.installation_status ==
+                                                'Complete' ||
+                                                (sliderNumber == 5 &&
+                                                  installationStatus == 2 &&
+                                                  reasonId &&
+                                                  reasonDes)
+                                                ? '#25AAE1ec'
+                                                : '#D0D0D0',
                                   },
                                 ]}
                                 onPress={
                                   sliderNumber == 2 && userRole == 2
                                     ? () => setLetsFinish(true)
                                     : sliderNumber == 5
-                                    ? () => {
+                                      ? () => {
                                         setLetsFinish(true);
                                         // if (editMeterIndex == null) {
                                         //   console.log('editMeterIndex.,.....',)
@@ -4671,36 +4665,36 @@ export default function UnitEdit({
                                         //   setLetsFinish(true);
                                         // }
                                       }
-                                    : changeSlider
+                                      : changeSlider
                                 }
                                 disabled={
                                   sliderNumber == 1 &&
-                                  slide1[0].selectId &&
-                                  slide1[1].selectId &&
-                                  selectedUtil &&
-                                  selectedUtilId != null
+                                    slide1[0].selectId &&
+                                    slide1[1].selectId &&
+                                    selectedUtil &&
+                                    selectedUtilId != null
                                     ? false
                                     : sliderNumber == 2 &&
                                       slide2[2].value &&
                                       slide2[1].value &&
                                       attachedToId != null
-                                    ? false
-                                    : sliderNumber == 3
-                                    ? false
-                                    : sliderNumber == 4 &&
-                                      lat != undefined &&
-                                      long != undefined
-                                    ? false
-                                    : (sliderNumber == 5 &&
-                                        installationStatus == 1) ||
-                                      meterInfo?.installation_status ==
-                                        'Complete' ||
-                                      (sliderNumber == 5 &&
-                                        installationStatus == 2 &&
-                                        reasonId &&
-                                        reasonDes)
-                                    ? false
-                                    : true
+                                      ? false
+                                      : sliderNumber == 3
+                                        ? false
+                                        : sliderNumber == 4 &&
+                                          lat != undefined &&
+                                          long != undefined
+                                          ? false
+                                          : (sliderNumber == 5 &&
+                                            installationStatus == 1) ||
+                                            meterInfo?.installation_status ==
+                                            'Complete' ||
+                                            (sliderNumber == 5 &&
+                                              installationStatus == 2 &&
+                                              reasonId &&
+                                              reasonDes)
+                                            ? false
+                                            : true
                                 }>
                                 <Icon
                                   size={width * 0.07}
@@ -4791,7 +4785,7 @@ export default function UnitEdit({
                           'Alert',
                           'Are you sure you want to clear current selected data',
                           [
-                            {text: 'No', style: 'cancel'},
+                            { text: 'No', style: 'cancel' },
                             {
                               text: 'Yes',
                               onPress: cancelMeter,
@@ -4817,7 +4811,7 @@ export default function UnitEdit({
                   }}>
                   <TextReuseableComponent title value={'Use Default Values'} />
                   <Switch
-                    trackColor={{false: '#767577', true: '#81b0ff'}}
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
                     thumbColor={defaultValues ? '#25AAE1ec ' : '#f4f3f4'}
                     ios_backgroundColor="#3e3e3e"
                     onValueChange={() => setDefaultValues(!defaultValues)}
@@ -4845,13 +4839,13 @@ export default function UnitEdit({
                       color="#5e5e5e"
                     /> */}
                     <TouchableOpacity
-                      style={{marginLeft: 5, top: 8}}
+                      style={{ marginLeft: 5, top: 8 }}
                       onPress={() =>
                         Alert.alert(
                           'Alert',
                           'Are you sure you want to clear current selected data',
                           [
-                            {text: 'No', style: 'cancel'},
+                            { text: 'No', style: 'cancel' },
                             {
                               text: 'Yes',
                               onPress: changeUtilityAndToggle,
@@ -4870,11 +4864,11 @@ export default function UnitEdit({
                     </TouchableOpacity>
                     <TextReuseableComponent
                       title
-                      style={[styles.modalHeading, {top: 8}]}
+                      style={[styles.modalHeading, { top: 8 }]}
                       value={meterInfo ? 'Meter-' + (meterNum + 1) : modalName}
                     />
                     <View
-                      style={{marginRight: 5, top: 8, width: width * 0.15}}
+                      style={{ marginRight: 5, top: 8, width: width * 0.15 }}
                       onPress={handleAddNewUnit}>
                       {meterInfo ? (
                         <TouchableOpacity
@@ -4926,7 +4920,7 @@ export default function UnitEdit({
                       <View
                         style={[
                           styles.inputContainer,
-                          {marginVertical: width * 0.02},
+                          { marginVertical: width * 0.02 },
                         ]}>
                         {/* //todo: This is Drop down picker */}
                         <Text_Input
@@ -4946,7 +4940,7 @@ export default function UnitEdit({
                       <View
                         style={[
                           styles.inputContainer,
-                          {marginVertical: width * 0.02},
+                          { marginVertical: width * 0.02 },
                         ]}>
                         <Text_Input
                           placeholder="Unit Name"
@@ -4969,9 +4963,9 @@ export default function UnitEdit({
                             type == 'meterDirect'
                               ? null
                               : (setState((oldState) => ({
-                                  ...oldState,
-                                  lastUnitData: text,
-                                })),
+                                ...oldState,
+                                lastUnitData: text,
+                              })),
                                 console.log('unit Name', state.lastUnitData));
                           }}
                           disabled={type == 'meterDirect' ? true : false}
@@ -4979,7 +4973,7 @@ export default function UnitEdit({
                           error={error.errorUnits}
                         />
                       </View>
-                      <View style={{width: '80%'}}>
+                      <View style={{ width: '80%' }}>
                         {error.errorUnits ? (
                           <HelperText type="error" visible={error.errorUnits}>
                             {error.errorUnits}
@@ -4993,7 +4987,7 @@ export default function UnitEdit({
                           value={'UNIT MIX*'}
                         />
                       </View>
-                      <View style={{zIndex: 1}}></View>
+                      <View style={{ zIndex: 1 }}></View>
                       <View style={[styles.inputContainer]}>
                         <Searchable_Dropdown
                           onItemSelect={(item) => {
@@ -5011,11 +5005,11 @@ export default function UnitEdit({
                             borderRadius: width * 0.015,
                             margin: width * 0.005,
                           }}
-                          itemTextStyle={{color: '#222'}}
+                          itemTextStyle={{ color: '#222' }}
                           itemsContainerStyle={{
                             maxHeight: width * 0.25,
                           }}
-                          items={unitMix}
+                          items={unitMixes}
                           resetValue={false}
                           onFocus={true}
                           btnDisabled={unitMixLoader}
@@ -5045,7 +5039,7 @@ export default function UnitEdit({
                           }}
                         />
                       </View>
-                      <View style={{width: '80%'}}>
+                      <View style={{ width: '80%' }}>
                         {error.errorUnitMix ? (
                           <HelperText type="error" visible={error.errorUnitMix}>
                             {error.errorUnitMix}
@@ -5068,7 +5062,7 @@ export default function UnitEdit({
                           }}>
                           <TextReuseableComponent
                             title
-                            style={{color: 'white'}}
+                            style={{ color: 'white' }}
                             value={'Save Unit'}
                           />
                         </TouchableOpacity>
@@ -5219,7 +5213,7 @@ export default function UnitEdit({
                   </View>
                 ) : null}
                 {!addNewMeter && meterInfo ? (
-                  <View style={{marginTop: 20}}>
+                  <View style={{ marginTop: 20 }}>
                     <View style={styles.infoViewContainer}>
                       <View
                         style={{
@@ -5286,11 +5280,11 @@ export default function UnitEdit({
                           title
                           style={[
                             styles.dataFieldText,
-                            {width: '45%', textAlign: 'left'},
+                            { width: '45%', textAlign: 'left' },
                           ]}
                           value={'Attached To:'}
                         />
-                        <View style={{width: '55%', alignItems: 'flex-end'}}>
+                        <View style={{ width: '55%', alignItems: 'flex-end' }}>
                           <View
                             style={{
                               justifyContent: 'center',
@@ -5300,7 +5294,7 @@ export default function UnitEdit({
                               title
                               value={
                                 meterInfo?.attachedTo_name == null ||
-                                meterInfo?.attachedTo_name == ''
+                                  meterInfo?.attachedTo_name == ''
                                   ? '--'
                                   : meterInfo?.attachedTo_name
                               }
@@ -5322,11 +5316,11 @@ export default function UnitEdit({
                           title
                           style={[
                             styles.dataFieldText,
-                            {width: '45%', textAlign: 'left'},
+                            { width: '45%', textAlign: 'left' },
                           ]}
                           value={'Initial Meter Reading:'}
                         />
-                        <View style={{width: '55%', alignItems: 'flex-end'}}>
+                        <View style={{ width: '55%', alignItems: 'flex-end' }}>
                           <View
                             style={{
                               justifyContent: 'center',
@@ -5336,7 +5330,7 @@ export default function UnitEdit({
                               title
                               value={
                                 meterInfo?.initial_meter_reading == null ||
-                                meterInfo?.initial_meter_reading == ''
+                                  meterInfo?.initial_meter_reading == ''
                                   ? '--'
                                   : meterInfo?.initial_meter_reading
                               }
@@ -5356,11 +5350,11 @@ export default function UnitEdit({
                           title
                           style={[
                             styles.dataFieldText,
-                            {width: '45%', textAlign: 'left'},
+                            { width: '45%', textAlign: 'left' },
                           ]}
                           value={'Device Serial Number:'}
                         />
-                        <View style={{width: '55%', alignItems: 'flex-end'}}>
+                        <View style={{ width: '55%', alignItems: 'flex-end' }}>
                           <View
                             style={{
                               justifyContent: 'center',
@@ -5370,7 +5364,7 @@ export default function UnitEdit({
                               title
                               value={
                                 meterInfo?.device_serial_number == null ||
-                                meterInfo?.device_serial_number == ''
+                                  meterInfo?.device_serial_number == ''
                                   ? '--'
                                   : meterInfo?.device_serial_number
                               }
@@ -5404,7 +5398,7 @@ export default function UnitEdit({
                           }}
                           value={'Installation Status'}
                         />
-                        {meterInfo?.installation_status == 'Incomplete' && (
+                        {meterInfo?.installation_status == 'Incomplete' || meterInfo?.installation_status == 0 && (
                           <TouchableOpacity
                             onPress={() => {
                               setEditMeter(false);
@@ -5444,11 +5438,11 @@ export default function UnitEdit({
                           title
                           style={[
                             styles.dataFieldText,
-                            {width: '45%', textAlign: 'left'},
+                            { width: '45%', textAlign: 'left' },
                           ]}
                           value={'Installation Status:'}
                         />
-                        <View style={{width: '55%', alignItems: 'flex-end'}}>
+                        <View style={{ width: '55%', alignItems: 'flex-end' }}>
                           <View
                             style={{
                               justifyContent: 'center',
@@ -5457,10 +5451,9 @@ export default function UnitEdit({
                             <TextReuseableComponent
                               title
                               value={
-                                meterInfo?.installation_status == null ||
-                                meterInfo?.installation_status == ''
+                                meterInfo?.installation_status == null
                                   ? '--'
-                                  : meterInfo?.installation_status
+                                  : meterInfo?.installation_status == 0 ? 'Incomplete' : meterInfo?.installation_status == 1 ? 'Complete' : meterInfo?.installation_status
                               }
                             />
                           </View>
@@ -5514,7 +5507,7 @@ export default function UnitEdit({
               ref={(ref) => {
                 this.camera = ref;
               }}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               type={RNCamera.Constants.Type.back}
               autoFocus="on"
               onBarCodeRead={onScanned}

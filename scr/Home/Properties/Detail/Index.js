@@ -227,7 +227,7 @@ class Details extends React.Component {
     });
 
     const transceiverRes = await API.get(`/property/transceivers/${id}`);
-    console.log('Transcievers', transceiverRes?.data?.data?.installs[0],
+    console.log('Transcievers', transceiverRes?.data,
       transceiverRes?.data?.data?.installs[1],
       transceiverRes?.data?.data?.installs[2],);
     if (transceiverRes?.data?.bool) {
@@ -651,7 +651,7 @@ class Details extends React.Component {
                 <TouchableOpacity
                   style={styles.clientDataEdit}
                   onPress={() => this.enableLocation()}
-                 >
+                >
                   <TextReuseableComponent
                     title
                     style={styles.editBottonText}
@@ -724,8 +724,8 @@ class Details extends React.Component {
                         { overflow: 'scroll', textAlign: 'left' },
                       ]}
                       value={`${this.state.listData.street == null
-                          ? ''
-                          : this.state.listData.street
+                        ? ''
+                        : this.state.listData.street
                         } ${this.state.listData.city == null
                           ? ''
                           : this.state.listData.city + ','

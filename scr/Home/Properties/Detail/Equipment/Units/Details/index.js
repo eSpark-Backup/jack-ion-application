@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Dimensions,
@@ -11,19 +11,20 @@ import {
   Alert,
   ToastAndroid,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
-import {Header, Button, Icon} from 'react-native-elements';
+import { Header, Button, Icon } from 'react-native-elements';
 import Home from 'react-native-vector-icons/Feather';
 import Check from 'react-native-vector-icons/Feather';
 import Radio from 'react-native-vector-icons/Feather';
 import RightArrow from 'react-native-vector-icons/Entypo';
-import {View as MotiView} from 'moti';
+import { View as MotiView } from 'moti';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Loader from '../../../../../../components/Loader';
-import {Svg, G} from 'react-native-svg';
-import {Icon as Iconx} from 'react-native-elements';
+import { Svg, G } from 'react-native-svg';
+import { Icon as Iconx } from 'react-native-elements';
 
 import {
   VictoryChart,
@@ -33,29 +34,33 @@ import {
   VictoryBar,
   VictoryLine,
 } from 'victory-native';
-import {Fonts} from '../../../../../../utils/fonts';
+import { Fonts } from '../../../../../../utils/fonts';
 import TextReuseableComponent from '../../../../../../components/Text/index';
 
 import EditUnit from '../modals/UnitEdit';
 // Components
 import styles from './style';
-import {Checkbox, Divider} from 'react-native-paper';
-import {color} from 'react-native-reanimated';
+import { Checkbox, Divider } from 'react-native-paper';
+import { color } from 'react-native-reanimated';
 import clc from 'cli-color';
 import TextTicker from 'react-native-text-ticker';
 import style from './style';
 import API from '../../../../../../api/SeviceApi';
-const {width, height} = Dimensions.get('window');
+import { Platform } from 'react-native';
+import systemSetting from 'react-native-system-setting';
+import { openSettings, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { PermissionsAndroid } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 export const MyToolTip = (value, position) => {
   return (
-    <View style={{height: 50, width: 50, backgroundColor: 'pink'}}>
+    <View style={{ height: 50, width: 50, backgroundColor: 'pink' }}>
       <TextReuseableComponent title value={value.y} />
     </View>
   );
 };
 
-const App = ({navigation}) => {
+const App = ({ navigation }) => {
   const scrollViewRef = useRef();
   const gettingChartdata = useRef(false);
 
@@ -215,9 +220,9 @@ const App = ({navigation}) => {
 
       // INDEPENDENT AXIS
       axisYears: {
-        axis: {stroke: 'black', strokeWidth: 1},
+        axis: { stroke: 'black', strokeWidth: 1 },
         ticks: {
-          size: ({tick}) => {
+          size: ({ tick }) => {
             const tickSize = tick.getFullYear() % 5 === 0 ? 10 : 5;
             return tickSize;
           },
@@ -233,7 +238,7 @@ const App = ({navigation}) => {
 
       // DATA SET ONE
       axisOne: {
-        axis: {stroke: BLUE_COLOR, strokeWidth: 1},
+        axis: { stroke: BLUE_COLOR, strokeWidth: 1 },
         ticks: {
           strokeWidth: 0,
         },
@@ -250,7 +255,7 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineOne: {
-        data: {stroke: '#5D84B6', strokeWidth: 2},
+        data: { stroke: '#5D84B6', strokeWidth: 2 },
       },
       axisOneCustomLabel: {
         fill: BLUE_COLOR,
@@ -261,8 +266,8 @@ const App = ({navigation}) => {
 
       // DATA SET TWO
       axisTwo: {
-        axis: {stroke: RED_COLOR, strokeWidth: 1},
-        ticks: {strokeWidth: 0},
+        axis: { stroke: RED_COLOR, strokeWidth: 1 },
+        ticks: { strokeWidth: 0 },
         tickLabels: {
           fill: 'gray',
           // fontFamily: 'inherit',
@@ -277,12 +282,12 @@ const App = ({navigation}) => {
         fontStyle: 'italic',
       },
       lineTwo: {
-        data: {stroke: 'gray', strokeWidth: 4.5},
+        data: { stroke: 'gray', strokeWidth: 4.5 },
       },
 
       // HORIZONTAL LINE
       lineThree: {
-        data: {stroke: '#e95f46', strokeWidth: 2},
+        data: { stroke: '#e95f46', strokeWidth: 2 },
       },
     };
   };
@@ -300,6 +305,7 @@ const App = ({navigation}) => {
     propertyId,
     propertyLat,
     propertyLong,
+    unitMixes
   } = navigation.state.params; //? Dynamic Ids
 
   const testId = navigation.state.params.unitId;
@@ -751,7 +757,7 @@ const App = ({navigation}) => {
         text: 'No',
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => deleteUnit()},
+      { text: 'Yes', onPress: () => deleteUnit() },
     ]);
   };
   const deleteUnit = async () => {
@@ -765,7 +771,7 @@ const App = ({navigation}) => {
         text: 'No',
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => deleteMeter(id)},
+      { text: 'Yes', onPress: () => deleteMeter(id) },
     ]);
   };
 
@@ -778,7 +784,7 @@ const App = ({navigation}) => {
     alert(response?.data?.message);
   };
 
-  const renderUnitList = ({item, index}) => {
+  const renderUnitList = ({ item, index }) => {
     return data?.data?.unit?.unit_meter?.length == 0 ? (
       <View style={styles.listOuter}>
         <View style={styles.listContainer}>
@@ -788,7 +794,7 @@ const App = ({navigation}) => {
               type={item.type}
               size={width * 0.05}
               color={'#000'}
-              style={{marginRight: width * 0.03}}
+              style={{ marginRight: width * 0.03 }}
             />
             <TextReuseableComponent
               title
@@ -831,7 +837,7 @@ const App = ({navigation}) => {
               type={item.type}
               size={width * 0.05}
               color={'#000'}
-              style={{marginRight: width * 0.03}}
+              style={{ marginRight: width * 0.03 }}
             />
             <TextReuseableComponent
               title
@@ -868,7 +874,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderRemoteList = ({item, index}) => {
+  const renderRemoteList = ({ item, index }) => {
     return unitMeter?.device_serial_number ? (
       <TouchableOpacity
         disabled={item.leftName == 'Recent Alert' ? false : true}
@@ -886,7 +892,7 @@ const App = ({navigation}) => {
             </View>
             <View style={styles.flexRow}>
               <View style={styles.flexColoum}>
-                <View style={{flexDirection: 'row-reverse'}}>
+                <View style={{ flexDirection: 'row-reverse' }}>
                   {item.rightName == null ? null : (
                     <TextReuseableComponent
                       title
@@ -915,14 +921,14 @@ const App = ({navigation}) => {
                       color={
                         unitMeter?.installation_status == 1 ? '#0fc908' : '#f00'
                       }
-                      style={{marginRight: width * 0.01}}
+                      style={{ marginRight: width * 0.01 }}
                     />
                   )}
                 </View>
                 {item.text ? (
                   <TextReuseableComponent
                     title
-                    style={[styles.listGreyText, {textAlign: 'right'}]}
+                    style={[styles.listGreyText, { textAlign: 'right' }]}
                     value={item.text}
                   />
                 ) : null}
@@ -961,7 +967,7 @@ const App = ({navigation}) => {
     setOpenedStatus(!openedStatus);
   };
 
-  const renderReasonData = ({item, index}) => {
+  const renderReasonData = ({ item, index }) => {
     return (
       <View>
         <TouchableOpacity
@@ -980,7 +986,7 @@ const App = ({navigation}) => {
               <View style={styles.flexRow}>
                 <View style={styles.flexColoum}>
                   <View
-                    style={{flexDirection: 'row-reverse', width: width * 0.6}}>
+                    style={{ flexDirection: 'row-reverse', width: width * 0.6 }}>
                     {item.rightName == null ? null : (
                       <TextTicker
                         duration={6000}
@@ -1019,7 +1025,7 @@ const App = ({navigation}) => {
             keyExtractor={(item, index) => item + index}
             renderItem={renderReasonInfo}
             ItemSeparatorComponent={() => (
-              <Divider style={[styles.listDivider, {marginTop: 0}]} />
+              <Divider style={[styles.listDivider, { marginTop: 0 }]} />
             )}
           />
         ) : null}
@@ -1027,7 +1033,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderMeterType = ({item, index}) => {
+  const renderMeterType = ({ item, index }) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -1045,7 +1051,7 @@ const App = ({navigation}) => {
             <View style={styles.flexRow}>
               <View style={styles.flexColoum}>
                 <View
-                  style={{flexDirection: 'row-reverse', width: width * 0.6}}>
+                  style={{ flexDirection: 'row-reverse', width: width * 0.6 }}>
                   {item.rightName == null ? null : (
                     <TextTicker
                       duration={6000}
@@ -1079,7 +1085,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderReasonInfo = ({item}) => {
+  const renderReasonInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
@@ -1122,7 +1128,7 @@ const App = ({navigation}) => {
       </View>
     );
   };
-  const renderMeterInfo = ({item}) => {
+  const renderMeterInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
@@ -1154,7 +1160,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const renderStatusInfo = ({item}) => {
+  const renderStatusInfo = ({ item }) => {
     return (
       <View style={styles.listInner}>
         <View style={styles.listInnerContainer}>
@@ -1191,6 +1197,84 @@ const App = ({navigation}) => {
     );
   };
 
+  const turnLocationOn = () => {
+    if (Platform.OS == 'ios') {
+      Linking.openURL('App-Prefs:Privacy&path=LOCATION');
+    } else if (Platform.OS == 'android') {
+      systemSetting.switchLocation();
+    }
+  };
+
+  const enableLocation = async (unitId) => {
+    const location = await systemSetting.isLocationEnabled();
+    if (!location) {
+      Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Turn On Location',
+          onPress: turnLocationOn,
+        },
+      ]);
+    } else {
+      if (Platform.OS == 'ios') {
+        request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          .then((result) => {
+            if (result == RESULTS.GRANTED) {
+              handleMeterAdd()
+            } else {
+              Alert.alert(
+                `You don't have access for the Location`,
+                `To Change the permission Open Settings`,
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Open Settings',
+                    onPress: openSettings,
+                  },
+                ],
+              );
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
+      if (Platform.OS == 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            handleMeterAdd()
+          } else {
+            Alert.alert(
+              `You don't have access for the Location`,
+              `To Change the permission Open Settings`,
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Open Settings',
+                  onPress: openSettings,
+                },
+              ],
+            );
+          }
+        } catch (err) {
+          alert(err);
+        }
+      }
+    }
+  };
+
   const handleMeterAdd = () => {
     setAddMeterModalVisible(!addMeterModalVisible);
   };
@@ -1199,7 +1283,7 @@ const App = ({navigation}) => {
     return <Loader />;
   } else if (data?.data?.unit?.unit_meter?.length == 0) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <EditUnit
           flag={flag}
           propertyId={propertyId}
@@ -1217,11 +1301,12 @@ const App = ({navigation}) => {
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
+          unitMixes={unitMixes}
         />
         <Header
           leftComponent={{
             text: 'Close',
-            style: {fontSize: width * 0.05, color: '#000'},
+            style: { fontSize: width * 0.05, color: '#000' },
             onPress: () => navigation.goBack(),
           }}
           centerComponent={
@@ -1239,7 +1324,7 @@ const App = ({navigation}) => {
           backgroundColor="#fff"
           containerStyle={styles.headerContainerStyle}
         />
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <EditUnit
             flag={flag}
             propertyId={propertyId}
@@ -1254,6 +1339,7 @@ const App = ({navigation}) => {
             buildingName={buildingName}
             buildingId={buildingId}
             unitDetails={data.data}
+            unitMixes={unitMixes}
             addMeterUnitMix={data?.data?.unit?.unit_mix}
             addMeterUnitMixId={data?.data?.unit?.unit_mix_id}
             addNewMeter={addMeterModalVisible}
@@ -1262,12 +1348,12 @@ const App = ({navigation}) => {
             }}
           />
           <SectionList
-            style={{marginTop: height * 0.02}}
+            style={{ marginTop: height * 0.02 }}
             contentContainerStyle={styles.sectionContainer}
             sections={unitData}
             keyExtractor={(item, index) => item + index}
             renderItem={renderUnitList}
-            renderSectionHeader={({section: {title, icon, type}}) => (
+            renderSectionHeader={({ section: { title, icon, type } }) => (
               <>
                 <View style={styles.sectionTitle}>
                   <TextReuseableComponent
@@ -1326,7 +1412,7 @@ const App = ({navigation}) => {
             <Button
               onPress={confirmUnitDelete}
               title={'Delete ' + data?.data?.unit?.name ?? 'N/A'}
-              buttonStyle={{backgroundColor: '#e24b4b'}}
+              buttonStyle={{ backgroundColor: '#e24b4b' }}
             />
           </View>
         </View>
@@ -1334,7 +1420,7 @@ const App = ({navigation}) => {
     );
   } else {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <EditUnit
           flag={flag}
           propertyId={propertyId}
@@ -1358,6 +1444,7 @@ const App = ({navigation}) => {
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
+          unitMixes={unitMixes}
           unitMixesId={data.data?.unit?.unit_mix_id}
           itemPressHandle={() => {
             setEditUnitMenuVisible(false);
@@ -1382,6 +1469,7 @@ const App = ({navigation}) => {
           buildingName={buildingName}
           buildingId={buildingId}
           unitDetails={data.data}
+          unitMixes={unitMixes}
           addMeterUnitMix={data?.data?.unit?.unit_mix}
           addMeterUnitMixId={data?.data?.unit?.unit_mix_id}
           addNewMeter={addMeterModalVisible}
@@ -1392,7 +1480,7 @@ const App = ({navigation}) => {
         <Header
           leftComponent={{
             text: 'Close',
-            style: {fontSize: width * 0.05, color: '#000'},
+            style: { fontSize: width * 0.05, color: '#000' },
             onPress: () => navigation.goBack(),
           }}
           centerComponent={
@@ -1404,7 +1492,7 @@ const App = ({navigation}) => {
             text: 'Edit',
             style: styles.headerText,
             onPress: () => {
-              setSelectedMeterForEdit({item: null, index: null});
+              setSelectedMeterForEdit({ item: null, index: null });
               openEditModal();
             },
           }}
@@ -1417,7 +1505,7 @@ const App = ({navigation}) => {
           ref={scrollViewRef}
           onContentSizeChange={() => {
             if (dangerView) {
-              scrollViewRef.current.scrollToEnd({animated: true});
+              scrollViewRef.current.scrollToEnd({ animated: true });
             }
           }}>
           <View style={styles.container}>
@@ -1430,7 +1518,7 @@ const App = ({navigation}) => {
               sections={unitData}
               keyExtractor={(item, index) => item + index}
               renderItem={renderUnitList}
-              renderSectionHeader={({section: {title, icon, type}}) => (
+              renderSectionHeader={({ section: { title, icon, type } }) => (
                 <>
                   <View style={styles.sectionTitle}>
                     <TextReuseableComponent heading value={title} />
@@ -1452,7 +1540,7 @@ const App = ({navigation}) => {
               contentContainerStyle={styles.sectionContainer}
               sections={reasonsData}
               keyExtractor={(item, index) => item + index}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return loadMeter ? null : (
                   <TouchableOpacity
                     onPress={() => {
@@ -1466,7 +1554,7 @@ const App = ({navigation}) => {
                           type: LayoutAnimation.Types.easeInEaseOut,
                         },
                       }),
-                        setSelectedMeterForEdit({item, index});
+                        setSelectedMeterForEdit({ item, index });
                       openEditModal();
                     }}
                     style={styles.meterContainer}>
@@ -1478,11 +1566,11 @@ const App = ({navigation}) => {
                       }}>
                       <Feather
                         name={
-                          item.installation_status == 'Complete' ? 'check' : 'x'
+                          item.installation_status == 'Complete' || item.installation_status == 1 ? 'check' : 'x'
                         }
                         size={width * 0.04}
                         color={
-                          item.installation_status == 'Complete'
+                          item.installation_status == 'Complete' || item.installation_status == 1
                             ? 'green'
                             : 'red'
                         }
@@ -1507,13 +1595,13 @@ const App = ({navigation}) => {
                   </TouchableOpacity>
                 );
               }}
-              renderSectionHeader={({section: {title, img}}) => (
+              renderSectionHeader={({ section: { title, img } }) => (
                 <>
                   <View style={styles.sectionTitle}>
                     <TextReuseableComponent heading value={'Meters'} />
                     <TouchableOpacity
-                      onPress={() => handleMeterAdd()}
-                      style={{width: width * 0.085}}>
+                      onPress={() => enableLocation()}
+                      style={{ width: width * 0.085 }}>
                       <TextReuseableComponent heading value={'+'} />
                     </TouchableOpacity>
                   </View>
