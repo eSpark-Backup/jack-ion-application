@@ -915,24 +915,33 @@ export default function AddEditProperty({
                 justifyContent: 'space-around',
                 marginTop: width * 0.1,
               }}>
-              <TouchableOpacity onPress={() => cancelAddType()}>
+              <TouchableOpacity
+                onPress={() => cancelAddType()}
+                style={styles.addTypeButtons}>
                 <TextReuseableComponent
                   title
-                  style={styles.addTypeButtons}
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                  }}
                   value={'Cancel'}
                 />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => doneAddType('Utility', true)}
-                disabled={addUtility ? false : true}>
+                disabled={addUtility ? false : true}
+                style={{
+                  ...styles.addTypeButtons,
+                  borderColor: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                }}>
                 <TextReuseableComponent
                   title
-                  style={[
-                    styles.addTypeButtons,
-                    {
-                      color: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                    },
-                  ]}
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                  }}
                   value={'Add'}
                 />
               </TouchableOpacity>
@@ -963,25 +972,33 @@ export default function AddEditProperty({
                   justifyContent: 'space-around',
                   marginTop: width * 0.1,
                 }}>
-                <TouchableOpacity onPress={() => cancelAddUType()}>
+                <TouchableOpacity
+                  onPress={() => cancelAddUType()}
+                  style={styles.addTypeButtons}>
                   <TextReuseableComponent
                     title
-                    style={styles.addTypeButtons}
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: '#25AAE1ec',
+                    }}
                     value={'Cancel'}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => doneAddType('Utility', false)}
-                  disabled={addUtility ? false : true}>
+                  disabled={addUtility ? false : true}
+                  style={{
+                    ...styles.addTypeButtons,
+                    borderColor: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                  }}>
                   <TextReuseableComponent
                     title
-                    style={[
-                      styles.addTypeButtons,
-                      {
-                        color: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                        borderColor: addUtility ? '#25AAE1ec' : '#d0d0d0',
-                      },
-                    ]}
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: width * 0.045,
+                      color: addUtility ? '#25AAE1ec' : '#d0d0d0',
+                    }}
                     value={'Add'}
                   />
                 </TouchableOpacity>
@@ -1088,10 +1105,16 @@ export default function AddEditProperty({
                       )}
                     />
                     <View style={styles.addManuBtnContainer}>
-                      <TouchableOpacity onPress={() => cancelAddType()}>
+                      <TouchableOpacity
+                        onPress={() => cancelAddType()}
+                        style={styles.addTypeButtons}>
                         <TextReuseableComponent
                           title
-                          style={styles.addTypeButtons}
+                          style={{
+                            fontWeight: 'bold',
+                            fontSize: width * 0.045,
+                            color: '#25AAE1ec',
+                          }}
                           value={'Cancel'}
                         />
                       </TouchableOpacity>
@@ -1101,22 +1124,24 @@ export default function AddEditProperty({
                           addManufacturer && selectAddManuUtil?.length > 0
                             ? false
                             : true
-                        }>
+                        }
+                        style={{
+                          ...styles.addTypeButtons,
+                          borderColor:
+                            addManufacturer && selectAddManuUtil?.length > 0
+                              ? '#25AAE1ec'
+                              : '#d0d0d0',
+                        }}>
                         <TextReuseableComponent
                           title
-                          style={[
-                            styles.addTypeButtons,
-                            {
-                              color:
-                                addManufacturer && selectAddManuUtil?.length > 0
-                                  ? '#25AAE1ec'
-                                  : '#d0d0d0',
-                              borderColor:
-                                addManufacturer && selectAddManuUtil?.length > 0
-                                  ? '#25AAE1ec'
-                                  : '#d0d0d0',
-                            },
-                          ]}
+                          style={{
+                            fontWeight: 'bold',
+                            fontSize: width * 0.045,
+                            color:
+                              addManufacturer && selectAddManuUtil?.length > 0
+                                ? '#25AAE1ec'
+                                : '#d0d0d0',
+                          }}
                           value={'Add'}
                         />
                       </TouchableOpacity>
@@ -1185,10 +1210,16 @@ export default function AddEditProperty({
               );
             })}
             <View style={styles.bottomBtnContainer}>
-              <TouchableOpacity onPress={() => cancelManu(flag)}>
+              <TouchableOpacity
+                onPress={() => cancelManu(flag)}
+                style={styles.addTypeButtons}>
                 <TextReuseableComponent
                   title
-                  style={styles.addTypeButtons}
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color: '#25AAE1ec',
+                  }}
                   value={'Cancel'}
                 />
               </TouchableOpacity>
@@ -1203,24 +1234,26 @@ export default function AddEditProperty({
                   utilAndManu[1]?.selectId !== ''
                     ? false
                     : true
-                }>
+                }
+                style={{
+                  ...styles.addTypeButtons,
+                  borderColor:
+                    utilAndManu[0]?.selectId !== '' &&
+                    utilAndManu[1]?.selectId !== ''
+                      ? '#25AAE1ec'
+                      : '#d0d0d0',
+                }}>
                 <TextReuseableComponent
                   title
-                  style={[
-                    styles.addTypeButtons,
-                    {
-                      color:
-                        utilAndManu[0]?.selectId !== '' &&
-                        utilAndManu[1]?.selectId !== ''
-                          ? '#25AAE1ec'
-                          : '#d0d0d0',
-                      borderColor:
-                        utilAndManu[0]?.selectId !== '' &&
-                        utilAndManu[1]?.selectId !== ''
-                          ? '#25AAE1ec'
-                          : '#d0d0d0',
-                    },
-                  ]}
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width * 0.045,
+                    color:
+                      utilAndManu[0]?.selectId !== '' &&
+                      utilAndManu[1]?.selectId !== ''
+                        ? '#25AAE1ec'
+                        : '#d0d0d0',
+                  }}
                   value={flag == 'add' ? 'Add' : 'Edit'}
                 />
               </TouchableOpacity>
@@ -1331,7 +1364,7 @@ export default function AddEditProperty({
             bottom: avoidKeyboard ? width * avoidMargin : 0,
           }}
           isVisible={modalVisible}
-          onBackdropPress={closeModal}>
+          onBackdropPress={() => setSelectLocation(false)}>
           {selectLocation ? (
             <View style={styles.loactionSelectionMainView}>
               <View style={styles.loactionSelectionInnerView}>

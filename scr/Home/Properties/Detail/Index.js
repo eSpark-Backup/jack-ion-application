@@ -785,7 +785,7 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '40%', textAlign: 'left'},
+                        {flex: 1, textAlign: 'left'},
                       ]}
                       value={'Unit Count:'}
                     />
@@ -818,7 +818,7 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '45%', textAlign: 'left'},
+                        {flex: 1, textAlign: 'left'},
                       ]}
                       value={'Utility Type:'}
                     />
@@ -871,7 +871,7 @@ class Details extends React.Component {
                       title
                       style={[
                         styles.dataFieldText,
-                        {width: '45%', textAlign: 'left'},
+                        {flex: 1, textAlign: 'left'},
                       ]}
                       value={'Manufacturer:'}
                     />
@@ -989,7 +989,7 @@ class Details extends React.Component {
                   </View>
                 </View>
                 <View
-                  style={[styles.infoViewContainer, {height: height * 0.4}]}>
+                  style={[styles.infoViewContainer, {maxHeight: height * 0.4}]}>
                   <TextReuseableComponent
                     title
                     style={styles.dataFieldHeadings}
@@ -1032,7 +1032,7 @@ class Details extends React.Component {
                     showsVerticalScrollIndicator={false}
                     style={{
                       width: width * 0.8,
-                      height: height * 0.4,
+                      maxHeight: height * 0.4,
                       marginVertical: height * 0.01,
                     }}>
                     {this.state.unitMixes.map((item, index) => (
