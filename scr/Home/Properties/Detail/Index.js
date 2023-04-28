@@ -189,7 +189,12 @@ class Details extends React.Component {
     let utilTypes = [];
     let manus = [];
     utilityManufacturersArr.filter((item) => {
-      utilTypes.push(item.utility_type.name);
+      const found = utilTypes.find(
+        (utilItem) => utilItem == item?.utility_type?.name,
+      );
+      if (!found) {
+        utilTypes.push(item.utility_type.name);
+      }
       manus.push(item.manufacturer.name);
     });
 

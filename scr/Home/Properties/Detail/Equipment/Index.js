@@ -772,7 +772,7 @@ class Splash extends Component {
                       console.log('Unit Item', unit?.item?.unit_mix);
                       if (unit?.item?.unit_mix == null) {
                         Toast.show(
-                          'Attached Unit Mix before adding meter',
+                          'Please attached Unit Mix to this unit before adding meter',
                           Toast.SHORT,
                         );
                       } else {

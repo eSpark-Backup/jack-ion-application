@@ -1,7 +1,7 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { Fonts } from '../../../../utils/fonts';
+import {StyleSheet, Dimensions} from 'react-native';
+import {Fonts} from '../../../../utils/fonts';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -91,11 +91,11 @@ export default styles = StyleSheet.create({
   buildingBadge: {
     backgroundColor: '#25AAE1ec',
     width: '100%',
-    justifyContent: "center",
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 6,
     color: 'white',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   bodyContainer: {
     backgroundColor: '#F5F5F5',
@@ -234,7 +234,7 @@ export default styles = StyleSheet.create({
     height: width * 0.04,
     width: width * 0.04,
     // marginRight: width * 0.01,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   unitDetailSeprater: {
     borderColor: '#3E4A4F50',
@@ -248,7 +248,6 @@ export default styles = StyleSheet.create({
     fontSize: width * 0.03,
     fontFamily: Fonts.Montserrat,
     textAlign: 'center',
-    textTransform: 'capitalize',
     color: '#3E4A4F',
   },
   buildingSelectIcon: {
@@ -378,7 +377,7 @@ export default styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     width: width * 0.7,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   input: {
     flex: 1,
@@ -393,7 +392,7 @@ export default styles = StyleSheet.create({
   addGatewayContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   buttonContainer: {
     borderWidth: height * 0.0027,

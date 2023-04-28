@@ -278,7 +278,7 @@ const Properties = ({
             </View>
 
             <TouchableOpacity
-              onPress={() => confirmDelete(prop?.item?.id)}
+              onPress={() => confirmDelete(prop?.item)}
               style={styles.animatedViewDetailBtn}>
               <MaterialCommunityIcons
                 name="delete-outline"

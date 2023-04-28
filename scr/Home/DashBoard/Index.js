@@ -186,14 +186,18 @@ export default class Splash extends Component {
     this.selectedProp(prop);
   };
 
-  confirmDelete = (id, index) => {
-    Alert.alert('Delete Property', 'Are you sure you want to Delete?', [
-      {
-        text: 'No',
-        style: 'cancel',
-      },
-      {text: 'Yes', onPress: () => this.deleteProperty(id, index)},
-    ]);
+  confirmDelete = (item, index) => {
+    Alert.alert(
+      'Are you sure?',
+      `You are about to delete ${item?.name}. Are you sure you want to proceed?`,
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {text: 'Yes', onPress: () => this.deleteProperty(item?.id, index)},
+      ],
+    );
   };
 
   deleteProperty = async (id, index) => {

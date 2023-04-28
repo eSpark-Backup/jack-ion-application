@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 
 import {
   View,
@@ -20,13 +20,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { TextInput, Button } from 'react-native-paper';
+import {TextInput, Button} from 'react-native-paper';
 import ContextProp from './Context/propContext';
 import CustumStatusBar from '../../components/StatusBar';
 import NetInfo from '@react-native-community/netinfo';
 
 // Components
-import { Fonts } from '../../utils/fonts';
+import {Fonts} from '../../utils/fonts';
 import styles from './style';
 import Filter from './Filter';
 import Modal from 'react-native-modal';
@@ -43,7 +43,7 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import API from '../../api/SeviceApi';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
   fetchPropetry,
   loadMoreData,
@@ -52,10 +52,10 @@ import {
 import TextReuseableComponent from '../../components/Text/index';
 import Loader from '../../components/Loader';
 import Properties from '../../components/properties';
-import { addToRecent } from '../../utils/helperFunction';
+import {addToRecent} from '../../utils/helperFunction';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 class Property extends PureComponent {
   static contextType = ContextProp;
@@ -79,14 +79,14 @@ class Property extends PureComponent {
       isPullDownShow: true,
       userRole: null,
       shimmers: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
+        {id: 1},
+        {id: 2},
+        {id: 3},
+        {id: 4},
+        {id: 5},
+        {id: 6},
+        {id: 7},
+        {id: 8},
       ],
     };
 
@@ -97,12 +97,12 @@ class Property extends PureComponent {
   async componentDidMount() {
     // this.props?.fetchPropetry();
     const role = await AsyncStorage.getItem('user_role');
-    this.setState({ userRole: role });
+    this.setState({userRole: role});
     console.log('ROLE', role);
     this.onFocusFunction();
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       if (this.context.propList) {
-        this.setState({ isPullDownShow: true });
+        this.setState({isPullDownShow: true});
         this.hidePullDown();
       }
     });
@@ -110,28 +110,28 @@ class Property extends PureComponent {
 
   openFilter = () => {
     this.context.getBillingCompany();
-    this.setState({ showFilter: true });
+    this.setState({showFilter: true});
   };
 
-  jumpToDetail = async ({ prop, item }) => {
+  jumpToDetail = async ({prop, item}) => {
     await addToRecent(prop.item);
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
     this.selectedProp(prop);
-    this.props.navigation.navigate('Detail', { item });
+    this.props.navigation.navigate('Detail', {item});
   };
-  jumpFromSearch = ({ prop, item }) => {
-    this.setState({ showSearch: false });
-    this.props.navigation.navigate('Detail', { item });
+  jumpFromSearch = ({prop, item}) => {
+    this.setState({showSearch: false});
+    this.props.navigation.navigate('Detail', {item});
   };
-  jumpToEquip = async ({ prop, item }) => {
-    await addToRecent(prop.item);
-    this.selectedProp(prop);
-    this.props.navigation.navigate('Equip', { item });
-  };
-  jumpToAlerts = async ({ prop, item }) => {
+  jumpToEquip = async ({prop, item}) => {
     await addToRecent(prop.item);
     this.selectedProp(prop);
-    this.props.navigation.navigate('Alerts', { item });
+    this.props.navigation.navigate('Equip', {item});
+  };
+  jumpToAlerts = async ({prop, item}) => {
+    await addToRecent(prop.item);
+    this.selectedProp(prop);
+    this.props.navigation.navigate('Alerts', {item});
   };
 
   selectedProp = (prop) => {
@@ -151,16 +151,16 @@ class Property extends PureComponent {
   };
 
   cleardata = (prop) => {
-    this.jumpToDetail({ prop, item: prop });
+    this.jumpToDetail({prop, item: prop});
     this.context.clearData();
   };
 
   closeAndClear = () => {
-    this.setState({ showSearch: false });
+    this.setState({showSearch: false});
     this.context.clearSearchList();
   };
   openAndClear = () => {
-    this.setState({ showSearch: true });
+    this.setState({showSearch: true});
     this.context.clearSearchList();
   };
 
@@ -188,26 +188,26 @@ class Property extends PureComponent {
           },
           () => {
             this.context.stopLoader();
-            this.setState({ Loading: false });
-            this.setState({ isAddPropVisible: true });
+            this.setState({Loading: false});
+            this.setState({isAddPropVisible: true});
           },
         );
       },
       (error) => {
         console.log('geo location', error);
         this.context.stopLoader();
-        this.setState({ Loading: false });
+        this.setState({Loading: false});
       },
-      { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
+      {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
     );
   };
 
   enableLocation = async () => {
-    this.setState({ Loading: true });
+    this.setState({Loading: true});
     const location = await SystemSetting.isLocationEnabled();
     Geocoder.init('AIzaSyBdXm5lf_NfpStchyRDc3Cl94cNNZMLW2s');
     if (!location) {
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
       this.context.stopLoader();
       Alert.alert('Enable Location', 'Kindly TurnOn Location to Add Meter', [
         {
@@ -239,9 +239,9 @@ class Property extends PureComponent {
         (error) => {
           console.log('geo locations', error);
           this.context.stopLoader();
-          this.setState({ Loading: false });
+          this.setState({Loading: false});
         },
-        { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 },
+        {enableHighAccuracy: false, timeout: 30000, maximumAge: 1000},
       );
       if (Platform.OS == 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
@@ -288,7 +288,7 @@ class Property extends PureComponent {
 
       this._renderMap();
     } else {
-      this.setState({ Loading: false });
+      this.setState({Loading: false});
       this.context.stopLoader();
       Alert.alert(
         `You don't have access for the Location`,
@@ -308,21 +308,25 @@ class Property extends PureComponent {
   };
 
   openAddProp = () => {
-    this.setState({ isAddPropVisible: true });
+    this.setState({isAddPropVisible: true});
   };
 
   closeAddProp = () => {
-    this.setState({ isAddPropVisible: false });
+    this.setState({isAddPropVisible: false});
   };
 
-  confirmDelete = (id) => {
-    Alert.alert('Delete Property', 'Are you sure you want to Delete?', [
-      {
-        text: 'No',
-        style: 'cancel',
-      },
-      { text: 'Yes', onPress: () => this.deleteProperty(id) },
-    ]);
+  confirmDelete = (item) => {
+    Alert.alert(
+      'Are you sure?',
+      `You are about to delete ${item?.name}. Are you sure you want to proceed?`,
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {text: 'Yes', onPress: () => this.deleteProperty(item?.id)},
+      ],
+    );
   };
 
   deleteProperty = async (id) => {
@@ -330,10 +334,10 @@ class Property extends PureComponent {
     this.context.loadLoader();
     const response = await API.post(`/property/delete/${id}`);
     if (response?.data?.bool) {
-      this.setState({ currentIndex: null });
+      this.setState({currentIndex: null});
       alert(response?.data?.message);
       this.props?.fetchPropetry();
-      this.setState({ propertyList: this.context.propList });
+      this.setState({propertyList: this.context.propList});
     } else {
       alert(response.data.message);
       this.context.stopLoader();
@@ -362,10 +366,14 @@ class Property extends PureComponent {
 
   onFocusFunction = () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log("state.isInternetReachable", state.isInternetReachable, this.context.propList);
-      this.setState({ noInternet: !state.isConnected });
+      console.log(
+        'state.isInternetReachable',
+        state.isInternetReachable,
+        this.context.propList,
+      );
+      this.setState({noInternet: !state.isConnected});
       if (state.isConnected) {
-        this.setState({ propertyList: this.context.propList });
+        this.setState({propertyList: this.context.propList});
       } else {
         console.log('unsubscribe function called');
       }
@@ -374,7 +382,7 @@ class Property extends PureComponent {
     unsubscribe();
   };
   onRefresh = async () => {
-    this.setState({ isPullDownShow: true });
+    this.setState({isPullDownShow: true});
     this.props?.fetchPropetry();
   };
   hidePullDown = () => {
@@ -389,7 +397,7 @@ class Property extends PureComponent {
           type: LayoutAnimation.Types.easeInEaseOut,
         },
       });
-      this.setState({ isPullDownShow: false });
+      this.setState({isPullDownShow: false});
     }, 5000);
   };
 
@@ -398,7 +406,7 @@ class Property extends PureComponent {
       this.hidePullDown();
     }
     if (!this.context.filterWork && this.state.filterWork) {
-      this.setState({ filterWork: false });
+      this.setState({filterWork: false});
     }
     // console.log('this.props.propList?.length', this.props.propList?.length);
     // console.log('this.props.limitExceed', this.props.limitExceed);
@@ -441,7 +449,7 @@ class Property extends PureComponent {
                     />
                     <TextReuseableComponent
                       title
-                      style={{ color: 'white', paddingLeft: width * 0.035 }}
+                      style={{color: 'white', paddingLeft: width * 0.035}}
                       value={'Search'}
                     />
                   </TouchableOpacity>
@@ -507,8 +515,8 @@ class Property extends PureComponent {
             <Filter
               type="Properties"
               isVisible={this.state.showFilter}
-              close={() => this.setState({ showFilter: false })}
-              filterWork={() => this.setState({ filterWork: true })}
+              close={() => this.setState({showFilter: false})}
+              filterWork={() => this.setState({filterWork: true})}
             />
             {this.state.showSearch ? (
               <Modal
@@ -520,10 +528,10 @@ class Property extends PureComponent {
                   <CustumStatusBar backColor transparent />
                 )}
                 <KeyboardAvoidingView
-                  style={{ alignItems: 'center' }}
+                  style={{alignItems: 'center'}}
                   behavior="padding">
                   <View style={styles.searchModalInner}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <EvilIcon
                         name="search"
                         size={width * 0.07}
@@ -554,7 +562,7 @@ class Property extends PureComponent {
                       />
                     </View>
                     {/* </View> */}
-                    <View style={{ position: 'absolute', right: width * 0.1 }}>
+                    <View style={{position: 'absolute', right: width * 0.1}}>
                       {this.context.searchLoading ? (
                         <ActivityIndicator color="white" size="small" />
                       ) : null}
@@ -569,7 +577,7 @@ class Property extends PureComponent {
                   </View>
                   <View style={styles.searchList}>
                     <FlatList
-                      style={{ marginBottom: width * 0.2 }}
+                      style={{marginBottom: width * 0.2}}
                       data={this.context.searchList}
                       renderItem={(item) => {
                         return (
@@ -583,9 +591,7 @@ class Property extends PureComponent {
                             jumpToDetail={this.jumpToDetail}
                             jumpToEquip={this.jumpToEquip}
                             jumpToAlerts={this.jumpToAlerts}
-                            confirmDelete={() =>
-                              this.confirmDelete(item?.item?.id)
-                            }
+                            confirmDelete={() => this.confirmDelete(item?.item)}
                           />
                         );
                       }}
@@ -639,7 +645,7 @@ class Property extends PureComponent {
                   showsVerticalScrollIndicator={false}
                   ListEmptyComponent={
                     <View
-                      style={{ height: height * 0.7, justifyContent: 'center' }}>
+                      style={{height: height * 0.7, justifyContent: 'center'}}>
                       <TextReuseableComponent
                         title
                         value={'Check Your Internet Connection'}
@@ -652,13 +658,13 @@ class Property extends PureComponent {
                     ) : null
                   }
                   data={this.props.propList}
-                  renderItem={({ item, index }) => {
+                  renderItem={({item, index}) => {
                     return (
                       <View
                         key={`property_index_${index}`}
                         style={styles.propListContainer}>
                         <Properties
-                          prop={{ item, index }}
+                          prop={{item, index}}
                           routerIcon={false}
                           warningIcon={false}
                           jumpFromSearch={null}
@@ -667,7 +673,7 @@ class Property extends PureComponent {
                           jumpToDetail={this.jumpToDetail}
                           jumpToEquip={this.jumpToEquip}
                           jumpToAlerts={this.jumpToAlerts}
-                          confirmDelete={() => this.confirmDelete(item?.id)}
+                          confirmDelete={() => this.confirmDelete(item)}
                         />
                       </View>
                     );
