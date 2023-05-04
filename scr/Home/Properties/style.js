@@ -1,10 +1,10 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { Fonts } from '../../utils/fonts';
+import {StyleSheet, Dimensions} from 'react-native';
+import {Fonts} from '../../utils/fonts';
 
 //Packages
 
 //Files
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   container: {
@@ -240,7 +240,7 @@ export default styles = StyleSheet.create({
     height: height * 0.015,
     borderRadius: 4,
   },
-  skeletonEquipsContainer: { flexDirection: 'row' },
+  skeletonEquipsContainer: {flexDirection: 'row'},
   skeletonBuilds: {
     width: width * 0.04,
     height: height * 0.045,
@@ -269,6 +269,7 @@ export default styles = StyleSheet.create({
   },
   pullDownContainer: {
     width: width * 0.4,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
@@ -276,18 +277,18 @@ export default styles = StyleSheet.create({
     elevation: 3,
     position: 'absolute',
     zIndex: 1,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-
   },
   pullDownText: {
+    marginLeft: 4,
     fontFamily: Fonts.Montserrat,
-    fontSize: height * .015,
+    fontSize: height * 0.015,
   },
   animatedDetailView: {
     width: width * 0.9,
@@ -296,35 +297,34 @@ export default styles = StyleSheet.create({
     borderWidth: width * 0.001,
   },
   animatedDetailShown: {
-    borderBottomWidth: height * .0003,
+    borderBottomWidth: height * 0.0003,
     width: width * 0.9,
-    height: height * .05,
+    height: height * 0.05,
     borderColor: 'black',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: height * .01
+    paddingLeft: height * 0.01,
   },
   animatedDetailShown1: {
-    borderBottomWidth: height * .0003,
+    borderBottomWidth: height * 0.0003,
     width: width * 0.9,
-    height: height * .05,
+    height: height * 0.05,
     borderColor: 'black',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    paddingLeft: height * .01
+    paddingLeft: height * 0.01,
   },
   animatedDetailBuildingAndUnit: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: height * .01,
+    marginRight: height * 0.01,
   },
   animatedDetailBuildingAndUnitText: {
     fontFamily: Fonts.Montserrat,
     fontSize: height * 0.015,
     color: '#001522',
-    marginLeft: height * .01,
-
+    marginLeft: height * 0.01,
   },
   animatedView: {
     flexDirection: 'row',

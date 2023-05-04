@@ -621,15 +621,14 @@ class Property extends PureComponent {
                   style={[
                     styles.pullDownContainer,
                     {
-                      height: this.state.isPullDownShow
-                        ? height * 0.07
-                        : height * 0,
+                      height: this.state.isPullDownShow ? 'auto' : 0,
+                      paddingVertical: this.state.isPullDownShow ? 5 : 0,
                     },
                   ]}>
                   <Icon
                     name="ios-arrow-down-sharp"
                     color="black"
-                    size={height * 0.03}
+                    size={height * 0.02}
                   />
                   <TextReuseableComponent
                     title

@@ -678,7 +678,7 @@ class Details extends React.Component {
                   <TextReuseableComponent
                     title
                     style={{...styles.dataFieldHeadings, borderBottomWidth: 0}}
-                    value={'Tpanel'}
+                    value={'Device Inventory'}
                   />
                 </TouchableOpacity>
 
