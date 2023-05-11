@@ -1,9 +1,9 @@
-import { StyleSheet, Dimensions, Platform, StatusBar } from 'react-native';
-import { Fonts } from '../../../utils/fonts';
+import {StyleSheet, Dimensions, Platform, StatusBar} from 'react-native';
+import {Fonts} from '../../../utils/fonts';
 
 //Packages
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
   skeletonMainContainer: {
@@ -20,7 +20,7 @@ export default styles = StyleSheet.create({
   skeletonMapContainer: {
     width: width,
     height: height * 0.5,
-    marginBottom: height * 0.02
+    marginBottom: height * 0.02,
   },
   skeletonTitleContainer: {
     width: width * 0.9,
@@ -47,7 +47,7 @@ export default styles = StyleSheet.create({
     width: width * 0.9,
     height: height * 0.06,
     borderRadius: 25,
-    marginBottom: height * 0.02
+    marginBottom: height * 0.02,
   },
   skeletonGatewayContainer: {
     marginBottom: height * 0.02,
@@ -168,7 +168,7 @@ export default styles = StyleSheet.create({
     borderColor: 'black',
     borderBottomWidth: width * 0.003,
     textTransform: 'uppercase',
-    marginBottom: height * 0.01,
+    // marginBottom: height * 0.01,
     textAlign: 'center',
     width: width * 0.8,
   },
@@ -185,13 +185,13 @@ export default styles = StyleSheet.create({
     width: width * 0.14,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: 'white'
+    color: 'white',
   },
   unitmixesHeadSmall: {
     width: width * 0.1,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: 'white'
+    color: 'white',
   },
   unitMixesValuesContainer: {
     width: '100%',
@@ -223,7 +223,7 @@ export default styles = StyleSheet.create({
     width: width * 0.25,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: 'white'
+    color: 'white',
   },
   sumUnitMixesValuesView: {
     width: '90%',
@@ -285,24 +285,24 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: height * 0.02,
     borderRadius: width * 0.05,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.20,
+    shadowOpacity: 0.2,
     shadowRadius: 1.41,
   },
   infoViewInner: {
-    height: height * 0.09,
-    width: width * 0.8,
-    alignItems: 'center',
+    // height: height * 0.09,
+    // width: width * 0.8,
     flexDirection: 'row',
-    marginBottom: height * 0.02,
-    justifyContent: 'space-between'
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
   },
   dataFieldText: {
-    fontSize: height * 0.022,
+    fontSize: 17,
     fontFamily: Fonts.Montserrat,
     width: width * 0.7,
     textAlign: 'center',
@@ -395,7 +395,7 @@ export default styles = StyleSheet.create({
     // paddingBottom: height * 0.015,
   },
 
-  drawerBtnIcon: { marginRight: width * 0.02 },
+  drawerBtnIcon: {marginRight: width * 0.02},
 
   // ----------------------------------------------------
 
@@ -537,7 +537,7 @@ export default styles = StyleSheet.create({
     height: width * 0.035,
     borderRadius: 100,
     backgroundColor: '#3e95c7',
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
   onlineText: {
     fontSize: width * 0.03,
@@ -550,15 +550,32 @@ export default styles = StyleSheet.create({
     height: width * 0.035,
     borderRadius: 100,
     backgroundColor: '#ff1414',
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
   offlineText: {
     fontSize: width * 0.03,
     color: '#2D2A2B',
     fontFamily: Fonts.Montserrat,
   },
-  bunchContainer: { width: '95%', backgroundColor: '#cdcdcd', borderColor: 1, padding: 10, marginVertical: 20, borderRadius: 10 },
-  rowSpaceBtw: { flexDirection: 'row', justifyContent: 'space-around' },
-  rowSpaceEvenly: { flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 5 },
-  bunchAlertContainer: { flexDirection: 'row', backgroundColor: 'yellow', padding: 5, borderRadius: 5, marginVertical: 5 }
+  bunchContainer: {
+    width: '95%',
+    backgroundColor: '#cdcdcd',
+    borderColor: 1,
+    padding: 10,
+    marginVertical: 20,
+    borderRadius: 10,
+  },
+  rowSpaceBtw: {flexDirection: 'row', justifyContent: 'space-around'},
+  rowSpaceEvenly: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginVertical: 5,
+  },
+  bunchAlertContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'yellow',
+    padding: 5,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
 });

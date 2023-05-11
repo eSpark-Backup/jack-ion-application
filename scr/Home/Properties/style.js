@@ -268,11 +268,11 @@ export default styles = StyleSheet.create({
     // shadowRadius: 3.84,
   },
   pullDownContainer: {
-    width: width * 0.4,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+    paddingHorizontal: 5,
     backgroundColor: 'white',
     elevation: 3,
     position: 'absolute',

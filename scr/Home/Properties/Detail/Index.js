@@ -677,7 +677,11 @@ class Details extends React.Component {
                   }>
                   <TextReuseableComponent
                     title
-                    style={{...styles.dataFieldHeadings, borderBottomWidth: 0}}
+                    style={{
+                      ...styles.dataFieldHeadings,
+                      borderBottomWidth: 0,
+                      marginBottom: height * 0.01,
+                    }}
                     value={'Device Inventory'}
                   />
                 </TouchableOpacity>
@@ -689,19 +693,22 @@ class Details extends React.Component {
                     value={'Gateway'}
                   />
                   <View style={styles.infoViewInner}>
-                    <Icon name="router" size={width * 0.06} />
+                    <Icon
+                      name="router"
+                      size={25}
+                      style={{position: 'absolute', left: -40}}
+                    />
                     {propertyData?.gateway ? (
-                      <View style={{justifyContent: 'flex-end'}}>
-                        <TextReuseableComponent
-                          title
-                          style={{
-                            textAlign: 'left',
-                            fontSize: height * 0.022,
-                            fontFamily: Fonts.Montserrat,
-                          }}
-                          value={`${propertyData?.gateway?.serial_number} Synced`}
-                        />
-                      </View>
+                      <TextReuseableComponent
+                        title
+                        style={{
+                          width: '70%',
+                          textAlign: 'center',
+                          fontSize: height * 0.022,
+                          fontFamily: Fonts.Montserrat,
+                        }}
+                        value={`${propertyData?.gateway?.serial_number} Synced`}
+                      />
                     ) : (
                       <>
                         <TextReuseableComponent
@@ -721,12 +728,16 @@ class Details extends React.Component {
                     value={'ADDRESS'}
                   />
                   <View style={[styles.infoViewInner, {height: 'auto'}]}>
-                    <Locate name="map-pin" size={width * 0.06} />
+                    <Locate
+                      name="map-pin"
+                      size={25}
+                      style={{position: 'absolute', left: -40}}
+                    />
                     <TextReuseableComponent
                       title
                       style={[
                         styles.dataFieldText,
-                        {overflow: 'scroll', textAlign: 'left'},
+                        {overflow: 'scroll', width: '70%'},
                       ]}
                       value={`${
                         this.state.listData.street == null
@@ -757,12 +768,12 @@ class Details extends React.Component {
                   <View style={styles.infoViewInner}>
                     <Folder
                       name="folder"
-                      size={width * 0.06}
-                      style={{textAlign: 'left'}}
+                      size={25}
+                      style={{position: 'absolute', left: -40}}
                     />
                     <TextReuseableComponent
                       title
-                      style={[styles.dataFieldText, {textAlign: 'right'}]}
+                      style={[styles.dataFieldText, {width: '70%'}]}
                       value={
                         this.state.listData.custom_id == null ||
                         this.state.listData.custom_id == ''
@@ -922,10 +933,14 @@ class Details extends React.Component {
                     value={'Owner/Developer Name'}
                   />
                   <View style={styles.infoViewInner}>
-                    <Folder name="folder" size={width * 0.06} />
+                    <Folder
+                      name="folder"
+                      size={25}
+                      style={{position: 'absolute', left: -40}}
+                    />
                     <TextReuseableComponent
                       title
-                      style={[styles.dataFieldText, {textAlign: 'right'}]}
+                      style={[styles.dataFieldText, {width: '70%'}]}
                       value={
                         this.state.listData.owner == null ||
                         this.state.listData.owner == ''
@@ -941,7 +956,7 @@ class Details extends React.Component {
                     style={styles.dataFieldHeadings}
                     value={'Meter Count & Installation Status'}
                   />
-                  <View style={[styles.infoViewInner, {height: width * 0.07}]}>
+                  <View style={styles.infoViewInner}>
                     <TextReuseableComponent
                       title
                       style={[
@@ -967,7 +982,7 @@ class Details extends React.Component {
                   <View
                     style={[
                       styles.infoViewInner,
-                      {height: height * 0.06, justifyContent: 'space-between'},
+                      {justifyContent: 'space-between'},
                     ]}>
                     <TextReuseableComponent
                       subHeading
