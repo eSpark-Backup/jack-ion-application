@@ -33,7 +33,7 @@
     "hermes-engine": "0.7.2",
     "moti": "^0.16.0",
     "react": "16.13.1",
-    "react-native": "0.64.0",
+    "react-native": "0.69.12",
     "react-native-a-beep": "^1.1.0",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-autocomplete-input": "^4.2.0",
