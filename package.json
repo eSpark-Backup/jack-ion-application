@@ -28,7 +28,7 @@
     "apisauce": "^2.1.1",
     "axios": "^0.32.0",
     "cli-color": "^2.0.0",
-    "formik": "^2.2.9",
+    "formik": "^2.4.9",
     "geolib": "^3.3.3",
     "hermes-engine": "0.7.2",
     "moti": "^0.16.0",
