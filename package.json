@@ -81,7 +81,7 @@
     "react-native-textinput-material-autocomplete": "^1.0.6",
     "react-native-tts": "^3.2.0",
     "react-native-vector-icons": "^9.0.0",
-    "react-native-video": "^5.2.0",
+    "react-native-video": "^6.19.2",
     "react-navigation": "^5.0.0",
     "react-navigation-drawer": "^2.7.2",
     "react-navigation-stack": "^2.8.2",
