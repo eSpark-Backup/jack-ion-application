@@ -86,7 +86,7 @@
     "react-navigation-drawer": "^2.7.2",
     "react-navigation-stack": "^2.8.2",
     "react-navigation-tabs": "^2.11.2",
-    "toggle-switch-react-native": "^2.2.0",
+    "toggle-switch-react-native": "^3.3.0",
     "victory-native": "^35.0.1",
     "yarn": "^1.22.17",
     "yup": "^1.7.1"
