@@ -27,7 +27,7 @@
     "formik": "^2.2.9",
     "geolib": "^3.3.3",
     "hermes-engine": "0.7.2",
-    "moti": "^0.16.0",
+    "moti": "^0.30.0",
     "react": "16.13.1",
     "react-native": "0.64.0",
     "react-native-a-beep": "^1.1.0",
