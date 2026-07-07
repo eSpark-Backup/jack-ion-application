@@ -19,7 +19,7 @@
     "@react-native-community/slider": "^4.1.12",
     "@react-native-firebase/app": "^13.0.1",
     "@react-native-firebase/messaging": "^13.0.1",
-    "@react-native-masked-view/masked-view": "^0.2.6",
+    "@react-native-masked-view/masked-view": "^0.3.2",
     "add": "^2.0.6",
     "apisauce": "^2.1.1",
     "axios": "^0.21.1",
